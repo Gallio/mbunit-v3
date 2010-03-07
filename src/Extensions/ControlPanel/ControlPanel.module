@@ -4,12 +4,18 @@
   <ItemGroup>
     <CSharpProject Include="Gallio.ControlPanel\Gallio.ControlPanel$(ProjectVariant).csproj" />
 
-    <Binary Include="Gallio.ControlPanel\bin\Gallio.ControlPanel.exe" />
-    <PluginFile Include="Gallio.ControlPanel\Gallio.ControlPanel.exe.config" />
-    <PluginFile Include="Gallio.ControlPanel\Gallio.ControlPanel.plugin" />
-    <Binary Include="Gallio.ControlPanel\Resources\Gallio.ControlPanel.ico">
-      <Folder>Resources</Folder>
-    </Binary>
+    <AssemblyFile Include="Gallio.ControlPanel\bin\Gallio.ControlPanel.exe">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+    <ConfigFile Include="Gallio.ControlPanel\Gallio.ControlPanel.exe.config">
+      <ImagePath>bin</ImagePath>
+    </ConfigFile>
+    <PluginFile Include="Gallio.ControlPanel\Gallio.ControlPanel.plugin">
+      <ImagePath>bin</ImagePath>
+    </PluginFile>
+    <File Include="Gallio.ControlPanel\Resources\Gallio.ControlPanel.ico">
+      <ImagePath>bin\Resources</ImagePath>
+    </File>
     
     <Feature Include="FEATURE_CONTROLPANEL" />
   </ItemGroup>

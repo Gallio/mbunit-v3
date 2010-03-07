@@ -4,8 +4,12 @@
   <ItemGroup>
     <Module Include="..\Gallio\Gallio.module" />
     
-    <Module Include="Templates\MbUnitTemplates.module" />
-    <Module Include="Samples\MbUnitSamples.module" />
+    <Module Include="Templates\MbUnitTemplates.module">
+      <Inherit>true</Inherit>
+    </Module>
+    <Module Include="Samples\MbUnitSamples.module">
+      <Inherit>true</Inherit>
+    </Module>
     
     <CSharpProject Include="MbUnit\MbUnit$(ProjectVariant).csproj" />
     <CSharpProject Include="MbUnit35\MbUnit35$(ProjectVariant).csproj" />
@@ -16,27 +20,52 @@
     <CSharpProject Include="MbUnit.TestResources.x64\MbUnit.TestResources.x64$(ProjectVariant).csproj" />
     <CSharpProject Include="MbUnit.Tests\MbUnit.Tests$(ProjectVariant).csproj" />
     
-    <DocumentedAssembly Include="MbUnit\bin\MbUnit.dll" />
-    <DocumentedAssembly Include="MbUnit35\bin\MbUnit35.dll" />
-    <DocumentedAssembly Include="MbUnit.Compatibility\bin\MbUnit.Compatibility.dll" />
+    <File Include="MbUnit Website.url" />
     
-    <Content Include="MbUnit Website.url" />
+    <AssemblyFile Include="MbUnit\bin\MbUnit.dll">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+    <PdbFile Include="MbUnit\bin\MbUnit.pdb">
+      <ImagePath>bin</ImagePath>
+    </PdbFile>
+    <XmlDocFile Include="MbUnit\bin\MbUnit.xml">
+      <ImagePath>bin</ImagePath>
+    </XmlDocFile>
+    <PluginFile Include="MbUnit\MbUnit.plugin">
+      <ImagePath>bin</ImagePath>
+    </PluginFile>
+    <File Include="MbUnit\MbUnit.dll.tdnet">
+      <ImagePath>bin</ImagePath>
+    </File>
+    <File Include="MbUnit\Resources\MbUnit.ico">
+      <ImagePath>bin\Resources</ImagePath>
+    </File>
     
-    <Binary Include="MbUnit\bin\MbUnit.dll" />
-    <Binary Include="MbUnit\bin\MbUnit.pdb" />
-    <PluginFile Include="MbUnit\MbUnit.plugin" />
-    <Binary Include="MbUnit\MbUnit.dll.tdnet" />
-    <Binary Include="MbUnit\Resources\MbUnit.ico">
-        <Folder>Resources</Folder>
-    </Binary>
+    <AssemblyFile Include="MbUnit35\bin\MbUnit35.dll">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+    <PdbFile Include="MbUnit35\bin\MbUnit35.pdb">
+      <ImagePath>bin</ImagePath>
+    </PdbFile>
+    <XmlDocFile Include="MbUnit35\bin\MbUnit35.xml">
+      <ImagePath>bin</ImagePath>
+    </XmlDocFile>
+    <PluginFile Include="MbUnit35\MbUnit35.plugin">
+      <ImagePath>bin</ImagePath>
+    </PluginFile>
     
-    <Binary Include="MbUnit35\bin\MbUnit35.dll" />
-    <Binary Include="MbUnit35\bin\MbUnit35.pdb" />
-    <PluginFile Include="MbUnit35\MbUnit35.plugin" />
-    
-    <Binary Include="MbUnit.Compatibility\bin\MbUnit.Compatibility.dll" />
-    <Binary Include="MbUnit.Compatibility\bin\MbUnit.Compatibility.pdb" />
-    <PluginFile Include="MbUnit.Compatibility\MbUnit.Compatibility.plugin" />
+    <AssemblyFile Include="MbUnit.Compatibility\bin\MbUnit.Compatibility.dll">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+    <PdbFile Include="MbUnit.Compatibility\bin\MbUnit.Compatibility.pdb">
+      <ImagePath>bin</ImagePath>
+    </PdbFile>
+    <XmlDocFile Include="MbUnit.Compatibility\bin\MbUnit.Compatibility.xml">
+      <ImagePath>bin</ImagePath>
+    </XmlDocFile>
+    <PluginFile Include="MbUnit.Compatibility\MbUnit.Compatibility.plugin">
+      <ImagePath>bin</ImagePath>
+    </PluginFile>
     
     <TestAssembly Include="MbUnit.Tests\bin\MbUnit.Tests.dll" />
   </ItemGroup>
@@ -46,13 +75,21 @@
     <CSharpProject Include="MbUnit40.Tests\MbUnit40.Tests$(ProjectVariant).csproj" />
 
     <!-- Reenable when we have some content.
-    <DocumentedAssembly Include="MbUnit40\bin\MbUnit40.dll" />
+    <XmlDocFile Include="MbUnit40\bin\MbUnit40.xml" />
     -->
-    <Binary Include="MbUnit40\bin\MbUnit40.xml" />
+    <File Include="MbUnit40\bin\MbUnit40.xml">
+      <ImagePath>bin</ImagePath>
+    </File>
     
-    <Binary Include="MbUnit40\bin\MbUnit40.dll" />
-    <Binary Include="MbUnit40\bin\MbUnit40.pdb" />
-    <PluginFile Include="MbUnit40\MbUnit40.plugin" />
+    <AssemblyFile Include="MbUnit40\bin\MbUnit40.dll">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+    <PdbFile Include="MbUnit40\bin\MbUnit40.pdb">
+      <ImagePath>bin</ImagePath>
+    </PdbFile>
+    <PluginFile Include="MbUnit40\MbUnit40.plugin">
+      <ImagePath>bin</ImagePath>
+    </PluginFile>
 
     <Feature Include="FEATURE_MBUNIT40" />
     

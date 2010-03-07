@@ -8,9 +8,9 @@
   <ItemGroup>
     <CSharpProject Include="CCNet.Gallio.WebDashboard.Plugin\CCNet.Gallio.WebDashboard.Plugin$(ProjectVariant).csproj" />
     
-    <Extra Include="docs\How to use Gallio with CruiseControl.Net.txt">
-      <Folder>CCNet</Folder>
-    </Extra>
+    <File Include="docs\How to use Gallio with CruiseControl.Net.txt">
+      <ImagePath>extras\CCNet</ImagePath>
+    </File>
     
     <CCNetPackageFile Include="CCNet.Gallio.WebDashboard.Plugin\bin\CCNet.Gallio.WebDashboard.Plugin.dll">
       <Folder>bin</Folder>
@@ -50,7 +50,7 @@
     <MakeDir Directories="$(ModuleTempDir)\CCNet\GallioReports;$(ModuleImageDir)\extras\CCNet" />
 
     <Copy SourceFiles="@(CCNetPackageFile)"
-          DestinationFiles="@(CCNetPackageFile->'$(ModuleTempDir)\CCNet\GallioReports\%(Folder)\%(Filename)%(Extension)')" />
+          DestinationFiles="@(CCNetPackageFile->'$(ModuleTempDir)\CCNet\GallioReports\%(ImagePath)\%(Filename)%(Extension)')" />
 
     <ItemGroup>
       <CCNetPackageFileTempCopy Include="$(ModuleTempDir)\CCNet\GallioReports\**\*" />
@@ -59,7 +59,7 @@
     <Zip Files="@(CCNetPackageFileTempCopy)"
          WorkingDirectory="$(ModuleTempDir)\CCNet\GallioReports"
          ZipFileName="$(ModuleImageDir)\extras\CCNet\GallioReports.zip"
-	 ZipLevel="9"
+         ZipLevel="9"
          Comment="This archive contains MbUnit Samples.  Extract them to a directory of your choice to run them." />
   </Target>
 </Project>

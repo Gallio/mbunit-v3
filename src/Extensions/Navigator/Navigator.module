@@ -5,10 +5,18 @@
     <CSharpProject Include="Gallio.Navigator\Gallio.Navigator$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Navigator.Tests\Gallio.Navigator.Tests$(ProjectVariant).csproj" />
     
-    <Binary Include="Gallio.Navigator\bin\Gallio.Navigator.exe" />
-    <PluginFile Include="Gallio.Navigator\Gallio.Navigator.exe.config" />
-    <PluginFile Include="Gallio.Navigator\Gallio.Navigator.plugin" />
-    <Binary Include="Gallio.Navigator\Gallio.Navigator.Readme.txt" />
+    <AssemblyFile Include="Gallio.Navigator\bin\Gallio.Navigator.exe">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+    <ConfigFile Include="Gallio.Navigator\Gallio.Navigator.exe.config">
+      <ImagePath>bin</ImagePath>
+    </ConfigFile>
+    <PluginFile Include="Gallio.Navigator\Gallio.Navigator.plugin">
+      <ImagePath>bin</ImagePath>
+    </PluginFile>
+    <File Include="Gallio.Navigator\Gallio.Navigator.Readme.txt">
+      <ImagePath>bin</ImagePath>
+    </File>
 
     <TestAssembly Include="Gallio.Navigator.Tests\bin\Gallio.Navigator.Tests.dll" />
   </ItemGroup>

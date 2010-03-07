@@ -7,16 +7,17 @@
     <CSharpProject Include="Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner50.Tests$(ProjectVariant).csproj" />
 
     <PluginFile Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner50.plugin">
-      <Folder>ReSharper\v5.0</Folder>
+      <ImagePath>bin\ReSharper\v5.0</ImagePath>
     </PluginFile>
-    <Binary Include="Gallio.ReSharperRunner\bin\v5.0\Gallio.ReSharperRunner50.dll">
-      <Folder>ReSharper\v5.0</Folder>
-    </Binary>
+    <AssemblyFile Include="Gallio.ReSharperRunner\bin\v5.0\Gallio.ReSharperRunner50.dll">
+      <ImagePath>bin\ReSharper\v5.0</ImagePath>
+    </AssemblyFile>
 
 	<!--
     <TestAssembly Include="Gallio.ReSharperRunner.Tests\bin\v5.0\Gallio.ReSharperRunner50.Tests.dll" />
 	-->
 
+    <Feature Include="FEATURE_RESHARPER_RUNNER" />
     <Feature Include="FEATURE_RESHARPER_RUNNER_50" />
   </ItemGroup>
 </Project>

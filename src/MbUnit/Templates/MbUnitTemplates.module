@@ -2,6 +2,8 @@
   <Import Project="$(ModuleTargets)" />
 
   <ItemGroup>
-    <Module Include="*\*.module" />
+    <Module Include="*\*.module">
+      <Inherit>true</Inherit>
+    </Module>
   </ItemGroup>
 </Project>

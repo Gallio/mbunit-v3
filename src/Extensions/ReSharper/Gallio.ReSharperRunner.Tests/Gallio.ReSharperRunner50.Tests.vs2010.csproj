@@ -113,10 +113,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\Program Files\JetBrains\ReSharper\v5.0\Bin\JetBrains.ReSharper.Daemon.Specific.dll</HintPath>
     </Reference>
-    <Reference Include="JetBrains.ReSharper.DependencyChecker, Version=4.5.1153.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\JetBrains\ReSharper\v5.0\Bin\JetBrains.ReSharper.DependencyChecker.dll</HintPath>
-    </Reference>
     <Reference Include="JetBrains.ReSharper.ExternalProcessStorage, Version=4.5.1153.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\Program Files\JetBrains\ReSharper\v5.0\Bin\JetBrains.ReSharper.ExternalProcessStorage.dll</HintPath>

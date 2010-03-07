@@ -5,15 +5,15 @@
     <CSharpProject Include="Gallio.TeamCityIntegration\Gallio.TeamCityIntegration$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.TeamCityIntegration.Tests\Gallio.TeamCityIntegration.Tests$(ProjectVariant).csproj" />
     
-    <Binary Include="Gallio.TeamCityIntegration\bin\Gallio.TeamCityIntegration.dll">
-        <Folder>TeamCity</Folder>
-    </Binary>
+    <AssemblyFile Include="Gallio.TeamCityIntegration\bin\Gallio.TeamCityIntegration.dll">
+      <ImagePath>bin\TeamCity</ImagePath>
+    </AssemblyFile>
     <PluginFile Include="Gallio.TeamCityIntegration\Gallio.TeamCityIntegration.plugin">
-        <Folder>TeamCity</Folder>
+      <ImagePath>bin\TeamCity</ImagePath>
     </PluginFile>
-    <Binary Include="Gallio.TeamCityIntegration\Readme.txt">
-        <Folder>TeamCity</Folder>
-    </Binary>
+    <File Include="Gallio.TeamCityIntegration\Readme.txt">
+      <ImagePath>bin\TeamCity</ImagePath>
+    </File>
     
     <TestAssembly Include="Gallio.TeamCityIntegration.Tests\bin\Gallio.TeamCityIntegration.Tests.dll" />
   </ItemGroup>

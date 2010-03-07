@@ -5,11 +5,11 @@
     <CSharpProject Include="Gallio.RSpecAdapter\Gallio.RSpecAdapter$(ProjectVariant).csproj" />    
     <CSharpProject Include="Gallio.RSpecAdapter.Tests\Gallio.RSpecAdapter.Tests$(ProjectVariant).csproj" />
     
-    <Binary Include="Gallio.RSpecAdapter\bin\Gallio.RSpecAdapter.dll">
-      <Folder>RSpec</Folder>
-    </Binary>
+    <AssemblyFile Include="Gallio.RSpecAdapter\bin\Gallio.RSpecAdapter.dll">
+      <ImagePath>bin\RSpec</ImagePath>
+    </AssemblyFile>
     <PluginFile Include="Gallio.RSpecAdapter\Gallio.RSpecAdapter.plugin">
-      <Folder>RSpec</Folder>
+      <ImagePath>bin\RSpec</ImagePath>
     </PluginFile>
     
     <TestAssembly Include="Gallio.RSpecAdapter.Tests\bin\Gallio.RSpecAdapter.Tests.dll" />

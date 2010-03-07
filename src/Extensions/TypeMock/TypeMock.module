@@ -5,14 +5,14 @@
     <CSharpProject Include="Gallio.TypeMockIntegration\Gallio.TypeMockIntegration$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.TypeMockIntegration.Tests\Gallio.TypeMockIntegration.Tests$(ProjectVariant).csproj" />
     
-    <Binary Include="libs\TypeMock.Integration.dll">
-        <Folder>TypeMock</Folder>
-    </Binary>
-    <Binary Include="Gallio.TypeMockIntegration\bin\Gallio.TypeMockIntegration.dll">
-        <Folder>TypeMock</Folder>
-    </Binary>
+    <AssemblyFile Include="libs\TypeMock.Integration.dll">
+      <ImagePath>bin\TypeMock</ImagePath>
+    </AssemblyFile>
+    <AssemblyFile Include="Gallio.TypeMockIntegration\bin\Gallio.TypeMockIntegration.dll">
+      <ImagePath>bin\TypeMock</ImagePath>
+    </AssemblyFile>
     <PluginFile Include="Gallio.TypeMockIntegration\Gallio.TypeMockIntegration.plugin">
-        <Folder>TypeMock</Folder>
+      <ImagePath>bin\TypeMock</ImagePath>
     </PluginFile>
     
     <TestAssembly Include="Gallio.TypeMockIntegration.Tests\bin\Gallio.TypeMockIntegration.Tests.dll" />

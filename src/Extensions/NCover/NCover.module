@@ -5,87 +5,87 @@
     <CSharpProject Include="Gallio.NCoverIntegration\Gallio.NCoverIntegration$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.NCoverIntegration.Tests\Gallio.NCoverIntegration.Tests$(ProjectVariant).csproj" />
     
-    <Binary Include="Gallio.NCoverIntegration\bin\Gallio.NCoverIntegration.dll">
-        <Folder>NCover</Folder>
-    </Binary>
+    <AssemblyFile Include="Gallio.NCoverIntegration\bin\Gallio.NCoverIntegration.dll">
+      <ImagePath>bin\NCover</ImagePath>
+    </AssemblyFile>
     <PluginFile Include="Gallio.NCoverIntegration\Gallio.NCoverIntegration.plugin">
-        <Folder>NCover</Folder>
+      <ImagePath>bin\NCover</ImagePath>
     </PluginFile>
 
-    <Binary Include="libs\NCover Readme.txt">
-        <Folder>NCover\libs</Folder>
-    </Binary>
-    <Binary Include="libs\NCoverExplorer Readme.txt">
-        <Folder>NCover\libs</Folder>
-    </Binary>
+    <File Include="libs\NCover Readme.txt">
+      <ImagePath>bin\NCover\libs</ImagePath>
+    </File>
+    <File Include="libs\NCoverExplorer Readme.txt">
+      <ImagePath>bin\NCover\libs</ImagePath>
+    </File>
 
-    <Binary Include="libs\NCover\Coverage.xsl">
-        <Folder>NCover\libs\NCover</Folder>
-    </Binary>
-    <Binary Include="libs\NCover\CoverLib.dll">
-        <Folder>NCover\libs\NCover</Folder>
-    </Binary>
-    <Binary Include="libs\NCover\Microsoft.VC80.CRT.manifest">
-        <Folder>NCover\libs\NCover</Folder>
-    </Binary>
-    <Binary Include="libs\NCover\MSVCP80.dll">
-        <Folder>NCover\libs\NCover</Folder>
-    </Binary>
-    <Binary Include="libs\NCover\MSVCR80.dll">
-        <Folder>NCover\libs\NCover</Folder>
-    </Binary>
-    <Binary Include="libs\NCover\NCover.Console.exe">
-        <Folder>NCover\libs\NCover</Folder>
-    </Binary>
-    <Binary Include="libs\NCover\NCover.Console.exe.config">
-        <Folder>NCover\libs\NCover</Folder>
-    </Binary>
-    <Binary Include="libs\NCover\NCover.Framework.dll">
-        <Folder>NCover\libs\NCover</Folder>
-    </Binary>
-    <Binary Include="libs\NCover\NCoverFAQ.html">
-        <Folder>NCover\libs\NCover</Folder>
-    </Binary>
+    <File Include="libs\NCover\Coverage.xsl">
+      <ImagePath>bin\NCover\libs\NCover</ImagePath>
+    </File>
+    <File Include="libs\NCover\CoverLib.dll">
+      <ImagePath>bin\NCover\libs\NCover</ImagePath>
+    </File>
+    <File Include="libs\NCover\Microsoft.VC80.CRT.manifest">
+      <ImagePath>bin\NCover\libs\NCover</ImagePath>
+    </File>
+    <File Include="libs\NCover\MSVCP80.dll">
+      <ImagePath>bin\NCover\libs\NCover</ImagePath>
+    </File>
+    <File Include="libs\NCover\MSVCR80.dll">
+      <ImagePath>bin\NCover\libs\NCover</ImagePath>
+    </File>
+    <File Include="libs\NCover\NCover.Console.exe">
+      <ImagePath>bin\NCover\libs\NCover</ImagePath>
+    </File>
+    <File Include="libs\NCover\NCover.Console.exe.config">
+      <ImagePath>bin\NCover\libs\NCover</ImagePath>
+    </File>
+    <File Include="libs\NCover\NCover.Framework.dll">
+      <ImagePath>bin\NCover\libs\NCover</ImagePath>
+    </File>
+    <File Include="libs\NCover\NCoverFAQ.html">
+      <ImagePath>bin\NCover\libs\NCover</ImagePath>
+    </File>
     
-    <Binary Include="libs\NCoverExplorer\CommandBars.dll">
-        <Folder>NCover\libs\NCoverExplorer</Folder>
-    </Binary>
-    <Binary Include="libs\NCoverExplorer\ConsoleConfig.xsd">
-        <Folder>NCover\libs\NCoverExplorer</Folder>
-    </Binary>
-    <Binary Include="libs\NCoverExplorer\ConsoleExample.config">
-        <Folder>NCover\libs\NCoverExplorer</Folder>
-    </Binary>
-    <Binary Include="libs\NCoverExplorer\CoverageReport.xsl">
-        <Folder>NCover\libs\NCoverExplorer</Folder>
-    </Binary>
-    <Binary Include="libs\NCoverExplorer\ICSharpCode.TextEditor.dll">
-        <Folder>NCover\libs\NCoverExplorer</Folder>
-    </Binary>
-    <Binary Include="libs\NCoverExplorer\license.txt">
-        <Folder>NCover\libs\NCoverExplorer</Folder>
-    </Binary>
-    <Binary Include="libs\NCoverExplorer\NCoverExplorer.Console.exe">
-        <Folder>NCover\libs\NCoverExplorer</Folder>
-    </Binary>
-    <Binary Include="libs\NCoverExplorer\NCoverExplorer.Core.dll">
-        <Folder>NCover\libs\NCoverExplorer</Folder>
-    </Binary>
-    <Binary Include="libs\NCoverExplorer\NCoverExplorer.exe">
-        <Folder>NCover\libs\NCoverExplorer</Folder>
-    </Binary>
-    <Binary Include="libs\NCoverExplorer\NCoverExplorer.exe.config">
-        <Folder>NCover\libs\NCoverExplorer</Folder>
-    </Binary>
-    <Binary Include="libs\NCoverExplorer\NCoverExplorer.NCoverRunner.dll">
-        <Folder>NCover\libs\NCoverExplorer</Folder>
-    </Binary>
-    <Binary Include="libs\NCoverExplorer\NCoverExplorerFAQ.html">
-        <Folder>NCover\libs\NCoverExplorer</Folder>
-    </Binary>
-    <Binary Include="libs\NCoverExplorer\NCoverExplorerReleaseNotes.html">
-        <Folder>NCover\libs\NCoverExplorer</Folder>
-    </Binary>
+    <File Include="libs\NCoverExplorer\CommandBars.dll">
+      <ImagePath>bin\NCover\libs\NCoverExplorer</ImagePath>
+    </File>
+    <File Include="libs\NCoverExplorer\ConsoleConfig.xsd">
+      <ImagePath>bin\NCover\libs\NCoverExplorer</ImagePath>
+    </File>
+    <File Include="libs\NCoverExplorer\ConsoleExample.config">
+      <ImagePath>bin\NCover\libs\NCoverExplorer</ImagePath>
+    </File>
+    <File Include="libs\NCoverExplorer\CoverageReport.xsl">
+      <ImagePath>bin\NCover\libs\NCoverExplorer</ImagePath>
+    </File>
+    <File Include="libs\NCoverExplorer\ICSharpCode.TextEditor.dll">
+      <ImagePath>bin\NCover\libs\NCoverExplorer</ImagePath>
+    </File>
+    <File Include="libs\NCoverExplorer\license.txt">
+      <ImagePath>bin\NCover\libs\NCoverExplorer</ImagePath>
+    </File>
+    <File Include="libs\NCoverExplorer\NCoverExplorer.Console.exe">
+      <ImagePath>bin\NCover\libs\NCoverExplorer</ImagePath>
+    </File>
+    <File Include="libs\NCoverExplorer\NCoverExplorer.Core.dll">
+      <ImagePath>bin\NCover\libs\NCoverExplorer</ImagePath>
+    </File>
+    <File Include="libs\NCoverExplorer\NCoverExplorer.exe">
+      <ImagePath>bin\NCover\libs\NCoverExplorer</ImagePath>
+    </File>
+    <File Include="libs\NCoverExplorer\NCoverExplorer.exe.config">
+      <ImagePath>bin\NCover\libs\NCoverExplorer</ImagePath>
+    </File>
+    <File Include="libs\NCoverExplorer\NCoverExplorer.NCoverRunner.dll">
+      <ImagePath>bin\NCover\libs\NCoverExplorer</ImagePath>
+    </File>
+    <File Include="libs\NCoverExplorer\NCoverExplorerFAQ.html">
+      <ImagePath>bin\NCover\libs\NCoverExplorer</ImagePath>
+    </File>
+    <File Include="libs\NCoverExplorer\NCoverExplorerReleaseNotes.html">
+      <ImagePath>bin\NCover\libs\NCoverExplorer</ImagePath>
+    </File>
     
     <Feature Include="FEATURE_NCOVER_INTEGRATION" />
 

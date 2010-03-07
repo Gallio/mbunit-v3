@@ -6,11 +6,16 @@
     <CSharpProject Include="Gallio.Common.Splash.Tests\Gallio.Common.Splash.Tests$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Common.Splash.Demo\Gallio.Common.Splash.Demo$(ProjectVariant).csproj" />
     
-    <DocumentedAssembly Include="Gallio.Common.Splash\bin\Gallio.Common.Splash.dll" />
+    <AssemblyFile Include="Gallio.Common.Splash\bin\Gallio.Common.Splash.dll">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+    <PdbFile Include="Gallio.Common.Splash\bin\Gallio.Common.Splash.pdb">
+      <ImagePath>bin</ImagePath>
+    </PdbFile>
+    <XmlDocFile Include="Gallio.Common.Splash\bin\Gallio.Common.Splash.xml">
+      <ImagePath>bin</ImagePath>
+    </XmlDocFile>
 
-    <Binary Include="Gallio.Common.Splash\bin\Gallio.Common.Splash.dll" />
-    <Binary Include="Gallio.Common.Splash\bin\Gallio.Common.Splash.pdb" />
-	
     <TestAssembly Include="Gallio.Common.Splash.Tests\bin\Gallio.Common.Splash.Tests.dll" />
   </ItemGroup>
 </Project>

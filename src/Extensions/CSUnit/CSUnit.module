@@ -6,37 +6,37 @@
     <CSharpProject Include="Gallio.CSUnitAdapter.Tests\Gallio.CSUnitAdapter.Tests$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.CSUnitAdapter.TestResources\Gallio.CSUnitAdapter.TestResources$(ProjectVariant).csproj" />
     
-    <Binary Include="Gallio.CSUnitAdapter\bin\Gallio.CSUnitAdapter.dll">
-        <Folder>CSUnit</Folder>
-    </Binary>
+    <AssemblyFile Include="Gallio.CSUnitAdapter\bin\Gallio.CSUnitAdapter.dll">
+      <ImagePath>bin\CSUnit</ImagePath>
+    </AssemblyFile>
     <PluginFile Include="Gallio.CSUnitAdapter\Gallio.CSUnitAdapter.plugin">
-        <Folder>CSUnit</Folder>
+      <ImagePath>bin\CSUnit</ImagePath>
     </PluginFile>
-    <Binary Include="Gallio.CSUnitAdapter\Readme.txt">
-        <Folder>CSUnit</Folder>
-    </Binary>
-    <Binary Include="Gallio.CSUnitAdapter\csUnit.dll.tdnet">
-        <Folder>CSUnit</Folder>
-    </Binary>
-    <Binary Include="libs\csUnit.dll">
-        <Folder>CSUnit</Folder>
-    </Binary>
-    <Binary Include="libs\csUnit.Common.dll">
-        <Folder>CSUnit</Folder>
-    </Binary>
-    <Binary Include="libs\csUnit.Core.dll">
-        <Folder>CSUnit</Folder>
-    </Binary>
-    <Binary Include="libs\csUnit.Interfaces.dll">
-        <Folder>CSUnit</Folder>
-    </Binary>
-    <Binary Include="libs\license.txt">
-        <Folder>CSUnit</Folder>
-    </Binary>
+    <File Include="Gallio.CSUnitAdapter\Readme.txt">
+      <ImagePath>bin\CSUnit</ImagePath>
+    </File>
+    <File Include="Gallio.CSUnitAdapter\csUnit.dll.tdnet">
+      <ImagePath>bin\CSUnit</ImagePath>
+    </File>
+    <File Include="Gallio.CSUnitAdapter\Resources\csUnit.ico">
+      <ImagePath>bin\CSUnit\Resources</ImagePath>
+    </File>    
     
-    <Binary Include="Gallio.CSUnitAdapter\Resources\csUnit.ico">
-        <Folder>CSUnit\Resources</Folder>
-    </Binary>
+    <File Include="libs\csUnit.dll">
+      <ImagePath>bin\CSUnit</ImagePath>
+    </File>
+    <File Include="libs\csUnit.Common.dll">
+      <ImagePath>bin\CSUnit</ImagePath>
+    </File>
+    <File Include="libs\csUnit.Core.dll">
+      <ImagePath>bin\CSUnit</ImagePath>
+    </File>
+    <File Include="libs\csUnit.Interfaces.dll">
+      <ImagePath>bin\CSUnit</ImagePath>
+    </File>
+    <File Include="libs\license.txt">
+      <ImagePath>bin\CSUnit</ImagePath>
+    </File>
     
     <TestAssembly Include="Gallio.CSUnitAdapter.Tests\bin\Gallio.CSUnitAdapter.Tests.dll" />
   </ItemGroup>

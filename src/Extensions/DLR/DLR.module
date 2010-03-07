@@ -5,15 +5,15 @@
     <CSharpProject Include="Gallio.DLRIntegration\Gallio.DLRIntegration$(ProjectVariant).csproj" />    
     <CSharpProject Include="Gallio.DLRIntegration.Tests\Gallio.DLRIntegration.Tests$(ProjectVariant).csproj" />    
     
-    <Binary Include="Gallio.DLRIntegration\bin\Gallio.DLRIntegration.dll">
-      <Folder>DLR</Folder>
-    </Binary>
+    <AssemblyFile Include="Gallio.DLRIntegration\bin\Gallio.DLRIntegration.dll">
+      <ImagePath>bin\DLR</ImagePath>
+    </AssemblyFile>
     <PluginFile Include="Gallio.DLRIntegration\Gallio.DLRIntegration.plugin">
-      <Folder>DLR</Folder>
+      <ImagePath>bin\DLR</ImagePath>
     </PluginFile>
-    <Binary Include="Gallio.DLRIntegration\Gallio.DLRIntegration.dll.config">
-      <Folder>DLR</Folder>
-    </Binary>
+    <ConfigFile Include="Gallio.DLRIntegration\Gallio.DLRIntegration.dll.config">
+      <ImagePath>bin\DLR</ImagePath>
+    </ConfigFile>
 
     <TestAssembly Include="Gallio.DLRIntegration.Tests\bin\Gallio.DLRIntegration.Tests.dll" />
 	

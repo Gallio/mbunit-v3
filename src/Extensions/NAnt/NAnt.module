@@ -5,9 +5,15 @@
     <CSharpProject Include="Gallio.NAntTasks\Gallio.NAntTasks$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.NAntTasks.Tests\Gallio.NAntTasks.Tests$(ProjectVariant).csproj" />
     
-    <PluginFile Include="Gallio.NAntTasks\Gallio.NAntTasks.plugin" />
-    <Binary Include="Gallio.NAntTasks\bin\Gallio.NAntTasks.dll" />
-    <DocumentedAssembly Include="Gallio.NAntTasks\bin\Gallio.NAntTasks.dll" />
+    <PluginFile Include="Gallio.NAntTasks\Gallio.NAntTasks.plugin">
+      <ImagePath>bin</ImagePath>
+    </PluginFile>
+    <AssemblyFile Include="Gallio.NAntTasks\bin\Gallio.NAntTasks.dll">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+    <XmlDocFile Include="Gallio.NAntTasks\bin\Gallio.NAntTasks.xml">
+      <ImagePath>bin</ImagePath>
+    </XmlDocFile>
     
     <TestAssembly Include="Gallio.NAntTasks.Tests\bin\Gallio.NAntTasks.Tests.dll" />
   </ItemGroup>

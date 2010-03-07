@@ -30,19 +30,22 @@
   <!-- ROOT CONTENT -->
 
   <ItemGroup>
-    <Module Include="src\All.module" />
-    <!--
-    <Module Include="compat\FxCop.module" />
-    <Module Include="compat\LibCheck.module" />
-    -->
+    <Module Include="src\Dist.Bundle.module" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Gallio License.txt" />
-    <Content Include="ASL - Apache Software Foundation License.txt" />
-    <Content Include="Credits.html" />
+    <LicenseFile Include="Gallio License.txt">
+      <ImagePath>licenses</ImagePath>
+    </LicenseFile>
+    <LicenseFile Include="ASL - Apache Software Foundation License.txt">
+      <ImagePath>licenses</ImagePath>
+    </LicenseFile>
     
-    <Extra Include="$(ToolsDir)\H2Reg\H2Reg.*" />
+    <File Include="Credits.html" />
+
+    <File Include="$(ToolsDir)\H2Reg\H2Reg.*">
+      <ImagePath>extras</ImagePath>
+    </File>
 
     <Feature Include="NO_ILMERGE" Condition="'$(SkipILMerge)'=='true'" />
     <Feature Include="NO_SANDCASTLE" Condition="'$(SkipDocumentation)'=='true'" />
@@ -50,7 +53,8 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(IncludeSources)">
-    <Content Include="Sources.txt" />
+    <File Include="Sources.txt" />
+      
     <Feature Include="INCLUDE_SOURCES" />
   </ItemGroup>
 

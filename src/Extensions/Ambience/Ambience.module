@@ -7,21 +7,38 @@
     <CSharpProject Include="Gallio.Ambience.UI\Gallio.Ambience.UI$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Ambience.Tests\Gallio.Ambience.Tests$(ProjectVariant).csproj" />
 
-    <PluginFile Include="Gallio.Ambience\Gallio.Ambience.plugin" />
+    <XmlDocFile Include="Gallio.Ambience\bin\Gallio.Ambience.xml">
+      <ImagePath>bin</ImagePath>
+    </XmlDocFile>
+    <PluginFile Include="Gallio.Ambience\Gallio.Ambience.plugin">
+      <ImagePath>bin</ImagePath>
+    </PluginFile>
 
-    <PluginFile Include="Gallio.Ambience.UI\Gallio.Ambience.UI.plugin" />
-    <Binary Include="Gallio.Ambience.UI\bin\Gallio.Ambience.UI.dll" />
+    <PluginFile Include="Gallio.Ambience.UI\Gallio.Ambience.UI.plugin">
+      <ImagePath>bin</ImagePath>
+    </PluginFile>
+    <AssemblyFile Include="Gallio.Ambience.UI\bin\Gallio.Ambience.UI.dll">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
 
-    <Binary Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe" />
-    <PluginFile Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe.config" />
+    <AssemblyFile Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+    <ConfigFile Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe.config">
+      <ImagePath>bin</ImagePath>
+    </ConfigFile>
 
-    <Content Include="libs\db4o.license.html" />
-    <Content Include="libs\Cecil.FlowAnalysis.license.html" />
-    <Content Include="libs\Mono.GetOptions.license.html" />
+    <LicenseFile Include="libs\db4o.license.html">
+      <ImagePath>licenses</ImagePath>
+    </LicenseFile>
+    <LicenseFile Include="libs\Cecil.FlowAnalysis.license.html">
+      <ImagePath>licenses</ImagePath>
+    </LicenseFile>
+    <LicenseFile Include="libs\Mono.GetOptions.license.html">
+      <ImagePath>licenses</ImagePath>
+    </LicenseFile>
 
     <TestAssembly Include="Gallio.Ambience.Tests\bin\Gallio.Ambience.Tests.dll" />
-
-    <DocumentedAssembly Include="Gallio.Ambience\bin\Gallio.Ambience.dll" />
     
     <Feature Include="FEATURE_AMBIENCE" />
   </ItemGroup>

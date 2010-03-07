@@ -1,7 +1,0 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(ModuleTargets)" />
-
-  <ItemGroup>
-    <Module Include="*\*.module" />
-  </ItemGroup>
-</Project>

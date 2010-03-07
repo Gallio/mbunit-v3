@@ -6,9 +6,15 @@
     <CSharpProject Include="Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Interop.Tests\Gallio.VisualStudio.Interop.Tests$(ProjectVariant).csproj" />
     
-    <PluginFile Include="Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.plugin" />
-    <Binary Include="Gallio.VisualStudio.Interop\bin\Gallio.VisualStudio.Interop.dll" />
-    <Binary Include="Gallio.VisualStudio.Interop\bin\Gallio.VisualStudio.Interop.pdb" />
+    <PluginFile Include="Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.plugin">
+      <ImagePath>bin</ImagePath>
+    </PluginFile>
+    <AssemblyFile Include="Gallio.VisualStudio.Interop\bin\Gallio.VisualStudio.Interop.dll">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>    
+    <PdbFile Include="Gallio.VisualStudio.Interop\bin\Gallio.VisualStudio.Interop.pdb">
+      <ImagePath>bin</ImagePath>
+    </PdbFile>
 
     <TestAssembly Include="Gallio.VisualStudio.Interop.Tests\bin\Gallio.VisualStudio.Interop.Tests.dll" />
   </ItemGroup>

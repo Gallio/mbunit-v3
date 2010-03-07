@@ -5,15 +5,25 @@
     <CSharpProject Include="Gallio.Icarus\Gallio.Icarus$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Icarus.Tests\Gallio.Icarus.Tests$(ProjectVariant).csproj" />
     
-    <Binary Include="Gallio.Icarus\bin\Gallio.Icarus.exe" />
-    <PluginFile Include="Gallio.Icarus\bin\Gallio.Icarus.exe.config" />
-    <PluginFile Include="Gallio.Icarus\Gallio.Icarus.plugin" />    
-    <Binary Include="Gallio.Icarus\bin\Gallio.Icarus.XmlSerializers.dll" />
-    <Binary Include="Gallio.Icarus\Resources\Gallio.Icarus.ico">
-        <Folder>Resources</Folder>
-    </Binary>
+    <AssemblyFile Include="Gallio.Icarus\bin\Gallio.Icarus.exe">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+    <ConfigFile Include="Gallio.Icarus\bin\Gallio.Icarus.exe.config">
+      <ImagePath>bin</ImagePath>
+    </ConfigFile>
+    <PluginFile Include="Gallio.Icarus\Gallio.Icarus.plugin">
+      <ImagePath>bin</ImagePath>
+    </PluginFile>
+    <AssemblyFile Include="Gallio.Icarus\bin\Gallio.Icarus.XmlSerializers.dll">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+    <File Include="Gallio.Icarus\Resources\Gallio.Icarus.ico">
+      <ImagePath>bin\Resources</ImagePath>
+    </File>
 
-    <Binary Include="libs\ICSharpCode.TextEditor.dll" />
+    <AssemblyFile Include="libs\ICSharpCode.TextEditor.dll">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
     
     <TestAssembly Include="Gallio.Icarus.Tests\bin\Gallio.Icarus.Tests.dll" />
   </ItemGroup>

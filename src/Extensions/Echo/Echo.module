@@ -5,12 +5,18 @@
     <CSharpProject Include="Gallio.Echo\Gallio.Echo$(ProjectVariant).csproj" />    
     <CSharpProject Include="Gallio.Echo.Tests\Gallio.Echo.Tests$(ProjectVariant).csproj" />
     
-    <Binary Include="Gallio.Echo\bin\Gallio.Echo.exe" />
-    <PluginFile Include="Gallio.Echo\bin\Gallio.Echo.exe.config" />
-    <PluginFile Include="Gallio.Echo\Gallio.Echo.plugin" />
-    <Binary Include="Gallio.Echo\Resources\Gallio.Echo.ico">
-        <Folder>Resources</Folder>
-    </Binary>
+    <AssemblyFile Include="Gallio.Echo\bin\Gallio.Echo.exe">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+    <ConfigFile Include="Gallio.Echo\bin\Gallio.Echo.exe.config">
+      <ImagePath>bin</ImagePath>
+    </ConfigFile>
+    <PluginFile Include="Gallio.Echo\Gallio.Echo.plugin">
+      <ImagePath>bin</ImagePath>
+    </PluginFile>
+    <File Include="Gallio.Echo\Resources\Gallio.Echo.ico">
+      <ImagePath>bin\Resources</ImagePath>
+    </File>
     
     <TestAssembly Include="Gallio.Echo.Tests\bin\Gallio.Echo.Tests.dll" />
   </ItemGroup>

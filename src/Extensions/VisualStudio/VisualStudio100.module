@@ -13,39 +13,40 @@
     <CSharpProject Include="Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip100.Proxy$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Tip.Tests\Gallio.VisualStudio.Tip100.Tests$(ProjectVariant).csproj" />
 
-     <Binary Include="Gallio.VisualStudio.Shell\bin\v10.0\Gallio.VisualStudio.Shell100.dll">
-      <Folder>VisualStudio\v10.0</Folder>
-    </Binary>
+    <AssemblyFile Include="Gallio.VisualStudio.Shell\bin\v10.0\Gallio.VisualStudio.Shell100.dll">
+      <ImagePath>bin\VisualStudio\v10.0</ImagePath>
+    </AssemblyFile>
     <PluginFile Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell100.plugin">
-      <Folder>VisualStudio\v10.0</Folder>
+      <ImagePath>bin\VisualStudio\v10.0</ImagePath>
     </PluginFile>
-    <Binary Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell100.addin">
-      <Folder>VisualStudio\v10.0</Folder>
-    </Binary>
+    <ConfigFile Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell100.addin">
+      <ImagePath>bin\VisualStudio\v10.0</ImagePath>
+    </ConfigFile>
     
     <!--
-    <Binary Include="Gallio.VisualStudio.Sail\bin\v10.0\Gallio.VisualStudio.Sail100.dll">
-      <Folder>VisualStudio\v10.0</Folder>
-    </Binary>
+    <AssemblyFile Include="Gallio.VisualStudio.Sail\bin\v10.0\Gallio.VisualStudio.Sail100.dll">
+      <ImagePath>bin\VisualStudio\v10.0</ImagePath>
+    </AssemblyFile>
     <PluginFile Include="Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail100.plugin">
-      <Folder>VisualStudio\v10.0</Folder>
+      <ImagePath>bin\VisualStudio\v10.0</ImagePath>
     </PluginFile>
     -->
    
+    <AssemblyFile Include="Gallio.VisualStudio.Tip\bin\v10.0\Gallio.VisualStudio.Tip100.dll">
+      <ImagePath>bin\VisualStudio\v10.0</ImagePath>
+    </AssemblyFile>
+    <AssemblyFile Include="Gallio.VisualStudio.Tip.Proxy\bin\v10.0\Gallio.VisualStudio.Tip100.Proxy.dll">
+      <ImagePath>bin\VisualStudio\v10.0</ImagePath>
+    </AssemblyFile>
     <PluginFile Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip100.plugin">
-      <Folder>VisualStudio\v10.0</Folder>
+      <ImagePath>bin\VisualStudio\v10.0</ImagePath>
     </PluginFile>
-    <Binary Include="Gallio.VisualStudio.Tip\bin\v10.0\Gallio.VisualStudio.Tip100.dll">
-      <Folder>VisualStudio\v10.0</Folder>
-    </Binary>
-    <Binary Include="Gallio.VisualStudio.Tip.Proxy\bin\v10.0\Gallio.VisualStudio.Tip100.Proxy.dll">
-      <Folder>VisualStudio\v10.0</Folder>
-    </Binary>
 
     <TestAssembly Include="Gallio.VisualStudio.Shell.Tests\bin\v10.0\Gallio.VisualStudio.Shell100.Tests.dll" />
     <TestAssembly Include="Gallio.VisualStudio.Sail.Tests\bin\v10.0\Gallio.VisualStudio.Sail100.Tests.dll" />    
     <TestAssembly Include="Gallio.VisualStudio.Tip.Tests\bin\v10.0\Gallio.VisualStudio.Tip100.Tests.dll" />
 
+    <Feature Include="FEATURE_VISUALSTUDIO" />
     <Feature Include="FEATURE_VISUALSTUDIO_100" />
     <Feature Include="FEATURE_VISUALSTUDIO_TIP_100" />
     <!-- Not ready for release.

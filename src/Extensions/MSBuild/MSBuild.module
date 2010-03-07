@@ -5,9 +5,15 @@
     <CSharpProject Include="Gallio.MSBuildTasks\Gallio.MSBuildTasks$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.MSBuildTasks.Tests\Gallio.MSBuildTasks.Tests$(ProjectVariant).csproj" />
 
-    <PluginFile Include="Gallio.MSBuildTasks\Gallio.MSBuildTasks.plugin" />
-    <Binary Include="Gallio.MSBuildTasks\bin\Gallio.MSBuildTasks.dll" />
-    <DocumentedAssembly Include="Gallio.MSBuildTasks\bin\Gallio.MSBuildTasks.dll" />
+    <PluginFile Include="Gallio.MSBuildTasks\Gallio.MSBuildTasks.plugin">
+      <ImagePath>bin</ImagePath>
+    </PluginFile>
+    <AssemblyFile Include="Gallio.MSBuildTasks\bin\Gallio.MSBuildTasks.dll">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+    <XmlDocFile Include="Gallio.MSBuildTasks\bin\Gallio.MSBuildTasks.xml">
+      <ImagePath>bin</ImagePath>
+    </XmlDocFile>
 
     <TestAssembly Include="Gallio.MSBuildTasks.Tests\bin\Gallio.MSBuildTasks.Tests.dll" />
   </ItemGroup>

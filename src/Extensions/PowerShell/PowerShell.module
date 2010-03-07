@@ -5,10 +5,18 @@
     <CSharpProject Include="Gallio.PowerShellCommands\Gallio.PowerShellCommands$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.PowerShellCommands.Tests\Gallio.PowerShellCommands.Tests$(ProjectVariant).csproj" />
     
-    <PluginFile Include="Gallio.PowerShellCommands\Gallio.PowerShellCommands.plugin" />
-    <Binary Include="Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.dll" />
-    <Binary Include="Gallio.PowerShellCommands\Gallio.PowerShellCommands.dll-Help.xml" />
-    <DocumentedAssembly Include="Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.dll" />
+    <PluginFile Include="Gallio.PowerShellCommands\Gallio.PowerShellCommands.plugin">
+      <ImagePath>bin</ImagePath>
+    </PluginFile>
+    <AssemblyFile Include="Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.dll">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+    <File Include="Gallio.PowerShellCommands\Gallio.PowerShellCommands.dll-Help.xml">
+      <ImagePath>bin</ImagePath>
+    </File>
+    <XmlDocFile Include="Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.xml">
+      <ImagePath>bin</ImagePath>
+    </XmlDocFile>
     
     <TestAssembly Include="Gallio.PowerShellCommands.Tests\bin\Gallio.PowerShellCommands.Tests.dll" />
   </ItemGroup>

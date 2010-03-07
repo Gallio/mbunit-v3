@@ -7,15 +7,15 @@
     <CSharpProject Include="Gallio.MSTestAdapter.TestResources\Gallio.MSTestAdapter.TestResources$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.MSTestAdapter.Tests\Gallio.MSTestAdapter.Tests$(ProjectVariant).csproj" />
 
-    <Binary Include="Gallio.MSTestAdapter\bin\Gallio.MSTestAdapter.dll">
-      <Folder>MSTest</Folder>
-    </Binary>
+    <AssemblyFile Include="Gallio.MSTestAdapter\bin\Gallio.MSTestAdapter.dll">
+      <ImagePath>bin\MSTest</ImagePath>
+    </AssemblyFile>
     <PluginFile Include="Gallio.MSTestAdapter\Gallio.MSTestAdapter.plugin">
-      <Folder>MSTest</Folder>
+      <ImagePath>bin\MSTest</ImagePath>
     </PluginFile>
-    <Binary Include="Gallio.MSTestAdapter\Readme.txt">
-      <Folder>MSTest</Folder>
-    </Binary>
+    <File Include="Gallio.MSTestAdapter\Readme.txt">
+      <ImagePath>bin\MSTest</ImagePath>
+    </File>
 
     <TestAssembly Include="Gallio.MSTestAdapter.Tests\bin\Gallio.MSTestAdapter.Tests.dll" />
 

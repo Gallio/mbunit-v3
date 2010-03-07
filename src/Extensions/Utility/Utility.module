@@ -4,12 +4,18 @@
   <ItemGroup>
     <CSharpProject Include="Gallio.Utility\Gallio.Utility$(ProjectVariant).csproj" />
 
-    <Binary Include="Gallio.Utility\bin\Gallio.Utility.exe" />
-    <PluginFile Include="Gallio.Utility\Gallio.Utility.exe.config" />
-    <PluginFile Include="Gallio.Utility\Gallio.Utility.plugin" />
-    <Binary Include="Gallio.Utility\Resources\Gallio.Utility.ico">
-      <Folder>Resources</Folder>
-    </Binary>
+    <AssemblyFile Include="Gallio.Utility\bin\Gallio.Utility.exe">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+    <ConfigFile Include="Gallio.Utility\Gallio.Utility.exe.config">
+      <ImagePath>bin</ImagePath>
+    </ConfigFile>
+    <PluginFile Include="Gallio.Utility\Gallio.Utility.plugin">
+      <ImagePath>bin</ImagePath>
+    </PluginFile>    
+    <File Include="Gallio.Utility\Resources\Gallio.Utility.ico">
+      <ImagePath>bin\Resources</ImagePath>
+    </File>
     
     <Feature Include="FEATURE_UTILITY" />
   </ItemGroup>

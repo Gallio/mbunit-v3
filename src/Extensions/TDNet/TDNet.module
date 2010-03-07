@@ -6,21 +6,21 @@
     <CSharpProject Include="Gallio.TDNetRunner.UI\Gallio.TDNetRunner.UI$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.TDNetRunner.Tests\Gallio.TDNetRunner.Tests$(ProjectVariant).csproj" />
     
-    <Binary Include="Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll">
-      <Folder>TDNet</Folder>
-    </Binary>
+    <AssemblyFile Include="Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll">
+      <ImagePath>bin\TDNet</ImagePath>
+    </AssemblyFile>
     <PluginFile Include="Gallio.TDNetRunner\Gallio.TDNetRunner.plugin">
-      <Folder>TDNet</Folder>
+      <ImagePath>bin\TDNet</ImagePath>
     </PluginFile>
-    <Binary Include="Gallio.TDNetRunner.UI\bin\Gallio.TDNetRunner.UI.dll">
-      <Folder>TDNet</Folder>
-    </Binary>
+    <AssemblyFile Include="Gallio.TDNetRunner.UI\bin\Gallio.TDNetRunner.UI.dll">
+      <ImagePath>bin\TDNet</ImagePath>
+    </AssemblyFile>
     <PluginFile Include="Gallio.TDNetRunner.UI\Gallio.TDNetRunner.UI.plugin">
-      <Folder>TDNet</Folder>
+      <ImagePath>bin\TDNet</ImagePath>
     </PluginFile>
-    <Binary Include="Gallio.TDNetRunner\Resources\TestDriven.ico">
-        <Folder>TDNet\Resources</Folder>
-    </Binary>
+    <File Include="Gallio.TDNetRunner\Resources\TestDriven.ico">
+      <ImagePath>bin\TDNet\Resources</ImagePath>
+    </File>
     
     <TestAssembly Include="Gallio.TDNetRunner.Tests\bin\Gallio.TDNetRunner.Tests.dll" />
   </ItemGroup>

@@ -7,47 +7,46 @@
     <CSharpProject Include="Gallio.NUnitAdapter.TestResources\Gallio.NUnitAdapter248.TestResources$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.NUnitAdapter.Tests\Gallio.NUnitAdapter248.Tests$(ProjectVariant).csproj" />
     
-    <Binary Include="Gallio.NUnitAdapter\bin\v2.4.8\Gallio.NUnitAdapter248.dll">
-        <Folder>NUnit\v2.4.8</Folder>
-    </Binary>
+    <AssemblyFile Include="Gallio.NUnitAdapter\bin\v2.4.8\Gallio.NUnitAdapter248.dll">
+      <ImagePath>bin\NUnit\v2.4.8</ImagePath>
+    </AssemblyFile>
     <PluginFile Include="Gallio.NUnitAdapter\Gallio.NUnitAdapter248.plugin">
-        <Folder>NUnit\v2.4.8</Folder>
+      <ImagePath>bin\NUnit\v2.4.8</ImagePath>
     </PluginFile>
-    <PluginFile Include="Gallio.NUnitAdapter\nunit.framework.dll.tdnet">
-        <Folder>NUnit\v2.4.8</Folder>
-    </PluginFile>
-    <Binary Include="Gallio.NUnitAdapter\Readme.txt">
-        <Folder>NUnit\v2.4.8</Folder>
-    </Binary>
-    <Binary Include="libs\v2.4.8\license.txt">
-        <Folder>NUnit\v2.4.8</Folder>
-    </Binary>
-    <Binary Include="libs\v2.4.8\nunit.framework.dll">
-        <Folder>NUnit\v2.4.8</Folder>
-    </Binary>
-    <Binary Include="libs\v2.4.8\nunit.framework.extensions.dll">
-        <Folder>NUnit\v2.4.8</Folder>
-    </Binary>
-    <Binary Include="libs\v2.4.8\nunit.core.dll">
-        <Folder>NUnit\v2.4.8</Folder>
-    </Binary>
-    <Binary Include="libs\v2.4.8\nunit.core.extensions.dll">
-        <Folder>NUnit\v2.4.8</Folder>
-    </Binary>
-    <Binary Include="libs\v2.4.8\nunit.core.interfaces.dll">
-        <Folder>NUnit\v2.4.8</Folder>
-    </Binary>
-    <Binary Include="libs\v2.4.8\nunit.util.dll">
-        <Folder>NUnit\v2.4.8</Folder>
-    </Binary>
+    <File Include="Gallio.NUnitAdapter\nunit.framework.dll.tdnet">
+      <ImagePath>bin\NUnit\v2.4.8</ImagePath>
+    </File>
+    <File Include="Gallio.NUnitAdapter\Readme.txt">
+      <ImagePath>bin\NUnit\v2.4.8</ImagePath>
+    </File>    
+    <File Include="Gallio.NUnitAdapter\Resources\NUnit.ico">
+      <ImagePath>bin\NUnit\v2.4.8\Resources</ImagePath>
+    </File>
     
-    <Binary Include="libs\v2.4.8\addins\NUnit Addins Readme.txt">
-        <Folder>NUnit\v2.4.8\addins</Folder>
-    </Binary>
-    
-    <Binary Include="Gallio.NUnitAdapter\Resources\NUnit.ico">
-        <Folder>NUnit\v2.4.8\Resources</Folder>
-    </Binary>
+    <File Include="libs\v2.4.8\license.txt">
+      <ImagePath>bin\NUnit\v2.4.8</ImagePath>
+    </File>
+    <File Include="libs\v2.4.8\nunit.framework.dll">
+      <ImagePath>bin\NUnit\v2.4.8</ImagePath>
+    </File>
+    <File Include="libs\v2.4.8\nunit.framework.extensions.dll">
+      <ImagePath>bin\NUnit\v2.4.8</ImagePath>
+    </File>
+    <File Include="libs\v2.4.8\nunit.core.dll">
+      <ImagePath>bin\NUnit\v2.4.8</ImagePath>
+    </File>
+    <File Include="libs\v2.4.8\nunit.core.extensions.dll">
+      <ImagePath>bin\NUnit\v2.4.8</ImagePath>
+    </File>
+    <File Include="libs\v2.4.8\nunit.core.interfaces.dll">
+      <ImagePath>bin\NUnit\v2.4.8</ImagePath>
+    </File>
+    <File Include="libs\v2.4.8\nunit.util.dll">
+      <ImagePath>bin\NUnit\v2.4.8</ImagePath>
+    </File>
+    <File Include="libs\v2.4.8\addins\NUnit Addins Readme.txt">
+      <ImagePath>bin\NUnit\v2.4.8\addins</ImagePath>
+    </File>
     
     <TestAssembly Include="Gallio.NUnitAdapter.Tests\bin\v2.4.8\Gallio.NUnitAdapter248.Tests.dll" />
     

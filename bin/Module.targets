@@ -26,42 +26,36 @@
     
     <File>
       <ImagePath />
-      <DistPath />
     </File>
+
+    <AssemblyFile>
+      <ImagePath />
+    </AssemblyFile>
+
+    <PdbFile>
+      <ImagePath />
+    </PdbFile>
+
+    <XmlDocFile>
+      <ImagePath />
+    </XmlDocFile>
+
+    <PluginFile>
+      <ImagePath />
+    </PluginFile>
+    
+    <ConfigFile>
+      <ImagePath />
+    </ConfigFile>
 
     <Zip>
       <BaseDir />
       <ImagePath />
-      <DistPath />
     </Zip>
     
-    <Content>
-      <Folder>.</Folder>
-    </Content>
-
-    <Binary>
-      <Folder />
-    </Binary>
-
-    <Document>
-      <Folder />
-    </Document>
-
-    <Extra>
-      <Folder />
-    </Extra>
-
-    <PluginFile>
-      <Folder />
-    </PluginFile>
-
     <ExportArchive>
       <ImagePath />
     </ExportArchive>
-    
-    <DocumentedAssembly>
-      <Folder />
-    </DocumentedAssembly>
     
     <TestAssembly />
     <Feature />
@@ -76,6 +70,7 @@
     <ModuleTempDir>$(ModuleBuildDir)\temp</ModuleTempDir>
     <ModuleReportDir>$(ModuleBuildDir)\report</ModuleReportDir>
     <ModuleImageDir>$(ModuleBuildDir)\image</ModuleImageDir>
+    <ModuleMetaDir>$(ModuleMetaDir)\meta</ModuleMetaDir>
     <ModuleDistDir>$(ModuleBuildDir)\dist</ModuleDistDir>
   </PropertyGroup>
   
@@ -140,12 +135,38 @@
   <!-- Core Targets -->
   
   <PropertyGroup>
-    <CorePreconditionDependsOn>CheckRootDir;RecursivePrecondition</CorePreconditionDependsOn>
-    <CoreCleanDependsOn>RecursiveClean;PopulateCommonProjects;CleanCommonProjects</CoreCleanDependsOn>
-    <CoreCompileDependsOn>RecursiveCompile;PopulateCommonProjects;CompileCommonProjects</CoreCompileDependsOn>
-    <CoreImageDependsOn>RecursiveImage;CopyInheritedImage;PopulateCommonProjects;ImageCommonProjects;MapFiles;ImageFiles;ImageZips</CoreImageDependsOn>
-    <CoreDistDependsOn>RecursiveDist;MapFiles;DistFiles;DistZips;GenerateExportArchives</CoreDistDependsOn>
-    <CoreTestDependsOn>RecursiveTest</CoreTestDependsOn>
+    <CorePreconditionDependsOn>
+        CheckRootDir;
+        RecursivePrecondition;
+    </CorePreconditionDependsOn>
+    <CoreCleanDependsOn>
+        RecursiveClean;
+        PopulateCommonProjects;
+        CleanCommonProjects;
+    </CoreCleanDependsOn>
+    <CoreCompileDependsOn>
+        RecursiveCompile;
+        PopulateCommonProjects;
+        CompileCommonProjects;
+    </CoreCompileDependsOn>
+    <CoreImageDependsOn>
+        RecursiveImage;
+        ImageInheritedModules;
+        PopulateCommonProjects;
+        ImageCommonProjects;
+        MapFilesToCopy;
+        ImageFilesToCopy;
+        ImageZips;
+        ImageExportArchives;
+        ImagePluginFiles;
+        ImageConfigFiles;
+    </CoreImageDependsOn>
+    <CoreDistDependsOn>
+        RecursiveDist;
+    </CoreDistDependsOn>
+    <CoreTestDependsOn>
+        RecursiveTest;
+    </CoreTestDependsOn>
   </PropertyGroup>
   
   <Target Name="CorePrecondition"
@@ -164,7 +185,7 @@
   <!-- Internal Targets -->
 
   <Target Name="CreateModuleBuildTree">
-    <MakeDir Directories="$(ModuleBuildDir);$(ModuleTempDir);$(ModuleReportDir);$(ModuleImageDir);$(ModuleDistDir)" />
+    <MakeDir Directories="$(ModuleBuildDir);$(ModuleTempDir);$(ModuleReportDir);$(ModuleImageDir);$(ModuleMetaDir);$(ModuleDistDir)" />
   </Target>
   
   <Target Name="DeleteModuleBuildTree">
@@ -176,17 +197,25 @@
 	       Text="RootDir must be set." />
   </Target>
   
-  <Target Name="CopyInheritedImage"
+  <Target Name="ImageInheritedModules"
           Condition="'@(Module)'!=''">
     <CreateItem Include="$(ModulesDir)\%(Module.FileName)\image\**\*"
-                Condition="'%(Module.InheritImage)'=='true'">
+                Condition="'%(Module.Inherit)'=='true'">
       <Output TaskParameter="Include" ItemName="_InheritedImageFile" />
+    </CreateItem>
+    <CreateItem Include="$(ModulesDir)\%(Module.FileName)\meta\**\*"
+                Condition="'%(Module.Inherit)'=='true'">
+      <Output TaskParameter="Include" ItemName="_InheritedMetaFile" />
     </CreateItem>
   
     <Copy SourceFiles="@(_InheritedImageFile)"
-          DestinationFolder="$(ModuleImageDir)"
+          DestinationFiles="@(_InheritedImageFile->'$(ModuleImageDir)\%(RecursiveDir)%(Filename)%(Extension)')"
           SkipUnchangedFiles="true"
           Condition="'@(_InheritedImageFile)'!=''" />
+    <Copy SourceFiles="@(_InheritedMetaFile)"
+          DestinationFiles="@(_InheritedMetaFile->'$(ModuleMetaDir)\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true"
+          Condition="'@(_InheritedMetaFile)'!=''" />
   </Target>
   
   <PropertyGroup>
@@ -270,48 +299,20 @@
     </ItemGroup>    
   </Target>
   
-  <Target Name="MapFiles">
+  <Target Name="MapFilesToCopy">
     <ItemGroup>
-      <File Include="@(Content)">
-        <ImagePath>%(Content.Folder)</ImagePath>
-      </File>
-
-      <File Include="@(Binary)">
-        <ImagePath>bin\%(Binary.Folder)</ImagePath>
-      </File>
-
-      <File Include="@(PluginFile)">
-        <ImagePath>bin\%(PluginFile.Folder)</ImagePath>
-      </File>
-
-      <File Include="@(Document)">
-        <ImagePath>docs\%(Document.Folder)</ImagePath>
-      </File>
-
-      <File Include="@(Extra)">
-        <ImagePath>extras\%(Extra.Folder)</ImagePath>
-      </File>
+      <_FileToCopy Include="@(File);@(AssemblyFile);@(PdbFile);@(XmlDocFile);@(ConfigFile);@(PluginFile);@(LicenseFile)" />
     </ItemGroup>
   </Target>
   
-  <Target Name="ImageFiles"
-          Condition="'@(File)'!=''">
-    <MakeDir Directories="@(File->'$(ModuleImageDir)\%(ImagePath)')"
+  <Target Name="ImageFilesToCopy"
+          Condition="'@(_FileToCopy)'!=''">
+    <MakeDir Directories="@(_FileToCopy->'$(ModuleImageDir)\%(ImagePath)')"
              Condition="'%(ImagePath)'!=''" />
 
-    <Copy SourceFiles="@(File)"
+    <Copy SourceFiles="@(_FileToCopy)"
           Condition="'%(ImagePath)'!=''"
-          DestinationFiles="@(File->'$(ModuleImageDir)\%(ImagePath)\%(RecursiveDir)%(Filename)%(Extension)')" />
-  </Target>
-
-  <Target Name="DistFiles"
-          Condition="'@(File)'!=''">
-    <MakeDir Directories="@(File->'$(ModuleDistDir)\%(DistPath)')"
-             Condition="'%(DistPath)'!=''" />
-
-    <Copy SourceFiles="@(File)"
-          Condition="'%(DistPath)'!=''"
-          DestinationFiles="@(File->'$(ModuleDistDir)\%(DistPath)\%(RecursiveDir)%(Filename)%(Extension)')" />
+          DestinationFiles="@(_FileToCopy->'$(ModuleImageDir)\%(ImagePath)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
   
   <Target Name="ImageZips"
@@ -322,15 +323,7 @@
 	 ZipFileName="$(ModuleImageDir)\%(ImagePath)" />
   </Target>
 
-  <Target Name="DistZips"
-          Condition="'@(Zip)'!=''">
-    <Zip Files="@(Zip)"
-         Condition="'%(DistPath)'!=''"
-	 WorkingDirectory="%(BaseDir)"
-	 ZipFileName="$(ModuleDistDir)\%(DistPath)" />
-  </Target>
-
-  <Target Name="GenerateExportArchives"
+  <Target Name="ImageExportArchives"
           Condition="'@(ExportArchive)'!=''">
     <Error Text="ImagePath must be specified for ExportArchive '%(ExportArchive.Identity)'."
            Condition="'%(ExportArchive.ImagePath)'==''" />
@@ -364,10 +357,17 @@
          ZipLevel="9" />
   </Target>
 
-  <Target Name="PatchPluginFiles"
+  <Target Name="ImagePluginFiles"
           Condition="'@(PluginFile)'!=''">
-    <FileUpdate Files="@(PluginFile->'$(ModuleImageDir)\bin\%(Folder)\%(Filename)%(Extension)')"
+    <FileUpdate Files="@(PluginFile->'$(ModuleImageDir)\%(ImagePath)\%(Filename)%(Extension)')"
                 Regex="0\.0\.0\.0"
                 ReplacementText="$(AssemblyVersion)" />
-  </Target>  
+  </Target>
+  
+  <Target Name="ImageConfigFiles"
+          Condition="'@(ConfigFile)'!=''">
+    <FileUpdate Files="@(ConfigFile->'$(ModuleImageDir)\%(ImagePath)\%(Filename)%(Extension)')"
+                Regex="0\.0\.0\.0"
+                ReplacementText="$(AssemblyVersion)" />
+  </Target>
 </Project>

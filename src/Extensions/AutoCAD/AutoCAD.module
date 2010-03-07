@@ -7,28 +7,30 @@
     <CSharpProject Include="Gallio.AutoCAD.Tests\Gallio.AutoCAD.Tests$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.AutoCAD.UI\Gallio.AutoCAD.UI$(ProjectVariant).csproj" />
     
-    <Binary Include="Gallio.AutoCAD\bin\Gallio.AutoCAD.dll">
-      <Folder>AutoCAD</Folder>
-    </Binary>
+    <AssemblyFile Include="Gallio.AutoCAD\bin\Gallio.AutoCAD.dll">
+      <ImagePath>bin\AutoCAD</ImagePath>
+    </AssemblyFile>
     <PluginFile Include="Gallio.AutoCAD\Gallio.AutoCAD.plugin">
-      <Folder>AutoCAD</Folder>
+      <ImagePath>bin\AutoCAD</ImagePath>
     </PluginFile>
-    <Binary Include="Gallio.AutoCAD.Plugin\bin\Gallio.AutoCAD.Plugin.dll">
-      <Folder>AutoCAD</Folder>
-    </Binary>
-    <Binary Include="Gallio.AutoCAD.UI\bin\Gallio.AutoCAD.UI.dll">
-      <Folder>AutoCAD</Folder>
-    </Binary>
+    <AssemblyFile Include="Gallio.AutoCAD.Plugin\bin\Gallio.AutoCAD.Plugin.dll">
+      <ImagePath>bin\AutoCAD</ImagePath>
+    </AssemblyFile>
+    <AssemblyFile Include="Gallio.AutoCAD.UI\bin\Gallio.AutoCAD.UI.dll">
+      <ImagePath>bin\AutoCAD</ImagePath>
+    </AssemblyFile>
     <PluginFile Include="Gallio.AutoCAD.UI\Gallio.AutoCAD.UI.plugin">
-      <Folder>AutoCAD</Folder>
+      <ImagePath>bin\AutoCAD</ImagePath>
     </PluginFile>
-    <Binary Include="libs\objectarx_license.doc">
-      <Folder>AutoCAD</Folder>
-    </Binary>
-    <Binary Include="Gallio.AutoCAD\Resources\Gallio.AutoCAD.ico">
-      <Folder>AutoCAD\Resources</Folder>
-    </Binary>
+    
+    <File Include="Gallio.AutoCAD\Resources\Gallio.AutoCAD.ico">
+      <ImagePath>bin\AutoCAD\Resources</ImagePath>
+    </File>
 
+    <LicenseFile Include="libs\objectarx_license.doc">
+      <ImagePath>licenses</ImagePath>
+    </LicenseFile>
+    
     <TestAssembly Include="Gallio.AutoCAD.Tests\bin\Gallio.AutoCAD.Tests.dll" />
 
     <Feature Include="FEATURE_AUTOCAD" />

@@ -5,12 +5,18 @@
     <CSharpProject Include="Gallio.Copy\Gallio.Copy$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Copy.Tests\Gallio.Copy.Tests$(ProjectVariant).csproj" />
     
-    <PluginFile Include="Gallio.Copy\Gallio.Copy.plugin" />
-    <Binary Include="Gallio.Copy\bin\Gallio.Copy.exe" />
-    <Binary Include="Gallio.Copy\bin\Gallio.Copy.exe.config" />
-    <Binary Include="Gallio.Copy\Resources\Gallio.Copy.ico">
-      <Folder>Resources</Folder>
-    </Binary>
+    <PluginFile Include="Gallio.Copy\Gallio.Copy.plugin">
+      <ImagePath>bin</ImagePath>
+    </PluginFile>
+    <AssemblyFile Include="Gallio.Copy\bin\Gallio.Copy.exe">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+    <ConfigFile Include="Gallio.Copy\bin\Gallio.Copy.exe.config">
+      <ImagePath>bin</ImagePath>
+    </ConfigFile>
+    <File Include="Gallio.Copy\Resources\Gallio.Copy.ico">
+      <ImagePath>bin\Resources</ImagePath>
+    </File>
     
     <TestAssembly Include="Gallio.Copy.Tests\bin\Gallio.Copy.Tests.dll" />
 
