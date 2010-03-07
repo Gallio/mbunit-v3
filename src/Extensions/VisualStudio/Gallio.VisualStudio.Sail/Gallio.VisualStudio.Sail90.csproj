@@ -27,7 +27,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.VisualStudio.Sail90.XML</DocumentationFile>
+    <DocumentationFile>bin\v9.0\Gallio.VisualStudio.Sail90.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -38,7 +38,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.VisualStudio.Sail90.XML</DocumentationFile>
+    <DocumentationFile>bin\v9.0\Gallio.VisualStudio.Sail90.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>

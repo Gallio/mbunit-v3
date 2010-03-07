@@ -1,13 +1,10 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="$(ModuleTargets)" />
   
   <ItemGroup>
-    <CSharpProject Include="Gallio.DLRIntegration\Gallio.DLRIntegration$(ProjectVariant).csproj" />
-    
+    <CSharpProject Include="Gallio.DLRIntegration\Gallio.DLRIntegration$(ProjectVariant).csproj" />    
     <CSharpProject Include="Gallio.DLRIntegration.Tests\Gallio.DLRIntegration.Tests$(ProjectVariant).csproj" />    
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <Binary Include="Gallio.DLRIntegration\bin\Gallio.DLRIntegration.dll">
       <Folder>DLR</Folder>
     </Binary>
@@ -24,21 +21,21 @@
   </ItemGroup>
 
   <Target Name="AfterImage">
-    <RemoveDir Directories="$(ImageDir)\bin\DLR\libs" />
-    <MakeDir Directories="$(ImageDir)\bin\DLR" />
+    <RemoveDir Directories="$(ModuleImageDir)\bin\DLR\libs" />
+    <MakeDir Directories="$(ModuleImageDir)\bin\DLR" />
 
     <SvnExport RepositoryPath="$(ModuleDir)\libs"
-               LocalPath="$(ImageDir)\bin\DLR\libs" />
+               LocalPath="$(ModuleImageDir)\bin\DLR\libs" />
 			   
-    <RemoveDir Directories="$(ImageDir)\bin\DLR\Scripts" />
-    <MakeDir Directories="$(ImageDir)\bin\DLR" />
+    <RemoveDir Directories="$(ModuleImageDir)\bin\DLR\Scripts" />
+    <MakeDir Directories="$(ModuleImageDir)\bin\DLR" />
 
     <SvnExport RepositoryPath="$(ModuleDir)\Gallio.DLRIntegration\Scripts"
-               LocalPath="$(ImageDir)\bin\DLR\Scripts" />
+               LocalPath="$(ModuleImageDir)\bin\DLR\Scripts" />
 	       
     <ItemGroup>
-      <LibsFiles Include="$(ImageDir)\bin\DLR\libs\**\*" />
-      <ScriptsFiles Include="$(ImageDir)\bin\DLR\scripts\**\*" />
+      <LibsFiles Include="$(ModuleImageDir)\bin\DLR\libs\**\*" />
+      <ScriptsFiles Include="$(ModuleImageDir)\bin\DLR\scripts\**\*" />
 
       <Token Include="LibsFilesToken">
         <ReplacementValue>@(LibsFiles->'&lt;file path="libs\%(RecursiveDir)%(Filename)%(Extension)"/&gt;', '%0A    ')</ReplacementValue>
@@ -48,15 +45,15 @@
       </Token>
     </ItemGroup>
 
-    <TemplateFile Template="$(ImageDir)\bin\DLR\Gallio.DLRIntegration.plugin"
+    <TemplateFile Template="$(ModuleImageDir)\bin\DLR\Gallio.DLRIntegration.plugin"
 		  Tokens="@(Token)" />
-    <Delete Files="$(ImageDir)\bin\DLR\Gallio.DLRIntegration.plugin" />
-    <Move SourceFiles="$(ImageDir)\bin\DLR\Gallio.DLRIntegration.out"
-          DestinationFiles="$(ImageDir)\bin\DLR\Gallio.DLRIntegration.plugin" />
+    <Delete Files="$(ModuleImageDir)\bin\DLR\Gallio.DLRIntegration.plugin" />
+    <Move SourceFiles="$(ModuleImageDir)\bin\DLR\Gallio.DLRIntegration.out"
+          DestinationFiles="$(ModuleImageDir)\bin\DLR\Gallio.DLRIntegration.plugin" />
   </Target>
 
   <Target Name="BeforeDist">
-    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\bin\DLR\libs&quot; -cg ComponentGroup -var var.DLR.libs.source -gg -ke -nologo -sfrag -sreg -t:DLR-libs.xslt -out DLR-libs.wxi" />
-    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\bin\DLR\Scripts&quot; -cg ComponentGroup -var var.DLR.scripts.source -gg -ke -nologo -sfrag -sreg -t:DLR-scripts.xslt -out DLR-scripts.wxi" />
+    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ModuleImageDir)\bin\DLR\libs&quot; -cg ComponentGroup -var var.DLR.libs.source -gg -ke -nologo -sfrag -sreg -t:DLR-libs.xslt -out DLR-libs.wxi" />
+    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ModuleImageDir)\bin\DLR\Scripts&quot; -cg ComponentGroup -var var.DLR.scripts.source -gg -ke -nologo -sfrag -sreg -t:DLR-scripts.xslt -out DLR-scripts.wxi" />
   </Target>
 </Project>

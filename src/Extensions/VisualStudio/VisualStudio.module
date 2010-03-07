@@ -1,11 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="$(ModuleTargets)" />
   <Import Project="VisualStudio.targets" />
   
-  <PropertyGroup>
-    <MonoCompatible>false</MonoCompatible>
-  </PropertyGroup>
-
   <ItemGroup Condition="$(VSIPInstalled)">
     <Feature Include="FEATURE_VISUALSTUDIO" />
   </ItemGroup>

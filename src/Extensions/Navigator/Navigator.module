@@ -1,24 +1,15 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
-  
-  <PropertyGroup>
-    <MonoCompatible>false</MonoCompatible>
-  </PropertyGroup>
+  <Import Project="$(ModuleTargets)" />
   
   <ItemGroup>
     <CSharpProject Include="Gallio.Navigator\Gallio.Navigator$(ProjectVariant).csproj" />
-
     <CSharpProject Include="Gallio.Navigator.Tests\Gallio.Navigator.Tests$(ProjectVariant).csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <Binary Include="Gallio.Navigator\bin\Gallio.Navigator.exe" />
     <PluginFile Include="Gallio.Navigator\Gallio.Navigator.exe.config" />
     <PluginFile Include="Gallio.Navigator\Gallio.Navigator.plugin" />
     <Binary Include="Gallio.Navigator\Gallio.Navigator.Readme.txt" />
-  </ItemGroup>
 
-  <ItemGroup>
     <TestAssembly Include="Gallio.Navigator.Tests\bin\Gallio.Navigator.Tests.dll" />
   </ItemGroup>
 </Project>

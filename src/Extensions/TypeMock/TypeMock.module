@@ -1,17 +1,10 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
-  
-  <PropertyGroup>
-    <MonoCompatible>false</MonoCompatible>
-  </PropertyGroup>
+  <Import Project="$(ModuleTargets)" />
   
   <ItemGroup>
     <CSharpProject Include="Gallio.TypeMockIntegration\Gallio.TypeMockIntegration$(ProjectVariant).csproj" />
-
     <CSharpProject Include="Gallio.TypeMockIntegration.Tests\Gallio.TypeMockIntegration.Tests$(ProjectVariant).csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <Binary Include="libs\TypeMock.Integration.dll">
         <Folder>TypeMock</Folder>
     </Binary>
@@ -21,9 +14,7 @@
     <PluginFile Include="Gallio.TypeMockIntegration\Gallio.TypeMockIntegration.plugin">
         <Folder>TypeMock</Folder>
     </PluginFile>
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <TestAssembly Include="Gallio.TypeMockIntegration.Tests\bin\Gallio.TypeMockIntegration.Tests.dll" />
   </ItemGroup>
 </Project>

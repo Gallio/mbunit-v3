@@ -1,7 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="$(ModuleTargets)" />
   
-  <ItemGroup Condition="'$(NoILMerge)'!='true'">
+  <ItemGroup>
     <CSharpProject Include="Gallio.Ambience\Gallio.Ambience$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Ambience.Server\Gallio.Ambience.Server$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Ambience.UI\Gallio.Ambience.UI$(ProjectVariant).csproj" />
@@ -25,10 +25,7 @@
     
     <Feature Include="FEATURE_AMBIENCE" />
   </ItemGroup>
-
-  <Target Name="AfterImage"
-          DependsOnTargets="AmbienceImage_ILMerge;AmbienceImage_NoILMerge" />
-
+  
   <ItemGroup>
     <AmbienceMergeDependency Include="Gallio.Ambience\bin\Db4objects.Db4o.dll" />
     <AmbienceMergeDependency Include="Gallio.Ambience\bin\Db4objects.Db4o.Linq.dll" />
@@ -36,27 +33,24 @@
     <AmbienceMergeDependency Include="Gallio.Ambience\bin\Mono.Cecil.dll" />
   </ItemGroup>
 
-  <Target Name="AmbienceImage_ILMerge"
-          Condition="'$(NoILMerge)'!='true'">
+  <Target Name="AfterImage">
     <Message Text="Running ILMerge on Gallio.Ambience.dll..."
              Importance="High" />
 
-    <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio.Ambience\bin\Gallio.Ambience.dll&quot; @(AmbienceMergeDependency->'&quot;%(Identity)&quot;', ' ') /internalize &quot;/out:$(ImageDir)\bin\Gallio.Ambience.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
+    <MakeDir Directories="$(ModuleImageDir)\bin" />
+    <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio.Ambience\bin\Gallio.Ambience.dll&quot; @(AmbienceMergeDependency->'&quot;%(Identity)&quot;', ' ') /internalize &quot;/out:$(ModuleImageDir)\bin\Gallio.Ambience.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
 
     <!-- Replace the copy of Ambience used for the tests because otherwise
          we get assembly conflicts when Db4o tries to communicate remotely
-	 with itself from an ILMerge'd context into a non-ILMerge'd context. -->
-    <Copy SourceFiles="$(ImageDir)\bin\Gallio.Ambience.dll"
+         with itself from an ILMerge'd context into a non-ILMerge'd context. -->
+    <Copy SourceFiles="$(ModuleImageDir)\bin\Gallio.Ambience.dll"
           DestinationFolder="Gallio.Ambience.Tests\bin" />
-    <Copy SourceFiles="$(ImageDir)\bin\Gallio.Ambience.dll"
+    <Copy SourceFiles="$(ModuleImageDir)\bin\Gallio.Ambience.dll"
           DestinationFolder="Gallio.Ambience.Server\bin" />
   </Target>
 
-  <Target Name="AmbienceImage_NoILMerge"
-          Condition="'$(NoILMerge)'=='true'">
-<!-- Cannot work because there will be conflicting versions of Mono.Cecil.dll
-    <Copy SourceFiles="Gallio.Ambience\bin\Gallio.Ambience.dll;@(AmbienceMergeDependency)"
-          DestinationFolder="$(ImageDir)\bin" />
--->
+  <Target Name="AfterPrecondition">
+    <Error Text="Cannot build Ambience when SkipILMerge is true."
+           Condition="'$(SkipILMerge)'=='true'" />
   </Target>
 </Project>

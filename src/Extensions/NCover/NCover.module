@@ -1,17 +1,10 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
-  
-  <PropertyGroup>
-    <MonoCompatible>false</MonoCompatible>
-  </PropertyGroup>
+  <Import Project="$(ModuleTargets)" />
   
   <ItemGroup>
     <CSharpProject Include="Gallio.NCoverIntegration\Gallio.NCoverIntegration$(ProjectVariant).csproj" />
-
     <CSharpProject Include="Gallio.NCoverIntegration.Tests\Gallio.NCoverIntegration.Tests$(ProjectVariant).csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <Binary Include="Gallio.NCoverIntegration\bin\Gallio.NCoverIntegration.dll">
         <Folder>NCover</Folder>
     </Binary>
@@ -93,9 +86,7 @@
     <Binary Include="libs\NCoverExplorer\NCoverExplorerReleaseNotes.html">
         <Folder>NCover\libs\NCoverExplorer</Folder>
     </Binary>
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <Feature Include="FEATURE_NCOVER_INTEGRATION" />
 
     <TestAssembly Include="Gallio.NCoverIntegration.Tests\bin\Gallio.NCoverIntegration.Tests.dll" />

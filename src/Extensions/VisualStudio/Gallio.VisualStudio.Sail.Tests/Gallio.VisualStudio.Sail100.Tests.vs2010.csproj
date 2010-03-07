@@ -41,7 +41,7 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.VisualStudio.Sail100.Tests.XML</DocumentationFile>
+    <DocumentationFile>bin\v10.0\Gallio.VisualStudio.Sail100.Tests.XML</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -54,7 +54,7 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.VisualStudio.Sail100.Tests.XML</DocumentationFile>
+    <DocumentationFile>bin\v10.0\Gallio.VisualStudio.Sail100.Tests.XML</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>

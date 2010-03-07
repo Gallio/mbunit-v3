@@ -1,8 +1,0 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <PropertyGroup>
-    <DotNet40>true</DotNet40>
-
-    <ProjectVariant>.vs2010</ProjectVariant>
-    <ProjectVariantExplicit>.vs2010</ProjectVariantExplicit>
-  </PropertyGroup>
-</Project>

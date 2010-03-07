@@ -1,17 +1,11 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
-  
-  <PropertyGroup>
-    <MonoCompatible>false</MonoCompatible>
-  </PropertyGroup>
+  <Import Project="$(ModuleTargets)" />
   
   <ItemGroup>
     <CSharpProject Include="Gallio.TDNetRunner\Gallio.TDNetRunner$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.TDNetRunner.UI\Gallio.TDNetRunner.UI$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.TDNetRunner.Tests\Gallio.TDNetRunner.Tests$(ProjectVariant).csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <Binary Include="Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll">
       <Folder>TDNet</Folder>
     </Binary>
@@ -27,9 +21,7 @@
     <Binary Include="Gallio.TDNetRunner\Resources\TestDriven.ico">
         <Folder>TDNet\Resources</Folder>
     </Binary>
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <TestAssembly Include="Gallio.TDNetRunner.Tests\bin\Gallio.TDNetRunner.Tests.dll" />
   </ItemGroup>
 </Project>

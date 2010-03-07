@@ -116,18 +116,6 @@
                 <File Name="Gallio.Common.Splash.pdb" />
                 <File Name="Gallio.Common.Splash.xml" />
             </Component>
-            <Component Id="Gallio.Utility" Guid="{91B04D9F-3775-4a56-82B1-864CF418D265}" Win64="no">
-                <File Name="Gallio.Utility.exe" KeyPath="yes" />
-                <File Name="Gallio.Utility.exe.config" />
-                <File Name="Gallio.Utility.plugin" />
-            </Component>
-            <Component Id="Gallio.ControlPanel" Guid="{7257BA17-B090-49eb-987D-D2DE4781554C}" Win64="no">
-                <File Name="Gallio.ControlPanel.exe" KeyPath="yes">
-                    <Shortcut Id="Gallio.ControlPanel.lnk" Name="Gallio Control Panel" Description="Configures preferences and manages the Gallio installation." Directory="GallioMenuFolder" WorkingDirectory="binFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" Show="normal" />
-		</File>
-                <File Name="Gallio.ControlPanel.exe.config" />
-                <File Name="Gallio.ControlPanel.plugin" />
-            </Component>
             <Component Id="Aga.Controls.dll" Guid="3c58ac7a-fe23-4bd4-9bb4-1bd5c107ba89" Win64="no">
                 <File Name="Aga.Controls.dll" Assembly=".net" AssemblyApplication="Gallio.Icarus.exe" KeyPath="yes" />
             </Component>
@@ -164,9 +152,6 @@
                 <File Id="Fixture.ico" Name="Fixture.ico" />
                 <File Id="Test.ico" Name="Test.ico" />
                 <File Id="Unsupported.ico" Name="Unsupported.ico" />
-		
-                <File Id="Gallio.ControlPanel.ico" Name="Gallio.ControlPanel.ico" />
-                <File Id="Gallio.Utility.ico" Name="Gallio.Utility.ico" />
             </Component>
 
             <Directory Id="Reports.css" Name="css">
@@ -291,7 +276,9 @@
             <ComponentRef Id="Gallio.UI"/>
             <ComponentRef Id="Gallio.Common.Splash"/>
             <ComponentRef Id="Gallio.Utility"/>
+            <ComponentRef Id="Gallio.Utility.Resources"/>
             <ComponentRef Id="Gallio.ControlPanel"/>
+            <ComponentRef Id="Gallio.ControlPanel.Resources"/>
             <ComponentRef Id="Gallio.Reports"/>
             <ComponentRef Id="Aga.Controls.dll" />
             <ComponentRef Id="WeifenLuo.WinFormsUI.Docking.dll" />

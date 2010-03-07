@@ -1,11 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="$(ModuleTargets)" />
   <Import Project="VisualStudio90.targets" />
   
-  <PropertyGroup>
-    <MonoCompatible>false</MonoCompatible>
-  </PropertyGroup>
-
   <ItemGroup Condition="$(VSIP90Installed)">
     <CSharpProject Include="Gallio.VisualStudio.Shell.Common\Gallio.VisualStudio.Shell$(ProjectVariant).csproj" />
   

@@ -1,0 +1,16 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(ModuleTargets)" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.Utility\Gallio.Utility$(ProjectVariant).csproj" />
+
+    <Binary Include="Gallio.Utility\bin\Gallio.Utility.exe" />
+    <PluginFile Include="Gallio.Utility\Gallio.Utility.exe.config" />
+    <PluginFile Include="Gallio.Utility\Gallio.Utility.plugin" />
+    <Binary Include="Gallio.Utility\Resources\Gallio.Utility.ico">
+      <Folder>Resources</Folder>
+    </Binary>
+    
+    <Feature Include="FEATURE_UTILITY" />
+  </ItemGroup>
+</Project>

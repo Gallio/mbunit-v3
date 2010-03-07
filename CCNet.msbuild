@@ -12,17 +12,15 @@
     <AssemblyVersion>$(AssemblyVersion)</AssemblyVersion>
     <AssemblyVersion Condition="'$(AssemblyVersion)'==''">$(Version)</AssemblyVersion>
 
-    <AssemblyFileVersion>$(AssemblyFileVersion)</AssemblyFileVersion>
-    <AssemblyFileVersion Condition="'$(AssemblyFileVersion)'==''">$(Version)</AssemblyFileVersion>
+    <FileVersion>$(FileVersion)</FileVersion>
+    <FileVersion Condition="'$(FileVersion)'==''">$(Version)</FileVersion>
 
     <RootDir>$(MSBuildProjectDirectory)</RootDir>
     <StartDir>$(RootDir)</StartDir>
-    <MetaBuildBinDir>$(RootDir)\tools\MetaBuild\bin</MetaBuildBinDir>
-    <MetaBuildConfigFile>$(RootDir)\bin\MetaBuild.config.custom</MetaBuildConfigFile>
   </PropertyGroup>
 
   <Target Name="Release">
-    <MSBuild Projects="$(MetaBuildBinDir)\MetaBuild.msbuild"
+    <MSBuild Projects="$(RootDir)\bin\Build.msbuild"
              Properties="
 	       Configuration=$(Configuration);
 	       ShowReports=$(ShowReports);
@@ -30,11 +28,9 @@
 	       Coverage=$(Coverage);
 	       Version=$(Version);
 	       AssemblyVersion=$(AssemblyVersion);
-	       AssemblyFileVersion=$(AssemblyFileVersion);
+	       FileVersion=$(FileVersion);
 	       RootDir=$(RootDir);
-	       StartDir=$(StartDir);
-	       MetaBuildBinDir=$(MetaBuildBinDir);
-	       MetaBuildConfigFile=$(MetaBuildConfigFile)"
-	     Targets="Clean;Build;Image;Test;Dist" />
+	       StartDir=$(StartDir)"
+	     Targets="Clean;Compile;Image;Test;Dist" />
   </Target>
 </Project>

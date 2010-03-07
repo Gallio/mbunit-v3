@@ -1,13 +1,10 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="$(ModuleTargets)" />
   
   <ItemGroup>
-    <CSharpProject Include="Gallio.RSpecAdapter\Gallio.RSpecAdapter$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.RSpecAdapter\Gallio.RSpecAdapter$(ProjectVariant).csproj" />    
+    <CSharpProject Include="Gallio.RSpecAdapter.Tests\Gallio.RSpecAdapter.Tests$(ProjectVariant).csproj" />
     
-    <CSharpProject Include="Gallio.RSpecAdapter.Tests\Gallio.RSpecAdapter.Tests$(ProjectVariant).csproj" />    
-  </ItemGroup>
-
-  <ItemGroup>
     <Binary Include="Gallio.RSpecAdapter\bin\Gallio.RSpecAdapter.dll">
       <Folder>RSpec</Folder>
     </Binary>
@@ -21,21 +18,21 @@
   </ItemGroup>
   
   <Target Name="AfterImage">
-    <RemoveDir Directories="$(ImageDir)\bin\RSpec\libs" />
-    <MakeDir Directories="$(ImageDir)\bin\RSpec" />
+    <RemoveDir Directories="$(ModuleImageDir)\bin\RSpec\libs" />
+    <MakeDir Directories="$(ModuleImageDir)\bin\RSpec" />
   
     <SvnExport RepositoryPath="$(ModuleDir)\libs"
-               LocalPath="$(ImageDir)\bin\RSpec\libs" />
+               LocalPath="$(ModuleImageDir)\bin\RSpec\libs" />
 			   
-    <RemoveDir Directories="$(ImageDir)\bin\RSpec\Scripts" />
-    <MakeDir Directories="$(ImageDir)\bin\RSpec" />
+    <RemoveDir Directories="$(ModuleImageDir)\bin\RSpec\Scripts" />
+    <MakeDir Directories="$(ModuleImageDir)\bin\RSpec" />
   
     <SvnExport RepositoryPath="$(ModuleDir)\Gallio.RSpecAdapter\Scripts"
-               LocalPath="$(ImageDir)\bin\RSpec\Scripts" />
+               LocalPath="$(ModuleImageDir)\bin\RSpec\Scripts" />
 
     <ItemGroup>
-      <LibsFiles Include="$(ImageDir)\bin\RSpec\libs\**\*" />
-      <ScriptsFiles Include="$(ImageDir)\bin\RSpec\scripts\**\*" />
+      <LibsFiles Include="$(ModuleImageDir)\bin\RSpec\libs\**\*" />
+      <ScriptsFiles Include="$(ModuleImageDir)\bin\RSpec\scripts\**\*" />
 
       <Token Include="LibsFilesToken">
         <ReplacementValue>@(LibsFiles->'&lt;file path="libs\%(RecursiveDir)%(Filename)%(Extension)"/&gt;', '%0A    ')</ReplacementValue>
@@ -45,15 +42,15 @@
       </Token>
     </ItemGroup>
 
-    <TemplateFile Template="$(ImageDir)\bin\RSpec\Gallio.RSpecAdapter.plugin"
+    <TemplateFile Template="$(ModuleImageDir)\bin\RSpec\Gallio.RSpecAdapter.plugin"
 		  Tokens="@(Token)" />
-    <Delete Files="$(ImageDir)\bin\RSpec\Gallio.RSpecAdapter.plugin" />
-    <Move SourceFiles="$(ImageDir)\bin\RSpec\Gallio.RSpecAdapter.out"
-          DestinationFiles="$(ImageDir)\bin\RSpec\Gallio.RSpecAdapter.plugin" />
+    <Delete Files="$(ModuleImageDir)\bin\RSpec\Gallio.RSpecAdapter.plugin" />
+    <Move SourceFiles="$(ModuleImageDir)\bin\RSpec\Gallio.RSpecAdapter.out"
+          DestinationFiles="$(ModuleImageDir)\bin\RSpec\Gallio.RSpecAdapter.plugin" />
   </Target>
   
   <Target Name="BeforeDist">
-    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\bin\RSpec\libs&quot; -cg ComponentGroup -var var.RSpec.libs.source -gg -ke -nologo -sfrag -sreg -t:RSpec-libs.xslt -out RSpec-libs.wxi" />
-    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\bin\RSpec\Scripts&quot; -cg ComponentGroup -var var.RSpec.scripts.source -gg -ke -nologo -sfrag -sreg -t:RSpec-scripts.xslt -out RSpec-scripts.wxi" />
+    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ModuleImageDir)\bin\RSpec\libs&quot; -cg ComponentGroup -var var.RSpec.libs.source -gg -ke -nologo -sfrag -sreg -t:RSpec-libs.xslt -out RSpec-libs.wxi" />
+    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ModuleImageDir)\bin\RSpec\Scripts&quot; -cg ComponentGroup -var var.RSpec.scripts.source -gg -ke -nologo -sfrag -sreg -t:RSpec-scripts.xslt -out RSpec-scripts.wxi" />
   </Target>
 </Project>

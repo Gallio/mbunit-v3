@@ -1,0 +1,165 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <!-- 
+    Core built targets.
+    Refer to the wiki for documentation.
+  -->
+  
+  <PropertyGroup>
+    <MSBuildCommunityTasksPath>$(RootDir)\tools\MSBuild Community Tasks</MSBuildCommunityTasksPath>    
+  </PropertyGroup>
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
+  
+  <!-- External Properties -->
+  <PropertyGroup>
+    <BuildDir Condition="'$(BuildDir)'==''">$(RootDir)\build</BuildDir>
+    <TempDir Condition="'$(TempDir)'==''">$(BuildDir)\temp</TempDir>
+    <ReportDir Condition="'$(ReportDir)'==''">$(BuildDir)\report</ReportDir>
+    <ModulesDir Condition="'$(ModulesDir)'==''">$(BuildDir)\modules</ModulesDir>
+    
+    <ModuleTargets Condition="'$(ModuleTargets)'==''">$(RootDir)\bin\Module.targets</ModuleTargets>
+    
+    <SkipDependencies Condition="'$(SkipDependencies)'==''">false</SkipDependencies>
+    <SkipSyncProjects Condition="'$(SkipSyncProjects)'==''">false</SkipSyncProjects>
+    <SkipILMerge Condition="'$(SkipILMerge)'==''">false</SkipILMerge>
+    <SkipSourceServer Condition="'$(SkipSourceServer)'==''">false</SkipSourceServer>
+    <SkipDocumentation Condition="'$(SkipDocumentation)'==''">false</SkipDocumentation>
+    <SkipArchive Condition="'$(SkipArchive)'==''">false</SkipArchive>
+    <SkipInstaller Condition="'$(SkipInstaller)'==''">false</SkipInstaller>
+    
+    <BuildInParallel Condition="'$(BuildInParallel)'==''">true</BuildInParallel>
+    <StopOnFirstFailure Condition="'$(StopOnFirstFailure)'==''">true</StopOnFirstFailure>
+    
+    <AssemblyVersion Condition="'$(AssemblyVersion)'==''">0.0.0.0</AssemblyVersion>
+    <FileVersion Condition="'$(FileVersion)'==''">0.0.0.0</FileVersion>
+    
+    <DotNetFrameworkVersion Condition="'$(DotNetFrameworkVersion)'=='' and Exists('$(SystemRoot)\Microsoft.Net\Framework\v4.0.30128')">4.0</DotNetFrameworkVersion>
+    <DotNetFrameworkVersion Condition="'$(DotNetFrameworkVersion)'==''">3.5</DotNetFrameworkVersion>
+    
+    <ProjectVariant></ProjectVariant>
+    <ProjectVariant Condition="'$(DotNetFrameworkVersion)'=='4.0'">.vs2010</ProjectVariant>
+    <ProjectVariantExplicit>.vs2008</ProjectVariantExplicit>
+    <ProjectVariantExplicit Condition="'$(DotNetFrameworkVersion)'=='4.0'">.vs2010</ProjectVariantExplicit>
+  </PropertyGroup>
+
+  <!-- Recursive Targets -->
+
+  <PropertyGroup>
+    <RecursiveProperties>
+        RootDir=$(RootDir);
+        StartDir=$(StartDir);
+        SourceDir=$(SourceDir);
+        BuildDir=$(BuildDir);
+        ToolsDir=$(ToolsDir);
+        ModuleTargets=$(ModuleTargets);
+        SkipModules=$(SkipModules);
+        FileVersion=$(FileVersion);
+        AssemblyVersion=$(AssemblyVersion);
+        DotNetFrameworkVersion=$(DotNetFrameworkVersion);
+    </RecursiveProperties>
+    
+    <Recurse>false</Recurse>
+    <Recurse Condition="'$(SkipDependencies)'!='true' or '$(Main)'=='true'">true</Recurse>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <SkipModule Include="$(SkipModules)"
+                Condition="'$(SkipModules)'!=''" />
+  </ItemGroup>
+  
+  <Target Name="PopulateRecursiveModules"
+          Condition="'@(Module)'!='' and $(Recurse)">
+    <FindInList List="@(Module)"
+                ItemSpecToFind="%(SkipModule.Identity).module"
+                Condition="'@(SkipModule)'!=''"
+                MatchFileNameOnly="true"
+                CaseSensitive="false">
+      <Output TaskParameter="ItemFound" ItemName="_SkippedModule" />
+    </FindInList>
+
+    <Message Importance="High"
+             Text="Skipping modules: @(_SkippedModule->'%(FileName)', ' ')"
+             Condition="'@(_SkippedModule)'!=''" />
+    
+    <ItemGroup>
+      <RecursiveModule Include="@(Module)" />
+      <RecursiveModule Remove="@(_SkippedModule)" Condition="'@(_SkippedModule)'!=''" />
+    </ItemGroup>
+  </Target>
+  
+  <Target Name="RecursivePrecondition"
+          DependsOnTargets="PopulateRecursiveModules">
+    <MSBuild Projects="@(RecursiveModule)"
+             Properties="$(RecursiveProperties)"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Condition="'@(RecursiveModule)'!=''"
+             Targets="Precondition" />
+             
+    <OnError ExecuteTargets="ModuleError" />
+  </Target>
+  
+  <Target Name="RecursiveClean"
+          DependsOnTargets="PopulateRecursiveModules">
+    <MSBuild Projects="@(RecursiveModule)"
+             Properties="$(RecursiveProperties)"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Condition="'@(RecursiveModule)'!=''"
+             Targets="Clean" />
+             
+    <OnError ExecuteTargets="ModuleError" />
+  </Target>
+  
+  <Target Name="RecursiveCompile"
+          DependsOnTargets="PopulateRecursiveModules">
+    <MSBuild Projects="@(RecursiveModule)"
+             Properties="$(RecursiveProperties)"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Condition="'@(RecursiveModule)'!=''"
+             Targets="Compile" />
+             
+    <OnError ExecuteTargets="ModuleError" />
+  </Target>
+  
+  <Target Name="RecursiveImage"
+          DependsOnTargets="PopulateRecursiveModules">
+    <MSBuild Projects="@(RecursiveModule)"
+             Properties="$(RecursiveProperties)"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Condition="'@(RecursiveModule)'!=''"
+             Targets="Image" />
+             
+    <OnError ExecuteTargets="ModuleError" />
+  </Target>
+  
+  <Target Name="RecursiveDist"
+          DependsOnTargets="PopulateRecursiveModules">
+    <MSBuild Projects="@(RecursiveModule)"
+             Properties="$(RecursiveProperties)"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Condition="'@(RecursiveModule)'!=''"
+             Targets="Dist" />
+             
+    <OnError ExecuteTargets="ModuleError" />
+  </Target>
+  
+  <Target Name="RecursiveTest"
+          DependsOnTargets="PopulateRecursiveModules">
+    <MSBuild Projects="@(RecursiveModule)"
+             Properties="$(RecursiveProperties)"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Condition="'@(RecursiveModule)'!=''"
+             Targets="Test" />
+             
+    <OnError ExecuteTargets="ModuleError" />
+  </Target>  
+  
+  <Target Name="ModuleError">
+    <Error Text="One or more modules failed to build.%0ATo exclude these modules from the build, call MSBuild with /p:SkipModules=Module1;Module2;..."
+           Condition="'$(Main)'=='true'" />
+  </Target>
+</Project>

@@ -44,7 +44,7 @@
     <NoWarn>
     </NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.VisualStudio.Shell90.XML</DocumentationFile>
+    <DocumentationFile>bin\v9.0\Gallio.VisualStudio.Shell90.XML</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -57,7 +57,7 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.VisualStudio.Shell90.XML</DocumentationFile>
+    <DocumentationFile>bin\v9.0\Gallio.VisualStudio.Shell90.XML</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>

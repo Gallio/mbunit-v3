@@ -1,14 +1,12 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="$(ModuleTargets)" />
   
   <ItemGroup>
     <CSharpProject Include="Gallio.XunitAdapter\Gallio.XunitAdapter$(ProjectVariant).csproj" />
 
     <CSharpProject Include="Gallio.XunitAdapter.TestResources\Gallio.XunitAdapter.TestResources$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.XunitAdapter.Tests\Gallio.XunitAdapter.Tests$(ProjectVariant).csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <Binary Include="Gallio.XunitAdapter\bin\Gallio.XunitAdapter.dll">
         <Folder>Xunit</Folder>
     </Binary>
@@ -39,9 +37,7 @@
     <Binary Include="libs\xunit.extensions.xml">
         <Folder>Xunit</Folder>
     </Binary>
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <TestAssembly Include="Gallio.XunitAdapter.Tests\bin\Gallio.XunitAdapter.Tests.dll" />
   </ItemGroup>
 </Project>

@@ -1,15 +1,13 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="$(ModuleTargets)" />
 
   <PropertyGroup>
     <ReportResourcesDir>$(SourceDir)\Gallio\Gallio.Reports\Resources</ReportResourcesDir>
   </PropertyGroup>
-  
+    
   <ItemGroup>
     <CSharpProject Include="CCNet.Gallio.WebDashboard.Plugin\CCNet.Gallio.WebDashboard.Plugin$(ProjectVariant).csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <Extra Include="docs\How to use Gallio with CruiseControl.Net.txt">
       <Folder>CCNet</Folder>
     </Extra>
@@ -45,22 +43,22 @@
     <Message Text="Generating CCNet package..."
              Importance="High" />
     
-    <Delete Files="$(ImageDir)\extras\CCNet\GallioReports.zip"
-            Condition="Exists('$(ImageDir)\extras\CCNet\GallioReports.zip')" />
+    <Delete Files="$(ModuleImageDir)\extras\CCNet\GallioReports.zip"
+            Condition="Exists('$(ModuleImageDir)\extras\CCNet\GallioReports.zip')" />
 
-    <RemoveDir Directories="$(TempDir)\CCNet\GallioReports" />
-    <MakeDir Directories="$(TempDir)\CCNet\GallioReports;$(ImageDir)\extras\CCNet" />
+    <RemoveDir Directories="$(ModuleTempDir)\CCNet\GallioReports" />
+    <MakeDir Directories="$(ModuleTempDir)\CCNet\GallioReports;$(ModuleImageDir)\extras\CCNet" />
 
     <Copy SourceFiles="@(CCNetPackageFile)"
-          DestinationFiles="@(CCNetPackageFile->'$(TempDir)\CCNet\GallioReports\%(Folder)\%(Filename)%(Extension)')" />
+          DestinationFiles="@(CCNetPackageFile->'$(ModuleTempDir)\CCNet\GallioReports\%(Folder)\%(Filename)%(Extension)')" />
 
     <ItemGroup>
-      <CCNetPackageFileTempCopy Include="$(TempDir)\CCNet\GallioReports\**\*" />
+      <CCNetPackageFileTempCopy Include="$(ModuleTempDir)\CCNet\GallioReports\**\*" />
     </ItemGroup>
 
     <Zip Files="@(CCNetPackageFileTempCopy)"
-         WorkingDirectory="$(TempDir)\CCNet\GallioReports"
-         ZipFileName="$(ImageDir)\extras\CCNet\GallioReports.zip"
+         WorkingDirectory="$(ModuleTempDir)\CCNet\GallioReports"
+         ZipFileName="$(ModuleImageDir)\extras\CCNet\GallioReports.zip"
 	 ZipLevel="9"
          Comment="This archive contains MbUnit Samples.  Extract them to a directory of your choice to run them." />
   </Target>

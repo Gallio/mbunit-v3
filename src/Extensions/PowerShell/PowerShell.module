@@ -1,23 +1,15 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
-  
-  <PropertyGroup>
-    <MonoCompatible>false</MonoCompatible>
-  </PropertyGroup>
+  <Import Project="$(ModuleTargets)" />
   
   <ItemGroup>
     <CSharpProject Include="Gallio.PowerShellCommands\Gallio.PowerShellCommands$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.PowerShellCommands.Tests\Gallio.PowerShellCommands.Tests$(ProjectVariant).csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <PluginFile Include="Gallio.PowerShellCommands\Gallio.PowerShellCommands.plugin" />
     <Binary Include="Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.dll" />
     <Binary Include="Gallio.PowerShellCommands\Gallio.PowerShellCommands.dll-Help.xml" />
     <DocumentedAssembly Include="Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <TestAssembly Include="Gallio.PowerShellCommands.Tests\bin\Gallio.PowerShellCommands.Tests.dll" />
   </ItemGroup>
 </Project>

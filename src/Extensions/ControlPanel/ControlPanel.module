@@ -1,0 +1,16 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(ModuleTargets)" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.ControlPanel\Gallio.ControlPanel$(ProjectVariant).csproj" />
+
+    <Binary Include="Gallio.ControlPanel\bin\Gallio.ControlPanel.exe" />
+    <PluginFile Include="Gallio.ControlPanel\Gallio.ControlPanel.exe.config" />
+    <PluginFile Include="Gallio.ControlPanel\Gallio.ControlPanel.plugin" />
+    <Binary Include="Gallio.ControlPanel\Resources\Gallio.ControlPanel.ico">
+      <Folder>Resources</Folder>
+    </Binary>
+    
+    <Feature Include="FEATURE_CONTROLPANEL" />
+  </ItemGroup>
+</Project>

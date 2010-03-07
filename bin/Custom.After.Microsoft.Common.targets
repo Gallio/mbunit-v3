@@ -1,0 +1,185 @@
+<!--
+ ! This stub enablesthe build to inject itself into unmodified common
+ ! project files.  You should not need to refer to it directly.
+ !
+ ! IMPORTANT NOTE: This file must remain compatible with MSBuild v2
+ !   so that it can work in the context of older Visual Studio 2005 projects.
+ !-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask TaskName="SGenMultipleTypes"
+             AssemblyFile="Gallio.BuildTools.Tasks.dll" />
+
+  <!-- Detect case where the MetaBuild targets have been loaded twice since both
+       MetaBuild.Common.targets and Custom.After.Microsoft.Common.targets might be in play. -->
+  <PropertyGroup Condition="'$(MetaBuildProjectType)'==''">
+    <UsingCustomAfterMicrosoftCommonTargets>true</UsingCustomAfterMicrosoftCommonTargets>
+  </PropertyGroup>
+
+  <!-- Import the global Custom.After.Microsoft.Common.targets file, if any.
+       We do this to interoperate with extensions other tools may have
+       installed.
+  -->
+  <PropertyGroup>
+    <GlobalCustomAfterMicrosoftCommonTargets Condition="'$(GlobalCustomAfterMicrosoftCommonTargets)'=='' and '$(MSBuildToolsVersion)'=='3.5'">$(MSBuildExtensionsPath)\v3.5\Custom.After.Microsoft.Common.targets</GlobalCustomAfterMicrosoftCommonTargets>
+    <GlobalCustomAfterMicrosoftCommonTargets Condition="'$(GlobalCustomAfterMicrosoftCommonTargets)'==''">$(MSBuildExtensionsPath)\v2.0\Custom.After.Microsoft.Common.targets</GlobalCustomAfterMicrosoftCommonTargets>
+  </PropertyGroup>
+  
+  <Import Project="$(GlobalCustomAfterMicrosoftCommonTargets)" Condition="Exists('$(GlobalCustomAfterMicrosoftCommonTargets)')"/>
+  
+  <!-- Customizations -->
+  
+  <PropertyGroup>
+    <!-- Default the ProjectAssemblyFileVersion and ProjectAssemblyVersion properties -->
+    <ProjectAssemblyFileVersion Condition="'$(ProjectAssemblyFileVersion)'==''">0.0.0.0</ProjectAssemblyFileVersion>
+    <ProjectAssemblyVersion Condition="'$(ProjectAssemblyVersion)'==''">0.0.0.0</ProjectAssemblyVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Language)'=='C#'">
+    <AssemblyInfoExtension>.cs</AssemblyInfoExtension>
+    <AssemblyInfoContent>using System.Reflection%3B;[assembly: AssemblyFileVersion("$(ProjectAssemblyFileVersion)")];[assembly: AssemblyVersion("$(ProjectAssemblyVersion)")]</AssemblyInfoContent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Language)'=='VB'">
+    <AssemblyInfoExtension>.vb</AssemblyInfoExtension>
+    <AssemblyInfoContent>Imports System.Reflection;%3CAssembly: AssemblyFileVersion("$(ProjectAssemblyFileVersion)")%3E;%3CAssembly: AssemblyVersion("$(ProjectAssemblyVersion)")%3E</AssemblyInfoContent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Language)'=='VJ#'">
+    <AssemblyInfoExtension>.jsl</AssemblyInfoExtension>
+    <AssemblyInfoContent>import System.Reflection.*;%3B;/** @assembly AssemblyFileVersion("$(ProjectAssemblyFileVersion)") */;/** @assembly AssemblyVersion("$(ProjectAssemblyVersion)") */</AssemblyInfoContent>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AssemblyInfoFile></AssemblyInfoFile>
+    <AssemblyInfoFile Condition="'$(BuildingInsideVisualStudio)'!='true' and '$(AssemblyInfoExtension)'!=''">$(IntermediateOutputPath)AdditionalAssemblyInfo$(AssemblyInfoExtension)</AssemblyInfoFile>
+    <CoreCleanDependsOn>
+      CleanAdditionalAssemblyInfo;
+      $(CoreCleanDependsOn)
+    </CoreCleanDependsOn>
+    <CompileDependsOn>
+      GenerateAdditionalAssemblyInfo;
+      $(CompileDependsOn);
+    </CompileDependsOn>
+    <DefineConstants>$(DefineConstants);HAVE_ASSEMBLY_VERSION</DefineConstants>
+    
+    <GetContentToCopyDependsOn>PopulateContentToCopyFromContentFiles</GetContentToCopyDependsOn>
+    <GetOutputToCopyDependsOn>PopulateOutputToCopyFromOutputFiles</GetOutputToCopyDependsOn>
+  </PropertyGroup>
+
+  <Target Name="CleanAdditionalAssemblyInfo">
+    <Delete Files="$(AssemblyInfoFile)" />
+  </Target>
+
+  <ItemGroup>
+    <Compile Condition="'$(AssemblyInfoFile)'!=''"
+             Include="$(AssemblyInfoFile)" />
+  </ItemGroup>
+
+  <Target Name="GenerateAdditionalAssemblyInfo"
+          Condition="'$(AssemblyInfoFile)'!=''">
+    <WriteLinesToFile File="$(AssemblyInfoFile)"
+                      Lines="$(AssemblyInfoContent)"
+                      Overwrite="true">
+    </WriteLinesToFile>
+
+    <!-- Force the timestamp into the distant past so that this file
+         never appears to have been changed.  This is to avoid redundantly
+         recompiling the assembly because of the AssemblyInfo. -->
+    <Touch Files="$(AssemblyInfoFile)"
+           Time="1970/01/01" />
+
+    <CreateItem Include="$(AdditionalAssemblyInfo)">
+      <Output TaskParameter="Include" ItemName="FileWrites" />
+    </CreateItem>
+  </Target>
+
+  <!-- GetContentToCopy
+       Called by the module when the ImageContentPath metadata is specified
+       so that the project's content files can be copied.
+  -->
+  <Target Name="GetContentToCopy"
+          DependsOnTargets="$(GetContentToCopyDependsOn)"
+          Outputs="@(ContentToCopy)" />
+
+  <Target Name="PopulateContentToCopyFromContentFiles"
+          DependsOnTargets="ContentFilesProjectOutputGroup">
+    <CreateItem Include="@(ContentFilesProjectOutputGroupOutput)">
+      <Output TaskParameter="Include" ItemName="ContentToCopy" />
+    </CreateItem>
+  </Target>
+
+  <!-- GetContentToCopy
+       Called by the module when the ImageOutputPath metadata is specified
+       so that the project's content files can be copied.
+  -->
+  <Target Name="GetOutputToCopy"
+          DependsOnTargets="$(GetOutputToCopyDependsOn)"
+          Outputs="@(OutputToCopy)" />
+
+  <Target Name="PopulateOutputToCopyFromOutputFiles">
+    <CreateItem Include="$(OutputPath)\**\*">
+      <Output TaskParameter="Include" ItemName="OutputToCopyNoTargetPath" />
+    </CreateItem>
+
+    <CreateItem Include="@(OutputToCopyNoTargetPath->'%(FullPath)')"
+                Condition="'@(OutputToCopyNoTargetPath)'!=''"
+                AdditionalMetadata="TargetPath=%(RecursiveDir)%(Filename)%(Extension)">
+      <Output TaskParameter="Include" ItemName="OutputToCopy" />
+    </CreateItem>
+  </Target>  
+  
+  <!-- This target overrides the built-in SGen target with a custom version that
+       supports generating a serializer that can handle multiple Xml document roots. -->
+  <Target Name="GenerateSerializationAssemblies" Condition="'$(_SGenGenerateSerializationAssembliesConfig)' == 'On' or ('@(WebReferenceUrl)'!='' and '$(_SGenGenerateSerializationAssembliesConfig)' == 'Auto')" DependsOnTargets="AssignTargetPaths;Compile;ResolveKeySource" Inputs="$(MSBuildAllProjects);@(IntermediateAssembly)" Outputs="$(IntermediateOutputPath)$(_SGenDllName)">
+    <Message Importance="High" Text="Generating XmlSerializers assembly." />
+
+    <SGenMultipleTypes BuildAssemblyName="$(TargetFileName)" BuildAssemblyPath="$(IntermediateOutputPath)" References="@(ReferencePath)" KeyFile="$(KeyOriginatorFile)">
+      <Output TaskParameter="SerializationAssembly" ItemName="SerializationAssembly" />
+    </SGenMultipleTypes>
+  </Target>
+  
+  <!-- Adds support for generating Thrift implementations. -->
+  <PropertyGroup>
+    <CompileDependsOn>PopulateThriftFile;CleanThriftImpl;GenerateThriftImpl;$(CompileDependsOn)</CompileDependsOn>
+    <CleanDependsOn>PopulateThriftFile;CleanThriftImpl;@(CleanDependsOn)</CleanDependsOn>
+	<ThriftCompiler>$(RootDir)\tools\Thrift\bin\Thrift.exe</ThriftCompiler>
+	<IntermediateThriftDir>$(IntermediateOutputPath)\Thrift</IntermediateThriftDir>
+	<ThriftPrologue>$(RootDir)\bin\ThriftPrologue.cs</ThriftPrologue>
+  </PropertyGroup>
+  
+  <Target Name="PopulateThriftFile">
+    <CreateItem Include="@(None);@(Content)"
+	            Condition="'%(Extension)'=='.thrift'">
+		<Output TaskParameter="Include" ItemName="ThriftFile" />
+	</CreateItem>
+  </Target>
+  
+  <Target Name="CleanThriftImpl">
+	<Delete Files="@(ThriftFile->'%(FullPath).cs"
+	        Condition="'@(ThriftFile)'!=''" />
+  </Target>
+
+  <Target Name="GenerateThriftImpl"
+          Inputs="@(ThriftFile)"
+		  Outputs="@(ThriftFile->'%(FullPath).cs')">
+    <Message Importance="High" Text="Generating Thrift implementations." />
+	
+	<MakeDir Directories="$(ThriftOutputDir)" />
+
+	<RemoveDir Directories="@(ThriftFile->'$(IntermediateOutputPath)\%(Identity)')"
+	           Condition="'@(ThriftFile)'!=''" />
+
+	<MakeDir Directories="@(ThriftFile->'$(IntermediateOutputPath)\%(Identity)')"
+	         Condition="'@(ThriftFile)'!=''" />
+			   
+    <Exec Command="&quot;$(ThriftCompiler)&quot; -strict -o &quot;$(IntermediateOutputPath)\%(ThriftFile.Identity)&quot; --gen csharp &quot;%(ThriftFile.FullPath)&quot;"
+	      StdOutEncoding="UTF-8" />
+	
+	<CreateItem Include="$(IntermediateOutputPath)\%(ThriftFile.Identity)\**\*.cs"
+				Condition="'@(ThriftFile)'!=''"
+	            AdditionalMetadata="MergedFile=%(ThriftFile.FullPath).cs">
+		<Output TaskParameter="Include" ItemName="ThriftGenFile" />
+	</CreateItem>
+	
+	<Exec Command="copy >nul /Y /A &quot;$(ThriftPrologue)&quot;+@(ThriftGenFile->'&quot;%(FullPath)&quot;', '+') &quot;%(ThriftGenFile.MergedFile)&quot;"
+	      Condition="'@(ThriftGenFile)'!=''" />
+  </Target>  
+</Project>

@@ -26,7 +26,7 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.VisualStudio.Sail90.Tests.XML</DocumentationFile>
+    <DocumentationFile>bin\v9.0\Gallio.VisualStudio.Sail90.Tests.XML</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -38,7 +38,7 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.VisualStudio.Sail90.Tests.XML</DocumentationFile>
+    <DocumentationFile>bin\v9.0\Gallio.VisualStudio.Sail90.Tests.XML</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>

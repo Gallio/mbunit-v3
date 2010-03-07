@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7A504845-DE3F-4E24-907D-AF5A5FAAE158}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MbUnit.Compatibility.Tests</RootNamespace>
+    <AssemblyName>MbUnit.Compatibility.Tests</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\MbUnit.Compatibility.Tests.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\MbUnit.Compatibility.Tests.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Framework\OldArrayAssertTest.cs" />
+    <Compile Include="Framework\OldAssertTest.cs" />
+    <Compile Include="Framework\OldAssertWithReflectionTest.cs" />
+    <Compile Include="Framework\OldAssertWithTypeTest.cs" />
+    <Compile Include="Framework\OldCollectionAssertTest.cs" />
+    <Compile Include="Framework\OldFileAssertTest.cs" />
+    <Compile Include="Framework\OldGenericAssertTest.cs" />
+    <Compile Include="Framework\OldStringAssertTest.cs" />
+    <Compile Include="Framework\OldXmlAssertTest.cs" />
+    <Compile Include="Framework\Reflection\BaseSample.cs" />
+    <Compile Include="Framework\Reflection\InstanceTests.cs" />
+    <Compile Include="Framework\Reflection\ReflectionExceptionTest.cs" />
+    <Compile Include="Framework\Reflection\SampleClass.cs" />
+    <Compile Include="Framework\Reflection\StaticTests.cs" />
+    <Compile Include="Framework\Reflection\TestSample.cs" />
+    <Compile Include="Framework\Xml\DiffConfigurationTests.cs" />
+    <Compile Include="Framework\Xml\DifferenceTests.cs" />
+    <Compile Include="Framework\Xml\DiffResultTests.cs" />
+    <Compile Include="Framework\Xml\ValidatorTests.cs" />
+    <Compile Include="Framework\Xml\XmlDiffTests.cs" />
+    <Compile Include="Framework\Xml\XmlInputTests.cs" />
+    <Compile Include="Framework\Xml\XPathTests.cs" />
+    <Compile Include="Framework\Xml\XsltTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Gallio\Gallio\Gallio.vs2010.csproj">
+      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
+      <Name>Gallio.vs2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MbUnit.Compatibility\MbUnit.Compatibility.vs2010.csproj">
+      <Project>{F588B51F-786A-48E2-950E-636062F9C302}</Project>
+      <Name>MbUnit.Compatibility.vs2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MbUnit\MbUnit.vs2010.csproj">
+      <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
+      <Name>MbUnit.vs2010</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Framework\Xml\etc\animal.xsl" />
+    <EmbeddedResource Include="Framework\Xml\etc\BookXsdGenerated.xml" />
+    <EmbeddedResource Include="Framework\Xml\etc\controlDetail.xml" />
+    <EmbeddedResource Include="Framework\Xml\etc\controlNamespaces.xml" />
+    <EmbeddedResource Include="Framework\Xml\etc\invalidBook.xml" />
+    <EmbeddedResource Include="Framework\Xml\etc\test.blame.html" />
+    <EmbeddedResource Include="Framework\Xml\etc\test1.xml" />
+    <EmbeddedResource Include="Framework\Xml\etc\test2.xml" />
+    <EmbeddedResource Include="Framework\Xml\etc\testAnimal.xml" />
+    <EmbeddedResource Include="Framework\Xml\etc\testDetail.xml" />
+    <EmbeddedResource Include="Framework\Xml\etc\testNamespaces.xml" />
+    <EmbeddedResource Include="Framework\Xml\etc\Book.xsd" />
+    <EmbeddedResource Include="Framework\Xml\etc\test.dtd" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

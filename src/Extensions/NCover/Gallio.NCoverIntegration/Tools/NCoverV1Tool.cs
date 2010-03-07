@@ -27,7 +27,7 @@ namespace Gallio.NCoverIntegration.Tools
     public class NCoverV1Tool : NCoverTool
     {
         private const string NCover1ProfilerKey = @"Software\Classes\CLSID\{6287B5F9-08A1-45e7-9498-B5B2E7B02995}";
-        private const string NCover1ProfilerKey64Bit = @"Software\Wow6432Node\Classes\CLSID\{6287B5F9-08A1-45e7-9498-B5B2E7B02995}";
+        private const string NCover1ProfilerKeyWow3264 = @"Software\Wow6432Node\Classes\CLSID\{6287B5F9-08A1-45e7-9498-B5B2E7B02995}";
 
         public static readonly NCoverV1Tool Instance = new NCoverV1Tool();
 
@@ -62,7 +62,7 @@ namespace Gallio.NCoverIntegration.Tools
 
         protected override void RegisterNCoverIfNecessary()
         {
-            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(ProcessSupport.Is64BitProcess ? NCover1ProfilerKey64Bit : NCover1ProfilerKey))
+            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(ProcessSupport.Is64BitProcess ? NCover1ProfilerKeyWow3264 : NCover1ProfilerKey))
             {
                 using (RegistryKey subKey = key.CreateSubKey("InprocServer32"))
                 {

@@ -1,12 +1,10 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="$(ModuleTargets)" />
   
   <ItemGroup>
     <CSharpProject Include="Gallio.Icarus\Gallio.Icarus$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Icarus.Tests\Gallio.Icarus.Tests$(ProjectVariant).csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <Binary Include="Gallio.Icarus\bin\Gallio.Icarus.exe" />
     <PluginFile Include="Gallio.Icarus\bin\Gallio.Icarus.exe.config" />
     <PluginFile Include="Gallio.Icarus\Gallio.Icarus.plugin" />    
@@ -16,9 +14,7 @@
     </Binary>
 
     <Binary Include="libs\ICSharpCode.TextEditor.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <TestAssembly Include="Gallio.Icarus.Tests\bin\Gallio.Icarus.Tests.dll" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,373 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <!-- 
+    Build system targets for modules.
+    Refer to the wiki for documentation.
+  -->
+
+  <Import Project="BuildCore.targets" />
+  
+  <!-- Item Definitions -->
+  
+  <ItemDefinitionGroup>
+    <CSharpProject>
+      <ImageContentPath />
+      <ImageOutputPath />
+    </CSharpProject>
+
+    <VBProject>
+      <ImageContentPath />
+      <ImageOutputPath />
+    </VBProject>
+    
+    <JSharpProject>
+      <ImageContentPath />
+      <ImageOutputPath />
+    </JSharpProject>
+    
+    <File>
+      <ImagePath />
+      <DistPath />
+    </File>
+
+    <Zip>
+      <BaseDir />
+      <ImagePath />
+      <DistPath />
+    </Zip>
+    
+    <Content>
+      <Folder>.</Folder>
+    </Content>
+
+    <Binary>
+      <Folder />
+    </Binary>
+
+    <Document>
+      <Folder />
+    </Document>
+
+    <Extra>
+      <Folder />
+    </Extra>
+
+    <PluginFile>
+      <Folder />
+    </PluginFile>
+
+    <ExportArchive>
+      <ImagePath />
+    </ExportArchive>
+    
+    <DocumentedAssembly>
+      <Folder />
+    </DocumentedAssembly>
+    
+    <TestAssembly />
+    <Feature />
+  </ItemDefinitionGroup>
+  
+  <!-- External Properties -->
+  <PropertyGroup>
+    <ModuleDir>$(MSBuildProjectDirectory)</ModuleDir>
+    <ModuleName>$(MSBuildProjectName)</ModuleName>
+    
+    <ModuleBuildDir>$(ModulesDir)\$(ModuleName)</ModuleBuildDir>
+    <ModuleTempDir>$(ModuleBuildDir)\temp</ModuleTempDir>
+    <ModuleReportDir>$(ModuleBuildDir)\report</ModuleReportDir>
+    <ModuleImageDir>$(ModuleBuildDir)\image</ModuleImageDir>
+    <ModuleDistDir>$(ModuleBuildDir)\dist</ModuleDistDir>
+  </PropertyGroup>
+  
+  <!-- External Targets -->
+  <PropertyGroup>
+	<PreconditionDependsOn>PrintPreconditionBanner;BeforePrecondition;CorePrecondition;AfterPrecondition</PreconditionDependsOn>
+	<CleanDependsOn>Precondition;PrintCleanBanner;BeforeClean;CoreClean;AfterClean;DeleteModuleBuildTree</CleanDependsOn>
+	<CompileDependsOn>Precondition;PrintCompileBanner;CreateModuleBuildTree;BeforeCompile;CoreCompile;AfterCompile</CompileDependsOn>
+	<ImageDependsOn>Precondition;PrintImageBanner;CreateModuleBuildTree;BeforeImage;CoreImage;AfterImage</ImageDependsOn>
+	<DistDependsOn>Precondition;PrintDistBanner;CreateModuleBuildTree;BeforeDist;CoreDist;AfterDist</DistDependsOn>
+	<TestDependsOn>Precondition;PrintTestBanner;CreateModuleBuildTree;BeforeTest;CoreTest;AfterTest</TestDependsOn>
+  </PropertyGroup>
+  
+  <Target Name="Precondition"
+          DependsOnTargets="$(PreconditionDependsOn)" />
+  <Target Name="Clean"
+          DependsOnTargets="$(CleanDependsOn)" />
+  <Target Name="Compile"
+          DependsOnTargets="$(CompileDependsOn)" />
+  <Target Name="Image"
+          DependsOnTargets="$(ImageDependsOn)" />
+  <Target Name="Dist"
+          DependsOnTargets="$(DistDependsOn)" />
+  <Target Name="Test"
+          DependsOnTargets="$(TestDependsOn)" />
+
+  <!-- Overridable Targets -->
+  <Target Name="BeforePrecondition" />
+  <Target Name="AfterPrecondition" />
+  <Target Name="BeforeClean" />
+  <Target Name="AfterClean" />
+  <Target Name="BeforeCompile" />
+  <Target Name="AfterCompile" />
+  <Target Name="BeforeImage" />
+  <Target Name="AfterImage" />
+  <Target Name="BeforeDist" />
+  <Target Name="AfterDist" />
+  <Target Name="BeforeTest" />
+  <Target Name="AfterTest" />
+
+  <!-- Banner Text -->
+  
+  <Target Name="PrintPreconditionBanner">
+    <Message Importance="Normal" Text="Precondition: $(ModuleName)" />
+  </Target>
+  <Target Name="PrintCleanBanner">
+    <Message Importance="Normal" Text="Clean: $(ModuleName)" />
+  </Target>
+  <Target Name="PrintCompileBanner">
+    <Message Importance="Normal" Text="Compile: $(ModuleName)" />
+  </Target>
+  <Target Name="PrintImageBanner">
+    <Message Importance="Normal" Text="Image: $(ModuleName)" />
+  </Target>
+  <Target Name="PrintDistBanner">
+    <Message Importance="Normal" Text="Dist: $(ModuleName)" />
+  </Target>
+  <Target Name="PrintTestBanner">
+    <Message Importance="Normal" Text="Test: $(ModuleName)" />
+  </Target>
+  
+  <!-- Core Targets -->
+  
+  <PropertyGroup>
+    <CorePreconditionDependsOn>CheckRootDir;RecursivePrecondition</CorePreconditionDependsOn>
+    <CoreCleanDependsOn>RecursiveClean;PopulateCommonProjects;CleanCommonProjects</CoreCleanDependsOn>
+    <CoreCompileDependsOn>RecursiveCompile;PopulateCommonProjects;CompileCommonProjects</CoreCompileDependsOn>
+    <CoreImageDependsOn>RecursiveImage;CopyInheritedImage;PopulateCommonProjects;ImageCommonProjects;MapFiles;ImageFiles;ImageZips</CoreImageDependsOn>
+    <CoreDistDependsOn>RecursiveDist;MapFiles;DistFiles;DistZips;GenerateExportArchives</CoreDistDependsOn>
+    <CoreTestDependsOn>RecursiveTest</CoreTestDependsOn>
+  </PropertyGroup>
+  
+  <Target Name="CorePrecondition"
+          DependsOnTargets="$(CorePreconditionDependsOn)" />
+  <Target Name="CoreClean"
+          DependsOnTargets="$(CoreCleanDependsOn)" />  
+  <Target Name="CoreCompile"
+          DependsOnTargets="$(CoreCompileDependsOn)" />  
+  <Target Name="CoreImage"
+          DependsOnTargets="$(CoreImageDependsOn)" />
+  <Target Name="CoreDist"
+          DependsOnTargets="$(CoreDistDependsOn)" />
+  <Target Name="CoreTest"
+          DependsOnTargets="$(CoreTestDependsOn)" />
+  
+  <!-- Internal Targets -->
+
+  <Target Name="CreateModuleBuildTree">
+    <MakeDir Directories="$(ModuleBuildDir);$(ModuleTempDir);$(ModuleReportDir);$(ModuleImageDir);$(ModuleDistDir)" />
+  </Target>
+  
+  <Target Name="DeleteModuleBuildTree">
+    <RemoveDir Directories="$(ModuleBuildDir)" />
+  </Target>
+  
+  <Target Name="CheckRootDir">
+    <Error Condition="'$(RootDir)'==''"
+	       Text="RootDir must be set." />
+  </Target>
+  
+  <Target Name="CopyInheritedImage"
+          Condition="'@(Module)'!=''">
+    <CreateItem Include="$(ModulesDir)\%(Module.FileName)\image\**\*"
+                Condition="'%(Module.InheritImage)'=='true'">
+      <Output TaskParameter="Include" ItemName="_InheritedImageFile" />
+    </CreateItem>
+  
+    <Copy SourceFiles="@(_InheritedImageFile)"
+          DestinationFolder="$(ModuleImageDir)"
+          SkipUnchangedFiles="true"
+          Condition="'@(_InheritedImageFile)'!=''" />
+  </Target>
+  
+  <PropertyGroup>
+    <CommonProjectProperties>
+      RootDir=$(RootDir);
+      CustomAfterMicrosoftCommonTargets=$(RootDir)\bin\Custom.After.Microsoft.Common.targets;
+      ProjectAssemblyFileVersion=$(FileVersion);
+      ProjectAssemblyVersion=$(AssemblyVersion);
+    </CommonProjectProperties>
+  </PropertyGroup>
+  
+  <Target Name="PopulateCommonProjects">
+    <ItemGroup>
+      <CommonProject Include="@(CSharpProject);@(VBProject);@(JSharpProject)" />
+    </ItemGroup>
+  </Target>
+  
+  <Target Name="CleanCommonProjects"
+          Condition="'@(CommonProject)'!=''">
+    <MSBuild Projects="@(CommonProject)"
+             Properties="$(CommonProjectProperties)"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Targets="Clean" />
+  </Target>
+  
+  <Target Name="CompileCommonProjects"
+          Condition="'@(CommonProject)'!=''">
+    <MSBuild Projects="@(CommonProject)"
+             Properties="$(CommonProjectProperties)"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Targets="Build" />
+  </Target>
+  
+  <Target Name="ImageCommonProjects"
+          DependsOnTargets="CopyCommonProjectContentToImage;CopyCommonProjectOutputToImage"
+          Condition="'@(CommonProject)'!=''" />
+  
+  <Target Name="CopyCommonProjectContentToImage"
+          Outputs="%(CommonProject.ContentPath)">
+    <MSBuild Projects="@(CommonProject)"
+             Condition="'%(CommonProject.OutputPath)'!=''"
+             Targets="GetContentToCopy">
+      <Output TaskParameter="TargetOutputs" ItemName="CommonProjectContentToCopy" />
+    </MSBuild>
+
+    <CreateProperty Value="%(CommonProject.ContentPath)">
+      <Output TaskParameter="Value" PropertyName="_ProjectContentPath" />
+    </CreateProperty>
+
+    <Copy SourceFiles="@(CommonProjectContentToCopy)"
+          Condition="'@(CommonProjectContentToCopy)'!=''"
+          SkipUnchangedFiles="true"
+          DestinationFiles="@(CommonProjectContentToCopy->'$(_ProjectContentPath)\%(TargetPath)')" />
+
+    <ItemGroup>
+      <CommonProjectContentToCopy Remove="**\*" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CopyCommonProjectOutputToImage"
+          Outputs="%(CommonProject.OutputPath)">
+    <MSBuild Projects="@(CommonProject)"
+             Condition="'%(CommonProject.OutputPath)'!=''"
+             Targets="GetOutputToCopy">
+      <Output TaskParameter="TargetOutputs" ItemName="CommonProjectOutputToCopy" />
+    </MSBuild>
+
+    <CreateProperty Value="%(CommonProject.OutputPath)">
+      <Output TaskParameter="Value" PropertyName="_ProjectOutputPath" />
+    </CreateProperty>
+
+    <Copy SourceFiles="@(CommonProjectOutputToCopy)"
+          Condition="'@(CommonProjectOutputToCopy)'!=''"
+          SkipUnchangedFiles="true"
+          DestinationFiles="@(CommonProjectOutputToCopy->'$(_ProjectOutputPath)\%(TargetPath)')" />
+
+    <ItemGroup>
+      <CommonProjectOutputToCopy Remove="**\*" />
+    </ItemGroup>    
+  </Target>
+  
+  <Target Name="MapFiles">
+    <ItemGroup>
+      <File Include="@(Content)">
+        <ImagePath>%(Content.Folder)</ImagePath>
+      </File>
+
+      <File Include="@(Binary)">
+        <ImagePath>bin\%(Binary.Folder)</ImagePath>
+      </File>
+
+      <File Include="@(PluginFile)">
+        <ImagePath>bin\%(PluginFile.Folder)</ImagePath>
+      </File>
+
+      <File Include="@(Document)">
+        <ImagePath>docs\%(Document.Folder)</ImagePath>
+      </File>
+
+      <File Include="@(Extra)">
+        <ImagePath>extras\%(Extra.Folder)</ImagePath>
+      </File>
+    </ItemGroup>
+  </Target>
+  
+  <Target Name="ImageFiles"
+          Condition="'@(File)'!=''">
+    <MakeDir Directories="@(File->'$(ModuleImageDir)\%(ImagePath)')"
+             Condition="'%(ImagePath)'!=''" />
+
+    <Copy SourceFiles="@(File)"
+          Condition="'%(ImagePath)'!=''"
+          DestinationFiles="@(File->'$(ModuleImageDir)\%(ImagePath)\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+
+  <Target Name="DistFiles"
+          Condition="'@(File)'!=''">
+    <MakeDir Directories="@(File->'$(ModuleDistDir)\%(DistPath)')"
+             Condition="'%(DistPath)'!=''" />
+
+    <Copy SourceFiles="@(File)"
+          Condition="'%(DistPath)'!=''"
+          DestinationFiles="@(File->'$(ModuleDistDir)\%(DistPath)\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+  
+  <Target Name="ImageZips"
+          Condition="'@(Zip)'!=''">
+    <Zip Files="@(Zip)"
+         Condition="'%(ImagePath)'!=''"
+	 WorkingDirectory="%(BaseDir)"
+	 ZipFileName="$(ModuleImageDir)\%(ImagePath)" />
+  </Target>
+
+  <Target Name="DistZips"
+          Condition="'@(Zip)'!=''">
+    <Zip Files="@(Zip)"
+         Condition="'%(DistPath)'!=''"
+	 WorkingDirectory="%(BaseDir)"
+	 ZipFileName="$(ModuleDistDir)\%(DistPath)" />
+  </Target>
+
+  <Target Name="GenerateExportArchives"
+          Condition="'@(ExportArchive)'!=''">
+    <Error Text="ImagePath must be specified for ExportArchive '%(ExportArchive.Identity)'."
+           Condition="'%(ExportArchive.ImagePath)'==''" />
+
+    <CreateItem Include="$(ModuleTempDir)\%(ExportArchive.ImagePath)">
+      <Output TaskParameter="Include" ItemName="_ExportArchiveTempDir" />
+    </CreateItem>
+
+    <RemoveDir Directories="@(_ExportArchiveTempDir)" />
+
+    <MakeDir Directories="@(_ExportArchiveTempDir->'%(RootDir)%(Directory)')" />
+
+    <SvnExport RepositoryPath="%(ExportArchive.FullPath)"
+               LocalPath="$(ModuleTempDir)\%(ExportArchive.ImagePath)" />
+
+    <CreateItem Include="$(ModuleImageDir)\%(ExportArchive.ImagePath)">
+      <Output TaskParameter="Include" ItemName="_ExportArchiveZipFile" />
+    </CreateItem>
+
+    <MakeDir Directories="@(_ExportArchiveZipFile->'%(RootDir)%(Directory)')" />
+
+    <CreateItem Include="$(ModuleTempDir)\%(ExportArchive.ImagePath)\**\*"
+                AdditionalMetadata="ImagePath=%(ExportArchive.ImagePath)">
+      <Output TaskParameter="Include" ItemName="_ExportArchiveItemFile" />
+    </CreateItem>
+
+    <Zip Files="@(_ExportArchiveItemFile)"
+         Condition="'@(_ExportArchiveItemFile)'!=''"
+         WorkingDirectory="$(ModuleTempDir)\%(_ExportArchiveItemFile.ImagePath)"
+         ZipFileName="$(ModuleImageDir)\%(_ExportArchiveItemFile.ImagePath)"
+         ZipLevel="9" />
+  </Target>
+
+  <Target Name="PatchPluginFiles"
+          Condition="'@(PluginFile)'!=''">
+    <FileUpdate Files="@(PluginFile->'$(ModuleImageDir)\bin\%(Folder)\%(Filename)%(Extension)')"
+                Regex="0\.0\.0\.0"
+                ReplacementText="$(AssemblyVersion)" />
+  </Target>  
+</Project>

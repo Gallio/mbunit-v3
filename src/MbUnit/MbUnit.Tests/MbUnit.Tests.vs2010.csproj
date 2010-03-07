@@ -41,7 +41,7 @@
   <ItemGroup>
     <Reference Include="Rhino.Mocks, Version=3.1.0.584, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
+      <HintPath>..\..\..\tools\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -53,17 +53,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compatibility\Framework\OldArrayAssertTest.cs" />
-    <Compile Include="Compatibility\Framework\OldAssertTest.cs" />
-    <Compile Include="Compatibility\Framework\OldAssertWithReflectionTest.cs" />
-    <Compile Include="Compatibility\Framework\OldAssertWithTypeTest.cs" />
-    <Compile Include="Compatibility\Framework\OldCollectionAssertTest.cs" />
-    <Compile Include="Compatibility\Framework\Reflection\BaseSample.cs" />
-    <Compile Include="Compatibility\Framework\Reflection\InstanceTests.cs" />
-    <Compile Include="Compatibility\Framework\Reflection\ReflectionExceptionTest.cs" />
-    <Compile Include="Compatibility\Framework\Reflection\SampleClass.cs" />
-    <Compile Include="Compatibility\Framework\Reflection\StaticTests.cs" />
-    <Compile Include="Compatibility\Framework\Reflection\TestSample.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassCollectionTest.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassTest.cs" />
     <Compile Include="Framework\MirrorTest.cs" />
@@ -73,15 +62,12 @@
     <Compile Include="Framework\RepeatTest.cs" />
     <Compile Include="Framework\ExplicitTest.cs" />
     <Compile Include="Framework\FactoryTest.cs" />
-    <Compile Include="Compatibility\Framework\OldFileAssertTest.cs" />
-    <Compile Include="Compatibility\Framework\OldGenericAssertTest.cs" />
     <Compile Include="Framework\ThreadedRepeatTest.cs" />
     <Compile Include="Integration\ContextOutcomeTest.cs" />
     <Compile Include="Integration\FixtureInheritanceTest.cs" />
     <Compile Include="Integration\WorkingDirectoryAndApplicationBaseTest.cs" />
     <Compile Include="Model\MbUnitTestFrameworkTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Compatibility\Framework\OldStringAssertTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Gallio\Gallio.Tests\Gallio.Tests.vs2010.csproj">
@@ -91,10 +77,6 @@
     <ProjectReference Include="..\..\Gallio\Gallio\Gallio.vs2010.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio.vs2010</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MbUnit.Compatibility\MbUnit.Compatibility.vs2010.csproj">
-      <Project>{F588B51F-786A-48E2-950E-636062F9C302}</Project>
-      <Name>MbUnit.Compatibility.vs2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\MbUnit.TestResources\MbUnit.TestResources.vs2010.csproj">
       <Project>{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}</Project>
@@ -110,15 +92,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compatibility\Framework\Xml\DiffConfigurationTests.cs" />
-    <Compile Include="Compatibility\Framework\Xml\DifferenceTests.cs" />
-    <Compile Include="Compatibility\Framework\Xml\DiffResultTests.cs" />
-    <Compile Include="Compatibility\Framework\Xml\ValidatorTests.cs" />
-    <Compile Include="Compatibility\Framework\OldXmlAssertTest.cs" />
-    <Compile Include="Compatibility\Framework\Xml\XmlDiffTests.cs" />
-    <Compile Include="Compatibility\Framework\Xml\XmlInputTests.cs" />
-    <Compile Include="Compatibility\Framework\Xml\XPathTests.cs" />
-    <Compile Include="Compatibility\Framework\Xml\XsltTests.cs" />
     <Compile Include="Framework\ExtensionPoints.cs" />
     <Compile Include="Framework\ApartmentStateTest.cs">
       <SubType>Code</SubType>
@@ -228,25 +201,10 @@
     <EmbeddedResource Include="Framework\SolarSystem.xml" />
     <EmbeddedResource Include="Framework\SolarSystemSchema.xsd" />
     <EmbeddedResource Include="Framework\SolarSystemWithErrors.xml" />
-    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\Book.xsd" />
-    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\test.dtd" />
     <EmbeddedResource Include="Framework\SampleBinaryResource.bin" />
     <None Include="MbUnit.Tests.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\animal.xsl" />
-    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\BookXsdGenerated.xml" />
-    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\controlDetail.xml" />
-    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\controlNamespaces.xml" />
-    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\invalidBook.xml" />
-    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\test.blame.html" />
-    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\test1.xml" />
-    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\test2.xml" />
-    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\testAnimal.xml" />
-    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\testDetail.xml" />
-    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\testNamespaces.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Framework\SampleTextResource.txt" />

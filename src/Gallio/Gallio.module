@@ -1,5 +1,5 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="$(ModuleTargets)" />
 
   <UsingTask TaskName="SGenMultipleTypes"
              AssemblyFile="..\..\bin\Gallio.BuildTools.Tasks.dll" />
@@ -9,15 +9,12 @@
 
     <CSharpProject Include="Gallio\Gallio$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio35\Gallio35$(ProjectVariant).csproj" />
-    <CSharpProject Include="Gallio.ControlPanel\Gallio.ControlPanel$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Host\Gallio.Host$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Tests\Gallio.Tests$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Loader\Gallio.Loader$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Reports\Gallio.Reports$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.UI\Gallio.UI$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.UI.Tests\Gallio.UI.Tests$(ProjectVariant).csproj" />
-    
-    <CSharpProject Include="Gallio.Utility\Gallio.Utility$(ProjectVariant).csproj" />
     
     <DocumentedAssembly Include="Gallio\bin\Gallio.dll" />
     <DocumentedAssembly Include="Gallio35\bin\Gallio35.dll" />
@@ -63,20 +60,6 @@
     <Binary Include="libs\Aga.Controls.dll" />
     <Binary Include="libs\WeifenLuo.WinFormsUI.Docking.dll" />
 
-    <Binary Include="Gallio.ControlPanel\bin\Gallio.ControlPanel.exe" />
-    <PluginFile Include="Gallio.ControlPanel\Gallio.ControlPanel.exe.config" />
-    <PluginFile Include="Gallio.ControlPanel\Gallio.ControlPanel.plugin" />
-    <Binary Include="Gallio.ControlPanel\Resources\Gallio.ControlPanel.ico">
-      <Folder>Resources</Folder>
-    </Binary>
-
-    <Binary Include="Gallio.Utility\bin\Gallio.Utility.exe" />
-    <PluginFile Include="Gallio.Utility\Gallio.Utility.exe.config" />
-    <PluginFile Include="Gallio.Utility\Gallio.Utility.plugin" />
-    <Binary Include="Gallio.Utility\Resources\Gallio.Utility.ico">
-      <Folder>Resources</Folder>
-    </Binary>
-
     <Binary Include="Gallio.Reports\bin\Gallio.Reports.dll" />
     <Binary Include="Gallio.Reports\bin\Gallio.Reports.pdb" />
     <PluginFile Include="Gallio.Reports\Gallio.Reports.plugin" />
@@ -103,7 +86,7 @@
     <TestAssembly Include="Gallio.UI.Tests\bin\Gallio.UI.Tests.dll" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(DotNet40)'=='true'">
+  <ItemGroup Condition="'$(DotNetFrameworkVersion)'=='4.0'">
     <CSharpProject Include="Gallio40\Gallio40$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio40.Tests\Gallio40.Tests$(ProjectVariant).csproj" />
     
@@ -140,17 +123,17 @@
     <Message Text="Running ILMerge on Gallio.dll..."
              Importance="High" />
 
-    <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio\bin\Gallio.dll&quot; @(GallioMergeDependency->'&quot;%(Identity)&quot;', ' ') /internalize &quot;/out:$(ImageDir)\bin\Gallio.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
+    <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio\bin\Gallio.dll&quot; @(GallioMergeDependency->'&quot;%(Identity)&quot;', ' ') /internalize &quot;/out:$(ModuleImageDir)\bin\Gallio.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
 	
 	<!-- Important: Running ILMerge changes the ModuleVersionId of Gallio.dll so we need
 	                to regenerate Gallio.XmlSerializers.dll -->
-    <SGenMultipleTypes BuildAssemblyName="Gallio.dll" BuildAssemblyPath="$(ImageDir)\bin" References="" KeyFile="..\Key.snk" />
+    <SGenMultipleTypes BuildAssemblyName="Gallio.dll" BuildAssemblyPath="$(ModuleImageDir)\bin" References="" KeyFile="..\Key.snk" />
   </Target>
 
   <Target Name="GallioImage_NoILMerge"
           Condition="'$(NoILMerge)'=='true'">
     <Copy SourceFiles="Gallio\bin\Gallio.dll;Gallio\bin\Gallio.pdb;Gallio\bin\Gallio.XmlSerializers.dll;@(GallioMergeDependency)"
-          DestinationFolder="$(ImageDir)\bin" />
+          DestinationFolder="$(ModuleImageDir)\bin" />
   </Target>
 
   <Target Name="GallioImage_XSD">
@@ -158,8 +141,8 @@
       <Output TaskParameter="Path" PropertyName="SdkPath" />
     </GetFrameworkSdkPath>
 
-    <Exec Command="&quot;$(SdkPath)&quot;\bin\xsd.exe &quot;$(ImageDir)\bin\Gallio.dll&quot; /o:&quot;$(TempDir)&quot; /nologo /type:Gallio.Runner.Reports.Schema.Report /type:Gallio.Runtime.Extensibility.Schema.Plugin /type:Gallio.Runner.Projects.Schema.TestProjectData" />
-    <Copy SourceFiles="$(TempDir)\schema0.xsd"
-          DestinationFiles="$(ImageDir)\bin\Gallio.xsd" />
+    <Exec Command="&quot;$(SdkPath)&quot;\bin\xsd.exe &quot;$(ModuleImageDir)\bin\Gallio.dll&quot; /o:&quot;$(ModuleTempDir)&quot; /nologo /type:Gallio.Runner.Reports.Schema.Report /type:Gallio.Runtime.Extensibility.Schema.Plugin /type:Gallio.Runner.Projects.Schema.TestProjectData" />
+    <Copy SourceFiles="$(ModuleTempDir)\schema0.xsd"
+          DestinationFiles="$(ModuleImageDir)\bin\Gallio.xsd" />
   </Target>
 </Project>

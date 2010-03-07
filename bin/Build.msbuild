@@ -1,0 +1,111 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5"
+  InitialTargets="PopulateModules"
+  DefaultTargets="Compile;Image;Dist;Test">
+  <!-- 
+    Main build script.
+    Refer to the wiki for documentation.
+  -->
+  
+  <!-- External Stuff -->
+  <PropertyGroup>
+    <RootDir Condition="'$(RootDir)'==''">$(MSBuildProjectDirectory)\..</RootDir>
+    <StartDir Condition="'$(StartDir)'==''">$(MSBuildStartupDirectory)</StartDir>
+    <SourceDir Condition="'$(SourceDir)'==''">$(RootDir)\src</SourceDir>
+    <ToolsDir Condition="'$(ToolsDir)'==''">$(RootDir)\tools</ToolsDir>
+	<Modules Condition="'$(Modules)'==''">$(StartDir)\*.module</Modules>
+  </PropertyGroup>
+  
+  <Import Project="BuildCore.targets" />
+  
+  <PropertyGroup>
+	<PreconditionDependsOn>PrintPreconditionBanner;CorePrecondition</PreconditionDependsOn>
+	<CleanDependsOn>Precondition;PrintCleanBanner;CoreClean;DeleteBuildTree</CleanDependsOn>
+	<CompileDependsOn>Precondition;PrintCompileBanner;CreateBuildTree;CoreCompile</CompileDependsOn>
+	<ImageDependsOn>Precondition;PrintImageBanner;CreateBuildTree;CoreImage</ImageDependsOn>
+	<DistDependsOn>Precondition;PrintDistBanner;CreateBuildTree;CoreDist</DistDependsOn>
+	<TestDependsOn>Precondition;PrintTestBanner;CreateBuildTree;CoreTest</TestDependsOn>
+  </PropertyGroup>
+  
+  <Target Name="Precondition"
+          DependsOnTargets="$(PreconditionDependsOn)" />
+  <Target Name="Clean"
+          DependsOnTargets="$(CleanDependsOn)" />
+  <Target Name="Compile"
+          DependsOnTargets="$(CompileDependsOn)" />
+  <Target Name="Image"
+          DependsOnTargets="$(ImageDependsOn)" />
+  <Target Name="Dist"
+          DependsOnTargets="$(DistDependsOn)" />
+  <Target Name="Test"
+          DependsOnTargets="$(TestDependsOn)" />
+  
+  <!-- Banner Text -->
+  
+  <Target Name="PrintPreconditionBanner">
+    <Message Importance="High" Text="%0A[Precondition]%0A" />
+  </Target>
+  <Target Name="PrintCleanBanner">
+    <Message Importance="High" Text="%0A[Clean]%0A" />
+  </Target>
+  <Target Name="PrintCompileBanner">
+    <Message Importance="High" Text="%0A[Compile]%0A" />
+  </Target>
+  <Target Name="PrintImageBanner">
+    <Message Importance="High" Text="%0A[Image]%0A" />
+  </Target>
+  <Target Name="PrintDistBanner">
+    <Message Importance="High" Text="%0A[Dist]%0A" />
+  </Target>
+  <Target Name="PrintTestBanner">
+    <Message Importance="High" Text="%0A[Test]%0A" />
+  </Target>
+  
+  <!-- Core Targets -->
+  
+  <PropertyGroup>
+    <CorePreconditionDependsOn>CheckModules;RecursivePrecondition</CorePreconditionDependsOn>
+    <CoreCleanDependsOn>RecursiveClean</CoreCleanDependsOn>
+    <CoreCompileDependsOn>RecursiveCompile</CoreCompileDependsOn>
+    <CoreImageDependsOn>RecursiveImage</CoreImageDependsOn>
+    <CoreDistDependsOn>RecursiveDist</CoreDistDependsOn>
+    <CoreTestDependsOn>RecursiveTest</CoreTestDependsOn>
+  </PropertyGroup>
+  
+  <Target Name="CorePrecondition"
+          DependsOnTargets="$(CorePreconditionDependsOn)" />
+  <Target Name="CoreClean"
+          DependsOnTargets="$(CoreCleanDependsOn)" />  
+  <Target Name="CoreCompile"
+          DependsOnTargets="$(CoreCompileDependsOn)" />  
+  <Target Name="CoreImage"
+          DependsOnTargets="$(CoreImageDependsOn)" />
+  <Target Name="CoreDist"
+          DependsOnTargets="$(CoreDistDependsOn)" />
+  <Target Name="CoreTest"
+          DependsOnTargets="$(CoreTestDependsOn)" />
+  
+  <!-- Internal Targets -->
+  
+  <PropertyGroup>
+    <Main>true</Main>
+  </PropertyGroup>
+  
+  <Target Name="PopulateModules">
+    <ItemGroup>
+      <Module Include="$(Modules)" />
+    </ItemGroup>
+  </Target>
+  
+  <Target Name="CreateBuildTree">
+    <MakeDir Directories="$(BuildDir);$(TempDir);$(ReportDir);$(ModulesDir)" />
+  </Target>
+  
+  <Target Name="DeleteBuildTree">
+    <RemoveDir Directories="$(BuildDir)" />
+  </Target>
+  
+  <Target Name="CheckModules">
+    <Error Condition="'@(Module)'==''"
+	       Text="No modules were found to satisfy '$(Modules)'." />
+  </Target>
+</Project>

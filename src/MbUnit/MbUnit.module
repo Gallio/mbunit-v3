@@ -1,14 +1,12 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="$(ModuleTargets)" />
 
   <ItemGroup>
-    <ModuleReference Include="..\Gallio\Gallio.module" />
+    <Module Include="..\Gallio\Gallio.module" />
     
     <Module Include="Templates\MbUnitTemplates.module" />
     <Module Include="Samples\MbUnitSamples.module" />
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <CSharpProject Include="MbUnit\MbUnit$(ProjectVariant).csproj" />
     <CSharpProject Include="MbUnit35\MbUnit35$(ProjectVariant).csproj" />
     <CSharpProject Include="MbUnit.Compatibility\MbUnit.Compatibility$(ProjectVariant).csproj" />
@@ -43,7 +41,7 @@
     <TestAssembly Include="MbUnit.Tests\bin\MbUnit.Tests.dll" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(DotNet40)'=='true'">
+  <ItemGroup Condition="'$(DotNetFrameworkVersion)'=='4.0'">
     <CSharpProject Include="MbUnit40\MbUnit40$(ProjectVariant).csproj" />
     <CSharpProject Include="MbUnit40.Tests\MbUnit40.Tests$(ProjectVariant).csproj" />
 

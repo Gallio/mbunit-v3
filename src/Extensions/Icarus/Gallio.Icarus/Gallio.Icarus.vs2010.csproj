@@ -31,9 +31,8 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <SourceRoot>$(MSBuildProjectDirectory)\..\..\..\..</SourceRoot>
-    <MetaBuildConfigFile>$(SourceRoot)\bin\MetaBuild.config.custom</MetaBuildConfigFile>
-    <CustomAfterMicrosoftCommonTargets>$(SourceRoot)\tools\MetaBuild\bin\Custom.After.Microsoft.Common.targets</CustomAfterMicrosoftCommonTargets>
+    <RootDir>$(MSBuildProjectDirectory)\..\..\..\..</RootDir>
+    <CustomAfterMicrosoftCommonTargets>$(RootDir)\bin\Custom.After.Microsoft.Common.targets</CustomAfterMicrosoftCommonTargets>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

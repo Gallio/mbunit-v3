@@ -14,9 +14,8 @@
     <SGenUseProxyTypes>false</SGenUseProxyTypes>
     <SGenShouldGenerateSerializer>true</SGenShouldGenerateSerializer>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <SourceRoot>$(MSBuildProjectDirectory)\..\..\..</SourceRoot>
-    <MetaBuildConfigFile>$(SourceRoot)\bin\MetaBuild.config.custom</MetaBuildConfigFile>
-    <CustomAfterMicrosoftCommonTargets>$(SourceRoot)\tools\MetaBuild\bin\Custom.After.Microsoft.Common.targets</CustomAfterMicrosoftCommonTargets>
+    <RootDir>$(MSBuildProjectDirectory)\..\..\..</RootDir>
+    <CustomAfterMicrosoftCommonTargets>$(RootDir)\bin\Custom.After.Microsoft.Common.targets</CustomAfterMicrosoftCommonTargets>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

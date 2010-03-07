@@ -1,10 +1,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="$(ModuleTargets)" />
   <Import Project="ReSharper31.targets" />
-
-  <PropertyGroup>
-    <MonoCompatible>false</MonoCompatible>
-  </PropertyGroup>
 
   <ItemGroup Condition="$(ReSharper31Installed)">
     <CSharpProject Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner31$(ProjectVariant).csproj" />

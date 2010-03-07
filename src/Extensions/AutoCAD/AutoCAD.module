@@ -1,10 +1,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="$(ModuleTargets)" />
 
-  <PropertyGroup>
-    <MonoCompatible>false</MonoCompatible>
-  </PropertyGroup>
-  
   <ItemGroup>
     <CSharpProject Include="Gallio.AutoCAD\Gallio.AutoCAD$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.AutoCAD.Plugin\Gallio.AutoCAD.Plugin$(ProjectVariant).csproj" />

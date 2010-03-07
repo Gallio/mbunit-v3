@@ -1,18 +1,12 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="$(ModuleTargets)" />
   <Import Project="MSTest.targets" />
-  
-  <PropertyGroup>
-    <MonoCompatible>false</MonoCompatible>
-  </PropertyGroup>
   
   <ItemGroup>
     <CSharpProject Include="Gallio.MSTestAdapter\Gallio.MSTestAdapter$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.MSTestAdapter.TestResources\Gallio.MSTestAdapter.TestResources$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.MSTestAdapter.Tests\Gallio.MSTestAdapter.Tests$(ProjectVariant).csproj" />
-  </ItemGroup>
 
-  <ItemGroup>
     <Binary Include="Gallio.MSTestAdapter\bin\Gallio.MSTestAdapter.dll">
       <Folder>MSTest</Folder>
     </Binary>

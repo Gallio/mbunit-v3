@@ -1,14 +1,12 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="$(ModuleTargets)" />
   
   <ItemGroup>
     <CSharpProject Include="Gallio.MbUnit2Adapter\Gallio.MbUnit2Adapter$(ProjectVariant).csproj" />
     
     <CSharpProject Include="Gallio.MbUnit2Adapter.TestResources\Gallio.MbUnit2Adapter.TestResources$(ProjectVariant).csproj" />
-    <CSharpProject Include="Gallio.MbUnit2Adapter.Tests\Gallio.MbUnit2Adapter.Tests$(ProjectVariant).csproj" />    
-  </ItemGroup>
-
-  <ItemGroup>
+    <CSharpProject Include="Gallio.MbUnit2Adapter.Tests\Gallio.MbUnit2Adapter.Tests$(ProjectVariant).csproj" />
+    
     <Binary Include="Gallio.MbUnit2Adapter\bin\Gallio.MbUnit2Adapter.dll">
         <Folder>MbUnit2</Folder>
     </Binary>
@@ -60,10 +58,8 @@
     
     <Binary Include="Gallio.MbUnit2Adapter\Resources\*.ico">
         <Folder>MbUnit2\Resources</Folder>
-    </Binary>    
-  </ItemGroup>
-
-  <ItemGroup>
+    </Binary>
+    
     <TestAssembly Include="Gallio.MbUnit2Adapter.Tests\bin\Gallio.MbUnit2Adapter.Tests.dll" />
   </ItemGroup>
 </Project>

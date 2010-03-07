@@ -1,5 +1,5 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="$(ModuleTargets)" />
 
   <UsingTask TaskName="ParseVersion"
              AssemblyFile="bin\Gallio.BuildTools.Tasks.dll" />
@@ -44,9 +44,9 @@
     
     <Extra Include="$(ToolsDir)\H2Reg\H2Reg.*" />
 
-    <Feature Include="NO_ILMERGE" Condition="'$(NoILMerge)'=='true'" />
-    <Feature Include="NO_SANDCASTLE" Condition="'$(NoSandcastle)'=='true'" />
-    <Feature Include="DOTNET40" Condition="'$(DotNet40)'=='true'" />
+    <Feature Include="NO_ILMERGE" Condition="'$(SkipILMerge)'=='true'" />
+    <Feature Include="NO_SANDCASTLE" Condition="'$(SkipDocumentation)'=='true'" />
+    <Feature Include="DOTNET40" Condition="'$(DotNetFrameworkVersion)'=='4.0'" />
   </ItemGroup>
 
   <ItemGroup Condition="$(IncludeSources)">
@@ -60,13 +60,10 @@
           DependsOnTargets="CleanInstaller" />
 
 
-  <!-- BUILD TARGETS -->
+  <!-- COMPILE TARGETS -->
 
-  <Target Name="BeforeBuild"
+  <Target Name="BeforeCompile"
           DependsOnTargets="VerifyProjectsSynchronized" />
-
-  <Target Name="AfterBuild"
-          DependsOnTargets="" />
 
 
   <!-- IMAGE TARGETS -->
@@ -90,20 +87,20 @@
   <!-- SUPPORT CODE: API DOCS -->
 
   <PropertyGroup>
-    <WebDocsParentDir>$(DistDir)\APIDocs</WebDocsParentDir>
+    <WebDocsParentDir>$(ModuleDistDir)\APIDocs</WebDocsParentDir>
     <WebDocsDir>$(WebDocsParentDir)\$(Version)</WebDocsDir>
-    <CHMDocsDir>$(ImageDir)\docs</CHMDocsDir>
-    <VSDocsDir>$(ImageDir)\docs\vs</VSDocsDir>
-    <SandcastleTempDir>$(TempDir)\docs</SandcastleTempDir>
+    <CHMDocsDir>$(ModuleImageDir)\docs</CHMDocsDir>
+    <VSDocsDir>$(ModuleImageDir)\docs\vs</VSDocsDir>
+    <SandcastleModuleTempDir>$(ModuleTempDir)\docs</SandcastleModuleTempDir>
 
     <SandcastleProjectPath>docs\Docs.shfbproj</SandcastleProjectPath>
     <SandcastlePatchedProjectPath>docs\Docs.patched.shfbproj</SandcastlePatchedProjectPath>
 
-    <SandcastleOutputPath>$(SandcastleTempDir)\output</SandcastleOutputPath>
-    <SandcastleIntellisensePath>$(SandcastleTempDir)\intellisense</SandcastleIntellisensePath>
+    <SandcastleOutputPath>$(SandcastleModuleTempDir)\output</SandcastleOutputPath>
+    <SandcastleIntellisensePath>$(SandcastleModuleTempDir)\intellisense</SandcastleIntellisensePath>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(NoSandcastle)'!='true'">
+  <ItemGroup Condition="'$(SkipDocumentation)'!='true'">
     <Feature Include="FEATURE_CHM_HELP" />
     <Feature Include="FEATURE_VS_HELP" />
   </ItemGroup>
@@ -112,11 +109,11 @@
           DependsOnTargets="BuildDocs_Sandcastle;BuildDocs_NoSandcastle" />
 
   <Target Name="BuildDocs_Sandcastle"
-          Condition="'$(NoSandcastle)'!='true'">
+          Condition="'$(SkipDocumentation)'!='true'">
     <Message Text="Building Docs..."
              Importance="High" />
 
-    <Error Text="Sandcastle and Sandcastle Help File Builder must be installed to generate documentation.  To only generate Xml Intellisense docs without Sandcastle, build with 'BuildNoSandcastle.bat'.  Be sure to also install the Sandcastle Styles patches.  Look in tools\Setup Files for the Sandcastle installers and patches."
+    <Error Text="Sandcastle and Sandcastle Help File Builder must be installed to generate documentation.  To only generate Xml Intellisense docs without Sandcastle, build with '/p:SkipDocumentation=true'.  Be sure to also install the Sandcastle Styles patches.  Look in tools\Setup Files for the Sandcastle installers and patches."
            Condition="! Exists('$(SandcastlePath)') or ! Exists('$(SandcastleHelpFileBuilderPath)')" />
 
     <Error Text="Visual Studio 2005 or 2008 SDK must be installed so that HTML Help 2 (HxS) documentation can be generated for integration with the Visual Studio help system.  Check Microsoft's site for the Visual Studio SDK installer."
@@ -131,9 +128,9 @@
 
     <Delete Files="$(CHMDocsDir)\Gallio.chm"
             Condition="Exists('$(CHMDocsDir)\Gallio.chm')" />
-    <RemoveDir Directories="$(WebDocsDir);$(VSDocsDir);$(SandcastleTempDir)" />
+    <RemoveDir Directories="$(WebDocsDir);$(VSDocsDir);$(SandcastleModuleTempDir)" />
     
-    <MakeDir Directories="$(WebDocsParentDir);$(CHMDocsDir);$(VSDocsDir);$(SandcastleTempDir)" />
+    <MakeDir Directories="$(WebDocsParentDir);$(CHMDocsDir);$(VSDocsDir);$(SandcastleModuleTempDir)" />
 
     <!-- Should be able to just override DocumentationSources but
          we get an error.
@@ -151,7 +148,7 @@
 		ReplacementText="&lt;DocumentationSources&gt;$(SandcastleDocumentationSources)&lt;/DocumentationSources&gt;" />
 
     <MSBuild Projects="$(SandcastlePatchedProjectPath)"
-             Properties="Version=$(Version);BuildDir=$(BuildDir);TempDir=$(TempDir);ReportDir=$(ReportDir);CustomBeforeSHFBTargets=$(SandcastleProjectOverridesPath)" />
+             Properties="Version=$(Version);BuildDir=$(BuildDir);ModuleTempDir=$(ModuleTempDir);ReportDir=$(ModuleReportDir);CustomBeforeSHFBTargets=$(SandcastleProjectOverridesPath)" />
 
     <ItemGroup>
       <VSDocsFile Include="$(SandcastleOutputPath)\Gallio.HxC" />
@@ -170,23 +167,23 @@
     <!-- Note: We leave the CHM file in the docs folder for downloads from web. -->
     <Exec Command="move /y &quot;$(SandcastleOutputPath)&quot; &quot;$(WebDocsDir)&quot;" />
 
-    <Delete Files="@(DocumentedAssembly->'$(ImageDir)\bin\%(Folder)\%(Filename).xml')" />
+    <Delete Files="@(DocumentedAssembly->'$(ModuleImageDir)\bin\%(Folder)\%(Filename).xml')" />
     <Move SourceFiles="@(DocumentedAssembly->'$(SandcastleIntellisensePath)\%(Filename).xml')"
-          DestinationFiles="@(DocumentedAssembly->'$(ImageDir)\bin\%(Folder)\%(Filename).xml')" />
+          DestinationFiles="@(DocumentedAssembly->'$(ModuleImageDir)\bin\%(Folder)\%(Filename).xml')" />
   </Target>
 
   <Target Name="BuildDocs_NoSandcastle"
-          Condition="'$(NoSandcastle)'=='true'">
+          Condition="'$(SkipDocumentation)'=='true'">
     <Copy SourceFiles="@(DocumentedAssembly->'%(RootDir)%(Directory)%(Filename).xml')"
-          DestinationFolder="$(ImageDir)\bin\%(DocumentedAssembly.Folder)" />
+          DestinationFolder="$(ModuleImageDir)\bin\%(DocumentedAssembly.Folder)" />
   </Target>
 
   <!-- SUPPORT CODE: SOURCES FILE -->
   <Target Name="BuildSourcesFile"
           Condition="$(IncludeSources)">
-    <Exec Command="svn.exe info --xml &quot;$(RootDir)&quot; > &quot;$(TempDir)\svninfo.xml&quot;" />
+    <Exec Command="svn.exe info --xml &quot;$(RootDir)&quot; > &quot;$(ModuleTempDir)\svninfo.xml&quot;" />
 
-    <XmlQuery XmlFileName="$(TempDir)\svninfo.xml"
+    <XmlQuery XmlFileName="$(ModuleTempDir)\svninfo.xml"
               XPath="/info/entry/url">
       <Output TaskParameter="Values" ItemName="SvnRepositoryItem" />
     </XmlQuery>
@@ -194,7 +191,7 @@
       <SvnRepository>%(SvnRepositoryItem._value)</SvnRepository>
     </PropertyGroup>
 
-    <XmlQuery XmlFileName="$(TempDir)\svninfo.xml"
+    <XmlQuery XmlFileName="$(ModuleTempDir)\svninfo.xml"
               XPath="/info/entry/@revision">
       <Output TaskParameter="Values" PropertyName="SvnRevision" />
     </XmlQuery>
@@ -202,7 +199,7 @@
     <Error Text="Could not parse SVN info."
            Condition="'$(SvnRepository)'=='' or '$(SvnRevision)'==''" />
 
-    <WriteLinesToFile File="$(ImageDir)\Sources.txt"
+    <WriteLinesToFile File="$(ModuleImageDir)\Sources.txt"
                       Overwrite="true"
                       Lines="Gallio v$(AssemblyFileVersion) was generated from the following sources.%0A%0ASubversion Repository: $(SvnRepository)%0A           Revision: $(SvnRevision)%0A%0APlease visit the following Url for checkout instructions.%0Ahttp://code.google.com/p/mb-unit/source/checkout" />
   </Target>
@@ -213,8 +210,8 @@
     <InstallerWixProperties>
       Configuration=Release;
       Version=$(Version);
-      TargetDir=$(DistDir)\;
-      GallioTargetDir=$(ImageDir);
+      TargetDir=$(ModuleDistDir)\;
+      GallioTargetDir=$(ModuleImageDir);
       WixTargetsPath=$(ToolsDir)\Wix\Wix.targets;
       WixTasksPath=$(ToolsDir)\Wix\WixTasks.dll;
       WixToolPath=$(ToolsDir)\Wix;
@@ -239,7 +236,7 @@
                       Lines="&lt;/Include&gt;"
                       Overwrite="false" />
 
-    <ParseVersion Version="$(Version)">
+    <ParseVersion Version="$(FileVersion)">
       <Output TaskParameter="Major" PropertyName="MajorVersion" />
       <Output TaskParameter="Minor" PropertyName="MinorVersion" />
       <Output TaskParameter="Build" PropertyName="BuildNumber" />
@@ -295,27 +292,28 @@
     <Message Text="Build redistributable Zip archive..."
              Importance="High" />
 
-    <CreateItem Include="$(ImageDir)\**\*.*">
+    <CreateItem Include="$(ModuleImageDir)\**\*.*">
       <Output TaskParameter="Include" ItemName="ZipFiles" />
     </CreateItem>
 
     <Zip Files="@(ZipFiles)"
-         WorkingDirectory="$(ImageDir)"
-         ZipFileName="$(DistDir)\GallioBundle-$(Version)$(VersionSuffix).zip"
+         WorkingDirectory="$(ModuleImageDir)"
+         ZipFileName="$(ModuleDistDir)\GallioBundle-$(Version)$(VersionSuffix).zip"
          ZipLevel="9" />
   </Target>
 
 
   <!-- SUPPORT CODE: SOURCE SERVER INDEXING -->
 
-  <Target Name="BuildSourceServerIndex">
+  <Target Name="BuildSourceServerIndex"
+                Condition="'$(SkipSourceServer)'!='true'">
     <Message Text="Generating source server index..."
              Importance="High" />
 
-    <Warning Text="The Debugging Tools for Windows must be installed along with the Source Source SDK in order to embed Source Server indexing information in the PDBs."
+    <Warning Text="The Debugging Tools for Windows must be installed along with the Source Source SDK in order to embed Source Server indexing information in the PDBs.  Disable this message with /p:SkipSourceServer=true."
              Condition="! Exists('$(SourceServerIndexerPath)')" />
 
-    <Exec Command="&quot;$(SourceServerIndexerPath)&quot; -System=svn -Ini=&quot;$(SourceDir)\srcsrv.ini&quot; -Source=&quot;$(SourceDir)&quot; -Symbols=&quot;$(ImageDir)\bin&quot;"
+    <Exec Command="&quot;$(SourceServerIndexerPath)&quot; -System=svn -Ini=&quot;$(SourceDir)\srcsrv.ini&quot; -Source=&quot;$(SourceDir)&quot; -Symbols=&quot;$(ModuleImageDir)\bin&quot;"
           Condition="Exists('$(SourceServerIndexerPath)')" />
   </Target>
 
@@ -327,7 +325,7 @@
 
   <!-- Note: The Gallio MSBuildTasks assembly gets loaded lazily so it's ok
        to reference it even when it has yet to be built. -->
-  <UsingTask AssemblyFile="$(ImageDir)\bin\Gallio.MSBuildTasks.dll" TaskName="Gallio.MSBuildTasks.Gallio" />
+  <UsingTask AssemblyFile="$(ModuleImageDir)\bin\Gallio.MSBuildTasks.dll" TaskName="Gallio.MSBuildTasks.Gallio" />
 
   <PropertyGroup>
     <TestRunnerType Condition="$(Coverage)">NCover3</TestRunnerType>
@@ -360,7 +358,7 @@
 
     <Gallio Condition="'$(Runtime)'=='CLR'"
             Files="@(TestAssembly)"
-            ReportDirectory="$(ReportDir)"
+            ReportDirectory="$(ModuleReportDir)"
             ReportTypes="$(ReportTypes)"
             RunnerType="$(TestRunnerType)"
 	    RunnerProperties="NCoverArguments='//eas .*.Tests%3B.*.TestResources%3BJetBrains.*%3BAga.Controls%3BConfiguration%3BDevExpress.*%3BEnvDTE.*%3BNAnt.*%3BcsUnit.*%3Bnunit.*%3Bxunit.*%3BQuickGraph.*%3BMbUnit.Framework%3BRhino.Mocks%3BTestDriven.Framework%3BWeifenLuo.*%3Blog4net%3BISymWrapper%3BICSharpCode.TextEditor%3BIronRuby.*%3BIronPython.* //et Castle.*%3BMono.*%3BCecil.*%3BSharpen.*%3BDb4objects.*%3BICSharpCode.*'"
@@ -372,15 +370,15 @@
     </Gallio>
 
     <Exec Condition="'$(Runtime)'=='Mono'"
-          Command="&quot;$(MonoExe)&quot; &quot;$(ImageDir)\bin\Gallio.Echo.exe&quot; @(TestAssembly->'&quot;%(FullPath)&quot;', ' ') /rd:&quot;$(ReportDir)&quot; /rt:&quot;$(ReportTypes)&quot; /r:&quot;$(TestRunnerType)&quot; /v:Verbose"
+          Command="&quot;$(MonoExe)&quot; &quot;$(ModuleImageDir)\bin\Gallio.Echo.exe&quot; @(TestAssembly->'&quot;%(FullPath)&quot;', ' ') /rd:&quot;$(ModuleReportDir)&quot; /rt:&quot;$(ReportTypes)&quot; /r:&quot;$(TestRunnerType)&quot; /v:Verbose"
           IgnoreExitCode="true"
-	  WorkingDirectory="$(TempDir)">
+	  WorkingDirectory="$(ModuleTempDir)">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Exec>
 
     <NCoverReporting Condition="$(Coverage) and Exists('Coverage.xml')"
                     CoverageDataPaths="Coverage.xml"
-                    OutputPath="$(ReportDir)\CoverageReport.xml"
+                    OutputPath="$(ModuleReportDir)\CoverageReport.xml"
 		    ProjectName="Gallio"
 		    ReportDataFilter="Assembly, Namespace"
 		    ReportFormat="Xml"
@@ -403,9 +401,9 @@
     <Message Text="Verifying installation of all plugins..."
              Importance="High" />
 
-    <Exec Command="&quot;$(ImageDir)\bin\Gallio.Utility.exe&quot; /v:Verbose VerifyInstallation"
+    <Exec Command="&quot;$(ModuleImageDir)\bin\Gallio.Utility.exe&quot; /v:Verbose VerifyInstallation"
           IgnoreExitCode="true"
-	  WorkingDirectory="$(TempDir)">
+	  WorkingDirectory="$(ModuleTempDir)">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Exec>
     
@@ -413,7 +411,8 @@
              Condition="'$(ExitCode)'!='0' and ! $(IgnoreFailures)" />
   </Target>
 
-  <Target Name="VerifyProjectsSynchronized">
+  <Target Name="VerifyProjectsSynchronized"
+          Condition="'$(SkipSyncProjects)'!='true'">
     <Message Text="Verifying that all VS 2008 and VS 2010 projects are synchronized..."
              Importance="High" />
 
@@ -423,7 +422,7 @@
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Exec>
     
-    <Error Text="There appear to be some differences between the project items of the VS 2008 projects and those of the VS 2010 projects.  Please run 'Sync VS2010 Projects.bat' to synchronize project items."
+    <Error Text="There appear to be some differences between the project items of the VS 2008 projects and those of the VS 2010 projects.  Please run 'Sync VS2010 Projects.bat' to synchronize project items.  Disable this message with /p:SkipSyncProjects=true."
              Condition="'$(ExitCode)'!='0' and ! $(IgnoreFailures)" />
   </Target>  
 </Project>

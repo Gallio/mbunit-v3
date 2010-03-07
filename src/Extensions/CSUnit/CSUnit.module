@@ -1,13 +1,11 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="$(ModuleTargets)" />
 
   <ItemGroup>
     <CSharpProject Include="Gallio.CSUnitAdapter\Gallio.CSUnitAdapter$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.CSUnitAdapter.Tests\Gallio.CSUnitAdapter.Tests$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.CSUnitAdapter.TestResources\Gallio.CSUnitAdapter.TestResources$(ProjectVariant).csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <Binary Include="Gallio.CSUnitAdapter\bin\Gallio.CSUnitAdapter.dll">
         <Folder>CSUnit</Folder>
     </Binary>
@@ -39,9 +37,7 @@
     <Binary Include="Gallio.CSUnitAdapter\Resources\csUnit.ico">
         <Folder>CSUnit\Resources</Folder>
     </Binary>
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <TestAssembly Include="Gallio.CSUnitAdapter.Tests\bin\Gallio.CSUnitAdapter.Tests.dll" />
   </ItemGroup>
 </Project>

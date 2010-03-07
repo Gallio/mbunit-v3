@@ -1,12 +1,8 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="$(ModuleTargets)" />
   <Import Project="VisualStudio100.targets" />
   
-  <PropertyGroup>
-    <MonoCompatible>false</MonoCompatible>
-  </PropertyGroup>
-
-  <ItemGroup Condition="'$(DotNet40)'=='true' and $(VSIP100Installed)">
+  <ItemGroup Condition="'$(DotNetFrameworkVersion)'=='4.0' and $(VSIP100Installed)">
     <CSharpProject Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell100$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Shell.Tests\Gallio.VisualStudio.Shell100.Tests$(ProjectVariant).csproj" />
     

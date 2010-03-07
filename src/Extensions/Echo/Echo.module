@@ -1,22 +1,17 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="$(ModuleTargets)" />
   
   <ItemGroup>
-    <CSharpProject Include="Gallio.Echo\Gallio.Echo$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.Echo\Gallio.Echo$(ProjectVariant).csproj" />    
+    <CSharpProject Include="Gallio.Echo.Tests\Gallio.Echo.Tests$(ProjectVariant).csproj" />
     
-    <CSharpProject Include="Gallio.Echo.Tests\Gallio.Echo.Tests$(ProjectVariant).csproj" />    
-  </ItemGroup>
-
-  <ItemGroup>
     <Binary Include="Gallio.Echo\bin\Gallio.Echo.exe" />
     <PluginFile Include="Gallio.Echo\bin\Gallio.Echo.exe.config" />
     <PluginFile Include="Gallio.Echo\Gallio.Echo.plugin" />
     <Binary Include="Gallio.Echo\Resources\Gallio.Echo.ico">
         <Folder>Resources</Folder>
     </Binary>
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <TestAssembly Include="Gallio.Echo.Tests\bin\Gallio.Echo.Tests.dll" />
   </ItemGroup>
 </Project>
