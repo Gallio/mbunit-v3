@@ -1,8 +1,5 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(ModuleTargets)" />
-
-  <UsingTask TaskName="SGenMultipleTypes"
-             AssemblyFile="..\..\bin\Gallio.BuildTools.Tasks.dll" />
+  <Import Project="$(RootDir)\bin\Module.targets" />
 
   <ItemGroup>
     <Module Include="Samples\GallioSamples.module">
@@ -127,10 +124,10 @@
     </File>
 
     <LicenseFile Include="libs\Mono.Cecil.license.html">
-      <ImagePath>licenses</ImagePath>
+      <ImagePath>bin</ImagePath>
     </LicenseFile>
     <LicenseFile Include="libs\CciMetadata\CciMetadata.License.txt">
-      <ImagePath>licenses</ImagePath>
+      <ImagePath>bin</ImagePath>
     </LicenseFile>
     
     <TestAssembly Include="Gallio.Tests\bin\Gallio.Tests.dll" />

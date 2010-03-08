@@ -1,5 +1,5 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(ModuleTargets)" />
+  <Import Project="$(RootDir)\bin\Module.targets" />
   
   <ItemGroup>
     <CSharpProject Include="Gallio.Ambience\Gallio.Ambience$(ProjectVariant).csproj" />
@@ -29,13 +29,13 @@
     </ConfigFile>
 
     <LicenseFile Include="libs\db4o.license.html">
-      <ImagePath>licenses</ImagePath>
+      <ImagePath>bin</ImagePath>
     </LicenseFile>
     <LicenseFile Include="libs\Cecil.FlowAnalysis.license.html">
-      <ImagePath>licenses</ImagePath>
+      <ImagePath>bin</ImagePath>
     </LicenseFile>
     <LicenseFile Include="libs\Mono.GetOptions.license.html">
-      <ImagePath>licenses</ImagePath>
+      <ImagePath>bin</ImagePath>
     </LicenseFile>
 
     <TestAssembly Include="Gallio.Ambience.Tests\bin\Gallio.Ambience.Tests.dll" />

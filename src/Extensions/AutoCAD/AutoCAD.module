@@ -1,5 +1,5 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(ModuleTargets)" />
+  <Import Project="$(RootDir)\bin\Module.targets" />
 
   <ItemGroup>
     <CSharpProject Include="Gallio.AutoCAD\Gallio.AutoCAD$(ProjectVariant).csproj" />
@@ -28,7 +28,7 @@
     </File>
 
     <LicenseFile Include="libs\objectarx_license.doc">
-      <ImagePath>licenses</ImagePath>
+      <ImagePath>bin\AutoCAD</ImagePath>
     </LicenseFile>
     
     <TestAssembly Include="Gallio.AutoCAD.Tests\bin\Gallio.AutoCAD.Tests.dll" />

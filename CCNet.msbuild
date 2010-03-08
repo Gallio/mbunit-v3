@@ -20,17 +20,17 @@
   </PropertyGroup>
 
   <Target Name="Release">
-    <MSBuild Projects="$(RootDir)\bin\Build.msbuild"
+    <MSBuild Projects="$(Modules)"
              Properties="
-	       Configuration=$(Configuration);
-	       ShowReports=$(ShowReports);
-	       ReportTypes=$(ReportTypes);
-	       Coverage=$(Coverage);
-	       Version=$(Version);
-	       AssemblyVersion=$(AssemblyVersion);
-	       FileVersion=$(FileVersion);
-	       RootDir=$(RootDir);
-	       StartDir=$(StartDir)"
+               Configuration=$(Configuration);
+               ShowReports=$(ShowReports);
+               ReportTypes=$(ReportTypes);
+               Coverage=$(Coverage);
+               Version=$(Version);
+               AssemblyVersion=$(AssemblyVersion);
+               FileVersion=$(FileVersion);
+               RootDir=$(RootDir);
+               StartDir=$(StartDir)"
 	     Targets="Clean;Compile;Image;Test;Dist" />
   </Target>
 </Project>

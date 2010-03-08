@@ -1,0 +1,46 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(RootDir)\bin\Module.targets" />
+
+  <ItemGroup>
+    <LicenseFile Include="Gallio License.txt" />
+    <LicenseFile Include="ASL - Apache Software Foundation License.txt" />
+    
+    <File Include="Credits.html" />
+    
+    <Feature Include="NO_ILMERGE" Condition="'$(SkipILMerge)'=='true'" />
+    <Feature Include="NO_SANDCASTLE" Condition="'$(SkipDocumentation)'=='true'" />
+    <Feature Include="DOTNET40" Condition="'$(DotNetFrameworkVersion)'=='4.0'" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(SkipSources)'!='true'">
+    <Feature Include="INCLUDE_SOURCES" />
+  </ItemGroup>
+  
+  <Target Name="BeforeImage"
+          DependsOnTargets="BuildSourcesFile" />
+  
+  <Target Name="BuildSourcesFile"
+          Condition="'$(SkipSources)'!='true'">
+    <Exec Command="svn.exe info --xml &quot;$(RootDir)&quot; > &quot;$(ModuleTempDir)\svninfo.xml&quot;" />
+
+    <XmlQuery XmlFileName="$(ModuleTempDir)\svninfo.xml"
+              XPath="/info/entry/url">
+      <Output TaskParameter="Values" ItemName="SvnRepositoryItem" />
+    </XmlQuery>
+    <PropertyGroup>
+      <SvnRepository>%(SvnRepositoryItem._value)</SvnRepository>
+    </PropertyGroup>
+
+    <XmlQuery XmlFileName="$(ModuleTempDir)\svninfo.xml"
+              XPath="/info/entry/@revision">
+      <Output TaskParameter="Values" PropertyName="SvnRevision" />
+    </XmlQuery>
+
+    <Error Text="Could not parse SVN info.  Use /p:SkipSources=true to skip generating sources.txt."
+           Condition="'$(SvnRepository)'=='' or '$(SvnRevision)'==''" />
+
+    <WriteLinesToFile File="$(ModuleImageDir)\Sources.txt"
+                      Overwrite="true"
+                      Lines="Gallio v$(FileVersion) was generated from the following sources.%0D%0A%0D%0ASubversion Repository: $(SvnRepository)%0D%0A           Revision: $(SvnRevision)%0D%0A%0D%0APlease visit the following Url for checkout instructions.%0D%0Ahttp://code.google.com/p/mb-unit/source/checkout" />
+  </Target>
+</Project>
