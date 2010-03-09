@@ -14,6 +14,8 @@
 
     <RootDir>$(MSBuildProjectDirectory)</RootDir>
     <StartDir>$(RootDir)</StartDir>
+    
+    <Modules Condition="'$(Modules)'==''">packages\Bundle Package.module</Modules>
   </PropertyGroup>
 
   <Target Name="Release">
