@@ -113,6 +113,11 @@ namespace Gallio.Framework
 
                 if (IsSimpleEnumerableType(leftType))
                 {
+                    if (IsMultidimensionalArrayType(leftType))
+                    {
+                        return CompareMultidimensionalArrays(left as Array, right as Array, CompareEqualsShim) == 0;
+                    }
+
                     var leftEnumerable = (IEnumerable)left;
                     var rightEnumerable = (IEnumerable)right;
                     return CompareEnumerables(leftEnumerable, rightEnumerable, CompareEqualsShim) == 0;
@@ -198,8 +203,7 @@ namespace Gallio.Framework
             }
 
             // Give up.
-            throw new InvalidOperationException(
-                String.Format("No ordering comparison defined on values of type {0} and {1}.", leftType, rightType ?? typeof(T)));
+            throw new InvalidOperationException(String.Format("No ordering comparison defined on values of type {0} and {1}.", leftType, rightType ?? typeof(T)));
         }
 
         private static Comparison<T> FindCompatibleGenericComparison<T>(Type leftType, Type rightType)
@@ -236,17 +240,19 @@ namespace Gallio.Framework
 
         private bool IsSimpleEnumerableTypeUncached(Type type)
         {
-            if (type.IsArray)
-                return type.GetArrayRank() == 1;
             if (!typeof(IEnumerable).IsAssignableFrom(type))
                 return false;
 
-            MethodInfo equalsMethod = type.GetMethod("Equals",
-                BindingFlags.Public | BindingFlags.Instance, null, equalsParams, null);
+            MethodInfo equalsMethod = type.GetMethod("Equals", BindingFlags.Public | BindingFlags.Instance, null, equalsParams, null);
             return equalsMethod.DeclaringType == typeof(object);
         }
+        
+        private static bool IsMultidimensionalArrayType(Type type)
+        {
+            return type.IsArray && type.GetArrayRank() > 1;
+        }
 
-        private int CompareEnumerables(IEnumerable leftEnumerable, IEnumerable rightEnumerable, Comparison<object> comparison)
+        private static int CompareEnumerables(IEnumerable leftEnumerable, IEnumerable rightEnumerable, Comparison<object> comparison)
         {
             IEnumerator leftEnumerator = leftEnumerable.GetEnumerator();
             IEnumerator rightEnumerator = rightEnumerable.GetEnumerator();
@@ -264,6 +270,20 @@ namespace Gallio.Framework
                 return -1;
 
             return 0;
+        }
+
+        private static int CompareMultidimensionalArrays(Array left, Array right, Comparison<object> comparison)
+        {
+            if (left.Rank != right.Rank)
+                throw new InvalidOperationException("Expected the compared arrays to have the same rank.");
+
+            for (int rank = 0; rank < left.Rank; rank++)
+            {
+                if (left.GetLongLength(rank) != right.GetLongLength(rank))
+                    throw new InvalidOperationException("Expected the compared arrays to have the same dimensional lengths.");
+            }
+
+            return CompareEnumerables(left, right, comparison);
         }
 
         /// <inheritdoc />

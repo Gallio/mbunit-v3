@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -76,7 +77,7 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        public void AreEqual_fails_with_IEnumrables()
+        public void AreEqual_fails_with_IEnumerables()
         {
             AssertionFailure[] failures = Capture(() =>
                 Assert.AreEqual(new List<string>(new[] { "1", "2" }), new List<string>(new[] { "1", "2", "3" })));
@@ -91,6 +92,41 @@ namespace MbUnit.Tests.Framework
             AssertionFailure[] failures = Capture(() => Assert.AreEqual(1, 2, "{0} message", "custom"));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("custom message", failures[0].Message);
+        }
+
+        [Test]
+        public void AreEqual_with_multidimensional_arrays()
+        {
+            var array1 = new[,] {{1, 2}, {3, 4}, {5, 6}};
+            var array2 = new[,] {{1, 2}, {3, 4}, {5, 6}};
+            Assert.AreEqual(array1, array2);
+        }
+
+        [Test]
+        public void AreEqual_fails_with_multidimensional_arrays_having_different_ranks()
+        {
+            Array array1 = new[,] {{1, 2}, {3, 4}, {5, 6}};
+            Array array2 = new[,,] {{{1, 2}}, {{3, 4}}, {{5, 6}}};
+            AssertionFailure[] failures = Capture(() => Assert.AreEqual(array1, array2));
+            Assert.AreEqual(1, failures.Length);
+        }
+
+        [Test]
+        public void AreEqual_fails_with_multidimensional_arrays_having_different_dimensional_lengths()
+        {
+            Array array1 = new[,] {{1, 2}, {3, 4}, {5, 6}};
+            Array array2 = new[,] {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+            AssertionFailure[] failures = Capture(() => Assert.AreEqual(array1, array2));
+            Assert.AreEqual(1, failures.Length);
+        }
+
+        [Test]
+        public void AreEqual_fails_with_multidimensional_arrays_having_different_values()
+        {
+            Array array1 = new[,] { { 1, 2 }, { 3, 4 }, { 5, 6 } };
+            Array array2 = new[,] { { 1, 2 }, { 3, 444 }, { 5, 6 } };
+            AssertionFailure[] failures = Capture(() => Assert.AreEqual(array1, array2));
+            Assert.AreEqual(1, failures.Length);
         }
 
         #endregion
