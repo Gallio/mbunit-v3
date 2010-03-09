@@ -121,4 +121,32 @@
     
     <Installer Include="GallioBundle" />
   </ItemGroup>
+  
+  <ItemGroup Condition="'$(SkipSandcastle)'!='true'">
+    <Feature Include="FEATURE_CHM_HELP" />
+    <Feature Include="FEATURE_VS_HELP" />
+    
+    <Sandcastle Include="$(RootDir)\docs\Docs.shfbproj">
+      <CHMDocsDir>$(ModuleImageDir)\docs</CHMDocsDir>
+      <VSDocsDir>$(ModuleImageDir)\docs\vs</VSDocsDir>
+      <WebDocsDir>$(ModuleDistDir)\APIDocs\$(FileVersion)</WebDocsDir>
+    </Sandcastle>
+  </ItemGroup>
+  
+  <Target Name="BeforeTest"
+          DependsOnTargets="VerifyInstallation" />
+  
+  <Target Name="VerifyInstallation">
+    <Message Text="Verifying installation of all plugins..."
+             Importance="High" />
+
+    <Exec Command="&quot;$(ModuleImageDir)\bin\Gallio.Utility.exe&quot; /v:Verbose VerifyInstallation"
+          IgnoreExitCode="true"
+	  WorkingDirectory="$(ModuleTempDir)">
+      <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
+    </Exec>
+    
+    <Error Text="Verification of plugin installation failed!"
+             Condition="'$(ExitCode)'!='0' and ! $(IgnoreFailures)" />
+  </Target>
 </Project>

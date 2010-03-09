@@ -10,12 +10,12 @@
   <PropertyGroup>
     <MSBuildCommunityTasksPath>$(RootDir)\tools\MSBuild Community Tasks</MSBuildCommunityTasksPath>    
   </PropertyGroup>
-  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" /> 
   
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />   
   <UsingTask TaskName="ParseVersion"
              AssemblyFile="Gallio.BuildTools.Tasks.dll" />
   <UsingTask TaskName="SGenMultipleTypes"
-             AssemblyFile="Gallio.BuildTools.Tasks.dll" />
+             AssemblyFile="Gallio.BuildTools.Tasks.dll" />             
   
   <!-- Item Definitions -->
   
@@ -78,6 +78,12 @@
     <ReleaseArchive />
     
     <Installer />
+    
+    <Sandcastle>
+      <CHMDocsDir />
+      <VSDocsDir />
+      <WebDocsDir />
+    </Sandcastle>
   </ItemDefinitionGroup>
   
   <!-- External Properties -->
@@ -106,10 +112,13 @@
     <SkipILMerge Condition="'$(SkipILMerge)'==''">false</SkipILMerge>
     <SkipSources Condition="'$(SkipSources)'==''">false</SkipSources>
     <SkipSourceServer Condition="'$(SkipSourceServer)'==''">false</SkipSourceServer>
-    <SkipDocumentation Condition="'$(SkipDocumentation)'==''">false</SkipDocumentation>
+    <SkipSandcastle Condition="'$(SkipSandcastle)'==''">false</SkipSandcastle>
     <SkipArchive Condition="'$(SkipArchive)'==''">false</SkipArchive>
     <SkipInstaller Condition="'$(SkipInstaller)'==''">false</SkipInstaller>
-    
+    <SkipCodeCoverage Condition="'$(SkipCodeCoverage)'==''">false</SkipCodeCoverage>
+
+    <IgnoreTestFailures Condition="'$(IgnoreTestFailures)'==''">false</IgnoreTestFailures>
+   
     <BuildInParallel Condition="'$(BuildInParallel)'==''">true</BuildInParallel>
     <StopOnFirstFailure Condition="'$(StopOnFirstFailure)'==''">true</StopOnFirstFailure>
     
@@ -123,12 +132,16 @@
     <ProjectVariant Condition="'$(DotNetFrameworkVersion)'=='4.0'">.vs2010</ProjectVariant>
     <ProjectVariantExplicit>.vs2008</ProjectVariantExplicit>
     <ProjectVariantExplicit Condition="'$(DotNetFrameworkVersion)'=='4.0'">.vs2010</ProjectVariantExplicit>
+    
+    <TestRunnerType Condition="'$(TestRunnerType)'=='' and '$(SkipCoverage)'=='true'">IsolatedProcess</TestRunnerType>
+    <TestRunnerType Condition="'$(TestRunnerType)'==''">NCover3</TestRunnerType>
+    <TestReportTypes>Xml;Html-Condensed</TestReportTypes>
   </PropertyGroup>
- 
+  
   <!-- External Targets -->
   
   <PropertyGroup>
-	<PreconditionDependsOn>PrintPreconditionBanner;CheckRootDir;BeforePrecondition;CorePrecondition;AfterPrecondition</PreconditionDependsOn>
+	<PreconditionDependsOn>PrintPreconditionBanner;MainPrecondition;BeforePrecondition;CorePrecondition;AfterPrecondition</PreconditionDependsOn>
 	<CleanDependsOn>Precondition;PrintCleanBanner;BeforeClean;CoreClean;AfterClean;DeleteModuleBuildTree;DeleteBuildTree</CleanDependsOn>
 	<CompileDependsOn>Precondition;PrintCompileBanner;CreateBuildTree;CreateModuleBuildTree;BeforeCompile;CoreCompile;AfterCompile</CompileDependsOn>
 	<ImageDependsOn>Precondition;PrintImageBanner;CreateBuildTree;CreateModuleBuildTree;BeforeImage;CoreImage;AfterImage</ImageDependsOn>
@@ -166,9 +179,27 @@
 
   <!-- Preconditions -->
   
-  <Target Name="CheckRootDir">
+  <Target Name="MainPrecondition"
+          DependsOnTargets="VerifyRootDirIsSet;VerifyProjectsSynchronized" />
+  
+  <Target Name="VerifyRootDirIsSet">
     <Error Condition="'$(RootDir)'==''"
 	       Text="RootDir must be set." />
+  </Target>  
+  
+  <Target Name="VerifyProjectsSynchronized"
+          Condition="'$(Main)'=='true' and '$(SkipSyncProjects)'!='true'">
+    <Message Text="Verifying that all VS 2008 and VS 2010 projects are synchronized...%0D%0ASkip this with '/p:SkipSyncProjects=true'."
+             Importance="High" />
+
+    <Exec Command="&quot;$(SourceDir)\Compare VS2010 Projects.bat&quot;"
+          IgnoreExitCode="true"
+	  WorkingDirectory="$(SourceDir)">
+      <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
+    </Exec>
+    
+    <Error Text="There appear to be some differences between the project items of the VS 2008 projects and those of the VS 2010 projects.  Please run 'Sync VS2010 Projects.bat' to synchronize project items.%0D%0ASkip this with '/p:SkipSyncProjects=true'."
+             Condition="'$(ExitCode)'!='0' and ! $(IgnoreFailures)" />
   </Target>  
   
   <!-- Banner Text -->
@@ -228,10 +259,12 @@
         ImageCommonProjects;
         MapFilesToCopy;
         ImageFilesToCopy;
+        ImagePdbFiles;
         ImageZips;
         ImageExportArchives;
         ImagePluginFiles;
         ImageConfigFiles;
+        ImageDocumentation;
         WriteTestAssemblyItemsToMeta;
         WriteXmlDocFileItemsToMeta;
         WriteFeatureItemsToMeta;
@@ -243,6 +276,7 @@
     </CoreDistDependsOn>
     <CoreTestDependsOn>
         RecursiveTest;
+        TestWithGallio;
     </CoreTestDependsOn>
   </PropertyGroup>
   
@@ -379,7 +413,7 @@
   </Target>  
   
   <Target Name="ModuleError">
-    <Error Text="One or more modules failed to build.%0ATo exclude these modules from the build, call MSBuild with /p:SkipModules=Module1;Module2;..."
+    <Error Text="One or more modules failed to build.%0D%0ASkip these modules with '/p:SkipModules=Module1;Module2;...'."
            Condition="'$(Main)'=='true'" />
   </Target>
   
@@ -509,26 +543,24 @@
   
   <Target Name="MapFilesToCopy">
     <ItemGroup>
-      <_FileToCopy Include="@(File);@(AssemblyFile);@(PdbFile);@(XmlDocFile);@(ConfigFile);@(PluginFile);@(LicenseFile)" />
+      <_FileToCopy Include="@(File);@(AssemblyFile);@(XmlDocFile);@(ConfigFile);@(PluginFile);@(LicenseFile)" />
     </ItemGroup>
   </Target>
   
   <Target Name="ImageFilesToCopy"
           Condition="'@(_FileToCopy)'!=''">
-    <MakeDir Directories="@(_FileToCopy->'$(ModuleImageDir)\%(ImagePath)')"
-             Condition="'%(ImagePath)'!=''" />
+    <MakeDir Directories="@(_FileToCopy->'$(ModuleImageDir)\%(ImagePath)')" />
 
     <Copy SourceFiles="@(_FileToCopy)"
-          Condition="'%(ImagePath)'!=''"
-          DestinationFiles="@(_FileToCopy->'$(ModuleImageDir)\%(ImagePath)\%(RecursiveDir)%(Filename)%(Extension)')" />
+          DestinationFiles="@(_FileToCopy->'$(ModuleImageDir)\%(ImagePath)\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
   </Target>
   
   <Target Name="ImageZips"
           Condition="'@(Zip)'!=''">
     <Zip Files="@(Zip)"
-         Condition="'%(ImagePath)'!=''"
-	 WorkingDirectory="%(BaseDir)"
-	 ZipFileName="$(ModuleImageDir)\%(ImagePath)" />
+         WorkingDirectory="%(BaseDir)"
+         ZipFileName="$(ModuleImageDir)\%(ImagePath)" />
   </Target>
 
   <Target Name="ImageExportArchives"
@@ -580,6 +612,15 @@
   </Target>
   
   <!-- Run Tests -->
+
+  <PropertyGroup>
+    <GallioInstallDir Condition="'$(GallioInstallDir)'==''">$(ModuleImageDir)</GallioInstallDir>
+    <NCoverInstallDir Condition="'$(NCoverInstallDir)'==''">$(Registry:HKEY_LOCAL_MACHINE\Software\Gnoso\NCover\@InstallDir)</NCoverInstallDir>
+  </PropertyGroup>
+  <UsingTask TaskName="NCover.MSBuildTasks.NCoverReporting"
+             AssemblyFile="$(NCoverInstallDir)\Build Task Plugins\NCover.MSBuildTasks.dll" />
+  <UsingTask TaskName="Gallio.MSBuildTasks.Gallio"
+             AssemblyFile="$(GallioInstallDir)\bin\Gallio.MSBuildTasks.dll" />
   
   <Target Name="WriteTestAssemblyItemsToMeta">
     <WriteLinesToFile File="$(ModuleMetaDir)\$(ModuleName).testassemblies"
@@ -602,7 +643,81 @@
     </RemoveDuplicates>
   </Target>
   
+  <Target Name="TestWithGallio"
+          DependsOnTargets="ReadMergedTestAssemblyItemsFromMeta"
+          Condition="'$(Main)'=='true'">
+    <PropertyGroup>
+      <_TestCoverageFilters>
+      </_TestCoverageFilters>
+      <_TestSatisfactoryCoverage>
+        <Threshold>
+            <CoverageMetric>SymbolCoverage</CoverageMetric>
+            <Value>95.0</Value>
+        </Threshold>
+        <Threshold>
+            <CoverageMetric>MethodCoverage</CoverageMetric>
+            <Value>70</Value>
+        </Threshold>
+        <Threshold>
+            <CoverageMetric>BranchCoverage</CoverageMetric>
+            <Value>75</Value>
+        </Threshold>
+      </_TestSatisfactoryCoverage>
+      <_TestCoverageFile>$(ModuleTempDir)\Coverage.xml</_TestCoverageFile>
+    </PropertyGroup>
+    
+    <Message Text="Running tests..."
+             Importance="High" />
+
+    <Delete Files="$(_TestCoverageFile)"
+            Condition="Exists('$(_TestCoverageFile)')" />   
+
+    <Gallio Files="@(MergedTestAssembly)"
+            ReportDirectory="$(ModuleReportDir)"
+            ReportTypes="$(TestReportTypes)"
+            RunnerType="$(TestRunnerType)"
+            RunnerProperties="NCoverCoverageFile='$(_TestCoverageFile)';NCoverArguments='//eas .*.Tests%3B.*.TestResources%3BJetBrains.*%3BAga.Controls%3BConfiguration%3BDevExpress.*%3BEnvDTE.*%3BNAnt.*%3BcsUnit.*%3Bnunit.*%3Bxunit.*%3BQuickGraph.*%3BMbUnit.Framework%3BRhino.Mocks%3BTestDriven.Framework%3BWeifenLuo.*%3Blog4net%3BISymWrapper%3BICSharpCode.TextEditor%3BIronRuby.*%3BIronPython.* //et Castle.*%3BMono.*%3BCecil.*%3BSharpen.*%3BDb4objects.*%3BICSharpCode.*'"
+            ShowReports="$(ShowReports)"
+            Verbosity="Verbose"
+            IgnoreFailures="true"
+            RunTimeLimit="2700">
+      <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
+    </Gallio>
+
+    <NCoverReporting Condition="'$(SkipTestCoverage)'!='true' and Exists('$(_TestCoverageFile)')"
+                     CoverageDataPaths="$(_TestCoverageFile)"
+                     OutputPath="$(ModuleReportDir)\CoverageReport.xml"
+                     ProjectName="Gallio"
+                     ReportDataFilter="Assembly, Namespace"
+                     ReportFormat="Xml"
+                     ReportType="SymbolModuleNamespaceClassMethod"
+                     SortBy="ClassLine"
+                     MaxTopUncoveredToReport="20"
+                     CoverageFilters="$(_TestCoverageFilters)"
+                     SatisfactoryCoverage="$(_TestSatisfactoryCoverage)" />
+                     
+    <!--
+    <Exec Command="cscript //nologo &quot;$(BinDir)\Run.vbs&quot; &quot;'$(NCoverInstallDir)\NCover.Explorer.exe' $(_TestCoverageFile)&quot;"
+          Condition="$(ShowReports) and $(Coverage) and Exists('Coverage.xml')" />
+    -->
+
+    <Error Text="Some tests failed!"
+             Condition="'$(ExitCode)'!='0' and ! $(IgnoreTestFailures)" />
+    <Warning Text="Some tests failed!"
+             Condition="'$(ExitCode)'!='0' and $(IgnoreTestFailures)" />    
+  </Target>
+  
   <!-- Generate Documentation -->
+  
+  <PropertyGroup>
+    <SandcastlePath>$(ProgramFiles)\Sandcastle</SandcastlePath>
+    <SandcastleHelpFileBuilderPath>$(SHFBROOT)</SandcastleHelpFileBuilderPath>
+    
+    <HTMLHelpCompilerPath>$(ProgramFiles)\HTML Help Workshop\hhc.exe</HTMLHelpCompilerPath>
+    
+    <VSIPSDKHelpPath>$(Registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\10.0\@InstallDir)\HelpIntegrationWizard\MSHelp2</VSIPSDKHelpPath>
+    <VSIPSDKHelpPath Condition="! Exists('$(VSIPSDKHelpPath)')">$(Registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\9.0\@InstallDir)\HelpIntegrationWizard\MSHelp2</VSIPSDKHelpPath>
+  </PropertyGroup>
   
   <Target Name="WriteXmlDocFileItemsToMeta">
     <WriteLinesToFile File="$(ModuleMetaDir)\$(ModuleName).xmldocfiles"
@@ -623,6 +738,116 @@
     <RemoveDuplicates Inputs="@(_MergedXmlDocFile)">
       <Output TaskParameter="Filtered" ItemName="MergedXmlDocFile" />
     </RemoveDuplicates>
+  </Target>
+  
+  <Target Name="ImageDocumentation"
+          DependsOnTargets="ImageDocumentation_Sandcastle;ImageDocumentation_SkipSandcastle" />
+  
+  <Target Name="ImageDocumentation_Sandcastle"
+          DependsOnTargets="ImageDocumentation_SandcastlePreprocess;ImageDocumentation_SandcastleProcess" />
+
+  <Target Name="ImageDocumentation_SandcastlePreprocess"
+          DependsOnTargets="ReadMergedXmlDocFileItemsFromMeta"
+          Condition="'$(SkipSourceServer)'!='true' and '@(Sandcastle)'!=''"> 
+    <Error Text="Sandcastle and Sandcastle Help File Builder must be installed to generate documentation.  Be sure to also install the Sandcastle Styles patches.  Look in tools\Setup Files for the Sandcastle installers and patches.%0D%0ASkip this with '/p:SkipSandcastle=true'."
+           Condition="! Exists('$(SandcastlePath)') or ! Exists('$(SandcastleHelpFileBuilderPath)')" />
+
+    <Error Text="Visual Studio 2008 or 2010 SDK must be installed so that HTML Help 2 (HxS) documentation can be generated for integration with the Visual Studio help system.  Check Microsoft's site for the Visual Studio SDK installer.%0D%0ASkip this with '/p:SkipSandcastle=true'."
+           Condition="! Exists('$(VSIPSDKHelpPath)')" />
+
+    <Error Text="Microsoft HTML Help Workshop must be installed so that Compiled HTML help (CHM) documentation can be generated.  Look in tools\Setup Files for the Microsoft HTML Help Workshop installer.%0D%0ASkip this with '/p:SkipSandcastle=true'."
+           Condition="! Exists('$(HTMLHelpCompilerPath)')" />
+
+    <ItemGroup>
+      <_SandcastleDocumentedAssembly Include="@(MergedXmlDocFile->'%(RootDir)%(Directory)%(FileName).dll')"
+                                     Condition="Exists('%(RootDir)%(Directory)%(FileName).dll')" />
+      <_SandcastleDocumentedAssembly Include="@(MergedXmlDocFile->'%(RootDir)%(Directory)%(FileName).exe')"
+                                     Condition="Exists('%(RootDir)%(Directory)%(FileName).exe')" />
+    </ItemGroup>
+           
+    <PropertyGroup>
+      <_SandcastleDocumentationSources>@(_SandcastleDocumentedAssembly->'&lt;DocumentationSource sourceFile=&quot;%(FullPath)&quot; /&gt;&lt;DocumentationSource sourceFile=&quot;%(RootDir)%(Directory)%(Filename).xml&quot; /&gt;', '')</_SandcastleDocumentationSources>
+      <_SandcastleProjectPath>%(Sandcastle.FullPath)</_SandcastleProjectPath>
+      <_SandcastlePatchedProjectPath>%(Sandcastle.RootDir)%(Sandcastle.Directory)%(Sandcastle.Filename).patched%(Sandcastle.Extension)</_SandcastlePatchedProjectPath>
+      <_SandcastleBuildDir>$(BuildDir)</_SandcastleBuildDir>
+      <_SandcastleTempDir>$(TempDir)</_SandcastleTempDir>
+      <_SandcastleReportDir>$(ReportDir)</_SandcastleReportDir>
+      <_SandcastleOutputPath>$(_SandcastleTempDir)\docs\output</_SandcastleOutputPath>
+      <_SandcastleIntellisensePath>$(_SandcastleTempDir)\docs\intellisense</_SandcastleIntellisensePath>
+      <_SandcastleCHMDocsDir>%(Sandcastle.CHMDocsDir)</_SandcastleCHMDocsDir>
+      <_SandcastleVSDocsDir>%(Sandcastle.VSDocsDir)</_SandcastleVSDocsDir>
+      <_SandcastleWebDocsDir>%(Sandcastle.WebDocsDir)</_SandcastleWebDocsDir>
+    </PropertyGroup>
+  </Target>
+  
+  <Target Name="ImageDocumentation_SandcastleProcess"
+          Inputs="@(MergedXmlDocFile);@(_SandcastleDocumentedAssembly);@(Sandcastle)"
+          Outputs="$(ModuleTempDir)\SandcastleDone.flag"
+          Condition="'$(SkipSourceServer)'!='true' and '@(Sandcastle)'!=''"> 
+    <Message Text="Building Documentation with Sandcastle..."
+             Importance="High" />
+             
+    <!-- Patch the project file's DocumentationSources and build it. -->
+
+    <MakeDir Directories="$(_SandcastleTempDir)" />
+    <Copy SourceFiles="$(_SandcastleProjectPath)"
+          DestinationFiles="$(_SandcastlePatchedProjectPath)" />
+    <FileUpdate Files="$(_SandcastlePatchedProjectPath)"
+                SingleLine="true"
+                Regex="&lt;DocumentationSources&gt;.*&lt;/DocumentationSources&gt;"
+                ReplacementText="&lt;DocumentationSources&gt;$(_SandcastleDocumentationSources)&lt;/DocumentationSources&gt;" />
+    <MSBuild Projects="$(_SandcastlePatchedProjectPath)"
+             Properties="
+               Version=$(FileVersion);
+               BuildDir=$(_SandcastleBuildDir);
+               TempDir=$(_SandcastleTempDir);
+               ReportDir=$(_SandcastleReportDir)"/>
+
+    <!-- Copy the CHM documentation resources to the right place. -->
+    <!-- Note: We don't delete the CHM so it will be available for the Web docs too. -->
+    
+    <ItemGroup>
+      <_SandcastleCHMDocsFile Include="$(_SandcastleOutputPath)\*.chm" />
+    </ItemGroup>
+          
+    <MakeDir Directories="$(_SandcastleCHMDocsDir)" />
+    <Copy SourceFiles="@(_SandcastleCHMDocsFile)"
+          DestinationFolder="$(_SandcastleCHMDocsDir)" />
+
+    <!-- Move the Visual Studio documentation resources to the right place. -->
+               
+    <ItemGroup>
+      <_SandcastleVSDocsFile Include="$(_SandcastleOutputPath)\*.Hx?" />
+      <_SandcastleVSDocsFile Include="$(_SandcastleOutputPath)\*_H2Reg.ini" />
+    </ItemGroup>
+
+    <RemoveDir Directories="$(_SandcastleVSDocsDir)" />
+    <MakeDir Directories="$(_SandcastleVSDocsDir)" />
+    <Move SourceFiles="@(_SandcastleVSDocsFile)"
+          DestinationFolder="$(_SandcastleVSDocsDir)" />
+
+    <!-- Move everything else (including a copy of the CHM) to the Web docs dir. -->
+    
+    <RemoveDir Directories="$(_SandcastleWebDocsDir)" />
+    <MakeDir Directories="$(_SandcastleWebDocsDir)\.." />
+    <Exec Command="move /y &quot;$(_SandcastleOutputPath)&quot; &quot;$(_SandcastleWebDocsDir)&quot;" />    
+          
+    <!-- Move Intellisense XML documentation to the image. -->
+    
+    <MakeDir Directories="@(XmlDocFile->'$(ModuleImageDir)\%(ImagePath)')" />    
+    <Delete Files="@(XmlDocFile->'$(ModuleImageDir)\bin\%(ImagePath)\%(Filename)%(Extension)')" />
+    <Move SourceFiles="@(XmlDocFile->'$(_SandcastleIntellisensePath)\%(Filename)%(Extension)')"
+          DestinationFiles="@(XmlDocFile->'$(ModuleImageDir)\bin\%(ImagePath)\%(Filename)%(Extension)')" />
+          
+    <!-- Leave a flag file behind to indicate that we did the work. -->
+    
+    <Touch Files="$(ModuleTempDir)\SandcastleDone.flag"
+           AlwaysCreate="true" />
+  </Target>
+  
+  <Target Name="ImageDocumentation_SkipSandcastle"
+          Condition="'$(SkipSourceServer)'=='true' and '@(Sandcastle)'!=''">
+    <!-- Nothing to do just now because XML documentation is already present. -->
   </Target>
   
   <!-- Generate Release Archive -->
@@ -647,7 +872,7 @@
   <PropertyGroup>
     <InstallerWixProperties>
       Configuration=Release;
-      Version=$(Version);
+      Version=$(FileVersion);
       TargetDir=$(ModuleDistDir)\;
       GallioTargetDir=$(ModuleImageDir);
       WixTargetsPath=$(ToolsDir)\Wix\Wix.targets;
@@ -656,7 +881,7 @@
       WixExtDir=$(ToolsDir)\Wix;
       DefineSolutionProperties=false
     </InstallerWixProperties>
-    <InstallerSourceDir>$(SourceDir)\Installer.Wix</InstallerSourceDir>
+    <InstallerSourceDir>$(SourceDir)\Installer</InstallerSourceDir>
     <InstallerFeatureFile>$(InstallerSourceDir)\Features.wxi</InstallerFeatureFile>
   </PropertyGroup>
   
@@ -691,7 +916,7 @@
                       Lines="&lt;Include&gt;"
                       Overwrite="true" />
     <WriteLinesToFile File="$(InstallerFeatureFile)"
-                      Lines="@(Feature -> '&lt;?define %(Identity)=&quot;true&quot; ?&gt;')"
+                      Lines="@(MergedFeature -> '&lt;?define %(Identity)=&quot;true&quot; ?&gt;')"
                       Overwrite="false" />
     <WriteLinesToFile File="$(InstallerFeatureFile)"
                       Lines="&lt;/Include&gt;"
@@ -753,5 +978,50 @@
     <MSBuild Projects="$(InstallerSourceDir)\%(Installer.Identity).wixproj"
              Targets="Clean"
              Properties="$(InstallerWixProperties);Platform=x64" />
-  </Target>  
+  </Target>
+  
+  <!-- Source Server -->
+  
+  <PropertyGroup>
+    <SourceServerIndexerPath>$(ProgramFiles)\Debugging Tools for Windows\sdk\srcsrv\ssindex.cmd</SourceServerIndexerPath>
+    <SourceServerIndexerPath Condition="! Exists('$(SourceServerIndexerPath)')">$(ProgramFiles)\Debugging Tools for Windows (x86)\srcsrv\ssindex.cmd</SourceServerIndexerPath>
+    <SourceServerIndexerPath Condition="! Exists('$(SourceServerIndexerPath)')">C:\Program Files\Debugging Tools for Windows (x64)\srcsrv\ssindex.cmd</SourceServerIndexerPath>
+  </PropertyGroup>
+  
+  <Target Name="ImagePdbFiles"
+          DependsOnTargets="ImagePdbFiles_SourceServer;ImagePdbFiles_SkipSourceServer" />
+          
+  <Target Name="ImagePdbFiles_SourceServer"
+          Condition="'$(SkipSourceServer)'!='true' and '@(PdbFile)'!=''"
+          Inputs="@(PdbFile)"
+          Outputs="@(PdbFile->'$(ModuleImageDir)\%(ImagePath)\%(Filename)%(Extension)')">
+    <Message Text="Generating source server index..."
+             Importance="High" />
+
+    <Warning Text="The Debugging Tools for Windows must be installed along with the Source Source SDK in order to embed Source Server indexing information in the PDBs.%0D%0ASkip this with '/p:SkipSourceServer=true'."
+             Condition="! Exists('$(SourceServerIndexerPath)')" />
+
+    <MakeDir Directories="$(ModuleTempDir)\pdbs" />
+             
+    <Copy SourceFiles="@(PdbFile)"
+          DestinationFiles="@(PdbFile->'$(ModuleTempDir)\pdbs\%(Filename)%(Extension)')" />
+          
+    <Exec Command="&quot;$(SourceServerIndexerPath)&quot; -System=svn -Ini=&quot;$(SourceDir)\srcsrv.ini&quot; -Source=&quot;$(SourceDir)&quot; -Symbols=&quot;$(ModuleTempDir)\pdbs&quot;"
+          Condition="Exists('$(SourceServerIndexerPath)')" />
+          
+    <Copy SourceFiles="@(PdbFile->'$(ModuleTempDir)\pdbs\%(Filename)%(Extension)')"
+          DestinationFiles="@(PdbFile->'$(ModuleImageDir)\%(ImagePath)\%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+  </Target>
+  
+  <Target Name="ImagePdbFiles_SkipSourceServer"          
+          Condition="'$(SkipSourceServer)'=='true' and '@(PdbFile)'!=''"
+          Inputs="@(PdbFile)"
+          Outputs="@(PdbFile->'$(ModuleImageDir)\%(ImagePath)\%(Filename)%(Extension)')">
+    <MakeDir Directories="@(PdbFile->'$(ModuleImageDir)\%(ImagePath)')" />
+
+    <Copy SourceFiles="@(PdbFile)"
+          DestinationFiles="@(PdbFile->'$(ModuleImageDir)\%(ImagePath)\%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+  </Target>
 </Project>

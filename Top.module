@@ -8,12 +8,11 @@
     <File Include="Credits.html" />
     
     <Feature Include="NO_ILMERGE" Condition="'$(SkipILMerge)'=='true'" />
-    <Feature Include="NO_SANDCASTLE" Condition="'$(SkipDocumentation)'=='true'" />
     <Feature Include="DOTNET40" Condition="'$(DotNetFrameworkVersion)'=='4.0'" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(SkipSources)'!='true'">
-    <Feature Include="INCLUDE_SOURCES" />
+    <Feature Include="FEATURE_SOURCES" />
   </ItemGroup>
   
   <Target Name="BeforeImage"

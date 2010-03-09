@@ -1,10 +1,7 @@
 <Project DefaultTargets="Release" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration>Release</Configuration>
-    <ShowReports>false</ShowReports>
-    <ReportTypes>XML-Inline</ReportTypes>
-    <Coverage>true</Coverage>
-    <IncludeSources>true</IncludeSources>
+    <TestReportTypes>XML-Inline</TestReportTypes>
 
     <Version>$(CCNetLabel)</Version>
     <Version Condition="'$(Version)'==''">0.0.0.0</Version>
@@ -23,10 +20,7 @@
     <MSBuild Projects="$(Modules)"
              Properties="
                Configuration=$(Configuration);
-               ShowReports=$(ShowReports);
-               ReportTypes=$(ReportTypes);
-               Coverage=$(Coverage);
-               Version=$(Version);
+               TestReportTypes=$(TestReportTypes);
                AssemblyVersion=$(AssemblyVersion);
                FileVersion=$(FileVersion);
                RootDir=$(RootDir);

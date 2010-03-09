@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:vs="http://schemas.microsoft.com/wix/VSExtension"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-    <?include ..\Installer.Wix\Features.wxi ?>
+    <?include ..\Installer\Features.wxi ?>
 
     <Fragment>
         <!-- TODO: Replace H2Reg.exe with the recommended way of registering help. -->
@@ -15,14 +15,16 @@
             <Component Id="Gallio.License" Guid="{80dcc954-656f-45de-9bf2-bec6ff1d7c58}" Win64="no">
                 <File Id="Gallio.License.txt" Source="$(var.GallioTargetDir)\Gallio License.txt" KeyPath="yes" />
             </Component>
-            <Component Id="Mono.Cecil.License" Guid="{3AF29A1B-1DD9-4994-98DC-2F7B88F99A20}" Win64="no">
-                <File Id="Mono.Cecil.license.html" Source="$(var.GallioTargetDir)\Mono.Cecil.license.html" KeyPath="yes" />
-            </Component>
             <Component Id="Gallio.Credits" Guid="{7EFEC8C8-CB48-41b3-818C-9CAD85DBECC1}" Win64="no">
                 <File Id="Gallio.Credits.html" Source="$(var.GallioTargetDir)\Credits.html" KeyPath="yes" >
                     <Shortcut Id="Gallio.Credits.lnk" Name="Gallio Credits" Directory="GallioMenuFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
                 </File>
             </Component>
+            <?ifdef FEATURE_SOURCES ?>
+            <Component Id="Gallio.Sources" Guid="{D4E22A10-81E3-4e93-ACF8-3254F3915BFA}" Win64="no">
+                <File Id="Gallio.Sources.txt" Source="$(var.GallioTargetDir)\Sources.txt" KeyPath="yes" />
+            </Component>
+            <?endif ?>
             <Component Id="Gallio.Website" Guid="{32DF17D3-27D2-4b7a-8094-37A559F2B234}" Win64="no">
                 <File Id="Gallio.Website.url" Source="$(var.GallioTargetDir)\Gallio Website.url" KeyPath="yes">
                     <Shortcut Id="Gallio.Website.lnk" Name="Gallio Website" Directory="GallioMenuFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
@@ -62,9 +64,6 @@
                 <File Name="ICSharpCode.SharpZipLib.dll" />
                 <File Name="Gallio.ReflectionShim.dll" />
                 <?endif ?>
-		<?ifdef INCLUDE_SOURCES ?>
-		<File Name="Sources.txt" />
-		<?endif ?>
             </Component>
             <Component Id="Gallio35" Guid="{015c2236-433f-45f4-86d8-88b87f7fad26}" Win64="no">
                 <File Name="Gallio35.dll" KeyPath="yes" />
@@ -121,6 +120,12 @@
             </Component>
             <Component Id="WeifenLuo.WinFormsUI.Docking.dll" Guid="3B11B01F-71EB-4423-AC66-55CE8E6E30D9" Win64="no">
                 <File Name="WeifenLuo.WinFormsUI.Docking.dll" Assembly=".net" AssemblyApplication="Gallio.Icarus.exe" KeyPath="yes" />
+            </Component>
+            <Component Id="Mono.Cecil.License" Guid="{3AF29A1B-1DD9-4994-98DC-2F7B88F99A20}" Win64="no">
+                <File Id="Mono.Cecil.license.html" Name="Mono.Cecil.license.html" KeyPath="yes" />
+            </Component>
+            <Component Id="CciMetadata.License" Guid="{A0253335-B09F-4095-8928-16F28CA07741}" Win64="no">
+                <File Id="CciMetadata.License.txt" Name="CciMetadata.License.txt" KeyPath="yes" />
             </Component>
 
             <Directory Id="LoaderFolder" Name="Loader">
@@ -257,9 +262,9 @@
                  Description="Installs the Gallio test automation platform." ConfigurableDirectory="INSTALLDIR" Display="2">
             <ComponentRef Id="Gallio" />
             <ComponentRef Id="Gallio35" />
-	    <?ifdef FEATURE_GALLIO40?>
+            <?ifdef FEATURE_GALLIO40?>
             <ComponentRef Id="Gallio40" />
-	    <?endif?>
+            <?endif?>
             <ComponentRef Id="Gallio.XmlSerializers" />
             <ComponentRef Id="Gallio.Host" />
             <ComponentRef Id="Gallio.Host.x86" />
@@ -269,10 +274,14 @@
             <ComponentRef Id="Gallio.Loader.NonGAC" />
             <ComponentRef Id="Gallio.License" />
             <ComponentRef Id="Mono.Cecil.License" />
+            <ComponentRef Id="CciMetadata.License" />
             <ComponentRef Id="Gallio.Website" />
             <ComponentRef Id="Gallio.Registry" />
             <ComponentRef Id="Apache.License" />
             <ComponentRef Id="Gallio.Credits" />
+            <?ifdef FEATURE_SOURCES?>
+            <ComponentRef Id="Gallio.Sources" />
+            <?endif?>
             <ComponentRef Id="Gallio.UI"/>
             <ComponentRef Id="Gallio.Common.Splash"/>
             <ComponentRef Id="Gallio.Utility"/>

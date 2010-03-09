@@ -50,7 +50,9 @@
     <AmbienceMergeDependency Include="Gallio.Ambience\bin\Mono.Cecil.dll" />
   </ItemGroup>
 
-  <Target Name="AfterImage">
+  <Target Name="AfterImage"
+          Inputs="Gallio.Ambience\bin\Gallio.Ambience.dll;@(AmbienceMergeDependency)"
+          Outputs="$(ModuleImageDir)\bin\Gallio.Ambience.dll;Gallio.Ambience.Tests\bin\Gallio.Ambience.dll;Gallio.Ambience.Server\bin\Gallio.Ambience.dll">
     <Message Text="Running ILMerge on Gallio.Ambience.dll..."
              Importance="High" />
 

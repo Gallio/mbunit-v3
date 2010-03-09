@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <?include ..\..\Installer.Wix\Features.wxi ?>
+    <?include ..\..\Installer\Features.wxi ?>
 
     <Fragment>
 <?ifdef FEATURE_UTILITY ?>
@@ -13,7 +13,7 @@
         </DirectoryRef>
         
         <DirectoryRef Id="ResourcesFolder" FileSource="$(var.GallioTargetDir)\bin\Resources\">
-            <Component Id="Gallio.ControlPanel.Resources" Guid="{1FBE3AE8-0D1D-476a-9F80-FA36FDAB336B}" Win64="no">
+            <Component Id="Gallio.Utility.Resources" Guid="{1FBE3AE8-0D1D-476a-9F80-FA36FDAB336B}" Win64="no">
                 <File Id="Gallio.Utility.ico" Name="Gallio.Utility.ico" />
             </Component>
         </DirectoryRef>

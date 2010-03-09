@@ -175,7 +175,9 @@
           DependsOnTargets="GallioImage_ILMerge;GallioImage_NoILMerge;GallioImage_XSD" />
 
   <Target Name="GallioImage_ILMerge"
-          Condition="'$(NoILMerge)'!='true'">
+          Condition="'$(NoILMerge)'!='true'"
+          Inputs="Gallio\bin\Gallio.dll;@(GallioMergeDependency)"
+          Outputs="$(ModuleImageDir)\bin\Gallio.dll">
     <Message Text="Running ILMerge on Gallio.dll..."
              Importance="High" />
 
@@ -192,7 +194,9 @@
           DestinationImagePath="$(ModuleImageDir)\bin" />
   </Target>
 
-  <Target Name="GallioImage_XSD">
+  <Target Name="GallioImage_XSD"
+          Inputs="$(ModuleImageDir)\bin\Gallio.dll"
+          Outputs="$(ModuleImageDir)\bin\Gallio.xsd">
     <GetFrameworkSdkPath>
       <Output TaskParameter="Path" PropertyName="SdkPath" />
     </GetFrameworkSdkPath>
