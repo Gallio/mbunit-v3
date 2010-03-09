@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Integration\ConfigurationFileTest.cs" />
+    <Compile Include="Integration\MSTestIntegrationTest.cs" />
     <Compile Include="Integration\RunDataDrivenTest.cs" />
     <Compile Include="Integration\EnvironmentSetupTest.cs" />
     <Compile Include="Integration\RunSimpleTest.cs" />

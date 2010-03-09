@@ -28,7 +28,7 @@ namespace Gallio.MSTestAdapter.Tests.Integration
 {
     [TestFixture]
     [RunSample(typeof(DataDrivenTest))]
-    public class RunDataDrivenTest : BaseTestWithSampleRunner
+    public class RunDataDrivenTest : MSTestIntegrationTest
     {
         [Test]
         public void Pythagoras()
