@@ -28,7 +28,7 @@
     </File>
 
     <LicenseFile Include="libs\objectarx_license.doc">
-      <ImagePath>bin\AutoCAD</ImagePath>
+      <ImagePath>licenses</ImagePath>
     </LicenseFile>
     
     <TestAssembly Include="Gallio.AutoCAD.Tests\bin\Gallio.AutoCAD.Tests.dll" />

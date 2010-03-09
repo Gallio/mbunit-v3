@@ -61,6 +61,7 @@
                     <Directory Id='docsFolder' Name='docs'/>
                     <Directory Id='extrasFolder' Name='extras'/>
                     <Directory Id='samplesFolder' Name='samples'/>
+                    <Directory Id='licensesFolder' Name='licenses'/>
                 </Directory>                
             </Directory>
 	    

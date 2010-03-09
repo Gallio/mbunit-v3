@@ -38,17 +38,19 @@
                      Account="NT AUTHORITY\NetworkService" />
 
                 <ServiceControl Id="Gallio.Ambience.ServiceControl" Name="Gallio.Ambience" Stop="both" Remove="uninstall" Wait="yes" />
-            </Component>
-            
-            <Component Id="Mono.GetOptions.License" Guid="{6FB09898-AABD-4d41-B786-97787CC1752B}" Win64="no">
-                <File Id="Mono.GetOptions.license.html" Name="Mono.GetOptions.license.html" KeyPath="yes" />
-            </Component>
-            <Component Id="Cecil.FlowAnalysis.License" Guid="{D9E6E5A9-6094-415c-848B-A023CFDC9C45}" Win64="no">
-                <File Id="Cecil.FlowAnalysis.license.html" Name="Cecil.FlowAnalysis.license.html" KeyPath="yes" />
-            </Component>
-            <Component Id="db4o.License" Guid="{FAC35C3D-4C6B-47c7-9702-718FE5BBFB30}" Win64="no">
-                <File Id="db4o.license.html" Name="db4o.license.html" KeyPath="yes" />
-            </Component>
+            </Component>            
+        </DirectoryRef>
+
+        <DirectoryRef Id="licensesFolder" FileSource="$(var.GallioTargetDir)\licenses\">
+          <Component Id="Mono.GetOptions.License" Guid="{6FB09898-AABD-4d41-B786-97787CC1752B}" Win64="no">
+            <File Id="Mono.GetOptions.license.html" Name="Mono.GetOptions.license.html" KeyPath="yes" />
+          </Component>
+          <Component Id="Cecil.FlowAnalysis.License" Guid="{D9E6E5A9-6094-415c-848B-A023CFDC9C45}" Win64="no">
+            <File Id="Cecil.FlowAnalysis.license.html" Name="Cecil.FlowAnalysis.license.html" KeyPath="yes" />
+          </Component>
+          <Component Id="db4o.License" Guid="{FAC35C3D-4C6B-47c7-9702-718FE5BBFB30}" Win64="no">
+            <File Id="db4o.license.html" Name="db4o.license.html" KeyPath="yes" />
+          </Component>
         </DirectoryRef>
 
         <DirectoryRef Id="GallioCommonAppDataFolder">
@@ -61,6 +63,7 @@
             <ComponentRef Id="Gallio.Ambience.dll" />
             <ComponentRef Id="Gallio.Ambience.UI.dll" />
             <ComponentRef Id="Gallio.Ambience.Server.exe" />
+          
             <ComponentRef Id="Mono.GetOptions.License" />
             <ComponentRef Id="Cecil.FlowAnalysis.License" />
             <ComponentRef Id="db4o.License" />

@@ -21,9 +21,6 @@
               <Component Id="Gallio.AutoCAD.UI.plugin" Guid="d199b77c-c691-42c8-86e1-c6d9ebe5be21" Win64="no">
                 <File Name="Gallio.AutoCAD.UI.plugin" KeyPath="yes" />
               </Component>
-              <Component Id="objectarx_license.doc" Guid="4dff01ff-d88d-48b6-b7d6-c735e96723c4" Win64="no">
-                  <File Name="objectarx_license.doc" KeyPath="yes" />
-              </Component>
               <Directory Id="Gallio.AutoCAD.Resources" Name="Resources">
                 <Component Id="Gallio.AutoCAD.Resources" Guid="747fe7a3-98e6-4084-84e6-a4b52e749e81" Win64="no">
                   <File Name="Gallio.AutoCAD.ico" KeyPath="yes" />
@@ -31,6 +28,13 @@
               </Directory>
             </Directory>
         </DirectoryRef>
+
+        <DirectoryRef Id="licensesFolder" FileSource="$(var.GallioTargetDir)\licenses\">
+          <Component Id="objectarx_license.doc" Guid="4dff01ff-d88d-48b6-b7d6-c735e96723c4" Win64="no">
+            <File Name="objectarx_license.doc" KeyPath="yes" />
+          </Component>
+        </DirectoryRef>
+      
         <Feature Id="feat_Gallio.AutoCAD" Title="AutoCAD Integration" Level="100" AllowAdvertise="no"
                  Description="Installs the AutoCAD integration features.">
             <ComponentRef Id="Gallio.AutoCAD.dll" />
@@ -38,8 +42,9 @@
             <ComponentRef Id="Gallio.AutoCAD.Plugin.dll" />
             <ComponentRef Id="Gallio.AutoCAD.UI.dll" />
             <ComponentRef Id="Gallio.AutoCAD.UI.plugin" />
-            <ComponentRef Id="objectarx_license.doc" />
             <ComponentRef Id="Gallio.AutoCAD.Resources" />
+          
+            <ComponentRef Id="objectarx_license.doc" />
         </Feature>
 <?endif?>
     </Fragment>

@@ -147,6 +147,6 @@
     </Exec>
     
     <Error Text="Verification of plugin installation failed!"
-             Condition="'$(ExitCode)'!='0' and ! $(IgnoreFailures)" />
+             Condition="'$(ExitCode)'!='0' and ! $(IgnoreTestFailures)" />
   </Target>
 </Project>

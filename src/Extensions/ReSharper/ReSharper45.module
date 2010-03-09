@@ -10,7 +10,7 @@
       <ImagePath>bin\ReSharper\v4.5</ImagePath>
     </PluginFile>
     <AssemblyFile Include="Gallio.ReSharperRunner\bin\v4.5\Gallio.ReSharperRunner45.dll">
-      <ImagePath>bin\eSharper\v4.5</ImagePath>
+      <ImagePath>bin\ReSharper\v4.5</ImagePath>
     </AssemblyFile>
 
     <TestAssembly Include="Gallio.ReSharperRunner.Tests\bin\v4.5\Gallio.ReSharperRunner45.Tests.dll" />

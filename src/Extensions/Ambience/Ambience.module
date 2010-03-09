@@ -29,13 +29,13 @@
     </ConfigFile>
 
     <LicenseFile Include="libs\db4o.license.html">
-      <ImagePath>bin</ImagePath>
+      <ImagePath>licenses</ImagePath>
     </LicenseFile>
     <LicenseFile Include="libs\Cecil.FlowAnalysis.license.html">
-      <ImagePath>bin</ImagePath>
+      <ImagePath>licenses</ImagePath>
     </LicenseFile>
     <LicenseFile Include="libs\Mono.GetOptions.license.html">
-      <ImagePath>bin</ImagePath>
+      <ImagePath>licenses</ImagePath>
     </LicenseFile>
 
     <TestAssembly Include="Gallio.Ambience.Tests\bin\Gallio.Ambience.Tests.dll" />

@@ -124,10 +124,10 @@
     </File>
 
     <LicenseFile Include="libs\Mono.Cecil.license.html">
-      <ImagePath>bin</ImagePath>
+      <ImagePath>licenses</ImagePath>
     </LicenseFile>
     <LicenseFile Include="libs\CciMetadata\CciMetadata.License.txt">
-      <ImagePath>bin</ImagePath>
+      <ImagePath>licenses</ImagePath>
     </LicenseFile>
     
     <TestAssembly Include="Gallio.Tests\bin\Gallio.Tests.dll" />
