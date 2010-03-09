@@ -20,6 +20,7 @@
   <files>
     <file path="Gallio.DLRIntegration.plugin" />
     <file path="Gallio.DLRIntegration.dll" />
+    <file path="Gallio.DLRIntegration.dll.config" />
     <!-- The following tokens are replaced during the build. -->
     ${LibsFilesToken}
     ${ScriptsFilesToken}

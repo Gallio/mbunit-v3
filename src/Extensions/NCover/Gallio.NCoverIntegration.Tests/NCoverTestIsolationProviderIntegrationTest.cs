@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using System.Reflection;
 using Gallio.Common.IO;
 using Gallio.Common.Policies;
 using Gallio.Framework;
@@ -83,7 +84,7 @@ namespace Gallio.NCoverIntegration.Tests
             using (new CurrentDirectorySwitcher(tempPath))
                 result = launcher.Run();
 
-            NCoverTool tool = NCoverTool.GetInstance(version);
+            NCoverTool tool = NCoverTool.GetInstance(version, ProcessorArchitecture.MSIL);
             if (! tool.IsInstalled())
             {
                 Assert.AreEqual(ResultCode.Failure, result.ResultCode);

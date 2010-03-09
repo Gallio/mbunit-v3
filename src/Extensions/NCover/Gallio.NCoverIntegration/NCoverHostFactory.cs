@@ -26,28 +26,24 @@ namespace Gallio.NCoverIntegration
     /// </summary>
     public class NCoverHostFactory : IsolatedProcessHostFactory
     {
-        private readonly NCoverTool tool;
+        private readonly NCoverVersion version;
 
         /// <summary>
         /// Creates a host factory.
         /// </summary>
         /// <param name="runtime">The runtime.</param>
-        /// <param name="tool">The NCover tool.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/>
-        /// or <paramref name="tool"/> is null.</exception>
-        public NCoverHostFactory(IRuntime runtime, NCoverTool tool)
+        /// <param name="version">The NCover version.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> is null.</exception>
+        public NCoverHostFactory(IRuntime runtime, NCoverVersion version)
             : base(runtime)
         {
-            if (tool == null)
-                throw new ArgumentNullException("tool");
-
-            this.tool = tool;
+            this.version = version;
         }
 
         /// <inheritdoc />
         protected override IHost CreateHostImpl(HostSetup hostSetup, ILogger logger)
         {
-            NCoverHost host = new NCoverHost(hostSetup, logger, RuntimePath, tool);
+            NCoverHost host = new NCoverHost(hostSetup, logger, RuntimePath, version);
             host.Connect();
             return host;
         }

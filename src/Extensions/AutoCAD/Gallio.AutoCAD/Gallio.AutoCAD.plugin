@@ -17,7 +17,6 @@
     <file path="Gallio.AutoCAD.plugin" />
     <file path="Gallio.AutoCAD.dll" />
     <file path="Gallio.AutoCAD.Plugin.dll" />
-    <file path="objectarx_license.doc" />
     <file path="Resources\Gallio.AutoCAD.ico" />
   </files>
 

@@ -19,9 +19,7 @@
     <file path="Gallio.Icarus.exe" />
     <file path="Gallio.Icarus.exe.config" />
     <file path="Gallio.Icarus.XmlSerializers.dll" />
-    <file path="Aga.Controls.dll" />
     <file path="ICSharpCode.TextEditor.dll" />
-    <file path="WeifenLuo.WinFormsUI.Docking.dll" />
     <file path="Resources\Gallio.Icarus.ico" />
   </files>
 

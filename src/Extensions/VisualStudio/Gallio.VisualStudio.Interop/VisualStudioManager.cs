@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using EnvDTE;
@@ -174,9 +175,9 @@ namespace Gallio.VisualStudio.Interop
         {
             string result = null;
 
-            RegistryUtils.TryActionOnOpenSubKeyWithBitness(Registry.LocalMachine,
+            RegistryUtils.TryActionOnOpenSubKeyWithBitness(
+                ProcessorArchitecture.X86, RegistryHive.LocalMachine,
                 @"SOFTWARE\Microsoft\VisualStudio\" + version,
-                @"SOFTWARE\Wow6432Node\Microsoft\VisualStudio\" + version,
                 key =>
                     {
                         result = key.GetValue("InstallDir") as string;

@@ -16,6 +16,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using Gallio.Common.Concurrency;
 using Gallio.Common.Platform;
 using Gallio.Framework;
@@ -70,8 +71,8 @@ namespace Gallio.VisualStudio.Tip.Tests
         private static ProcessTask RunMSTest(string options)
         {
             string value = (string) RegistryUtils.GetValueWithBitness(
-                @"HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\9.0",
-                @"HKEY_LOCAL_MACHINE\Software\Wow6432Node\Microsoft\VisualStudio\9.0",
+                ProcessorArchitecture.X86, RegistryHive.LocalMachine,
+                @"Software\Microsoft\VisualStudio\9.0",
                 "InstallDir", null);
             if (value == null)
                 Assert.Inconclusive("Visual Studio 2008 does not appear to be installed.");

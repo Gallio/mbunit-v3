@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using Gallio.Common.Concurrency;
 using Gallio.Common.Platform;
@@ -29,9 +30,12 @@ namespace Gallio.NCoverIntegration.Tools
         private const string NCover1ProfilerKey = @"Software\Classes\CLSID\{6287B5F9-08A1-45e7-9498-B5B2E7B02995}";
         private const string NCover1ProfilerKeyWow3264 = @"Software\Wow6432Node\Classes\CLSID\{6287B5F9-08A1-45e7-9498-B5B2E7B02995}";
 
-        public static readonly NCoverV1Tool Instance = new NCoverV1Tool();
+        public NCoverV1Tool(ProcessorArchitecture architecture)
+            : base(architecture)
+        {
+        }
 
-        public override string Name
+        protected override string BaseName
         {
             get { return "NCover v1.5.8"; }
         }
@@ -52,7 +56,8 @@ namespace Gallio.NCoverIntegration.Tools
             return null;
         }
 
-        protected override void BuildNCoverConsoleArguments(StringBuilder result, string executablePath, string arguments, string workingDirectory, string ncoverArguments, string ncoverCoverageFile)
+        protected override void BuildNCoverConsoleArguments(StringBuilder result, string executablePath, string arguments,
+            string workingDirectory, string ncoverArguments, string ncoverCoverageFile)
         {
             base.BuildNCoverConsoleArguments(result, executablePath, arguments, workingDirectory, ncoverArguments, ncoverCoverageFile);
 

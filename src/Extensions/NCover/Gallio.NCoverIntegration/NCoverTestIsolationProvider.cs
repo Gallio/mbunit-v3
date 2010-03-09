@@ -48,8 +48,7 @@ namespace Gallio.NCoverIntegration
         /// <inheritdoc />
         protected override ITestIsolationContext CreateContextImpl(TestIsolationOptions testIsolationOptions, ILogger logger)
         {
-            NCoverTool tool = NCoverTool.GetInstance(version);
-            return new NCoverTestIsolationContext(testIsolationOptions, logger, runtime, tool);
+            return new NCoverTestIsolationContext(testIsolationOptions, logger, runtime, version);
         }
     }
 }

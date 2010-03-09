@@ -16,6 +16,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using Gallio.Common.Platform;
 using Microsoft.Win32;
 
@@ -35,9 +36,9 @@ namespace Gallio.MSTestAdapter.Wrapper
         {
             string result = null;
 
-            RegistryUtils.TryActionOnOpenSubKeyWithBitness(Registry.LocalMachine,
+            RegistryUtils.TryActionOnOpenSubKeyWithBitness(
+                ProcessorArchitecture.None, RegistryHive.LocalMachine,
                 @"SOFTWARE\Microsoft\VisualStudio\" + visualStudioVersion,
-                @"SOFTWARE\Wow6432Node\Microsoft\VisualStudio\" + visualStudioVersion,
                 key =>
                 {
                     string visualStudioInstallDir = (string)key.GetValue("InstallDir");

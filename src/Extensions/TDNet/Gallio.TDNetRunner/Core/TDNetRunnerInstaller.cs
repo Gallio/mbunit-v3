@@ -40,7 +40,7 @@ namespace Gallio.TDNetRunner.Core
 
         private const string RunnerRegKeyPrefix = "Gallio";
         private const string LocalMachineRegKey = @"Software\MutantDesign\TestDriven.NET\TestRunners";
-        private const string LocalMachineRegKey32Bit = @"Software\Wow6432Node\MutantDesign\TestDriven.NET\TestRunners";
+        private const string LocalMachineRegKeyWow3264Node = @"Software\Wow6432Node\MutantDesign\TestDriven.NET\TestRunners";
 
         public static readonly string InstallerId = "TDNetRunner.Installer";
 
@@ -114,7 +114,7 @@ namespace Gallio.TDNetRunner.Core
             RemoveExistingRegistryKeys(progressMonitor, Registry.LocalMachine, LocalMachineRegKey);
 
             if (ProcessSupport.Is64BitProcess)
-                RemoveExistingRegistryKeys(progressMonitor, Registry.LocalMachine, LocalMachineRegKey32Bit);
+                RemoveExistingRegistryKeys(progressMonitor, Registry.LocalMachine, LocalMachineRegKeyWow3264Node);
         }
 
         private void RemoveExistingRegistryKeys(IProgressMonitor progressMonitor, RegistryKey hiveKey, string rootKeyPath)
@@ -144,7 +144,7 @@ namespace Gallio.TDNetRunner.Core
             InstallRegistryKeysForIcarus(icarusPath, progressMonitor, Registry.LocalMachine, LocalMachineRegKey);
 
             if (ProcessSupport.Is64BitProcess)
-                InstallRegistryKeysForIcarus(icarusPath, progressMonitor, Registry.LocalMachine, LocalMachineRegKey32Bit);
+                InstallRegistryKeysForIcarus(icarusPath, progressMonitor, Registry.LocalMachine, LocalMachineRegKeyWow3264Node);
         }
 
         private void InstallRegistryKeysForIcarus(string icarusPath, IProgressMonitor progressMonitor, RegistryKey hiveKey, string rootKeyPath)
@@ -167,7 +167,7 @@ namespace Gallio.TDNetRunner.Core
             InstallRegistryKeysForFramework(frameworkName, frameworkAssembly, priority, progressMonitor, Registry.LocalMachine, LocalMachineRegKey);
 
             if (ProcessSupport.Is64BitProcess)
-                InstallRegistryKeysForFramework(frameworkName, frameworkAssembly, priority, progressMonitor, Registry.LocalMachine, LocalMachineRegKey32Bit);
+                InstallRegistryKeysForFramework(frameworkName, frameworkAssembly, priority, progressMonitor, Registry.LocalMachine, LocalMachineRegKeyWow3264Node);
         }
 
         private void InstallRegistryKeysForFramework(string frameworkName, AssemblySignature frameworkAssembly, int priority, IProgressMonitor progressMonitor, RegistryKey hiveKey, string rootKeyPath)

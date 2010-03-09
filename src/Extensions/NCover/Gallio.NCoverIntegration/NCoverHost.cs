@@ -28,7 +28,7 @@ namespace Gallio.NCoverIntegration
     /// </summary>
     public class NCoverHost : IsolatedProcessHost
     {
-        private readonly NCoverTool tool;
+        private readonly NCoverVersion version;
 
         /// <summary>
         /// Creates an uninitialized host.
@@ -36,17 +36,13 @@ namespace Gallio.NCoverIntegration
         /// <param name="hostSetup">The host setup.</param>
         /// <param name="logger">The logger for host message output.</param>
         /// <param name="installationPath">The runtime installation path where the hosting executable will be found.</param>
-        /// <param name="tool">The NCover tool.</param>
+        /// <param name="version">The NCover version.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> 
-        /// <paramref name="logger"/>, <paramref name="installationPath"/>
-        /// or <paramref name="tool"/> is null.</exception>
-        public NCoverHost(HostSetup hostSetup, ILogger logger, string installationPath, NCoverTool tool)
-            : base(ForceProcessorArchitectureAndRuntimeVersionIfRequired(hostSetup, tool), logger, installationPath)
+        /// <paramref name="logger"/>, <paramref name="installationPath"/> is null.</exception>
+        public NCoverHost(HostSetup hostSetup, ILogger logger, string installationPath, NCoverVersion version)
+            : base(ForceProcessorArchitectureAndRuntimeVersionIfRequired(hostSetup, version), logger, installationPath)
         {
-            if (tool == null)
-                throw new ArgumentNullException("tool");
-
-            this.tool = tool;
+            this.version = version;
         }
 
         /// <inheritdoc />
@@ -55,7 +51,9 @@ namespace Gallio.NCoverIntegration
             string ncoverArguments, ncoverCoverageFile;
             GetNCoverProperties(HostSetup, out ncoverArguments, out ncoverCoverageFile);
 
-            return tool.CreateNCoverConsoleTask(executablePath, arguments, workingDirectory, ncoverArguments, ncoverCoverageFile, Logger);
+            NCoverTool tool = NCoverTool.GetInstance(version, HostSetup.ProcessorArchitecture);
+            return tool.CreateNCoverConsoleTask(executablePath, arguments, workingDirectory,
+                ncoverArguments, ncoverCoverageFile, Logger);
         }
 
         internal static void GetNCoverProperties(HostSetup hostSetup,
@@ -78,10 +76,11 @@ namespace Gallio.NCoverIntegration
             hostSetup.AddProperty("NCoverCoverageFile", ncoverCoverageFile);
         }
 
-        private static HostSetup ForceProcessorArchitectureAndRuntimeVersionIfRequired(HostSetup hostSetup, NCoverTool tool)
+        private static HostSetup ForceProcessorArchitectureAndRuntimeVersionIfRequired(HostSetup hostSetup, NCoverVersion version)
         {
             hostSetup = hostSetup.Copy();
 
+            NCoverTool tool = NCoverTool.GetInstance(version, hostSetup.ProcessorArchitecture);
             hostSetup.ProcessorArchitecture = tool.NegotiateProcessorArchitecture(hostSetup.ProcessorArchitecture);
             hostSetup.RuntimeVersion = tool.NegotiateRuntimeVersion(hostSetup.RuntimeVersion);
 

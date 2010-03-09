@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using System.Reflection;
 using Gallio.Common.Platform;
 using Microsoft.Win32;
 
@@ -40,9 +41,9 @@ namespace Gallio.AutoCAD
         {
             string result = null;
 
-            RegistryUtils.TryActionOnOpenSubKeyWithBitness(Registry.CurrentUser, 
+            RegistryUtils.TryActionOnOpenSubKeyWithBitness(
+                ProcessorArchitecture.None, RegistryHive.CurrentUser, 
                 @"Software\Autodesk\DWGCommon\shellex\Apps",
-                @"Software\Wow6432Node\Autodesk\DWGCommon\shellex\Apps",
                 regKey =>
                 {
                     var subKeyName = regKey.GetValue(null) as string;

@@ -14,15 +14,19 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using System.Reflection;
 using Gallio.Common.Concurrency;
 
 namespace Gallio.NCoverIntegration.Tools
 {
     public class NCoverV3Tool : NCoverTool
     {
-        public static readonly NCoverV3Tool Instance = new NCoverV3Tool();
+        public NCoverV3Tool(ProcessorArchitecture architecture)
+            : base(architecture)
+        {
+        }
 
-        public override string Name
+        protected override string BaseName
         {
             get { return "NCover v3"; }
         }

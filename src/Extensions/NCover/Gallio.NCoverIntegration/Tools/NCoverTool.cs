@@ -27,25 +27,49 @@ namespace Gallio.NCoverIntegration.Tools
 {
     public abstract class NCoverTool
     {
-        public static NCoverTool GetInstance(NCoverVersion version)
+        private readonly ProcessorArchitecture architecture;
+
+        public static NCoverTool GetInstance(NCoverVersion version, ProcessorArchitecture architecture)
         {
             switch (version)
             {
                 case NCoverVersion.V1:
-                    return NCoverV1Tool.Instance;
+                    return new NCoverV1Tool(architecture);
 
                 case NCoverVersion.V2:
-                    return NCoverV2Tool.Instance;
+                    return new NCoverV2Tool(architecture);
 
                 case NCoverVersion.V3:
-                    return NCoverV3Tool.Instance;
+                    return new NCoverV3Tool(architecture);
 
                 default:
                     throw new NotSupportedException("Unrecognized NCover version.");
             }
         }
 
-        public abstract string Name { get; }
+        public NCoverTool(ProcessorArchitecture architecture)
+        {
+            this.architecture = architecture;
+        }
+
+        public ProcessorArchitecture Architecture
+        {
+            get { return architecture; }
+        }
+
+        public string Name
+        {
+            get
+            {
+                if (architecture == ProcessorArchitecture.X86)
+                    return BaseName + " (x86)";
+                if (architecture == ProcessorArchitecture.Amd64)
+                    return BaseName + " (x64)";
+                return BaseName;
+            }
+        }
+
+        protected abstract string BaseName { get; }
 
         public bool IsInstalled()
         {
@@ -112,10 +136,13 @@ namespace Gallio.NCoverIntegration.Tools
 
         public ProcessorArchitecture NegotiateProcessorArchitecture(ProcessorArchitecture requestedArchitecture)
         {
+            if (requestedArchitecture == ProcessorArchitecture.IA64)
+                throw new NCoverToolException(string.Format("NCover {0} does not support IA64.", Name));
+
             if (!RequiresX86())
                 return requestedArchitecture;
 
-            if (requestedArchitecture == ProcessorArchitecture.Amd64 || requestedArchitecture == ProcessorArchitecture.IA64)
+            if (requestedArchitecture == ProcessorArchitecture.Amd64)
                 throw new NCoverToolException(string.Format("NCover {0} must run code as a 32bit process but the requested architecture was 64bit.  Please use a newer version of NCover.", Name));
 
             return ProcessorArchitecture.X86;
@@ -163,14 +190,14 @@ namespace Gallio.NCoverIntegration.Tools
         {
         }
 
-        protected static bool GetNCoverInstallInfoFromRegistry(string versionPrefix, out string version, out string installDir)
+        protected bool GetNCoverInstallInfoFromRegistry(string versionPrefix, out string version, out string installDir)
         {
             string resultVersion = null;
             string resultInstallDir = null;
 
-            bool resultSuccess = RegistryUtils.TryActionOnOpenSubKeyWithBitness(Registry.LocalMachine,
+            bool resultSuccess = RegistryUtils.TryActionOnOpenSubKeyWithBitness(
+                architecture, RegistryHive.LocalMachine,
                 @"Software\Gnoso\NCover",
-                @"Software\Wow6432Node\Gnoso\NCover",
                 key =>
                 {
                     string candidateVersion = key.GetValue("CurrentVersion") as string;
@@ -223,7 +250,7 @@ namespace Gallio.NCoverIntegration.Tools
             return new ProcessTask(exePath, arguments.ToString(), exeDir);
         }
 
-        private static void AppendSources(StringBuilder arguments, IList<string> sources)
+        private static void AppendSources(StringBuilder arguments, IEnumerable<string> sources)
         {
             foreach (string source in sources)
             {
