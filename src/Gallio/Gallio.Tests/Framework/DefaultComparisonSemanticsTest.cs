@@ -160,7 +160,7 @@ namespace Gallio.Tests.Framework
 
         [Test]
         [Row(true, typeof(int[]))]
-        [Row(false, typeof(int[,]))]
+        [Row(true, typeof(int[,]))]
         [Row(true, typeof(List<int>))]
         [Row(true, typeof(LinkedList<int>))]
         [Row(true, typeof(ArrayList))]
