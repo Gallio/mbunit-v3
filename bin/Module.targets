@@ -615,6 +615,9 @@
 
   <PropertyGroup>
     <GallioInstallDir Condition="'$(GallioInstallDir)'==''">$(ModuleImageDir)</GallioInstallDir>
+	
+	<!-- Work around the fact that MSBuild runs as an x86 process on x64 so we see the 32bit registry view. -->
+	<NCoverInstallDir Condition="'$(NCoverInstallDir)'=='' and Exists('C:\Program Files\NCover\Build Task Plugins\NCover.MSBuildTasks.dll')">C:\Program Files\NCover</NCoverInstallDir>
     <NCoverInstallDir Condition="'$(NCoverInstallDir)'==''">$(Registry:HKEY_LOCAL_MACHINE\Software\Gnoso\NCover\@InstallDir)</NCoverInstallDir>
   </PropertyGroup>
   <UsingTask TaskName="NCover.MSBuildTasks.NCoverReporting"
