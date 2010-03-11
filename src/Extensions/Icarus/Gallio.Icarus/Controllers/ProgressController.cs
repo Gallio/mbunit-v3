@@ -16,7 +16,6 @@
 using System;
 using System.Timers;
 using Gallio.Common.Policies;
-using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.UI.ProgressMonitoring;
 
@@ -25,25 +24,18 @@ namespace Gallio.Icarus.Controllers
     internal class ProgressController : IProgressController
     {
         private readonly ITaskManager taskManager;
-        private readonly Timer timer = new Timer();
+        private readonly Timer timer = new Timer { AutoReset = false };
 
-        public event EventHandler<DisplayProgressDialogEventArgs> DisplayProgressDialog;
+        public event EventHandler DisplayProgressDialog;
 
         public ProgressController(ITaskManager taskManager, IOptionsController optionsController)
         {
             this.taskManager = taskManager;
 
-            bool displayProgressDialog = false;
-            timer.AutoReset = false;
-            timer.Interval = 1000;
-            timer.Elapsed += (sender, e) => 
-            { 
-                displayProgressDialog = true; 
-            };
-
-            taskManager.ProgressUpdate += (sender, e) =>
+            timer.Interval = TimeSpan.FromSeconds(2).TotalMilliseconds;
+            timer.Elapsed += (sender, e) =>
             {
-                if (!displayProgressDialog) 
+                if (!optionsController.ShowProgressDialogs)
                     return;
 
                 // HACK: we don't want to display the progress dialog when running tests
@@ -51,25 +43,13 @@ namespace Gallio.Icarus.Controllers
                 if (taskManager.ProgressMonitor.TaskName == "Running tests")
                     return;
 
-                EventHandlerPolicy.SafeInvoke(DisplayProgressDialog, this, 
-                    new DisplayProgressDialogEventArgs(taskManager.ProgressMonitor));
-                displayProgressDialog = false;
+                EventHandlerPolicy.SafeInvoke(DisplayProgressDialog, this,
+                    System.EventArgs.Empty);
             };
-
-            if (!optionsController.ShowProgressDialogs) 
-                return;
 
             taskManager.TaskStarted += (sender, e) => timer.Start();
-            taskManager.TaskCanceled += (sender, e) =>
-            {
-                displayProgressDialog = false;
-                timer.Stop();
-            };
-            taskManager.TaskCompleted += (sender, e) =>
-            {
-                displayProgressDialog = false;
-                timer.Stop();
-            };
+            taskManager.TaskCanceled += (sender, e) => timer.Stop();
+            taskManager.TaskCompleted += (sender, e) => timer.Stop();
         }
 
         public void Cancel()

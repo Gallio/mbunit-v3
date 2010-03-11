@@ -15,9 +15,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using Aga.Controls.Tree;
+using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Model;
 using Gallio.Runner.Reports.Schema;
+using Gallio.UI.Tree.Nodes;
 
 namespace Gallio.Icarus.Models
 {
@@ -25,8 +28,37 @@ namespace Gallio.Icarus.Models
     {
         private TestStatus? testStatus;
         private readonly List<TestStepRun> testStepRuns = new List<TestStepRun>();
+        private bool isFiltered;
 
         public virtual string Id { get; private set; }
+
+        public override CheckState CheckState
+        {
+            get
+            {
+                return base.CheckState;
+            }
+            set
+            {
+                if (isFiltered)
+                    return;
+
+                base.CheckState = value;
+            }
+        }
+
+        public bool IsFiltered
+        {
+            get
+            {
+                return isFiltered;
+            }
+            set
+            {
+                isFiltered = value;
+                CheckState = CheckState.Unchecked;
+            }
+        }
 
         public TestStatus? TestStatus
         {
@@ -143,6 +175,23 @@ namespace Gallio.Icarus.Models
 
             foreach (var n in Nodes)
                 ((TestTreeNode)n).Reset();
+        }
+
+        protected override bool ChildShouldBeChecked(ThreeStateNode child, CheckState checkState)
+        {
+            if (checkState != CheckState.Checked)
+                return true;
+
+            var testDataNode = child as TestDataNode;
+
+            if (testDataNode == null)
+                return true;
+
+            if (testDataNode.IsIgnored || testDataNode.IsPending
+                || testDataNode.IsExplicit)
+                return false;
+
+            return true;
         }
 
         public int CompareTo(TestTreeNode other)

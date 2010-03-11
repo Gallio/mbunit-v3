@@ -13,14 +13,52 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Aga.Controls.Tree;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Windows.Forms;
+using Gallio.Runtime.Extensibility;
+using Gallio.UI.Tree.Nodes;
 
 namespace Gallio.Copy
 {
-    public class PluginNode : Node
+    public class PluginNode : ThreeStateNode
     {
-        public PluginNode(string pluginId)
-            : base(pluginId)
-        { }
+        private readonly List<string> dependencies = new List<string>();
+
+        public PluginNode(IPluginDescriptor plugin)
+            : base(plugin.PluginId)
+        {
+            //var traits = plugin.ResolveTraits();
+
+            foreach (var dependency in plugin.PluginDependencies)
+            {
+                dependencies.Add(dependency.PluginId);
+            }
+        }
+
+        public override CheckState CheckState
+        {
+            get
+            {
+                return base.CheckState;
+            }
+            set
+            {
+                base.CheckState = value;
+                if (value == CheckState.Checked)
+                    UpdateDependencies();
+            }
+        }
+
+        private void UpdateDependencies()
+        {
+            Debug.Assert(Parent != null, "Parent has not been set.");
+
+            foreach (PluginNode pluginNode in Parent.Nodes)
+            {
+                if (dependencies.Contains(pluginNode.Text))
+                    pluginNode.CheckState = CheckState.Checked;
+            }
+        }
     }
 }

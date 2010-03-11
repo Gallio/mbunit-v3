@@ -130,9 +130,6 @@
     <Compile Include="Controls\TestKindIcon.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\NodeCheckBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Controls\TestNodeTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -161,9 +158,6 @@
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="ApplicationShutdown.cs" />
     <Compile Include="Controllers\EventArgs\FileChangedEventArgs.cs" />
-    <Compile Include="Controllers\EventArgs\DisplayProgressDialogEventArgs.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Controllers\EventArgs\ExecutionLogUpdatedEventArgs.cs" />
     <Compile Include="Controllers\EventArgs\ShowSourceCodeEventArgs.cs" />
     <Compile Include="Controllers\ExecutionLogController.cs" />
@@ -248,7 +242,6 @@
     <Compile Include="Controls\PropertiesTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Models\ThreeStateNode.cs" />
     <Compile Include="Services\FilterService.cs" />
     <Compile Include="Services\IFilterService.cs" />
     <Compile Include="WindowManager\MenuList.cs" />

@@ -24,11 +24,7 @@ namespace Gallio.Icarus.Tests.Utilities
 {
     internal class TestTaskManager : ITaskManager
     {
-        public bool TaskRunning
-        {
-            get;
-            private set;
-        }
+        public bool TaskRunning { get; private set; }
 
         public ObservableProgressMonitor ProgressMonitor
         {

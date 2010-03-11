@@ -28,6 +28,6 @@ namespace Gallio.Copy
         [CommandLineArgument(CommandLineArgumentFlags.AtMostOnce, ShortName = "h", 
             LongName = "help", Description = "Display this help text.", 
             Synonyms = new[] { "?" })]
-        public bool Help = false;
+        public bool Help;
     }
 }

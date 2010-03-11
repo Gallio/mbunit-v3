@@ -14,19 +14,29 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.DataBinding;
 
 namespace Gallio.Copy
 {
-    internal interface ICopyController
+    public interface ICopyController
     {
-        IList<string> Plugins { get; }
         ObservableProgressMonitor ProgressMonitor { get; }
+        
+        PluginTreeModel SourcePlugins { get; }
+        PluginTreeModel TargetPlugins { get; }
+        
+        Observable<string> SourcePluginFolder { get; }
+        Observable<string> TargetPluginFolder { get; }
 
         event EventHandler ShowProgressDialog;
         event EventHandler ProgressUpdate;
 
-        void CopyTo(string destinationFolder, IList<string> selectedPlugins);
+        void CopyPlugins();
+        void UpdateSourcePluginFolder(string sourcePluginFolder);
+        void UpdateTargetPluginFolder(string targetPluginFolder);
+        
+        void Load();
+        void Shutdown();
     }
 }

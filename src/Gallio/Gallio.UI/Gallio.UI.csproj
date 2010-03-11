@@ -151,6 +151,9 @@
     </Compile>
     <Compile Include="ErrorReporting\ErrorDialogUnhandledExceptionHandler.cs" />
     <Compile Include="Menus\MenuCommand.cs" />
+    <Compile Include="ProgressMonitoring\ToolStripStatusLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ProgressMonitoring\ICommand.cs" />
     <Compile Include="ProgressMonitoring\ITaskManager.cs" />
     <Compile Include="ProgressMonitoring\ProgressMonitorDialog.cs">
@@ -160,6 +163,9 @@
       <DependentUpon>ProgressMonitorDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="ProgressMonitoring\TaskManager.cs" />
+    <Compile Include="ProgressMonitoring\ToolStripProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\HtmlTestStepRunFormatter.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -176,6 +182,10 @@
     <Compile Include="Reports\TestStepRunViewer.Designer.cs">
       <DependentUpon>TestStepRunViewer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tree\NodeControls\NodeCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Tree\Nodes\ThreeStateNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ControlPanel\ControlPanelDialog.resx">

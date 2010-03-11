@@ -1,8 +1,8 @@
 ﻿using System.Windows.Forms;
-using Gallio.Icarus.Models;
+using Gallio.UI.Tree.Nodes;
 using MbUnit.Framework;
 
-namespace Gallio.Icarus.Tests.Models
+namespace Gallio.UI.Tests.Tree.Node
 {
     [Category("Nodes"), TestsOn(typeof(ThreeStateNode))]
     public class ThreeStateNodeTest
@@ -47,3 +47,5 @@ namespace Gallio.Icarus.Tests.Models
         }
     }
 }
+
+

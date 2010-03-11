@@ -14,27 +14,32 @@
 // limitations under the License.
 
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using Aga.Controls.Tree;
+using Gallio.Common.IO;
 using Gallio.Runtime.Extensibility;
 
 namespace Gallio.Copy
 {
-    internal class PluginTreeModel : TreeModelBase
+    public class PluginTreeModel : TreeModelBase
     {
-        private readonly Registry registry = new Registry();
-        private readonly Node root;
+        private readonly IFileSystem fileSystem;
+        private readonly Node root = new RootNode();
+        
+        private List<IPluginDescriptor> pluginDescriptors = new List<IPluginDescriptor>();
 
-        public PluginTreeModel(string pluginFolder)
+        public PluginTreeModel(IFileSystem fileSystem)
         {
-            var pluginLoader = new PluginLoader();
-            pluginLoader.AddPluginPath(pluginFolder);
+            this.fileSystem = fileSystem;
+        }
 
-            var pluginCatalog = new PluginCatalog();
-            pluginLoader.PopulateCatalog(pluginCatalog);
+        public void UpdatePluginList(IRegistry registry)
+        {
+            pluginDescriptors = new List<IPluginDescriptor>(registry.Plugins);
+            pluginDescriptors.Sort((l, r) => l.PluginId.CompareTo(r.PluginId));
 
-            pluginCatalog.ApplyTo(registry);
-
-            root = new Node("Plugins");
+            OnStructureChanged(new TreePathEventArgs(new TreePath()));
         }
 
         public override IEnumerable GetChildren(TreePath treePath)
@@ -44,13 +49,16 @@ namespace Gallio.Copy
                 yield return root;
             }
             else if (treePath.LastNode == root)
-            {
-                foreach (var pluginDescriptor in registry.Plugins)
+            {                
+                foreach (var pluginDescriptor in pluginDescriptors)
                 {
-                    var pluginNode = new PluginNode(pluginDescriptor.PluginId);
+                    var pluginNode = new PluginNode(pluginDescriptor);
+                    root.Nodes.Add(pluginNode);
                     foreach (var file in pluginDescriptor.FilePaths)
                     {
-                        pluginNode.Nodes.Add(new FileNode(file));
+                        var fullPath = Path.Combine(pluginDescriptor.BaseDirectory.FullName, file);
+                        var exists = fileSystem.FileExists(fullPath);
+                        pluginNode.Nodes.Add(new FileNode(file, exists));
                     }
                     yield return pluginNode;
                 }
@@ -70,7 +78,8 @@ namespace Gallio.Copy
             if (treePath.LastNode is FileNode)
                 return true;
 
-            return treePath.LastNode is PluginNode && ((PluginNode)treePath.LastNode).Nodes.Count == 0;
+            return treePath.LastNode is PluginNode && 
+                ((PluginNode)treePath.LastNode).Nodes.Count == 0;
         }
     }
 }

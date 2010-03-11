@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.UI.ProgressMonitoring;
+
 namespace Gallio.Icarus
 {
     partial class Main
@@ -85,8 +87,8 @@ namespace Gallio.Icarus
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripStatusLabel = new ToolStripStatusLabel();
+            this.toolStripProgressBar = new ToolStripProgressBar();
             this.projectToolStrip = new System.Windows.Forms.ToolStrip();
             this.newProjectToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openProjectToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -671,7 +673,7 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
+        private ToolStripStatusLabel toolStripStatusLabel;
         private System.Windows.Forms.ToolStrip projectToolStrip;
         private System.Windows.Forms.ToolStripButton newProjectToolStripButton;
         private System.Windows.Forms.ToolStripButton openProjectToolStripButton;
@@ -690,7 +692,7 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripContainer toolStripContainer;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsMenuItem;
-        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
+        private ToolStripProgressBar toolStripProgressBar;
         private System.Windows.Forms.ToolStripMenuItem testsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem startTestsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem stopTestsToolStripMenuItem;

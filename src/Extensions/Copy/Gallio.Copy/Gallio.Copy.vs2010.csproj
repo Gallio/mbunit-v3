@@ -70,8 +70,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\CopyCommand.cs" />
+    <Compile Include="Commands\UpdatePluginFolderCommand.cs" />
+    <Compile Include="Commands\ComparePluginsCommand.cs" />
+    <Compile Include="Controls\Tree\NodeControls\NodeTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Tree\NodeControls\NodeCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Tree\PluginTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="RootNode.cs" />
     <Compile Include="CopyArguments.cs" />
-    <Compile Include="CopyCommand.cs" />
     <Compile Include="CopyController.cs" />
     <Compile Include="CopyForm.cs">
       <SubType>Form</SubType>
@@ -84,9 +96,6 @@
     <Compile Include="ICopyController.cs" />
     <Compile Include="PluginNode.cs" />
     <Compile Include="PluginTreeModel.cs" />
-    <Compile Include="PluginTreeView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="CopyForm.resx">
       <DependentUpon>CopyForm.cs</DependentUpon>
@@ -102,7 +111,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Content Include="Gallio.Copy.plugin" />
-    <Content Include="Resources\Gallio.Copy.ico" />
+    <Content Include="Resources\copy.ico" />
     <None Include="Gallio.Copy.exe.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -115,6 +124,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Runtime\ComponentScanner.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.vs2010.csproj">

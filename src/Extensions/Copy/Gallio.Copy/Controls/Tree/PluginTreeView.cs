@@ -13,13 +13,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using Aga.Controls.Tree;
+using Aga.Controls.Tree.NodeControls;
+using NodeCheckBox = Gallio.Copy.Controls.Tree.NodeControls.NodeCheckBox;
+using NodeTextBox = Gallio.Copy.Controls.Tree.NodeControls.NodeTextBox;
 
-namespace Gallio.Icarus.Controllers
+namespace Gallio.Copy.Controls.Tree
 {
-    public interface IProgressController
+    public class PluginTreeView : TreeViewAdv
     {
-        event EventHandler DisplayProgressDialog;
-        void Cancel();
+        public PluginTreeView()
+        {
+            var nodeCheckBox = new NodeCheckBox();
+            NodeControls.Add(nodeCheckBox);
+
+            var nodeIcon = new NodeIcon
+            {
+                DataPropertyName = "Image",
+            };
+            NodeControls.Add(nodeIcon);
+
+            NodeControls.Add(new NodeTextBox());
+        }
     }
 }

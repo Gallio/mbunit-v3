@@ -120,4 +120,31 @@
   <data name="ApplicationName" xml:space="preserve">
     <value>Gallio Copy</value>
   </data>
+	<data name="CopyForm_Select_a_target_plugin_folder">
+		<value xml:space="preserve">Select a target plugin folder</value>
+	</data>
+	<data name="CopyForm_Select_a_source_plugin_folder">
+		<value xml:space="preserve">Select a source plugin folder</value>
+	</data>
+	<data name="UpdatePluginFolderCommand_Updating_list_of_plugins">
+		<value xml:space="preserve">Updating list of plugins</value>
+	</data>
+	<data name="UpdatePluginFolderCommand_Applying_catalog_to_registry">
+		<value xml:space="preserve">Applying catalog to registry</value>
+	</data>
+	<data name="UpdatePluginFolderCommand_Adding_plugin_path">
+		<value xml:space="preserve">Adding plugin path</value>
+	</data>
+	<data name="UpdatePluginFolderCommand_Populating_catalog">
+		<value xml:space="preserve">Populating catalog</value>
+	</data>
+	<data name="CopyForm_Please_select_a_target_folder_">
+		<value xml:space="preserve">Please select a target folder.</value>
+	</data>
+	<data name="CopyForm_Copy">
+		<value xml:space="preserve">Copy</value>
+	</data>
+	<data name="ComparePluginsCommand_Comparing_source_and_target_plugins">
+		<value xml:space="preserve">Comparing source and target plugins</value>
+	</data>
 </root>

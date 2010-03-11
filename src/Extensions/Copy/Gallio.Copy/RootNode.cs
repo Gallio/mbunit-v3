@@ -13,20 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.Tree.Nodes;
 
-namespace Gallio.Icarus.Controllers.EventArgs
+namespace Gallio.Copy
 {
-    internal class DisplayProgressDialogEventArgs : System.EventArgs
+    public class RootNode : ThreeStateNode
     {
-        public ObservableProgressMonitor ProgressMonitor
-        {
-            get; private set;
-        }
-
-        public DisplayProgressDialogEventArgs(ObservableProgressMonitor progressMonitor)
-        {
-            ProgressMonitor = progressMonitor;
-        }
+        public RootNode()
+            : base("Plugins")
+        { }
     }
 }

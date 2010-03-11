@@ -14,51 +14,101 @@
 // limitations under the License.
 
 using System;
-using System.IO;
-using System.Reflection;
 using System.Windows.Forms;
-using Gallio.Common.Reflection;
+using Gallio.Copy.Properties;
 
 namespace Gallio.Copy
 {
     internal partial class CopyForm : Form
     {
-        public CopyForm()
+        private readonly ICopyController controller;
+
+        public CopyForm(ICopyController controller)
         {
+            this.controller = controller;
+
             InitializeComponent();
-           
-            var pluginFolder = GetSourcePluginFolder();
-            sourcePluginTreeView.Model = new PluginTreeModel(pluginFolder);
-            sourcePluginFolderTextBox.Text = pluginFolder;
+
+            controller.ProgressUpdate += (s, e) =>
+            {
+                toolStripProgressBar.ProgressChanged(controller.ProgressMonitor);
+                taskNameStatusLabel.ProgressChanged(controller.ProgressMonitor);
+            };
+
+            controller.SourcePluginFolder.PropertyChanged +=
+                (s, e) => sourcePluginFolderTextBox.Text = controller.SourcePluginFolder;
+            controller.TargetPluginFolder.PropertyChanged +=
+                (s, e) => targetPluginFolderTextBox.Text = controller.TargetPluginFolder;
+
+            sourcePluginTreeView.Model = controller.SourcePlugins;
+            targetPluginTreeView.Model = controller.TargetPlugins;
         }
 
-        private void closeButton_Click(object sender, EventArgs e)
+        private void CloseButtonClick(object sender, EventArgs e)
         {
+            controller.Shutdown();
             Close();
         }
 
-        private void copyButton_Click(object sender, EventArgs e)
+        private void CopyButtonClick(object sender, EventArgs e)
         {
-            using (var folderBrowserDialog = new FolderBrowserDialog())
+            if (string.IsNullOrEmpty(targetPluginFolderTextBox.Text))
             {
-                folderBrowserDialog.Description = "Please choose a destination folder for the copy.";
+                MessageBox.Show(Resources.CopyForm_Please_select_a_target_folder_, 
+                    Resources.CopyForm_Copy, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
-                if (folderBrowserDialog.ShowDialog(this) != DialogResult.OK)
-                    return;
+            controller.CopyPlugins();
+        }
+
+        private void SelectSourcePluginFolderButtonClick(object sender, EventArgs e)
+        {
+            var folderBrowserDialog = new FolderBrowserDialog
+            {
+                Description = Resources.CopyForm_Select_a_source_plugin_folder,
+                SelectedPath = sourcePluginFolderTextBox.Text
+            };
+
+            using (folderBrowserDialog)
+            {
+                var result = folderBrowserDialog.ShowDialog();
+                if (result == DialogResult.OK)
+                    UpdateSourcePluginFolder(folderBrowserDialog.SelectedPath);
             }
         }
 
-        // modified version of debug method in DefaultRuntime.
-        private static string GetSourcePluginFolder()
+        private void UpdateSourcePluginFolder(string pluginFolder)
         {
-            // Find the root "src" dir.
-            string initPath = AssemblyUtils.GetAssemblyLocalPath(Assembly.GetExecutingAssembly());
+            sourcePluginFolderTextBox.Text = pluginFolder;
+            controller.UpdateSourcePluginFolder(pluginFolder);
+        }
 
-            string srcDir = initPath;
-            while (srcDir != null && Path.GetFileName(srcDir) != @"src")
-                srcDir = Path.GetDirectoryName(srcDir);
+        private void SelectTargetPluginFolderButtonClick(object sender, EventArgs e)
+        {
+            var folderBrowserDialog = new FolderBrowserDialog
+            {
+                Description = Resources.CopyForm_Select_a_target_plugin_folder,
+                SelectedPath = targetPluginFolderTextBox.Text
+            };
 
-            return srcDir;
-       }
+            using (folderBrowserDialog)
+            {
+                var result = folderBrowserDialog.ShowDialog();
+                if (result == DialogResult.OK)
+                    UpdateTargetPluginFolder(folderBrowserDialog.SelectedPath);
+            }
+        }
+
+        private void UpdateTargetPluginFolder(string pluginFolder)
+        {
+            targetPluginFolderTextBox.Text = pluginFolder;
+            controller.UpdateTargetPluginFolder(pluginFolder);
+        }
+
+        private void CopyForm_Load(object sender, EventArgs e)
+        {
+            controller.Load();
+        }
     }
 }

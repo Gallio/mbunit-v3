@@ -15,7 +15,7 @@
 
 using Gallio.Icarus.Controls;
 using MbUnit.Framework;
-using NodeCheckBox = Gallio.Icarus.Controls.NodeCheckBox;
+using NodeCheckBox = Gallio.UI.Tree.NodeControls.NodeCheckBox;
 
 namespace Gallio.Icarus.Tests.Controls
 {

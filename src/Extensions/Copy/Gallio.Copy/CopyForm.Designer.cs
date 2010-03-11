@@ -1,4 +1,7 @@
-﻿namespace Gallio.Copy
+﻿using Gallio.Copy.Controls.Tree;
+using Gallio.UI.ProgressMonitoring;
+
+namespace Gallio.Copy
 {
     partial class CopyForm
     {
@@ -28,23 +31,23 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CopyForm));
             this.pluginIdColumnHeader = new System.Windows.Forms.ColumnHeader();
             this.closeButton = new System.Windows.Forms.Button();
             this.copyButton = new System.Windows.Forms.Button();
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.taskNameStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.taskNameStatusLabel = new Gallio.UI.ProgressMonitoring.ToolStripStatusLabel();
+            this.toolStripProgressBar = new Gallio.UI.ProgressMonitoring.ToolStripProgressBar();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.sourceGroupBox = new System.Windows.Forms.GroupBox();
-            this.sourcePluginTreeView = new Gallio.Copy.PluginTreeView();
+            this.sourcePluginTreeView = new Gallio.Copy.Controls.Tree.PluginTreeView();
             this.selectSourcePluginFolderButton = new System.Windows.Forms.Button();
             this.sourcePluginFolderTextBox = new System.Windows.Forms.TextBox();
             this.targetGroupBox = new System.Windows.Forms.GroupBox();
             this.targetPluginFolderTextBox = new System.Windows.Forms.TextBox();
-            this.targetPluginTreeView = new Gallio.Copy.PluginTreeView();
+            this.targetPluginTreeView = new Gallio.Copy.Controls.Tree.PluginTreeView();
             this.selectTargetPluginFolderButton = new System.Windows.Forms.Button();
-            this.selectAllButton = new System.Windows.Forms.Button();
             this.toolStripContainer.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.SuspendLayout();
@@ -65,24 +68,24 @@
             // 
             this.closeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.closeButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.closeButton.Location = new System.Drawing.Point(516, 341);
+            this.closeButton.Location = new System.Drawing.Point(516, 316);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(75, 23);
             this.closeButton.TabIndex = 1;
             this.closeButton.Text = "Close";
             this.closeButton.UseVisualStyleBackColor = true;
-            this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
+            this.closeButton.Click += new System.EventHandler(this.CloseButtonClick);
             // 
             // copyButton
             // 
             this.copyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.copyButton.Location = new System.Drawing.Point(435, 341);
+            this.copyButton.Location = new System.Drawing.Point(435, 316);
             this.copyButton.Name = "copyButton";
             this.copyButton.Size = new System.Drawing.Size(75, 23);
             this.copyButton.TabIndex = 1;
             this.copyButton.Text = "Copy";
             this.copyButton.UseVisualStyleBackColor = true;
-            this.copyButton.Click += new System.EventHandler(this.copyButton_Click);
+            this.copyButton.Click += new System.EventHandler(this.CopyButtonClick);
             // 
             // toolStripContainer
             // 
@@ -95,9 +98,8 @@
             // 
             this.toolStripContainer.ContentPanel.Controls.Add(this.splitContainer);
             this.toolStripContainer.ContentPanel.Controls.Add(this.closeButton);
-            this.toolStripContainer.ContentPanel.Controls.Add(this.selectAllButton);
             this.toolStripContainer.ContentPanel.Controls.Add(this.copyButton);
-            this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(603, 376);
+            this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(603, 351);
             this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer.Name = "toolStripContainer";
@@ -143,7 +145,7 @@
             // splitContainer.Panel2
             // 
             this.splitContainer.Panel2.Controls.Add(this.targetGroupBox);
-            this.splitContainer.Size = new System.Drawing.Size(579, 318);
+            this.splitContainer.Size = new System.Drawing.Size(579, 293);
             this.splitContainer.SplitterDistance = 289;
             this.splitContainer.TabIndex = 2;
             // 
@@ -155,7 +157,7 @@
             this.sourceGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.sourceGroupBox.Location = new System.Drawing.Point(0, 0);
             this.sourceGroupBox.Name = "sourceGroupBox";
-            this.sourceGroupBox.Size = new System.Drawing.Size(289, 318);
+            this.sourceGroupBox.Size = new System.Drawing.Size(289, 293);
             this.sourceGroupBox.TabIndex = 8;
             this.sourceGroupBox.TabStop = false;
             this.sourceGroupBox.Text = "Source";
@@ -174,7 +176,7 @@
             this.sourcePluginTreeView.Model = null;
             this.sourcePluginTreeView.Name = "sourcePluginTreeView";
             this.sourcePluginTreeView.SelectedNode = null;
-            this.sourcePluginTreeView.Size = new System.Drawing.Size(268, 262);
+            this.sourcePluginTreeView.Size = new System.Drawing.Size(268, 237);
             this.sourcePluginTreeView.TabIndex = 4;
             // 
             // selectSourcePluginFolderButton
@@ -186,6 +188,7 @@
             this.selectSourcePluginFolderButton.TabIndex = 6;
             this.selectSourcePluginFolderButton.Text = "...";
             this.selectSourcePluginFolderButton.UseVisualStyleBackColor = true;
+            this.selectSourcePluginFolderButton.Click += new System.EventHandler(this.SelectSourcePluginFolderButtonClick);
             // 
             // sourcePluginFolderTextBox
             // 
@@ -205,7 +208,7 @@
             this.targetGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.targetGroupBox.Location = new System.Drawing.Point(0, 0);
             this.targetGroupBox.Name = "targetGroupBox";
-            this.targetGroupBox.Size = new System.Drawing.Size(286, 318);
+            this.targetGroupBox.Size = new System.Drawing.Size(286, 293);
             this.targetGroupBox.TabIndex = 11;
             this.targetGroupBox.TabStop = false;
             this.targetGroupBox.Text = "Target";
@@ -234,7 +237,7 @@
             this.targetPluginTreeView.Model = null;
             this.targetPluginTreeView.Name = "targetPluginTreeView";
             this.targetPluginTreeView.SelectedNode = null;
-            this.targetPluginTreeView.Size = new System.Drawing.Size(264, 262);
+            this.targetPluginTreeView.Size = new System.Drawing.Size(264, 237);
             this.targetPluginTreeView.TabIndex = 8;
             // 
             // selectTargetPluginFolderButton
@@ -246,16 +249,7 @@
             this.selectTargetPluginFolderButton.TabIndex = 10;
             this.selectTargetPluginFolderButton.Text = "...";
             this.selectTargetPluginFolderButton.UseVisualStyleBackColor = true;
-            // 
-            // selectAllButton
-            // 
-            this.selectAllButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.selectAllButton.Location = new System.Drawing.Point(12, 341);
-            this.selectAllButton.Name = "selectAllButton";
-            this.selectAllButton.Size = new System.Drawing.Size(75, 23);
-            this.selectAllButton.TabIndex = 1;
-            this.selectAllButton.Text = "Select All";
-            this.selectAllButton.UseVisualStyleBackColor = true;
+            this.selectTargetPluginFolderButton.Click += new System.EventHandler(this.SelectTargetPluginFolderButtonClick);
             // 
             // CopyForm
             // 
@@ -265,8 +259,10 @@
             this.CancelButton = this.closeButton;
             this.ClientSize = new System.Drawing.Size(603, 398);
             this.Controls.Add(this.toolStripContainer);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CopyForm";
             this.Text = "Gallio Copy";
+            this.Load += new System.EventHandler(this.CopyForm_Load);
             this.toolStripContainer.BottomToolStripPanel.ResumeLayout(false);
             this.toolStripContainer.BottomToolStripPanel.PerformLayout();
             this.toolStripContainer.ContentPanel.ResumeLayout(false);
@@ -292,9 +288,8 @@
         private System.Windows.Forms.ColumnHeader pluginIdColumnHeader;
         private System.Windows.Forms.ToolStripContainer toolStripContainer;
         private System.Windows.Forms.StatusStrip statusStrip;
-        private System.Windows.Forms.ToolStripStatusLabel taskNameStatusLabel;
-        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
-        private System.Windows.Forms.Button selectAllButton;
+        private ToolStripStatusLabel taskNameStatusLabel;
+        private ToolStripProgressBar toolStripProgressBar;
         private System.Windows.Forms.SplitContainer splitContainer;
         private System.Windows.Forms.Button selectSourcePluginFolderButton;
         private System.Windows.Forms.TextBox sourcePluginFolderTextBox;

@@ -88,7 +88,6 @@
     <Compile Include="Controllers\SourceCodeControllerTest.cs" />
     <Compile Include="Controllers\TestControllerTest.cs" />
     <Compile Include="Controllers\TestResultsControllerTest.cs" />
-    <Compile Include="Controls\NodeCheckBoxTest.cs" />
     <Compile Include="Controls\ProjectTreeViewTest.cs" />
     <Compile Include="Controls\TestNodeTextBoxTest.cs" />
     <Compile Include="Controls\TestKindIconTest.cs">
@@ -112,7 +111,6 @@
     <Compile Include="Models\TestTreeModelTest.cs" />
     <Compile Include="Models\TestTreeNodes\TestDataNodeTest.cs" />
     <Compile Include="Models\TestTreeNodeTest.cs" />
-    <Compile Include="Models\ThreeStateNodeTest.cs" />
     <Compile Include="Models\TreeModelDecoratorTest.cs" />
     <Compile Include="ProgressMonitoring\Win7TaskBarTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

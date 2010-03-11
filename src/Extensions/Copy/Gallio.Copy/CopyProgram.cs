@@ -16,10 +16,14 @@
 using System;
 using System.Windows.Forms;
 using Gallio.Common.Collections;
+using Gallio.Common.Policies;
 using Gallio.Copy.Properties;
+using Gallio.Copy.Runtime;
+using Gallio.Runner;
 using Gallio.Runtime;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Runtime.Logging;
+using Gallio.UI.ErrorReporting;
 
 namespace Gallio.Copy
 {
@@ -51,21 +55,44 @@ namespace Gallio.Copy
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            var runtimeSetup = new RuntimeSetup();
-            GenericCollectionUtils.ForEach(Arguments.PluginDirectories, runtimeSetup.AddPluginDirectory);
+            UnhandledErrorPolicy();
+
+            var runtimeSetup = CreateRuntimeSetup();
 
             var logger = new FilteredLogger(new RichConsoleLogger(Console), Verbosity.Normal);
             using (RuntimeBootstrap.Initialize(runtimeSetup, logger))
             {
-                Application.Run(new CopyForm());
+                var scanner = new ComponentScanner(RuntimeAccessor.Registry);
+                scanner.Scan();
+
+                var controller = RuntimeAccessor.ServiceLocator.Resolve<ICopyController>();
+                var copyForm = new CopyForm(controller);
+
+                ErrorDialogUnhandledExceptionHandler.RunApplicationWithHandler(copyForm);
             }
 
-            return 0;
+            return ResultCode.Success;
+        }
+
+        private RuntimeSetup CreateRuntimeSetup()
+        {
+            var runtimeSetup = new RuntimeSetup();
+            GenericCollectionUtils.ForEach(Arguments.PluginDirectories, runtimeSetup.AddPluginDirectory);
+            return runtimeSetup;
         }
 
         protected override void ShowHelp()
         {
             ArgumentParser.ShowUsageInMessageBox(ApplicationTitle);
+        }
+
+        private static void UnhandledErrorPolicy()
+        {
+            Application.ThreadException += (sender, e) => 
+                UnhandledExceptionPolicy.Report("Error from Application.ThreadException", e.Exception);
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) => 
+                UnhandledExceptionPolicy.Report("Error from Application.ThreadException", 
+                (Exception)e.ExceptionObject);
         }
 
         [STAThread]

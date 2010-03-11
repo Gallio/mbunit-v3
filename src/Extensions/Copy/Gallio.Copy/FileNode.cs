@@ -13,14 +13,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Aga.Controls.Tree;
+using Gallio.UI.Tree.Nodes;
 
 namespace Gallio.Copy
 {
-    public class FileNode : Node
+    public class FileNode : ThreeStateNode
     {
-        public FileNode(string fileName)
-            : base(fileName)
-        { }
+        public FileNode(string file, bool exists)
+            : base(file)
+        {
+            File = file;
+            Exists = exists;
+        }
+
+        public string File { get; private set; }
+
+        public bool Exists { get; private set; }
     }
 }

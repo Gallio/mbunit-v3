@@ -14,26 +14,30 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
+using System.IO;
+using System.Reflection;
 using Gallio.Common.IO;
 using Gallio.Common.Policies;
-using Gallio.Runtime;
-using Gallio.Runtime.Extensibility;
+using Gallio.Common.Reflection;
+using Gallio.Copy.Commands;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.UI.Common.Policies;
+using Gallio.UI.DataBinding;
 using Gallio.UI.ProgressMonitoring;
+using Timer = System.Timers.Timer;
 
 namespace Gallio.Copy
 {
-    internal class CopyController : ICopyController
+    public class CopyController : ICopyController
     {
-        private readonly IFileSystem fileSystem;
-        private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
         private readonly ITaskManager taskManager;
-        private readonly IRegistry registry;
-        private readonly Timer timer = new Timer();
-        private List<string> plugins;
+        private readonly Timer timer = new Timer { AutoReset = false };
+        private const int WaitToDisplayProgressDialogInSeconds = 2;
+
+        public Observable<string> SourcePluginFolder { get; private set; }
+        public Observable<string> TargetPluginFolder { get; private set; }
+
+        public PluginTreeModel SourcePlugins { get; private set; }
+        public PluginTreeModel TargetPlugins { get; private set; }
 
         public ObservableProgressMonitor ProgressMonitor
         {
@@ -43,51 +47,81 @@ namespace Gallio.Copy
         public event EventHandler ShowProgressDialog;
         public event EventHandler ProgressUpdate;
 
-        public CopyController(IFileSystem fileSystem, IUnhandledExceptionPolicy unhandledExceptionPolicy, 
-            ITaskManager taskManager, IRegistry registry)
+        public CopyController(ITaskManager taskManager, IFileSystem fileSystem)
         {
-            this.fileSystem = fileSystem;
-            this.unhandledExceptionPolicy = unhandledExceptionPolicy;
             this.taskManager = taskManager;
-            this.registry = registry;
 
-            taskManager.ProgressUpdate += (sender, e) => EventHandlerPolicy.SafeInvoke(ProgressUpdate, this, EventArgs.Empty);
+            taskManager.ProgressUpdate += (s, e) =>
+                EventHandlerPolicy.SafeInvoke(ProgressUpdate, this, EventArgs.Empty);
+            
+            SetupTimer();
+
+            SourcePluginFolder = new Observable<string>();
+            TargetPluginFolder = new Observable<string>();
+
+            SourcePlugins = new PluginTreeModel(fileSystem);
+            TargetPlugins = new PluginTreeModel(fileSystem);
+        }
+
+        private void SetupTimer()
+        {
             taskManager.TaskStarted += (sender, e) => timer.Start();
             taskManager.TaskCompleted += (sender, e) => timer.Stop();
             taskManager.TaskCanceled += (sender, e) => timer.Stop();
 
-            timer.Interval = 2000;
-            timer.Tick += (sender, e) =>
-            {
+            timer.Interval = TimeSpan.FromSeconds(WaitToDisplayProgressDialogInSeconds).TotalMilliseconds;
+            timer.Elapsed += (s, e) => 
                 EventHandlerPolicy.SafeInvoke(ShowProgressDialog, this, EventArgs.Empty);
-                timer.Stop();
-            };
         }
 
-        public IList<string> Plugins
+        public void CopyPlugins()
         {
-            get
-            {
-                if (plugins == null)
-                {
-                    plugins = new List<string>();
-                    foreach (var pluginDescriptor in RuntimeAccessor.Registry.Plugins)
-                    {
-                        if (pluginDescriptor.PluginId != "BuiltIn")
-                            plugins.Add(pluginDescriptor.PluginId);
-                    }
-                    plugins.Sort();
-                }
-                return plugins;
-            }
         }
 
-        public void CopyTo(string destinationFolder, IList<string> selectedPlugins)
+        public void Load()
         {
-            var copyCommand = new CopyCommand(destinationFolder, selectedPlugins, registry, 
-                fileSystem, unhandledExceptionPolicy);
+            UpdateSourcePluginFolder(GetSourcePluginFolder());
+        }
 
-            taskManager.QueueTask(copyCommand);
+        public void Shutdown()
+        {
+            taskManager.ClearQueue();
+            taskManager.ProgressMonitor.Cancel();
+        }
+
+        public void UpdateSourcePluginFolder(string sourcePluginFolder)
+        {
+            SourcePluginFolder.Value = sourcePluginFolder;
+            UpdatePluginFolder(SourcePlugins, sourcePluginFolder);
+        }
+
+        public void UpdateTargetPluginFolder(string targetPluginFolder)
+        {
+            TargetPluginFolder.Value = targetPluginFolder;
+            UpdatePluginFolder(TargetPlugins, targetPluginFolder);
+        }
+
+        private void UpdatePluginFolder(PluginTreeModel pluginTreeModel, 
+            string targetPluginFolder)
+        {
+            taskManager.QueueTask(new UpdatePluginFolderCommand(pluginTreeModel, 
+                targetPluginFolder));
+            taskManager.QueueTask(new ComparePluginsCommand(SourcePlugins,
+                TargetPlugins));
+        }
+
+        // modified version of debug method in DefaultRuntime.
+        // TODO: replace with install location
+        private static string GetSourcePluginFolder()
+        {
+            // Find the root "src" dir.
+            string initPath = AssemblyUtils.GetAssemblyLocalPath(Assembly.GetExecutingAssembly());
+
+            string srcDir = initPath;
+            while (srcDir != null && Path.GetFileName(srcDir) != @"src")
+                srcDir = Path.GetDirectoryName(srcDir);
+
+            return srcDir;
         }
     }
 }

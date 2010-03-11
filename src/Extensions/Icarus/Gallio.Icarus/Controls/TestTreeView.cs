@@ -20,6 +20,7 @@ using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Model;
 using System.Windows.Forms;
 using System.Drawing;
+using Gallio.UI.Tree.NodeControls;
 
 namespace Gallio.Icarus.Controls
 {

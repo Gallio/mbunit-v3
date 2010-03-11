@@ -19,7 +19,6 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 using Gallio.Common.Concurrency;
 using Gallio.Icarus.Commands;
@@ -29,7 +28,6 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.ProgressMonitoring;
 using Gallio.Icarus.Projects;
-using Gallio.Icarus.Properties;
 using Gallio.Icarus.TestExplorer;
 using Gallio.Icarus.Utilities;
 using Gallio.Icarus.WindowManager;
@@ -143,15 +141,15 @@ namespace Gallio.Icarus
                 }
             };
 
-            progressController = RuntimeAccessor.ServiceLocator.Resolve<IProgressController>();
-            taskManager.ProgressUpdate += (sender, e) => Sync.Invoke(this, ProgressUpdate);
-            taskManager.TaskCanceled += (sender, e) => Sync.Invoke(this, TaskCanceled);
-            taskManager.TaskCompleted += (sender, e) => Sync.Invoke(this, TaskCompleted);
-            progressController.DisplayProgressDialog += (sender, e) => Sync.Invoke(this, () =>
+            taskManager.ProgressUpdate += (s, e) =>
             {
-                var dialog = new ProgressMonitorDialog(e.ProgressMonitor);
-                dialog.Show(this);
-            });
+                toolStripProgressBar.ProgressChanged(taskManager.ProgressMonitor);
+                toolStripStatusLabel.ProgressChanged(taskManager.ProgressMonitor);
+            };
+            
+            progressController = RuntimeAccessor.ServiceLocator.Resolve<IProgressController>();
+            progressController.DisplayProgressDialog += (s, e) => Sync.Invoke(this, () => 
+                new ProgressMonitorDialog(taskManager.ProgressMonitor).Show(this));
 
             commandFactory = RuntimeAccessor.ServiceLocator.Resolve<ICommandFactory>();
             testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
@@ -508,45 +506,6 @@ namespace Gallio.Icarus
                     return;
             }
             Reload();
-        }
-
-        private void ProgressUpdate()
-        {
-            var progressMonitor = taskManager.ProgressMonitor;
-
-            if (double.IsNaN(progressMonitor.TotalWorkUnits))
-            {
-                toolStripProgressBar.Style = ProgressBarStyle.Marquee;
-            }
-            else
-            {
-                toolStripProgressBar.Style = ProgressBarStyle.Continuous;
-                toolStripProgressBar.Maximum = Convert.ToInt32(progressMonitor.TotalWorkUnits);
-                toolStripProgressBar.Value = Convert.ToInt32(progressMonitor.CompletedWorkUnits);
-            }
-
-            var sb = new StringBuilder();
-            sb.Append(progressMonitor.TaskName);
-            if (!string.IsNullOrEmpty(progressMonitor.LeafSubTaskName))
-            {
-                sb.Append(" - ");
-                sb.Append(progressMonitor.LeafSubTaskName);
-            }
-            if (progressMonitor.TotalWorkUnits > 0)
-                sb.Append(String.Format(" ({0:P0})", (progressMonitor.CompletedWorkUnits / progressMonitor.TotalWorkUnits)));
-            toolStripStatusLabel.Text = sb.ToString();
-        }
-
-        private void TaskCanceled()
-        {
-            toolStripProgressBar.Value = 0;
-            toolStripStatusLabel.Text = Resources.Main_TaskCanceled_Canceled;
-        }
-
-        private void TaskCompleted()
-        {
-            toolStripProgressBar.Value = 0;
-            toolStripStatusLabel.Text = string.Empty;
         }
 
         private void startWithDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
