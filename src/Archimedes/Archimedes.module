@@ -35,13 +35,16 @@
 	<ConfigFile Include="Archimedes.Client\Archimedes.Client.exe.config">
 	  <ImagePath>bin\Archimedes</ImagePath>
 	</ConfigFile>
-	<AssemblyFile Include="Archimedes.Client\Archimedes.Client.plugin">
+	<PluginFile Include="Archimedes.Client\Archimedes.Client.plugin">
 	  <ImagePath>bin\Archimedes</ImagePath>
-	</AssemblyFile>
+	</PluginFile>
 	
 	<AssemblyFile Include="Archimedes.Web\bin\Archimedes.Web.dll">
 	  <ImagePath>bin\Archimedes\Web\bin</ImagePath>
 	</AssemblyFile>
+	<PluginFile Include="Archimedes.Web\Archimedes.Web.plugin">
+	  <ImagePath>bin\Archimedes\Web</ImagePath>
+	</PluginFile>
 		
     <TestAssembly Include="Archimedes.Tests\bin\Archimedes.Tests.dll" />
     <TestAssembly Include="Archimedes.Web.Tests\bin\Archimedes.Web.Tests.dll" />
