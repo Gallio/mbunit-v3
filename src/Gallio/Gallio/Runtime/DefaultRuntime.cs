@@ -443,6 +443,20 @@ namespace Gallio.Runtime
                                 plugin.PluginId, assemblyBinding.AssemblyName.FullName, assemblyName.FullName));
                         }
                     }
+                    else if (assemblyBinding.CodeBase == null)
+                    {
+                        try
+                        {
+                            Assembly.Load(assemblyBinding.AssemblyName);
+                        }
+                        catch (FileNotFoundException)
+                        {
+                            success = false;
+                            dispatchLogger.Log(LogSeverity.Error, string.Format(
+                                "Plugin '{0}' expects assembly '{1}' to be installed in the GAC but it was not found.",
+                                plugin.PluginId, assemblyBinding.AssemblyName.FullName));
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
