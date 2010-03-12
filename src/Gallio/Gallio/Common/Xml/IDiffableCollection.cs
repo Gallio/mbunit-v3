@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@ using System.Text;
 namespace Gallio.Common.Xml
 {
     /// <summary>
-    /// A collection of XML items that can be compared another 
+    /// A collection of XML markups that can be compared to another 
     /// collection of the same type, in order to get the differences.
     /// </summary>
     /// <typeparam name="TCollection">The type of the collection.</typeparam>

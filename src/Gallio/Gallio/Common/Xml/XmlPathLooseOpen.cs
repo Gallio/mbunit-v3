@@ -13,25 +13,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Model.Schema;
-using Gallio.Common.Reflection;
-using Gallio.Runner.Reports.Schema;
-using Gallio.Tests;
-using MbUnit.Framework;
-using Gallio.Common.Xml;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Gallio.Tests.Common.Xml
+namespace Gallio.Common.Xml
 {
-    [TestFixture]
-    [TestsOn(typeof(Null))]
-    public class NullTest
+    /// <summary>
+    /// Abstract node that extends a loose XML path, and let it opened for further extensions.
+    /// </summary>
+    internal abstract class XmlPathLooseOpen : XmlPathLooseClosed, IXmlPathLooseOpen
     {
-        [Test]
-        public void Default()
+        /// <inheritdoc/>
+        protected XmlPathLooseOpen()
         {
-            Assert.IsTrue(Null.Instance.IsNull);
-            Assert.AreSame(Null.Instance, Null.Instance.Child);
-            Assert.IsEmpty(Null.Instance.ToXml());
         }
+
+        /// <inheritdoc/>
+        protected XmlPathLooseOpen(IXmlPathLooseOpen parent)
+            : base(parent)
+        {
+        }
+
+        /// <inheritdoc/>
+        public abstract IXmlPathLooseOpen Element(string name);
+
+        /// <inheritdoc/>
+        public abstract IXmlPathLooseClosed Attribute(string name);
     }
 }

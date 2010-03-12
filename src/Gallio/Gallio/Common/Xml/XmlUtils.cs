@@ -38,21 +38,25 @@ namespace Gallio.Common.Xml
             if (writeAction == null)
                 throw new ArgumentNullException("writeAction");
 
-            var xmlWriterSettings = new XmlWriterSettings();
-            xmlWriterSettings.CheckCharacters = false;
-            xmlWriterSettings.Encoding = Encoding.UTF8;
-            xmlWriterSettings.Indent = false;
-            xmlWriterSettings.CloseOutput = false;
+            var xmlWriterSettings = new XmlWriterSettings
+            {
+                CheckCharacters = false,
+                Encoding = Encoding.UTF8,
+                Indent = false,
+                CloseOutput = false
+            };
 
             var stream = new MemoryStream();
 
             using (var xmlWriter = XmlWriter.Create(stream, xmlWriterSettings))
                 writeAction(xmlWriter);
 
-            var xmlReaderSettings = new XmlReaderSettings();
-            xmlReaderSettings.CheckCharacters = false;
-            xmlReaderSettings.ValidationType = ValidationType.None;
-            xmlReaderSettings.CloseInput = true;
+            var xmlReaderSettings = new XmlReaderSettings
+            {
+                CheckCharacters = false,
+                ValidationType = ValidationType.None,
+                CloseInput = true
+            };
 
             stream.Position = 0;
 

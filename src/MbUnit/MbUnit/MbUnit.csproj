@@ -169,7 +169,6 @@
     <Compile Include="Framework\FormatterAttribute.cs" />
     <Compile Include="Framework\EqualityComparerAttribute.cs" />
     <Compile Include="Framework\ComparerAttribute.cs" />
-    <Compile Include="Framework\XmlOptions.cs" />
     <Compile Include="Framework\PrincipalAttribute.cs" />
     <Compile Include="Framework\MultipleCultureAttribute.cs" />
     <Compile Include="Framework\ImpersonateAttribute.cs" />
@@ -204,6 +203,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Framework\TestSuite.cs" />
+    <Compile Include="Framework\XmlOptions.cs" />
     <Compile Include="Framework\XmlPath.cs" />
   </ItemGroup>
   <ItemGroup>

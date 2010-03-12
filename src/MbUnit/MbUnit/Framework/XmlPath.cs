@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,22 +40,11 @@ namespace MbUnit.Framework
     public class XmlPath
     {
         /// <summary>
-        /// 
+        /// Starts the construction of a path.
         /// </summary>
-        internal static IXmlPathOpen Empty
-        {
-            get
-            {
-                return XmlPathRoot.Empty;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="elementName"></param>
-        /// <returns></returns>
-        public static IXmlPathOpen Element(string elementName)
+        /// <param name="elementName">The name of the first element.</param>
+        /// <returns>A path that can be further extended.</returns>
+        public static IXmlPathLooseOpen Element(string elementName)
         {
             return XmlPathRoot.Element(elementName);
         }

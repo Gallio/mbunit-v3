@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SolarSystem xmlns="SolarSystem">
+  <Planets>
+    <Planet name="Mercury" distanceToSun="0.4 AU">
+      <Satellites/>
+    </Planet>
+    <Planet name="Venus" distanceToSun="0.7 AU">
+      <Satellites/>
+    </Planet>
+    <!-- Hey! This one is mine! -->
+    <Planet name="Earth" distanceToSun="1 AU">
+      <Satellites>
+        <Satellite name="Moon"/>
+      </Satellites>
+    </Planet>
+     <Planet name="Mars" distanceToSun="1.5 AU">
+      <Satellites>
+        <Satellite name="Deimos"/>
+        <Satellite name="Phobos"/>
+      </Satellites>
+    </Planet>
+     <Planet name="Jupiter" distanceToSun="5.2 AU">
+      <Satellites>
+        <Satellite name="Io"/>
+        <Satellite name="Europa"/>
+        <Satellite name="Ganymede"/>
+        <Satellite name="Callisto"/>
+      </Satellites>
+    </Planet>
+     <Planet name="Saturn" distanceToSun="9.5 AU">
+      <Satellites>
+        <Satellite name="Mimas"/>
+        <Satellite name="Enceladus"/>
+        <Satellite name="Tethys"/>
+        <Satellite name="Dione"/>
+        <Satellite name="Rhea"/>
+        <Satellite name="Titan"/>
+        <Satellite name="Iapetus"/>
+      </Satellites>
+    </Planet>
+     <Planet name="Uranus" distanceToSun="19.6 AU">
+      <Satellites>
+        <Satellite name="Miranda"/>
+        <Satellite name="Ariel"/>
+        <Satellite name="Umbriel"/>
+        <Satellite name="Titania"/>
+        <Satellite name="Oberon"/>
+      </Satellites>
+    </Planet>
+     <Planet name="Neptune" distanceToSun="30 AU">
+      <Satellites>
+        <Satellite name="Triton"/>
+      </Satellites>
+    </Planet>
+  </Planets>
+</SolarSystem>

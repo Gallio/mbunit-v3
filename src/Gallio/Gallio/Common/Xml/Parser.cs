@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,10 +29,19 @@ namespace Gallio.Common.Xml
         private readonly string xml;
 
         /// <summary>
-        /// Constructs the parser.
+        /// Parses the specified XML fragment.
         /// </summary>
         /// <param name="xml">The XML fragment to parse.</param>
-        public Parser(string xml)
+        /// <param name="options">Parsing options.</param>
+        /// <returns>The resulting document representing the parsed XML fragment.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null.</exception>
+        public static Fragment Run(string xml, Options options)
+        {
+            var parser = new Parser(xml);
+            return parser.RunImpl(options);
+        }
+
+        private Parser(string xml)
         {
             if (xml == null)
                 throw new ArgumentNullException("xml");
@@ -40,14 +49,9 @@ namespace Gallio.Common.Xml
             this.xml = xml;
         }
 
-        /// <summary>
-        /// Parses the XML fragment.
-        /// </summary>
-        /// <param name="options">XML options.</param>
-        /// <returns>The resulting document representing the parsed XML fragment.</returns>
-        public Document Run(Options options)
+        private Fragment RunImpl(Options options)
         {
-            INode root = Null.Instance;
+            IMarkup root = null;
             var declarationAttributes = AttributeCollection.Empty;
             var settings = new XmlReaderSettings()
             {
@@ -55,18 +59,18 @@ namespace Gallio.Common.Xml
                 IgnoreWhitespace = true
             };
 
-            using (var reader = XmlTextReader.Create(new StringReader(xml), settings))
+            using (var reader = XmlReader.Create(new StringReader(xml), settings))
             {
                 while (reader.Read())
                 {
                     switch (reader.NodeType)
                     {
                         case XmlNodeType.Element:
-                            root = ParseElement(reader);
+                            root = ParseElement(0, reader);
                             break;
 
                         case XmlNodeType.XmlDeclaration:
-                            declarationAttributes = GetAttributes(reader);
+                            declarationAttributes = new AttributeCollection(GetAttributes(reader));
                             break;
 
                         default:
@@ -75,35 +79,39 @@ namespace Gallio.Common.Xml
                 }
             }
 
-            return new Document(new Declaration(declarationAttributes), root);
+            if (root == null)
+                throw new ArgumentException("The specified XML fragment does not have any root element.", "xml");
+
+            return new Fragment(new Declaration(declarationAttributes), root);
         }
 
-        private Element ParseElement(XmlReader reader)
+        private static MarkupElement ParseElement(int index, XmlReader reader)
         {
             string name = reader.Name;
-            string value = String.Empty;
-            var children = new List<Element>();
-            AttributeCollection attributes = GetAttributes(reader);
+            var children = new List<IMarkup>();
+            var attributes = new AttributeCollection(GetAttributes(reader));
 
             if (!reader.IsEmptyElement)
             {
+                int i = 0;
+
                 while (reader.Read())
                 {
                     switch (reader.NodeType)
                     {
                         case XmlNodeType.EndElement:
-                            return new Element(ToXmlTree(children), name, value, attributes);
+                            return new MarkupElement(index, name, attributes, children);
 
                         case XmlNodeType.Text:
-                            value = reader.Value;
+                            children.Add(new MarkupContent(i++, reader.Value));
                             break;
 
                         case XmlNodeType.Element:
-                            children.Add(ParseElement(reader));
+                            children.Add(ParseElement(i++, reader));
                             break;
 
                         case XmlNodeType.Comment:
-                            children.Add(new Comment(reader.Value));
+                            children.Add(new MarkupComment(i++, reader.Value));
                             break;
 
                         default:
@@ -112,31 +120,28 @@ namespace Gallio.Common.Xml
                 }
             }
 
-            return new Element(ToXmlTree(children), name, value, attributes);
+            return new MarkupElement(index, name, attributes, children);
         }
 
-        private static AttributeCollection GetAttributes(XmlReader reader)
+        private static IEnumerable<Attribute> GetAttributes(XmlReader reader)
         {
-            var attributes = new List<Attribute>();
+            var tokens = new List<Pair<string, string>>();
 
             if (reader.MoveToFirstAttribute())
             {
                 do
                 {
-                    attributes.Add(new Attribute(reader.Name, reader.Value));
+                    tokens.Add(new Pair<string, string>(reader.Name, reader.Value));
 
                 } while (reader.MoveToNextAttribute());
             }
 
             reader.MoveToElement();
-            return new AttributeCollection(attributes);
-        }
 
-        private static INode ToXmlTree(IList<Element> elements)
-        {
-            return elements.Count == 0
-                ? Null.Instance
-                : (INode)new ElementCollection(elements);
+            for (int i = 0; i < tokens.Count; i++)
+            {
+                yield return new Attribute(i, tokens[i].First, tokens[i].Second, tokens.Count);
+            }
         }
     }
 }

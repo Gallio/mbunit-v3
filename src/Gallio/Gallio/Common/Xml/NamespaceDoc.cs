@@ -21,7 +21,7 @@ using System.Text;
 namespace Gallio.Common.Xml
 {
     /// <summary>
-    /// The Gallio.Common.Xml namespace contains types for manipulating Xml.
+    /// The Gallio.Common.Xml2 namespace contains types for manipulating Xml.
     /// </summary>
     [CompilerGenerated]
     class NamespaceDoc

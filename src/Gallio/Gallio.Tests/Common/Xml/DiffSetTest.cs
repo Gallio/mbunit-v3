@@ -20,6 +20,7 @@ using Gallio.Tests;
 using MbUnit.Framework;
 using Gallio.Common.Xml;
 using System;
+using Rhino.Mocks;
 
 namespace Gallio.Tests.Common.Xml
 {
@@ -45,12 +46,13 @@ namespace Gallio.Tests.Common.Xml
         [Test]
         public void Constructs_ok()
         {
-            var diff1 = new Diff("Path1", "Message1", "Expected1", "Actual1");
-            var diff2 = new Diff("Path2", "Message2", "Expected2", "Actual2");
-            var diff3 = new Diff("Path3", "Message3", "Expected3", "Actual3");
+            var mockPath = MockRepository.GenerateStub<IXmlPathStrict>();
+            var diff1 = new Diff("Message1", mockPath, DiffTargets.Actual);
+            var diff2 = new Diff("Message2", mockPath, DiffTargets.Actual);
+            var diff3 = new Diff("Message3", mockPath, DiffTargets.Actual);
             var diffSet = new DiffSet(new[] { diff1, diff2, diff3 });
             Assert.IsFalse(diffSet.IsEmpty);
-            Assert.AreElementsEqual(new[] { diff1, diff2, diff3 }, diffSet);
+            Assert.AreElementsSame(new[] { diff1, diff2, diff3 }, diffSet);
         }
     }
 }

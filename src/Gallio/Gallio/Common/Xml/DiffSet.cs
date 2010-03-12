@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@ namespace Gallio.Common.Xml
     /// <summary>
     /// An immutable set of diff items representing the differences between two XML fragments.
     /// </summary>
-    public class DiffSet : IEnumerable<Diff>
+    public sealed class DiffSet : IEnumerable<Diff>
     {
         private readonly IList<Diff> diffs;
 
@@ -48,18 +48,18 @@ namespace Gallio.Common.Xml
         /// <summary>
         /// Constructs a sets from the specified enumeration of diff items.
         /// </summary>
-        /// <param name="diffs"></param>
+        /// <param name="diffs">An enumeration of diff items.</param>
         public DiffSet(IEnumerable<Diff> diffs)
         {
             if (diffs == null)
-                throw new ArgumentNullException("items");
+                throw new ArgumentNullException("diffs");
 
-            this.diffs = new ReadOnlyCollection<Diff>(new List<Diff>(diffs));
+            this.diffs = new List<Diff>(diffs).AsReadOnly();
         }
 
         private DiffSet()
         {
-            this.diffs = new ReadOnlyCollection<Diff>(new List<Diff>());
+            this.diffs = new List<Diff>().AsReadOnly();
         }
 
         /// <inheritdoc />
@@ -77,14 +77,17 @@ namespace Gallio.Common.Xml
         }
 
         /// <summary>
-        /// Returns the diff set as an enumeration of assertion failures.
+        /// Returns the diff items as an enumeration of assertion failures.
         /// </summary>
+        /// <param name="expected">The expected fragment used to format the diff.</param>
+        /// <param name="actual">The actual fragment used to format the diff.</param>
         /// <returns>The resulting enumeration of assertion failures.</returns>
-        public IEnumerable<AssertionFailure> ToAssertionFailures()
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expected"/> or <paramref name="actual"/> is null.</exception>
+        public IEnumerable<AssertionFailure> ToAssertionFailures(Fragment expected, Fragment actual)
         {
             foreach (Diff diff in diffs)
             {
-                yield return diff.ToAssertionFailure();
+                yield return diff.ToAssertionFailure(expected, actual);
             }
         }
     }

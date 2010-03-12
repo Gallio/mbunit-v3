@@ -41,24 +41,110 @@ namespace Gallio.Tests.Common.Xml
         {
             var collection = AttributeCollection.Empty;
             Assert.IsEmpty(collection);
-            Assert.IsEmpty(collection.ToXml());
+            Assert.AreEqual(0, collection.Count);
         }
 
         [Test]
         public void Constructs_ok()
         {
-            var attribute1 = new Gallio.Common.Xml.Attribute("name1", "value1");
-            var attribute2 = new Gallio.Common.Xml.Attribute("name2", "value2");
-            var attribute3 = new Gallio.Common.Xml.Attribute("name3", "value3");
+            var attribute1 = new Gallio.Common.Xml.Attribute(123, "name1", "value1", 999);
+            var attribute2 = new Gallio.Common.Xml.Attribute(456, "name2", "value2", 999);
+            var attribute3 = new Gallio.Common.Xml.Attribute(789, "name3", "value3", 999);
             var array = new[] { attribute1, attribute2, attribute3 };
             var collection = new AttributeCollection(array);
-            Assert.AreElementsEqual(array, collection,
-                new StructuralEqualityComparer<Gallio.Common.Xml.Attribute> 
-                { 
-                    { x => x.Name }, 
-                    { x => x.Value } 
-                });
-            Assert.AreEqual(" name1=\"value1\" name2=\"value2\" name3=\"value3\"", collection.ToXml());
+            Assert.AreEqual(3, collection.Count);
+            Assert.AreElementsSame(array, collection);
+        }
+
+        private static AttributeCollection MakeStubCollection(params string[] namesValues)
+        {
+            var list = new List<Gallio.Common.Xml.Attribute>();
+
+            for (int i = 0; i < namesValues.Length / 2; i++)
+            {
+                list.Add(new Gallio.Common.Xml.Attribute(i, namesValues[2 * i], namesValues[2 * i + 1], namesValues.Length / 2));
+            }
+
+            return new AttributeCollection(list);
+        }
+
+        [Test]
+        public void Contains_with_null_name_should_throw_exception()
+        {
+            var attributes = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            Assert.Throws<ArgumentNullException>(() => attributes.Contains(null, null, Options.None));
+        }
+
+        [Test]
+        public void Contains_yes()
+        {
+            var attributes = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            bool found = attributes.Contains("name2", null, Options.None);
+            Assert.IsTrue(found);
+        }
+
+        [Test]
+        public void Contains_case_insensitive_yes()
+        {
+            var attributes = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            bool found = attributes.Contains("NAME2", null, Options.IgnoreAttributesNameCase);
+            Assert.IsTrue(found);
+        }
+
+        [Test]
+        public void Contains_no()
+        {
+            var attributes = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            bool found = attributes.Contains("name123", null, Options.None);
+            Assert.IsFalse(found);
+        }
+
+        [Test]
+        public void Contains_case_senstive_no()
+        {
+            var attributes = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            bool found = attributes.Contains("NAME123", null, Options.None);
+            Assert.IsFalse(found);
+        }
+
+        [Test]
+        public void Contains_with_case_sensitive_value_yes()
+        {
+            var attributes = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            bool found = attributes.Contains("name2", "value2", Options.None);
+            Assert.IsTrue(found);
+        }
+
+        [Test]
+        public void Contains_with_case_insensitive_value_yes()
+        {
+            var attributes = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            bool found = attributes.Contains("name2", "VALUE2", Options.IgnoreAttributesValueCase);
+            Assert.IsTrue(found);
+        }
+
+        [Test]
+        public void Contains_with_case_sensitive_value_no()
+        {
+            var attributes = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            bool found = attributes.Contains("name2", "VALUE2", Options.None);
+            Assert.IsFalse(found);
+        }
+
+        [Test]
+        public void Contains_with_case_insensitive_value_no()
+        {
+            var attributes = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            bool found = attributes.Contains("name2", "value3", Options.None);
+            Assert.IsFalse(found);
+        }
+
+        [Test]
+        public void Contains_value_among_several()
+        {
+            var attributes = MakeStubCollection("name", "value1", "name", "value2", "name", "value3");
+            bool found = attributes.Contains("name", "value3", Options.None);
+            Assert.IsTrue(found);
         }
 
         [Test]
@@ -66,7 +152,7 @@ namespace Gallio.Tests.Common.Xml
         public void Diff_with_null_expected_value_should_throw_exception()
         {
             var collection = AttributeCollection.Empty;
-            collection.Diff(null, XmlPath.Empty, XmlOptions.Strict.Value);
+            collection.Diff(null, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
         }
 
         [Test]
@@ -77,162 +163,71 @@ namespace Gallio.Tests.Common.Xml
             collection.Diff(AttributeCollection.Empty, null, XmlOptions.Strict.Value);
         }
 
-        private AttributeCollection MakeCollection(params string[] namesValues)
-        {
-            var list = new List<Gallio.Common.Xml.Attribute>();
-
-            for (int i = 0; i < namesValues.Length / 2; i++)
-            {
-                list.Add(new Gallio.Common.Xml.Attribute(namesValues[2 * i], namesValues[2 * i + 1]));
-            }
-
-            return new AttributeCollection(list);
-        }
-
-        [Test]
-        public void Contains_with_null_name_should_throw_exception()
-        {
-            var attributes = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            Assert.Throws<ArgumentNullException>(() => attributes.Contains(null, null, Options.None));
-        }
-
-        [Test]
-        public void Contains_yes()
-        {
-            var attributes = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            bool found = attributes.Contains("name2", null, Options.None);
-            Assert.IsTrue(found);
-        }
-
-        [Test]
-        public void Contains_case_insensitive_yes()
-        {
-            var attributes = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            bool found = attributes.Contains("NAME2", null, Options.IgnoreAttributesNameCase);
-            Assert.IsTrue(found);
-        }
-
-        [Test]
-        public void Contains_no()
-        {
-            var attributes = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            bool found = attributes.Contains("name123", null, Options.None);
-            Assert.IsFalse(found);
-        }
-
-        [Test]
-        public void Contains_case_senstive_no()
-        {
-            var attributes = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            bool found = attributes.Contains("NAME123", null, Options.None);
-            Assert.IsFalse(found);
-        }
-
-        [Test]
-        public void Contains_with_case_sensitive_value_yes()
-        {
-            var attributes = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            bool found = attributes.Contains("name2", "value2", Options.None);
-            Assert.IsTrue(found);
-        }
-
-        [Test]
-        public void Contains_with_case_insensitive_value_yes()
-        {
-            var attributes = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            bool found = attributes.Contains("name2", "VALUE2", Options.IgnoreAttributesValueCase);
-            Assert.IsTrue(found);
-        }
-
-        [Test]
-        public void Contains_with_case_sensitive_value_no()
-        {
-            var attributes = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            bool found = attributes.Contains("name2", "VALUE2", Options.None);
-            Assert.IsFalse(found);
-        }
-
-        [Test]
-        public void Contains_with_case_insensitive_value_no()
-        {
-            var attributes = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            bool found = attributes.Contains("name2", "value3", Options.None);
-            Assert.IsFalse(found);
-        }
-
-        [Test]
-        public void Contains_value_among_several()
-        {
-            var attributes = MakeCollection("name", "value1", "name", "value2", "name", "value3");
-            bool found = attributes.Contains("name", "value3", Options.None);
-            Assert.IsTrue(found);
-        }
-
         #region Diffing ordered attributes
-        
+
         [Test]
         public void Diff_equal_collections()
         {
-            var actual = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            var expected = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), XmlOptions.Strict.Value);
+            var actual = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            var expected = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
             Assert.IsEmpty(diffSet);
         }
 
         [Test]
         public void Diff_collections_with_missing_attribute_at_the_end()
         {
-            var actual = MakeCollection("name1", "value1", "name2", "value2");
-            var expected = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), XmlOptions.Strict.Value);
-            AssertDiff(diffSet, new[] { new Diff("<Root>", "Missing attribute.", "name3", String.Empty) });
+            var actual = MakeStubCollection("name1", "value1", "name2", "value2");
+            var expected = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            AssertDiff(diffSet, new[] { new Diff("Missing attribute.", XmlPathRoot.Strict.Element(0).Attribute(2), DiffTargets.Expected) });
         }
 
         [Test]
         public void Diff_collections_with_missing_attribute_in_the_middle()
         {
-            var actual = MakeCollection("name1", "value1", "name3", "value3");
-            var expected = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), XmlOptions.Strict.Value);
-            AssertDiff(diffSet, new[] { new Diff("<Root>", "Unexpected attribute found.", "name2", "name3") });
+            var actual = MakeStubCollection("name1", "value1", "name3", "value3");
+            var expected = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            AssertDiff(diffSet, new[] { new Diff("Unexpected attribute found.", XmlPathRoot.Strict.Element(0).Attribute(1), DiffTargets.Actual) });
         }
 
         [Test]
         public void Diff_collections_with_exceeding_attribute_at_the_end()
         {
-            var actual = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            var expected = MakeCollection("name1", "value1", "name2", "value2");
-            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), XmlOptions.Strict.Value);
-            AssertDiff(diffSet, new[] { new Diff("<Root>", "Unexpected attribute found.", String.Empty, "name3") });
+            var actual = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            var expected = MakeStubCollection("name1", "value1", "name2", "value2");
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            AssertDiff(diffSet, new[] { new Diff("Unexpected attribute found.", XmlPathRoot.Strict.Element(0).Attribute(2), DiffTargets.Actual) });
         }
 
         [Test]
         public void Diff_collections_with_exceeding_attribute_in_the_middle()
         {
-            var actual = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            var expected = MakeCollection("name1", "value1", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), XmlOptions.Strict.Value);
-            AssertDiff(diffSet, new[] { new Diff("<Root>", "Unexpected attribute found.", "name3", "name2") });
+            var actual = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            var expected = MakeStubCollection("name1", "value1", "name3", "value3");
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            AssertDiff(diffSet, new[] { new Diff("Unexpected attribute found.", XmlPathRoot.Strict.Element(0).Attribute(1), DiffTargets.Actual) });
         }
 
         [Test]
         public void Diff_collections_with_one_unexpected_value()
         {
-            var actual = MakeCollection("name1", "value1", "name2", "ERROR!", "name3", "value3");
-            var expected = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), XmlOptions.Strict.Value);
-            AssertDiff(diffSet, new[] { new Diff("<Root name2='...'>", "Unexpected attribute value found.", "value2", "ERROR!") });
+            var actual = MakeStubCollection("name1", "value1", "name2", "ERROR!", "name3", "value3");
+            var expected = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            AssertDiff(diffSet, new[] { new Diff("Unexpected attribute value found.", XmlPathRoot.Strict.Element(0).Attribute(1), DiffTargets.Both) });
         }
 
         [Test]
         public void Diff_collections_with_several_unexpected_values()
         {
-            var actual = MakeCollection("name1", "ERROR1!", "name2", "value2", "name3", "ERROR3!");
-            var expected = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), XmlOptions.Strict.Value);
+            var actual = MakeStubCollection("name1", "ERROR1!", "name2", "value2", "name3", "ERROR3!");
+            var expected = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
             AssertDiff(diffSet, new[] { 
-                new Diff("<Root name1='...'>", "Unexpected attribute value found.", "value1", "ERROR1!"),
-                new Diff("<Root name3='...'>", "Unexpected attribute value found.", "value3", "ERROR3!") });
+                new Diff("Unexpected attribute value found.", XmlPathRoot.Strict.Element(0).Attribute(0), DiffTargets.Both),
+                new Diff("Unexpected attribute value found.", XmlPathRoot.Strict.Element(0).Attribute(2), DiffTargets.Both) });
         }
 
         #endregion
@@ -242,37 +237,37 @@ namespace Gallio.Tests.Common.Xml
         [Test]
         public void Diff_equal_unordered_collections()
         {
-            var actual = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            var expected = MakeCollection("name2", "value2", "name3", "value3", "name1", "value1");
-            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), Options.IgnoreAttributesOrder);
+            var actual = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            var expected = MakeStubCollection("name2", "value2", "name3", "value3", "name1", "value1");
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), Options.IgnoreAttributesOrder);
             Assert.IsEmpty(diffSet);
         }
 
         [Test]
         public void Diff_equal_unordered_collections_with_missing_attribute()
         {
-            var actual = MakeCollection("name1", "value1", "name3", "value3");
-            var expected = MakeCollection("name2", "value2", "name3", "value3", "name1", "value1");
-            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), Options.IgnoreAttributesOrder);
-            AssertDiff(diffSet, new[] { new Diff("<Root>", "Missing attribute.", "name2", String.Empty) });
+            var actual = MakeStubCollection("name1", "value1", "name3", "value3");
+            var expected = MakeStubCollection("name2", "value2", "name3", "value3", "name1", "value1");
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), Options.IgnoreAttributesOrder);
+            AssertDiff(diffSet, new[] { new Diff("Missing attribute.", XmlPathRoot.Strict.Element(0).Attribute(0), DiffTargets.Expected) });
         }
 
         [Test]
         public void Diff_equal_unordered_collections_with_excess_attribute()
         {
-            var actual = MakeCollection("name1", "value1", "name3", "value3", "name2", "value2");
-            var expected = MakeCollection("name2", "value2", "name1", "value1");
-            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), Options.IgnoreAttributesOrder);
-            AssertDiff(diffSet, new[] { new Diff("<Root>", "Unexpected attribute found.", String.Empty, "name3") });
+            var actual = MakeStubCollection("name1", "value1", "name3", "value3", "name2", "value2");
+            var expected = MakeStubCollection("name2", "value2", "name1", "value1");
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), Options.IgnoreAttributesOrder);
+            AssertDiff(diffSet, new[] { new Diff("Unexpected attribute found.", XmlPathRoot.Strict.Element(0).Attribute(1), DiffTargets.Actual) });
         }
 
         [Test]
         public void Diff_equal_unordered_collections_with_unexpected_attribute_value()
         {
-            var actual = MakeCollection("name1", "value1", "name3", "ERROR!", "name2", "value2");
-            var expected = MakeCollection("name2", "value2", "name1", "value1", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), Options.IgnoreAttributesOrder);
-            AssertDiff(diffSet, new[] { new Diff("<Root name3='...'>", "Unexpected attribute value found.", "value3", "ERROR!") });
+            var actual = MakeStubCollection("name1", "value1", "name3", "ERROR!", "name2", "value2");
+            var expected = MakeStubCollection("name2", "value2", "name1", "value1", "name3", "value3");
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), Options.IgnoreAttributesOrder);
+            AssertDiff(diffSet, new[] { new Diff("Unexpected attribute value found.", XmlPathRoot.Strict.Element(0).Attribute(1), DiffTargets.Both) });
         }
 
         #endregion

@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,15 +22,16 @@ namespace Gallio.Common.Xml
     /// <summary>
     /// A simple builder for the <see cref="DiffSet"/> object.
     /// </summary>
-    public class DiffSetBuilder
+    public sealed class DiffSetBuilder
     {
-        private readonly List<Diff> items = new List<Diff>();
+        private readonly IList<Diff> items = new List<Diff>();
 
         /// <summary>
         /// Adds the specified diff item to the set.
         /// </summary>
         /// <param name="item">The diff item to be added.</param>
         /// <returns>A reference to the builder itself.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="item"/> is null.</exception>
         public DiffSetBuilder Add(Diff item)
         {
             if (item == null)
@@ -45,6 +46,7 @@ namespace Gallio.Common.Xml
         /// </summary>
         /// <param name="items">The diff items to be added.</param>
         /// <returns>A reference to the builder itself.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="items"/> is null.</exception>
         public DiffSetBuilder Add(DiffSet items)
         {
             if (items == null)

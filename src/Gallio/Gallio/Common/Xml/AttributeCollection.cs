@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -68,22 +68,6 @@ namespace Gallio.Common.Xml
             this.attributes = new List<Attribute>(attributes);
         }
 
-        /// <summary>
-        /// Returns the XML fragment for the attributes.
-        /// </summary>
-        /// <returns>The resulting XML fragment representing the attributes.</returns>
-        public string ToXml()
-        {
-            var builder = new StringBuilder();
-
-            foreach (var attribute in attributes)
-            {
-                builder.Append(" " + attribute.ToXml());
-            }
-
-            return builder.ToString();
-        }
-
         /// <inheritdoc />
         public IEnumerator<Attribute> GetEnumerator()
         {
@@ -99,7 +83,7 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public DiffSet Diff(AttributeCollection expected, IXmlPathOpen path, Options options)
+        public DiffSet Diff(AttributeCollection expected, IXmlPathStrict path, Options options)
         {
             return DiffEngineFactory.ForAttributes(expected, this, path, options).Diff();
         }
@@ -119,7 +103,7 @@ namespace Gallio.Common.Xml
         }
 
         /// <summary>
-        /// Determines whether the collection contains an attribute with the specified name.
+        /// Determines whether the collection contains an attribute with the specified name, and optionally the specified value.
         /// </summary>
         /// <param name="searchedAttributeName">The name of the searched attribute.</param>
         /// <param name="expectedAttributeValue">The expected value found in the searched attribute, or null if the value must be ignored.</param>
@@ -132,8 +116,27 @@ namespace Gallio.Common.Xml
                 throw new ArgumentNullException("searchedAttributeName");
 
             return attributes.Exists(attribute => attribute.AreNamesEqual(searchedAttributeName, options)
-                && ((expectedAttributeValue == null) 
-                || attribute.AreValuesEqual(expectedAttributeValue, options)));
+                && ((expectedAttributeValue == null) || attribute.AreValuesEqual(expectedAttributeValue, options)));
+        }
+
+        /// <summary>
+        /// Returns the number of times the searched markup was found at the specified path.
+        /// </summary>
+        /// <param name="searchedPath">The path of the searched markup.</param>
+        /// <param name="expectedValue">The expected value found in the searched markup, or null if the value must be ignored.</param>
+        /// <param name="options">Options for the search.</param>
+        /// <returns>The number of matching items found; zero if not found.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="searchedPath"/> is null.</exception>
+        public int CountAt(IXmlPathLoose searchedPath, string expectedValue, Options options)
+        {
+            int count = 0;
+
+            foreach (Attribute attribute in attributes)
+            {
+                count += attribute.CountAt(searchedPath, expectedValue, options);
+            }
+
+            return count;
         }
     }
 }

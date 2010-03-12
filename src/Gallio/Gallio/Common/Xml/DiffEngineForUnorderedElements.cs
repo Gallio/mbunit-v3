@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,11 +22,11 @@ namespace Gallio.Common.Xml
     /// <summary>
     /// Diffing engine for collections of unordered elements.
     /// </summary>
-    public class DiffEngineForUnorderedElements : IDiffEngine<ElementCollection>
+    internal sealed class DiffEngineForUnorderedElements : IDiffEngine<MarkupCollection>
     {
-        private readonly ElementCollection expected;
-        private readonly ElementCollection actual;
-        private readonly IXmlPathOpen path;
+        private readonly MarkupCollection expected;
+        private readonly MarkupCollection actual;
+        private readonly IXmlPathStrict path;
         private readonly Options options;
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Gallio.Common.Xml
         /// <param name="actual">The actual object.</param>
         /// <param name="path">The current path of the parent node.</param>
         /// <param name="options">Equality options.</param>
-        public DiffEngineForUnorderedElements(ElementCollection expected, ElementCollection actual, IXmlPathOpen path, Options options)
+        public DiffEngineForUnorderedElements(MarkupCollection expected, MarkupCollection actual, IXmlPathStrict path, Options options)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");
@@ -72,7 +72,7 @@ namespace Gallio.Common.Xml
             // Find first exact match (= empty diff)
             for (int i = 0; i < source.Count; i++)
             {
-                int j = pool.FindIndex(x => !mask.Contains(x) && source[i].Diff(pool[x], XmlPathOpen.Empty, options).IsEmpty);
+                int j = pool.FindIndex(x => !mask.Contains(x) && source[i].Diff(pool[x], XmlPathRoot.Strict.Empty, options).IsEmpty);
 
                 if (j < 0)
                 {
@@ -91,9 +91,7 @@ namespace Gallio.Common.Xml
 
                 if (j < 0)
                 {
-                    builder.Add(new Diff(path.ToString(), message, 
-                        invert ? expected[i].Name : String.Empty,
-                        invert ? String.Empty : actual[i].Name));
+                    builder.Add(new Diff(message, path.Element(i), invert ? DiffTargets.Expected : DiffTargets.Actual));
                 }
                 else
                 {

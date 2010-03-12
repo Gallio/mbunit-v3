@@ -27,107 +27,162 @@ namespace Gallio.Tests.Common.Xml
     [TestsOn(typeof(Attribute))]
     public class AttributeTest : DiffableTestBase
     {
+
+        [Test]
+        [ExpectedArgumentOutOfRangeException]
+        public void Constructs_with_negative_index_should_throw_exception()
+        {
+            new Attribute(-1, "name", "value", 1);
+        }
         [Test]
         [ExpectedArgumentNullException]
         public void Constructs_with_null_name_should_throw_exception()
         {
-            new Attribute(null, "value");
+            new Attribute(0, null, "value", 1);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Constructs_with_null_value_should_throw_exception()
         {
-            new Attribute("name", null);
+            new Attribute(0, "name", null, 1);
+        }
+
+        [Test]
+        [ExpectedArgumentOutOfRangeException]
+        public void Constructs_with_invalid_count_should_throw_exception([Column(-1, 0, 5)] int invalidCount)
+        {
+            new Attribute(5, "name", "value", invalidCount);
         }
 
         [Test]
         public void Constructs_ok()
         {
-            var attribute = new Attribute("planet", "Saturn");
+            var attribute = new Attribute(123, "planet", "Saturn", 456);
+            Assert.AreEqual(123, attribute.Index);
             Assert.AreEqual("planet", attribute.Name);
             Assert.AreEqual("Saturn", attribute.Value);
-            Assert.AreEqual("planet=\"Saturn\"", attribute.ToXml());
+        }
+
+        [Test]
+        [Row("planet", Options.None, true)]
+        [Row("planet", Options.IgnoreAttributesNameCase, true)]
+        [Row("PLANET", Options.None, false)]
+        [Row("PLANET", Options.IgnoreAttributesNameCase, true)]
+        [Row("star", Options.None, false)]
+        [Row("star", Options.IgnoreAttributesNameCase, false)]
+        [Row("STAR", Options.None, false)]
+        [Row("STAR", Options.IgnoreAttributesNameCase, false)]
+        public void AreNamesEqual(string otherName, Options options, bool expected)
+        {
+            var attribute = new Attribute(123, "planet", "Saturn", 456);
+            bool actual = attribute.AreNamesEqual(otherName, options);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Row("Saturn", Options.None, true)]
+        [Row("Saturn", Options.IgnoreAttributesValueCase, true)]
+        [Row("SATURN", Options.None, false)]
+        [Row("SATURN", Options.IgnoreAttributesValueCase, true)]
+        [Row("Uranus", Options.None, false)]
+        [Row("Uranus", Options.IgnoreAttributesValueCase, false)]
+        [Row("URANUS", Options.None, false)]
+        [Row("URANUS", Options.IgnoreAttributesValueCase, false)]
+        public void AreValuesEqual(string othervalue, Options options, bool expected)
+        {
+            var attribute = new Attribute(123, "planet", "Saturn", 456);
+            bool actual = attribute.AreValuesEqual(othervalue, options);
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Diff_with_null_expected_value_should_throw_exception()
         {
-             var actual = new Attribute("planet", "Saturn");
-             actual.Diff(null, XmlPath.Empty, XmlOptions.Strict.Value);
+            var actual = new Attribute(123, "planet", "Saturn", 456);
+            actual.Diff(null, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Diff_with_null_path_should_throw_exception()
         {
-            var actual = new Attribute("planet", "Saturn");
-            var expected = new Attribute("planet", "Saturn");
+            var actual = new Attribute(123, "planet", "Saturn", 456);
+            var expected = new Attribute(123, "planet", "Saturn", 456);
             actual.Diff(expected, null, XmlOptions.Strict.Value);
         }
 
         [Test]
-        public void Diff_equal_attributes()
+        public void Diff_equal_attributes_with_same_index()
         {
-            var actual = new Attribute("planet", "Saturn");
-            var expected = new Attribute("planet", "Saturn");
-            var diff = actual.Diff(expected, XmlPath.Empty, XmlOptions.Strict.Value);
+            var actual = new Attribute(123, "planet", "Saturn", 456);
+            var expected = new Attribute(123, "planet", "Saturn", 456);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            Assert.IsTrue(diff.IsEmpty);
+        }
+
+        [Test]
+        public void Diff_equal_attributes_with_different_index()
+        {
+            var actual = new Attribute(123, "planet", "Saturn", 456);
+            var expected = new Attribute(456, "planet", "Saturn", 789);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
             Assert.IsTrue(diff.IsEmpty);
         }
 
         [Test]
         public void Diff_equal_attributes_ignoring_name_case()
         {
-            var actual = new Attribute("planet", "Saturn");
-            var expected = new Attribute("PLANET", "Saturn");
-            var diff = actual.Diff(expected, XmlPath.Empty, Options.IgnoreAttributesNameCase);
+            var actual = new Attribute(123, "planet", "Saturn", 456);
+            var expected = new Attribute(123, "PLANET", "Saturn", 456);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), Options.IgnoreAttributesNameCase);
             Assert.IsTrue(diff.IsEmpty);
         }
 
         [Test]
         public void Diff_attributes_with_name_differing_by_case()
         {
-            var actual = new Attribute("planet", "Saturn");
-            var expected = new Attribute("PLANET", "Saturn");
-            var diff = actual.Diff(expected, XmlPath.Empty, XmlOptions.Strict.Value);
-            AssertDiff(diff, new Diff(string.Empty, "Unexpected attribute found.", "PLANET", "planet"));
+            var actual = new Attribute(123, "planet", "Saturn", 456);
+            var expected = new Attribute(123, "PLANET", "Saturn", 456);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            AssertDiff(diff, new Diff("Unexpected attribute found.", XmlPathRoot.Strict.Element(0).Attribute(123), DiffTargets.Actual));
         }
 
         [Test]
         public void Diff_attributes_with_different_name()
         {
-            var actual = new Attribute("planet", "Saturn");
-            var expected = new Attribute("orb", "Saturn");
-            var diff = actual.Diff(expected, XmlPath.Empty, XmlOptions.Strict.Value);
-            AssertDiff(diff, new Diff(string.Empty, "Unexpected attribute found.", "orb", "planet"));
+            var actual = new Attribute(123, "planet", "Saturn", 456);
+            var expected = new Attribute(123, "orb", "Saturn", 456);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            AssertDiff(diff, new Diff("Unexpected attribute found.", XmlPathRoot.Strict.Element(0).Attribute(123), DiffTargets.Actual));
         }
 
         [Test]
         public void Diff_attributes_with_value_differing_by_case()
         {
-            var actual = new Attribute("planet", "sAtUrN");
-            var expected = new Attribute("planet", "Saturn");
-            var diff = actual.Diff(expected, XmlPath.Empty, XmlOptions.Strict.Value);
-            AssertDiff(diff, new Diff(string.Empty, "Unexpected attribute value found.", "Saturn", "sAtUrN"));
+            var actual = new Attribute(123, "planet", "sAtUrN", 456);
+            var expected = new Attribute(123, "planet", "Saturn", 456);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            AssertDiff(diff, new Diff("Unexpected attribute value found.", XmlPathRoot.Strict.Element(0).Attribute(123), DiffTargets.Both));
         }
 
         [Test]
         public void Diff_attributes_ignoring_value_case()
         {
-            var actual = new Attribute("planet", "sAtUrN");
-            var expected = new Attribute("planet", "Saturn");
-            var diff = actual.Diff(expected, XmlPath.Empty, Options.IgnoreAttributesValueCase);
+            var actual = new Attribute(123, "planet", "sAtUrN", 456);
+            var expected = new Attribute(123, "planet", "Saturn", 456);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), Options.IgnoreAttributesValueCase);
             Assert.IsTrue(diff.IsEmpty);
         }
 
         [Test]
         public void Diff_attributes_with_different_value()
         {
-            var actual = new Attribute("planet", "Jupiter");
-            var expected = new Attribute("planet", "Saturn");
-            var diff = actual.Diff(expected, XmlPath.Empty, XmlOptions.Strict.Value);
-            AssertDiff(diff, new Diff(string.Empty, "Unexpected attribute value found.", "Saturn", "Jupiter"));
+            var actual = new Attribute(123, "planet", "Jupiter", 456);
+            var expected = new Attribute(123, "planet", "Saturn", 456);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            AssertDiff(diff, new Diff("Unexpected attribute value found.", XmlPathRoot.Strict.Element(0).Attribute(123), DiffTargets.Both));
         }
     }
 }

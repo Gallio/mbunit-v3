@@ -1,0 +1,172 @@
+// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
+// Portions Copyright 2000-2004 Jonathan de Halleux
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+using System;
+using Gallio.Common.Collections;
+using Gallio.Model.Schema;
+using Gallio.Common.Reflection;
+using Gallio.Runner.Reports.Schema;
+using Gallio.Tests;
+using MbUnit.Framework;
+using Gallio.Common.Xml;
+using Rhino.Mocks;
+
+namespace Gallio.Tests.Common.Xml
+{
+    [TestFixture]
+    [TestsOn(typeof(MarkupElement))]
+    public class MarkupElementTest : DiffableTestBase
+    {
+        [Test]
+        [ExpectedArgumentOutOfRangeException]
+        public void Constructs_with_negative_index_should_throw_exception()
+        {
+            new MarkupElement(-1, "name", AttributeCollection.Empty, EmptyArray<IMarkup>.Instance);
+        }
+        
+        [Test]
+        [ExpectedArgumentNullException]
+        public void Constructs_with_null_name_should_throw_exception()
+        {
+            new MarkupElement(0, null, AttributeCollection.Empty, EmptyArray<IMarkup>.Instance);
+        }
+
+        [Test]
+        [ExpectedArgumentNullException]
+        public void Constructs_with_null_attributes_should_throw_exception()
+        {
+            new MarkupElement(0, "name", null, EmptyArray<IMarkup>.Instance);
+        }
+
+        [Test]
+        [ExpectedArgumentNullException]
+        public void Constructs_with_null_child_should_throw_exception()
+        {
+            new MarkupElement(0, "name", AttributeCollection.Empty, null);
+        }
+
+
+        [Test]
+        public void Constructs_empty_element([Column(0, 123)] int index)
+        {
+            var element = new MarkupElement(index, "Planet", AttributeCollection.Empty, EmptyArray<IMarkup>.Instance);
+            Assert.AreEqual(index, element.Index);
+            Assert.IsEmpty(element.Children);
+            Assert.IsEmpty(element.Attributes);
+            Assert.AreEqual("Planet", element.Name);
+        }
+
+        [Test]
+        public void Constructs_non_empty_element()
+        {
+            var attribute1 = new Gallio.Common.Xml.Attribute(0, "diameter", "4878 km", 2);
+            var attribute2 = new Gallio.Common.Xml.Attribute(1, "revolution", "58.6 d", 2);
+            var mockChild1 = MockRepository.GenerateStub<IMarkup>();
+            var mockChild2 = MockRepository.GenerateStub<IMarkup>();
+            var element = new MarkupElement(0, "Planet", new[] { attribute1, attribute2 }, new[] { mockChild1, mockChild2 });
+            Assert.AreElementsSame(new[] { mockChild1, mockChild2 }, element.Children);
+            Assert.AreElementsSame(new[] { attribute1, attribute2 }, element.Attributes);
+            Assert.AreEqual("Planet", element.Name);
+        }
+
+
+        [Test]
+        [Row("planet", Options.None, true)]
+        [Row("planet", Options.IgnoreElementsNameCase, true)]
+        [Row("PLANET", Options.None, false)]
+        [Row("PLANET", Options.IgnoreElementsNameCase, true)]
+        [Row("star", Options.None, false)]
+        [Row("star", Options.IgnoreElementsNameCase, false)]
+        [Row("STAR", Options.None, false)]
+        [Row("STAR", Options.IgnoreElementsNameCase, false)]
+        public void AreNamesEqual(string otherName, Options options, bool expected)
+        {
+            var element = new MarkupElement(0, "planet", AttributeCollection.Empty, EmptyArray<IMarkup>.Instance);
+            bool actual = element.AreNamesEqual(otherName, options);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [ExpectedArgumentNullException]
+        public void Diff_with_null_expected_value_should_throw_exception()
+        {
+            var actual = new MarkupElement(123, "Name", AttributeCollection.Empty, EmptyArray<IMarkup>.Instance);
+            actual.Diff(null, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
+        }
+
+        [Test]
+        [ExpectedArgumentNullException]
+        public void Diff_with_null_path_should_throw_exception()
+        {
+            var actual = new MarkupElement(123, "Name", AttributeCollection.Empty, EmptyArray<IMarkup>.Instance);
+            var expected = new MarkupElement(123, "Name", AttributeCollection.Empty, EmptyArray<IMarkup>.Instance);
+            actual.Diff(expected, null, XmlOptions.Strict.Value);
+        }
+
+        [Test]
+        public void Diff_equal_with_different_index()
+        {
+            var actual = new MarkupElement(123, "Name", AttributeCollection.Empty, EmptyArray<IMarkup>.Instance);
+            var expected = new MarkupElement(456, "Name", AttributeCollection.Empty, EmptyArray<IMarkup>.Instance);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
+            Assert.IsTrue(diff.IsEmpty);
+        }
+
+        [Test]
+        public void Diff_equal_with_same_index()
+        {
+            var actual = new MarkupElement(123, "Name", AttributeCollection.Empty, EmptyArray<IMarkup>.Instance);
+            var expected = new MarkupElement(123, "Name", AttributeCollection.Empty, EmptyArray<IMarkup>.Instance);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
+            Assert.IsTrue(diff.IsEmpty);
+        }
+
+        [Test]
+        public void Diff_with_item_differing_by_name()
+        {
+            var actual = new MarkupElement(123, "Name", AttributeCollection.Empty, EmptyArray<IMarkup>.Instance);
+            var expected = new MarkupElement(123, "SomeOtherName", AttributeCollection.Empty, EmptyArray<IMarkup>.Instance);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
+            AssertDiff(diff, new Diff("Unexpected element markup found.", XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Both));
+        }
+
+        [Test]
+        public void Diff_with_item_differing_by_name_case()
+        {
+            var actual = new MarkupElement(123, "Name", AttributeCollection.Empty, EmptyArray<IMarkup>.Instance);
+            var expected = new MarkupElement(123, "NAME", AttributeCollection.Empty, EmptyArray<IMarkup>.Instance);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
+            AssertDiff(diff, new Diff("Unexpected element markup found.", XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Both));
+        }
+
+        [Test]
+        public void Diff_equal_with_item_differing_by_name_case()
+        {
+            var actual = new MarkupElement(123, "Name", AttributeCollection.Empty, EmptyArray<IMarkup>.Instance);
+            var expected = new MarkupElement(123, "NAME", AttributeCollection.Empty, EmptyArray<IMarkup>.Instance);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Custom.IgnoreElementsNameCase.Value);
+            Assert.IsTrue(diff.IsEmpty);
+        }
+
+        [Test]
+        public void Diff_with_items_differing_by_type()
+        {
+            var actual = new MarkupElement(123, "Name", AttributeCollection.Empty, EmptyArray<IMarkup>.Instance);
+            var expected = MockRepository.GenerateStub<IMarkup>();
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
+            AssertDiff(diff, new Diff("Unexpected element markup found.", XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Actual));
+        }
+    }
+}

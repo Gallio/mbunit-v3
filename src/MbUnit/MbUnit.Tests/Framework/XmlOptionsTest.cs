@@ -61,17 +61,5 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(Options.IgnoreAttributesNameCase | Options.IgnoreElementsValueCase |
                 Options.IgnoreComments, settings.Value);
         }
-
-
-        [Test]
-        public void Method()
-        {
-            var loose = XmlOptions.Loose;
-            var def = XmlOptions.Default;
-            var strict = XmlOptions.Strict;
-
-
-
-        }
     }
 }

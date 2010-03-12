@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,11 +22,11 @@ namespace Gallio.Common.Xml
     /// <summary>
     /// Diffing engine for collections of unordered attributes.
     /// </summary>
-    public class DiffEngineForUnorderedAttributes : IDiffEngine<AttributeCollection>
+    internal sealed class DiffEngineForUnorderedAttributes : IDiffEngine<AttributeCollection>
     {
         private readonly AttributeCollection expected;
         private readonly AttributeCollection actual;
-        private readonly IXmlPathOpen path;
+        private readonly IXmlPathStrict path;
         private readonly Options options;
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Gallio.Common.Xml
         /// <param name="actual">The actual object.</param>
         /// <param name="path">The current path of the parent node.</param>
         /// <param name="options">Equality options.</param>
-        public DiffEngineForUnorderedAttributes(AttributeCollection expected, AttributeCollection actual, IXmlPathOpen path, Options options)
+        public DiffEngineForUnorderedAttributes(AttributeCollection expected, AttributeCollection actual, IXmlPathStrict path, Options options)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");
@@ -74,9 +74,8 @@ namespace Gallio.Common.Xml
 
                 if (j < 0)
                 {
-                    builder.Add(new Diff(path.ToString(), message,
-                        invert ? expected[i].Name : String.Empty,
-                        invert ? String.Empty : actual[i].Name));
+                    var targets = invert ? DiffTargets.Expected : DiffTargets.Actual;
+                    builder.Add(new Diff(message, path.Attribute(i), targets));
                 }
                 else
                 {
@@ -98,7 +97,7 @@ namespace Gallio.Common.Xml
 
         private int Find(AttributeCollection source, Attribute attribute, IList<int> mask)
         {
-            int index = source.FindIndex(i => !mask.Contains(i) && attribute.Diff(source[i], XmlPathOpen.Empty, options).IsEmpty);
+            int index = source.FindIndex(i => !mask.Contains(i) && attribute.Diff(source[i], XmlPathStrictElement.Root.Element(0), options).IsEmpty);
 
             if (index < 0)
             {

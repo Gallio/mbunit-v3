@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using Gallio.Model.Schema;
@@ -34,24 +35,60 @@ namespace Gallio.Tests.Common.Xml
         [ExpectedArgumentNullException]
         public void Constructs_with_null_xml_should_throw_exception()
         {
-            new Parser(null);
+            Parser.Run(null, Options.None);
         }
 
+        private string sample =
+            "<Root>" +
+            "  <!-- Some comment -->" +
+            "  <Parent>" +
+            "    <Child id='123'/>" +       
+            "    <Child id='456'>Data</Child>" +
+            "  </Parent>" +            
+            "</Root>";            
+
         [Test]
-        [Row("<Node/>")]
-        [Row("<Node>Value</Node>")]
-        [Row("<Root><Node1/><Node2/></Root>")]
-        [Row("<?xml version=\"1.0\"?><Node/>")]
-        [Row("<Node value=\"hello\"/>")]
-        [Row("<Node value1=\"123\" value2=\"456\"/>")]
-        [Row("<Root><!-- Some comments here... --></Root>")]
-        [Row("<Root><Child1/><!-- Some comments here... --><Child2/></Root>")]
-        public void Parse_xml_tree(string input)
+        public void Parse()
         {
-            var parser = new Parser(input);
-            Document document = parser.Run(XmlOptions.Strict.Value);
-            string actualOutput = document.ToXml();
-            Assert.AreEqual(input, actualOutput);
+            Fragment fragment = Parser.Run(sample, Options.None);
+
+            // Level 0.
+            var children = fragment.Children.ToList();
+            Assert.AreEqual(1, children.Count);
+            Assert.IsInstanceOfType<MarkupElement>(children[0]);
+            Assert.AreEqual("Root", ((MarkupElement)children[0]).Name);
+            Assert.IsEmpty(((MarkupElement)children[0]).Attributes);
+
+            // Level 1.
+            children = children[0].Children.ToList();
+            Assert.AreEqual(2, children.Count);
+            Assert.IsInstanceOfType<MarkupComment>(children[0]);
+            Assert.AreEqual(" Some comment ", ((MarkupComment)children[0]).Text);
+            Assert.IsInstanceOfType<MarkupElement>(children[1]);
+            Assert.AreEqual("Parent", ((MarkupElement)children[1]).Name);
+            Assert.IsEmpty(((MarkupElement)children[1]).Attributes);
+
+            // Level 3 - Child 1.
+            children = children[1].Children.ToList();
+            Assert.AreEqual(2, children.Count);
+            Assert.IsInstanceOfType<MarkupElement>(children[0]);
+            Assert.AreEqual("Child", ((MarkupElement)children[0]).Name);
+            Assert.AreEqual(1, ((MarkupElement)children[0]).Attributes.Count);
+            Assert.AreEqual("id", ((MarkupElement)children[0]).Attributes[0].Name);
+            Assert.AreEqual("123", ((MarkupElement)children[0]).Attributes[0].Value);
+            Assert.IsEmpty(((MarkupElement)children[0]).Children);
+
+            // Level 3 - Child 2.
+            Assert.IsInstanceOfType<MarkupElement>(children[1]);
+            Assert.AreEqual("Child", ((MarkupElement)children[1]).Name);
+            Assert.AreEqual(1, ((MarkupElement)children[1]).Attributes.Count);
+            Assert.AreEqual("id", ((MarkupElement)children[1]).Attributes[0].Name);
+            Assert.AreEqual("456", ((MarkupElement)children[1]).Attributes[0].Value);
+
+            // Level 4.
+            children = children[1].Children.ToList();
+            Assert.IsInstanceOfType<MarkupContent>(children[0]);
+            Assert.AreEqual("Data", ((MarkupContent)children[0]).Text);
         }
     }
 }

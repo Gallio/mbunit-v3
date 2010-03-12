@@ -20,6 +20,7 @@ using Gallio.Tests;
 using MbUnit.Framework;
 using Gallio.Common.Xml;
 using System;
+using Rhino.Mocks;
 
 namespace Gallio.Tests.Common.Xml
 {
@@ -29,68 +30,44 @@ namespace Gallio.Tests.Common.Xml
     {
         [Test]
         [ExpectedArgumentNullException]
-        public void Constructs_with_null_path_should_throw_exception()
-        {
-            new Diff(null, "Message", "Expected", "Actual");
-        }
-
-        [Test]
-        [ExpectedArgumentNullException]
         public void Constructs_with_null_message_should_throw_exception()
         {
-            new Diff("Path", null, "Expected", "Actual");
+            var mockPath = MockRepository.GenerateStub<IXmlPathStrict>();
+            new Diff(null, mockPath, DiffTargets.Actual);
         }
 
         [Test]
         [ExpectedArgumentNullException]
-        public void Constructs_with_null_expected_value_should_throw_exception()
+        public void Constructs_with_null_path_should_throw_exception()
         {
-            new Diff("Path", "Message", null, "Actual");
+            new Diff("Message", null, DiffTargets.Actual);
         }
 
         [Test]
-        [ExpectedArgumentNullException]
-        public void Constructs_with_null_actual_value_should_throw_exception()
+        [ExpectedArgumentException]
+        public void Constructs_with_empty_message_should_throw_exception()
         {
-            new Diff("Path", "Message", "Expected", null);
+            var mockPath = MockRepository.GenerateStub<IXmlPathStrict>();
+            new Diff(String.Empty, mockPath, DiffTargets.Actual);
         }
 
         [Test]
         public void Constructs_ok()
         {
-            var diff = new Diff("Path", "Message", "Expected", "Actual");
-            Assert.AreEqual("Path", diff.Path);
+            var mockPath = MockRepository.GenerateStub<IXmlPathStrict>();
+            var diff = new Diff("Message", mockPath, DiffTargets.Both);
             Assert.AreEqual("Message", diff.Message);
-            Assert.AreEqual("Expected", diff.Expected);
-            Assert.AreEqual("Actual", diff.Actual);
+            Assert.AreSame(mockPath, diff.Path);
+            Assert.AreEqual(DiffTargets.Both, diff.Targets);
         }
 
         [Test]
-        public void ToString_without_expected_and_actual_values()
+        public void Formats()
         {
-            var diff = new Diff("Path", "This is the message.", String.Empty, String.Empty);
-            Assert.AreEqual("This is the message.", diff.ToString());
-        }
-
-        [Test]
-        public void ToString_with_expected_and_actual_values()
-        {
-            var diff = new Diff("Path", "This is the message.", "ExpectedValue", "ActualValue");
-            Assert.AreEqual("This is the message. Expected = 'ExpectedValue'. Found = 'ActualValue'.", diff.ToString());
-        }
-
-        [Test]
-        public void ToString_with_expected_value_only()
-        {
-            var diff = new Diff("Path", "This is the message.", "ExpectedValue", String.Empty);
-            Assert.AreEqual("This is the message. Expected = 'ExpectedValue'.", diff.ToString());
-        }
-
-        [Test]
-        public void ToString_with_actual_value_only()
-        {
-            var diff = new Diff("Path", "This is the message.", String.Empty, "ActualValue");
-            Assert.AreEqual("This is the message. Found = 'ActualValue'.", diff.ToString());
+            var mockPath = MockRepository.GenerateStub<IXmlPathStrict>();
+            mockPath.Stub(x => x.ToString()).Return("All paths lead to Roma");
+            var diff = new Diff("This is the message", mockPath, DiffTargets.Both);
+            Assert.AreEqual("This is the message at 'All paths lead to Roma'.", diff.ToString());
         }
     }
 }

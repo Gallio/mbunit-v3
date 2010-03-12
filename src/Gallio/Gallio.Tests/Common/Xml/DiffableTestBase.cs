@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,10 +31,8 @@ namespace Gallio.Tests.Common.Xml
             Assert.AreElementsEqualIgnoringOrder(expected, actual,
                 new StructuralEqualityComparer<Diff>
                 {
-                    { x => x.Path.ToString() },
-                    { x => x.Message },
-                    { x => x.Actual },
-                    { x => x.Expected }
+                    x => x.Message,
+                    x => x.Path.ToString(),
                 });
         }
     }

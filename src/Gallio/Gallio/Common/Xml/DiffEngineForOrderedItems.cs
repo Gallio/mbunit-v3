@@ -24,15 +24,22 @@ namespace Gallio.Common.Xml
     /// </summary>
     /// <typeparam name="TCollection">The type of the collection.</typeparam>
     /// <typeparam name="TItem">The type of the items in the collection.</typeparam>
-    public class DiffEngineForOrderedItems<TCollection, TItem> : IDiffEngine<TCollection>
-        where TCollection : IDiffableCollection<TCollection, TItem>
-        where TItem : IDiffable<TItem>, INamed
+    internal sealed class DiffEngineForOrderedItems<TCollection, TItem> : IDiffEngine<TCollection>
+        where TCollection : class, IDiffableCollection<TCollection, TItem>
+        where TItem : class, IDiffable<TItem>, INamed
     {
         private readonly TCollection expected;
         private readonly TCollection actual;
-        private readonly IXmlPathOpen path;
+        private readonly IXmlPathStrict path;
         private readonly Options options;
-        private readonly string itemName;
+        private readonly OrderedItemType itemType;
+
+        private static readonly IDictionary<OrderedItemType, Func<IXmlPathStrict, int, IXmlPathStrict>> extend 
+            = new Dictionary<OrderedItemType, Func<IXmlPathStrict, int, IXmlPathStrict>>
+        {
+            { OrderedItemType.Attribute, (path, i) => path.Attribute(i)},
+            { OrderedItemType.Element, (path, i) => path.Element(i)},
+        };
 
         /// <summary>
         /// Constructs the diffing engine.
@@ -41,8 +48,8 @@ namespace Gallio.Common.Xml
         /// <param name="actual">The actual object.</param>
         /// <param name="path">The current path of the parent node.</param>
         /// <param name="options">Equality options.</param>
-        /// <param name="itemName">A friendly name for the items.</param>
-        public DiffEngineForOrderedItems(TCollection expected, TCollection actual, IXmlPathOpen path, Options options, string itemName)
+        /// <param name="itemType">A type of the diffed items.</param>
+        public DiffEngineForOrderedItems(TCollection expected, TCollection actual, IXmlPathStrict path, Options options, OrderedItemType itemType)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");
@@ -50,42 +57,41 @@ namespace Gallio.Common.Xml
                 throw new ArgumentNullException("actual");
             if (path == null)
                 throw new ArgumentNullException("path");
-            if (itemName == null)
-                throw new ArgumentNullException("itemName");
 
             this.expected = expected;
             this.actual = actual;
             this.path = path;
             this.options = options;
-            this.itemName = itemName;
+            this.itemType = itemType;
         }
 
         /// <inheritdoc />
         public DiffSet Diff()
         {
             var builder = new DiffSetBuilder();
-            int index = 0;
+            int i = 0;
 
-            while (index < expected.Count)
+            while (i < expected.Count)
             {
-                if (index >= actual.Count)
+                if (i >= actual.Count)
                 {
-                    builder.Add(new Diff(path.ToString(), String.Format("Missing {0}.", itemName), expected[index].Name, String.Empty));
+                    builder.Add(new Diff(String.Format("Missing {0}.", 
+                        itemType.ToString().ToLower()), extend[itemType](path, i), DiffTargets.Expected));
                 }
                 else
                 {
-                    DiffSet diffSet = actual[index].Diff(expected[index], path, options);
+                    DiffSet diffSet = actual[i].Diff(expected[i], path, options);
                     builder.Add(diffSet);
 
-                    if (!diffSet.IsEmpty && !actual[index].AreNamesEqual(expected[index].Name, options))
+                    if (!diffSet.IsEmpty && !actual[i].AreNamesEqual(expected[i].Name, options))
                         return builder.ToDiffSet();
                 }
 
-                index++;
+                i++;
             }
 
             return builder
-                .Add(ProcessExcessAttributes(index))
+                .Add(ProcessExcessAttributes(i))
                 .ToDiffSet();
         }
 
@@ -95,10 +101,27 @@ namespace Gallio.Common.Xml
 
             for (int i = startIndex; i < actual.Count; i++)
             {
-                builder.Add(new Diff(path.ToString(), String.Format("Unexpected {0} found.", itemName), String.Empty, actual[i].Name));
+                builder.Add(new Diff(String.Format("Unexpected {0} found.", 
+                    itemType.ToString().ToLower()), extend[itemType](path, i), DiffTargets.Actual));
             }
 
             return builder.ToDiffSet();
         }
+    }
+
+    /// <summary>
+    /// The target diffed items.
+    /// </summary>
+    internal enum OrderedItemType
+    {
+        /// <summary>
+        /// Attribute.
+        /// </summary>
+        Attribute,
+
+        /// <summary>
+        /// Element
+        /// </summary>
+        Element,
     }
 }

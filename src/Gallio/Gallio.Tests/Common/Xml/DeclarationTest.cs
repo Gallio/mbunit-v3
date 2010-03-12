@@ -37,17 +37,16 @@ namespace Gallio.Tests.Common.Xml
         public void Constructs_with_empty_attributes()
         {
             var declaration = new Declaration(AttributeCollection.Empty);
-            Assert.IsEmpty(declaration.ToXml());
+            Assert.IsEmpty(declaration.Attributes);
         }
 
         [Test]
         public void Constructs_ok()
         {
-            var attribute1 = new Attribute("name1", "value1");
-            var attribute2 = new Attribute("name2", "value2");
-            var array = new[] { attribute1, attribute2 };
-            var declaration = new Declaration(new AttributeCollection(array));
-            Assert.AreEqual("<?xml name1=\"value1\" name2=\"value2\"?>", declaration.ToXml());
+            var attribute1 = new Attribute(123, "name1", "value1", 999);
+            var attribute2 = new Attribute(456, "name2", "value2", 999);
+            var declaration = new Declaration(new[] { attribute1, attribute2 });
+            Assert.AreElementsSame(new[] { attribute1, attribute2 }, declaration.Attributes);
         }
     }
 }

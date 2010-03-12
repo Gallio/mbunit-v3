@@ -1,0 +1,26 @@
+<doc>
+  <remarks>
+	<para>
+	  The path specified in <paramref name="searchedPath"/> should start with a slash character ('/').
+	  Elements must be separated by a slash, and attributes denoted by a colon (':').
+	</para>
+	<example>
+	  <para>
+	    Assuming the following XML fragment exits:
+	  </para>
+	  <code><![CDATA[
+	    <Root>
+		  <Parent>
+		    <Child someAttribute="123" />
+		  </Parent>
+		</Root>
+	  ]]></code>
+	  <para>
+		The following path would be valid:
+	  </para>
+	  <code><![CDATA[
+		"/Root/Parent/Child:someAttribute"
+	  ]]></code>
+	</example>
+  </remarks>
+</doc>

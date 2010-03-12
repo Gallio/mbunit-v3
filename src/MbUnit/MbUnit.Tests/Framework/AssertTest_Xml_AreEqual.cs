@@ -59,12 +59,6 @@ namespace MbUnit.Tests.Framework
             Assert.Xml.AreEqual(expected, actual);
         }
 
-        private void AssertFailures(AssertionFailure[] failures, params string[] expectedDescriptions)
-        {
-            Assert.AreEqual(1, failures.Length);
-            Assert.AreElementsEqualIgnoringOrder(expectedDescriptions, failures[0].LabeledValues.Select(x => x.ToString()));
-        }
-
         public struct ExpectedFailureData
         {
             public string Path;
@@ -93,17 +87,14 @@ namespace MbUnit.Tests.Framework
 
         [Test]
         [Factory("ProvideXmlData")]
-        public void AreEqual_fails(string expectedXml, string actualXml, XmlOptions options, ExpectedFailureData[] expectedErrors)
+        public void AreEqual_fails(string expectedXml, string actualXml, XmlOptions options, int expectedErrors)
         {
-            AssertionFailure[] failures = AssertTest.Capture(() => Assert.Xml.AreEqual(expectedXml, actualXml, options));
+            AssertionFailure[] failures = Capture(() => Assert.Xml.AreEqual(expectedXml, actualXml, options));
 
-            if (expectedErrors.Length > 0)
+            if (expectedErrors > 0)
             {
                 Assert.AreEqual(1, failures.Length);
-                Assert.AreElementsEqualIgnoringOrder(
-                    expectedErrors.Select(x => x.ToString()),
-                    failures[0].InnerFailures.Select(x => x.ToString()),
-                    (x, y) => y.Replace(" ", String.Empty).StartsWith(x.Replace(" ", String.Empty)));
+                Assert.AreEqual(expectedErrors, failures[0].InnerFailures.Count());
             }
             else
             {
@@ -119,142 +110,59 @@ namespace MbUnit.Tests.Framework
                 { 
                     "<Node>Hello</Node>", 
                     "<Node>Salut</Node>",
-                    XmlOptions.Default,
-                    new[] 
-                    { 
-                        new ExpectedFailureData
-                        {
-                            Message = "Unexpected element value found.",
-                            Path = "<Node>",
-                            Expected = "Hello",
-                            Actual = "Salut"
-                        }
-                    }
+                    XmlOptions.Default, 1
                 };
 
                 yield return new object[] 
                 { 
                     "<Root><Parent><Child>Hello</Child></Parent></Root>", 
                     "<Root><Parent><Child>Salut</Child></Parent></Root>",
-                    XmlOptions.Default,
-                    new[] 
-                    { 
-                        new ExpectedFailureData
-                        {
-                            Message = "Unexpected element value found.",
-                            Path = "<Root><Parent><Child>",
-                            Expected = "Hello",
-                            Actual = "Salut"
-                        }
-                    }
+                    XmlOptions.Default, 1
                 };
 
                 yield return new object[] 
                 { 
                     "<Root><Parent><Child>Hello</Child></Parent></Root>", 
                     "<Root><Parent><Môme>Salut</Môme></Parent></Root>",
-                    XmlOptions.Default,
-                    new[] 
-                    { 
-                        new ExpectedFailureData
-                        {
-                            Message = "Unexpected element found.",
-                            Path = "<Root><Parent>",
-                            Actual = "Môme"
-                        },
-                        new ExpectedFailureData
-                        {
-                            Message = "Missing element.",
-                            Path = "<Root><Parent>",
-                            Expected = "Child",
-                        }
-                    }
+                    XmlOptions.Default, 2
                 };
 
                 yield return new object[] 
                 { 
-                    "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><Root/>", 
-                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Root/>", 
-                    XmlOptions.Default,
-                    new[] 
-                    { 
-                        new ExpectedFailureData
-                        {
-                            Message = "Unexpected attribute value found.",
-                            Path = "<?xml encoding='...' ?>",
-                            Actual = "UTF-8",
-                            Expected = "ISO-8859-1"
-                        },
-                    }
+                    "<?xml version='1.0' encoding='ISO-8859-1'?><Root/>", 
+                    "<?xml version='1.0' encoding='UTF-8'?><Root/>", 
+                    XmlOptions.Default, 1
                 };
 
                 yield return new object[] 
                 { 
                     "<Root><Node1/><!-- Expected text. --><Node2/></Root>", 
                     "<Root><Node1/><!-- Actual text. --><Node2/></Root>", 
-                    XmlOptions.Strict,
-                    new[] 
-                    { 
-                        new ExpectedFailureData
-                        {
-                            Message = "Unexpected comment found.",
-                            Path = "<Root>",
-                            Actual = " Actual text. ",
-                            Expected = " Expected text. "
-                        },
-                    }
+                    XmlOptions.Strict, 1
                 };
 
                 yield return new object[] 
                 { 
                     "<Root><Child value='123X'/><Child/><Child value='456Z'/></Root>",
                     "<ROOT><Child></Child><CHILD value='123x'/><!-- Yipee! --><child vaLUE = '456z'/></ROOT>",
-                    XmlOptions.Loose,
-                    EmptyArray<ExpectedFailureData>.Instance
+                    XmlOptions.Loose, 0
                 };
 
                 yield return new object[] 
                 { 
                     GetTextResource("MbUnit.Tests.Framework.SolarSystem.xml"),
                     GetTextResource("MbUnit.Tests.Framework.SolarSystemWithErrors.xml"),
-                    XmlOptions.Custom.IgnoreElementsOrder,
-                    new ExpectedFailureData[] 
-                    { 
-                        new ExpectedFailureData
-                        {
-                            Message = "Unexpected attribute value found.",
-                            Path = "<SolarSystem><Planets><Planet distanceToSun='...'>",
-                            Actual = "1.666 AU",
-                            Expected = "1.5 AU"
-                        },
-                        new ExpectedFailureData
-                        {
-                            Message = "Unexpected element found.",
-                            Path = "<SolarSystem><Planets><Planet><Satellites>",
-                            Actual = "SXtellite",
-                        },
-                        new ExpectedFailureData
-                        {
-                            Message = "Missing element.",
-                            Path = "<SolarSystem><Planets><Planet><Satellites>",
-                            Expected = "Satellite",
-                        },
-                        new ExpectedFailureData
-                        {
-                            Message = "Unexpected element found.",
-                            Path = "<SolarSystem><Planets>",
-                            Actual = "Planet",
-                        },
-                        new ExpectedFailureData
-                        {
-                            Message = "Unexpected comment found.",
-                            Path = "<SolarSystem><Planets>",
-                            Actual = " Hey! This one is yours! ",
-                            Expected = " Hey! This one is mine! "
-                        },
-                    }
+                    XmlOptions.Custom.IgnoreElementsOrder, 5
                 };
             }
+        }
+
+        [Test, Explicit]
+        public void AreEqual_fails_explicit()
+        {
+            string expected = GetTextResource("MbUnit.Tests.Framework.SolarSystem.xml");
+            string actual = GetTextResource("MbUnit.Tests.Framework.SolarSystemWithErrors.xml");
+            Assert.Xml.AreEqual(expected, actual);
         }
     }
 }

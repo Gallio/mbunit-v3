@@ -34,38 +34,52 @@ namespace MbUnit.Tests.Framework
         [ExpectedArgumentNullException]
         public void Assert_IsUnique_with_null_reader_should_throw_exception()
         {
-            Assert.Xml.IsUnique((TextReader)null, XmlPath.Element("Root"));
+            Assert.Xml.IsUnique((TextReader)null, XmlPath.Element("Root"), XmlOptions.Default);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Assert_IsUnique_with_null_xml_should_throw_exception()
         {
-            Assert.Xml.IsUnique((string)null, XmlPath.Element("Root"));
+            Assert.Xml.IsUnique((string)null, XmlPath.Element("Root"), XmlOptions.Default);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Assert_IsUnique_with_null_path_should_throw_exception()
         {
-            Assert.Xml.IsUnique("<xml/>", null);
+            Assert.Xml.IsUnique("<xml/>", (IXmlPathLoose)null, XmlOptions.Default);
+        }
+
+        [Test]
+        [ExpectedArgumentNullException]
+        public void Assert_IsUnique_with_null_text_path_should_throw_exception()
+        {
+            Assert.Xml.IsUnique("<xml/>", (string)null, XmlOptions.Default);
         }
 
         [Test]
         public void Assert_IsUnique_passes()
         {
             var xml = GetTextResource("MbUnit.Tests.Framework.SolarSystem.xml");
-            Assert.Xml.IsUnique(xml, XmlPath.Element("SolarSystem").Element("Planets"));
+            Assert.Xml.IsUnique(xml, XmlPath.Element("SolarSystem").Element("Planets"), XmlOptions.Default);
+        }
+
+        [Test]
+        public void Assert_IsUnique_passes_with_text_path()
+        {
+            var xml = GetTextResource("MbUnit.Tests.Framework.SolarSystem.xml");
+            Assert.Xml.IsUnique(xml, "/SolarSystem/Planets", XmlOptions.Default);
         }
 
         [Test]
         public void Assert_IsUnique_fails_because_the_searched_item_does_not_exist()
         {
             var xml = GetTextResource("MbUnit.Tests.Framework.SolarSystem.xml");
-            AssertionFailure[] failures = AssertTest.Capture(() => Assert.Xml.IsUnique(xml, XmlPath.Element("SolarSystem").Element("Moons")));
+            AssertionFailure[] failures = Capture(() => Assert.Xml.IsUnique(xml, XmlPath.Element("SolarSystem").Element("Moons"), XmlOptions.Default));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the XML fragment to contain only once the searched XML element or attribute, but none was found.", failures[0].Description);
-            Assert.AreEqual("<SolarSystem><Moons>", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("/SolarSystem/Moons", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("0", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
 
@@ -73,10 +87,10 @@ namespace MbUnit.Tests.Framework
         public void Assert_IsUnique_fails_because_the_searched_item_exists_several_times()
         {
             var xml = GetTextResource("MbUnit.Tests.Framework.SolarSystem.xml");
-            AssertionFailure[] failures = AssertTest.Capture(() => Assert.Xml.IsUnique(xml, XmlPath.Element("SolarSystem").Element("Planets").Element("Planet")));
+            AssertionFailure[] failures = Capture(() => Assert.Xml.IsUnique(xml, XmlPath.Element("SolarSystem").Element("Planets").Element("Planet"), XmlOptions.Default));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the XML fragment to contain only once the searched XML element or attribute, But several were found.", failures[0].Description);
-            Assert.AreEqual("<SolarSystem><Planets><Planet>", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("/SolarSystem/Planets/Planet", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("8", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
     }

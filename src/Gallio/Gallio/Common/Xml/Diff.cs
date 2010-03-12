@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,25 +21,13 @@ using Gallio.Framework.Assertions;
 namespace Gallio.Common.Xml
 {
     /// <summary>
-    /// A diff item representing a difference between two XML fragments.
+    /// A diff item representing one single difference between two XML fragments.
     /// </summary>
-    public class Diff
+    public sealed class Diff
     {
-        private readonly string path;
         private readonly string message;
-        private readonly string expected;
-        private readonly string actual;
-
-        /// <summary>
-        /// Gets the path of the difference in the XML fragment.
-        /// </summary>
-        public string Path
-        {
-            get
-            {
-                return path;
-            }
-        }
+        private readonly IXmlPathStrict path;
+        private readonly DiffTargets targets;
 
         /// <summary>
         /// Gets a message explaining the difference.
@@ -53,86 +41,79 @@ namespace Gallio.Common.Xml
         }
 
         /// <summary>
-        /// Gets the expected XML fragment.
+        /// Gets the path of the difference.
         /// </summary>
-        public string Expected
+        public IXmlPathStrict Path
         {
             get
             {
-                return expected;
+                return path;
             }
         }
 
         /// <summary>
-        /// Gets the actual XML fragment.
+        /// Indicates which XML fragment is targeted by the diff.
         /// </summary>
-        public string Actual
+        public DiffTargets Targets
         {
             get
             {
-                return actual;
+                return targets;
             }
         }
 
         /// <summary>
         /// Constructs a diff item.
         /// </summary>
-        /// <param name="path">The path of the difference in the XML fragment.</param>
         /// <param name="message">The message explaining the difference.</param>
-        /// <param name="expected">The expected XML fragment.</param>
-        /// <param name="actual">The actual XML fragment</param>
-        public Diff(string path, string message, string expected, string actual)
+        /// <param name="path">The path of the difference.</param>
+        /// <param name="targets">Indicates which XML fragment is targeted by the diff.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> or <paramref name="path"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="message"/> or <paramref name="path"/> is empty.</exception>
+        public Diff(string message, IXmlPathStrict path, DiffTargets targets)
         {
-            if (path == null)
-                throw new ArgumentNullException("path");
             if (message == null)
                 throw new ArgumentNullException("message");
-            if (expected == null)
-                throw new ArgumentNullException("expected");
-            if (actual == null)
-                throw new ArgumentNullException("actual");
+            if (path == null)
+                throw new ArgumentNullException("path");
+            if (message.Length == 0)
+                throw new ArgumentException("Cannot be empty.", "message");
 
-            this.path = path;
             this.message = message;
-            this.expected = expected;
-            this.actual = actual;
+            this.path = path;
+            this.targets = targets;
         }
 
         /// <inheritdoc />
         public override string ToString()
         {
-            var builder = new StringBuilder(message);
-
-            if (expected.Length > 0)
-            {
-                builder.AppendFormat(" Expected = '{0}'.", expected);
-            }
-
-            if (actual.Length > 0)
-            {
-                builder.AppendFormat(" Found = '{0}'.", actual);
-            }
-
-            return builder.ToString();
+            return String.Format("{0} at '{1}'.", message, path.ToString());
         }
 
         /// <summary>
-        /// Returns the diff as an assertion failures.
+        /// Returns the diff as an assertion failure.
         /// </summary>
+        /// <param name="expected">The expected fragment used to format the diff.</param>
+        /// <param name="actual">The actual fragment used to format the diff.</param>
         /// <returns>The resulting assertion failure.</returns>
-        public AssertionFailure ToAssertionFailure()
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expected"/> or <paramref name="actual"/> is null.</exception>
+        public AssertionFailure ToAssertionFailure(Fragment expected, Fragment actual)
         {
+            bool showActual = ((targets & DiffTargets.Actual) != 0);
+            bool showExpected = ((targets & DiffTargets.Expected) != 0);
             var builder = new AssertionFailureBuilder(message);
-            builder.AddLabeledValue("Path", path);
 
-            if (expected.Length > 0)
+            if (showActual && showExpected)
             {
-                builder.AddRawExpectedValue(expected);
+                builder.AddRawExpectedAndActualValuesWithDiffs(path.Format(expected), path.Format(actual));
             }
-
-            if (actual.Length > 0)
+            else if (showActual)
             {
-                builder.AddRawActualValue(actual);
+                builder.AddRawActualValue(path.Format(actual));
+            }
+            else if (showExpected)
+            {
+                builder.AddRawExpectedValue(path.Format(expected));
             }
 
             return builder.ToAssertionFailure();

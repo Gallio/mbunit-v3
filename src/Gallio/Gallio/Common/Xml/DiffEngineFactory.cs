@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Common.Xml;
 
 namespace Gallio.Common.Xml
 {
@@ -27,41 +28,37 @@ namespace Gallio.Common.Xml
         /// <summary>
         /// Makes a diffing engine for collections of attributes.
         /// </summary>
-        /// <param name="expected">The expected object.</param>
-        /// <param name="actual">The actual object.</param>
+        /// <param name="expected">The expected attributes.</param>
+        /// <param name="actual">The actual attributes.</param>
         /// <param name="path">The current path of the parent node.</param>
         /// <param name="options">Equality options.</param>
         /// <returns>The resulting diffing engine.</returns>
-        public static IDiffEngine<AttributeCollection> ForAttributes(AttributeCollection expected, AttributeCollection actual, IXmlPathOpen path, Options options)
+        public static IDiffEngine<AttributeCollection> ForAttributes(AttributeCollection expected, AttributeCollection actual, IXmlPathStrict path, Options options)
         {
             if ((options & Options.IgnoreAttributesOrder) != 0)
             {
                 return new DiffEngineForUnorderedAttributes(expected, actual, path, options);
             }
-            else
-            {
-                return new DiffEngineForOrderedItems<AttributeCollection, Attribute>(expected, actual, path, options, "attribute");
-            }
+            
+            return new DiffEngineForOrderedItems<AttributeCollection, Attribute>(expected, actual, path, options, OrderedItemType.Attribute);
         }
 
         /// <summary>
         /// Makes a diffing engine for collections of elements.
         /// </summary>
-        /// <param name="expected">The expected object.</param>
-        /// <param name="actual">The actual object.</param>
+        /// <param name="expected">The expected elements.</param>
+        /// <param name="actual">The actual elements.</param>
         /// <param name="path">The current path of the parent node.</param>
         /// <param name="options">Equality options.</param>
         /// <returns>The resulting diffing engine.</returns>
-        public static IDiffEngine<ElementCollection> ForElements(ElementCollection expected, ElementCollection actual, IXmlPathOpen path, Options options)
+        public static IDiffEngine<MarkupCollection> ForElements(MarkupCollection expected, MarkupCollection actual, IXmlPathStrict path, Options options)
         {
             if ((options & Options.IgnoreElementsOrder) != 0)
             {
                 return new DiffEngineForUnorderedElements(expected, actual, path, options);
             }
-            else
-            {
-                return new DiffEngineForOrderedItems<ElementCollection, Element>(expected, actual, path, options, "element");
-            }
+
+            return new DiffEngineForOrderedItems<MarkupCollection, IMarkup>(expected, actual, path, options, OrderedItemType.Element);
         }
     }
 }

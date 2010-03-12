@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,12 +20,12 @@ using System.Text;
 namespace Gallio.Common.Xml
 {
     /// <summary>
-    /// A named XML item.
+    /// Represents an XML markup with a name.
     /// </summary>
     public interface INamed
     {
         /// <summary>
-        /// Gets the name of the item.
+        /// Gets the name of the markup.
         /// </summary>
         string Name
         {
@@ -33,7 +33,7 @@ namespace Gallio.Common.Xml
         }
 
         /// <summary>
-        /// Determines whether the name of the current item is equal to the specified name, 
+        /// Determines whether the name of the current markup is equal to the specified name, 
         /// by respecting the specified equality options.
         /// </summary>
         /// <param name="otherName">The name to compare.</param>

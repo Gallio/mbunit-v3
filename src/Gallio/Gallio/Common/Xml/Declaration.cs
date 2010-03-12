@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Common.Collections;
 
 namespace Gallio.Common.Xml
 {
     /// <summary>
     /// Represents the declaration element at the beginning of an XML document.
     /// </summary>
-    public class Declaration : IDiffable<Declaration>
+    public sealed class Declaration : MarkupBase, IDiffable<Declaration>
     {
         private readonly AttributeCollection attributes;
 
@@ -41,31 +42,29 @@ namespace Gallio.Common.Xml
         /// Constructs the declaration element.
         /// </summary>
         /// <param name="attributes">The attributes of the element.</param>
-        public Declaration(AttributeCollection attributes)
+        public Declaration(IEnumerable<Attribute> attributes)
+            : base(-1, EmptyArray<IMarkup>.Instance)
         {
             if (attributes == null)
                 throw new ArgumentNullException("attributes");
 
-            this.attributes = attributes;
-        }
-
-        /// <summary>
-        /// Returns the XML fragment for the declaration element.
-        /// </summary>
-        /// <returns>The resulting XML fragment representing the declaration element.</returns>
-        public string ToXml()
-        {
-            var output = attributes.ToXml();
-
-            if (output.Length > 0)
-                output = String.Format("<?xml{0}?>", output);
-
-            return output;
+            this.attributes = new AttributeCollection(attributes);
         }
 
         /// <inheritdoc />
-        public DiffSet Diff(Declaration expected, IXmlPathOpen path, Options options)
+        public override DiffSet Diff(IMarkup expected, IXmlPathStrict path, Options options)
         {
+            return Diff((Declaration)expected, path, options);
+        }
+
+        /// <inheritdoc />
+        public DiffSet Diff(Declaration expected, IXmlPathStrict path, Options options)
+        {
+            if (expected == null)
+                throw new ArgumentNullException("expected");
+            if (path == null)
+                throw new ArgumentNullException("path");
+            
             return attributes.Diff(expected.Attributes, path, options);
         }
     }
