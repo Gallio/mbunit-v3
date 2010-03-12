@@ -100,6 +100,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\SDK\Loader\Gallio.Loader.cs">
+      <Link>Gallio.Loader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SDK\Loader\Gallio.Loader.Isolation.cs">
+      <Link>Gallio.Loader.Isolation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SDK\Loader\Gallio.Loader.VersionPolicy.cs">
+      <Link>Gallio.Loader.VersionPolicy.cs</Link>
+    </Compile>
     <Compile Include="Core\DefaultShell.cs" />
     <Compile Include="Core\Guids.cs" />
     <Compile Include="Core\ShellAccessor.cs" />
@@ -124,10 +133,6 @@
     <Compile Include="UI\ToolWindows\ShellToolWindowPane.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio.Loader\Gallio.Loader.vs2010.csproj">
-      <Project>{67FB2969-E6BF-4754-91AA-B6075F8E67EE}</Project>
-      <Name>Gallio.Loader.vs2010</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.vs2010.csproj">
       <Project>{36B1F505-995B-41E7-AAC9-1E845B08F2D7}</Project>
       <Name>Gallio.UI.vs2010</Name>

@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using JetBrains.ReSharper.TaskRunnerFramework;
-using Gallio.Loader;
+using Gallio.Loader.Isolation;
 
 namespace Gallio.ReSharperRunner.Provider.Facade
 {
@@ -113,7 +113,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
                 }
                 catch (Exception ex)
                 {
-                    throw SafeException.Wrap(ex);
+                    throw ServerExceptionUtils.Wrap(ex);
                 }
             }
         }
@@ -127,7 +127,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
             }
             catch (Exception ex)
             {
-                throw SafeException.Wrap(ex);
+                throw ServerExceptionUtils.Wrap(ex);
             }
         }
 
@@ -141,7 +141,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
             }
             catch (Exception ex)
             {
-                throw SafeException.Wrap(ex);
+                throw ServerExceptionUtils.Wrap(ex);
             }
         }
 
@@ -154,7 +154,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
             }
             catch (Exception ex)
             {
-                throw SafeException.Wrap(ex);
+                throw ServerExceptionUtils.Wrap(ex);
             }
         }
 
@@ -167,7 +167,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
             }
             catch (Exception ex)
             {
-                throw SafeException.Wrap(ex);
+                throw ServerExceptionUtils.Wrap(ex);
             }
         }
 
@@ -180,7 +180,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
             }
             catch (Exception ex)
             {
-                throw SafeException.Wrap(ex);
+                throw ServerExceptionUtils.Wrap(ex);
             }
         }
 
@@ -193,7 +193,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
             }
             catch (Exception ex)
             {
-                throw SafeException.Wrap(ex);
+                throw ServerExceptionUtils.Wrap(ex);
             }
         }
 
@@ -206,7 +206,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
             }
             catch (Exception ex)
             {
-                throw SafeException.Wrap(ex);
+                throw ServerExceptionUtils.Wrap(ex);
             }
         }
 

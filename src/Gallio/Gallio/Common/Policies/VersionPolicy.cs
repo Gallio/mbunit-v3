@@ -18,11 +18,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
-#if LOADER
-namespace Gallio.Loader // separate copy of version policy embedded in Gallio.Loader
-#else
+// Note: There is a separate copy in the Loader SDK.
 namespace Gallio.Common.Policies
-#endif
 {
     /// <summary>
     /// Gets version information for Gallio components.

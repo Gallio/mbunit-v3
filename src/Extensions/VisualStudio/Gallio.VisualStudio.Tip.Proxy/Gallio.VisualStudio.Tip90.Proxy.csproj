@@ -58,7 +58,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EnvironmentManager.cs" />
+    <Compile Include="..\..\..\SDK\Loader\Gallio.Loader.cs">
+      <Link>Gallio.Loader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SDK\Loader\Gallio.Loader.Isolation.cs">
+      <Link>Gallio.Loader.Isolation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SDK\Loader\Gallio.Loader.SharedEnvironment.cs">
+      <Link>Gallio.Loader.SharedEnvironment.cs</Link>
+    </Compile>
     <Compile Include="GallioTestElement.cs" />
     <Compile Include="GallioTestResult.cs" />
     <Compile Include="Guids.cs" />
@@ -77,13 +85,6 @@
     <Compile Include="Resources\VSPackageResourceIds.cs" />
     <Compile Include="SGallioTestService.cs" />
     <Compile Include="XmlPersistenceUtils.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio.Loader\Gallio.Loader.csproj">
-      <Project>{67FB2969-E6BF-4754-91AA-B6075F8E67EE}</Project>
-      <Name>Gallio.Loader</Name>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Test.ico" />

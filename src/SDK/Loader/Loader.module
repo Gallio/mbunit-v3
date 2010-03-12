@@ -1,0 +1,25 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(RootDir)\bin\Module.targets" />
+
+  <ItemGroup>
+    <CSharpProject Include="Gallio.Loader$(ProjectVariant).csproj" />
+  
+    <File Include="Gallio.Loader.cs">
+      <ImagePath>sdk\Loader</ImagePath>
+    </File>
+    <File Include="Gallio.Loader.Isolation.cs">
+      <ImagePath>sdk\Loader</ImagePath>
+    </File>
+    <File Include="Gallio.Loader.SharedEnvironment.cs">
+      <ImagePath>sdk\Loader</ImagePath>
+    </File>
+    <File Include="Gallio.Loader.VersionPolicy.cs">
+      <ImagePath>sdk\Loader</ImagePath>
+    </File>
+	
+	<XmlDocFile Include="bin\Gallio.Loader.xml">
+	  <!-- We don't actually ship this file. -->
+	  <ImagePath>..\temp</ImagePath>
+	</XmlDocFile>
+  </ItemGroup>
+</Project>

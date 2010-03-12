@@ -30,7 +30,7 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
     {
         static AnnotationDaemonStage()
         {
-            GallioLoader.Initialize().SetupRuntime();
+            LoaderManager.InitializeAndSetupRuntimeIfNeeded();
         }
 
 #if RESHARPER_31 || RESHARPER_40 || RESHARPER_41

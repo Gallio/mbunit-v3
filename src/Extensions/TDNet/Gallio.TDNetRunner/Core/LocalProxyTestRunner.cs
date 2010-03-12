@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Gallio.Loader;
+using Gallio.Loader.Isolation;
+using Gallio.Loader.SharedEnvironment;
 using Gallio.TDNetRunner.Facade;
 using Gallio.TDNetRunner.Properties;
 
@@ -89,7 +91,7 @@ namespace Gallio.TDNetRunner.Core
         {
             try
             {
-                IGallioRemoteEnvironment environment = EnvironmentManager.GetSharedEnvironment();
+                IIsolatedEnvironment environment = SharedEnvironmentManager.GetSharedEnvironment();
                 AppDomain.CurrentDomain.AssemblyResolve += ResolveRunnerAssembly;
                 Type runnerType = typeof(RemoteProxyTestRunner);
                 object runner = environment.AppDomain.CreateInstanceAndUnwrap(runnerType.Assembly.FullName, runnerType.FullName);

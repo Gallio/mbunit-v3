@@ -62,6 +62,7 @@
                     <Directory Id='extrasFolder' Name='extras'/>
                     <Directory Id='samplesFolder' Name='samples'/>
                     <Directory Id='licensesFolder' Name='licenses'/>
+                    <Directory Id='sdkFolder' Name='sdk'/>
                 </Directory>                
             </Directory>
 	    
@@ -165,7 +166,10 @@
             <FeatureRef Id='feat_MbUnit3.Templates.VS2010'/>
         </FeatureRef>
 
-        <Feature Id='feat_FrameworkAdapters' Title="Test Framework Adapters" Level="1" Display="6" AllowAdvertise="no">
+        <FeatureRef Id='feat_Archimedes'> <!-- Display="6" -->
+        </FeatureRef>
+		
+        <Feature Id='feat_FrameworkAdapters' Title="Test Framework Adapters" Level="1" Display="8" AllowAdvertise="no">
             <FeatureRef Id='feat_CSUnitAdapter'/>
             <FeatureRef Id='feat_MbUnit2Adapter'/>
 <?ifdef FEATURE_MSTEST_ADAPTER ?>
@@ -178,7 +182,7 @@
             <FeatureRef Id='feat_XunitAdapter'/>
         </Feature>
 
-        <Feature Id='feat_Runners' Title='Test Runners' Level="1" Display="8" AllowAdvertise="no">
+        <Feature Id='feat_Runners' Title='Test Runners' Level="1" Display="10" AllowAdvertise="no">
             <FeatureRef Id='feat_Gallio.Echo'/>
             <FeatureRef Id='feat_Gallio.Icarus'/>
             <FeatureRef Id='feat_Gallio.MsBuildTasks'/>
@@ -195,7 +199,7 @@
 <?endif?>
         </Feature>
 
-        <Feature Id='feat_Tools' Title='Test Tools' Level="1" Display="10" AllowAdvertise="no">
+        <Feature Id='feat_Tools' Title='Test Tools' Level="1" Display="12" AllowAdvertise="no">
 <?ifdef FEATURE_AUTOCAD ?>
             <FeatureRef Id='feat_Gallio.AutoCAD'/>
 <?endif?>
@@ -213,7 +217,7 @@
             <FeatureRef Id='feat_TypeMockIntegration'/>
         </Feature>
 
-        <Feature Id='feat_Docs' Title='Documentation' Level="1" Display="12" AllowAdvertise="no">
+        <Feature Id='feat_Docs' Title='Documentation' Level="1" Display="14" AllowAdvertise="no">
 <?ifdef FEATURE_CHM_HELP ?>
             <FeatureRef Id='feat_Gallio.Help'/>
 <?endif?>
@@ -222,16 +226,21 @@
 <?endif?>
         </Feature>
 
-        <Feature Id="feat_Samples" Title='Samples' Level="1" Display="14" AllowAdvertise="no">
+        <Feature Id="feat_Samples" Title='Samples' Level="1" Display="16" AllowAdvertise="no">
             <ComponentRef Id="SamplesMenuFolder.RemoveFolder"/>
             <FeatureRef Id='feat_Gallio.Samples'/>
             <FeatureRef Id='feat_MbUnit3.Samples'/>
         </Feature>
 
-        <Feature Id='feat_Extras' Title='Extras' Level="1" Display="16" AllowAdvertise="no">
+        <Feature Id='feat_Extras' Title='Extras' Level="1" Display="18" AllowAdvertise="no">
             <FeatureRef Id='feat_CCNetExtensions'/>
         </Feature>
 
+<?ifdef FEATURE_SDK ?>
+        <FeatureRef Id='feat_SDK'> <!-- Display="20" -->
+		</FeatureRef>
+<?endif?>
+		
         <!-- -->
         <!-- Properties used by 'Add or Remove Programs' in Control Panel. -->
         <!-- -->

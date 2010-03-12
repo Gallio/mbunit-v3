@@ -498,14 +498,15 @@
           Condition="'@(CommonProject)'!=''" />
   
   <Target Name="CopyCommonProjectContentToImage"
-          Outputs="%(CommonProject.ContentPath)">
+          Outputs="%(CommonProject.ImageContentPath)">
     <MSBuild Projects="@(CommonProject)"
-             Condition="'%(CommonProject.OutputPath)'!=''"
+             Properties="$(CommonProjectProperties)"
+			 Condition="'%(CommonProject.ImageContentPath)'!=''"
              Targets="GetContentToCopy">
       <Output TaskParameter="TargetOutputs" ItemName="CommonProjectContentToCopy" />
     </MSBuild>
 
-    <CreateProperty Value="%(CommonProject.ContentPath)">
+    <CreateProperty Value="$(ModuleImageDir)\%(CommonProject.ImageContentPath)">
       <Output TaskParameter="Value" PropertyName="_ProjectContentPath" />
     </CreateProperty>
 
@@ -515,19 +516,20 @@
           DestinationFiles="@(CommonProjectContentToCopy->'$(_ProjectContentPath)\%(TargetPath)')" />
 
     <ItemGroup>
-      <CommonProjectContentToCopy Remove="**\*" />
+      <CommonProjectContentToCopy Remove="@(CommonProjectContentToCopy)" />
     </ItemGroup>
   </Target>
 
   <Target Name="CopyCommonProjectOutputToImage"
-          Outputs="%(CommonProject.OutputPath)">
+          Outputs="%(CommonProject.ImageOutputPath)">
     <MSBuild Projects="@(CommonProject)"
-             Condition="'%(CommonProject.OutputPath)'!=''"
+             Properties="$(CommonProjectProperties)"
+             Condition="'%(CommonProject.ImageOutputPath)'!=''"
              Targets="GetOutputToCopy">
       <Output TaskParameter="TargetOutputs" ItemName="CommonProjectOutputToCopy" />
     </MSBuild>
 
-    <CreateProperty Value="%(CommonProject.OutputPath)">
+    <CreateProperty Value="$(ModuleImageDir)\%(CommonProject.ImageOutputPath)">
       <Output TaskParameter="Value" PropertyName="_ProjectOutputPath" />
     </CreateProperty>
 
@@ -537,7 +539,7 @@
           DestinationFiles="@(CommonProjectOutputToCopy->'$(_ProjectOutputPath)\%(TargetPath)')" />
 
     <ItemGroup>
-      <CommonProjectOutputToCopy Remove="**\*" />
+      <CommonProjectOutputToCopy Remove="@(CommonProjectOutputToCopy)" />
     </ItemGroup>    
   </Target>
   
@@ -648,7 +650,7 @@
   
   <Target Name="TestWithGallio"
           DependsOnTargets="ReadMergedTestAssemblyItemsFromMeta"
-          Condition="'$(Main)'=='true'">
+          Condition="'$(Main)'=='true' and '@(MergedTestAssembly)'!=''">
     <PropertyGroup>
       <_TestCoverageFilters>
       </_TestCoverageFilters>

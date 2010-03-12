@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{7D517A79-20C8-4a65-AB25-65EEB787096A}</ProjectGuid>
+    <ProjectGuid>{7D517A79-20C8-4A65-AB25-65EEB787096A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.ReSharperRunner</RootNamespace>
@@ -109,6 +109,14 @@
     <Reference Include="JetBrains.ReSharper.UnitTestExplorer, Version=3.0.517.8, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="JetBrains.ReSharper.UnitTestFramework, Version=5.0.1526.25, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\JetBrains\ReSharper\v5.0\Bin\JetBrains.ReSharper.UnitTestFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio 2008 SDK\VisualStudioIntegration\Common\Assemblies\Microsoft.VisualStudio.OLE.Interop.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -121,6 +129,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
+      <Aliases>global</Aliases>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -131,8 +140,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\SDK\Loader\Gallio.Loader.cs">
+      <Link>Gallio.Loader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SDK\Loader\Gallio.Loader.Isolation.cs">
+      <Link>Gallio.Loader.Isolation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SDK\Loader\Gallio.Loader.SharedEnvironment.cs">
+      <Link>Gallio.Loader.SharedEnvironment.cs</Link>
+    </Compile>
     <Compile Include="Provider\AnnotationState.cs" />
-    <Compile Include="Provider\EnvironmentManager.cs" />
     <Compile Include="Provider\Actions\ShowFullReportAction.cs" />
     <Compile Include="Provider\Actions\ShowCondensedReportAction.cs" />
     <Compile Include="Provider\Actions\GallioAction.cs" />
@@ -189,10 +206,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio.Loader\Gallio.Loader.csproj">
-      <Project>{67FB2969-E6BF-4754-91AA-B6075F8E67EE}</Project>
-      <Name>Gallio.Loader</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>

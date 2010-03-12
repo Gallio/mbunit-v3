@@ -1,0 +1,55 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(RootDir)\bin\Module.targets" />
+
+  <ItemGroup>
+    <Module Include="$(SourceDir)\Gallio\Gallio.module" />
+    <Module Include="$(SourceDir)\MbUnit\MbUnit.module" />
+  
+    <CSharpProject Include="Archimedes\Archimedes$(ProjectVariant).csproj" />
+    <CSharpProject Include="Archimedes.Tests\Archimedes.Tests$(ProjectVariant).csproj" />
+    <CSharpProject Include="Archimedes.Client\Archimedes.Client$(ProjectVariant).csproj" />
+    <CSharpProject Include="Archimedes.Web\Archimedes.Web$(ProjectVariant).csproj">
+	  <ImageContentPath>bin\Archimedes\Web</ImageContentPath>
+	</CSharpProject>
+    <CSharpProject Include="Archimedes.Web.Tests\Archimedes.Web.Tests$(ProjectVariant).csproj" />
+    
+	<AssemblyFile Include="Archimedes\bin\Archimedes.dll">
+	  <ImagePath>bin\Archimedes</ImagePath>
+	</AssemblyFile>
+	<PdbFile Include="Archimedes\bin\Archimedes.pdb">
+	  <ImagePath>bin\Archimedes</ImagePath>
+	</PdbFile>
+	<XmlDocFile Include="Archimedes\bin\Archimedes.xml">
+	  <ImagePath>bin\Archimedes</ImagePath>
+	</XmlDocFile>
+	<PluginFile Include="Archimedes\Archimedes.plugin">
+	  <ImagePath>bin\Archimedes</ImagePath>
+	</PluginFile>
+	<File Include="Archimedes\Resources\Archimedes.ico">
+	  <ImagePath>bin\Archimedes\Resources</ImagePath>
+	</File>
+	
+	<AssemblyFile Include="Archimedes.Client\bin\Archimedes.Client.exe">
+	  <ImagePath>bin\Archimedes</ImagePath>
+	</AssemblyFile>
+	<ConfigFile Include="Archimedes.Client\Archimedes.Client.exe.config">
+	  <ImagePath>bin\Archimedes</ImagePath>
+	</ConfigFile>
+	<AssemblyFile Include="Archimedes.Client\Archimedes.Client.plugin">
+	  <ImagePath>bin\Archimedes</ImagePath>
+	</AssemblyFile>
+	
+	<AssemblyFile Include="Archimedes.Web\bin\Archimedes.Web.dll">
+	  <ImagePath>bin\Archimedes\Web\bin</ImagePath>
+	</AssemblyFile>
+		
+    <TestAssembly Include="Archimedes.Tests\bin\Archimedes.Tests.dll" />
+    <TestAssembly Include="Archimedes.Web.Tests\bin\Archimedes.Web.Tests.dll" />
+	
+	<Feature Include="FEATURE_ARCHIMEDES" />
+  </ItemGroup>
+  
+  <Target Name="BeforeDist">
+    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ModuleImageDir)\bin\Archimedes\Web&quot; -cg ComponentGroup -var var.Archimedes.Web.source -gg -ke -nologo -sfrag -sreg -t:Archimedes.Web.xslt -out Archimedes.Web.wxi" />
+  </Target>
+</Project>

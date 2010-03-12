@@ -108,6 +108,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\SDK\Loader\Gallio.Loader.cs">
+      <Link>Gallio.Loader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SDK\Loader\Gallio.Loader.Isolation.cs">
+      <Link>Gallio.Loader.Isolation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SDK\Loader\Gallio.Loader.SharedEnvironment.cs">
+      <Link>Gallio.Loader.SharedEnvironment.cs</Link>
+    </Compile>
     <Compile Include="Provider\Actions\GallioAction.cs" />
     <Compile Include="Provider\Actions\ShowCondensedReportAction.cs" />
     <Compile Include="Provider\Actions\ShowFullReportAction.cs" />
@@ -119,7 +128,6 @@
     <Compile Include="Provider\Daemons\ErrorAnnotationHighlighting.cs" />
     <Compile Include="Provider\Daemons\AnnotationDaemonStage.cs" />
     <Compile Include="Provider\Daemons\AnnotationDaemonStageProcess.cs" />
-    <Compile Include="Provider\EnvironmentManager.cs" />
     <Compile Include="Provider\Facade\AdapterFacadeLogger.cs" />
     <Compile Include="Provider\Facade\AdapterFacadeTaskServer.cs" />
     <Compile Include="Provider\Facade\FacadeLoggerWrapper.cs" />
@@ -166,10 +174,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio.Loader\Gallio.Loader.csproj">
-      <Project>{67FB2969-E6BF-4754-91AA-B6075F8E67EE}</Project>
-      <Name>Gallio.Loader</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>

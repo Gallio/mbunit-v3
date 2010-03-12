@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Runtime.Remoting;
 using Gallio.Loader;
 using Gallio.TDNetRunner.Facade;
 
@@ -27,7 +28,7 @@ namespace Gallio.TDNetRunner.Core
         /// <summary>
         /// Aborts the test run.
         /// </summary>
-        /// <exception cref="SafeException">Thrown if the operation could not be performed.</exception>
+        /// <exception cref="ServerException">Thrown if the operation could not be performed.</exception>
         void Abort();
 
         /// <summary>
@@ -37,7 +38,7 @@ namespace Gallio.TDNetRunner.Core
         /// <param name="assemblyPath">The test assembly.</param>
         /// <param name="cref">The code reference for the test to run.</param>
         /// <param name="facadeOptions">The TDNet options.</param>
-        /// <exception cref="SafeException">Thrown if the operation could not be performed.</exception>
+        /// <exception cref="ServerException">Thrown if the operation could not be performed.</exception>
         FacadeTestRunState Run(IFacadeTestListener testListener, string assemblyPath, string cref, FacadeOptions facadeOptions);
     }
 }

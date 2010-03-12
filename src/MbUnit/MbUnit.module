@@ -4,13 +4,6 @@
   <ItemGroup>
     <Module Include="..\Gallio\Gallio.module" />
     
-    <Module Include="Templates\MbUnitTemplates.module">
-      <Inherit>true</Inherit>
-    </Module>
-    <Module Include="Samples\MbUnitSamples.module">
-      <Inherit>true</Inherit>
-    </Module>
-    
     <CSharpProject Include="MbUnit\MbUnit$(ProjectVariant).csproj" />
     <CSharpProject Include="MbUnit35\MbUnit35$(ProjectVariant).csproj" />
     <CSharpProject Include="MbUnit.Compatibility\MbUnit.Compatibility$(ProjectVariant).csproj" />

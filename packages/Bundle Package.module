@@ -16,8 +16,17 @@
     <Module Include="$(SourceDir)\Gallio\Gallio.module">
       <Inherit>true</Inherit>
     </Module>
+    <Module Include="$(SourceDir)\Gallio\Samples\GallioSamples.module">
+      <Inherit>true</Inherit>
+    </Module>
     
     <Module Include="$(SourceDir)\MbUnit\MbUnit.module">
+      <Inherit>true</Inherit>
+    </Module>
+    <Module Include="$(SourceDir)\MbUnit\Samples\MbUnitSamples.module">
+      <Inherit>true</Inherit>
+    </Module>
+    <Module Include="$(SourceDir)\MbUnit\Templates\MbUnitTemplates.module">
       <Inherit>true</Inherit>
     </Module>
     
@@ -114,6 +123,14 @@
     <Module Include="$(SourceDir)\Extensions\Xunit\Xunit.module">
       <Inherit>true</Inherit>
     </Module>
+	
+	<Module Include="$(SourceDir)\Archimedes\Archimedes.module">
+      <Inherit>true</Inherit>
+	</Module>
+	
+	<Module Include="$(SourceDir)\SDK\SDK.module">
+      <Inherit>true</Inherit>
+	</Module>
   </ItemGroup>
   
   <ItemGroup>

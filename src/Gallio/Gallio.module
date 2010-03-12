@@ -2,15 +2,10 @@
   <Import Project="$(RootDir)\bin\Module.targets" />
 
   <ItemGroup>
-    <Module Include="Samples\GallioSamples.module">
-      <Inherit>true</Inherit>
-    </Module>
-
     <CSharpProject Include="Gallio\Gallio$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio35\Gallio35$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Host\Gallio.Host$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Tests\Gallio.Tests$(ProjectVariant).csproj" />
-    <CSharpProject Include="Gallio.Loader\Gallio.Loader$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Reports\Gallio.Reports$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.UI\Gallio.UI$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.UI.Tests\Gallio.UI.Tests$(ProjectVariant).csproj" />
@@ -51,19 +46,6 @@
     <ConfigFile Include="Gallio\bin\Gallio.Host.Elevated.x86.exe.config">
       <ImagePath>bin</ImagePath>
     </ConfigFile>
-
-    <AssemblyFile Include="Gallio.Loader\bin\Gallio.Loader.dll">
-      <ImagePath>bin\Loader</ImagePath>
-    </AssemblyFile>
-    <PdbFile Include="Gallio.Loader\bin\Gallio.Loader.pdb">
-      <ImagePath>bin\Loader</ImagePath>
-    </PdbFile>
-    <XmlDocFile Include="Gallio.Loader\bin\Gallio.Loader.xml">
-      <ImagePath>bin\Loader</ImagePath>
-    </XmlDocFile>
-    <PluginFile Include="Gallio.Loader\Gallio.Loader.plugin">
-      <ImagePath>bin\Loader</ImagePath>
-    </PluginFile>
     
     <AssemblyFile Include="Gallio35\bin\Gallio35.dll">
       <ImagePath>bin</ImagePath>
@@ -172,7 +154,7 @@
   </ItemGroup>
 
   <Target Name="AfterImage"
-          DependsOnTargets="GallioImage_ILMerge;GallioImage_NoILMerge;GallioImage_XSD" />
+          DependsOnTargets="GallioImage_ILMerge;GallioImage_NoILMerge" />
 
   <Target Name="GallioImage_ILMerge"
           Condition="'$(NoILMerge)'!='true'"
@@ -192,17 +174,5 @@
           Condition="'$(NoILMerge)'=='true'">
     <Copy SourceFiles="Gallio\bin\Gallio.dll;Gallio\bin\Gallio.pdb;Gallio\bin\Gallio.XmlSerializers.dll;@(GallioMergeDependency)"
           DestinationImagePath="$(ModuleImageDir)\bin" />
-  </Target>
-
-  <Target Name="GallioImage_XSD"
-          Inputs="$(ModuleImageDir)\bin\Gallio.dll"
-          Outputs="$(ModuleImageDir)\bin\Gallio.xsd">
-    <GetFrameworkSdkPath>
-      <Output TaskParameter="Path" PropertyName="SdkPath" />
-    </GetFrameworkSdkPath>
-
-    <Exec Command="&quot;$(SdkPath)&quot;\bin\xsd.exe &quot;$(ModuleImageDir)\bin\Gallio.dll&quot; /o:&quot;$(ModuleTempDir)&quot; /nologo /type:Gallio.Runner.Reports.Schema.Report /type:Gallio.Runtime.Extensibility.Schema.Plugin /type:Gallio.Runner.Projects.Schema.TestProjectData" />
-    <Copy SourceFiles="$(ModuleTempDir)\schema0.xsd"
-          DestinationFiles="$(ModuleImageDir)\bin\Gallio.xsd" />
   </Target>
 </Project>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\Installer\Features.wxi ?>
+
+<?ifdef FEATURE_SDK?>
+    <Fragment>
+        <DirectoryRef Id="sdkFolder" FileSource="$(var.GallioTargetDir)\sdk\">
+            <Component Id="SDK.Readme" Guid="{84CE114F-5502-484f-9839-3693ED589C9F}" Win64="no">
+                <File Name="Readme.txt" KeyPath="yes" />
+            </Component>
+			
+			<Directory Id="SDK.Loader" Name="Loader">
+				<Component Id="SDK.Loader" Guid="{296EB7F2-F747-4808-A28B-558C66BF6CDB}" Win64="no">
+					<File Name="Gallio.Loader.cs" KeyPath="yes" />
+					<File Name="Gallio.Loader.Isolation.cs" />
+					<File Name="Gallio.Loader.SharedEnvironment.cs" />
+					<File Name="Gallio.Loader.VersionPolicy.cs" />
+				</Component>
+			</Directory>
+        </DirectoryRef>
+
+        <Feature Id="feat_SDK" Title="Gallio SDK" Level="1" Display="20" AllowAdvertise="no"
+                 Description="Installs the Gallio SDK components for developers.">
+            <ComponentRef Id='SDK.Readme'/>
+            <ComponentRef Id='SDK.Loader'/>
+        </Feature>
+    </Fragment>
+<?endif?>
+</Wix>

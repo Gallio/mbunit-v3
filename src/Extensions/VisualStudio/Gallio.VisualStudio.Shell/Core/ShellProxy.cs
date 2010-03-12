@@ -178,7 +178,7 @@ namespace Gallio.VisualStudio.Shell.Core
 
         private static void SetupRuntime()
         {
-            GallioLoader.Initialize().SetupRuntime();
+            LoaderManager.InitializeAndSetupRuntimeIfNeeded();
         }
 
         private sealed class ShellHolder : IDisposable

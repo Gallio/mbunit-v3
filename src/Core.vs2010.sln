@@ -25,8 +25,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TDNetRunner.vs2010",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Reports.vs2010", "Gallio\Gallio.Reports\Gallio.Reports.vs2010.csproj", "{399C33BF-A9F7-4390-8F9C-8EECF7814123}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Loader.vs2010", "Gallio\Gallio.Loader\Gallio.Loader.vs2010.csproj", "{67FB2969-E6BF-4754-91AA-B6075F8E67EE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Compatibility.vs2010", "MbUnit\MbUnit.Compatibility\MbUnit.Compatibility.vs2010.csproj", "{F588B51F-786A-48E2-950E-636062F9C302}"
 EndProject
 Global
@@ -83,10 +81,6 @@ Global
 		{399C33BF-A9F7-4390-8F9C-8EECF7814123}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{399C33BF-A9F7-4390-8F9C-8EECF7814123}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{399C33BF-A9F7-4390-8F9C-8EECF7814123}.Release|Any CPU.Build.0 = Release|Any CPU
-		{67FB2969-E6BF-4754-91AA-B6075F8E67EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{67FB2969-E6BF-4754-91AA-B6075F8E67EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{67FB2969-E6BF-4754-91AA-B6075F8E67EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{67FB2969-E6BF-4754-91AA-B6075F8E67EE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F588B51F-786A-48E2-950E-636062F9C302}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F588B51F-786A-48E2-950E-636062F9C302}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F588B51F-786A-48E2-950E-636062F9C302}.Release|Any CPU.ActiveCfg = Release|Any CPU

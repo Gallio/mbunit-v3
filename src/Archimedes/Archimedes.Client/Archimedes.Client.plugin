@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<plugin pluginId="Archimedes.Client"
+        recommendedInstallationPath=""
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>Archimedes.Client</name>
+    <version>0.0.0.0</version>
+    <description>The Archimedes command-line client.</description>
+    <icon>plugin://Archimedes/Resources/Archimedes.ico</icon>
+  </traits>
+
+  <dependencies>
+    <dependency pluginId="Archimedes" />
+  </dependencies>
+
+  <files>
+    <file path="Archimedes.Client.plugin" />
+    <file path="Archimedes.Client.exe" />
+    <file path="Archimedes.Client.exe.config" />
+  </files>
+
+  <assemblies>
+    <assembly fullName="Archimedes.Client, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
+              codeBase="Archimedes.Client.exe"
+              qualifyPartialName="true" />
+  </assemblies>
+
+  <services>
+  </services>
+  
+  <components>
+  </components>
+</plugin>

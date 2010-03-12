@@ -1,0 +1,32 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(RootDir)\bin\Module.targets" />
+
+  <ItemGroup>
+    <Module Include="$(SourceDir)\Gallio\Gallio.module" />
+  
+	<Module Include="Loader\Loader.module">
+	  <Inherit>true</Inherit>
+	</Module>
+  
+    <File Include="Readme.txt">
+	  <ImagePath>sdk</ImagePath>
+	</File>
+
+    <Feature Include="FEATURE_SDK" />
+  </ItemGroup>
+  
+  <Target Name="AfterImage"
+          DependsOnTargets="GallioImage_XSD" />
+  
+  <Target Name="GallioImage_XSD"
+          Inputs="$(ModulesDir)\Gallio\image\bin\Gallio.dll"
+          Outputs="$(ModuleImageDir)\sdk\Gallio.xsd">
+    <GetFrameworkSdkPath>
+      <Output TaskParameter="Path" PropertyName="SdkPath" />
+    </GetFrameworkSdkPath>
+
+    <Exec Command="&quot;$(SdkPath)&quot;\bin\xsd.exe &quot;$(ModulesDir)\Gallio\image\bin\Gallio.dll&quot; /o:&quot;$(ModuleTempDir)&quot; /nologo /type:Gallio.Runner.Reports.Schema.Report /type:Gallio.Runtime.Extensibility.Schema.Plugin /type:Gallio.Runner.Projects.Schema.TestProjectData" />
+    <Copy SourceFiles="$(ModuleTempDir)\schema0.xsd"
+          DestinationFiles="$(ModuleImageDir)\sdk\Gallio.xsd" />
+  </Target>
+</Project>

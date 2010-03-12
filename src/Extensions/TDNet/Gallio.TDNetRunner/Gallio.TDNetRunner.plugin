@@ -23,8 +23,6 @@
     <assembly fullName="Gallio.TDNetRunner, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
               codeBase="Gallio.TDNetRunner.dll"
               qualifyPartialName="true" />
-
-    <assembly fullName="Gallio.Loader, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"/>
   </assemblies>
 
   <services>

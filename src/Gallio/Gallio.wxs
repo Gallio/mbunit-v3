@@ -122,23 +122,6 @@
                 <File Name="WeifenLuo.WinFormsUI.Docking.dll" Assembly=".net" AssemblyApplication="WeifenLuo.WinFormsUI.Docking.dll" KeyPath="yes" />
             </Component>
 
-            <Directory Id="LoaderFolder" Name="Loader">
-                <Component Id="Gallio.Loader.GAC" Guid="{1b752f49-373c-4a57-8f72-eb97287d0d35}" Win64="no">
-                    <!-- Install in the GAC -->
-                    <File Id="Gallio.Loader.dll.GAC" Name="Gallio.Loader.dll" KeyPath="yes" Assembly=".net" />
-
-	            <!-- TODO: Install the PDB and XML in the GAC also.
-		           This may require using a custom task. -->
-                </Component>
-		
-                <Component Id="Gallio.Loader.NonGAC" Guid="{335A459C-AF25-4e9a-A0A7-745C06B00911}" Win64="no">
-                    <File Id="Gallio.Loader.dll.NonGAC" Name="Gallio.Loader.dll" KeyPath="yes" Assembly=".net" AssemblyApplication="Gallio.Loader.dll.NonGAC" />
-                    <File Id="Gallio.Loader.xml.NonGAC" Name="Gallio.Loader.xml" />
-                    <File Id="Gallio.Loader.pdb.NonGAC" Name="Gallio.Loader.pdb" />
-                    <File Id="Gallio.Loader.plugin.NonGAC" Name="Gallio.Loader.plugin" />
-                </Component>
-            </Directory>
-
             <Directory Id="ResourcesFolder" Name="Resources" />
         </DirectoryRef>
 
@@ -273,8 +256,6 @@
             <ComponentRef Id="Gallio.Host.x86" />
             <ComponentRef Id="Gallio.Host.Elevated" />
             <ComponentRef Id="Gallio.Host.Elevated.x86" />
-            <ComponentRef Id="Gallio.Loader.GAC" />
-            <ComponentRef Id="Gallio.Loader.NonGAC" />
             <ComponentRef Id="Gallio.License" />
             <ComponentRef Id="Gallio.Website" />
             <ComponentRef Id="Gallio.Registry" />

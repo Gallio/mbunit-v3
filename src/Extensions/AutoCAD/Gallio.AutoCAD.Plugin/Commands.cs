@@ -110,8 +110,8 @@ namespace Gallio.AutoCAD.Plugin
         {
             public static void Run(string ipcPortName, Guid linkId)
             {
-                IGallioLoader loader = GallioLoader.Initialize();
-                loader.SetupRuntime(); // note: after this point we can reference Gallio types.
+                LoaderManager.InitializeAndSetupRuntimeIfNeeded();
+                // note: after this point we can reference Gallio types.
 
                 ShimWithRuntime.Run(ipcPortName, linkId);
             }

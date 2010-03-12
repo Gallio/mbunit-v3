@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\..\Installer\Features.wxi ?>
+
+<?ifdef FEATURE_ARCHIMEDES ?>
+    <Fragment>
+        <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
+            <Component Id="Archimedes" Guid="{5497ACA3-F3D9-4064-A495-A894929D18FC}" Win64="no">
+                <File Name="Archimedes.dll" KeyPath="yes" />
+                <File Name="Archimedes.pdb" />
+                <File Name="Archimedes.xml" />
+                <File Name="Archimedes.plugin" />
+            </Component>
+			
+			<Directory Id="Archimedes.Resources" Name="Resources">
+				<Component Id="Archimedes.Resources" Guid="{55E266A8-4A4D-4633-B899-D68FAEC65CDC}" Win64="no">
+					<File Name="Archimedes.ico" KeyPath="yes" />
+				</Component>
+			</Directory>
+			
+            <Component Id="Archimedes.Client" Guid="{F43C2F25-4C5A-49ff-A510-C3D78DC41258}" Win64="no">
+                <File Name="Archimedes.Client.exe" KeyPath="yes" />
+                <File Name="Archimedes.Client.exe.config" />
+                <File Name="Archimedes.Client.plugin" />
+            </Component>
+			
+			<Directory Id="Archimedes.Web" Name="Web">
+			</Directory>
+        </DirectoryRef>
+        
+        <Feature Id="feat_Archimedes" Title="Archimedes" Display="6" AllowAdvertise="no"
+            Description="Installs the Archimedes test case management tool.">
+
+            <ComponentRef Id="Archimedes" />
+            <ComponentRef Id="Archimedes.Resources" />
+            <ComponentRef Id="Archimedes.Client" />
+          
+		    <Feature Id="feat_Archimedes.Web" Title="Archimedes Web Site" Level="100" AllowAdvertise="no"
+				Description="Installs the Archimedes web site.">
+				<ComponentGroupRef Id="Archimedes.Web.ComponentGroup" />
+			</Feature>
+        </Feature>
+    </Fragment>
+<?endif?>
+</Wix>

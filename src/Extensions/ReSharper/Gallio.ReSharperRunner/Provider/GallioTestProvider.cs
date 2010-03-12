@@ -72,7 +72,7 @@ namespace Gallio.ReSharperRunner.Provider
 
         static GallioTestProvider()
         {
-            GallioLoader.Initialize().SetupRuntime();
+            LoaderManager.InitializeAndSetupRuntimeIfNeeded();
         }
 
         public GallioTestProvider()

@@ -28,9 +28,8 @@ namespace Gallio.VisualStudio.Tip
         /// <returns>The target factory.</returns>
         public static IProxyTargetFactory GetTargetFactory()
         {
-            IGallioLoader loader = GallioLoader.Initialize();
-            loader.SetupRuntime();
-            return loader.Resolve<IProxyHandler>().TargetFactory;
+            LoaderManager.InitializeAndSetupRuntimeIfNeeded();
+            return LoaderManager.Loader.Resolve<IProxyHandler>().TargetFactory;
         }
     }
 }

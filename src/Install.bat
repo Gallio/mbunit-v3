@@ -23,7 +23,7 @@ echo This script installs or uninstalls components built in the source tree
 echo for local debugging purposes.
 echo.
 echo Choose the component to install or uninstall:
-echo   1^) Install Gallio.Loader and installable components, including:
+echo   1^) Install Gallio registry keys and plugins, including:
 echo         - Reports
 echo         - TestDriven.Net runner
 echo   2^) Install Visual Studio 2008 addin.  ^(implies 1^)
@@ -37,7 +37,7 @@ set ANSWER=%~1
 if not defined ANSWER set /P ANSWER=Choice? 
 echo.
 
-if "%ANSWER%"=="1" call :INSTALL_LOADER & goto :OK
+if "%ANSWER%"=="1" call :INSTALL_GALLIO & goto :OK
 if "%ANSWER%"=="2" call :INSTALL_VISUALSTUDIO_ADDIN 9 & goto :OK
 if "%ANSWER%"=="3" call :INSTALL_VISUALSTUDIO_ADDIN 10 & goto :OK
 
@@ -49,53 +49,35 @@ pause
 exit /b 0
 
 
-REM Install Gallio.Loader into the GAC.
-:INSTALL_LOADER
-echo ** Install Gallio.Loader **
-call :SET_LOADER_VARS
-
-echo Installing Gallio.Loader assembly into GAC.
-"%GACUTIL%" /i "%LOADER_DLL%" /f
-echo.
-
+REM Install Gallio and installable components.
+:INSTALL_GALLIO
+echo ** Install Gallio. **
 echo Adding registry keys.
 "%REG%" ADD "HKEY_LOCAL_MACHINE\Software\Gallio.org\Gallio\0.0" /V InstallationFolder /D "%SRC_DIR%Gallio\Gallio" /F >nul
 echo.
 
-echo Installing installable components.
+echo Installing plugins.
 call "%SRC_DIR%Gallio.Utility.bat" Setup /install /v:verbose 
 echo.
 exit /b 0
 
 
-REM Uninstalls Gallio.Loader from the GAC.
-:UNINSTALL_LOADER
-echo ** Uninstall Gallio.Loader **
-call :SET_LOADER_VARS
-
-echo Uninstalling Gallio.Loader assembly from GAC.
-"%GACUTIL%" /u "%LOADER_DLL%" 2>nul >nul
-echo.
-
+REM Uninstalls Gallio.
+:UNINSTALL_GALLIO
+echo ** Uninstall Gallio. **
 echo Deleting registry keys.
 "%REG%" DELETE "HKEY_LOCAL_MACHINE\Software\Gallio.org\Gallio\0.0" /V InstallationFolder /F 2>nul >nul
 echo.
 
-echo Uninstalling installable components.
+echo Uninstalling plugins.
 call "%SRC_DIR%Gallio.Utility.bat" Setup /uninstall /v:verbose 
 echo.
 exit /b 0
 
 
-REM Helper: Set Loader vars
-:SET_LOADER_VARS
-set LOADER_DLL=%SRC_DIR%\Gallio\Gallio.Loader\bin\Gallio.Loader.dll
-exit /b 0
-
-
 REM Install Visual Studio addin.
 :INSTALL_VISUALSTUDIO_ADDIN
-call :INSTALL_LOADER
+call :INSTALL_GALLIO
 
 echo ** Install Visual Studio v%~1.0 Addin **
 call :SET_VISUALSTUDIO_ADDIN_VARS "%~1"
@@ -191,7 +173,7 @@ exit /b 0
 
 REM Uninstall all.
 :UNINSTALL_ALL
-call :UNINSTALL_LOADER
+call :UNINSTALL_GALLIO
 call :UNINSTALL_VISUALSTUDIO_ADDIN 9
 call :UNINSTALL_VISUALSTUDIO_ADDIN 10
 exit /b 0

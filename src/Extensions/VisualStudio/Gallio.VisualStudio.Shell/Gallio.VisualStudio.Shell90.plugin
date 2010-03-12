@@ -27,8 +27,6 @@
     <assembly fullName="Gallio.VisualStudio.Shell90, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
               codeBase="Gallio.VisualStudio.Shell90.dll"
               qualifyPartialName="true" />
-    
-    <assembly fullName="Gallio.Loader, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"/>
   </assemblies>
 
   <components>

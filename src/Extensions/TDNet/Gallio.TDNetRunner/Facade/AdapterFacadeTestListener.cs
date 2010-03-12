@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Loader.Isolation;
 using TestDriven.Framework;
 using Gallio.Loader;
 
@@ -50,7 +51,7 @@ namespace Gallio.TDNetRunner.Facade
             }
             catch (Exception ex)
             {
-                throw SafeException.Wrap(ex);
+                throw ServerExceptionUtils.Wrap(ex);
             }
         }
 
@@ -65,7 +66,7 @@ namespace Gallio.TDNetRunner.Facade
             }
             catch (Exception ex)
             {
-                throw SafeException.Wrap(ex);
+                throw ServerExceptionUtils.Wrap(ex);
             }
         }
 
@@ -80,7 +81,7 @@ namespace Gallio.TDNetRunner.Facade
             }
             catch (Exception ex)
             {
-                throw SafeException.Wrap(ex);
+                throw ServerExceptionUtils.Wrap(ex);
             }
         }
 

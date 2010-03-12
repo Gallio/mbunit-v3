@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<plugin pluginId="Archimedes"
+        recommendedInstallationPath=""
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>Archimedes</name>
+    <version>0.0.0.0</version>
+    <description>The Archimedes test management system.</description>
+    <icon>plugin://Archimedes/Resources/Archimedes.ico</icon>
+  </traits>
+
+  <dependencies>
+    <dependency pluginId="Gallio" />
+  </dependencies>
+
+  <files>
+    <file path="Archimedes.plugin" />
+    <file path="Archimedes.dll" />
+    <file path="Archimedes.pdb" />
+    <file path="Archimedes.xml" />
+
+    <file path="Resources\Archimedes.ico" />
+  </files>
+
+  <assemblies>
+    <assembly fullName="Archimedes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
+              codeBase="Archimedes.dll"
+              qualifyPartialName="true" />
+  </assemblies>
+
+  <services>
+  </services>
+  
+  <components>
+  </components>
+</plugin>

@@ -15,7 +15,8 @@
 
 using System;
 using System.Diagnostics;
-using Gallio.Loader;
+using Gallio.Loader.Isolation;
+using Gallio.Loader.SharedEnvironment;
 using Microsoft.VisualStudio.TestTools.TestAdapter;
 
 namespace Gallio.VisualStudio.Tip
@@ -47,7 +48,7 @@ namespace Gallio.VisualStudio.Tip
 
         private static ITestAdapter CreateRemoteShim()
         {
-            IGallioRemoteEnvironment environment = EnvironmentManager.GetSharedEnvironment();
+            IIsolatedEnvironment environment = SharedEnvironmentManager.GetSharedEnvironment();
 
             Type shimType = typeof(Shim);
             ITestAdapter shim = (ITestAdapter)environment.AppDomain.CreateInstanceAndUnwrap(shimType.Assembly.FullName, shimType.FullName);

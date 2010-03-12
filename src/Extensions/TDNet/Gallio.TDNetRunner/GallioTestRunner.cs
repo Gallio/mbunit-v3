@@ -15,7 +15,6 @@
 
 using System;
 using System.Reflection;
-using Gallio.TDNetRunner.Core;
 using Gallio.TDNetRunner.Facade;
 using TestDriven.Framework;
 
@@ -34,7 +33,8 @@ namespace Gallio.TDNetRunner
                 throw new ArgumentNullException("assembly");
 
             FacadeOptions options = FacadeOptions.ReadFromRegistry();
-            FacadeTestRunState result = TestRunner.Run(new AdapterFacadeTestListener(testListener), EnvironmentManager.GetAssemblyPath(assembly), null, options);
+            FacadeTestRunState result = TestRunner.Run(new AdapterFacadeTestListener(testListener),
+                GetAssemblyPath(assembly), null, options);
             return FacadeUtils.ToTestRunState(result);
         }
 
@@ -48,7 +48,8 @@ namespace Gallio.TDNetRunner
                 throw new ArgumentNullException("ns");
 
             FacadeOptions options = FacadeOptions.ReadFromRegistry();
-            FacadeTestRunState result = TestRunner.Run(new AdapterFacadeTestListener(testListener), EnvironmentManager.GetAssemblyPath(assembly), @"N:" + ns, options);
+            FacadeTestRunState result = TestRunner.Run(new AdapterFacadeTestListener(testListener),
+                GetAssemblyPath(assembly), @"N:" + ns, options);
             return FacadeUtils.ToTestRunState(result);
         }
 
@@ -63,8 +64,13 @@ namespace Gallio.TDNetRunner
 
             FacadeOptions options = FacadeOptions.ReadFromRegistry();
             FacadeTestRunState result = TestRunner.Run(new AdapterFacadeTestListener(testListener),
-                EnvironmentManager.GetAssemblyPath(assembly), FacadeUtils.ToCref(member), options);
+                GetAssemblyPath(assembly), FacadeUtils.ToCref(member), options);
             return FacadeUtils.ToTestRunState(result);
+        }
+
+        private static string GetAssemblyPath(Assembly assembly)
+        {
+            return new Uri(assembly.CodeBase).LocalPath;
         }
     }
 }

@@ -17,6 +17,8 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using Gallio.Loader;
+using Gallio.Loader.Isolation;
+using Gallio.Loader.SharedEnvironment;
 using JetBrains.ReSharper.TaskRunnerFramework;
 
 namespace Gallio.ReSharperRunner.Provider.Facade
@@ -88,7 +90,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
 
         protected virtual FacadeTaskResult Execute(IFacadeTaskServer facadeTaskServer, IFacadeLogger facadeLogger, FacadeTask facadeTask, FacadeTaskExecutorConfiguration facadeTaskExecutorConfiguration)
         {
-            IGallioRemoteEnvironment environment = EnvironmentManager.GetSharedEnvironment();
+            IIsolatedEnvironment environment = SharedEnvironmentManager.GetSharedEnvironment();
 
             Type taskRunnerType = typeof(RemoteFacadeTaskRunner);
             IRemoteFacadeTaskRunner taskRunner = (IRemoteFacadeTaskRunner)environment.AppDomain.CreateInstanceAndUnwrap(

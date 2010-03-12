@@ -25,8 +25,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TDNetRunner", "Exten
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Reports", "Gallio\Gallio.Reports\Gallio.Reports.csproj", "{399C33BF-A9F7-4390-8F9C-8EECF7814123}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Loader", "Gallio\Gallio.Loader\Gallio.Loader.csproj", "{67FB2969-E6BF-4754-91AA-B6075F8E67EE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,10 +79,6 @@ Global
 		{399C33BF-A9F7-4390-8F9C-8EECF7814123}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{399C33BF-A9F7-4390-8F9C-8EECF7814123}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{399C33BF-A9F7-4390-8F9C-8EECF7814123}.Release|Any CPU.Build.0 = Release|Any CPU
-		{67FB2969-E6BF-4754-91AA-B6075F8E67EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{67FB2969-E6BF-4754-91AA-B6075F8E67EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{67FB2969-E6BF-4754-91AA-B6075F8E67EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{67FB2969-E6BF-4754-91AA-B6075F8E67EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -30,7 +30,7 @@ namespace Gallio.ReSharperRunner.Provider.Actions
     {
         static GallioAction()
         {
-            GallioLoader.Initialize().SetupRuntime();
+            LoaderManager.InitializeAndSetupRuntimeIfNeeded();
         }
 
         public abstract bool Update(IDataContext context, ActionPresentation presentation, DelegateUpdate nextUpdate);
