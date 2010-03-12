@@ -14,9 +14,8 @@
   </dependencies>
 
   <files>
-    <file path="Archimedes.plugin" />
-    <file path="Web.config" />
-    <file path="bin\Archimedes.Web.dll" />
+    <!-- The following tokens are replaced during the build. -->
+    ${WebFilesToken}
   </files>
 
   <assemblies>

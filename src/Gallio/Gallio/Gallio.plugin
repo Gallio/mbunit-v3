@@ -27,7 +27,6 @@
     <file path="Gallio.Host.Elevated.exe.config" />
     <file path="Gallio.Host.Elevated.x86.exe" />
     <file path="Gallio.Host.Elevated.x86.exe.config" />
-    <file path="Gallio.xsd" />
 
     <file path="Resources\Assembly.ico" />
     <file path="Resources\Container.ico" />

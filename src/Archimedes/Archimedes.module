@@ -49,6 +49,22 @@
 	<Feature Include="FEATURE_ARCHIMEDES" />
   </ItemGroup>
   
+  <Target Name="AfterImage">
+    <ItemGroup>
+      <WebFiles Include="$(ModuleImageDir)\bin\Archimedes\Web\**\*" />
+
+      <Token Include="WebFilesToken">
+        <ReplacementValue>@(WebFiles->'&lt;file path="libs\%(RecursiveDir)%(Filename)%(Extension)"/&gt;', '%0A    ')</ReplacementValue>
+      </Token>
+    </ItemGroup>
+
+    <TemplateFile Template="$(ModuleImageDir)\bin\Archimedes\Web\Archimedes.Web.plugin"
+		  Tokens="@(Token)" />
+    <Delete Files="$(ModuleImageDir)\bin\Archimedes\Web\Archimedes.Web.plugin" />
+    <Move SourceFiles="$(ModuleImageDir)\bin\Archimedes\Web\Archimedes.Web.out"
+          DestinationFiles="$(ModuleImageDir)\bin\Archimedes\Web\Archimedes.Web.plugin" />
+  </Target>
+  
   <Target Name="BeforeDist">
     <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ModuleImageDir)\bin\Archimedes\Web&quot; -cg ComponentGroup -var var.Archimedes.Web.source -gg -ke -nologo -sfrag -sreg -t:Archimedes.Web.xslt -out Archimedes.Web.wxi" />
   </Target>
