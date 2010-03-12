@@ -42,6 +42,9 @@
     <Module Include="$(SourceDir)\Extensions\ControlPanel\ControlPanel.module">
       <Inherit>true</Inherit>
     </Module>
+    <Module Include="$(SourceDir)\Extensions\Copy\Copy.module">
+      <Inherit>true</Inherit>
+    </Module>
     <Module Include="$(SourceDir)\Extensions\CSUnit\CSUnit.module">
       <Inherit>true</Inherit>
     </Module>

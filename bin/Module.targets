@@ -199,7 +199,7 @@
     </Exec>
     
     <Error Text="There appear to be some differences between the project items of the VS 2008 projects and those of the VS 2010 projects.  Please run 'Sync VS2010 Projects.bat' to synchronize project items.%0D%0ASkip this with '/p:SkipSyncProjects=true'."
-             Condition="'$(ExitCode)'!='0' and ! $(IgnoreFailures)" />
+             Condition="'$(ExitCode)'!='0' and ! $(IgnoreTestFailures)" />
   </Target>  
   
   <!-- Banner Text -->
