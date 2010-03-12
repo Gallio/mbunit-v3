@@ -181,10 +181,10 @@
     <Compile Include="..\Extensions\Utility\Utility.wxs">
       <Link>Utility.wxs</Link>
     </Compile>
-    <Compile Include="..\Archimedes.wxs">
+    <Compile Include="..\Archimedes\Archimedes.wxs">
       <Link>Archimedes.wxs</Link>
     </Compile>
-    <Compile Include="..\SDK.wxs">
+    <Compile Include="..\SDK\SDK.wxs">
       <Link>SDK.wxs</Link>
     </Compile>	
   </ItemGroup>
