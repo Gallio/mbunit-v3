@@ -49,7 +49,9 @@
     <TestAssembly Include="Archimedes.Tests\bin\Archimedes.Tests.dll" />
     <TestAssembly Include="Archimedes.Web.Tests\bin\Archimedes.Web.Tests.dll" />
 	
+    <!-- Not ready for prime time.
 	<Feature Include="FEATURE_ARCHIMEDES" />
+    -->
   </ItemGroup>
   
   <Target Name="AfterImage">
