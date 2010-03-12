@@ -18,6 +18,7 @@ using System.Text.RegularExpressions;
 using Gallio.Common.Policies;
 using Gallio.MSTestAdapter.TestResources;
 using Gallio.Common.Reflection;
+using Gallio.Runner;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Tests;
 using MbUnit.Framework;
@@ -26,7 +27,7 @@ namespace Gallio.MSTestAdapter.Tests.Integration
 {
     [TestFixture]
     [RunSample(typeof(EnvironmentSetupSample))]
-    public class EnvironmentSetupTest : BaseTestWithSampleRunner
+    public class EnvironmentSetupTest : MSTestIntegrationTest
     {
         private string tempDir = SpecialPathPolicy.For("MSTestAdapter").GetTempDirectory().FullName;
 

@@ -17,6 +17,7 @@ using System;
 using System.Configuration;
 using System.IO;
 using Gallio.Common.Markup;
+using Gallio.Common.Platform;
 using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Common.Reflection;
@@ -33,14 +34,8 @@ namespace Gallio.MSTestAdapter.Tests.Integration
     /// </summary>
     [TestFixture]
     [RunSample(typeof(ConfigurationFileSample))]
-    public class ConfigurationFileTest : BaseTestWithSampleRunner
+    public class ConfigurationFileTest : MSTestIntegrationTest
     {
-        protected override void ConfigureRunner()
-        {
-            base.ConfigureRunner();
-            Runner.TestRunnerFactoryName = StandardTestRunnerFactoryNames.IsolatedAppDomain;
-        }
-
         [Test]
         public void TestCanAccessItsAppSettings()
         {

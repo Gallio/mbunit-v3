@@ -13,6 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// If defined, verifies that the assembly is in the GAC (which is slow).
+// Otherwise just assumes it is installed.
+//#define STRICT_GAC_CHECKS
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -255,6 +259,7 @@ namespace Gallio.Runtime.Extensibility
 
         private static bool IsAssemblyRegisteredInGAC(string assemblyName)
         {
+#if STRICT_GAC_CHECKS
             try
             {
                 System.Reflection.Assembly.ReflectionOnlyLoad(assemblyName);
@@ -264,6 +269,9 @@ namespace Gallio.Runtime.Extensibility
             {
                 return false;
             }
+#else
+            return true;
+#endif
         }
 
         private static IList<PluginData> TopologicalSortByDependencies(IList<PluginData> plugins)

@@ -18,6 +18,7 @@ using Gallio.MSTestAdapter.TestResources;
 using Gallio.Model;
 using Gallio.Common.Markup;
 using Gallio.Common.Reflection;
+using Gallio.Runner;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Tests;
 using MbUnit.Framework;
@@ -26,7 +27,7 @@ namespace Gallio.MSTestAdapter.Tests.Integration
 {
     [TestFixture]
     [RunSample(typeof(SimpleTest))]
-    public class RunSimpleTest : BaseTestWithSampleRunner
+    public class RunSimpleTest : MSTestIntegrationTest
     {
         [Test]
         public void PassTestPassed()
