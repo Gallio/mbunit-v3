@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\..\Installer\Common.wxi ?>
+    
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="XunitAdapter" Name="Xunit">
-                <Component Id="Gallio.XunitAdapter" Guid="2fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="no">
+                <Component Id="Gallio.XunitAdapter" Guid="2fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="$(var.Win64Binary)">
                     <File Name="Gallio.XunitAdapter.dll" KeyPath="yes" />
                     <File Name="Gallio.XunitAdapter.plugin" />
                     <File Id="xunit.EULA.txt" Name="EULA.txt" />
@@ -16,7 +18,7 @@
                 </Component>
 		
                 <Directory Id="XUnitAdapter.Resources" Name="Resources">
-                    <Component Id="Gallio.XunitAdapter.Resources" Guid="{4417172C-9A53-413e-B423-7F1B40976083}" Win64="no">
+                    <Component Id="Gallio.XunitAdapter.Resources" Guid="{4417172C-9A53-413e-B423-7F1B40976083}" Win64="$(var.Win64Binary)">
                         <File Name="xUnit.ico" KeyPath="yes" />
                     </Component>
                 </Directory>

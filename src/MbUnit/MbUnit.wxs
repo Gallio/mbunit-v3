@@ -1,39 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <?include ..\Installer\Features.wxi ?>
+    <?include ..\Installer\Common.wxi ?>
 
     <Fragment>
+        <Icon Id="MbUnit.icon.exe" SourceFile="$(var.GallioTargetDir)\bin\Resources\MbUnit.ico" />
+    
         <DirectoryRef Id="INSTALLDIR">
-            <Component Id="MbUnit.Website" Guid="{6F174992-5128-4c86-BEB3-7CD07C684DC1}" Win64="no">
+            <Component Id="MbUnit.Website" Guid="{6F174992-5128-4c86-BEB3-7CD07C684DC1}" Win64="$(var.Win64Binary)">
                 <File Id="MbUnit.Website.url" Source="$(var.GallioTargetDir)\MbUnit Website.url" KeyPath="yes">
-                    <Shortcut Id="MbUnit.Website.lnk" Name="MbUnit Website" Directory="GallioMenuFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes"/>
+                    <Shortcut Id="MbUnit.Website.lnk" Name="MbUnit Website" Directory="GallioMenuFolder" Icon="MbUnit.icon.exe" IconIndex="0" Advertise="yes"/>
                 </File>
             </Component>
         </DirectoryRef>
 
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Component Id="MbUnit.v3" Guid="{2f25f1f8-46ea-40f5-a850-16bac64cad1b}" Win64="no">
+            <Component Id="MbUnit.v3" Guid="{2f25f1f8-46ea-40f5-a850-16bac64cad1b}" Win64="$(var.Win64Binary)">
                 <File Name="MbUnit.dll" KeyPath="yes" />
                 <File Name="MbUnit.plugin" />
                 <File Name="MbUnit.pdb" />
                 <File Name="MbUnit.xml" />
                 <File Name="MbUnit.dll.tdnet" />
             </Component>
-            <Component Id="MbUnit35.v3" Guid="{7fa829c3-df5c-4e41-865b-54084c65c0b0}" Win64="no">
+            <Component Id="MbUnit35.v3" Guid="{7fa829c3-df5c-4e41-865b-54084c65c0b0}" Win64="$(var.Win64Binary)">
                 <File Name="MbUnit35.dll" KeyPath="yes" />
                 <File Name="MbUnit35.plugin" />
                 <File Name="MbUnit35.pdb" />
                 <File Name="MbUnit35.xml" />
             </Component>
 	    <?ifdef FEATURE_MBUNIT40?>
-            <Component Id="MbUnit40.v3" Guid="{63BE14A1-5846-478C-85B3-4C3E02DB5445}" Win64="no">
+            <Component Id="MbUnit40.v3" Guid="{63BE14A1-5846-478C-85B3-4C3E02DB5445}" Win64="$(var.Win64Binary)">
                 <File Name="MbUnit40.dll" KeyPath="yes" />
                 <File Name="MbUnit40.plugin" />
                 <File Name="MbUnit40.pdb" />
                 <File Name="MbUnit40.xml" />
             </Component>
 	    <?endif?>
-            <Component Id="MbUnit.Compatibility.v3" Guid="{107b6248-21bd-4d8f-b20b-3101b938429f}" Win64="no">
+            <Component Id="MbUnit.Compatibility.v3" Guid="{107b6248-21bd-4d8f-b20b-3101b938429f}" Win64="$(var.Win64Binary)">
                 <File Name="MbUnit.Compatibility.dll" KeyPath="yes"/>
                 <File Name="MbUnit.Compatibility.plugin" />
                 <File Name="MbUnit.Compatibility.pdb" />
@@ -42,7 +44,7 @@
         </DirectoryRef>
 
         <DirectoryRef Id="ResourcesFolder" FileSource="$(var.GallioTargetDir)\bin\Resources\">
-            <Component Id="MbUnit.Resources" Guid="{A4BE5B2B-71C2-4de2-A720-8127395DB45A}" Win64="no">
+            <Component Id="MbUnit.Resources" Guid="{A4BE5B2B-71C2-4de2-A720-8127395DB45A}" Win64="$(var.Win64Binary)">
                 <File Id="MbUnit.ico" Name="MbUnit.ico" KeyPath="yes" />
             </Component>
         </DirectoryRef>

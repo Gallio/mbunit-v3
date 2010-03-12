@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <?include ..\..\Installer\Features.wxi ?>
+    <?include ..\..\Installer\Common.wxi ?>
 
     <Fragment>
 <?ifdef FEATURE_CONTROLPANEL ?>
+        <Icon Id="CPanel.icon.exe" SourceFile="$(var.GallioTargetDir)\bin\Gallio.ControlPanel.exe" />
+        
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Component Id="Gallio.ControlPanel" Guid="{A50A7971-B328-4800-B3FF-574F93DB6A59}" Win64="no">
+            <Component Id="Gallio.ControlPanel" Guid="{A50A7971-B328-4800-B3FF-574F93DB6A59}" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.ControlPanel.exe" KeyPath="yes">
-                    <Shortcut Id="Gallio.ControlPanel.lnk" Name="Gallio Control Panel" Description="Configures preferences and manages the Gallio installation." Directory="GallioMenuFolder" WorkingDirectory="binFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" Show="normal" />
+                    <Shortcut Id="Gallio.ControlPanel.lnk" Name="Gallio Control Panel" Description="Configures preferences and manages the Gallio installation." Directory="GallioMenuFolder" WorkingDirectory="binFolder" Icon="CPanel.icon.exe" IconIndex="0" Advertise="yes" Show="normal" />
                 </File>
                 <File Name="Gallio.ControlPanel.exe.config" />
                 <File Name="Gallio.ControlPanel.plugin" />
@@ -15,7 +17,7 @@
         </DirectoryRef>
         
         <DirectoryRef Id="ResourcesFolder" FileSource="$(var.GallioTargetDir)\bin\Resources\">
-            <Component Id="Gallio.ControlPanel.Resources" Guid="{0F43F53A-DC15-4a63-8712-407374041E3C}" Win64="no">
+            <Component Id="Gallio.ControlPanel.Resources" Guid="{0F43F53A-DC15-4a63-8712-407374041E3C}" Win64="$(var.Win64Binary)">
                 <File Id="Gallio.ControlPanel.ico" Name="Gallio.ControlPanel.ico" />
             </Component>
         </DirectoryRef>

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\..\Installer\Common.wxi ?>
+
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Component Id="Gallio.NAntTasks" Guid="521559b4-9925-4420-be87-5142705be635" Win64="no">
+            <Component Id="Gallio.NAntTasks" Guid="521559b4-9925-4420-be87-5142705be635" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.NAntTasks.dll" KeyPath="yes" />
                 <File Name="Gallio.NAntTasks.xml" />
-		<File Name="Gallio.NAntTasks.plugin" />
+                <File Name="Gallio.NAntTasks.plugin" />
             </Component>
         </DirectoryRef>
         <Feature Id="feat_Gallio.NAntTasks" Title="NAnt Tasks" Level="1" AllowAdvertise="no"

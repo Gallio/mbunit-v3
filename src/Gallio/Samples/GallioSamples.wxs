@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:VS="http://schemas.microsoft.com/wix/VSExtension" >
+    <?include ..\..\Installer\Common.wxi ?>
+     
     <Fragment>
         <DirectoryRef Id="samplesFolder">
             <Directory Id="samplesFolder.Gallio" Name="Gallio" />

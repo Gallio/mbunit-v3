@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:vs="http://schemas.microsoft.com/wix/VSExtension">
+    <?include ..\..\Installer\Common.wxi ?>
+     
     <Fragment>
         <!-- Note: Beginning with v3.1, the runners are registered by the Setup utility command. -->
 
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="TDNet" Name="TDNet">
-                <Component Id="Gallio.TDNetRunner" Guid="9fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="no">
+                <Component Id="Gallio.TDNetRunner" Guid="9fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="$(var.Win64Binary)">
                     <File Name="Gallio.TDNetRunner.dll" KeyPath="yes"
                           Assembly=".net" AssemblyApplication="Gallio.TDNetRunner.dll" />
                     <File Name="Gallio.TDNetRunner.plugin"/>
                 </Component>
-                <Component Id="Gallio.TDNetRunner.UI" Guid="{858EBABB-D4A7-4fb9-869A-9C9676CB324E}" Win64="no">
+                <Component Id="Gallio.TDNetRunner.UI" Guid="{858EBABB-D4A7-4fb9-869A-9C9676CB324E}" Win64="$(var.Win64Binary)">
                     <File Name="Gallio.TDNetRunner.UI.dll" KeyPath="yes"
                           Assembly=".net" AssemblyApplication="Gallio.TDNetRunner.UI.dll" />
                     <File Name="Gallio.TDNetRunner.UI.plugin" />
                 </Component>
 
-		<Directory Id="Gallio.TDNetRunner.Resources" Name="Resources">
-		    <Component Id="Gallio.TDNetRunner.Resources" Guid="{8DDAEC10-F8F6-45c4-B27B-DB00DAB254C4}" Win64="no">
-		        <File Name="TestDriven.ico" KeyPath="yes" />
-		    </Component>
-		</Directory>
+                <Directory Id="Gallio.TDNetRunner.Resources" Name="Resources">
+                    <Component Id="Gallio.TDNetRunner.Resources" Guid="{8DDAEC10-F8F6-45c4-B27B-DB00DAB254C4}" Win64="$(var.Win64Binary)">
+                        <File Name="TestDriven.ico" KeyPath="yes" />
+                    </Component>
+                </Directory>
             </Directory>
         </DirectoryRef>
 

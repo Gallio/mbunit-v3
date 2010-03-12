@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <?include ..\..\Installer\Features.wxi ?>
+    <?include ..\..\Installer\Common.wxi ?>
     
     <?ifdef FEATURE_RSPEC_ADAPTER ?>
     <?define RSpec.libs.source = "$(var.GallioTargetDir)\bin\RSpec\libs" ?>
@@ -11,7 +11,7 @@
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
           <Directory Id="RSpec" Name="RSpec">
-            <Component Id="Gallio.RSpecAdapter" Guid="{67720016-826B-4028-BC2A-89B97F3885BC}" Win64="no">
+            <Component Id="Gallio.RSpecAdapter" Guid="{67720016-826B-4028-BC2A-89B97F3885BC}" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.RSpecAdapter.dll" KeyPath="yes" />
                 <File Name="Gallio.RSpecAdapter.plugin" />
             </Component>

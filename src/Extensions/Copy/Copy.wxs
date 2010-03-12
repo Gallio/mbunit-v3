@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <?include ..\..\Installer\Features.wxi ?>
-    <?ifdef FEATURE_COPY ?>
+    <?include ..\..\Installer\Common.wxi ?>
 
-    <Fragment>
+<?ifdef FEATURE_COPY ?>
+    <Fragment>        
+        <Icon Id="Copy.icon.exe" SourceFile="$(var.GallioTargetDir)\bin\Gallio.Copy.exe" />
+        
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Component Id="Gallio.Copy" Guid="{EC40CC4E-B37C-469b-9F87-215145AD066A}" Win64="no">
-                <File Name="Gallio.Copy.exe" KeyPath="yes" />
+            <Component Id="Gallio.Copy" Guid="{EC40CC4E-B37C-469b-9F87-215145AD066A}" Win64="$(var.Win64Binary)">
+                <File Name="Gallio.Copy.exe" KeyPath="yes">
+                    <Shortcut Id="Gallio.Copy.lnk" Name="Gallio Copy" Description="Install and copy plugins." Directory="GallioMenuFolder" WorkingDirectory="binFolder" Icon="Copy.icon.exe" IconIndex="0" Advertise="yes" Show="normal" />
+                </File>
                 <File Name="Gallio.Copy.exe.config" />
-		<File Name="Gallio.Copy.plugin" />
+                <File Name="Gallio.Copy.plugin" />
             </Component>
         </DirectoryRef>
 
         <DirectoryRef Id="ResourcesFolder" FileSource="$(var.GallioTargetDir)\bin\Resources\">
-            <Component Id="Gallio.Copy.Resources" Guid="{79523F5C-3251-4be1-9135-46DCE77587FA}" Win64="no">
+            <Component Id="Gallio.Copy.Resources" Guid="{79523F5C-3251-4be1-9135-46DCE77587FA}" Win64="$(var.Win64Binary)">
                 <File Id="Gallio.Copy.ico" Name="Gallio.Copy.ico" KeyPath="yes" />
             </Component>
         </DirectoryRef>
@@ -24,5 +28,5 @@
             <ComponentRef Id="Gallio.Copy.Resources"/>
         </Feature>
     </Fragment>
-    <?endif?>
+<?endif?>
 </Wix>

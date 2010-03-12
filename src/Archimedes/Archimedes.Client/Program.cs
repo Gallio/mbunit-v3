@@ -17,13 +17,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Gallio.Loader;
+using Gallio.Runtime.ConsoleSupport;
 
 namespace Archimedes.Client
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        [STAThread]
+        public static int Main(string[] args)
         {
+            LoaderManager.Initialize();
+            return RunProgram(args, LoaderManager.Loader.RuntimePath);
+        }
+
+        private static int RunProgram(string[] args, string runtimePath)
+        {
+            return new ArchimedesClientProgram(runtimePath)
+                .Run(NativeConsole.Instance, args);
         }
     }
 }

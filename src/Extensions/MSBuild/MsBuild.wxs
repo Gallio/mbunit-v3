@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\..\Installer\Common.wxi ?>
+    
     <Fragment>
         <!-- TODO: What if we install to the default MsBuild Extension path?
             C:\Program Files\MSBuild\Gallio\v3.0\Gallio.targets
@@ -8,7 +10,7 @@
          -->
 
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Component Id="Gallio.MsBuildTasks" Guid="d5e560bd-3a27-431b-84a0-df0663e2f3e6" Win64="no">
+            <Component Id="Gallio.MsBuildTasks" Guid="d5e560bd-3a27-431b-84a0-df0663e2f3e6" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.MsBuildTasks.dll" KeyPath="yes" />
                 <File Name="Gallio.MsBuildTasks.xml" />
                 <File Name="Gallio.MsBuildTasks.plugin" />

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" 
      xmlns:ps="http://schemas.microsoft.com/wix/PSExtension">
+    <?include ..\..\Installer\Common.wxi ?>
+     
     <Fragment>
         <Property Id='POWERSHELL1.0'>
             <RegistrySearch Id='PowerShell10Registry' Type='raw' Root='HKLM' Key='Software\Microsoft\PowerShell\1' Name='Install' Win64="no" />
         </Property>
                   
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Component Id="Gallio.PowerShellCommands" Guid="82469f8a-b09b-4fb1-80c6-e3882fd54ffd" Win64="no">
+            <Component Id="Gallio.PowerShellCommands" Guid="82469f8a-b09b-4fb1-80c6-e3882fd54ffd" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.PowerShellCommands.dll" KeyPath="yes"
                       Assembly=".net"  AssemblyApplication="Gallio.PowerShellCommands.dll" >
                     <ps:SnapIn Id="Gallio" Vendor="Gallio" Description="Gallio Commands." />

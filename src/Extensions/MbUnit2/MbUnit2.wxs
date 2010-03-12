@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\..\Installer\Common.wxi ?>
+
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="MbUnit2" Name="MbUnit2">
-                <Component Id="Gallio.MbUnit2Adapter" Guid="489abfa0-93a1-4f46-8685-e428d4d75120" Win64="no">
+                <Component Id="Gallio.MbUnit2Adapter" Guid="489abfa0-93a1-4f46-8685-e428d4d75120" Win64="$(var.Win64Binary)">
                     <File Name="Gallio.MbUnit2Adapter.dll" KeyPath="yes" />
                     <File Name="Gallio.MbUnit2Adapter.plugin" />
                     <File Name="MbUnit.Framework.dll" />
@@ -22,11 +24,11 @@
                     <File Name="TestFu.xml" />
                 </Component>
 
-		<Directory Id="MbUnit2.Resources" Name="Resources">
-                    <Component Id="Gallio.MbUnit2Adapter.Resources" Guid="{FB03826A-BEC8-470d-8F27-7F3CE846F879}" Win64="no">
+                <Directory Id="MbUnit2.Resources" Name="Resources">
+                    <Component Id="Gallio.MbUnit2Adapter.Resources" Guid="{FB03826A-BEC8-470d-8F27-7F3CE846F879}" Win64="$(var.Win64Binary)">
                         <File Id="Gallio.MbUnit2Adapter.Resources.MbUnit.ico" Name="MbUnit.ico" KeyPath="yes" />
                     </Component>
-		</Directory>
+                </Directory>
             </Directory>
         </DirectoryRef>
 

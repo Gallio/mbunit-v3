@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\..\Installer\Common.wxi ?>
+
     <Fragment>
         <DirectoryRef Id="extrasFolder" FileSource="$(var.GallioTargetDir)\extras\">
             <Directory Id="CCNet" Name="CCNet">
-                <Component Id="CCNet.Docs" Guid="{735B640A-D57A-4193-906F-7B102BE5E321}" Win64="no">
+                <Component Id="CCNet.Docs" Guid="{735B640A-D57A-4193-906F-7B102BE5E321}" Win64="$(var.Win64Binary)">
                     <File Name="How to use Gallio with CruiseControl.Net.txt" KeyPath="yes" />
                 </Component>
-                <Component Id="CCNet.GallioReports.zip" Guid="{7BB4972F-8004-46ec-9EA8-690DD8666CEB}" Win64="no">
+                <Component Id="CCNet.GallioReports.zip" Guid="{7BB4972F-8004-46ec-9EA8-690DD8666CEB}" Win64="$(var.Win64Binary)">
                     <File Name="GallioReports.zip" KeyPath="yes" />
                 </Component>
             </Directory>

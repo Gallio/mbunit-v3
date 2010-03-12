@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?include ..\..\Installer\Common.wxi ?>
+
   <Fragment>
     <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
       <Directory Id="NCover" Name="NCover">
-        <Component Id="Gallio.NCoverIntegration" Guid="5C614361-C7FF-4283-A51E-D7DC2A5B8826" Win64="no">
+        <Component Id="Gallio.NCoverIntegration" Guid="5C614361-C7FF-4283-A51E-D7DC2A5B8826" Win64="$(var.Win64Binary)">
           <File Name="Gallio.NCoverIntegration.dll" KeyPath="yes" />
           <File Name="Gallio.NCoverIntegration.plugin" />
         </Component>
 
         <Directory Id="NCover.libs" Name="libs">
-          <Component Id="NCover.Readme" Guid="{86F01EAC-C110-4a5d-9F13-2EAFA32909CD}" Win64="no">
+          <Component Id="NCover.Readme" Guid="{86F01EAC-C110-4a5d-9F13-2EAFA32909CD}" Win64="$(var.Win64Binary)">
             <File Id="NCover.Readme.txt" Name="NCover Readme.txt" KeyPath="yes"/>
           </Component>
 
-          <Component Id="NCoverExplorer.Readme" Guid="{EA33A01B-5075-4757-AB4D-8150949480D6}" Win64="no">
+          <Component Id="NCoverExplorer.Readme" Guid="{EA33A01B-5075-4757-AB4D-8150949480D6}" Win64="$(var.Win64Binary)">
             <File Id="NCoverExplorer.Readme.txt" Name="NCoverExplorer Readme.txt" KeyPath="yes"/>
           </Component>
 
           <Directory Id="NCover.libs.NCover" Name="NCover">            
-            <Component Id="NCover.Program" Guid="{E7F6CE38-EAA1-474a-BE27-7941DF5C89A8}" Win64="no">
+            <Component Id="NCover.Program" Guid="{E7F6CE38-EAA1-474a-BE27-7941DF5C89A8}" Win64="$(var.Win64Binary)">
               <File Name="Coverage.xsl" />
               <File Name="CoverLib.dll" />
               <File Name="Microsoft.VC80.CRT.manifest"/>
@@ -32,7 +34,7 @@
           </Directory>
           
           <Directory Id="NCover.libs.NCoverExplorer" Name="NCoverExplorer">
-            <Component Id="NCoverExplorer.Program" Guid="{F7D057FF-EB29-47e5-83C6-82A6ACF21D5C}" Win64="no">
+            <Component Id="NCoverExplorer.Program" Guid="{F7D057FF-EB29-47e5-83C6-82A6ACF21D5C}" Win64="$(var.Win64Binary)">
               <File Name="CommandBars.dll"/>
               <File Name="ConsoleConfig.xsd"/>
               <File Name="ConsoleExample.config"/>

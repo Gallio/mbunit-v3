@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include>
+  <?include Features.wxi ?>
+
+  <?if $(var.Platform)=x64?>
+    <?define Win64Binary = "yes" ?>
+  <?else?>
+    <?define Win64Binary = "no" ?>
+  <?endif?>
+</Include>

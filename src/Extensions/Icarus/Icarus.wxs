@@ -1,62 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\..\Installer\Common.wxi ?>
+    
     <Fragment>
         <Property Id="INSTALLDESKTOPSHORTCUT" Value="1" />
         <Property Id="INSTALLSTARTMENUSHORTCUT" Value="1" />
 
+        <Icon Id="Icarus.icon.exe" SourceFile="$(var.GallioTargetDir)\bin\Gallio.Icarus.exe" />
+
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Component Id="Gallio.Icarus.exe" Guid="2a7e3285-c570-44fa-8132-cb6d22f2f7c0" Win64="no">
-                <File Name="Gallio.Icarus.exe" KeyPath="yes" />
+            <Component Id="Gallio.Icarus.exe" Guid="2a7e3285-c570-44fa-8132-cb6d22f2f7c0" Win64="$(var.Win64Binary)">
+                <File Name="Gallio.Icarus.exe" KeyPath="yes">
+                    <Shortcut Id="Gallio.Icarus.Menu.lnk" Name="Icarus GUI Test Runner" Description="Run tests." Directory="GallioMenuFolder" WorkingDirectory="binFolder" Icon="Icarus.icon.exe" IconIndex="0" Advertise="yes" Show="normal" />
+                    <Shortcut Id="Gallio.Icarus.Desktop.lnk" Name="Icarus GUI Test Runner" Description="Run tests." Directory="DesktopFolder" WorkingDirectory="binFolder" Icon="Icarus.icon.exe" IconIndex="0" Advertise="yes" Show="normal" />
+                </File>
                 <File Name="Gallio.Icarus.exe.config" />
                 <File Name="Gallio.Icarus.plugin" />
                 <File Name="Gallio.Icarus.XmlSerializers.dll" />
             </Component>
-            <Component Id="ICSharpCode.TextEditor.dll" Guid="7b12c1e0-c859-4ca8-a32a-b3e1f5059055" Win64="no">
+            <Component Id="ICSharpCode.TextEditor.dll" Guid="7b12c1e0-c859-4ca8-a32a-b3e1f5059055" Win64="$(var.Win64Binary)">
                 <File Name="ICSharpCode.TextEditor.dll" Assembly=".net" AssemblyApplication="Gallio.Icarus.exe" KeyPath="yes" />
             </Component>
         </DirectoryRef>
 
         <DirectoryRef Id="ResourcesFolder" FileSource="$(var.GallioTargetDir)\bin\Resources\">
-            <Component Id="Gallio.Icarus.Resources" Guid="{F8A60B6D-04DC-4835-959A-500E2365741A}" Win64="no">
+            <Component Id="Gallio.Icarus.Resources" Guid="{F8A60B6D-04DC-4835-959A-500E2365741A}" Win64="$(var.Win64Binary)">
                 <File Id="Gallio.Icarus.ico" Name="Gallio.Icarus.ico" KeyPath="yes" />
             </Component>
         </DirectoryRef>
 	
-        <Icon Id="Gallio.icon.exe" SourceFile="$(var.GallioTargetDir)\bin\Gallio.Icarus.exe" />
-
-        <DirectoryRef Id="GallioMenuFolder">
-            <Component Id="Gallio.Icarus.MenuShortcut" Guid="24507684-a556-421e-8081-33be552794a2" Win64="no">
-                <Condition>INSTALLSTARTMENUSHORTCUT</Condition>
-                <CreateFolder />
-                <RegistryKey Action="none" Root="HKCU" Key="Software\Gallio.org\Gallio\$(var.MajorVersion).$(var.MinorVersion)">
-                    <RegistryValue Type="string" Value="[INSTALLDIR]" KeyPath="yes" />
-                </RegistryKey>
-                <Shortcut Id="Gallio.Icarus.lnk" Name="Icarus GUI Test Runner" Icon="Gallio.icon.exe" IconIndex="0" Target="[#Gallio.Icarus.exe]" Directory="GallioMenuFolder" WorkingDirectory="binFolder" Advertise="no" Show="normal" />
-                <RemoveFile Id="Gallio.Icarus.lnk" On="uninstall" Name="[Gallio.Icarus.lnk]" />
-                <RemoveFolder Id="GallioMenuFolder" On="uninstall" />
-            </Component>
-        </DirectoryRef>
-
-        <DirectoryRef Id="DesktopFolder">
-            <Component Id="Gallio.Icarus.DesktopShortcut" Guid="0738b1ff-91a5-47cc-b130-5eb6cdee925d" Win64="no">
-                <Condition>INSTALLDESKTOPSHORTCUT</Condition>
-                <RegistryKey Action="none" Root="HKCU" Key="Software\Gallio.org\Gallio\$(var.MajorVersion).$(var.MinorVersion)">
-                    <RegistryValue Type="string" Value="[INSTALLDIR]" KeyPath="yes" />
-                </RegistryKey>
-                <Shortcut Id="Gallio.Icarus.Desktop.lnk" Name="Gallio Icarus" Icon="Gallio.icon.exe" IconIndex="0" Target="[#Gallio.Icarus.exe]" Directory="DesktopFolder" WorkingDirectory="binFolder" Advertise="no" Show="normal" />
-                <RemoveFile Id="Gallio.Icarus.Desktop.lnk" On="uninstall" Name="[Gallio.Icarus.Desktop.lnk]" />
-            </Component>
-        </DirectoryRef>
-
         <Feature Id="feat_Gallio.Icarus" Title="Icarus (GUI Test Runner)" Level="1" AllowAdvertise="no"
             Description="Installs the Gallio GUI-based test runner.">
             <ComponentRef Id="Gallio.Icarus.exe" />
             <ComponentRef Id="Gallio.Icarus.Resources" />
 
             <ComponentRef Id="ICSharpCode.TextEditor.dll" />
-
-            <ComponentRef Id="Gallio.Icarus.MenuShortcut" />
-            <ComponentRef Id="Gallio.Icarus.DesktopShortcut" />
         </Feature>
     </Fragment>
 </Wix>

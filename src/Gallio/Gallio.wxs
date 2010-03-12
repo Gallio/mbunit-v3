@@ -2,34 +2,39 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:vs="http://schemas.microsoft.com/wix/VSExtension"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-    <?include ..\Installer\Features.wxi ?>
+    <?include ..\Installer\Common.wxi ?>
 
     <Fragment>
         <!-- TODO: Replace H2Reg.exe with the recommended way of registering help. -->
         <Property Id="GALLIO_HOMEPAGE" Value="http://www.gallio.org/" />
 
+        <Icon Id="Gallio.icon.exe" SourceFile="$(var.GallioTargetDir)\bin\Resources\Gallio.ico" />
+        
         <DirectoryRef Id="INSTALLDIR">
-            <Component Id="Apache.License" Guid="{66f9f954-992a-44ce-8696-082b3807d845}" Win64="no">
+            <Component Id="Apache.License" Guid="{66f9f954-992a-44ce-8696-082b3807d845}" Win64="$(var.Win64Binary)">
                 <File Id="Apache.License.txt" Source="$(var.GallioTargetDir)\ASL - Apache Software Foundation License.txt" KeyPath="yes" />
             </Component>
-            <Component Id="Gallio.License" Guid="{80dcc954-656f-45de-9bf2-bec6ff1d7c58}" Win64="no">
+            <Component Id="Gallio.License" Guid="{80dcc954-656f-45de-9bf2-bec6ff1d7c58}" Win64="$(var.Win64Binary)">
                 <File Id="Gallio.License.txt" Source="$(var.GallioTargetDir)\Gallio License.txt" KeyPath="yes" />
             </Component>
-            <Component Id="Gallio.Credits" Guid="{7EFEC8C8-CB48-41b3-818C-9CAD85DBECC1}" Win64="no">
+            <Component Id="Gallio.Credits" Guid="{7EFEC8C8-CB48-41b3-818C-9CAD85DBECC1}" Win64="$(var.Win64Binary)">
                 <File Id="Gallio.Credits.html" Source="$(var.GallioTargetDir)\Credits.html" KeyPath="yes" >
                     <Shortcut Id="Gallio.Credits.lnk" Name="Gallio Credits" Directory="GallioMenuFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
                 </File>
             </Component>
             <?ifdef FEATURE_SOURCES ?>
-            <Component Id="Gallio.Sources" Guid="{D4E22A10-81E3-4e93-ACF8-3254F3915BFA}" Win64="no">
+            <Component Id="Gallio.Sources" Guid="{D4E22A10-81E3-4e93-ACF8-3254F3915BFA}" Win64="$(var.Win64Binary)">
                 <File Id="Gallio.Sources.txt" Source="$(var.GallioTargetDir)\Sources.txt" KeyPath="yes" />
             </Component>
             <?endif ?>
-            <Component Id="Gallio.Website" Guid="{32DF17D3-27D2-4b7a-8094-37A559F2B234}" Win64="no">
+            <Component Id="Gallio.Website" Guid="{32DF17D3-27D2-4b7a-8094-37A559F2B234}" Win64="$(var.Win64Binary)">
                 <File Id="Gallio.Website.url" Source="$(var.GallioTargetDir)\Gallio Website.url" KeyPath="yes">
                     <Shortcut Id="Gallio.Website.lnk" Name="Gallio Website" Directory="GallioMenuFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
                 </File>
             </Component>
+        </DirectoryRef>
+        
+        <DirectoryRef Id="ProgramFilesFolder">
             <Component Id="Gallio.Registry" Guid="{1AE1AC98-1FF2-4913-9ACA-EB8018E40508}" Win64="no">
                 <RegistryKey Id="Gallio.RegistryKey1" Action="createAndRemoveOnUninstall"
                              Root="HKLM" Key="SOFTWARE\Gallio.org\Gallio">
@@ -53,72 +58,71 @@
         </DirectoryRef>
 
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Component Id="Gallio" Guid="{1f25f1f8-46ea-40f5-a850-16bac64cad0a}" Win64="no">
+            <Component Id="Gallio" Guid="{1f25f1f8-46ea-40f5-a850-16bac64cad0a}" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.dll" KeyPath="yes" />
                 <File Name="Gallio.plugin" />
                 <File Name="Gallio.pdb" />
                 <File Name="Gallio.xml" />
-                <File Id="Gallio.xsd" Name="Gallio.xsd" />
                 <?ifdef NO_ILMERGE ?>
                 <File Name="Mono.Cecil.dll" />
                 <File Name="ICSharpCode.SharpZipLib.dll" />
                 <File Name="Gallio.ReflectionShim.dll" />
                 <?endif ?>
             </Component>
-            <Component Id="Gallio35" Guid="{015c2236-433f-45f4-86d8-88b87f7fad26}" Win64="no">
+            <Component Id="Gallio35" Guid="{015c2236-433f-45f4-86d8-88b87f7fad26}" Win64="$(var.Win64Binary)">
                 <File Name="Gallio35.dll" KeyPath="yes" />
                 <File Name="Gallio35.plugin" />
                 <File Name="Gallio35.pdb" />
                 <File Name="Gallio35.xml" />
             </Component>
             <?ifdef FEATURE_GALLIO40?>
-            <Component Id="Gallio40" Guid="{830C1A43-888C-4E3B-BFC0-D59D086A4B2B}" Win64="no">
+            <Component Id="Gallio40" Guid="{830C1A43-888C-4E3B-BFC0-D59D086A4B2B}" Win64="$(var.Win64Binary)">
                 <File Name="Gallio40.dll" KeyPath="yes" />
                 <File Name="Gallio40.plugin" />
                 <File Name="Gallio40.pdb" />
                 <File Name="Gallio40.xml" />
             </Component>
             <?endif?>
-            <Component Id="Gallio.XmlSerializers" Guid="{1F8F8C04-E8CF-478c-AD16-9D90921C71A5}" Win64="no">
+            <Component Id="Gallio.XmlSerializers" Guid="{1F8F8C04-E8CF-478c-AD16-9D90921C71A5}" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.XmlSerializers.dll" KeyPath="yes" />
             </Component>
-            <Component Id="Gallio.Host" Guid="{182CEF37-6885-4954-8411-CB57DA11357B}" Win64="no">
+            <Component Id="Gallio.Host" Guid="{182CEF37-6885-4954-8411-CB57DA11357B}" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.Host.exe" KeyPath="yes" />
                 <File Name="Gallio.Host.exe.config" />
             </Component>
-            <Component Id="Gallio.Host.x86" Guid="{9560EEA1-E472-4cc6-99DA-03CDCD370343}" Win64="no">
+            <Component Id="Gallio.Host.x86" Guid="{9560EEA1-E472-4cc6-99DA-03CDCD370343}" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.Host.x86.exe" KeyPath="yes" />
                 <File Name="Gallio.Host.x86.exe.config" />
             </Component>
-            <Component Id="Gallio.Host.Elevated" Guid="{1E93B413-D626-4b3d-BCC1-BEB41897A492}" Win64="no">
+            <Component Id="Gallio.Host.Elevated" Guid="{1E93B413-D626-4b3d-BCC1-BEB41897A492}" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.Host.Elevated.exe" KeyPath="yes" />
                 <File Name="Gallio.Host.Elevated.exe.config" />
             </Component>
-            <Component Id="Gallio.Host.Elevated.x86" Guid="{DF5897EC-016B-40c6-8B27-1A2E04D1A969}" Win64="no">
+            <Component Id="Gallio.Host.Elevated.x86" Guid="{DF5897EC-016B-40c6-8B27-1A2E04D1A969}" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.Host.Elevated.x86.exe" KeyPath="yes" />
                 <File Name="Gallio.Host.Elevated.x86.exe.config" />
             </Component>
-            <Component Id="Gallio.Reports" Guid="9e17b959-1768-4a2b-b750-99821b01dd53" Win64="no">
+            <Component Id="Gallio.Reports" Guid="9e17b959-1768-4a2b-b750-99821b01dd53" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.Reports.dll" KeyPath="yes" />
                 <File Name="Gallio.Reports.pdb" />
                 <File Name="Gallio.Reports.xml" />
                 <File Name="Gallio.Reports.plugin" />
             </Component>
-            <Component Id="Gallio.UI" Guid="{7CEEF55C-A9DD-4ce1-AD70-50CCEE425CE4}" Win64="no">
+            <Component Id="Gallio.UI" Guid="{7CEEF55C-A9DD-4ce1-AD70-50CCEE425CE4}" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.UI.dll" KeyPath="yes" />
                 <File Name="Gallio.UI.pdb" />
                 <File Name="Gallio.UI.xml" />
                 <File Name="Gallio.UI.plugin" />
             </Component>
-            <Component Id="Gallio.Common.Splash" Guid="{08C90196-9158-4FD9-BBEA-39122FB47841}" Win64="no">
+            <Component Id="Gallio.Common.Splash" Guid="{08C90196-9158-4FD9-BBEA-39122FB47841}" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.Common.Splash.dll" KeyPath="yes" />
                 <File Name="Gallio.Common.Splash.pdb" />
                 <File Name="Gallio.Common.Splash.xml" />
             </Component>
-            <Component Id="Aga.Controls.dll" Guid="3c58ac7a-fe23-4bd4-9bb4-1bd5c107ba89" Win64="no">
+            <Component Id="Aga.Controls.dll" Guid="3c58ac7a-fe23-4bd4-9bb4-1bd5c107ba89" Win64="$(var.Win64Binary)">
                 <File Name="Aga.Controls.dll" Assembly=".net" AssemblyApplication="Aga.Controls.dll" KeyPath="yes" />
             </Component>
-            <Component Id="WeifenLuo.WinFormsUI.Docking.dll" Guid="3B11B01F-71EB-4423-AC66-55CE8E6E30D9" Win64="no">
+            <Component Id="WeifenLuo.WinFormsUI.Docking.dll" Guid="3B11B01F-71EB-4423-AC66-55CE8E6E30D9" Win64="$(var.Win64Binary)">
                 <File Name="WeifenLuo.WinFormsUI.Docking.dll" Assembly=".net" AssemblyApplication="WeifenLuo.WinFormsUI.Docking.dll" KeyPath="yes" />
             </Component>
 
@@ -126,16 +130,16 @@
         </DirectoryRef>
 
         <DirectoryRef Id="licensesFolder" FileSource="$(var.GallioTargetDir)\licenses\">
-          <Component Id="Mono.Cecil.License" Guid="{3AF29A1B-1DD9-4994-98DC-2F7B88F99A20}" Win64="no">
+          <Component Id="Mono.Cecil.License" Guid="{3AF29A1B-1DD9-4994-98DC-2F7B88F99A20}" Win64="$(var.Win64Binary)">
             <File Id="Mono.Cecil.license.html" Name="Mono.Cecil.license.html" KeyPath="yes" />
           </Component>
-          <Component Id="CciMetadata.License" Guid="{A0253335-B09F-4095-8928-16F28CA07741}" Win64="no">
+          <Component Id="CciMetadata.License" Guid="{A0253335-B09F-4095-8928-16F28CA07741}" Win64="$(var.Win64Binary)">
             <File Id="CciMetadata.License.txt" Name="CciMetadata.License.txt" KeyPath="yes" />
           </Component>
         </DirectoryRef>
 
         <DirectoryRef Id="ResourcesFolder" FileSource="$(var.GallioTargetDir)\bin\Resources\">
-            <Component Id="Gallio.Resources" Guid="{E99D0D72-95F9-4d17-8BAA-7FFC83402E52}" Win64="no">
+            <Component Id="Gallio.Resources" Guid="{E99D0D72-95F9-4d17-8BAA-7FFC83402E52}" Win64="$(var.Win64Binary)">
                 <File Id="Gallio.ico" Name="Gallio.ico" KeyPath="yes" />
 		
                 <File Id="Assembly.ico" Name="Assembly.ico" />
@@ -146,7 +150,7 @@
             </Component>
 
             <Directory Id="Reports.css" Name="css">
-                <Component Id="Gallio.Resources.css" Guid="65dc0971-e579-4226-b78a-1588d9f6977d" Win64="no">
+                <Component Id="Gallio.Resources.css" Guid="65dc0971-e579-4226-b78a-1588d9f6977d" Win64="$(var.Win64Binary)">
                     <File Id="Gallio.Report.css" Name="Gallio-Report.css" KeyPath="yes" />
 
                     <!-- Remove files generated at runtime. -->
@@ -155,7 +159,7 @@
             </Directory>
 
             <Directory Id="Reports.js" Name="js">
-                <Component Id="Gallio.Resources.js" Guid="09db9a62-2734-4624-9d6c-8ce1688d21ce" Win64="no">
+                <Component Id="Gallio.Resources.js" Guid="09db9a62-2734-4624-9d6c-8ce1688d21ce" Win64="$(var.Win64Binary)">
                     <File Id="Gallio.Report.js" Name="Gallio-Report.js" KeyPath="yes" />
                     <File Id="swfobject.js" Name="swfobject.js" />
                     <File Id="player.swf" Name="player.swf" />
@@ -164,7 +168,7 @@
             </Directory>
 
             <Directory Id="Reports.xsl" Name="xsl">
-                <Component Id="Gallio.Resources.xsl" Guid="1AE4D4DD-DE35-4887-8953-9079E1BE2447" Win64="no">
+                <Component Id="Gallio.Resources.xsl" Guid="1AE4D4DD-DE35-4887-8953-9079E1BE2447" Win64="$(var.Win64Binary)">
                     <File Id="Gallio.Report.common.xsl" Name="Gallio-Report.common.xsl" />
                     <File Id="Gallio.Report.txt.xsl" Name="Gallio-Report.txt.xsl" />
                     <File Id="Gallio.Report.txt.common.xsl" Name="Gallio-Report.txt-common.xsl" />
@@ -180,7 +184,7 @@
             </Directory>
 
             <Directory Id="Reports.img" Name="img">
-                <Component Id="Gallio.Resources.img" Guid="76196919-6e89-486f-b095-5bc28787d954" Win64="no">
+                <Component Id="Gallio.Resources.img" Guid="76196919-6e89-486f-b095-5bc28787d954" Win64="$(var.Win64Binary)">
                     <File Id="Reports.GallioTestReportHeader.png" Name="GallioTestReportHeader.png" KeyPath="yes" />
                     <File Id="Reports.Failed.gif" Name="Failed.gif" />
                     <File Id="Reports.FullStop.gif" Name="FullStop.gif" />
@@ -193,19 +197,18 @@
                 </Component>
 
                 <Directory Id="Reports.img.testkinds" Name="testkinds">
-                    <Component Id="Gallio.Resources.img.testkinds" Guid="{12DC88DC-9A22-49c7-B82C-5F2DD879C4D9}" Win64="no">
+                    <Component Id="Gallio.Resources.img.testkinds" Guid="{12DC88DC-9A22-49c7-B82C-5F2DD879C4D9}" Win64="$(var.Win64Binary)">
                         <!-- Remove files generated at runtime. -->
                         <RemoveFile Id="Reports.img.testkinds.RemoveFiles" Name="*.*" On="uninstall" />
                         <RemoveFolder Id="Reports.img.testkinds.RemoveFolder" On="uninstall" />
                     </Component>
                 </Directory>
             </Directory>
-
         </DirectoryRef>
 
         <DirectoryRef Id="docsFolder" FileSource="$(var.GallioTargetDir)\docs\">
 <?ifdef FEATURE_CHM_HELP ?>
-            <Component Id="Gallio.chm" Guid="{37BEC1CB-8141-4793-8CFF-986AC4849EB9}" Win64="no">
+            <Component Id="Gallio.chm" Guid="{37BEC1CB-8141-4793-8CFF-986AC4849EB9}" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.chm" KeyPath="yes">
                     <Shortcut Id="Gallio.Offline.Documentation.lnk" Name="Offline Documentation" Directory="GallioMenuFolder" WorkingDirectory="docsFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" Show="normal" />
                 </File>
@@ -214,7 +217,7 @@
 
 <?ifdef FEATURE_VS_HELP ?>
             <Directory Id="docsVsFolder" Name="vs">
-                <Component Id="Gallio.Help.vs" Guid="37360bcd-0c85-4132-822e-5810371b59fa" Win64="no">
+                <Component Id="Gallio.Help.vs" Guid="37360bcd-0c85-4132-822e-5810371b59fa" Win64="$(var.Win64Binary)">
                     <File Name="Gallio.HxS" />
                     <File Name="Gallio.HxC" />
                     <File Name="Gallio.HxT" />
@@ -225,7 +228,7 @@
                     <File Name="Gallio_S.HxK" />
                     <File Name="Gallio_NamedUrlIndex.HxK" />
                 </Component>
-                <Component Id="Gallio.H2Reg.ini" Guid="7bb0227e-0dc9-4385-b97c-1b9aff6504fd" Win64="no">
+                <Component Id="Gallio.H2Reg.ini" Guid="7bb0227e-0dc9-4385-b97c-1b9aff6504fd" Win64="$(var.Win64Binary)">
                     <File Id="Gallio.H2Reg.ini" Name="Gallio_H2Reg.ini" />
                 </Component>
             </Directory>
@@ -235,7 +238,7 @@
         <DirectoryRef Id="extrasFolder">
 <?ifdef FEATURE_VS_HELP ?>
             <Directory Id='H2RegDir' Name='H2Reg'>
-                <Component Id="H2Reg.exe" Guid="779c47b3-56ba-4efc-ab52-3b809c2f2c3b" Win64="no">
+                <Component Id="H2Reg.exe" Guid="779c47b3-56ba-4efc-ab52-3b809c2f2c3b" Win64="$(var.Win64Binary)">
                     <File Id="H2Reg.exe" Source="$(sys.SOURCEFILEDIR)..\..\tools\H2Reg\H2Reg.exe" KeyPath="yes" />
                     <File Id="H2Reg.ini" Source="$(sys.SOURCEFILEDIR)..\..\tools\H2Reg\H2Reg.ini" />
                     <RemoveFile Id="H2Reg_Log.txt" Name="H2Reg_Log.txt" On="uninstall" />

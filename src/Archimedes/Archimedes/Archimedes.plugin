@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Archimedes"
-        recommendedInstallationPath=""
+        recommendedInstallationPath="Archimedes"
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Archimedes</name>

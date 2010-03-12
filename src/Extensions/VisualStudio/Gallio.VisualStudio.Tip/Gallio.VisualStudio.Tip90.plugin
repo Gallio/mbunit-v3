@@ -16,7 +16,10 @@
   <files>
     <file path="Gallio.VisualStudio.Tip90.plugin" />
     <file path="Gallio.VisualStudio.Tip90.dll" />
+    
+    <!-- Installed in the GAC only.
     <file path="Gallio.VisualStudio.Tip90.Proxy.dll" />
+    -->
   </files>
 
   <probingPaths>

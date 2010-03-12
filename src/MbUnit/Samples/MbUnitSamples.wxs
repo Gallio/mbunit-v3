@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:VS="http://schemas.microsoft.com/wix/VSExtension" >
+    <?include ..\..\Installer\Common.wxi ?>
+     
     <Fragment>
         <DirectoryRef Id="samplesFolder" FileSource="$(var.GallioTargetDir)\samples\">
             <Directory Id="MbUnit.Samples" Name="MbUnit">
-                <Component Id="MbUnit.Samples.Readme" Guid="{EA434A17-A650-4fce-A25B-8D9D0B6577D9}" Win64="no">
+                <Component Id="MbUnit.Samples.Readme" Guid="{EA434A17-A650-4fce-A25B-8D9D0B6577D9}" Win64="$(var.Win64Binary)">
                     <File Id="MbUnit.Samples.Readme.txt" Name="Readme.txt" KeyPath="yes" />
                 </Component>
 
-                <Component Id="MbUnit.Samples.UnitTesting" Guid="{FD430940-F292-47d6-957F-E0A8D3E20FAD}" Win64="no">
+                <Component Id="MbUnit.Samples.UnitTesting" Guid="{FD430940-F292-47d6-957F-E0A8D3E20FAD}" Win64="$(var.Win64Binary)">
                     <File Id="MbUnit.Samples.UnitTesting.zip" Name="Unit Testing.zip" KeyPath="yes" />
                 </Component>
 
-                <Component Id="MbUnit.Samples.WebTestingWithWatiN" Guid="{FAE3E883-1007-4cf6-8106-8ED3F97D070E}" Win64="no">
+                <Component Id="MbUnit.Samples.WebTestingWithWatiN" Guid="{FAE3E883-1007-4cf6-8106-8ED3F97D070E}" Win64="$(var.Win64Binary)">
                     <File Id="MbUnit.Samples.WebTestingWithWatiN.zip" Name="Web Testing with WatiN.zip" KeyPath="yes" />
                 </Component>
 
-                <Component Id="MbUnit.Samples.GUITestingWithWhite" Guid="{7F850761-AD5A-405b-BEBD-3D547727E682}" Win64="no">
+                <Component Id="MbUnit.Samples.GUITestingWithWhite" Guid="{7F850761-AD5A-405b-BEBD-3D547727E682}" Win64="$(var.Win64Binary)">
                     <File Id="MbUnit.Samples.GUITestingWithWhite.zip" Name="GUI Testing with White.zip" KeyPath="yes" />
                 </Component>
             </Directory>

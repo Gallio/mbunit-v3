@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <?include ..\..\Installer\Features.wxi ?>
+    <?include ..\..\Installer\Common.wxi ?>
 
 <?ifdef FEATURE_NUNIT_ADAPTER_25 ?>
     <Fragment>
         <DirectoryRef Id="NUnit" FileSource="$(var.GallioTargetDir)\bin\NUnit">
           <Directory Id="NUnit.v25" Name="v2.5">
-            <Component Id="Gallio.NUnitAdapter25" Guid="{156A9E25-863F-4f45-BDE4-D516B22B1244}" Win64="no">
+            <Component Id="Gallio.NUnitAdapter25" Guid="{156A9E25-863F-4f45-BDE4-D516B22B1244}" Win64="$(var.Win64Binary)">
               <File Id="NUnit.v25.NUnitAdapter25.dll" Name="Gallio.NUnitAdapter25.dll" KeyPath="yes" />
               <File Id="NUnit.v25.NUnitAdapter25.plugin" Name="Gallio.NUnitAdapter25.plugin" />
               <File Id="NUnit.v25.nunit.license.txt" Name="license.txt" />
@@ -21,13 +21,13 @@
             </Component>
 
             <Directory Id="NUnit.v25.Addins" Name="addins">
-              <Component Id="Gallio.NUnitAdapter25.Addins" Guid="{D3441D43-CF56-47f1-A7B8-4C66338B39D0}" Win64="no">
+              <Component Id="Gallio.NUnitAdapter25.Addins" Guid="{D3441D43-CF56-47f1-A7B8-4C66338B39D0}" Win64="$(var.Win64Binary)">
                 <File Id="NUnit.v25.AddinsReadme.txt" Name="NUnit Addins Readme.txt" KeyPath="yes" />
               </Component>
             </Directory>
 	    
             <Directory Id="NUnit.v25.Resources" Name="Resources">
-              <Component Id="Gallio.NUnitAdapter25.Resources" Guid="{2E07E5B6-E699-4794-828F-2C454DDF2BD1}" Win64="no">
+              <Component Id="Gallio.NUnitAdapter25.Resources" Guid="{2E07E5B6-E699-4794-828F-2C454DDF2BD1}" Win64="$(var.Win64Binary)">
                 <File Id="NUnit.v25.NUnit.ico" Name="NUnit.ico" KeyPath="yes" />
               </Component>
             </Directory>

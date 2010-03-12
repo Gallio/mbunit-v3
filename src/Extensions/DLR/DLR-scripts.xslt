@@ -18,7 +18,7 @@
 
   <xsl:template match="wix:Component">
     <xsl:copy>
-      <xsl:attribute name="Win64">no</xsl:attribute>
+      <xsl:attribute name="Win64">$(var.Win64Binary)</xsl:attribute>
       <xsl:apply-templates select="@*|node()"/>      
     </xsl:copy>
   </xsl:template>

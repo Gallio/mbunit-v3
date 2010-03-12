@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <?include ..\..\Installer\Features.wxi ?>
+    <?include ..\..\Installer\Common.wxi ?>
 
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-          <Component Id="Gallio.Navigator" Guid="{AF22A32E-D8AA-40a2-8E14-07A70C52F46F}" Win64="no">
+          <Component Id="Gallio.Navigator" Guid="{AF22A32E-D8AA-40a2-8E14-07A70C52F46F}" Win64="$(var.Win64Binary)">
             <File Name="Gallio.Navigator.exe" KeyPath="yes" Assembly=".net" AssemblyApplication="Gallio.Navigator.exe" />
             <File Name="Gallio.Navigator.exe.config" />
             <File Name="Gallio.Navigator.plugin" />
             <File Name="Gallio.Navigator.Readme.txt" />
           </Component>
-
+        </DirectoryRef>
+        
+        <DirectoryRef Id="ProgramFilesFolder">
             <!-- Note: When editing these registry entries, be sure to update the COM registration
                        hooks used by regasm.exe in GallioProtocolHandler. -->
           <Component Id="Gallio.Navigator.Registry.x86" Guid="{C1D0FB1F-0124-457b-9D80-D7253C704AA4}" Win64="no">

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <?include ..\..\Installer\Features.wxi ?>
+    <?include ..\..\Installer\Common.wxi ?>
     
     <?ifdef FEATURE_DLR_INTEGRATION ?>
     <?define DLR.libs.source = "$(var.GallioTargetDir)\bin\DLR\libs" ?>
@@ -11,7 +11,7 @@
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="DLR" Name="DLR">
-                <Component Id="Gallio.DLRIntegration" Guid="{2E94473F-CF78-4113-91EA-4B0B87CF4C48}" Win64="no">
+                <Component Id="Gallio.DLRIntegration" Guid="{2E94473F-CF78-4113-91EA-4B0B87CF4C48}" Win64="$(var.Win64Binary)">
                   <File Name="Gallio.DLRIntegration.dll" KeyPath="yes" />
                   <File Name="Gallio.DLRIntegration.plugin" />
                   <File Name="Gallio.DLRIntegration.dll.config" />

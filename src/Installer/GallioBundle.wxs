@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
-    <?include Features.wxi ?>
+    <?include Common.wxi ?>
 
     <Product
         Id="*"
@@ -56,6 +56,7 @@
         <!-- Define all directories used in the install -->
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id='ProgramFilesFolder' Name='PFiles'>
+<?if $(var.Platform) != "x64" ?>
                 <Directory Id='INSTALLDIR' Name='Gallio'>
                     <Directory Id='binFolder' Name='bin'/>
                     <Directory Id='docsFolder' Name='docs'/>
@@ -64,10 +65,19 @@
                     <Directory Id='licensesFolder' Name='licenses'/>
                     <Directory Id='sdkFolder' Name='sdk'/>
                 </Directory>                
+<?endif?>
             </Directory>
 	    
-<?if $(var.Platform)=x64?>
+<?if $(var.Platform) = "x64" ?>
             <Directory Id='ProgramFiles64Folder' Name='PFiles64'>
+                <Directory Id='INSTALLDIR' Name='Gallio'>
+                    <Directory Id='binFolder' Name='bin'/>
+                    <Directory Id='docsFolder' Name='docs'/>
+                    <Directory Id='extrasFolder' Name='extras'/>
+                    <Directory Id='samplesFolder' Name='samples'/>
+                    <Directory Id='licensesFolder' Name='licenses'/>
+                    <Directory Id='sdkFolder' Name='sdk'/>
+                </Directory>                
             </Directory>
 <?endif?>
 

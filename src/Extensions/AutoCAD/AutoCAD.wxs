@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <?include ..\..\Installer\Features.wxi ?>
+    <?include ..\..\Installer\Common.wxi ?>
 
     <Fragment>
 <?ifdef FEATURE_AUTOCAD ?>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="AutoCAD" Name="AutoCAD">
-              <Component Id="Gallio.AutoCAD.dll" Guid="4f9c795d-50fa-4710-bd9e-6d11c771e9a7" Win64="no">
+              <Component Id="Gallio.AutoCAD.dll" Guid="4f9c795d-50fa-4710-bd9e-6d11c771e9a7" Win64="$(var.Win64Binary)">
                   <File Name="Gallio.AutoCAD.dll" KeyPath="yes"/>
               </Component>
-              <Component Id="Gallio.AutoCAD.plugin" Guid="3c258bc9-05f5-41a4-b0a1-f848ecc529f4" Win64="no">
+              <Component Id="Gallio.AutoCAD.plugin" Guid="3c258bc9-05f5-41a4-b0a1-f848ecc529f4" Win64="$(var.Win64Binary)">
                   <File Name="Gallio.AutoCAD.plugin" KeyPath="yes" />
               </Component>
-              <Component Id="Gallio.AutoCAD.Plugin.dll" Guid="9c467029-0caa-4138-862c-f09a1839698b" Win64="no">
+              <Component Id="Gallio.AutoCAD.Plugin.dll" Guid="9c467029-0caa-4138-862c-f09a1839698b" Win64="$(var.Win64Binary)">
                   <File Name="Gallio.AutoCAD.Plugin.dll" KeyPath="yes" />
               </Component>
-              <Component Id="Gallio.AutoCAD.UI.dll" Guid="c97e1d5e-d646-4d94-9291-325833ad4389" Win64="no">
+              <Component Id="Gallio.AutoCAD.UI.dll" Guid="c97e1d5e-d646-4d94-9291-325833ad4389" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.AutoCAD.UI.dll" KeyPath="yes" />
               </Component>
-              <Component Id="Gallio.AutoCAD.UI.plugin" Guid="d199b77c-c691-42c8-86e1-c6d9ebe5be21" Win64="no">
+              <Component Id="Gallio.AutoCAD.UI.plugin" Guid="d199b77c-c691-42c8-86e1-c6d9ebe5be21" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.AutoCAD.UI.plugin" KeyPath="yes" />
               </Component>
               <Directory Id="Gallio.AutoCAD.Resources" Name="Resources">
-                <Component Id="Gallio.AutoCAD.Resources" Guid="747fe7a3-98e6-4084-84e6-a4b52e749e81" Win64="no">
+                <Component Id="Gallio.AutoCAD.Resources" Guid="747fe7a3-98e6-4084-84e6-a4b52e749e81" Win64="$(var.Win64Binary)">
                   <File Name="Gallio.AutoCAD.ico" KeyPath="yes" />
                 </Component>
               </Directory>
@@ -30,7 +30,7 @@
         </DirectoryRef>
 
         <DirectoryRef Id="licensesFolder" FileSource="$(var.GallioTargetDir)\licenses\">
-          <Component Id="objectarx_license.doc" Guid="4dff01ff-d88d-48b6-b7d6-c735e96723c4" Win64="no">
+          <Component Id="objectarx_license.doc" Guid="4dff01ff-d88d-48b6-b7d6-c735e96723c4" Win64="$(var.Win64Binary)">
             <File Name="objectarx_license.doc" KeyPath="yes" />
           </Component>
         </DirectoryRef>

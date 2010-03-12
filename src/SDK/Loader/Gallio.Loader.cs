@@ -117,10 +117,14 @@ namespace Gallio.Loader
 
                 return runtimePath;
             }
+            catch (LoaderException)
+            {
+                throw;
+            }            
             catch (Exception ex)
             {
                 throw new LoaderException(string.Format(
-                    "An exception occurred while attempting to determing the Gallio runtime path.\n\n{0}",
+                    "An exception occurred while attempting to determine the Gallio runtime path.\n\n{0}",
                     GetFailureHint()), ex);
             }
         }
@@ -277,17 +281,15 @@ namespace Gallio.Loader
 
         /// <summary>
         /// Gets the version of Gallio to load by searching the referenced assemblies
-        /// returned by <see cref="GetReferencedAssemblies"/> for the assembly name
-        /// returned by <see cref="GetReferencedGallioAssemblyName"/> and returning
-        /// the runtime version that was discovered.
+        /// for an assembly name for which <see cref="IsGallioAssemblyName"/> returns true
+        /// then returns the runtime version that was discovered.
         /// </summary>
         /// <returns>The runtime version, or null if not found.</returns>
         protected virtual string GetRuntimeVersionUsingReferencedAssemblies()
         {
-            string referencedGallioAssemblyName = GetReferencedGallioAssemblyName();
             foreach (AssemblyName assemblyName in GetReferencedAssemblies())
             {
-                if (assemblyName.Name == referencedGallioAssemblyName)
+                if (IsGallioAssemblyName(assemblyName))
                     return string.Format(CultureInfo.InvariantCulture, "{0}.{1}",
                         assemblyName.Version.Major, assemblyName.Version.Minor);
             }
@@ -296,16 +298,18 @@ namespace Gallio.Loader
         }
 
         /// <summary>
-        /// Gets the name of the referenced Gallio assembly that should be used to
-        /// automatically determine the version of Gallio to load.
+        /// Returns true if the assembly name is a Gallio assembly.
         /// </summary>
         /// <remarks>
-        /// The default implementation returns "Gallio".
+        /// The default implementation returns true for any assembly called
+        /// "Gallio" or whose name starts with "Gallio.".
         /// </remarks>
-        /// <returns>The primary referenced Gallio assembly name, eg. "Gallio".</returns>
-        protected virtual string GetReferencedGallioAssemblyName()
+        /// <param name="assemblyName">The assembly name to check, not null.</param>
+        /// <returns>True if the assembly is a Gallio assembly.</returns>
+        protected virtual bool IsGallioAssemblyName(AssemblyName assemblyName)
         {
-            return "Gallio";
+            return assemblyName.Name == "Gallio"
+                || assemblyName.Name.StartsWith("Gallio.");
         }
 
         /// <summary>
@@ -313,13 +317,16 @@ namespace Gallio.Loader
         /// to automatically determine the version of Gallio to load.
         /// </summary>
         /// <remarks>
-        /// The default implementation returns the assemblies referenced by the
-        /// currently executing assembly.
+        /// The default implementation returns the name of the assemblies referenced by the
+        /// currently executing assembly and the name of the executing assembly itself.
         /// </remarks>
         /// <returns>The referenced assemblies.</returns>
         protected virtual IEnumerable<AssemblyName> GetReferencedAssemblies()
         {
-            return Assembly.GetExecutingAssembly().GetReferencedAssemblies();
+            Assembly executingAssembly = Assembly.GetExecutingAssembly();
+            foreach (AssemblyName assemblyName in executingAssembly.GetReferencedAssemblies())
+                yield return assemblyName;
+            yield return executingAssembly.GetName();
         }
     }
 

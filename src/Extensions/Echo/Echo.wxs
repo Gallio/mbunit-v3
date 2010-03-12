@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\..\Installer\Common.wxi ?>
+    
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Component Id="Gallio.Echo" Guid="8f28f164-fa85-4a2f-bfa3-b75c8bea2031" Win64="no">
+            <Component Id="Gallio.Echo" Guid="8f28f164-fa85-4a2f-bfa3-b75c8bea2031" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.Echo.exe" KeyPath="yes" />
                 <File Name="Gallio.Echo.exe.config" />
                 <File Name="Gallio.Echo.plugin" />
@@ -10,7 +12,7 @@
         </DirectoryRef>
 
         <DirectoryRef Id="ResourcesFolder" FileSource="$(var.GallioTargetDir)\bin\Resources\">
-            <Component Id="Gallio.Echo.Resources" Guid="{12D947CF-B41D-414f-8434-DEB0EF0F5786}" Win64="no">
+            <Component Id="Gallio.Echo.Resources" Guid="{12D947CF-B41D-414f-8434-DEB0EF0F5786}" Win64="$(var.Win64Binary)">
                 <File Id="Gallio.Echo.ico" Name="Gallio.Echo.ico" KeyPath="yes" />
             </Component>
         </DirectoryRef>

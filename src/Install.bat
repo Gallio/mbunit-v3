@@ -7,7 +7,7 @@ setlocal
 set SRC_DIR=%~dp0
 set BIN_DIR=%~dp0..\bin
 set GACUTIL=%BIN_DIR%\gacutil.exe
-set GACUTIL40=%BIN_DIR%\gacutil40.exe
+set GACUTIL40=%PROGRAMFILES%\Microsoft SDKs\Windows\v7.0A\Bin\NETFX 4.0 Tools\gacutil.exe
 set ELEVATE=%BIN_DIR%\elevate.cmd
 set REG=%BIN_DIR%\reg.exe
 

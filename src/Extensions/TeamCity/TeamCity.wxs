@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\..\Installer\Common.wxi ?>
+
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="TeamCityIntegration" Name="TeamCity">
-                <Component Id="Gallio.TeamCityIntegration.dll" Guid="{E729AAA0-3E16-4ac9-BB82-26F2F2F93BA4}" Win64="no">
+                <Component Id="Gallio.TeamCityIntegration.dll" Guid="{E729AAA0-3E16-4ac9-BB82-26F2F2F93BA4}" Win64="$(var.Win64Binary)">
                     <File Name="Gallio.TeamCityIntegration.dll" KeyPath="yes" />
                     <File Name="Gallio.TeamCityIntegration.plugin" />
                 </Component>
 		
-                <Component Id="TeamCity.Readme.txt" Guid="{7E2D01EA-590D-4822-9748-691332285A1D}" Win64="no">
+                <Component Id="TeamCity.Readme.txt" Guid="{7E2D01EA-590D-4822-9748-691332285A1D}" Win64="$(var.Win64Binary)">
                     <File Id="TeamCity.Readme.txt" Name="Readme.txt" KeyPath="yes" />
                 </Component>
             </Directory>

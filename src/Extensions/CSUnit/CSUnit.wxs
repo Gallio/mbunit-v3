@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?include ..\..\Installer\Common.wxi ?>
+    
   <Fragment>
     <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
       <Directory Id="CSUnitAdapter" Name="CSUnit">
-        <Component Id="Gallio.CSUnitAdapter" Guid="{F8EDE10A-7DE4-4285-91A0-A33694A3ED41}" Win64="no">
+        <Component Id="Gallio.CSUnitAdapter" Guid="{F8EDE10A-7DE4-4285-91A0-A33694A3ED41}" Win64="$(var.Win64Binary)">
           <File Name="Gallio.CSUnitAdapter.dll" />
           <File Name="Gallio.CSUnitAdapter.plugin" />
           <File Name="csUnit.dll" />
@@ -16,7 +18,7 @@
         </Component>
 
         <Directory Id="csUnit.Resources" Name="Resources">
-          <Component Id="Gallio.CSUnitAdapter.Resources" Guid="{4F53AEC4-41C3-4c4e-9A3C-1A382871B3DD}" Win64="no">
+          <Component Id="Gallio.CSUnitAdapter.Resources" Guid="{4F53AEC4-41C3-4c4e-9A3C-1A382871B3DD}" Win64="$(var.Win64Binary)">
             <File Name="csUnit.ico" KeyPath="yes" />
           </Component>
         </Directory>

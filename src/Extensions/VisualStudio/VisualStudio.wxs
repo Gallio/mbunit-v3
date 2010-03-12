@@ -2,14 +2,14 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:vs="http://schemas.microsoft.com/wix/VSExtension"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-    <?include ..\..\Installer\Features.wxi ?>
+    <?include ..\..\Installer\Common.wxi ?>
 
 <?ifdef FEATURE_VISUALSTUDIO ?>
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="VisualStudio" Name="VisualStudio">
 
-                <Component Id="Gallio.VisualStudio.Shell.dll" Guid="{315C4933-F90B-4337-9D9B-B66153E80B31}" Win64="no">
+                <Component Id="Gallio.VisualStudio.Shell.dll" Guid="{315C4933-F90B-4337-9D9B-B66153E80B31}" Win64="$(var.Win64Binary)">
                     <File Name="Gallio.VisualStudio.Shell.dll" KeyPath="yes" 
                           Assembly=".net" AssemblyApplication="Gallio.VisualStudio.Shell.dll" />
                     <File Name="Gallio.VisualStudio.Shell.plugin" />
