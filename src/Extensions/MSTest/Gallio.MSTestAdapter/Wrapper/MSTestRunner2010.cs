@@ -23,5 +23,10 @@ namespace Gallio.MSTestAdapter.Wrapper
         {
             return "10.0";
         }
+
+        protected override string GetCommandLineAssemblyName()
+        {
+            return "Microsoft.VisualStudio.QualityTools.CommandLine, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a";
+        }
     }
 }

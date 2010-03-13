@@ -151,7 +151,19 @@ namespace Gallio.VisualStudio.Shell.Core
             IServiceContainer container = GetVsService<IServiceContainer>(typeof(IServiceContainer));
             if (container != null)
             {
-                ServiceCreatorCallback callback = delegate { return factory(); };
+                ServiceCreatorCallback callback = delegate {
+                    try
+                    {
+                        return factory();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Log(LogSeverity.Error,
+                            string.Format("Failed to create service '{0}'.", serviceType),
+                            ex);
+                        throw;
+                    }
+                };
                 container.AddService(serviceType, callback, true);
             }
         }
@@ -168,7 +180,18 @@ namespace Gallio.VisualStudio.Shell.Core
             runtime.AddLogListener(logger);
 
             foreach (var extensionHandle in extensionHandles)
-                extensionHandle.GetComponent().Initialize();
+            {
+                try
+                {
+                    extensionHandle.GetComponent().Initialize();
+                }
+                catch (Exception ex)
+                {
+                    logger.Log(LogSeverity.Error,
+                        string.Format("Failed to initialize shell extension '{0}'.", extensionHandle.Id),
+                        ex);
+                }
+            }
         }
 
         internal void Shutdown()
@@ -178,7 +201,18 @@ namespace Gallio.VisualStudio.Shell.Core
                 if (IsInitialized)
                 {
                     foreach (var extensionHandle in extensionHandles)
-                        extensionHandle.GetComponent().Shutdown();
+                    {
+                        try
+                        {
+                            extensionHandle.GetComponent().Shutdown();
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Log(LogSeverity.Error,
+                                string.Format("Failed to shutdown shell extension '{0}'.", extensionHandle.Id),
+                                ex);
+                        }
+                    }
                 }
             }
             finally

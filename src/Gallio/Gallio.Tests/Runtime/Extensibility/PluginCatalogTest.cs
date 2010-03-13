@@ -555,6 +555,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 pluginDescriptor.VerifyAllExpectations();
             }
 
+#if STRICT_GAC_CHECKS
             [Test]
             public void ApplyTo_WhenAssemblyHasNoCodeBaseAndIsNotInTheGAC_DisablesPlugin()
             {
@@ -578,6 +579,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 registry.VerifyAllExpectations();
                 pluginDescriptor.VerifyAllExpectations();
             }
+#endif            
 
             [Test]
             public void ApplyTo_WhenAssemblyHasACodeBaseButIsNotFoundByProbing_DisablesPlugin()
