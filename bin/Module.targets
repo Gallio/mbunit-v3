@@ -649,7 +649,11 @@
   </Target>
   
   <Target Name="TestWithGallio"
-          DependsOnTargets="ReadMergedTestAssemblyItemsFromMeta"
+          DependsOnTargets="ReadMergedTestAssemblyItemsFromMeta;RunMergedTestAssemblyItemsWithGallio"
+          Condition="'$(Main)'=='true'">
+  </Target>
+  
+  <Target Name="RunMergedTestAssemblyItemsWithGallio"
           Condition="'$(Main)'=='true' and '@(MergedTestAssembly)'!=''">
     <PropertyGroup>
       <_TestCoverageFilters>

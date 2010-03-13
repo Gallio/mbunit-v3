@@ -144,12 +144,14 @@ namespace Gallio.Runtime.Extensibility
                         }
                         else
                         {
+#if STRICT_GAC_CHECKS
                             if (!IsAssemblyRegisteredInGAC(assembly.FullName))
                             {
                                 disabledReasons.Add(
                                     string.Format("Could not find assembly '{0}' in the global assembly cache.",
                                         assembly.FullName));
                             }
+#endif
 
                             absoluteCodeBase = null;
                         }
@@ -257,9 +259,9 @@ namespace Gallio.Runtime.Extensibility
             return null;
         }
 
+#if STRICT_GAC_CHECKS
         private static bool IsAssemblyRegisteredInGAC(string assemblyName)
         {
-#if STRICT_GAC_CHECKS
             try
             {
                 System.Reflection.Assembly.ReflectionOnlyLoad(assemblyName);
@@ -269,10 +271,8 @@ namespace Gallio.Runtime.Extensibility
             {
                 return false;
             }
-#else
-            return true;
-#endif
         }
+#endif
 
         private static IList<PluginData> TopologicalSortByDependencies(IList<PluginData> plugins)
         {
