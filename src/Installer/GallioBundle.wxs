@@ -176,8 +176,10 @@
             <FeatureRef Id='feat_MbUnit3.Templates.VS2010'/>
         </FeatureRef>
 
+<?ifdef FEATURE_ARCHIMEDES ?>
         <FeatureRef Id='feat_Archimedes'> <!-- Display="6" -->
         </FeatureRef>
+<?endif?>
 		
         <Feature Id='feat_FrameworkAdapters' Title="Test Framework Adapters" Level="1" Display="8" AllowAdvertise="no">
             <FeatureRef Id='feat_CSUnitAdapter'/>
