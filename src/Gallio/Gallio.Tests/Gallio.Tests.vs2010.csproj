@@ -427,6 +427,7 @@
     <None Include="Resources\SampleImage.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Common\Xml\SolarSystem.xml" />
     <Content Include="Reports\Diagnostic.xslt" />
     <EmbeddedResource Include="Common\IO\SampleResource.txt" />
     <None Include="Gallio.Tests.dll.config">
