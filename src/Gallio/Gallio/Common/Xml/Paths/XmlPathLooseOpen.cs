@@ -17,28 +17,28 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Gallio.Common.Xml
+namespace Gallio.Common.Xml.Paths
 {
     /// <summary>
-    /// Represents an XML node with a name.
+    /// Abstract node that extends a loose XML path, and let it opened for further extensions.
     /// </summary>
-    public interface INamed
+    internal abstract class XmlPathLooseOpen : XmlPathLooseClosed, IXmlPathLooseOpen
     {
-        /// <summary>
-        /// Gets the name of the node.
-        /// </summary>
-        string Name
+        /// <inheritdoc/>
+        protected XmlPathLooseOpen()
         {
-            get;
         }
 
-        /// <summary>
-        /// Determines whether the name of the current node is equal to the specified name, 
-        /// by respecting the specified equality options.
-        /// </summary>
-        /// <param name="otherName">The name to compare.</param>
-        /// <param name="options">Equality options.</param>
-        /// <returns>True if the names are equal; false otherwise.</returns>
-        bool AreNamesEqual(string otherName, Options options);
+        /// <inheritdoc/>
+        protected XmlPathLooseOpen(IXmlPathLooseOpen parent)
+            : base(parent)
+        {
+        }
+
+        /// <inheritdoc/>
+        public abstract IXmlPathLooseOpen Element(string name);
+
+        /// <inheritdoc/>
+        public abstract IXmlPathLooseClosed Attribute(string name);
     }
 }

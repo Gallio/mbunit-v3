@@ -35,7 +35,7 @@ namespace Gallio.Common.Xml
         /// <param name="options">Parsing options.</param>
         /// <returns>The resulting document representing the parsed XML fragment.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null.</exception>
-        public static Fragment Run(string xml, Options options)
+        public static NodeFragment Run(string xml, Options options)
         {
             var parser = new Parser(xml);
             return parser.RunImpl(options);
@@ -49,10 +49,10 @@ namespace Gallio.Common.Xml
             this.xml = xml;
         }
 
-        private Fragment RunImpl(Options options)
+        private NodeFragment RunImpl(Options options)
         {
-            IMarkup root = null;
-            var declarationAttributes = AttributeCollection.Empty;
+            INode root = null;
+            var declarationAttributes = NodeAttributeCollection.Empty;
             var settings = new XmlReaderSettings()
             {
                 IgnoreComments = ((options & Options.IgnoreComments) != 0),
@@ -70,7 +70,7 @@ namespace Gallio.Common.Xml
                             break;
 
                         case XmlNodeType.XmlDeclaration:
-                            declarationAttributes = new AttributeCollection(GetAttributes(reader));
+                            declarationAttributes = new NodeAttributeCollection(GetAttributes(reader));
                             break;
 
                         default:
@@ -82,14 +82,14 @@ namespace Gallio.Common.Xml
             if (root == null)
                 throw new ArgumentException("The specified XML fragment does not have any root element.", "xml");
 
-            return new Fragment(new Declaration(declarationAttributes), root);
+            return new NodeFragment(new NodeDeclaration(declarationAttributes), root);
         }
 
-        private static MarkupElement ParseElement(int index, XmlReader reader)
+        private static NodeElement ParseElement(int index, XmlReader reader)
         {
             string name = reader.Name;
-            var children = new List<IMarkup>();
-            var attributes = new AttributeCollection(GetAttributes(reader));
+            var children = new List<INode>();
+            var attributes = new NodeAttributeCollection(GetAttributes(reader));
 
             if (!reader.IsEmptyElement)
             {
@@ -100,10 +100,10 @@ namespace Gallio.Common.Xml
                     switch (reader.NodeType)
                     {
                         case XmlNodeType.EndElement:
-                            return new MarkupElement(index, name, attributes, children);
+                            return new NodeElement(index, name, attributes, children);
 
                         case XmlNodeType.Text:
-                            children.Add(new MarkupContent(i++, reader.Value));
+                            children.Add(new NodeContent(i++, reader.Value));
                             break;
 
                         case XmlNodeType.Element:
@@ -111,7 +111,7 @@ namespace Gallio.Common.Xml
                             break;
 
                         case XmlNodeType.Comment:
-                            children.Add(new MarkupComment(i++, reader.Value));
+                            children.Add(new NodeComment(i++, reader.Value));
                             break;
 
                         default:
@@ -120,10 +120,10 @@ namespace Gallio.Common.Xml
                 }
             }
 
-            return new MarkupElement(index, name, attributes, children);
+            return new NodeElement(index, name, attributes, children);
         }
 
-        private static IEnumerable<Attribute> GetAttributes(XmlReader reader)
+        private static IEnumerable<NodeAttribute> GetAttributes(XmlReader reader)
         {
             var tokens = new List<Pair<string, string>>();
 
@@ -140,7 +140,7 @@ namespace Gallio.Common.Xml
 
             for (int i = 0; i < tokens.Count; i++)
             {
-                yield return new Attribute(i, tokens[i].First, tokens[i].Second, tokens.Count);
+                yield return new NodeAttribute(i, tokens[i].First, tokens[i].Second, tokens.Count);
             }
         }
     }

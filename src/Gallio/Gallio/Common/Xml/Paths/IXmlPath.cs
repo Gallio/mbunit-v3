@@ -17,28 +17,25 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Gallio.Common.Xml
+namespace Gallio.Common.Xml.Paths
 {
     /// <summary>
-    /// Represents an XML node with a name.
+    /// Represents an immutable path to a node in an XML fragment.
     /// </summary>
-    public interface INamed
+    public interface IXmlPath
     {
         /// <summary>
-        /// Gets the name of the node.
+        /// Determines whether the current node represents the empty root path.
         /// </summary>
-        string Name
-        {
+        bool IsEmpty
+        { 
             get;
         }
-
+        
         /// <summary>
-        /// Determines whether the name of the current node is equal to the specified name, 
-        /// by respecting the specified equality options.
+        /// Formats the current path.
         /// </summary>
-        /// <param name="otherName">The name to compare.</param>
-        /// <param name="options">Equality options.</param>
-        /// <returns>True if the names are equal; false otherwise.</returns>
-        bool AreNamesEqual(string otherName, Options options);
+        /// <returns>The resulting formatted path.</returns>
+        string ToString();
     }
 }

@@ -15,30 +15,26 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Gallio.Common.Xml;
+using Gallio.Common.Xml.Diffing;
+using Gallio.Tests;
+using MbUnit.Framework;
 
-namespace Gallio.Common.Xml
+namespace Gallio.Tests.Common.Xml.Diffing
 {
-    /// <summary>
-    /// Represents an XML node with a name.
-    /// </summary>
-    public interface INamed
+    public abstract class DiffableTestBase
     {
-        /// <summary>
-        /// Gets the name of the node.
-        /// </summary>
-        string Name
+        protected void AssertDiff(DiffSet actual, params Diff[] expected)
         {
-            get;
+            Assert.AreEqual(expected.Length == 0, actual.IsEmpty);
+            Assert.AreElementsEqualIgnoringOrder(expected, actual,
+                new StructuralEqualityComparer<Diff>
+                {
+                    x => x.Message,
+                    x => x.Path.ToString(),
+                });
         }
-
-        /// <summary>
-        /// Determines whether the name of the current node is equal to the specified name, 
-        /// by respecting the specified equality options.
-        /// </summary>
-        /// <param name="otherName">The name to compare.</param>
-        /// <param name="options">Equality options.</param>
-        /// <returns>True if the names are equal; false otherwise.</returns>
-        bool AreNamesEqual(string otherName, Options options);
     }
 }

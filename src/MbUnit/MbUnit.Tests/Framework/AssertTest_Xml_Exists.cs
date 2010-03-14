@@ -16,6 +16,7 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Gallio.Common.Xml.Paths;
 using Gallio.Framework.Assertions;
 using MbUnit.Framework;
 using System.Collections.Generic;

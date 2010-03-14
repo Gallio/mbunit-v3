@@ -17,28 +17,19 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Gallio.Common.Xml
+namespace Gallio.Common.Xml.Diffing
 {
     /// <summary>
-    /// Represents an XML node with a name.
+    /// Diffing engine.
     /// </summary>
-    public interface INamed
+    /// <typeparam name="T">The type of the objects to diff.</typeparam>
+    public interface IDiffEngine<T>
+        where T : IDiffable<T>
     {
         /// <summary>
-        /// Gets the name of the node.
+        /// Computes the differences between the expected and the actual object.
         /// </summary>
-        string Name
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Determines whether the name of the current node is equal to the specified name, 
-        /// by respecting the specified equality options.
-        /// </summary>
-        /// <param name="otherName">The name to compare.</param>
-        /// <param name="options">Equality options.</param>
-        /// <returns>True if the names are equal; false otherwise.</returns>
-        bool AreNamesEqual(string otherName, Options options);
+        /// <returns>The resulting diff set.</returns>
+        DiffSet Diff();
     }
 }

@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Gallio;
+using Gallio.Common.Xml.Diffing;
+using Gallio.Common.Xml.Paths;
 using Gallio.Framework.Assertions;
 using Gallio.Common.Xml;
 using System.Xml;
@@ -152,8 +154,8 @@ namespace MbUnit.Framework
 
                 AssertionHelper.Verify(() =>
                 {
-                    Fragment actual;
-                    Fragment expected;
+                    NodeFragment actual;
+                    NodeFragment expected;
 
                     try
                     {
@@ -524,7 +526,7 @@ namespace MbUnit.Framework
 
                 AssertionHelper.Verify(() =>
                 {
-                    Fragment actual;
+                    NodeFragment actual;
 
                     try
                     {
@@ -889,7 +891,7 @@ namespace MbUnit.Framework
 
                 AssertionHelper.Verify(() =>
                 {
-                    Fragment actual;
+                    NodeFragment actual;
 
                     try
                     {

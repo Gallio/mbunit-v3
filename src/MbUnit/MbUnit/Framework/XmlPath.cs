@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections.ObjectModel;
 using Gallio.Common.Xml;
+using Gallio.Common.Xml.Paths;
 
 namespace MbUnit.Framework
 {
