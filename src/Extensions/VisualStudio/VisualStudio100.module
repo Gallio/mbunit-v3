@@ -6,7 +6,10 @@
     <MonoCompatible>false</MonoCompatible>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(DotNet40)'=='true' and $(VSIP100Installed)">
+  <!-- Disabled this by default in the build because Gallio v3.1 was originally released with support
+       for VS 2010 Beta 1.  Things are different enough in VS 2010 RC that people whould just
+       use Gallio v3.2 instead. -->
+  <ItemGroup Condition="'$(DotNet40)'=='true' and $(VSIP100Installed) and '$(ForceVS2010Build)'=='true'">
     <CSharpProject Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell100$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Shell.Tests\Gallio.VisualStudio.Shell100.Tests$(ProjectVariant).csproj" />
     
