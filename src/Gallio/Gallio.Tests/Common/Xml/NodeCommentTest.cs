@@ -113,7 +113,7 @@ namespace Gallio.Tests.Common.Xml
             var actual = new NodeComment(123, "TEXT");
             var expected = MockRepository.GenerateStub<INode>();
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
-            AssertDiff(diff, new Diff("Unexpected comment markup.", XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Actual));
+            AssertDiff(diff, new Diff("Unexpected comment node.", XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Actual));
         }
     }
 }
