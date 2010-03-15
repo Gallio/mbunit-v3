@@ -66,7 +66,8 @@ namespace Gallio.Common.Xml
                     switch (reader.NodeType)
                     {
                         case XmlNodeType.Element:
-                            root = ParseElement(0, reader);
+                            var rootBuilder = ParseElement(0, reader);
+                            root = rootBuilder(1);
                             break;
 
                         case XmlNodeType.XmlDeclaration:
@@ -85,34 +86,43 @@ namespace Gallio.Common.Xml
             return new NodeFragment(new NodeDeclaration(declarationAttributes), root);
         }
 
-        private static NodeElement ParseElement(int index, XmlReader reader)
+        private delegate INode NodeBuilder(int count);
+
+        private static NodeBuilder ParseElement(int index, XmlReader reader)
         {
             string name = reader.Name;
-            var children = new List<INode>();
+            var children = new List<NodeBuilder>();
             var attributes = new NodeAttributeCollection(GetAttributes(reader));
+            int i = 0;
 
             if (!reader.IsEmptyElement)
             {
-                int i = 0;
-
                 while (reader.Read())
                 {
                     switch (reader.NodeType)
                     {
                         case XmlNodeType.EndElement:
-                            return new NodeElement(index, name, attributes, children);
+                            return count => new NodeElement(index, count, name, attributes, children.ConvertAll(x => x(i)));
 
                         case XmlNodeType.Text:
-                            children.Add(new NodeContent(i++, reader.Value));
+                        {
+                            int current = i++;
+                            string text = reader.Value;
+                            children.Add(count => new NodeContent(current, count, text));
                             break;
+                        }
 
                         case XmlNodeType.Element:
                             children.Add(ParseElement(i++, reader));
                             break;
 
                         case XmlNodeType.Comment:
-                            children.Add(new NodeComment(i++, reader.Value));
+                        {
+                            int current = i++;
+                            string text = reader.Value;
+                            children.Add(count => new NodeComment(current, count, text));
                             break;
+                        }
 
                         default:
                             break;
@@ -120,7 +130,7 @@ namespace Gallio.Common.Xml
                 }
             }
 
-            return new NodeElement(index, name, attributes, children);
+            return count => new NodeElement(index, count, name, attributes, children.ConvertAll(x => x(i)));
         }
 
         private static IEnumerable<NodeAttribute> GetAttributes(XmlReader reader)

@@ -27,10 +27,8 @@ namespace Gallio.Common.Xml.Paths
         private readonly IXmlPathStrict parent;
         private readonly int index;
 
-        /// <summary>
-        /// Gets the parent path node.
-        /// </summary>
-        protected IXmlPathStrict Parent
+        /// <inheritdoc/>
+        public IXmlPathStrict Parent
         {
             get
             {
@@ -96,29 +94,6 @@ namespace Gallio.Common.Xml.Paths
         public virtual IXmlPathStrict Declaration()
         {
             throw new InvalidOperationException();
-        }
-
-        /// <inheritdoc/>
-        public string Format(NodeFragment fragment)
-        {
-            if (fragment == null)
-                throw new ArgumentNullException("fragment");
-
-            var aggregator = new XmlPathFormatAggregator();
-            Format(fragment, aggregator);
-            return aggregator.GetResult();
-        }
-
-        /// <inheritdoc/>
-        public virtual void Format(NodeFragment fragment, XmlPathFormatAggregator aggregator)
-        {
-            INode node = fragment.Find(this);
-            node.Aggregate(aggregator);
-
-            if (Parent != null && !Parent.IsEmpty)
-            {
-                Parent.Format(fragment, aggregator);
-            }
         }
 
         /// <inheritdoc/>

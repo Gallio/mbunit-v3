@@ -45,7 +45,7 @@ namespace Gallio.Common.Xml
         /// </summary>
         /// <param name="attributes">The attributes of the element.</param>
         public NodeDeclaration(IEnumerable<NodeAttribute> attributes)
-            : base(-1, EmptyArray<INode>.Instance)
+            : base(NodeType.Declaration, -1, 1, EmptyArray<INode>.Instance)
         {
             if (attributes == null)
                 throw new ArgumentNullException("attributes");

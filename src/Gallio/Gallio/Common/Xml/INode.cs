@@ -27,9 +27,33 @@ namespace Gallio.Common.Xml
     public interface INode : IDiffable<INode>, INamed
     {
         /// <summary>
+        /// Gets the type of the node.
+        /// </summary>
+        NodeType Type
+        { 
+            get;
+        }
+
+        /// <summary>
         /// Gets the index of the node.
         /// </summary>
         int Index
+        { 
+            get;
+        }
+
+        /// <summary>
+        /// Determines whether it is the first attribute in its parent.
+        /// </summary>
+        bool IsFirst
+        { 
+            get;
+        }
+
+        /// <summary>
+        /// Determines whether it is the last attribute in its parent.
+        /// </summary>
+        bool IsLast
         { 
             get;
         }
@@ -41,12 +65,6 @@ namespace Gallio.Common.Xml
         {
             get;
         }
-
-        /// <summary>
-        /// Aggregates the representation of the current node.
-        /// </summary>
-        /// <param name="aggregator">The aggregator.</param>
-        void Aggregate(XmlPathFormatAggregator aggregator);
 
         /// <summary>
         /// Returns the number of times the searched node was found at the specified path.

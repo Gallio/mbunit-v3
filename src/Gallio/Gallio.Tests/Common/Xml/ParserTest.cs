@@ -57,6 +57,8 @@ namespace Gallio.Tests.Common.Xml
             Assert.AreEqual(1, children.Count);
             Assert.IsInstanceOfType<NodeElement>(children[0]);
             Assert.AreEqual("Root", ((NodeElement)children[0]).Name);
+            Assert.IsTrue(children[0].IsFirst);
+            Assert.IsTrue(children[0].IsLast);
             Assert.IsEmpty(((NodeElement)children[0]).Attributes);
 
             // Level 1.
@@ -64,8 +66,12 @@ namespace Gallio.Tests.Common.Xml
             Assert.AreEqual(2, children.Count);
             Assert.IsInstanceOfType<NodeComment>(children[0]);
             Assert.AreEqual(" Some comment ", ((NodeComment)children[0]).Text);
+            Assert.IsTrue(children[0].IsFirst);
+            Assert.IsFalse(children[0].IsLast);
             Assert.IsInstanceOfType<NodeElement>(children[1]);
             Assert.AreEqual("Parent", ((NodeElement)children[1]).Name);
+            Assert.IsFalse(children[1].IsFirst);
+            Assert.IsTrue(children[1].IsLast);
             Assert.IsEmpty(((NodeElement)children[1]).Attributes);
 
             // Level 3 - Child 1.
@@ -73,22 +79,32 @@ namespace Gallio.Tests.Common.Xml
             Assert.AreEqual(2, children.Count);
             Assert.IsInstanceOfType<NodeElement>(children[0]);
             Assert.AreEqual("Child", ((NodeElement)children[0]).Name);
+            Assert.IsTrue(children[0].IsFirst);
+            Assert.IsFalse(children[0].IsLast);
             Assert.AreEqual(1, ((NodeElement)children[0]).Attributes.Count);
             Assert.AreEqual("id", ((NodeElement)children[0]).Attributes[0].Name);
             Assert.AreEqual("123", ((NodeElement)children[0]).Attributes[0].Value);
+            Assert.IsTrue(((NodeElement)children[0]).Attributes[0].IsFirst);
+            Assert.IsTrue(((NodeElement)children[0]).Attributes[0].IsLast);
             Assert.IsEmpty(((NodeElement)children[0]).Children);
 
             // Level 3 - Child 2.
             Assert.IsInstanceOfType<NodeElement>(children[1]);
             Assert.AreEqual("Child", ((NodeElement)children[1]).Name);
             Assert.AreEqual(1, ((NodeElement)children[1]).Attributes.Count);
+            Assert.IsFalse(children[1].IsFirst);
+            Assert.IsTrue(children[1].IsLast);
             Assert.AreEqual("id", ((NodeElement)children[1]).Attributes[0].Name);
             Assert.AreEqual("456", ((NodeElement)children[1]).Attributes[0].Value);
+            Assert.IsTrue(((NodeElement)children[1]).Attributes[0].IsFirst);
+            Assert.IsTrue(((NodeElement)children[1]).Attributes[0].IsLast);
 
             // Level 4.
             children = children[1].Children.ToList();
             Assert.IsInstanceOfType<NodeContent>(children[0]);
             Assert.AreEqual("Data", ((NodeContent)children[0]).Text);
+            Assert.IsTrue(children[0].IsFirst);
+            Assert.IsTrue(children[0].IsLast);
         }
     }
 }

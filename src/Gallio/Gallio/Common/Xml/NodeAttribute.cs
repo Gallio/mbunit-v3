@@ -31,9 +31,16 @@ namespace Gallio.Common.Xml
         private readonly string value;
         private readonly int count;
 
-        /// <summary>
-        /// Gets the index of the attribute.
-        /// </summary>
+        /// <inheritdoc />
+        public NodeType Type
+        {
+            get
+            {
+                return NodeType.Attribute;
+            }
+        }
+
+        /// <inheritdoc />
         public int Index
         {
             get
@@ -59,6 +66,28 @@ namespace Gallio.Common.Xml
             get
             {
                 return value;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether it is the first attribute in its parent.
+        /// </summary>
+        public bool IsFirst
+        {
+            get
+            {
+                return index == 0;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether it is the last attribute in its parent.
+        /// </summary>
+        public bool IsLast
+        {
+            get
+            {
+                return index == count - 1;
             }
         }
 
@@ -166,12 +195,6 @@ namespace Gallio.Common.Xml
             {
                 return false;
             }
-        }
-
-        /// <inheritdoc />
-        public void Aggregate(XmlPathFormatAggregator aggregator)
-        {
-            aggregator.HangAttribute(name, value, index == 0, index == count - 1);
         }
 
         /// <inheritdoc />

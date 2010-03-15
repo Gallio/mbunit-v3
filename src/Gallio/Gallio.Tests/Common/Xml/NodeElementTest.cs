@@ -36,35 +36,35 @@ namespace Gallio.Tests.Common.Xml
         [ExpectedArgumentOutOfRangeException]
         public void Constructs_with_negative_index_should_throw_exception()
         {
-            new NodeElement(-1, "name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
+            new NodeElement(-1, 123, "name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
         }
         
         [Test]
         [ExpectedArgumentNullException]
         public void Constructs_with_null_name_should_throw_exception()
         {
-            new NodeElement(0, null, NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
+            new NodeElement(0, 123, null, NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Constructs_with_null_attributes_should_throw_exception()
         {
-            new NodeElement(0, "name", null, EmptyArray<INode>.Instance);
+            new NodeElement(0, 123, "name", null, EmptyArray<INode>.Instance);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Constructs_with_null_child_should_throw_exception()
         {
-            new NodeElement(0, "name", NodeAttributeCollection.Empty, null);
+            new NodeElement(0, 123, "name", NodeAttributeCollection.Empty, null);
         }
 
 
         [Test]
         public void Constructs_empty_element([Column(0, 123)] int index)
         {
-            var element = new NodeElement(index, "Planet", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
+            var element = new NodeElement(index, 123, "Planet", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
             Assert.AreEqual(index, element.Index);
             Assert.IsEmpty(element.Children);
             Assert.IsEmpty(element.Attributes);
@@ -78,7 +78,7 @@ namespace Gallio.Tests.Common.Xml
             var attribute2 = new Gallio.Common.Xml.NodeAttribute(1, "revolution", "58.6 d", 2);
             var mockChild1 = MockRepository.GenerateStub<INode>();
             var mockChild2 = MockRepository.GenerateStub<INode>();
-            var element = new NodeElement(0, "Planet", new[] { attribute1, attribute2 }, new[] { mockChild1, mockChild2 });
+            var element = new NodeElement(0, 123, "Planet", new[] { attribute1, attribute2 }, new[] { mockChild1, mockChild2 });
             Assert.AreElementsSame(new[] { mockChild1, mockChild2 }, element.Children);
             Assert.AreElementsSame(new[] { attribute1, attribute2 }, element.Attributes);
             Assert.AreEqual("Planet", element.Name);
@@ -96,7 +96,7 @@ namespace Gallio.Tests.Common.Xml
         [Row("STAR", Options.IgnoreElementsNameCase, false)]
         public void AreNamesEqual(string otherName, Options options, bool expected)
         {
-            var element = new NodeElement(0, "planet", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
+            var element = new NodeElement(0, 123, "planet", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
             bool actual = element.AreNamesEqual(otherName, options);
             Assert.AreEqual(expected, actual);
         }
@@ -105,7 +105,7 @@ namespace Gallio.Tests.Common.Xml
         [ExpectedArgumentNullException]
         public void Diff_with_null_expected_value_should_throw_exception()
         {
-            var actual = new NodeElement(123, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
+            var actual = new NodeElement(123, 123, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
             actual.Diff(null, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
         }
 
@@ -113,16 +113,16 @@ namespace Gallio.Tests.Common.Xml
         [ExpectedArgumentNullException]
         public void Diff_with_null_path_should_throw_exception()
         {
-            var actual = new NodeElement(123, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
-            var expected = new NodeElement(123, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
+            var actual = new NodeElement(123, 123, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
+            var expected = new NodeElement(123, 123, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
             actual.Diff(expected, null, XmlOptions.Strict.Value);
         }
 
         [Test]
         public void Diff_equal_with_different_index()
         {
-            var actual = new NodeElement(123, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
-            var expected = new NodeElement(456, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
+            var actual = new NodeElement(123, 456, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
+            var expected = new NodeElement(456, 456, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
             Assert.IsTrue(diff.IsEmpty);
         }
@@ -130,8 +130,8 @@ namespace Gallio.Tests.Common.Xml
         [Test]
         public void Diff_equal_with_same_index()
         {
-            var actual = new NodeElement(123, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
-            var expected = new NodeElement(123, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
+            var actual = new NodeElement(123, 456, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
+            var expected = new NodeElement(123, 456, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
             Assert.IsTrue(diff.IsEmpty);
         }
@@ -139,8 +139,8 @@ namespace Gallio.Tests.Common.Xml
         [Test]
         public void Diff_with_item_differing_by_name()
         {
-            var actual = new NodeElement(123, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
-            var expected = new NodeElement(123, "SomeOtherName", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
+            var actual = new NodeElement(123, 456, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
+            var expected = new NodeElement(123, 456, "SomeOtherName", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
             AssertDiff(diff, new Diff("Unexpected element node found.", XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Both));
         }
@@ -148,8 +148,8 @@ namespace Gallio.Tests.Common.Xml
         [Test]
         public void Diff_with_item_differing_by_name_case()
         {
-            var actual = new NodeElement(123, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
-            var expected = new NodeElement(123, "NAME", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
+            var actual = new NodeElement(123, 456, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
+            var expected = new NodeElement(123, 456, "NAME", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
             AssertDiff(diff, new Diff("Unexpected element node found.", XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Both));
         }
@@ -157,8 +157,8 @@ namespace Gallio.Tests.Common.Xml
         [Test]
         public void Diff_equal_with_item_differing_by_name_case()
         {
-            var actual = new NodeElement(123, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
-            var expected = new NodeElement(123, "NAME", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
+            var actual = new NodeElement(123, 456, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
+            var expected = new NodeElement(123, 456, "NAME", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Custom.IgnoreElementsNameCase.Value);
             Assert.IsTrue(diff.IsEmpty);
         }
@@ -166,7 +166,7 @@ namespace Gallio.Tests.Common.Xml
         [Test]
         public void Diff_with_items_differing_by_type()
         {
-            var actual = new NodeElement(123, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
+            var actual = new NodeElement(123, 456, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
             var expected = MockRepository.GenerateStub<INode>();
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
             AssertDiff(diff, new Diff("Unexpected element node found.", XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Actual));

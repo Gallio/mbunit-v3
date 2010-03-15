@@ -44,10 +44,11 @@ namespace Gallio.Common.Xml
         /// Constructs textual content inside an element.
         /// </summary>
         /// <param name="index">The index of the node.</param>
+        /// <param name="count">The total number of nodes at the same level.</param>
         /// <param name="text">The literal text content.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null.</exception>
-        public NodeContent(int index, string text)
-            : base(index, EmptyArray<INode>.Instance)
+        public NodeContent(int index, int count, string text)
+            : base(NodeType.Content, index, count, EmptyArray<INode>.Instance)
         {
             if (index < 0)
                 throw new ArgumentOutOfRangeException("index");
@@ -105,12 +106,6 @@ namespace Gallio.Common.Xml
         public bool AreValuesEqual(string otherText, Options options)
         {
             return Text.Equals(otherText, GetComparisonType(options));
-        }
-
-        /// <inheritdoc />
-        public override void Aggregate(XmlPathFormatAggregator aggregator)
-        {
-            aggregator.HangContent(text);
         }
     }
 }

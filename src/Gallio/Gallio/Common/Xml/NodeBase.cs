@@ -27,8 +27,19 @@ namespace Gallio.Common.Xml
     /// </summary>
     public abstract class NodeBase : INode
     {
+        private readonly NodeType type;
         private readonly int index;
+        private readonly int count;
         private readonly NodeCollection children;
+
+        /// <inheritdoc />
+        public NodeType Type
+        {
+            get
+            {
+                return type;
+            }
+        }
 
         /// <inheritdoc />
         public int Index
@@ -57,18 +68,40 @@ namespace Gallio.Common.Xml
             }
         }
 
+        /// <inheritdoc />
+        public bool IsFirst
+        {
+            get
+            {
+                return index == 0;
+            }
+        }
+
+        /// <inheritdoc />
+        public bool IsLast
+        {
+            get
+            {
+                return index == count - 1;
+            }
+        }
+
         /// <summary>
         /// Constructs a node instance.
         /// </summary>
+        /// <param name="type">The type of the node.</param>
         /// <param name="index">The index of the node.</param>
+        /// <param name="count">The number of elements at the same level.</param>
         /// <param name="children">The children nodes.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="children"/> is null.</exception>
-        protected NodeBase(int index, IEnumerable<INode> children)
+        protected NodeBase(NodeType type, int index, int count, IEnumerable<INode> children)
         {
             if (children == null)
                 throw new ArgumentNullException("children");
 
+            this.type = type;
             this.index = index;
+            this.count = count;
             this.children = new NodeCollection(children);
         }
 
@@ -79,11 +112,6 @@ namespace Gallio.Common.Xml
         public virtual bool AreNamesEqual(string otherName, Options options)
         {
             return true;
-        }
-
-        /// <inheritdoc />
-        public virtual void Aggregate(XmlPathFormatAggregator aggregator)
-        {
         }
 
         /// <inheritdoc />

@@ -153,6 +153,7 @@
     <Compile Include="Common\Xml\NodeContentTest.cs" />
     <Compile Include="Common\Xml\NodeElementTest.cs" />
     <Compile Include="Common\Xml\ParserTest.cs" />
+    <Compile Include="Common\Xml\Paths\XmlPathRendererTest.cs" />
     <Compile Include="Common\Xml\Paths\IXmlPathTest.cs" />
     <Compile Include="Framework\Assertions\AssertionHelperTest.cs" />
     <Compile Include="Framework\CaptureTest.cs" />

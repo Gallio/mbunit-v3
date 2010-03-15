@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using Gallio.Common.Xml.Paths;
 using Gallio.Framework.Assertions;
+using Gallio.Runtime.Formatting;
 
 namespace Gallio.Common.Xml.Diffing
 {
@@ -102,22 +103,35 @@ namespace Gallio.Common.Xml.Diffing
         {
             bool showActual = ((targets & DiffTargets.Actual) != 0);
             bool showExpected = ((targets & DiffTargets.Expected) != 0);
-            var builder = new AssertionFailureBuilder(message);
+            var builder = new AssertionFailureBuilder(message, new NullFormatter());
+            const XmlPathRenderingOptions options = XmlPathRenderingOptions.UseIndentation;
 
             if (showActual && showExpected)
             {
-                builder.AddRawExpectedAndActualValuesWithDiffs(path.Format(expected), path.Format(actual));
+                var actualFormatted = XmlPathRenderer.Run(path, actual, options);
+                var expectedFormatted = XmlPathRenderer.Run(path, expected, options);
+                builder.AddRawExpectedAndActualValuesWithDiffs(expectedFormatted, actualFormatted);
             }
             else if (showActual)
             {
-                builder.AddRawActualValue(path.Format(actual));
+                var actualFormatted = XmlPathRenderer.Run(path, actual, options);
+                builder.AddRawActualValue(actualFormatted);
             }
             else if (showExpected)
             {
-                builder.AddRawExpectedValue(path.Format(expected));
+                var expectedFormatted = XmlPathRenderer.Run(path, expected, options);
+                builder.AddRawExpectedValue(expectedFormatted);
             }
 
             return builder.ToAssertionFailure();
+        }
+
+        private class NullFormatter : IFormatter
+        {
+            public string Format(object obj)
+            {
+                return (string) obj;
+            }
         }
     }
 }

@@ -35,20 +35,20 @@ namespace Gallio.Tests.Common.Xml
         [ExpectedArgumentOutOfRangeException]
         public void Constructs_with_negative_index_should_throw_exception()
         {
-            new NodeContent(-1, "blah blah");
+            new NodeContent(-1, 123, "blah blah");
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Constructs_with_null_value_should_throw_exception()
         {
-            new NodeContent(0, null);
+            new NodeContent(0, 123, null);
         }
 
         [Test]
         public void Constructs_ok([Column(0, 123)] int index)
         {
-            var comment = new NodeContent(index, " Jack Burton ");
+            var comment = new NodeContent(index, 123, " Jack Burton ");
             Assert.AreEqual(index, comment.Index);
             Assert.IsEmpty(comment.Children);
             Assert.AreEqual(" Jack Burton ", comment.Text);
@@ -58,7 +58,7 @@ namespace Gallio.Tests.Common.Xml
         [ExpectedArgumentNullException]
         public void Diff_with_null_expected_value_should_throw_exception()
         {
-            var actual = new NodeContent(123, "Text");
+            var actual = new NodeContent(123, 123, "Text");
             actual.Diff(null, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
         }
 
@@ -66,16 +66,16 @@ namespace Gallio.Tests.Common.Xml
         [ExpectedArgumentNullException]
         public void Diff_with_null_path_should_throw_exception()
         {
-            var actual = new NodeContent(123, "Text");
-            var expected = new NodeContent(123, "Text");
+            var actual = new NodeContent(123, 123, "Text");
+            var expected = new NodeContent(123, 123, "Text");
             actual.Diff(expected, null, XmlOptions.Strict.Value);
         }
 
         [Test]
         public void Diff_equal_with_different_index()
         {
-            var actual = new NodeContent(123, "Text");
-            var expected = new NodeContent(456, "Text");
+            var actual = new NodeContent(123, 123, "Text");
+            var expected = new NodeContent(456, 123, "Text");
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
             Assert.IsTrue(diff.IsEmpty);
         }
@@ -83,8 +83,8 @@ namespace Gallio.Tests.Common.Xml
         [Test]
         public void Diff_equal_with_same_index()
         {
-            var actual = new NodeContent(123, "Text");
-            var expected = new NodeContent(123, "Text");
+            var actual = new NodeContent(123, 123, "Text");
+            var expected = new NodeContent(123, 123, "Text");
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
             Assert.IsTrue(diff.IsEmpty);
         }
@@ -92,8 +92,8 @@ namespace Gallio.Tests.Common.Xml
         [Test]
         public void Diff_equal_ignoring_name_case()
         {
-            var actual = new NodeContent(123, "Text");
-            var expected = new NodeContent(123, "TEXT");
+            var actual = new NodeContent(123, 123, "Text");
+            var expected = new NodeContent(123, 123, "TEXT");
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, Options.IgnoreElementsValueCase);
             Assert.IsTrue(diff.IsEmpty);
         }
@@ -101,8 +101,8 @@ namespace Gallio.Tests.Common.Xml
         [Test]
         public void Diff_with_value_differing_by_case()
         {
-            var actual = new NodeContent(123, "Text");
-            var expected = new NodeContent(123, "TEXT");
+            var actual = new NodeContent(123, 123, "Text");
+            var expected = new NodeContent(123, 123, "TEXT");
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
             AssertDiff(diff, new Diff("Unexpected text content found.", XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Both));
         }
@@ -110,7 +110,7 @@ namespace Gallio.Tests.Common.Xml
         [Test]
         public void Diff_with_items_differing_by_type()
         {
-            var actual = new NodeContent(123, "TEXT");
+            var actual = new NodeContent(123, 123, "TEXT");
             var expected = MockRepository.GenerateStub<INode>();
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
             AssertDiff(diff, new Diff("Unexpected text content found.", XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Actual));

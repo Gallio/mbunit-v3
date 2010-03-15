@@ -54,13 +54,14 @@ namespace Gallio.Common.Xml
         /// Constructs an XML element.
         /// </summary>
         /// <param name="index">The index of the node.</param>
+        /// <param name="count">The total number of nodes at the same level.</param>
         /// <param name="name">The name of the element.</param>
         /// <param name="attributes">The attributes of the element.</param>
         /// <param name="children">The child nodes of the element.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>, <paramref name="attributes"/>, or <paramref name="children"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is empty.</exception>
-        public NodeElement(int index, string name, IEnumerable<NodeAttribute> attributes, IEnumerable<INode> children)
-            : base(index, children)
+        public NodeElement(int index, int count, string name, IEnumerable<NodeAttribute> attributes, IEnumerable<INode> children)
+            : base(NodeType.Element, index, count, children)
         {
             if (index < 0)
                 throw new ArgumentOutOfRangeException("index");
@@ -118,30 +119,6 @@ namespace Gallio.Common.Xml
         public override bool AreNamesEqual(string otherName, Options options)
         {
             return name.Equals(otherName, GetComparisonTypeForName(options));
-        }
-
-        /// <inheritdoc />
-        public override void Aggregate(XmlPathFormatAggregator aggregator)
-        {
-            var builder = new StringBuilder("<" + name);
-            builder.Append(aggregator.PendingAttribute ?? (Attributes.Count > 0 ? " " + XmlPathFormatAggregator.Ellipsis : String.Empty));
-
-            if (Children.Count == 0)
-            {
-                builder.Append("/>");
-            }
-            else
-            {
-                builder.Append(">");
-
-                if (aggregator.PendingContent != null)
-                {
-                    builder.Append(aggregator.PendingContent);
-                    builder.AppendFormat("</{0}>", name);
-                }
-            }
-
-            aggregator.Add(builder.ToString());
         }
 
         /// <inheritdoc />

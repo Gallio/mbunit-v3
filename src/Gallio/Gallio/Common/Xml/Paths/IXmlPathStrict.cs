@@ -39,6 +39,15 @@ namespace Gallio.Common.Xml.Paths
         }
 
         /// <summary>
+        /// Gets the parent path node.
+        /// </summary>
+        /// <inheritdoc/>
+        IXmlPathStrict Parent
+        { 
+            get;
+        }
+
+        /// <summary>
         /// Extends the path to a child element.
         /// </summary>
         /// <param name="index">The index of the child element.</param>
@@ -57,16 +66,6 @@ namespace Gallio.Common.Xml.Paths
         /// </summary>
         /// <returns>A new immutable strict path that encapsulates the current path.</returns>
         IXmlPathStrict Declaration();
-
-        /// <summary>
-        /// Formats the current path against the specified XML fragment.
-        /// </summary>
-        /// <param name="fragment">The reference XML fragment.</param>
-        /// <returns>The resulting formatted path.</returns>
-        string Format(NodeFragment fragment);
-
-        /// <inheritdoc/>
-        void Format(NodeFragment fragment, XmlPathFormatAggregator aggregator);
 
         /// <summary>
         /// Splits the current path into an array containing all the inner child nodes.

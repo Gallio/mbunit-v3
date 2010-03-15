@@ -52,7 +52,7 @@ namespace Gallio.Common.Xml
         /// <param name="root">The root element of the document.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="declaration"/> is null.</exception>
         public NodeFragment(NodeDeclaration declaration, INode root)
-            : base(0, new[] { root })
+            : base(NodeType.Fragment, 0, 1, new[] { root })
         {
             if (declaration == null)
                 throw new ArgumentNullException("declaration");

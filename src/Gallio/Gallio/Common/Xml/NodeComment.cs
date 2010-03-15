@@ -44,10 +44,11 @@ namespace Gallio.Common.Xml
         /// Constructs an XML comment tag.
         /// </summary>
         /// <param name="index">The index of the node.</param>
+        /// <param name="count">The total number of nodes at the same level.</param>
         /// <param name="text">The literal content of the comment tag.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null.</exception>
-        public NodeComment(int index, string text)
-            : base(index, EmptyArray<INode>.Instance)
+        public NodeComment(int index, int count, string text)
+            : base(NodeType.Comment, index, count, EmptyArray<INode>.Instance)
         {
             if (index < 0)
                 throw new ArgumentOutOfRangeException("index");
@@ -86,12 +87,6 @@ namespace Gallio.Common.Xml
             return new DiffSetBuilder()
                 .Add(new Diff("Unexpected comment found.", path.Element(Index), DiffTargets.Both))
                 .ToDiffSet();
-        }
-
-        /// <inheritdoc />
-        public override void Aggregate(XmlPathFormatAggregator aggregator)
-        {
-            aggregator.Add(String.Format("<!--{0}-->", text));
         }
     }
 }

@@ -259,11 +259,13 @@
     <Compile Include="Common\Xml\Diffing\IDiffableCollection.cs" />
     <Compile Include="Common\Xml\Diffing\IDiffEngine.cs" />
     <Compile Include="Common\Xml\INode.cs" />
+    <Compile Include="Common\Xml\NodeType.cs" />
     <Compile Include="Common\Xml\Paths\IXmlPathLoose.cs" />
     <Compile Include="Common\Xml\Paths\IXmlPathLooseClosed.cs" />
     <Compile Include="Common\Xml\Paths\IXmlPathLooseOpen.cs" />
-    <Compile Include="Common\Xml\Paths\XmlPathFormatAggregator.cs" />
     <Compile Include="Common\Xml\Paths\XmlPathParser.cs" />
+    <Compile Include="Common\Xml\Paths\XmlPathRenderer.cs" />
+    <Compile Include="Common\Xml\Paths\XmlPathRenderingOptions.cs" />
     <Compile Include="Common\Xml\Paths\XmlPathStrictDeclaration.cs" />
     <Compile Include="Common\Xml\Diffing\DiffEngineForOrderedItems.cs" />
     <Compile Include="Common\Xml\Diffing\DiffEngineForUnorderedAttributes.cs" />

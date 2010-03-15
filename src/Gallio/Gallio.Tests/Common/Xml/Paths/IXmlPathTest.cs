@@ -245,24 +245,5 @@ namespace Gallio.Tests.Common.Xml.Paths
         }
 
         #endregion
-
-        #region Strict paths formatting
-
-        [TextData(ResourcePath = "SolarSystem.xml")]
-        public string xml;
-
-        [Test]
-        [Row("/", "")]
-        [Row("/0", "<SolarSystem …>")]
-        [Row("/0/0/0/0", "<SolarSystem …><Planets><Planet …><Satellites/>")]
-        public void Format_path(string input, string expected)
-        {
-            NodeFragment fragment = Parser.Run(xml, Options.None);
-            var path = XmlPathRoot.Strict.Parse(input);
-            var actual = path.Format(fragment);
-            Assert.AreEqual(expected, actual);
-        }
-
-        #endregion
     }
 }
