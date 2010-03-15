@@ -123,6 +123,9 @@ namespace Gallio.Common.Xml.Paths
                     break;
 
                 case NodeType.Declaration:
+                    AggregateDeclaration((NodeDeclaration)node);
+                    break;
+
                 default:
                     throw new InvalidOperationException();
             }
@@ -131,6 +134,14 @@ namespace Gallio.Common.Xml.Paths
         private void AggregateComment(NodeComment node)
         {
             AddLine(String.Format("<!--{0}-->", node.Text));
+        }
+
+        private void AggregateDeclaration(NodeDeclaration node)
+        {
+            var output = new StringBuilder("<?xml");
+            output.Append(pendingAttribute ?? (node.Attributes.Count > 0 ? " " + Ellipsis : String.Empty));
+            output.Append("?>");
+            AddLine(output.ToString());
         }
 
         private void AggregateAttribute(NodeAttribute node)
