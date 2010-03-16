@@ -283,6 +283,8 @@
     <Compile Include="Common\Xml\Paths\IXmlPathLooseOpen.cs" />
     <Compile Include="Common\Xml\Paths\XmlPathParser.cs" />
     <Compile Include="Common\Xml\Paths\XmlPathRenderer.cs" />
+    <Compile Include="Common\Xml\Paths\XmlPathRendererFlat.cs" />
+    <Compile Include="Common\Xml\Paths\XmlPathRendererWithIndentation.cs" />
     <Compile Include="Common\Xml\Paths\XmlPathRenderingOptions.cs" />
     <Compile Include="Common\Xml\Paths\XmlPathStrictDeclaration.cs" />
     <Compile Include="Common\Xml\Diffing\DiffEngineForOrderedItems.cs" />

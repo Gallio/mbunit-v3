@@ -111,10 +111,11 @@ namespace Gallio.Common.Xml
                 throw new ArgumentNullException("path");
 
             INode current = this;
+            var array = path.ToArray();
 
-            foreach (IXmlPathStrict item in path.ToArray())
+            for (int i = 0; i < array.Length && current != null; i++)
             {
-                current = item.FindInParent(current);
+                current = array[i].FindInParent(current);
             }
 
             return current;

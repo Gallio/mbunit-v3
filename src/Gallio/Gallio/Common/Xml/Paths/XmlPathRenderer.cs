@@ -22,18 +22,23 @@ namespace Gallio.Common.Xml.Paths
     /// <summary>
     /// Formats a strict path into a human readable form, based on the contents of an existing XML fragment.
     /// </summary>
-    internal sealed class XmlPathRenderer
+    internal abstract class XmlPathRenderer
     {
         private readonly IXmlPathStrict rootPath;
         private readonly NodeFragment fragment;
-        private readonly XmlPathRenderingOptions options;
-        private readonly List<string> lines = new List<string>();
+        private readonly List<Line> lines = new List<Line>();
         private string pendingAttribute;
         private string pendingContent;
 
         // Rendering constants
         private const string Ellipsis = "…";
-        private const int tab = 2;
+        private const int ContextualAttributes = 2;
+
+        protected struct Line
+        {
+            public int Level;
+            public string Text;
+        }
 
         /// <summary>
         /// Formats a strict path into a human readable form, based on the contents of an existing XML fragment.
@@ -44,10 +49,14 @@ namespace Gallio.Common.Xml.Paths
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/>, or <paramref name="fragment"/> is null.</exception>
         public static string Run(IXmlPathStrict path, NodeFragment fragment, XmlPathRenderingOptions options)
         {
-            return new XmlPathRenderer(path, fragment, options).RunImpl();
+            var renderer = ((options & XmlPathRenderingOptions.UseIndentation) != 0)
+                ? (XmlPathRenderer)new XmlPathRendererWithIndentation(path, fragment)
+                : (XmlPathRenderer)new XmlPathRendererFlat(path, fragment);
+
+            return renderer.RunImpl();
         }
 
-        private XmlPathRenderer(IXmlPathStrict path, NodeFragment fragment, XmlPathRenderingOptions options)
+        protected XmlPathRenderer(IXmlPathStrict path, NodeFragment fragment)
         {
             if (path == null)
                 throw new ArgumentNullException("path");
@@ -56,59 +65,39 @@ namespace Gallio.Common.Xml.Paths
 
             this.rootPath = path;
             this.fragment = fragment;
-            this.options = options;
         }
 
         private string RunImpl()
         {
-            ProcessPathNode(rootPath);
-
-            if ((options & XmlPathRenderingOptions.UseIndentation) != 0)
-                return ConsolidateWithIndentation();
-
-            return ConsolidateFlat();
+            ProcessPathNode(rootPath, 0);
+            return Consolidate(lines);
         }
 
-        private string ConsolidateFlat()
+        protected abstract string Consolidate(List<Line> lines);
+
+        private void ProcessPathNode(IXmlPathStrict path, int level)
         {
-            lines.Reverse();
-            return String.Concat(lines.ToArray());
-        }
+            var node = fragment.Find(path);
 
-        private string ConsolidateWithIndentation()
-        {
-            var output = new StringBuilder();
-            output.AppendLine();
-
-            for (int i = 0; i < lines.Count; i++)
-            {
-                string line = lines[lines.Count - i - 1];
-                output.AppendLine(new string(' ', i*tab) + line);
-            }
-
-            return output.ToString();
-        }
-
-        private void ProcessPathNode(IXmlPathStrict path)
-        {
-            Aggregate(fragment.Find(path));
+            if (node != null)
+                Aggregate(node, level);
 
             if (path.Parent != null && !path.Parent.IsEmpty)
             {
-                ProcessPathNode(path.Parent);
+                ProcessPathNode(path.Parent, level + 1);
             }
         }
 
-        private void Aggregate(INode node)
+        private void Aggregate(INode node, int level)
         {
             switch (node.Type)
             {
                 case NodeType.Element:
-                    AggregateElement((NodeElement)node);
+                    AggregateElement((NodeElement)node, level);
                     break;
 
                 case NodeType.Comment:
-                    AggregateComment((NodeComment)node);
+                    AggregateComment((NodeComment)node, level);
                     break;
 
                 case NodeType.Content:
@@ -123,7 +112,7 @@ namespace Gallio.Common.Xml.Paths
                     break;
 
                 case NodeType.Declaration:
-                    AggregateDeclaration((NodeDeclaration)node);
+                    AggregateDeclaration((NodeDeclaration)node, level);
                     break;
 
                 default:
@@ -131,17 +120,17 @@ namespace Gallio.Common.Xml.Paths
             }
         }
 
-        private void AggregateComment(NodeComment node)
+        private void AggregateComment(NodeComment node, int level)
         {
-            AddLine(String.Format("<!--{0}-->", node.Text));
+            AddLine(String.Format("<!--{0}-->", node.Text), level);
         }
 
-        private void AggregateDeclaration(NodeDeclaration node)
+        private void AggregateDeclaration(NodeDeclaration node, int level)
         {
             var output = new StringBuilder("<?xml");
             output.Append(pendingAttribute ?? (node.Attributes.Count > 0 ? " " + Ellipsis : String.Empty));
             output.Append("?>");
-            AddLine(output.ToString());
+            AddLine(output.ToString(), level);
         }
 
         private void AggregateAttribute(NodeAttribute node)
@@ -151,7 +140,7 @@ namespace Gallio.Common.Xml.Paths
             if (!node.IsFirst)
                 output.Append(Ellipsis + " ");
 
-            output.AppendFormat("{0}='{1}'", node.Name, node.Value);
+            output.Append(FormatAttribute(node));
 
             if (!node.IsLast)
                 output.Append(" " + Ellipsis);
@@ -159,15 +148,26 @@ namespace Gallio.Common.Xml.Paths
             pendingAttribute = output.ToString();
         }
 
-        private void AggregateContent(NodeContent node)
+        private static string FormatAttribute(NodeAttribute node)
         {
-            pendingContent = node.Text;
+            return String.Format("{0}='{1}'", node.Name, node.Value);
         }
 
-        private void AggregateElement(NodeElement node)
+        private void AggregateContent(NodeContent node)
+        {
+            var output = new StringBuilder();
+
+            if (!node.IsFirst)
+                output.Append(Ellipsis + " ");
+
+            output.Append(node.Text);
+            pendingContent = output.ToString();
+        }
+
+        private void AggregateElement(NodeElement node, int level)
         {
             var output = new StringBuilder("<" + node.Name);
-            output.Append(pendingAttribute ?? (node.Attributes.Count > 0 ? " " + Ellipsis : String.Empty));
+            output.Append(pendingAttribute ?? AggregateContextualAttributes(node));
 
             if (node.Children.Count == 0)
             {
@@ -184,12 +184,45 @@ namespace Gallio.Common.Xml.Paths
                 }
             }
 
-            AddLine(output.ToString());
+            AddLine(output.ToString(), level);
+            
+            if (!node.IsFirst)
+               AddLine(Ellipsis, level);
         }
 
-        private void AddLine(string line)
+        private static string AggregateContextualAttributes(NodeElement node)
         {
-            lines.Add(line);
+            var output = new StringBuilder();
+
+            if (node.Attributes.Count > 0)
+            {
+                bool isAlone = node.IsFirst && node.IsLast;
+
+                if (!isAlone)
+                {
+                    int count = Math.Min(ContextualAttributes, node.Attributes.Count);
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        output.Append(" " + FormatAttribute(node.Attributes[i]));
+                    }
+                }
+
+                if (isAlone || node.Attributes.Count > ContextualAttributes)
+                    output.Append(" " + Ellipsis);
+            }
+
+            return output.ToString();
+        }
+
+        private void AddLine(string text, int level)
+        {
+            lines.Add(new Line
+            {
+                Level = level,
+                Text = text
+            });
+
             ResetPendingEntries();
         }
 

@@ -30,14 +30,19 @@ namespace Gallio.Tests.Common.Xml.Paths
     [TestsOn(typeof(XmlPathRenderer))]
     public class XmlPathRendererTest
     {
-        [TextData(ResourcePath = "SolarSystem.xml")]
-        public string xml;
-
         [Test]
         [Row("/", "")]
         [Row("/0", "<SolarSystem …>")]
-        [Row("/0/0/0/0", "<SolarSystem …><Planets><Planet …><Satellites/>")]
-        public void Format_path(string input, string expected)
+        [Row("/0:0", "<SolarSystem xmlns='SolarSystem'>")]
+        [Row("/0/0/0:0", "<SolarSystem …><Planets><Planet name='Mercury' …>")]
+        [Row("/0/0/6:0", "<SolarSystem …><Planets>…<Planet name='Saturn' …>")]
+        [Row("/0/0/0:1", "<SolarSystem …><Planets><Planet … distanceToSun='0.4 AU'>")]
+        [Row("/0/0/0/0", "<SolarSystem …><Planets><Planet name='Mercury' distanceToSun='0.4 AU'><Satellites/>")]
+        [Row("/0/0/2", "<SolarSystem …><Planets><!-- Hey! This one is mine! -->")]
+        [Row("/0/0/5/0/2:0", "<SolarSystem …><Planets>…<Planet name='Jupiter' distanceToSun='5.2 AU'><Satellites>…<Satellite name='Ganymede'/>")]
+        [Row("/0/0/0/0/0/0/0", "<SolarSystem …><Planets><Planet name='Mercury' distanceToSun='0.4 AU'><Satellites/>", Description = "Should truncate path and ignore non-existing nodes")]
+        [Row("/0/0/666", "<SolarSystem …><Planets>", Description = "Should truncate path when index out of range")]
+        public void Format_path(string input, string expected, [TextData(ResourcePath = "SolarSystem.xml")] string xml)
         {
             NodeFragment fragment = Parser.Run(xml, Options.None);
             var path = XmlPathRoot.Strict.Parse(input);

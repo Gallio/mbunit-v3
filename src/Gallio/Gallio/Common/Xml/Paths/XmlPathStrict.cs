@@ -121,6 +121,9 @@ namespace Gallio.Common.Xml.Paths
             if (index < 0)
                 return ((NodeFragment)parent).Declaration;
 
+            if (index >= parent.Children.Count)
+                return null;
+
             return parent.Children[index];
         }
     }

@@ -13,13 +13,13 @@
         <Satellite name="Moon"/>
       </Satellites>
     </Planet>
-     <Planet name="Mars" distanceToSun="1.5 AU">
+    <Planet name="Mars" distanceToSun="1.5 AU">
       <Satellites>
         <Satellite name="Deimos"/>
         <Satellite name="Phobos"/>
       </Satellites>
     </Planet>
-     <Planet name="Jupiter" distanceToSun="5.2 AU">
+    <Planet name="Jupiter" distanceToSun="5.2 AU">
       <Satellites>
         <Satellite name="Io"/>
         <Satellite name="Europa"/>
@@ -27,7 +27,7 @@
         <Satellite name="Callisto"/>
       </Satellites>
     </Planet>
-     <Planet name="Saturn" distanceToSun="9.5 AU">
+    <Planet name="Saturn" distanceToSun="9.5 AU">
       <Satellites>
         <Satellite name="Mimas"/>
         <Satellite name="Enceladus"/>
@@ -38,7 +38,7 @@
         <Satellite name="Iapetus"/>
       </Satellites>
     </Planet>
-     <Planet name="Uranus" distanceToSun="19.6 AU">
+    <Planet name="Uranus" distanceToSun="19.6 AU">
       <Satellites>
         <Satellite name="Miranda"/>
         <Satellite name="Ariel"/>
@@ -47,7 +47,7 @@
         <Satellite name="Oberon"/>
       </Satellites>
     </Planet>
-     <Planet name="Neptune" distanceToSun="30 AU">
+    <Planet name="Neptune" distanceToSun="30 AU">
       <Satellites>
         <Satellite name="Triton"/>
       </Satellites>
