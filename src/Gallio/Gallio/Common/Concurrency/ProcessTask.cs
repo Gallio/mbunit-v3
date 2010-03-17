@@ -105,6 +105,10 @@ namespace Gallio.Common.Concurrency
         /// Gets the <see cref="Process" /> that was started or null if the
         /// process has not been started yet.
         /// </summary>
+        /// <remarks>
+        /// Please be aware that <see cref="Process" /> is not thread-safe.
+        /// You must lock the process object before accessing it.
+        /// </remarks>
         public Process Process
         {
             get { return process; }
@@ -205,9 +209,13 @@ namespace Gallio.Common.Concurrency
         {
             get
             {
-                if (process == null || !process.HasExited)
+                if (process == null)
                     return -1;
-                return process.ExitCode;
+                
+                lock (process)
+                {
+                    return process.HasExited ? process.ExitCode : -1;
+                }
             }
         }
 
@@ -324,7 +332,10 @@ namespace Gallio.Common.Concurrency
                 ConfigureProcessStartInfo(this, new ConfigureProcessStartInfoEventArgs(startInfo));
 
             process = StartProcess(startInfo);
-            process.EnableRaisingEvents = true;
+            lock (process)
+            {
+                process.EnableRaisingEvents = true;
+            }
 
             StartLogging();
             StartProcessExitDetection();
@@ -356,8 +367,16 @@ namespace Gallio.Common.Concurrency
                 {
                     try
                     {
-                        while (!process.HasExited)
+                        for (;;)
+                        {
+                            lock (process)
+                            {
+                                if (process.HasExited)
+                                    break;
+                            }
+                            
                             Thread.Sleep(100);
+                        }
                     }
                     catch
                     {
@@ -376,27 +395,43 @@ namespace Gallio.Common.Concurrency
             {
                 // Handle process exit including the case where the process might already
                 // have exited just prior to adding the event handler.
-                process.Exited += delegate { HandleProcessExit(); };
-                if (process.HasExited)
-                    HandleProcessExit();
+                lock (process)
+                {
+                    process.Exited += delegate { HandleProcessExit(); };
+                    if (process.HasExited)
+                        HandleProcessExit();
+                }
             }
         }
 
         private void HandleProcessExit()
-        {
-            WaitForConsoleToBeCompletelyReadOnceProcessHasExited();
-
+        {            
+            // The process lock may already be held by this thread since the
+            // Process object can call its Exited event handler as a side effect of
+            // several operations on the Process object.  This could result in a
+            // deadlock if the task's Terminated event waits on some other thread that
+            // is also blocked on the process.  So we make it asynchronous instead.
             if (Interlocked.Exchange(ref exited, 1) == 0)
             {
-                NotifyTerminated(TaskResult<object>.CreateFromValue(process.ExitCode));
+                ThreadPool.QueueUserWorkItem((state) =>
+                {
+                    WaitForConsoleToBeCompletelyReadOnceProcessHasExited();
+                    NotifyTerminated(TaskResult<object>.CreateFromValue(ExitCode));
+                }, null);
             }
         }
 
         /// <inheritdoc />
         protected override void AbortImpl()
         {
-            if (process != null && !process.HasExited)
-                process.Kill();
+            if (process == null)
+                return;
+
+            lock (process)
+            {
+                if (!process.HasExited)
+                    process.Kill();
+            }
         }
 
         /// <inheritdoc />
@@ -405,8 +440,28 @@ namespace Gallio.Common.Concurrency
             if (process == null)
                 return true;
 
-            if (!process.WaitForExit(timeout.HasValue ? (int)timeout.Value.TotalMilliseconds : int.MaxValue))
-                return false;
+            // There might be multiple threads blocked on Join simultaneously with
+            // different timeouts.  Unfortunately they can't all just wait at the
+            // same time because the Process object is not threadsafe.  So instead
+            // we only lock for short intervals.
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            for (;;)
+            {
+                lock (process)
+                {
+                    int incrementalTimeout = timeout.HasValue && timeout.Value.Ticks >= 0
+                        ? Math.Min((int) (timeout.Value - stopwatch.Elapsed).TotalMilliseconds, 100)
+                        : 100;
+                    if (incrementalTimeout < 0)
+                        incrementalTimeout = 0;
+                        
+                    if (process.WaitForExit(incrementalTimeout))
+                        break;
+                        
+                    if (incrementalTimeout == 0)
+                        return false;
+                }
+            }
 
             WaitForConsoleToBeCompletelyReadOnceProcessHasExited();
             return true;
@@ -419,16 +474,19 @@ namespace Gallio.Common.Concurrency
 
         private void StartLogging()
         {
-            if (process.StartInfo.RedirectStandardOutput)
+            lock (process)
             {
-                process.OutputDataReceived += LogOutputData;
-                process.BeginOutputReadLine();
-            }
+                if (process.StartInfo.RedirectStandardOutput)
+                {
+                    process.OutputDataReceived += LogOutputData;
+                    process.BeginOutputReadLine();
+                }
 
-            if (process.StartInfo.RedirectStandardError)
-            {
-                process.ErrorDataReceived += LogErrorData;
-                process.BeginErrorReadLine();
+                if (process.StartInfo.RedirectStandardError)
+                {
+                    process.ErrorDataReceived += LogErrorData;
+                    process.BeginErrorReadLine();
+                }
             }
 
             loggingStarted = true;
@@ -461,7 +519,10 @@ namespace Gallio.Common.Concurrency
             // courtesy is not extended to WaitForExit with a timeout.  Since the process
             // has already exited, we should only be waiting to read the streams
             // which ought to be pretty quick.
-            process.WaitForExit();
+            lock (process)
+            {
+                process.WaitForExit();
+            }
         }
     }
 }
