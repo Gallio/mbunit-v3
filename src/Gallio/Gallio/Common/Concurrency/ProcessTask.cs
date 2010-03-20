@@ -53,6 +53,8 @@ namespace Gallio.Common.Concurrency
         private Process process;
         private int exited;
         private bool loggingStarted;
+        
+        private ManualResetEvent exitedEvent;
 
         /// <summary>
         /// Creates a process task.
@@ -75,6 +77,8 @@ namespace Gallio.Common.Concurrency
             this.executablePath = Path.GetFullPath(executablePath);
             this.arguments = arguments;
             this.workingDirectory = workingDirectory;
+            
+            exitedEvent = new ManualResetEvent(false);
         }
 
         /// <summary>
@@ -411,12 +415,20 @@ namespace Gallio.Common.Concurrency
             // several operations on the Process object.  This could result in a
             // deadlock if the task's Terminated event waits on some other thread that
             // is also blocked on the process.  So we make it asynchronous instead.
+            // Join then blocks on the exitedEvent to restore the required synchronization.
             if (Interlocked.Exchange(ref exited, 1) == 0)
             {
                 ThreadPool.QueueUserWorkItem((state) =>
                 {
-                    WaitForConsoleToBeCompletelyReadOnceProcessHasExited();
-                    NotifyTerminated(TaskResult<object>.CreateFromValue(ExitCode));
+                    try
+                    {
+                        WaitForConsoleToBeCompletelyReadOnceProcessHasExited();
+                        NotifyTerminated(TaskResult<object>.CreateFromValue(ExitCode));
+                    }
+                    finally
+                    {
+                        exitedEvent.Set();
+                    }
                 }, null);
             }
         }
@@ -464,6 +476,7 @@ namespace Gallio.Common.Concurrency
             }
 
             WaitForConsoleToBeCompletelyReadOnceProcessHasExited();
+            exitedEvent.WaitOne();
             return true;
         }
 
