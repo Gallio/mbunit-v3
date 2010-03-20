@@ -9,7 +9,6 @@
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Component Id="Gallio.Ambience.dll" Guid="{0CEA0DD8-D3BA-45f3-B607-7914A27D4967}" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.Ambience.dll" KeyPath="yes" />
-                <File Name="Gallio.Ambience.pdb" />
                 <File Name="Gallio.Ambience.xml" />
                 <File Name="Gallio.Ambience.plugin" />
 

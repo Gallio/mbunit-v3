@@ -15,7 +15,6 @@
   <files>
     <file path="Gallio.VisualStudio.Interop.plugin" />
     <file path="Gallio.VisualStudio.Interop.dll" />
-    <file path="Gallio.VisualStudio.Interop.pdb" />
   </files>
 
   <assemblies>
