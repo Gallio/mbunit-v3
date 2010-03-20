@@ -16,7 +16,6 @@
   <files>
     <file path="Archimedes.plugin" />
     <file path="Archimedes.dll" />
-    <file path="Archimedes.pdb" />
     <file path="Archimedes.xml" />
 
     <file path="Resources\Archimedes.ico" />
