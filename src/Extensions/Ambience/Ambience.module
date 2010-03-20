@@ -73,10 +73,10 @@
 
     <!-- Replace the copy of Ambience used for the tests because otherwise
          we get assembly conflicts when Db4o tries to communicate remotely
-         with itself from an ILMerge'd context into a non-ILMerge'd context. -->
-    <Copy SourceFiles="$(ModuleImageDir)\bin\Gallio.Ambience.dll"
+         with itself because the assembly name is different when ILMerge'd. -->
+    <Copy SourceFiles="$(ModuleTempDir)\Gallio.Ambience.dll"
           DestinationFolder="Gallio.Ambience.Tests\bin" />
-    <Copy SourceFiles="$(ModuleImageDir)\bin\Gallio.Ambience.dll"
+    <Copy SourceFiles="$(ModuleTempDir)\Gallio.Ambience.dll"
           DestinationFolder="Gallio.Ambience.Server\bin" />
   </Target>
 

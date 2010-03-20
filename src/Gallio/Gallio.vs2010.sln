@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.vs2010", "..\MbUnit\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Compatibility.vs2010", "..\MbUnit\MbUnit.Compatibility\MbUnit.Compatibility.vs2010.csproj", "{F588B51F-786A-48E2-950E-636062F9C302}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Compatibility.Tests", "..\MbUnit\MbUnit.Compatibility.Tests\MbUnit.Compatibility.Tests.csproj", "{7A504845-DE3F-4E24-907D-AF5A5FAAE158}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Compatibility.Tests.vs2010", "..\MbUnit\MbUnit.Compatibility.Tests\MbUnit.Compatibility.Tests.vs2010.csproj", "{7A504845-DE3F-4E24-907D-AF5A5FAAE158}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.TestResources.vs2010", "..\MbUnit\MbUnit.TestResources\MbUnit.TestResources.vs2010.csproj", "{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}"
 EndProject
