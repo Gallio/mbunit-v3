@@ -104,19 +104,16 @@
             </Component>
             <Component Id="Gallio.Reports" Guid="9e17b959-1768-4a2b-b750-99821b01dd53" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.Reports.dll" KeyPath="yes" />
-                <File Name="Gallio.Reports.pdb" />
                 <File Name="Gallio.Reports.xml" />
                 <File Name="Gallio.Reports.plugin" />
             </Component>
             <Component Id="Gallio.UI" Guid="{7CEEF55C-A9DD-4ce1-AD70-50CCEE425CE4}" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.UI.dll" KeyPath="yes" />
-                <File Name="Gallio.UI.pdb" />
                 <File Name="Gallio.UI.xml" />
                 <File Name="Gallio.UI.plugin" />
             </Component>
             <Component Id="Gallio.Common.Splash" Guid="{08C90196-9158-4FD9-BBEA-39122FB47841}" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.Common.Splash.dll" KeyPath="yes" />
-                <File Name="Gallio.Common.Splash.pdb" />
                 <File Name="Gallio.Common.Splash.xml" />
             </Component>
             <Component Id="Aga.Controls.dll" Guid="3c58ac7a-fe23-4bd4-9bb4-1bd5c107ba89" Win64="$(var.Win64Binary)">

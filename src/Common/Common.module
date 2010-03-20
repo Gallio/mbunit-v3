@@ -10,7 +10,7 @@
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
     <PdbFile Include="Gallio.Common.Splash\bin\Gallio.Common.Splash.pdb">
-      <ImagePath>bin</ImagePath>
+      <ExcludeFromImage>true</ExcludeFromImage>
     </PdbFile>
     <XmlDocFile Include="Gallio.Common.Splash\bin\Gallio.Common.Splash.xml">
       <ImagePath>bin</ImagePath>

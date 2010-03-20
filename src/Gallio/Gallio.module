@@ -85,7 +85,7 @@
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
     <PdbFile Include="Gallio.UI\bin\Gallio.UI.pdb">
-      <ImagePath>bin</ImagePath>
+      <ExcludeFromImage>true</ExcludeFromImage>
     </PdbFile>
     <XmlDocFile Include="Gallio.UI\bin\Gallio.UI.xml">
       <ImagePath>bin</ImagePath>
@@ -104,7 +104,7 @@
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
     <PdbFile Include="Gallio.Reports\bin\Gallio.Reports.pdb">
-      <ImagePath>bin</ImagePath>
+      <ExcludeFromImage>true</ExcludeFromImage>
     </PdbFile>
     <XmlDocFile Include="Gallio.Reports\bin\Gallio.Reports.xml">
       <ImagePath>bin</ImagePath>

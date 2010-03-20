@@ -16,7 +16,6 @@
   <files>
     <file path="Gallio.Reports.plugin" />
     <file path="Gallio.Reports.dll" />
-    <file path="Gallio.Reports.pdb" />
     <file path="Gallio.Reports.xml" />
     <file path="Resources\css\Gallio-Report.css" />
     <file path="Resources\img\Failed.gif" />
