@@ -37,9 +37,9 @@
 
     <Error Text="Could not parse SVN info.  Use /p:SkipSources=true to skip generating sources.txt."
            Condition="'$(SvnRepository)'=='' or '$(SvnRevision)'==''" />
-
+           
     <WriteLinesToFile File="$(ModuleImageDir)\Sources.txt"
                       Overwrite="true"
-                      Lines="Gallio v$(FileVersion) was generated from the following sources.%0D%0A%0D%0ASubversion Repository: $(SvnRepository)%0D%0A           Revision: $(SvnRevision)%0D%0A%0D%0APlease visit the following Url for checkout instructions.%0D%0Ahttp://code.google.com/p/mb-unit/source/checkout" />
+                      Lines="Gallio v$(FileVersion) was generated from the following sources.%0D%0A%0D%0ASubversion Repository: $(SvnRepository)%0D%0A           Revision: $(SvnRevision)%0D%0A%0D%0APlease visit the following Url for checkout instructions.%0D%0A  http://code.google.com/p/mb-unit/source/checkout%0D%0A%0D%0AAlso refer to the wiki for information about how to debug with symbols and source code.%0D%0A  http://www.gallio.org/wiki/gallio:debugging_with_symbols_and_source_code" />
   </Target>
 </Project>
