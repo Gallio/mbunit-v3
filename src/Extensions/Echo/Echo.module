@@ -8,6 +8,9 @@
     <AssemblyFile Include="Gallio.Echo\bin\Gallio.Echo.exe">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.Echo\bin\Gallio.Echo.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <ConfigFile Include="Gallio.Echo\bin\Gallio.Echo.exe.config">
       <ImagePath>bin</ImagePath>
     </ConfigFile>

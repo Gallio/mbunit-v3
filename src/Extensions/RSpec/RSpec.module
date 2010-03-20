@@ -8,6 +8,9 @@
     <AssemblyFile Include="Gallio.RSpecAdapter\bin\Gallio.RSpecAdapter.dll">
       <ImagePath>bin\RSpec</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.RSpecAdapter\bin\Gallio.RSpecAdapter.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <PluginFile Include="Gallio.RSpecAdapter\Gallio.RSpecAdapter.plugin">
       <ImagePath>bin\RSpec</ImagePath>
     </PluginFile>

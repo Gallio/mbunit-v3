@@ -7,6 +7,9 @@
     <AssemblyFile Include="Gallio.ControlPanel\bin\Gallio.ControlPanel.exe">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.ControlPanel\bin\Gallio.ControlPanel.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <ConfigFile Include="Gallio.ControlPanel\Gallio.ControlPanel.exe.config">
       <ImagePath>bin</ImagePath>
     </ConfigFile>

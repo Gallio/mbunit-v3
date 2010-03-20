@@ -8,6 +8,9 @@
     <AssemblyFile Include="Gallio.TeamCityIntegration\bin\Gallio.TeamCityIntegration.dll">
       <ImagePath>bin\TeamCity</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.TeamCityIntegration\bin\Gallio.TeamCityIntegration.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <PluginFile Include="Gallio.TeamCityIntegration\Gallio.TeamCityIntegration.plugin">
       <ImagePath>bin\TeamCity</ImagePath>
     </PluginFile>

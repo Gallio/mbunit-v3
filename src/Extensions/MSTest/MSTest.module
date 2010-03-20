@@ -10,7 +10,10 @@
     <AssemblyFile Include="Gallio.MSTestAdapter\bin\Gallio.MSTestAdapter.dll">
       <ImagePath>bin\MSTest</ImagePath>
     </AssemblyFile>
-    <PluginFile Include="Gallio.MSTestAdapter\Gallio.MSTestAdapter.plugin">
+    <PdbFile Include="Gallio.MSTestAdapter\bin\Gallio.MSTestAdapter.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
+   <PluginFile Include="Gallio.MSTestAdapter\Gallio.MSTestAdapter.plugin">
       <ImagePath>bin\MSTest</ImagePath>
     </PluginFile>
     <File Include="Gallio.MSTestAdapter\Readme.txt">

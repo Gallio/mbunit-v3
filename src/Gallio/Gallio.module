@@ -12,6 +12,15 @@
     
     <File Include="Gallio Website.url" />
   
+    <AssemblyFile Include="$(ModuleTempDir)\Gallio.dll">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+    <PdbFile Include="$(ModuleTempDir)\Gallio.pdb">
+      <ImagePath>bin</ImagePath>
+    </PdbFile>
+    <AssemblyFile Include="$(ModuleTempDir)\Gallio.XmlSerializers.dll">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
     <XmlDocFile Include="Gallio\bin\Gallio.xml">
       <ImagePath>bin</ImagePath>
     </XmlDocFile>
@@ -22,28 +31,40 @@
       <ImagePath>bin\Resources</ImagePath>
     </File>
 
-    <AssemblyFile Include="Gallio\bin\Gallio.Host.exe">
+    <AssemblyFile Include="Gallio.Host\bin\Gallio.Host.exe">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
-    <ConfigFile Include="Gallio\bin\Gallio.Host.exe.config">
+    <PdbFile Include="Gallio.Host\bin\Gallio.Host.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
+    <ConfigFile Include="Gallio.Host\bin\Gallio.Host.exe.config">
       <ImagePath>bin</ImagePath>
     </ConfigFile>
-    <AssemblyFile Include="Gallio\bin\Gallio.Host.x86.exe">
+    <AssemblyFile Include="Gallio.Host\bin\Gallio.Host.x86.exe">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
-    <ConfigFile Include="Gallio\bin\Gallio.Host.x86.exe.config">
+    <PdbFile Include="Gallio.Host\bin\Gallio.Host.x86.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
+    <ConfigFile Include="Gallio.Host\bin\Gallio.Host.x86.exe.config">
       <ImagePath>bin</ImagePath>
     </ConfigFile>
-    <AssemblyFile Include="Gallio\bin\Gallio.Host.Elevated.exe">
+    <AssemblyFile Include="Gallio.Host\bin\Gallio.Host.Elevated.exe">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
-    <ConfigFile Include="Gallio\bin\Gallio.Host.Elevated.exe.config">
+    <PdbFile Include="Gallio.Host\bin\Gallio.Host.Elevated.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
+    <ConfigFile Include="Gallio.Host\bin\Gallio.Host.Elevated.exe.config">
       <ImagePath>bin</ImagePath>
     </ConfigFile>
-    <AssemblyFile Include="Gallio\bin\Gallio.Host.Elevated.x86.exe">
+    <AssemblyFile Include="Gallio.Host\bin\Gallio.Host.Elevated.x86.exe">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
-    <ConfigFile Include="Gallio\bin\Gallio.Host.Elevated.x86.exe.config">
+    <PdbFile Include="Gallio.Host\bin\Gallio.Host.Elevated.x86.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
+    <ConfigFile Include="Gallio.Host\bin\Gallio.Host.Elevated.x86.exe.config">
       <ImagePath>bin</ImagePath>
     </ConfigFile>
     
@@ -153,26 +174,28 @@
 	<GallioMergeDependency Include="Gallio\bin\Microsoft.Cci.SourceModel.dll" />
   </ItemGroup>
 
-  <Target Name="AfterImage"
+  <Target Name="BeforeImage"
           DependsOnTargets="GallioImage_ILMerge;GallioImage_NoILMerge" />
 
   <Target Name="GallioImage_ILMerge"
           Condition="'$(NoILMerge)'!='true'"
           Inputs="Gallio\bin\Gallio.dll;@(GallioMergeDependency)"
-          Outputs="$(ModuleImageDir)\bin\Gallio.dll">
+          Outputs="$(ModuleTempDir)\Gallio.dll">
     <Message Text="Running ILMerge on Gallio.dll..."
              Importance="High" />
 
-    <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio\bin\Gallio.dll&quot; @(GallioMergeDependency->'&quot;%(Identity)&quot;', ' ') /internalize &quot;/out:$(ModuleImageDir)\bin\Gallio.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
+    <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio\bin\Gallio.dll&quot; @(GallioMergeDependency->'&quot;%(Identity)&quot;', ' ') /internalize &quot;/out:$(ModuleTempDir)\Gallio.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
 	
 	<!-- Important: Running ILMerge changes the ModuleVersionId of Gallio.dll so we need
 	                to regenerate Gallio.XmlSerializers.dll -->
-    <SGenMultipleTypes BuildAssemblyName="Gallio.dll" BuildAssemblyPath="$(ModuleImageDir)\bin" References="" KeyFile="..\Key.snk" />
+    <SGenMultipleTypes BuildAssemblyName="Gallio.dll" BuildAssemblyPath="$(ModuleTempDir)" References="" KeyFile="..\Key.snk" />
   </Target>
 
   <Target Name="GallioImage_NoILMerge"
           Condition="'$(NoILMerge)'=='true'">
-    <Copy SourceFiles="Gallio\bin\Gallio.dll;Gallio\bin\Gallio.pdb;Gallio\bin\Gallio.XmlSerializers.dll;@(GallioMergeDependency)"
+    <Copy SourceFiles="Gallio\bin\Gallio.dll;Gallio\bin\Gallio.pdb;Gallio\bin\Gallio.XmlSerializers.dll"
+          DestinationImagePath="$(ModuleTempDir)" />
+    <Copy SourceFiles="@(GallioMergeDependency)"
           DestinationImagePath="$(ModuleImageDir)\bin" />
   </Target>
 </Project>

@@ -13,7 +13,7 @@
       <ImagePath>bin</ImagePath>
     </AssemblyFile>    
     <PdbFile Include="Gallio.VisualStudio.Interop\bin\Gallio.VisualStudio.Interop.pdb">
-      <ImagePath>bin</ImagePath>
+      <ExcludeFromImage>true</ExcludeFromImage>
     </PdbFile>
 
     <TestAssembly Include="Gallio.VisualStudio.Interop.Tests\bin\Gallio.VisualStudio.Interop.Tests.dll" />

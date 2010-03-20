@@ -8,6 +8,9 @@
     <AssemblyFile Include="Gallio.Icarus\bin\Gallio.Icarus.exe">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.Icarus\bin\Gallio.Icarus.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <ConfigFile Include="Gallio.Icarus\bin\Gallio.Icarus.exe.config">
       <ImagePath>bin</ImagePath>
     </ConfigFile>

@@ -9,6 +9,9 @@
     <AssemblyFile Include="Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll">
       <ImagePath>bin\TDNet</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.TDNetRunner\bin\Gallio.TDNetRunner.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <PluginFile Include="Gallio.TDNetRunner\Gallio.TDNetRunner.plugin">
       <ImagePath>bin\TDNet</ImagePath>
     </PluginFile>

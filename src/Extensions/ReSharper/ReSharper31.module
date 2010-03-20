@@ -12,6 +12,9 @@
     <AssemblyFile Include="Gallio.ReSharperRunner\bin\v3.1\Gallio.ReSharperRunner31.dll">
       <ImagePath>bin\ReSharper\v3.1</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.ReSharperRunner\bin\v3.1\Gallio.ReSharperRunner31.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
 
     <TestAssembly Include="Gallio.ReSharperRunner.Tests\bin\v3.1\Gallio.ReSharperRunner31.Tests.dll" />
 

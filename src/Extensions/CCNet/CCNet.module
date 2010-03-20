@@ -12,6 +12,9 @@
       <ImagePath>extras\CCNet</ImagePath>
     </File>
     
+    <PdbFile Include="CCNet.Gallio.WebDashboard.Plugin\bin\CCNet.Gallio.WebDashboard.Plugin.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <CCNetPackageFile Include="CCNet.Gallio.WebDashboard.Plugin\bin\CCNet.Gallio.WebDashboard.Plugin.dll">
       <Folder>bin</Folder>
     </CCNetPackageFile>

@@ -11,6 +11,9 @@
     <AssemblyFile Include="Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.dll">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <File Include="Gallio.PowerShellCommands\Gallio.PowerShellCommands.dll-Help.xml">
       <ImagePath>bin</ImagePath>
     </File>

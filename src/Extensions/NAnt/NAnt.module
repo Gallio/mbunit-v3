@@ -8,6 +8,9 @@
     <PluginFile Include="Gallio.NAntTasks\Gallio.NAntTasks.plugin">
       <ImagePath>bin</ImagePath>
     </PluginFile>
+    <PdbFile Include="Gallio.NAntTasks\bin\Gallio.NAntTasks.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <AssemblyFile Include="Gallio.NAntTasks\bin\Gallio.NAntTasks.dll">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>

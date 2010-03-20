@@ -10,6 +10,9 @@
     <AssemblyFile Include="Gallio.MbUnit2Adapter\bin\Gallio.MbUnit2Adapter.dll">
       <ImagePath>bin\MbUnit2</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.MbUnit2Adapter\bin\Gallio.MbUnit2Adapter.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <PluginFile Include="Gallio.MbUnit2Adapter\Gallio.MbUnit2Adapter.plugin">
       <ImagePath>bin\MbUnit2</ImagePath>
     </PluginFile>

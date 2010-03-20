@@ -8,6 +8,9 @@
     <AssemblyFile Include="Gallio.Navigator\bin\Gallio.Navigator.exe">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.Navigator\bin\Gallio.Navigator.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <ConfigFile Include="Gallio.Navigator\Gallio.Navigator.exe.config">
       <ImagePath>bin</ImagePath>
     </ConfigFile>

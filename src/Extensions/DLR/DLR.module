@@ -8,6 +8,9 @@
     <AssemblyFile Include="Gallio.DLRIntegration\bin\Gallio.DLRIntegration.dll">
       <ImagePath>bin\DLR</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.DLRIntegration\bin\Gallio.DLRIntegration.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <PluginFile Include="Gallio.DLRIntegration\Gallio.DLRIntegration.plugin">
       <ImagePath>bin\DLR</ImagePath>
     </PluginFile>

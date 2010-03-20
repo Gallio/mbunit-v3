@@ -9,7 +9,6 @@
             <Component Id="Gallio.VisualStudio.Interop.dll" Guid="{83F35834-50DB-48f3-A643-CA07A0397778}" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.VisualStudio.Interop.dll" KeyPath="yes" 
                       Assembly=".net" AssemblyApplication="Gallio.VisualStudio.Interop.dll" />
-                <File Name="Gallio.VisualStudio.Interop.pdb" />
                 <File Name="Gallio.VisualStudio.Interop.plugin" />
             </Component>
         </DirectoryRef>

@@ -10,6 +10,9 @@
     <AssemblyFile Include="Gallio.NUnitAdapter\bin\v2.4.8\Gallio.NUnitAdapter248.dll">
       <ImagePath>bin\NUnit\v2.4.8</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.NUnitAdapter\bin\v2.4.8\Gallio.NUnitAdapter248.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <PluginFile Include="Gallio.NUnitAdapter\Gallio.NUnitAdapter248.plugin">
       <ImagePath>bin\NUnit\v2.4.8</ImagePath>
     </PluginFile>

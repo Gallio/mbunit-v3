@@ -8,6 +8,9 @@
     <AssemblyFile Include="Gallio.NCoverIntegration\bin\Gallio.NCoverIntegration.dll">
       <ImagePath>bin\NCover</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.NCoverIntegration\bin\Gallio.NCoverIntegration.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <PluginFile Include="Gallio.NCoverIntegration\Gallio.NCoverIntegration.plugin">
       <ImagePath>bin\NCover</ImagePath>
     </PluginFile>

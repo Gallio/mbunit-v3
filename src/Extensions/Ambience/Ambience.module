@@ -7,6 +7,12 @@
     <CSharpProject Include="Gallio.Ambience.UI\Gallio.Ambience.UI$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Ambience.Tests\Gallio.Ambience.Tests$(ProjectVariant).csproj" />
 
+    <AssemblyFile Include="$(ModuleTempDir)\Gallio.Ambience.dll">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+    <PdbFile Include="$(ModuleTempDir)\Gallio.Ambience.pdb">
+      <ImagePath>bin</ImagePath>
+    </PdbFile>
     <XmlDocFile Include="Gallio.Ambience\bin\Gallio.Ambience.xml">
       <ImagePath>bin</ImagePath>
     </XmlDocFile>
@@ -20,10 +26,16 @@
     <AssemblyFile Include="Gallio.Ambience.UI\bin\Gallio.Ambience.UI.dll">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.Ambience.UI\bin\Gallio.Ambience.UI.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
 
     <AssemblyFile Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <ConfigFile Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe.config">
       <ImagePath>bin</ImagePath>
     </ConfigFile>
@@ -50,14 +62,14 @@
     <AmbienceMergeDependency Include="Gallio.Ambience\bin\Mono.Cecil.dll" />
   </ItemGroup>
 
-  <Target Name="AfterImage"
+  <Target Name="BeforeImage"
           Inputs="Gallio.Ambience\bin\Gallio.Ambience.dll;@(AmbienceMergeDependency)"
-          Outputs="$(ModuleImageDir)\bin\Gallio.Ambience.dll;Gallio.Ambience.Tests\bin\Gallio.Ambience.dll;Gallio.Ambience.Server\bin\Gallio.Ambience.dll">
+          Outputs="$(ModuleTempDir)\Gallio.Ambience.dll;Gallio.Ambience.Tests\bin\Gallio.Ambience.dll;Gallio.Ambience.Server\bin\Gallio.Ambience.dll">
     <Message Text="Running ILMerge on Gallio.Ambience.dll..."
              Importance="High" />
 
     <MakeDir Directories="$(ModuleImageDir)\bin" />
-    <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio.Ambience\bin\Gallio.Ambience.dll&quot; @(AmbienceMergeDependency->'&quot;%(Identity)&quot;', ' ') /internalize &quot;/out:$(ModuleImageDir)\bin\Gallio.Ambience.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
+    <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio.Ambience\bin\Gallio.Ambience.dll&quot; @(AmbienceMergeDependency->'&quot;%(Identity)&quot;', ' ') /internalize &quot;/out:$(ModuleTempDir)\Gallio.Ambience.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
 
     <!-- Replace the copy of Ambience used for the tests because otherwise
          we get assembly conflicts when Db4o tries to communicate remotely

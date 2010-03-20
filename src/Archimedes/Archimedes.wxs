@@ -12,7 +12,6 @@
             <Directory Id="Archimedes" Name="Archimedes">
                 <Component Id="Archimedes" Guid="{5497ACA3-F3D9-4064-A495-A894929D18FC}" Win64="$(var.Win64Binary)">
                     <File Name="Archimedes.dll" KeyPath="yes" />
-                    <File Name="Archimedes.pdb" />
                     <File Name="Archimedes.xml" />
                     <File Name="Archimedes.plugin" />
                 </Component>

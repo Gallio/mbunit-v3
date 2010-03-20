@@ -45,6 +45,7 @@
 
     <PdbFile>
       <ImagePath>.</ImagePath>
+      <ExcludeFromImage>false</ExcludeFromImage>
     </PdbFile>
 
     <XmlDocFile>
@@ -65,18 +66,21 @@
     
     <Zip>
       <BaseDir />
-      <ImagePath />
+      <ImagePath>.</ImagePath>
     </Zip>
     
     <ExportArchive>
-      <ImagePath />
+      <ImagePath>.</ImagePath>
     </ExportArchive>
     
     <TestAssembly />
+    
+    <ReleaseImageArchive />
+
+    <DebugSymbol />
+    <ReleaseDebugSymbols />
+    
     <Feature />
-    
-    <ReleaseArchive />
-    
     <Installer />
     
     <Sandcastle>
@@ -268,10 +272,13 @@
         WriteTestAssemblyItemsToMeta;
         WriteXmlDocFileItemsToMeta;
         WriteFeatureItemsToMeta;
+        WriteDebugSymbolItemsToMeta;
     </CoreImageDependsOn>
     <CoreDistDependsOn>
         RecursiveDist;
-        DistReleaseArchive;
+        DistInheritedModules;
+        DistReleaseImageArchive;
+        DistReleaseDebugSymbols;
         DistInstaller;
     </CoreDistDependsOn>
     <CoreTestDependsOn>
@@ -437,7 +444,7 @@
     <RemoveDir Directories="$(ModuleBuildDir)" />
   </Target>
   
-  <!-- Declarative Item Processing Targets -->
+  <!-- Modules -->
 
   <Target Name="ImageInheritedModules"
           Condition="'@(Module)'!=''">
@@ -459,6 +466,21 @@
           SkipUnchangedFiles="true"
           Condition="'@(_InheritedMetaFile)'!=''" />
   </Target>
+  
+  <Target Name="DistInheritedModules"
+          Condition="'@(Module)'!=''">
+    <CreateItem Include="$(ModulesDir)\%(Module.FileName)\dist\**\*"
+                Condition="'%(Module.Inherit)'=='true'">
+      <Output TaskParameter="Include" ItemName="_InheritedDistFile" />
+    </CreateItem>
+  
+    <Copy SourceFiles="@(_InheritedDistFile)"
+          DestinationFiles="@(_InheritedDistFile->'$(ModuleDistDir)\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true"
+          Condition="'@(_InheritedDistFile)'!=''" />
+  </Target>
+  
+  <!-- Projects -->
   
   <PropertyGroup>
     <CommonProjectProperties>
@@ -861,18 +883,18 @@
   
   <!-- Generate Release Archive -->
   
-  <Target Name="DistReleaseArchive"
-          Condition="'@(ReleaseArchive)'!=''">
-    <Message Text="Build redistributable Zip archive @(ReleaseArchive)..."
+  <Target Name="DistReleaseImageArchive"
+          Condition="'@(ReleaseImageArchive)'!=''">
+    <Message Text="Build redistributable Zip archive @(ReleaseImageArchive)..."
              Importance="High" />
 
     <CreateItem Include="$(ModuleImageDir)\**\*.*">
-      <Output TaskParameter="Include" ItemName="_ReleaseArchiveFiles" />
+      <Output TaskParameter="Include" ItemName="_ReleaseImageArchiveFiles" />
     </CreateItem>
 
-    <Zip Files="@(_ReleaseArchiveFiles)"
+    <Zip Files="@(_ReleaseImageArchiveFiles)"
          WorkingDirectory="$(ModuleImageDir)"
-         ZipFileName="$(ModuleDistDir)\%(ReleaseArchive.Identity)-$(FileVersion).zip"
+         ZipFileName="$(ModuleDistDir)\%(ReleaseImageArchive.Identity)"
          ZipLevel="9" />
   </Target>
   
@@ -989,7 +1011,7 @@
              Properties="$(InstallerWixProperties);Platform=x64" />
   </Target>
   
-  <!-- Source Server -->
+  <!-- PDBs and Source Server -->
   
   <PropertyGroup>
     <SourceServerIndexerPath>$(ProgramFiles)\Debugging Tools for Windows\sdk\srcsrv\ssindex.cmd</SourceServerIndexerPath>
@@ -998,39 +1020,80 @@
   </PropertyGroup>
   
   <Target Name="ImagePdbFiles"
-          DependsOnTargets="ImagePdbFiles_SourceServer;ImagePdbFiles_SkipSourceServer" />
+          Condition="'@(PdbFile)'!=''"
+          DependsOnTargets="ImagePdbFiles_SourceServer;ImagePdbFiles_SkipSourceServer">
+    <MakeDir Directories="@(PdbFile->'$(ModuleImageDir)\%(ImagePath)')"
+             Condition="'%(PdbFile.ExcludeFromImage)'!='true'" />
+             
+    <Copy SourceFiles="@(PdbFile->'$(ModuleTempDir)\pdbs\%(Filename)%(Extension)')"
+          DestinationFiles="@(PdbFile->'$(ModuleImageDir)\%(ImagePath)\%(Filename)%(Extension)')"
+          Condition="'%(PdbFile.ExcludeFromImage)'!='true'"
+          SkipUnchangedFiles="true" />
           
+    <ItemGroup>
+      <DebugSymbol Include="@(PdbFile->'$(ModuleTempDir)\pdbs\%(Filename)%(Extension)')" />
+    </ItemGroup>
+  </Target>
+  
   <Target Name="ImagePdbFiles_SourceServer"
           Condition="'$(SkipSourceServer)'!='true' and '@(PdbFile)'!=''"
           Inputs="@(PdbFile)"
-          Outputs="@(PdbFile->'$(ModuleImageDir)\%(ImagePath)\%(Filename)%(Extension)')">
+          Outputs="@(PdbFile->'$(ModuleTempDir)\pdbs\%(Filename)%(Extension)')">
     <Message Text="Generating source server index..."
              Importance="High" />
 
-    <Warning Text="The Debugging Tools for Windows must be installed along with the Source Source SDK in order to embed Source Server indexing information in the PDBs.%0D%0ASkip this with '/p:SkipSourceServer=true'."
+    <Error Text="The Debugging Tools for Windows must be installed along with the Source Source SDK in order to embed Source Server indexing information in the PDBs.%0D%0ASkip this with '/p:SkipSourceServer=true'."
              Condition="! Exists('$(SourceServerIndexerPath)')" />
-
+          
     <MakeDir Directories="$(ModuleTempDir)\pdbs" />
-             
+    
     <Copy SourceFiles="@(PdbFile)"
           DestinationFiles="@(PdbFile->'$(ModuleTempDir)\pdbs\%(Filename)%(Extension)')" />
           
     <Exec Command="&quot;$(SourceServerIndexerPath)&quot; -System=svn -Ini=&quot;$(SourceDir)\srcsrv.ini&quot; -Source=&quot;$(SourceDir)&quot; -Symbols=&quot;$(ModuleTempDir)\pdbs&quot;"
           Condition="Exists('$(SourceServerIndexerPath)')" />
-          
-    <Copy SourceFiles="@(PdbFile->'$(ModuleTempDir)\pdbs\%(Filename)%(Extension)')"
-          DestinationFiles="@(PdbFile->'$(ModuleImageDir)\%(ImagePath)\%(Filename)%(Extension)')"
-          SkipUnchangedFiles="true" />
   </Target>
   
-  <Target Name="ImagePdbFiles_SkipSourceServer"          
+  <Target Name="ImagePdbFiles_SkipSourceServer"
           Condition="'$(SkipSourceServer)'=='true' and '@(PdbFile)'!=''"
           Inputs="@(PdbFile)"
-          Outputs="@(PdbFile->'$(ModuleImageDir)\%(ImagePath)\%(Filename)%(Extension)')">
-    <MakeDir Directories="@(PdbFile->'$(ModuleImageDir)\%(ImagePath)')" />
-
+          Outputs="@(PdbFile->'$(ModuleTempDir)\pdbs\%(Filename)%(Extension)')">
+    <MakeDir Directories="$(ModuleTempDir)\pdbs" />
+    
     <Copy SourceFiles="@(PdbFile)"
-          DestinationFiles="@(PdbFile->'$(ModuleImageDir)\%(ImagePath)\%(Filename)%(Extension)')"
+          DestinationFiles="@(PdbFile->'$(ModuleTempDir)\pdbs\%(Filename)%(Extension)')" />
+  </Target>
+  
+  <!-- Debug Symbols -->
+  
+  <Target Name="WriteDebugSymbolItemsToMeta">
+    <WriteLinesToFile File="$(ModuleMetaDir)\$(ModuleName).debugsymbols"
+                      Lines="@(DebugSymbol->'%(FullPath)')"
+                      Overwrite="true" />
+  </Target>
+  
+  <Target Name="ReadMergedDebugSymbolItemsFromMeta">
+    <ItemGroup>
+      <_DebugSymbolsFile Include="$(ModuleMetaDir)\*.debugsymbols" />
+    </ItemGroup>
+  
+    <ReadLinesFromFile File="%(_DebugSymbolsFile.FullPath)"
+                       Condition="'@(_DebugSymbolsFile)'!=''">
+      <Output TaskParameter="Lines" ItemName="_MergedDebugSymbols" />
+    </ReadLinesFromFile>
+    
+    <RemoveDuplicates Inputs="@(_MergedDebugSymbols)">
+      <Output TaskParameter="Filtered" ItemName="MergedDebugSymbols" />
+    </RemoveDuplicates>
+  </Target>
+
+  <Target Name="DistReleaseDebugSymbols"
+          DependsOnTargets="ReadMergedDebugSymbolItemsFromMeta"
+          Condition="'@(ReleaseDebugSymbols)'!=''">
+    <MakeDir Directories="$(ModuleDistDir)\%(ReleaseDebugSymbols.Identity)" />
+          
+    <Copy SourceFiles="@(MergedDebugSymbols)"
+          DestinationFolder="$(ModuleDistDir)\%(ReleaseDebugSymbols.Identity)"
           SkipUnchangedFiles="true" />
   </Target>
 </Project>

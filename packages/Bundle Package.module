@@ -137,7 +137,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ReleaseArchive Include="GallioBundle" />
+    <ReleaseImageArchive Include="GallioBundle-$(FileVersion).zip" />
+    <ReleaseDebugSymbols Include="Symbols\$(FileVersion)" />
     
     <Installer Include="GallioBundle" />
   </ItemGroup>

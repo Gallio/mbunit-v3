@@ -2,6 +2,10 @@
   <Import Project="$(RootDir)\bin\Module.targets" />
   <Import Project="VisualStudio90.targets" />
   
+  <ItemGroup>
+    <Module Include="VisualStudio.Common.module" />
+  </ItemGroup>
+  
   <ItemGroup Condition="$(VSIP90Installed)">
     <CSharpProject Include="Gallio.VisualStudio.Shell.Common\Gallio.VisualStudio.Shell$(ProjectVariant).csproj" />
   
@@ -18,6 +22,9 @@
     <AssemblyFile Include="Gallio.VisualStudio.Shell.Common\bin\Gallio.VisualStudio.Shell.dll">
       <ImagePath>bin\VisualStudio</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.VisualStudio.Shell.Common\bin\Gallio.VisualStudio.Shell.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <PluginFile Include="Gallio.VisualStudio.Shell.Common\Gallio.VisualStudio.Shell.plugin">
       <ImagePath>bin\VisualStudio</ImagePath>
     </PluginFile>
@@ -25,6 +32,9 @@
     <AssemblyFile Include="Gallio.VisualStudio.Shell\bin\v9.0\Gallio.VisualStudio.Shell90.dll">
       <ImagePath>bin\VisualStudio\v9.0</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.VisualStudio.Shell\bin\v9.0\Gallio.VisualStudio.Shell90.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <PluginFile Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell90.plugin">
       <ImagePath>bin\VisualStudio\v9.0</ImagePath>
     </PluginFile>
@@ -36,6 +46,9 @@
     <AssemblyFile Include="Gallio.VisualStudio.Sail\bin\v9.0\Gallio.VisualStudio.Sail90.dll">
       <ImagePath>bin\VisualStudio\v9.0</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.VisualStudio.Sail\bin\v9.0\Gallio.VisualStudio.Sail90.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <PluginFile Include="Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail90.plugin">
       <ImagePath>bin\VisualStudio\v9.0</ImagePath>
     </PluginFile>
@@ -44,9 +57,15 @@
     <AssemblyFile Include="Gallio.VisualStudio.Tip\bin\v9.0\Gallio.VisualStudio.Tip90.dll">
       <ImagePath>bin\VisualStudio\v9.0</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.VisualStudio.Tip\bin\v9.0\Gallio.VisualStudio.Tip90.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <AssemblyFile Include="Gallio.VisualStudio.Tip.Proxy\bin\v9.0\Gallio.VisualStudio.Tip90.Proxy.dll">
       <ImagePath>bin\VisualStudio\v9.0</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.VisualStudio.Tip.Proxy\bin\v9.0\Gallio.VisualStudio.Tip90.Proxy.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <PluginFile Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip90.plugin">
       <ImagePath>bin\VisualStudio\v9.0</ImagePath>
     </PluginFile>

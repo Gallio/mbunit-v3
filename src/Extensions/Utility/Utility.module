@@ -7,6 +7,9 @@
     <AssemblyFile Include="Gallio.Utility\bin\Gallio.Utility.exe">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.Utility\bin\Gallio.Utility.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <ConfigFile Include="Gallio.Utility\Gallio.Utility.exe.config">
       <ImagePath>bin</ImagePath>
     </ConfigFile>

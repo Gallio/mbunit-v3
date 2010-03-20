@@ -11,6 +11,9 @@
     <AssemblyFile Include="Gallio.Copy\bin\Gallio.Copy.exe">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.Copy\bin\Gallio.Copy.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <ConfigFile Include="Gallio.Copy\bin\Gallio.Copy.exe.config">
       <ImagePath>bin</ImagePath>
     </ConfigFile>

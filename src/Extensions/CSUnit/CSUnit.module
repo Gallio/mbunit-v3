@@ -9,6 +9,9 @@
     <AssemblyFile Include="Gallio.CSUnitAdapter\bin\Gallio.CSUnitAdapter.dll">
       <ImagePath>bin\CSUnit</ImagePath>
     </AssemblyFile>
+    <PdbFile Include="Gallio.CSUnitAdapter\bin\Gallio.CSUnitAdapter.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
     <PluginFile Include="Gallio.CSUnitAdapter\Gallio.CSUnitAdapter.plugin">
       <ImagePath>bin\CSUnit</ImagePath>
     </PluginFile>

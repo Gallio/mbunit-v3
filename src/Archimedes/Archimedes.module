@@ -17,7 +17,7 @@
 	  <ImagePath>bin\Archimedes</ImagePath>
 	</AssemblyFile>
 	<PdbFile Include="Archimedes\bin\Archimedes.pdb">
-	  <ImagePath>bin\Archimedes</ImagePath>
+      <ExcludeFromImage>true</ExcludeFromImage>
 	</PdbFile>
 	<XmlDocFile Include="Archimedes\bin\Archimedes.xml">
 	  <ImagePath>bin\Archimedes</ImagePath>
@@ -32,6 +32,9 @@
 	<AssemblyFile Include="Archimedes.Client\bin\Archimedes.Client.exe">
 	  <ImagePath>bin\Archimedes</ImagePath>
 	</AssemblyFile>
+    <PdbFile Include="Archimedes.Client\bin\Archimedes.Client.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
 	<ConfigFile Include="Archimedes.Client\Archimedes.Client.exe.config">
 	  <ImagePath>bin\Archimedes</ImagePath>
 	</ConfigFile>
@@ -42,6 +45,9 @@
 	<AssemblyFile Include="Archimedes.Web\bin\Archimedes.Web.dll">
 	  <ImagePath>bin\Archimedes\Web\bin</ImagePath>
 	</AssemblyFile>
+    <PdbFile Include="Archimedes.Web\bin\Archimedes.Web.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
 	<PluginFile Include="Archimedes.Web\Archimedes.Web.plugin">
 	  <ImagePath>bin\Archimedes\Web</ImagePath>
 	</PluginFile>
