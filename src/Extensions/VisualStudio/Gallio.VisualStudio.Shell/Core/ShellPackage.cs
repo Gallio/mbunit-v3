@@ -54,6 +54,14 @@ namespace Gallio.VisualStudio.Shell.Core
     {
         private bool wasInitialized;
 
+        /// <summary>
+        /// Creates the package.
+        /// </summary>
+        public ShellPackage()
+        {
+            ShellEnvironment.SetRunningInVisualStudio();
+        }
+
         /// <inheritdoc />
         protected override void Initialize()
         {

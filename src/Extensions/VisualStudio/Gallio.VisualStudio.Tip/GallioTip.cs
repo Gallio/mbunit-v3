@@ -27,6 +27,7 @@ using Gallio.Runtime;
 using Gallio.Common.Reflection;
 using Gallio.Runtime.Loader;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.VisualStudio.Shell.Core;
 using Microsoft.VisualStudio.TestTools.Common;
 using TestResult=Microsoft.VisualStudio.TestTools.Common.TestResult;
 
@@ -50,8 +51,9 @@ namespace Gallio.VisualStudio.Tip
 
         public override ICollection Load(string location, ProjectData projectData, IWarningHandler warningHandler)
         {
-            // Skip loading if the extension is not fully initalized.
-            if (!TipShellExtension.IsInitialized)
+            // Skip loading if the extension is not fully initalized unless we are not
+            // running in Visual Studio (because we are running in MSTest instead).
+            if (!TipShellExtension.IsInitialized && ShellEnvironment.IsRunningInVisualStudio)
                 return EmptyArray<TestElement>.Instance;
 
             // Explore the tests.

@@ -61,6 +61,7 @@
     <Compile Include="Core\BaseShellExtension.cs" />
     <Compile Include="Core\IShell.cs" />
     <Compile Include="Core\IShellExtension.cs" />
+    <Compile Include="Core\ShellEnvironment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\ServiceFactory.cs" />
     <Compile Include="Core\ShellException.cs" />

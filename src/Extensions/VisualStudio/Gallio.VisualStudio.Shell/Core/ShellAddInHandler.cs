@@ -42,6 +42,14 @@ namespace Gallio.VisualStudio.Shell.Core
         private AddIn addIn;
 
         /// <summary>
+        /// Creates the add-in handler.
+        /// </summary>
+        public ShellAddInHandler()
+        {
+            ShellEnvironment.SetRunningInVisualStudio();
+        }
+
+        /// <summary>
         /// Gets the automation object.
         /// </summary>
         public DTE2 DTE
