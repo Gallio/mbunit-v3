@@ -204,7 +204,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner45", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner45.Tests", "Extensions\ReSharper\Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner45.Tests.csproj", "{4D4C9967-94B4-4102-81C0-069245469B4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Utility", "Gallio\Gallio.Utility\Gallio.Utility.csproj", "{EAA1CA6D-4078-4E7B-B605-1326E80EAA38}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Utility", "Extensions\Utility\Gallio.Utility\Gallio.Utility.csproj", "{EAA1CA6D-4078-4E7B-B605-1326E80EAA38}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DLR", "DLR", "{4C8FCA8C-EF7C-4EDE-9325-489BEC0E8417}"
 EndProject
@@ -218,7 +218,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.RSpecAdapter", "Exte
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.RSpecAdapter.Tests", "Extensions\RSpec\Gallio.RSpecAdapter.Tests\Gallio.RSpecAdapter.Tests.csproj", "{31F4EA44-83BC-4864-AB2E-E85FA668D3EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ControlPanel", "Gallio\Gallio.ControlPanel\Gallio.ControlPanel.csproj", "{1B1FCC31-612B-4591-9BAF-95892968CAA7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ControlPanel", "Extensions\ControlPanel\Gallio.ControlPanel\Gallio.ControlPanel.csproj", "{1B1FCC31-612B-4591-9BAF-95892968CAA7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TDNetRunner.UI", "Extensions\TDNet\Gallio.TDNetRunner.UI\Gallio.TDNetRunner.UI.csproj", "{7FE31A41-EF76-4A9C-8C65-196C8869CA31}"
 EndProject
