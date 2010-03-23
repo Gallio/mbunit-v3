@@ -428,7 +428,7 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             IDeclarationsCache cache = GetAssemblyDeclarationsCache(moduleHandle);
             if (cache == null)
-                return EmptyArray<StaticDeclaratedTypeWrapper>.Instance;
+                return EmptyArray<StaticDeclaredTypeWrapper>.Instance;
 
 #if ! RESHARPER_50_OR_NEWER
             INamespace namespaceHandle = psiManager.GetNamespace("");
