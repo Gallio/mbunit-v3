@@ -24,7 +24,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
     /// It should always appear after <see cref="GallioTestRunTask" />.
     /// </summary>
     [Serializable]
-    public class GallioTestItemTask : FacadeTask, IEquatable<GallioTestItemTask>
+    public sealed class GallioTestItemTask : FacadeTask, IEquatable<GallioTestItemTask>
     {
         private readonly string testId;
 
@@ -63,7 +63,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 
         public override int GetHashCode()
         {
-            return testId.GetHashCode();
+            return 0x44444444 ^ testId.GetHashCode();
         }
     }
 }

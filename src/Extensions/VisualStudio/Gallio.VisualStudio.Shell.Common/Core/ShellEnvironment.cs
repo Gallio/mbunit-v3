@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Gallio.VisualStudio.Shell.Core
 {
@@ -17,17 +18,13 @@ namespace Gallio.VisualStudio.Shell.Core
         /// or Visual Studio.  When called by MSTest, the Shell package and add-in are not
         /// initialized so neither are the shell extensions and other standard features.
         /// </remarks>
-        public static bool IsRunningInVisualStudio { get; private set; }
-
-        /// <summary>
-        /// Sets the <see cref="IsRunningInVisualStudio"/> flag to true.
-        /// </summary>
-        /// <remarks>
-        /// This method is called whenever the Shell package or add-in is first instantiated.
-        /// </remarks>
-        public static void SetRunningInVisualStudio()
+        public static bool IsRunningInVisualStudio
         {
-            IsRunningInVisualStudio = true;
+            get
+            {
+                return Process.GetCurrentProcess().ProcessName
+                    .Equals("devenv", StringComparison.InvariantCultureIgnoreCase);
+            }
         }
     }
 }

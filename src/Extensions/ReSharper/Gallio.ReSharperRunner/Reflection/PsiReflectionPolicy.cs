@@ -303,10 +303,13 @@ namespace Gallio.ReSharperRunner.Reflection
 #else
             CacheManagerEx cacheManager = CacheManagerEx.GetInstance(psiManager.Solution);
             IPsiModule psiModule = GetPsiModule(moduleHandle);
-            foreach (IAttributeInstance attrib in cacheManager.GetModuleAttributes(psiModule).AttributeInstances)
+            if (psiModule != null)
             {
-                if (IsAttributeInstanceValid(attrib))
-                    yield return new StaticAttributeWrapper(this, attrib);
+                foreach (IAttributeInstance attrib in cacheManager.GetModuleAttributes(psiModule).AttributeInstances)
+                {
+                    if (IsAttributeInstanceValid(attrib))
+                        yield return new StaticAttributeWrapper(this, attrib);
+                }
             }
 #endif
         }
@@ -359,7 +362,11 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override StaticDeclaredTypeWrapper GetAssemblyType(StaticAssemblyWrapper assembly, string typeName)
         {
             IModule moduleHandle = (IModule)assembly.Handle;
-            ITypeElement typeHandle = GetAssemblyDeclarationsCache(moduleHandle).GetTypeElementByCLRName(typeName);
+            IDeclarationsCache cache = GetAssemblyDeclarationsCache(moduleHandle);
+            if (cache == null)
+                return null;
+            
+            ITypeElement typeHandle = cache.GetTypeElementByCLRName(typeName);
             return typeHandle != null && typeHandle.IsValid() ?
                 MakeDeclaredTypeWithoutSubstitution(typeHandle) : null;
         }
@@ -420,6 +427,8 @@ namespace Gallio.ReSharperRunner.Reflection
         private IList<StaticDeclaredTypeWrapper> GetAssemblyTypes(IModule moduleHandle, bool includeNonPublicTypes)
         {
             IDeclarationsCache cache = GetAssemblyDeclarationsCache(moduleHandle);
+            if (cache == null)
+                return EmptyArray<StaticDeclaratedTypeWrapper>.Instance;
 
 #if ! RESHARPER_50_OR_NEWER
             INamespace namespaceHandle = psiManager.GetNamespace("");
@@ -481,6 +490,9 @@ namespace Gallio.ReSharperRunner.Reflection
             return psiManager.GetDeclarationsCache(DeclarationsCacheScope.LibraryScope(assemblyHandle, false), true);
 #else
             IPsiModule psiModule = GetPsiModule(moduleHandle);
+            if (psiModule == null)
+                return null;
+                
             return psiManager.GetDeclarationsCache(DeclarationsScopeFactory.ModuleScope(psiModule, false), true);
 #endif
         }

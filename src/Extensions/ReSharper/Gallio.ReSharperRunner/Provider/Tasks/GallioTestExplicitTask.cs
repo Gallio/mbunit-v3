@@ -28,7 +28,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
     /// </para>
     /// </remarks>
     [Serializable]
-    public class GallioTestExplicitTask : FacadeTask, IEquatable<GallioTestExplicitTask>
+    public sealed class GallioTestExplicitTask : FacadeTask, IEquatable<GallioTestExplicitTask>
     {
         private readonly string testId;
 
@@ -67,7 +67,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 
         public override int GetHashCode()
         {
-            return testId.GetHashCode();
+            return 0x22222222 ^ testId.GetHashCode();
         }
     }
 }

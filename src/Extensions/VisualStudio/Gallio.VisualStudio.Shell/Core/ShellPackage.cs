@@ -59,7 +59,6 @@ namespace Gallio.VisualStudio.Shell.Core
         /// </summary>
         public ShellPackage()
         {
-            ShellEnvironment.SetRunningInVisualStudio();
         }
 
         /// <inheritdoc />

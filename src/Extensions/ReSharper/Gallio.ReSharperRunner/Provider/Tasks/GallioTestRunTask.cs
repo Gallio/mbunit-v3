@@ -39,7 +39,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
     /// </para>
     /// </remarks>
     [Serializable]
-    public class GallioTestRunTask : FacadeTask, IEquatable<GallioTestRunTask>
+    public sealed class GallioTestRunTask : FacadeTask, IEquatable<GallioTestRunTask>
     {
         /// <summary>
         /// Gets a shared instance of the task.
@@ -67,7 +67,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 
         public override int GetHashCode()
         {
-            return 0;
+            return unchecked((int) 0x88888888);
         }
 
         public override FacadeTaskResult Execute(IFacadeTaskServer facadeTaskServer, IFacadeLogger facadeLogger, FacadeTaskExecutorConfiguration facadeTaskExecutorConfiguration)

@@ -28,7 +28,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
     /// </para>
     /// </remarks>
     [Serializable]
-    public class GallioTestAssemblyTask : FacadeTask, IEquatable<GallioTestAssemblyTask>
+    public sealed class GallioTestAssemblyTask : FacadeTask, IEquatable<GallioTestAssemblyTask>
     {
         private readonly string assemblyLocation;
 
@@ -67,7 +67,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 
         public override int GetHashCode()
         {
-            return assemblyLocation.GetHashCode();
+            return 0x11111111 ^ assemblyLocation.GetHashCode();
         }
     }
 }

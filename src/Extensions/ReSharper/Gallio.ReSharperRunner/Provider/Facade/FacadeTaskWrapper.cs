@@ -47,7 +47,9 @@ namespace Gallio.ReSharperRunner.Provider.Facade
 
         public bool Equals(FacadeTaskWrapper other)
         {
-            return other != null && facadeTask.Equals(other.facadeTask);
+            return other != null
+                && base.Equals(other)
+                && facadeTask.Equals(other.facadeTask);
         }
 
         public override bool Equals(object obj)
@@ -57,7 +59,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
 
         public override int GetHashCode()
         {
-            return facadeTask.GetHashCode();
+            return base.GetHashCode() ^ facadeTask.GetHashCode();
         }
 
         public override void SaveXml(XmlElement element)

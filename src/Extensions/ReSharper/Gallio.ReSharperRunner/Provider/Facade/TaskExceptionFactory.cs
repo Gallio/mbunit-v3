@@ -22,10 +22,11 @@ namespace Gallio.ReSharperRunner.Provider.Facade
 {
     /// <summary>
     /// Works around the fact that <see cref="TaskException" />
-    /// does not provide a constructor that accepts raw string parameters.
+    /// does not provide a constructor that accepts raw string parameters prior to R# 5.0.
     /// </summary>
     internal static class TaskExceptionFactory
     {
+#if ! RESHARPER_50_OR_NEWER    
         private static readonly FieldInfo typeField = typeof(TaskException).GetField("myType", BindingFlags.NonPublic | BindingFlags.Instance);
         private static readonly FieldInfo messageField = typeof(TaskException).GetField("myMessage", BindingFlags.NonPublic | BindingFlags.Instance);
         private static readonly FieldInfo stackTraceField = typeof(TaskException).GetField("myStackTrace", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -40,5 +41,11 @@ namespace Gallio.ReSharperRunner.Provider.Facade
             stackTraceField.SetValue(ex, stackTrace);
             return (TaskException)ex;
         }
+#else        
+        public static TaskException CreateTaskException(string type, string message, string stackTrace)
+        {
+            return new TaskException(type, message, stackTrace);
+        }
+#endif
     }
 }

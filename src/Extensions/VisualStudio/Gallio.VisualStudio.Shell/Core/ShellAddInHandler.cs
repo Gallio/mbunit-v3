@@ -46,7 +46,6 @@ namespace Gallio.VisualStudio.Shell.Core
         /// </summary>
         public ShellAddInHandler()
         {
-            ShellEnvironment.SetRunningInVisualStudio();
         }
 
         /// <summary>
