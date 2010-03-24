@@ -892,7 +892,7 @@ namespace MbUnit.Framework
 
             private MemberInfo InternalGetMemberInfo()
             {
-                return ResolveMember(MemberTypes.All, "member", null);
+                return ResolveMember(MemberTypes.All, "member", signature);
             }
 
             private MemberInfo ResolveMember(MemberTypes memberTypes, string memberTypeDescription, Type[] expectedArgTypes)
@@ -970,7 +970,9 @@ namespace MbUnit.Framework
                             resolvedGenericArgs[parameterType.GenericParameterPosition] = expectedArgTypes[i];
                     }
 
-                    if (expectedArgTypes != null && !parameterType.IsAssignableFrom(expectedArgTypes[i]))
+                    if (expectedArgTypes != null && 
+                        !parameterType.IsAssignableFrom(expectedArgTypes[i]) &&
+                        (expectedArgTypes[i] != null || parameterType.IsValueType))
                         return null; // parameter is not assignable
                 }
 

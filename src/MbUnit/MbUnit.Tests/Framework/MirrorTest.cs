@@ -412,7 +412,7 @@ namespace MbUnit.Tests.Framework
             var mirror = Mirror.ForObject(obj);
 
             var ex = Assert.Throws<MirrorException>(() => { var m = mirror["InstanceMethod"].MemberInfo; });
-            Assert.AreEqual("Could not find a unique matching member 'InstanceMethod' of type 'MbUnit.Tests.Framework.MirrorTest+SampleObject'.  There were 5 matches out of 5 members with the same name.  Try providing additional information to narrow down the choices.", ex.Message);
+            Assert.AreEqual("Could not find a unique matching member 'InstanceMethod' of type 'MbUnit.Tests.Framework.MirrorTest+SampleObject'.  There were 6 matches out of 6 members with the same name.  Try providing additional information to narrow down the choices.", ex.Message);
 
             Assert.AreEqual("InstanceMethod", mirror["InstanceMethod"].WithGenericArgs().WithSignature().MemberInfo.Name);
             Assert.AreEqual(0, ((MethodInfo)mirror["InstanceMethod"].WithGenericArgs().WithSignature().MemberInfo).GetParameters().Length);
@@ -424,12 +424,16 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(0, ((MethodInfo)mirror["InstanceMethod"].WithGenericArgs(typeof(int)).WithSignature().MemberInfo).GetParameters().Length);
             Assert.AreEqual("InstanceMethod", mirror["InstanceMethod"].WithGenericArgs(typeof(int)).WithSignature(typeof(int)).MemberInfo.Name);
             Assert.AreEqual(1, ((MethodInfo)mirror["InstanceMethod"].WithGenericArgs(typeof(int)).WithSignature(typeof(int)).MemberInfo).GetParameters().Length);
+            Assert.AreEqual("InstanceMethod", mirror["InstanceMethod"].WithSignature(typeof(string)).MemberInfo.Name);
+            Assert.AreEqual(1, ((MethodInfo)mirror["InstanceMethod"].WithSignature(typeof(string)).MemberInfo).GetParameters().Length);
 
             Assert.AreEqual(5, mirror["InstanceMethod"].WithGenericArgs().Invoke());
             Assert.AreEqual(8, mirror["InstanceMethod"].WithGenericArgs().Invoke(4));
             Assert.AreEqual(28, mirror["InstanceMethod"].Invoke(4, 7));
             Assert.AreEqual(0, mirror["InstanceMethod"].WithGenericArgs(typeof(int)).Invoke());
             Assert.AreEqual(4, mirror["InstanceMethod"].WithGenericArgs(typeof(int)).Invoke(4));
+            Assert.AreEqual(6, mirror["InstanceMethod"].Invoke("abcdef"));
+            Assert.AreEqual(0, mirror["InstanceMethod"].Invoke(new object[] { null })); // Resolve null parameter as string.
         }
 
         [Test]
@@ -577,6 +581,11 @@ namespace MbUnit.Tests.Framework
             private T InstanceMethod<T>(T x)
             {
                 return x;
+            }
+
+            private int InstanceMethod(string x)
+            {
+                return (x ?? String.Empty).Length;
             }
 
             private static int StaticMethod()
