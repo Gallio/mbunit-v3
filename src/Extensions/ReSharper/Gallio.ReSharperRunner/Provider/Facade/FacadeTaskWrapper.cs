@@ -48,8 +48,13 @@ namespace Gallio.ReSharperRunner.Provider.Facade
         public bool Equals(FacadeTaskWrapper other)
         {
             return other != null
-                && base.Equals(other)
+                && RunnerID == other.RunnerID
                 && facadeTask.Equals(other.facadeTask);
+        }
+
+        public override bool Equals(RemoteTask other)
+        {
+            return Equals(other as FacadeTaskWrapper);
         }
 
         public override bool Equals(object obj)

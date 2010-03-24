@@ -323,7 +323,11 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override string GetAssemblyPath(StaticAssemblyWrapper assembly)
         {
             IModule moduleHandle = (IModule)assembly.Handle;
-            return GetAssemblyFile(moduleHandle).Location.FullPath;
+            IAssemblyFile assemblyFile = GetAssemblyFile(moduleHandle);
+            if (assemblyFile == null)
+                return @"unknown";
+            
+            return assemblyFile.Location.FullPath;
         }
 
         protected override IList<AssemblyName> GetAssemblyReferences(StaticAssemblyWrapper assembly)
@@ -382,6 +386,7 @@ namespace Gallio.ReSharperRunner.Reflection
             return desiredAssemblyName.Name == candidateAssemblyName.Name;
         }
 
+        // note: result may be null
         private static IAssemblyFile GetAssemblyFile(IModule moduleHandle)
         {
             IProject projectHandle = moduleHandle as IProject;
@@ -393,6 +398,7 @@ namespace Gallio.ReSharperRunner.Reflection
             return files[0];
         }
 
+        // note: result may be null
         private static IAssemblyFile GetAssemblyFile(IProject projectHandle)
         {
             return BuildSettingsManager.GetInstance(projectHandle).GetOutputAssemblyFile();
@@ -403,11 +409,21 @@ namespace Gallio.ReSharperRunner.Reflection
             IProject projectHandle = moduleHandle as IProject;
             if (projectHandle != null)
             {
+                IAssemblyFile assemblyFile = GetAssemblyFile(projectHandle);
+                AssemblyName name;
+
+                if (assemblyFile == null)
+                {
+                    name = new AssemblyName(moduleHandle.Name);
+                }
+                else
+                {
 #if RESHARPER_50_OR_NEWER
-                AssemblyName name = new AssemblyName(GetAssemblyFile(projectHandle).AssemblyName.FullName);
+                    name = new AssemblyName(assemblyFile.AssemblyName.FullName);
 #else
-                AssemblyName name = GetAssemblyFile(projectHandle).AssemblyName;
+                    name = assemblyFile.AssemblyName;
 #endif
+                }
                 if (name.Version == null)
                 {
                     name = (AssemblyName) name.Clone();
