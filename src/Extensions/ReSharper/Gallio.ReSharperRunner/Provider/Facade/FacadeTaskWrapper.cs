@@ -52,10 +52,12 @@ namespace Gallio.ReSharperRunner.Provider.Facade
                 && facadeTask.Equals(other.facadeTask);
         }
 
+#if RESHARPER_50_OR_NEWER
         public override bool Equals(RemoteTask other)
         {
             return Equals(other as FacadeTaskWrapper);
         }
+#endif
 
         public override bool Equals(object obj)
         {
