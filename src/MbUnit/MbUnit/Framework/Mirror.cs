@@ -892,7 +892,7 @@ namespace MbUnit.Framework
 
             private MemberInfo InternalGetMemberInfo()
             {
-                return ResolveMember(MemberTypes.All, "member", signature);
+                return ResolveMember(MemberTypes.All, "member", null);
             }
 
             private MemberInfo ResolveMember(MemberTypes memberTypes, string memberTypeDescription, Type[] expectedArgTypes)
@@ -962,18 +962,26 @@ namespace MbUnit.Framework
                 for (int i = 0; i < parameters.Length; i++)
                 {
                     Type parameterType = parameters[i].ParameterType;
+                    
                     if (parameterType.IsGenericParameter)
                     {
-                        parameterType = resolvedGenericArgs[parameterType.GenericParameterPosition];
-
-                        if (parameterType.IsGenericParameter && expectedArgTypes != null)
+                        if (signature != null && signature[i] != null)
+                            resolvedGenericArgs[parameterType.GenericParameterPosition] = signature[i];
+                        else if (expectedArgTypes != null && expectedArgTypes[i] != null)
                             resolvedGenericArgs[parameterType.GenericParameterPosition] = expectedArgTypes[i];
+
+                        parameterType = resolvedGenericArgs[parameterType.GenericParameterPosition];
                     }
 
+                    if (signature != null &&
+                        ((signature[i] != null && !parameterType.IsAssignableFrom(signature[i])) || 
+                        (signature[i] == null && parameterType.IsValueType)))
+                        return null;
+
                     if (expectedArgTypes != null && 
-                        !parameterType.IsAssignableFrom(expectedArgTypes[i]) &&
-                        (expectedArgTypes[i] != null || parameterType.IsValueType))
-                        return null; // parameter is not assignable
+                        ((expectedArgTypes[i] != null && !parameterType.IsAssignableFrom(expectedArgTypes[i])) ||
+                        (expectedArgTypes[i] == null && parameterType.IsValueType)))
+                        return null;
                 }
 
                 if (resolvedGenericArgs != null)
