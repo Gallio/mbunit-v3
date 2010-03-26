@@ -104,7 +104,7 @@ namespace Gallio.Tests.Common.Xml
             var actual = new NodeContent(123, 123, "Text");
             var expected = new NodeContent(123, 123, "TEXT");
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
-            AssertDiff(diff, new Diff("Unexpected text content found.", XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Both));
+            AssertDiff(diff, new Diff(DiffType.MismatchedContent, XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Both));
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace Gallio.Tests.Common.Xml
             var actual = new NodeContent(123, 123, "TEXT");
             var expected = MockRepository.GenerateStub<INode>();
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
-            AssertDiff(diff, new Diff("Unexpected text content found.", XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Actual));
+            AssertDiff(diff, new Diff(DiffType.UnexpectedContent, XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Actual));
         }
     }
 }

@@ -149,7 +149,7 @@ namespace Gallio.Tests.Common.Xml
             var actual = new NodeAttribute(123, "planet", "Saturn", 456);
             var expected = new NodeAttribute(123, "PLANET", "Saturn", 456);
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
-            AssertDiff(diff, new Diff("Unexpected attribute found.", XmlPathRoot.Strict.Element(0).Attribute(123), DiffTargets.Actual));
+            AssertDiff(diff, new Diff(DiffType.UnexpectedAttribute, XmlPathRoot.Strict.Element(0).Attribute(123), DiffTargets.Actual));
         }
 
         [Test]
@@ -158,7 +158,7 @@ namespace Gallio.Tests.Common.Xml
             var actual = new NodeAttribute(123, "planet", "Saturn", 456);
             var expected = new NodeAttribute(123, "orb", "Saturn", 456);
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
-            AssertDiff(diff, new Diff("Unexpected attribute found.", XmlPathRoot.Strict.Element(0).Attribute(123), DiffTargets.Actual));
+            AssertDiff(diff, new Diff(DiffType.UnexpectedAttribute, XmlPathRoot.Strict.Element(0).Attribute(123), DiffTargets.Actual));
         }
 
         [Test]
@@ -167,7 +167,7 @@ namespace Gallio.Tests.Common.Xml
             var actual = new NodeAttribute(123, "planet", "sAtUrN", 456);
             var expected = new NodeAttribute(123, "planet", "Saturn", 456);
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
-            AssertDiff(diff, new Diff("Unexpected attribute value found.", XmlPathRoot.Strict.Element(0).Attribute(123), DiffTargets.Both));
+            AssertDiff(diff, new Diff(DiffType.MismatchedAttribute, XmlPathRoot.Strict.Element(0).Attribute(123), DiffTargets.Both));
         }
 
         [Test]
@@ -185,7 +185,7 @@ namespace Gallio.Tests.Common.Xml
             var actual = new NodeAttribute(123, "planet", "Jupiter", 456);
             var expected = new NodeAttribute(123, "planet", "Saturn", 456);
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
-            AssertDiff(diff, new Diff("Unexpected attribute value found.", XmlPathRoot.Strict.Element(0).Attribute(123), DiffTargets.Both));
+            AssertDiff(diff, new Diff(DiffType.MismatchedAttribute, XmlPathRoot.Strict.Element(0).Attribute(123), DiffTargets.Both));
         }
     }
 }

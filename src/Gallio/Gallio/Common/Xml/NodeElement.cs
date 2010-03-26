@@ -83,7 +83,7 @@ namespace Gallio.Common.Xml
                 return Diff(expectedComment, path, options);
 
             return new DiffSetBuilder()
-                .Add(new Diff("Unexpected element node found.", path.Element(Index), DiffTargets.Actual))
+                .Add(new Diff(DiffType.UnexpectedElement, path.Element(Index), DiffTargets.Actual))
                 .ToDiffSet();
         }
 
@@ -98,7 +98,7 @@ namespace Gallio.Common.Xml
             if (!AreNamesEqual(expected.Name, options))
             {
                 return new DiffSetBuilder()
-                    .Add(new Diff("Unexpected element node found.", path.Element(Index), DiffTargets.Both))
+                    .Add(new Diff(DiffType.MismatchedElement, path.Element(Index), DiffTargets.Both))
                     .ToDiffSet();
             }
 

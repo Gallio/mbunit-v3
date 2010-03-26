@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Common.Text.RegularExpression;
 using Gallio.Common.Xml.Paths;
 
 namespace Gallio.Common.Xml.Diffing
@@ -34,13 +35,6 @@ namespace Gallio.Common.Xml.Diffing
         private readonly IXmlPathStrict path;
         private readonly Options options;
         private readonly OrderedItemType itemType;
-
-        private static readonly IDictionary<OrderedItemType, Func<IXmlPathStrict, int, IXmlPathStrict>> extend 
-            = new Dictionary<OrderedItemType, Func<IXmlPathStrict, int, IXmlPathStrict>>
-        {
-            { OrderedItemType.Attribute, (path, i) => path.Attribute(i)},
-            { OrderedItemType.Element, (path, i) => path.Element(i)},
-        };
 
         /// <summary>
         /// Constructs the diffing engine.
@@ -76,8 +70,7 @@ namespace Gallio.Common.Xml.Diffing
             {
                 if (i >= actual.Count)
                 {
-                    builder.Add(new Diff(String.Format("Missing {0}.", 
-                        itemType.ToString().ToLower()), extend[itemType](path, i), DiffTargets.Expected));
+                    builder.Add(new Diff(itemType.DiffTypeMissing, itemType.ExtendsPath(path, i), DiffTargets.Expected));
                 }
                 else
                 {
@@ -102,8 +95,7 @@ namespace Gallio.Common.Xml.Diffing
 
             for (int i = startIndex; i < actual.Count; i++)
             {
-                builder.Add(new Diff(String.Format("Unexpected {0} found.", 
-                    itemType.ToString().ToLower()), extend[itemType](path, i), DiffTargets.Actual));
+                builder.Add(new Diff(itemType.DiffTypeUnexpected, itemType.ExtendsPath(path, i), DiffTargets.Actual));
             }
 
             return builder.ToDiffSet();
@@ -113,16 +105,35 @@ namespace Gallio.Common.Xml.Diffing
     /// <summary>
     /// The target diffed items.
     /// </summary>
-    internal enum OrderedItemType
+    internal sealed class OrderedItemType
     {
-        /// <summary>
-        /// Attribute.
-        /// </summary>
-        Attribute,
+        private readonly DiffType diffTypeUnexpected;
+        private readonly DiffType diffTypeMissing;
+        private readonly Func<IXmlPathStrict, int, IXmlPathStrict> pathExtender;
 
-        /// <summary>
-        /// Element
-        /// </summary>
-        Element,
+        public DiffType DiffTypeMissing
+        {
+            get { return diffTypeMissing; }
+        }
+
+        public DiffType DiffTypeUnexpected
+        {
+            get { return diffTypeUnexpected; }
+        }
+
+        public IXmlPathStrict ExtendsPath(IXmlPathStrict path, int childIndex)
+        {
+            return pathExtender(path, childIndex);
+        }
+
+        private OrderedItemType(DiffType diffTypeUnexpected, DiffType diffTypeMissing, Func<IXmlPathStrict, int, IXmlPathStrict> pathExtender)
+        {
+            this.diffTypeUnexpected = diffTypeUnexpected;
+            this.diffTypeMissing = diffTypeMissing;
+            this.pathExtender = pathExtender;
+        }
+
+        public static readonly OrderedItemType Attribute = new OrderedItemType(DiffType.UnexpectedAttribute, DiffType.MissingAttribute, (path, i) => path.Attribute(i));
+        public static readonly OrderedItemType Element = new OrderedItemType(DiffType.UnexpectedElement, DiffType.MissingElement, (path, i) => path.Element(i));
     }
 }

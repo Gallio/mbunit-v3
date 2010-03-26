@@ -32,7 +32,7 @@ namespace Gallio.Tests.Common.Xml.Diffing
             Assert.AreElementsEqualIgnoringOrder(expected, actual,
                 new StructuralEqualityComparer<Diff>
                 {
-                    x => x.Message,
+                    x => x.Type,
                     x => x.Path.ToString(),
                 });
         }

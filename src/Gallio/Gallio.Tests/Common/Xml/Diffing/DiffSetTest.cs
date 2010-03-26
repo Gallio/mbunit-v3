@@ -49,9 +49,9 @@ namespace Gallio.Tests.Common.Diffing.Xml
         public void Constructs_ok()
         {
             var mockPath = MockRepository.GenerateStub<IXmlPathStrict>();
-            var diff1 = new Diff("Message1", mockPath, DiffTargets.Actual);
-            var diff2 = new Diff("Message2", mockPath, DiffTargets.Actual);
-            var diff3 = new Diff("Message3", mockPath, DiffTargets.Actual);
+            var diff1 = new Diff(DiffType.MissingAttribute, mockPath, DiffTargets.Actual);
+            var diff2 = new Diff(DiffType.MissingAttribute, mockPath, DiffTargets.Actual);
+            var diff3 = new Diff(DiffType.MissingAttribute, mockPath, DiffTargets.Actual);
             var diffSet = new DiffSet(new[] { diff1, diff2, diff3 });
             Assert.IsFalse(diffSet.IsEmpty);
             Assert.AreElementsSame(new[] { diff1, diff2, diff3 }, diffSet);

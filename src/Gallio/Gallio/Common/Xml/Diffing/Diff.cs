@@ -27,18 +27,18 @@ namespace Gallio.Common.Xml.Diffing
     /// </summary>
     public sealed class Diff
     {
-        private readonly string message;
+        private readonly DiffType diffType;
         private readonly IXmlPathStrict path;
         private readonly DiffTargets targets;
 
         /// <summary>
-        /// Gets a message explaining the difference.
+        /// Gets a type of the diff.
         /// </summary>
-        public string Message
+        public DiffType Type
         {
             get
             {
-                return message;
+                return diffType;
             }
         }
 
@@ -67,21 +67,19 @@ namespace Gallio.Common.Xml.Diffing
         /// <summary>
         /// Constructs a diff item.
         /// </summary>
-        /// <param name="message">The message explaining the difference.</param>
+        /// <param name="diffType">The type of the diff.</param>
         /// <param name="path">The path of the difference.</param>
         /// <param name="targets">Indicates which XML fragment is targeted by the diff.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> or <paramref name="path"/> is null.</exception>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="message"/> or <paramref name="path"/> is empty.</exception>
-        public Diff(string message, IXmlPathStrict path, DiffTargets targets)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="diffType"/> or <paramref name="path"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="diffType"/> or <paramref name="path"/> is empty.</exception>
+        public Diff(DiffType diffType, IXmlPathStrict path, DiffTargets targets)
         {
-            if (message == null)
-                throw new ArgumentNullException("message");
+            if (diffType == null)
+                throw new ArgumentNullException("type");
             if (path == null)
                 throw new ArgumentNullException("path");
-            if (message.Length == 0)
-                throw new ArgumentException("Cannot be empty.", "message");
 
-            this.message = message;
+            this.diffType = diffType;
             this.path = path;
             this.targets = targets;
         }
@@ -89,7 +87,7 @@ namespace Gallio.Common.Xml.Diffing
         /// <inheritdoc />
         public override string ToString()
         {
-            return String.Format("{0} at '{1}'.", message, path.ToString());
+            return String.Format("{0} at '{1}'.", diffType.Description, path.ToString());
         }
 
         /// <summary>
@@ -103,7 +101,7 @@ namespace Gallio.Common.Xml.Diffing
         {
             bool showActual = ((targets & DiffTargets.Actual) != 0);
             bool showExpected = ((targets & DiffTargets.Expected) != 0);
-            var builder = new AssertionFailureBuilder(message, new NullFormatter());
+            var builder = new AssertionFailureBuilder(diffType.Description, new NullFormatter());
             const XmlPathRenderingOptions options = XmlPathRenderingOptions.UseIndentation;
 
             if (showActual && showExpected)

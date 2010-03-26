@@ -67,7 +67,7 @@ namespace Gallio.Common.Xml
                 return Diff(expectedContent, path, options);
 
             return new DiffSetBuilder()
-                .Add(new Diff("Unexpected text content found.", path.Element(Index), DiffTargets.Actual))
+                .Add(new Diff(DiffType.UnexpectedContent, path.Element(Index), DiffTargets.Actual))
                 .ToDiffSet();
         }
 
@@ -85,7 +85,7 @@ namespace Gallio.Common.Xml
             }
 
             return new DiffSetBuilder()
-                .Add(new Diff("Unexpected text content found.", path.Element(Index), DiffTargets.Both))
+                .Add(new Diff(DiffType.MismatchedContent, path.Element(Index), DiffTargets.Both))
                 .ToDiffSet();
         }
 

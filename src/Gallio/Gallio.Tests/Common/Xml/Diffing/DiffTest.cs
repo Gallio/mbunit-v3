@@ -32,7 +32,7 @@ namespace Gallio.Tests.Common.Diffing.Xml
     {
         [Test]
         [ExpectedArgumentNullException]
-        public void Constructs_with_null_message_should_throw_exception()
+        public void Constructs_with_null_diffType_should_throw_exception()
         {
             var mockPath = MockRepository.GenerateStub<IXmlPathStrict>();
             new Diff(null, mockPath, DiffTargets.Actual);
@@ -42,7 +42,7 @@ namespace Gallio.Tests.Common.Diffing.Xml
         [ExpectedArgumentNullException]
         public void Constructs_with_null_path_should_throw_exception()
         {
-            new Diff("Message", null, DiffTargets.Actual);
+            new Diff(DiffType.MissingElement, null, DiffTargets.Actual);
         }
 
         [Test]
@@ -50,15 +50,15 @@ namespace Gallio.Tests.Common.Diffing.Xml
         public void Constructs_with_empty_message_should_throw_exception()
         {
             var mockPath = MockRepository.GenerateStub<IXmlPathStrict>();
-            new Diff(String.Empty, mockPath, DiffTargets.Actual);
+            new Diff(DiffType.MissingElement, mockPath, DiffTargets.Actual);
         }
 
         [Test]
         public void Constructs_ok()
         {
             var mockPath = MockRepository.GenerateStub<IXmlPathStrict>();
-            var diff = new Diff("Message", mockPath, DiffTargets.Both);
-            Assert.AreEqual("Message", diff.Message);
+            var diff = new Diff(DiffType.MissingElement, mockPath, DiffTargets.Both);
+            Assert.AreEqual(DiffType.MissingElement, diff.Type);
             Assert.AreSame(mockPath, diff.Path);
             Assert.AreEqual(DiffTargets.Both, diff.Targets);
         }
@@ -68,8 +68,8 @@ namespace Gallio.Tests.Common.Diffing.Xml
         {
             var mockPath = MockRepository.GenerateStub<IXmlPathStrict>();
             mockPath.Stub(x => x.ToString()).Return("All paths lead to Roma");
-            var diff = new Diff("This is the message", mockPath, DiffTargets.Both);
-            Assert.AreEqual("This is the message at 'All paths lead to Roma'.", diff.ToString());
+            var diff = new Diff(DiffType.MissingElement, mockPath, DiffTargets.Both);
+            Assert.AreEqual("Missing element at 'All paths lead to Roma'.", diff.ToString());
         }
     }
 }

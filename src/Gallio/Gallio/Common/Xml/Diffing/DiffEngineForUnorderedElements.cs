@@ -57,12 +57,12 @@ namespace Gallio.Common.Xml.Diffing
         {
             var notified = new List<int>();
             return new DiffSetBuilder()
-                .Add(FindElements(notified, true, "Missing element."))
-                .Add(FindElements(notified, false, "Unexpected element found."))
+                .Add(FindElements(notified, true, DiffType.MissingElement))
+                .Add(FindElements(notified, false, DiffType.UnexpectedElement))
                 .ToDiffSet();
         }
 
-        private DiffSet FindElements(IList<int> notified, bool invert, string message)
+        private DiffSet FindElements(IList<int> notified, bool invert, DiffType diffType)
         {
             var builder = new DiffSetBuilder();
             var mask = new List<int>();
@@ -92,7 +92,7 @@ namespace Gallio.Common.Xml.Diffing
 
                 if (j < 0)
                 {
-                    builder.Add(new Diff(message, path.Element(i), invert ? DiffTargets.Expected : DiffTargets.Actual));
+                    builder.Add(new Diff(diffType, path.Element(i), invert ? DiffTargets.Expected : DiffTargets.Actual));
                 }
                 else
                 {

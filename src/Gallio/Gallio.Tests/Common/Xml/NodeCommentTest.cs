@@ -95,7 +95,7 @@ namespace Gallio.Tests.Common.Xml
             var actual = new NodeComment(123, 456, "Text");
             var expected = new NodeComment(123, 456, "SomeOtherText");
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
-            AssertDiff(diff, new Diff("Unexpected comment found.", XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Both));
+            AssertDiff(diff, new Diff(DiffType.MismatchedComment, XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Both));
         }
 
         [Test]
@@ -104,7 +104,7 @@ namespace Gallio.Tests.Common.Xml
             var actual = new NodeComment(123, 456, "Text");
             var expected = new NodeComment(123, 456, "TEXT");
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
-            AssertDiff(diff, new Diff("Unexpected comment found.", XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Both));
+            AssertDiff(diff, new Diff(DiffType.MismatchedComment, XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Both));
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace Gallio.Tests.Common.Xml
             var actual = new NodeComment(123, 456, "TEXT");
             var expected = MockRepository.GenerateStub<INode>();
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
-            AssertDiff(diff, new Diff("Unexpected comment node.", XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Actual));
+            AssertDiff(diff, new Diff(DiffType.UnexpectedComment, XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Actual));
         }
     }
 }

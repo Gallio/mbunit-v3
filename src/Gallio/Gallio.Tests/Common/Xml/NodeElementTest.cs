@@ -142,7 +142,7 @@ namespace Gallio.Tests.Common.Xml
             var actual = new NodeElement(123, 456, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
             var expected = new NodeElement(123, 456, "SomeOtherName", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
-            AssertDiff(diff, new Diff("Unexpected element node found.", XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Both));
+            AssertDiff(diff, new Diff(DiffType.MismatchedElement, XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Both));
         }
 
         [Test]
@@ -151,7 +151,7 @@ namespace Gallio.Tests.Common.Xml
             var actual = new NodeElement(123, 456, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
             var expected = new NodeElement(123, 456, "NAME", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
-            AssertDiff(diff, new Diff("Unexpected element node found.", XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Both));
+            AssertDiff(diff, new Diff(DiffType.MismatchedElement, XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Both));
         }
 
         [Test]
@@ -169,7 +169,7 @@ namespace Gallio.Tests.Common.Xml
             var actual = new NodeElement(123, 456, "Name", NodeAttributeCollection.Empty, EmptyArray<INode>.Instance);
             var expected = MockRepository.GenerateStub<INode>();
             var diff = actual.Diff(expected, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
-            AssertDiff(diff, new Diff("Unexpected element node found.", XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Actual));
+            AssertDiff(diff, new Diff(DiffType.UnexpectedElement, XmlPathRoot.Strict.Empty.Element(123), DiffTargets.Actual));
         }
     }
 }

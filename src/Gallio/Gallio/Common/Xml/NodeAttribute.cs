@@ -137,11 +137,11 @@ namespace Gallio.Common.Xml
 
             if (!AreNamesEqual(expected.Name, options))
             {
-                builder.Add(new Diff("Unexpected attribute found.", path.Attribute(index), DiffTargets.Actual));
+                builder.Add(new Diff(DiffType.UnexpectedAttribute, path.Attribute(index), DiffTargets.Actual));
             }
             else if (!value.Equals(expected.Value, GetComparisonTypeForValue(options)))
             {
-                builder.Add(new Diff("Unexpected attribute value found.", path.Attribute(index), DiffTargets.Both));
+                builder.Add(new Diff(DiffType.MismatchedAttribute, path.Attribute(index), DiffTargets.Both));
             }
 
             return builder.ToDiffSet();

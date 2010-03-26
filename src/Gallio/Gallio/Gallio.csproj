@@ -246,6 +246,7 @@
     <Compile Include="Common\Unit.cs" />
     <Compile Include="Common\Validation\NamespaceDoc.cs" />
     <Compile Include="Common\Normalization\NormalizationUtils.cs" />
+    <Compile Include="Common\Xml\Diffing\DiffType.cs" />
     <Compile Include="Common\Xml\NodeAttribute.cs" />
     <Compile Include="Common\Xml\NodeAttributeCollection.cs" />
     <Compile Include="Common\Xml\NodeDeclaration.cs" />
