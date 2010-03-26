@@ -114,6 +114,7 @@
     <Compile Include="Common\Reflection\CodeElementSorterTest.cs" />
     <Compile Include="Common\Reflection\CodeLocationTest.cs" />
     <Compile Include="Common\Reflection\CodeReferenceTest.cs" />
+    <Compile Include="Common\Reflection\ReflectionUtilsTest.cs" />
     <Compile Include="Common\Reflection\DeclaringTypeComparerTest.cs" />
     <Compile Include="Common\Reflection\AssemblyUtilsTest.cs" />
     <Compile Include="Common\Reflection\Impl\CciDebugSymbolResolverTest.cs" />

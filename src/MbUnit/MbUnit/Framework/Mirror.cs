@@ -974,13 +974,13 @@ namespace MbUnit.Framework
                     }
 
                     if (signature != null &&
-                        ((signature[i] != null && !parameterType.IsAssignableFrom(signature[i])) || 
-                        (signature[i] == null && parameterType.IsValueType)))
+                        ((signature[i] != null && !parameterType.IsAssignableFrom(signature[i])) ||
+                        (signature[i] == null && !ReflectionUtils.IsNullable(parameterType))))
                         return null;
 
                     if (expectedArgTypes != null && 
                         ((expectedArgTypes[i] != null && !parameterType.IsAssignableFrom(expectedArgTypes[i])) ||
-                        (expectedArgTypes[i] == null && parameterType.IsValueType)))
+                        (expectedArgTypes[i] == null && !ReflectionUtils.IsNullable(parameterType))))
                         return null;
                 }
 

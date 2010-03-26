@@ -334,5 +334,17 @@ namespace Gallio.Common.Reflection
 
             return members;
         }
+
+        /// <summary>
+        /// Determines whether the specified type represents a nullable value.
+        /// </summary>
+        /// <param name="type">The type to evaluate.</param>
+        /// <returns>True if it is nullable; otherwise false.</returns>
+        public static bool IsNullable(Type type)
+        {
+            return (type == null)
+                   || !type.IsValueType // = reference type
+                   || (Nullable.GetUnderlyingType(type) != null); // = Nullable<T>
+        }
     }
 }
