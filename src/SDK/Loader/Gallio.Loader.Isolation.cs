@@ -162,9 +162,9 @@ namespace Gallio.Loader.Isolation
                 }
                 catch (Exception)
                 {
-                    string initializerAssemblyUri = new Uri(initializerAssembly.CodeBase).LocalPath;
+                    string initializerAssemblyPath = LoaderUtils.GetAssemblyPath(initializerAssembly);
                     initializer = (IsolatedInitializer)
-                        appDomain.CreateInstanceFromAndUnwrap(initializerAssemblyUri, initializerType.FullName);
+                        appDomain.CreateInstanceFromAndUnwrap(initializerAssemblyPath, initializerType.FullName);
                 }
             }
             catch (Exception ex)

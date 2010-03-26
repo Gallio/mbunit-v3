@@ -58,19 +58,9 @@ namespace Gallio.Loader.SharedEnvironment
         private static IIsolatedEnvironment CreateSharedEnvironment()
         {
             IIsolatedEnvironment environment = IsolatedEnvironmentManager.CreateIsolatedEnvironment();
-            environment.Loader.AddHintDirectory(GetHostPath());
+            environment.Loader.AddHintDirectory(LoaderUtils.GetLoaderDirectoryPath());
             environment.Loader.SetupRuntime();
             return environment;
-        }
-
-        private static string GetHostPath()
-        {
-            return Path.GetDirectoryName(GetAssemblyPath(typeof(SharedEnvironmentManager).Assembly));
-        }
-
-        private static string GetAssemblyPath(Assembly assembly)
-        {
-            return new Uri(assembly.CodeBase).LocalPath;
         }
     }
 }

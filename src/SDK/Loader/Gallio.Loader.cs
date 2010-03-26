@@ -41,6 +41,31 @@ namespace Gallio.Loader
     class NamespaceDoc
     {
     }
+    
+    /// <summary>
+    /// Helper utilities for implementing the Gallio loader.
+    /// </summary>
+    internal static class LoaderUtils
+    {
+        /// <summary>
+        /// Gets the local path of an assembly.  (Not its shadow copied location.)
+        /// </summary>
+        /// <param name="assembly">The assembly, not null.</param>
+        /// <returns>The assembly path.</returns>
+        public static string GetAssemblyPath(Assembly assembly)
+        {
+            return new Uri(assembly.CodeBase).LocalPath;
+        }
+        
+        /// <summary>
+        /// Gets the directory path of the assembly that contains the loader.
+        /// </summary>
+        /// <returns>The directory path of the assembly that contains the loader.</returns>
+        public static string GetLoaderDirectoryPath()
+        {
+            return Path.GetDirectoryName(GetAssemblyPath(typeof(LoaderUtils).Assembly));
+        }
+    }
 
     /// <summary>
     /// The exception that is thrown by the loader when an operation cannot be performed.

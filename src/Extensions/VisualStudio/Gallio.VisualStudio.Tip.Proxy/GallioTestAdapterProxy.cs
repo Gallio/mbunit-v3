@@ -49,10 +49,16 @@ namespace Gallio.VisualStudio.Tip
         private static ITestAdapter CreateRemoteShim()
         {
             IIsolatedEnvironment environment = SharedEnvironmentManager.GetSharedEnvironment();
-
+            environment.Loader.AddHintDirectory(GetVSTSDirectoryPath());
+            
             Type shimType = typeof(Shim);
             ITestAdapter shim = (ITestAdapter)environment.AppDomain.CreateInstanceAndUnwrap(shimType.Assembly.FullName, shimType.FullName);
             return shim;
+        }
+        
+        private static string GetVSTSDirectoryPath()
+        {
+            return Path.GetDirectoryName(LoaderUtils.GetAssemblyPath(typeof(ITestAdapter).Assembly));
         }
 
         private sealed class Shim : MarshalByRefTestAdapterProxy
