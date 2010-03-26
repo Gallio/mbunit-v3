@@ -15,6 +15,8 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
+using Gallio.Loader;
 using Gallio.Loader.Isolation;
 using Gallio.Loader.SharedEnvironment;
 using Microsoft.VisualStudio.TestTools.TestAdapter;
