@@ -46,14 +46,6 @@ namespace Gallio.Tests.Common.Diffing.Xml
         }
 
         [Test]
-        [ExpectedArgumentException]
-        public void Constructs_with_empty_message_should_throw_exception()
-        {
-            var mockPath = MockRepository.GenerateStub<IXmlPathStrict>();
-            new Diff(DiffType.MissingElement, mockPath, DiffTargets.Actual);
-        }
-
-        [Test]
         public void Constructs_ok()
         {
             var mockPath = MockRepository.GenerateStub<IXmlPathStrict>();

@@ -75,7 +75,7 @@ namespace Gallio.Common.Xml.Diffing
         public Diff(DiffType diffType, IXmlPathStrict path, DiffTargets targets)
         {
             if (diffType == null)
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException("diffType");
             if (path == null)
                 throw new ArgumentNullException("path");
 

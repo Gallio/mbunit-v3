@@ -46,6 +46,17 @@ namespace Gallio.Common.Xml.Diffing
         }
 
         /// <summary>
+        /// Gets the number of diffs in the collection.
+        /// </summary>
+        public int Count
+        {
+            get
+            {
+                return diffs.Count;
+            }
+        }
+
+        /// <summary>
         /// Constructs a sets from the specified enumeration of diff items.
         /// </summary>
         /// <param name="diffs">An enumeration of diff items.</param>

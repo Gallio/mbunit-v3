@@ -186,7 +186,10 @@ namespace MbUnit.Framework
                     if (diffSet.IsEmpty)
                         return null;
 
-                    return new AssertionFailureBuilder("Expected XML fragments to be equal according to the specified options.")
+                    string message = String.Format("Expected the XML fragments to be equal but {0} difference{1} found.",
+                        diffSet.Count, diffSet.Count > 1 ? "s were" : " was");
+                    
+                    return new AssertionFailureBuilder(message)
                         .SetMessage(messageFormat, messageArgs)
                         .AddRawLabeledValue("Equality Options", options.Value)
                         .AddInnerFailures(diffSet.ToAssertionFailures(expected, actual))
