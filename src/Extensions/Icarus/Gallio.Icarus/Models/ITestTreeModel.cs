@@ -31,6 +31,5 @@ namespace Gallio.Icarus.Models
             TreeBuilderOptions options);
         void ResetTestStatus(IProgressMonitor progressMonitor);
         void UpdateTestCount();
-        void TestStepFinished(TestData testData, TestStepRun testStepRun);
     }
 }

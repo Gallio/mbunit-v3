@@ -131,25 +131,8 @@ namespace Gallio.Icarus.Tests.Controllers
             testRunnerEvents.Raise(tre => tre.TestStepFinished += null, testRunner, 
                 testStepFinishedEventArgs);
 
-            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<TestStepFinished>
-                .Matches(tsf => tsf.TestId == "id")));
-        }
-
-        [Test]
-        public void TestStepFinished_Test()
-        {
-            var progressMonitor = MockProgressMonitor.Instance;
-            optionsController.Stub(oc => oc.TestRunnerExtensions).Return(new BindingList<string>(new List<string>()));
-            StubTestRunnerFactory();
-            testController.Explore(progressMonitor, new List<string>());
-            TestStepFinishedEventArgs testStepFinishedEventArgs = new TestStepFinishedEventArgs(new Report(), 
-                new TestData("id", "name", "fullName"), 
-                new TestStepRun(new TestStepData("id", "name", "fullName", "testId")));
-
-            testRunnerEvents.Raise(tre => tre.TestStepFinished += null, testRunner, testStepFinishedEventArgs);
-
-            testTreeModel.AssertWasCalled(ttm => ttm.TestStepFinished(testStepFinishedEventArgs.Test, 
-                testStepFinishedEventArgs.TestStepRun));
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<TestStepFinished>.Matches(tsf => 
+                tsf.TestData == testData && tsf.TestStepRun == testStepRun)));
         }
 
         [Test]

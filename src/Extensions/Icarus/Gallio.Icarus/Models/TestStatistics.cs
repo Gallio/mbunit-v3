@@ -36,7 +36,10 @@ namespace Gallio.Icarus.Models
 
         public void Handle(TestStepFinished @event)
         {
-            switch (@event.TestStatus)
+            if (false == @event.TestStepRun.Step.IsTestCase)
+                return;
+
+            switch (@event.TestStepRun.Result.Outcome.Status)
             {
                 case TestStatus.Passed:
                     Passed.Value++;

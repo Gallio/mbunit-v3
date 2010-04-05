@@ -21,7 +21,6 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Common.Markup;
-using Gallio.Model;
 using Gallio.Model.Schema;
 using Gallio.Runner.Reports.Schema;
 using MbUnit.Framework;
@@ -71,8 +70,12 @@ namespace Gallio.Icarus.Tests.Controllers
                 Assert.AreEqual(1, e.TestStepRuns.Count);
                 flag = true;
             };
+            var testData = new TestData("root", "name", "fullName")
+            {
+                IsTestCase = true
+            };
 
-            executionLogController.Handle(new TestStepFinished("root", TestStatus.Passed));
+            executionLogController.Handle(new TestStepFinished(testData, null));
 
             Assert.IsTrue(flag);
         }

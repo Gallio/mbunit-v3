@@ -16,6 +16,8 @@
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Model;
+using Gallio.Model.Schema;
+using Gallio.Runner.Reports.Schema;
 using MbUnit.Framework;
 
 namespace Gallio.Icarus.Tests.Models
@@ -23,41 +25,51 @@ namespace Gallio.Icarus.Tests.Models
     public class TestStatisticsTests
     {
         [Test]
-        public void TestStepFinished_should_increment_passed_if_test_step_passed()
+        public void Passed_should_be_incremented_if_completed_test_step_passed()
         {
             var testStatistics = new TestStatistics();
 
-            testStatistics.Handle(new TestStepFinished("id", TestStatus.Passed));
+            testStatistics.Handle(GetTestStepFinished(TestStatus.Passed));
 
             Assert.AreEqual(1, testStatistics.Passed.Value);
         }
 
+        private static TestStepFinished GetTestStepFinished(TestStatus testStatus)
+        {
+            var testStepRun = new TestStepRun(new TestStepData("id", "name", "fullName", "testId"))
+            {
+                Step = new TestStepData("id", "name", "fullName", "testId") { IsTestCase = true },
+                Result = new TestResult(new TestOutcome(testStatus))
+            };
+            return new TestStepFinished(null, testStepRun);
+        }
+
         [Test]
-        public void TestStepFinished_should_increment_failed_if_test_step_failed()
+        public void Failed_should_be_incremented_if_completed_test_step_failed()
         {
             var testStatistics = new TestStatistics();
 
-            testStatistics.Handle(new TestStepFinished("id", TestStatus.Failed));
+            testStatistics.Handle(GetTestStepFinished(TestStatus.Failed));
 
             Assert.AreEqual(1, testStatistics.Failed.Value);
         }
 
         [Test]
-        public void TestStepFinished_should_increment_skipped_if_test_step_was_skipped()
+        public void Skipped_should_be_incremented_if_completed_test_step_was_skipped()
         {
             var testStatistics = new TestStatistics();
 
-            testStatistics.Handle(new TestStepFinished("id", TestStatus.Skipped));
+            testStatistics.Handle(GetTestStepFinished(TestStatus.Skipped));
 
             Assert.AreEqual(1, testStatistics.Skipped.Value);
         }
 
         [Test]
-        public void TestStepFinished_should_increment_inconclusive_if_test_step_was_inconclusive()
+        public void Inconclusive_should_be_incremented_if_completed_test_step_was_inconclusive()
         {
             var testStatistics = new TestStatistics();
 
-            testStatistics.Handle(new TestStepFinished("id", TestStatus.Inconclusive));
+            testStatistics.Handle(GetTestStepFinished(TestStatus.Inconclusive));
 
             Assert.AreEqual(1, testStatistics.Inconclusive.Value);
         }
@@ -66,7 +78,7 @@ namespace Gallio.Icarus.Tests.Models
         public void Reset_should_set_passed_to_zero()
         {
             var testStatistics = new TestStatistics();
-            testStatistics.Handle(new TestStepFinished("id", TestStatus.Passed));
+            testStatistics.Handle(GetTestStepFinished(TestStatus.Passed));
 
             testStatistics.Handle(new TestsReset());
 
@@ -77,7 +89,7 @@ namespace Gallio.Icarus.Tests.Models
         public void Reset_should_set_failed_to_zero()
         {
             var testStatistics = new TestStatistics();
-            testStatistics.Handle(new TestStepFinished("id", TestStatus.Failed));
+            testStatistics.Handle(GetTestStepFinished(TestStatus.Failed));
 
             testStatistics.Handle(new TestsReset());
 
@@ -88,7 +100,7 @@ namespace Gallio.Icarus.Tests.Models
         public void Reset_should_set_skipped_to_zero()
         {
             var testStatistics = new TestStatistics();
-            testStatistics.Handle(new TestStepFinished("id", TestStatus.Skipped));
+            testStatistics.Handle(GetTestStepFinished(TestStatus.Skipped));
 
             testStatistics.Handle(new TestsReset());
 
@@ -99,11 +111,25 @@ namespace Gallio.Icarus.Tests.Models
         public void Reset_should_set_inconclusive_to_zero()
         {
             var testStatistics = new TestStatistics();
-            testStatistics.Handle(new TestStepFinished("id", TestStatus.Skipped));
+            testStatistics.Handle(GetTestStepFinished(TestStatus.Skipped));
 
             testStatistics.Handle(new TestsReset());
 
             Assert.AreEqual(0, testStatistics.Inconclusive.Value);
+        }
+
+        [Test]
+        public void Count_should_not_be_updated_if_completed_test_step_is_not_test_case()
+        {
+            var testStatistics = new TestStatistics();
+            var testStepRun = new TestStepRun(new TestStepData("id", "name", "fullName", "testId"))
+            {
+                Result = new TestResult(new TestOutcome(TestStatus.Passed))
+            };
+
+            testStatistics.Handle(new TestStepFinished(null, testStepRun));
+
+            Assert.AreEqual(0, testStatistics.Passed.Value);
         }
     }
 }

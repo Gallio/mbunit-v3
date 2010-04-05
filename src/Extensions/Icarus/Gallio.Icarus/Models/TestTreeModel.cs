@@ -16,16 +16,16 @@
 using System;
 using System.Collections.Generic;
 using Aga.Controls.Tree;
+using Gallio.Icarus.Events;
 using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Icarus.TreeBuilders;
 using Gallio.Model.Schema;
-using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.DataBinding;
 
 namespace Gallio.Icarus.Models
 {
-    public class TestTreeModel : TreeModelDecorator, ITestTreeModel
+    public class TestTreeModel : TreeModelDecorator, ITestTreeModel, Handles<TestStepFinished>
     {
         private readonly IList<ITreeBuilder> treeBuilders;
 
@@ -89,18 +89,6 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public void TestStepFinished(TestData testData, TestStepRun testStepRun)
-        {
-            if (Root == null)
-                return;
-
-            var nodes = Root.Find(testData.Id, true);
-            foreach (var node in nodes) // there should only be one
-            {
-                node.AddTestStepRun(testStepRun);
-            }
-        }
-
         public void BuildTestTree(IProgressMonitor progressMonitor, TestModelData testModelData, 
             TreeBuilderOptions options)
         {
@@ -139,6 +127,18 @@ namespace Gallio.Icarus.Models
             foreach (var td in testData.Children)
                 count += CountTestData(td);
             return count;
+        }
+
+        public void Handle(TestStepFinished @event)
+        {
+            if (Root == null)
+                return;
+
+            var nodes = Root.Find(@event.TestData.Id, true);
+            foreach (var node in nodes) // there should only be one
+            {
+                node.AddTestStepRun(@event.TestStepRun);
+            }
         }
     }
 }

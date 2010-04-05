@@ -94,7 +94,7 @@ namespace Gallio.Icarus.Controllers
 
         public void Handle(TestStepFinished @event)
         {
-            if (selectedTestIds.Count == 0 || selectedTestIds.Contains(@event.TestId))
+            if (selectedTestIds.Count == 0 || selectedTestIds.Contains(@event.TestData.Id))
                 Update();
         }
     }

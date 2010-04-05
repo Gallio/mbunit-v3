@@ -40,13 +40,15 @@ namespace Gallio.Icarus.Controllers
         private readonly ITaskManager taskManager;
         private readonly IEventAggregator eventAggregator;
         private readonly IFilterService filterService;
-        private LockBox<Report> reportLockBox;       
+        private LockBox<Report> reportLockBox;
         private ITestRunnerFactory testRunnerFactory;
         private TestPackage testPackage;
         private string treeViewCategory;
 
-        public TestController(ITestTreeModel testTreeModel, IOptionsController optionsController, 
-            ITaskManager taskManager, IEventAggregator eventAggregator, 
+        private bool testsFailed;
+
+        public TestController(ITestTreeModel testTreeModel, IOptionsController optionsController,
+            ITaskManager taskManager, IEventAggregator eventAggregator,
             IFilterService filterService)
         {
             this.testTreeModel = testTreeModel;
@@ -59,7 +61,7 @@ namespace Gallio.Icarus.Controllers
             reportLockBox = new LockBox<Report>(new Report());
         }
 
-        public void Explore(IProgressMonitor progressMonitor, 
+        public void Explore(IProgressMonitor progressMonitor,
             IEnumerable<string> testRunnerExtensions)
         {
             using (progressMonitor.BeginTask("Exploring the tests", 100))
@@ -80,16 +82,17 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public void Run(bool debug, IProgressMonitor progressMonitor, 
+        public void Run(bool debug, IProgressMonitor progressMonitor,
             IEnumerable<string> testRunnerExtensions)
         {
             using (progressMonitor.BeginTask("Running the tests.", 100))
             {
                 eventAggregator.Send(new RunStarted());
+                testsFailed = false;
 
                 progressMonitor.Worked(5);
 
-                DoWithTestRunner(testRunner => RunTests(debug, testRunner, progressMonitor), 
+                DoWithTestRunner(testRunner => RunTests(debug, testRunner, progressMonitor),
                     progressMonitor, 5, testRunnerExtensions);
 
                 eventAggregator.Send(new RunFinished());
@@ -109,7 +112,7 @@ namespace Gallio.Icarus.Controllers
                 FilterSet = filterSet
             };
 
-            testRunner.Run(testPackageCopy, testExplorationOptions, testExecutionOptions, 
+            testRunner.Run(testPackageCopy, testExplorationOptions, testExecutionOptions,
                 progressMonitor.CreateSubProgressMonitor(85));
         }
 
@@ -140,7 +143,7 @@ namespace Gallio.Icarus.Controllers
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(99))
                 {
-                    ReadReport(report => testTreeModel.BuildTestTree(subProgressMonitor, 
+                    ReadReport(report => testTreeModel.BuildTestTree(subProgressMonitor,
                         report.TestModel, options));
                 }
             }
@@ -194,14 +197,14 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        private void RegisterTestRunnerExtensions(IEnumerable<string> testRunnerExtensions, 
+        private void RegisterTestRunnerExtensions(IEnumerable<string> testRunnerExtensions,
             ITestRunner testRunner)
         {
             var extensionSpecifications = new List<string>();
-            
-            GenericCollectionUtils.AddAllIfNotAlreadyPresent(testRunnerExtensions, 
+
+            GenericCollectionUtils.AddAllIfNotAlreadyPresent(testRunnerExtensions,
                 extensionSpecifications);
-            GenericCollectionUtils.AddAllIfNotAlreadyPresent(optionsController.TestRunnerExtensions, 
+            GenericCollectionUtils.AddAllIfNotAlreadyPresent(optionsController.TestRunnerExtensions,
                 extensionSpecifications);
 
             foreach (var extensionSpecification in extensionSpecifications)
@@ -227,22 +230,23 @@ namespace Gallio.Icarus.Controllers
 
         private void WireUpTestStepFinished(ITestRunner testRunner)
         {
-            testRunner.Events.TestStepFinished += (sender, e) => 
+            testRunner.Events.TestStepFinished += (sender, e) =>
                 taskManager.BackgroundTask(() =>
                 {
-                    testTreeModel.TestStepFinished(e.Test, e.TestStepRun);
+                    eventAggregator.Send(new TestStepFinished(e.Test,
+                        e.TestStepRun));
 
-                    if (e.TestStepRun.Step.IsTestCase)
-                    {
-                        eventAggregator.Send(new TestStepFinished(e.Test.Id, 
-                            e.TestStepRun.Result.Outcome.Status));
-                    }
+                    if (false == ShouldSendTestsFailedEvent(e.TestStepRun.Result.Outcome.Status)) 
+                        return;
 
-                    if (e.TestStepRun.Result.Outcome.Status == TestStatus.Failed)
-                    {
-                        eventAggregator.Send(new TestsFailed());
-                    }
+                    testsFailed = true;
+                    eventAggregator.Send(new TestsFailed());
                 });
+        }
+
+        private bool ShouldSendTestsFailedEvent(TestStatus testStatus)
+        {
+            return testStatus == TestStatus.Failed && false == testsFailed;
         }
 
         public void Handle(TreeViewCategoryChanged @event)

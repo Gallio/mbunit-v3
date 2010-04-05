@@ -13,19 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Model;
+using Gallio.Model.Schema;
+using Gallio.Runner.Reports.Schema;
 
 namespace Gallio.Icarus.Events
 {
     public class TestStepFinished : Event
     {
-        public string TestId { get; private set; }
-        public TestStatus TestStatus { get; private set; }
+        public TestData TestData { get; private set; }
+        public TestStepRun TestStepRun { get; private set; }
 
-        public TestStepFinished(string testId, TestStatus testStatus)
+        public TestStepFinished(TestData testData, TestStepRun testStepRun)
         {
-            TestId = testId;
-            TestStatus = testStatus;
+            TestData = testData;
+            TestStepRun = testStepRun;
         }
     }
 }
