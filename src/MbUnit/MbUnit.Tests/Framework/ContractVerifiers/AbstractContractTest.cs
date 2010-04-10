@@ -39,14 +39,14 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         /// <param name="testMethodName">Name of evaluated test method.</param>
         /// <param name="expectedTestStatus">Expected test status. If <see cref="TestStatus.Inconclusive" />
         /// is specified, the test method is expected to not run.</param>
-        protected void VerifySampleContract(string groupName, Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
+        protected TestStepRun VerifySampleContract(string groupName, Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
         {
             var contractName = String.Format("/{0}/{1}/", GetType().Name, fixtureType.Name);
             var all = Report.TestPackageRun.AllTestStepRuns.Where(x => x.Step.IsPrimary).Select(x => x.Step.FullName).ToArray();
             var contracts = Report.TestPackageRun.AllTestStepRuns
                 .Where(x => x.Step.IsPrimary && x.Step.FullName.Contains(contractName) && x.Step.FullName.EndsWith(groupName));
             Assert.IsNotEmpty(contracts, "No contract named '...{0}' found in the fixture.", contractName);
-            bool found = false;
+            TestStepRun first = null;
 
             foreach (TestStepRun contract in contracts)
             {
@@ -54,20 +54,26 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
 
                 foreach (TestStepRun run in runs)
                 {
-                    found = true;
                     Assert.IsNotNull(run);
                     Assert.AreEqual(expectedTestStatus, run.Result.Outcome.Status);
+
+                    if (first == null)
+                    {
+                        first = run;
+                    }
                 }
             }
 
             if (expectedTestStatus == TestStatus.Inconclusive)
             {
-                Assert.IsFalse(found);
+                Assert.IsNull(first);
             }
             else
             {
-                Assert.IsTrue(found, "No test method named '{0}' found.", testMethodName);
+                Assert.IsNotNull(first, "No test method named '{0}' found.", testMethodName);
             }
+
+            return first;
         }
     }
 }

@@ -58,6 +58,8 @@
     <Compile Include="Framework\BindAttribute.cs" />
     <Compile Include="Framework\ColumnAttribute.cs" />
     <Compile Include="Framework\CombinatorialJoinAttribute.cs" />
+    <Compile Include="Framework\ContractVerifiers\Core\HashStore.cs" />
+    <Compile Include="Framework\ContractVerifiers\HashCodeAcceptanceContract.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClass.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassCollection.cs" />
     <Compile Include="Framework\CsvDataAttribute.cs" />
