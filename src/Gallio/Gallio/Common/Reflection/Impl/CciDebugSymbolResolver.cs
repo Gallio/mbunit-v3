@@ -38,6 +38,7 @@ namespace Gallio.Common.Reflection.Impl
     {
         private readonly bool avoidLocks;
         private readonly IDictionary<string, CciModuleCache> cache = new Dictionary<string, CciModuleCache>();
+        private readonly IList<string> unavailable = new List<string>();
 
         /// <summary>
         /// Creates a Mono debug symbol resolver.
@@ -63,12 +64,16 @@ namespace Gallio.Common.Reflection.Impl
 
             if (!cache.TryGetValue(assemblyPath, out data))
             {
+                if (unavailable.Contains(assemblyPath))
+                    return CodeLocation.Unknown;
+
                 try
                 {
                     data = new CciModuleCache(new FileSystem(), assemblyPath, avoidLocks);
                 }
                 catch (InvalidOperationException)
                 {
+                    unavailable.Add(assemblyPath);
                     return CodeLocation.Unknown;
                 }
 
