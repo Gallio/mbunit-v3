@@ -157,8 +157,12 @@ namespace Gallio.VisualStudio.Tip
 
             if (vstsAttachment != null)
             {
-                var file = vstsAttachment.Uri.Segments.Last();
-                var fileEx = file.Substring(file.Length - 4, 4);
+                //var file = vstsAttachment.Uri.Segments.Last();
+                //var fileEx = file.Substring(file.Length - 7, 7);
+
+                var file = new FileInfo(vstsAttachment.Uri.Segments.Last());
+
+                var fileEx = file.Extension;
 
                 switch(fileEx)
                 {
@@ -194,14 +198,24 @@ namespace Gallio.VisualStudio.Tip
         {
             var mem = new MemoryStream();
             var f = new FileStream(vstsAttachment.Uri.LocalPath, FileMode.Open, FileAccess.Read);
-            f.Read(mem.GetBuffer(), 0, (int)f.Length);
+            mem.SetLength(f.Length);
 
-            var binaryAttachment = new BinaryAttachment(vstsAttachment.Description, MimeTypes.GetMimeTypeByExtension(fileEx), mem.ToArray());
-                
-            f.Close();
-            mem.Close();
+            f.Read(mem.GetBuffer(), 0, (int)f.Length -1);
 
-            return binaryAttachment;
+            try
+            {
+                var binaryAttachment = new BinaryAttachment(vstsAttachment.Description, MimeTypes.GetMimeTypeByExtension(fileEx), mem.ToArray());
+
+                f.Close();
+                mem.Close();
+
+                return binaryAttachment;
+            }
+            catch (Exception)
+            {
+                //bury the exception and return null back so no attachment is returned
+                return null;
+            }
         }
 
         private static BinaryAttachment GetImageAttachment(UriDataAttachment vstsAttachment)
