@@ -202,20 +202,15 @@ namespace Gallio.VisualStudio.Tip
 
             f.Read(mem.GetBuffer(), 0, (int)f.Length -1);
 
-            try
-            {
-                var binaryAttachment = new BinaryAttachment(vstsAttachment.Description, MimeTypes.GetMimeTypeByExtension(fileEx), mem.ToArray());
+            var mime = MimeTypes.GetMimeTypeByExtension(fileEx) ?? MimeTypes.Binary;
 
-                f.Close();
-                mem.Close();
+            var binaryAttachment = new BinaryAttachment(vstsAttachment.Description, mime, mem.ToArray());
 
-                return binaryAttachment;
-            }
-            catch (Exception)
-            {
-                //bury the exception and return null back so no attachment is returned
-                return null;
-            }
+            f.Close();
+            mem.Close();
+
+            return binaryAttachment;
+          
         }
 
         private static BinaryAttachment GetImageAttachment(UriDataAttachment vstsAttachment)

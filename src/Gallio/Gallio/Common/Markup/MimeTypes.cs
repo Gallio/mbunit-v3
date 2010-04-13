@@ -133,9 +133,6 @@ namespace Gallio.Common.Markup
             if (mimeType == null && ! DotNetRuntimeSupport.IsUsingMono)
                 mimeType = GetMimeTypeForExtensionFromWindowsRegistry(extension);
 
-            if (mimeType == null)
-                throw new Exception("mime type not found");
-
             return mimeType;
         }
 
