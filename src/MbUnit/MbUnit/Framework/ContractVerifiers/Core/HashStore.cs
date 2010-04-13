@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Common.Mathematics;
 
 namespace MbUnit.Framework.ContractVerifiers.Core
 {
@@ -80,6 +81,46 @@ namespace MbUnit.Framework.ContractVerifiers.Core
             }
 
             return result;
+        }
+        
+        /// <summary>
+        /// Returns the Chi-Square probability level (one-tailed).
+        /// </summary>
+        /// <returns>The resulting probability level.</returns>
+        public double ChiSquareGoodnessToFit()
+        {
+            int k = GetPrime(map.Count);
+            var array = new int[k];
+            Array.Clear(array, 0, k);
+            int i = 0;
+
+            foreach (var value in map.Values)
+            {
+                array[i % k] += value;
+                i++;
+            }
+
+            double expected = (double)count / k;
+            double sum = 0;
+
+            for (int j = 0; j < k; j++)
+            {
+                double x = array[j] - expected;
+                sum += x * x;
+            }
+
+            return Statistics.ChiSquareProbability(k - 1, sum / expected);
+        }
+
+        private static int GetPrime(int n)
+        {
+            if (n > 400)
+                return 113;
+
+            if (n > 80)
+                return 19;
+
+            return n;
         }
     }
 }

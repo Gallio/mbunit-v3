@@ -49,5 +49,13 @@ namespace MbUnit.Tests.Framework.ContractVerifiers.Core
             double actualProbability = map.GetCollisionProbability();
             Assert.AreApproximatelyEqual(expectedProbability, actualProbability, 0.0001);
         }
+
+        [Test]
+        public void ChiSquareTest()
+        {
+            var map = new HashStore(new[] { 7, 7, 7, 8, 8, 8, 8, 9, 9, 6, 6, 6, 5, 5, 5, 5, 5, 5 });
+            double actual = map.ChiSquareGoodnessToFit();
+            Assert.AreApproximatelyEqual(0.634716, actual, 0.000001);
+        }
     }
 }

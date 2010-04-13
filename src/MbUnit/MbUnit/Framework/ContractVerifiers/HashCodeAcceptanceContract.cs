@@ -86,7 +86,8 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <typeparam name="T">The type of the object for which the hash code generation must be evaluated.</typeparam>
     public class HashCodeAcceptanceContract<T> : AbstractContract
     {
-        private double collisionProbabilityLimit = 0.05; // Default at 5%
+        private double collisionProbabilityLimit = 0.05; // Default at 5%.
+        private double uniformDistributionSignificanceLevel = 0.05; // Default at 5%.
 
         /// <summary>
         /// Gets or sets the maximum collision probability tolerated.
@@ -97,7 +98,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// than this limit, the test will fail.
         /// </para>
         /// <para>
-        /// The default value is 0.05 (5%).
+        /// The default is 0.05 (5%).
         /// </para>
         /// </remarks>
         public double CollisionProbabilityLimit
@@ -113,6 +114,34 @@ namespace MbUnit.Framework.ContractVerifiers
                     throw new ArgumentOutOfRangeException("value", "The probability must be comprised between 0 and 1.");
 
                 collisionProbabilityLimit = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the required significance level to determine whether the distribution is uniform.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If the actual probability calculated from the specified distinct instances is less than 
+        /// the specified value, the test fails.
+        /// </para>
+        /// <para>
+        /// The default is 0.05 (5%).
+        /// </para>
+        /// </remarks>
+        public double UniformDistributionSignificanceLevel
+        {
+            get
+            {
+                return uniformDistributionSignificanceLevel;
+            }
+
+            set
+            {
+                if (value < 0 || value > 1)
+                    throw new ArgumentOutOfRangeException("value", "The uniform distribution significance level must be between 0 and 1.");
+
+                uniformDistributionSignificanceLevel = value;
             }
         }
 
@@ -139,8 +168,7 @@ namespace MbUnit.Framework.ContractVerifiers
         {
             var store = new HashStore(GenericCollectionUtils.Select(DistinctInstances, o => o.GetHashCode()));
             yield return CreateCollisionProbabilityTest(store);
-            //yield return CreateUniformDistributionTest(store);
-            //yield return CreateAvalancheTest(store);
+            yield return CreateUniformDistributionTest(store);
         }
 
         private Test CreateCollisionProbabilityTest(HashStore store)
@@ -152,11 +180,11 @@ namespace MbUnit.Framework.ContractVerifiers
                     double probability = store.GetCollisionProbability();
                     TestLog.WriteLine("Actual Collision Probability = {0}", probability);
 
-                    if (probability <= CollisionProbabilityLimit)
+                    if (probability <= collisionProbabilityLimit)
                         return null;
 
                     return new AssertionFailureBuilder("Expected the collision probability to be less than the specified limit.")
-                        .AddRawExpectedValue(CollisionProbabilityLimit)
+                        .AddRawExpectedValue(collisionProbabilityLimit)
                         .AddRawActualValue(probability)
                         .SetStackTrace(Context.GetStackTraceData())
                         .ToAssertionFailure();
@@ -166,9 +194,22 @@ namespace MbUnit.Framework.ContractVerifiers
 
         private Test CreateUniformDistributionTest(HashStore store)
         {
-            return new TestCase("UniformDistribution", () =>
+            return new TestCase("UniformDistributionTest", () =>
             {
-                // TODO
+                AssertionHelper.Verify(() =>
+                {
+                    double probability = store.ChiSquareGoodnessToFit();
+                    TestLog.WriteLine("Actual Probability Statement = {0}", probability);
+
+                    if (probability > uniformDistributionSignificanceLevel)
+                        return null;
+
+                    return new AssertionFailureBuilder("Expected the statement probability to be greater than the specified significance level.")
+                        .AddRawExpectedValue(uniformDistributionSignificanceLevel)
+                        .AddRawActualValue(probability)
+                        .SetStackTrace(Context.GetStackTraceData())
+                        .ToAssertionFailure();
+                });
             });
         }
 

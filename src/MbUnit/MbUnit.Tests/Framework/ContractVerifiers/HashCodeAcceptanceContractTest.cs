@@ -30,8 +30,10 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
     public class HashCodeAcceptanceContractTest : AbstractContractTest
     {
         [Test]
-        [Row("Test1", "CollisionProbabilityTest", TestStatus.Failed)]
-        [Row("Test2", "CollisionProbabilityTest", TestStatus.Passed)]
+        [Row("CollisionTestFail", "CollisionProbabilityTest", TestStatus.Failed)]
+        [Row("CollisionTestPass", "CollisionProbabilityTest", TestStatus.Passed)]
+        [Row("DistributionTestFail", "UniformDistributionTest", TestStatus.Failed)]
+        [Row("DistributionTestPass", "UniformDistributionTest", TestStatus.Passed)]
         public void VerifySampleAccessorContract(string groupName, string testMethodName, TestStatus expectedTestStatus)
         {
             VerifySampleContract(groupName, typeof(SampleTest), testMethodName, expectedTestStatus);
@@ -41,20 +43,45 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         internal class SampleTest
         {
             [VerifyContract]
-            public readonly IContract Test1 = new HashCodeAcceptanceContract<Sample>
+            public readonly IContract CollisionTestFail = new HashCodeAcceptanceContract<Sample>
             {
                 CollisionProbabilityLimit = 0.1,
-                DistinctInstances = GetSampleInstances(1, 1, 2, 3)
+                DistinctInstances = GetSampleInstancesFromValues(1, 1, 2, 3)
             };
 
             [VerifyContract]
-            public readonly IContract Test2 = new HashCodeAcceptanceContract<Sample>
+            public readonly IContract CollisionTestPass = new HashCodeAcceptanceContract<Sample>
             {
                 CollisionProbabilityLimit = 0.2,
-                DistinctInstances = GetSampleInstances(1, 1, 2, 3)
+                DistinctInstances = GetSampleInstancesFromValues(1, 1, 2, 3)
             };
 
-            private static IEnumerable<Sample> GetSampleInstances(params int[] hashes)
+            [VerifyContract]
+            public readonly IContract DistributionTestPass = new HashCodeAcceptanceContract<Sample>
+            {
+                UniformDistributionSignificanceLevel = 0.01,
+                DistinctInstances = GetSampleInstancesFromFrequencies(17, 8, 8, 6, 10, 16, 15, 19)
+            };
+
+            [VerifyContract]
+            public readonly IContract DistributionTestFail = new HashCodeAcceptanceContract<Sample>
+            {
+                UniformDistributionSignificanceLevel = 0.1,
+                DistinctInstances = GetSampleInstancesFromFrequencies(17, 8, 8, 6, 10, 16, 15, 19)
+            };
+
+            private static IEnumerable<Sample> GetSampleInstancesFromFrequencies(params int[] frequencies)
+            {
+                for (int i = 0; i < frequencies.Length; i++)
+                {
+                    for (int j = 0; j < frequencies[i]; j++)
+                    {
+                        yield return new Sample(i + 1);
+                    }
+                }
+            }
+
+            private static IEnumerable<Sample> GetSampleInstancesFromValues(params int[] hashes)
             {
                 for (int i = 0; i < hashes.Length; i++)
                 {
@@ -77,50 +104,5 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
                 return value;
             }
         }
-
-        #region Experimentations
-
-        [Explicit]
-        internal class ExperimentTest
-        {
-            [VerifyContract]
-            public readonly IContract HashCodeAcceptanceTests = new HashCodeAcceptanceContract<Experiment>
-            {
-                CollisionProbabilityLimit = 0.01,
-                DistinctInstances = GetDistinctInstances()
-            };
-
-            private static IEnumerable<Experiment> GetDistinctInstances()
-            {
-                for (int i = 0; i < 1000; i++)
-                    for (int j = 0; j < 1000; j++)
-                        yield return new Experiment(i, j);
-            }
-
-            internal class Experiment
-            {
-                private readonly int id1;
-                private readonly int id2;
-
-                public Experiment(int id1, int id2)
-                {
-                    this.id1 = id1;
-                    this.id2 = id2;
-                }
-
-                public override int GetHashCode()
-                {
-                    unchecked
-                    {
-                        int hash = 17;
-                        hash = hash * 23 + id1.GetHashCode();
-                        hash = hash * 23 + id2.GetHashCode();
-                        return hash;
-                    }
-                }
-            }
-        }
-
-        #endregion
     }
 }
