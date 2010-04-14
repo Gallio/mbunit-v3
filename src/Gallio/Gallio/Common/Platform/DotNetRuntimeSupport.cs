@@ -107,7 +107,7 @@ namespace Gallio.Common.Platform
         /// those frameworks are just libraries that usually run on the 2.0.50727 runtime on the CLR.
         /// </para>
         /// </remarks>
-        /// <returns>The runtime version, eg. "v2.0.50727" or "v4.0.30128"</returns>
+        /// <returns>The runtime version, eg. "v2.0.50727" or "v4.0.30319"</returns>
         public static string RuntimeVersion
         {
             get
@@ -141,14 +141,14 @@ namespace Gallio.Common.Platform
         /// <summary>
         /// Gets the version of the installed .Net 4.0 runtime version, or null if not installed.
         /// </summary>
-        /// <returns>The runtime version, eg. "v4.0.30128"</returns>
+        /// <returns>The runtime version, eg. "v4.0.30319"</returns>
         public static string InstalledDotNet40RuntimeVersion
         {
             get
             {
                 // FIXME: faking it might not be a good idea...
                 if (IsUsingMono)
-                    return "v4.0.30128";
+                    return "v4.0.30319";
 
                 string runtimeVersion = (string) RegistryUtils.GetValueWithBitness(
                     ProcessorArchitecture.None, RegistryHive.LocalMachine,
@@ -161,7 +161,7 @@ namespace Gallio.Common.Platform
         /// <summary>
         /// Gets the version of the most recent installed .Net runtime version.
         /// </summary>
-        /// <returns>The runtime version, eg. "v4.0.30128"</returns>
+        /// <returns>The runtime version, eg. "v4.0.30319"</returns>
         public static string MostRecentInstalledDotNetRuntimeVersion
         {
             get

@@ -13,7 +13,7 @@ if not defined MSBUILD_ARGS (
   exit /b 1
 )
 
-if not defined MSBUILD set MSBUILD=%SystemRoot%\Microsoft.Net\Framework\v4.0.30128\MSBuild.exe
+if not defined MSBUILD set MSBUILD=%SystemRoot%\Microsoft.Net\Framework\v4.0.30319\MSBuild.exe
 if not defined MSBUILD set MSBUILD=%SystemRoot%\Microsoft.Net\Framework\v3.5\MSBuild.exe
 if not defined MSBUILD (
   echo Could not find path to MSBuild.exe.

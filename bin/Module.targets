@@ -129,7 +129,7 @@
     <AssemblyVersion Condition="'$(AssemblyVersion)'==''">0.0.0.0</AssemblyVersion>
     <FileVersion Condition="'$(FileVersion)'==''">0.0.0.0</FileVersion>
     
-    <DotNetFrameworkVersion Condition="'$(DotNetFrameworkVersion)'=='' and Exists('$(SystemRoot)\Microsoft.Net\Framework\v4.0.30128')">4.0</DotNetFrameworkVersion>
+    <DotNetFrameworkVersion Condition="'$(DotNetFrameworkVersion)'=='' and Exists('$(SystemRoot)\Microsoft.Net\Framework\v4.0.30319')">4.0</DotNetFrameworkVersion>
     <DotNetFrameworkVersion Condition="'$(DotNetFrameworkVersion)'==''">3.5</DotNetFrameworkVersion>
     
     <ProjectVariant></ProjectVariant>
