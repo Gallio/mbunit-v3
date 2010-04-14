@@ -31,8 +31,12 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
     {
         [Test]
         [Row("CollisionTestFail", "CollisionProbabilityTest", TestStatus.Failed)]
+        [Row("CollisionTestFail", "UniformDistributionTest", TestStatus.Passed)]
         [Row("CollisionTestPass", "CollisionProbabilityTest", TestStatus.Passed)]
+        [Row("CollisionTestPass", "UniformDistributionTest", TestStatus.Passed)]
+        [Row("DistributionTestFail", "CollisionProbabilityTest", TestStatus.Passed)]
         [Row("DistributionTestFail", "UniformDistributionTest", TestStatus.Failed)]
+        [Row("DistributionTestPass", "CollisionProbabilityTest", TestStatus.Passed)]
         [Row("DistributionTestPass", "UniformDistributionTest", TestStatus.Passed)]
         public void VerifySampleAccessorContract(string groupName, string testMethodName, TestStatus expectedTestStatus)
         {
@@ -46,6 +50,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             public readonly IContract CollisionTestFail = new HashCodeAcceptanceContract<Sample>
             {
                 CollisionProbabilityLimit = 0.1,
+                UniformDistributionSignificanceLevel = 0.05,
                 DistinctInstances = GetSampleInstancesFromValues(1, 1, 2, 3)
             };
 
@@ -53,20 +58,23 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             public readonly IContract CollisionTestPass = new HashCodeAcceptanceContract<Sample>
             {
                 CollisionProbabilityLimit = 0.2,
+                UniformDistributionSignificanceLevel = 0.05,
                 DistinctInstances = GetSampleInstancesFromValues(1, 1, 2, 3)
             };
 
             [VerifyContract]
             public readonly IContract DistributionTestPass = new HashCodeAcceptanceContract<Sample>
             {
-                UniformDistributionSignificanceLevel = 0.01,
+                CollisionProbabilityLimit = 0.2,
+                UniformDistributionSignificanceLevel = 0.055,
                 DistinctInstances = GetSampleInstancesFromFrequencies(17, 8, 8, 6, 10, 16, 15, 19)
             };
 
             [VerifyContract]
             public readonly IContract DistributionTestFail = new HashCodeAcceptanceContract<Sample>
             {
-                UniformDistributionSignificanceLevel = 0.1,
+                CollisionProbabilityLimit = 0.2,
+                UniformDistributionSignificanceLevel = 0.057,
                 DistinctInstances = GetSampleInstancesFromFrequencies(17, 8, 8, 6, 10, 16, 15, 19)
             };
 

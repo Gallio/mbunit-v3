@@ -107,8 +107,9 @@
     <Compile Include="Common\IO\ContentInline.cs" />
     <Compile Include="Common\Markup\AttachmentType.cs" />
     <Compile Include="Common\Markup\MarkupNormalizationUtils.cs" />
+    <Compile Include="Common\Mathematics\ChiSquareTest.cs" />
+    <Compile Include="Common\Mathematics\Gamma.cs" />
     <Compile Include="Common\Mathematics\NamespaceDoc.cs" />
-    <Compile Include="Common\Mathematics\Statistics.cs" />
     <Compile Include="Common\Messaging\IMessageExchangeLink.cs" />
     <Compile Include="Common\Messaging\MessageConsumer.cs" />
     <Compile Include="Common\Messaging\NamespaceDoc.cs" />

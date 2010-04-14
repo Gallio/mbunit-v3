@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Common\ActionChainTestForTwoParameters.cs" />
     <Compile Include="BaseTestWithMocks.cs" />
+    <Compile Include="Common\Collections\CollectionUtilsTest.cs" />
     <Compile Include="Common\Collections\GenericCollectionUtilsTest.cs" />
     <Compile Include="Common\Collections\PropertyBagTest.cs" />
     <Compile Include="Common\Collections\PropertySetTest.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Common\Markup\Tags\TextAttachmentTest.cs" />
     <Compile Include="Common\Markup\Tags\TextTagTest.cs" />
     <Compile Include="Common\Markup\TextualMarkupDocumentWriterTest.cs" />
+    <Compile Include="Common\Mathematics\GammaTest.cs" />
     <Compile Include="Common\Media\BitmapVideoFrameTest.cs" />
     <Compile Include="Common\Media\CaptionOverlayTest.cs" />
     <Compile Include="Common\Media\CaptureParametersTest.cs" />

@@ -74,6 +74,28 @@ namespace Gallio.Common.Collections
                     return value;
 
             return default(T);
+        }        
+
+        /// <summary>
+        /// Returns an array of the specified length, filled with the specifed constant value.
+        /// </summary>
+        /// <typeparam name="T">The type of the array.</typeparam>
+        /// <param name="value">The constant value.</param>
+        /// <param name="length">The length of the array.</param>
+        /// <returns>The resulting array.</returns>
+        public static T[] ConstantArray<T>(T value, int length)
+        {
+            if (length < 0)
+                throw new ArgumentOutOfRangeException("length", "Must be greater than or equal to zero.");
+
+            var array = new T[length];
+
+            for (int i = 0; i < length; i++)
+            {
+                array[i] = value;
+            }
+
+            return array;
         }
     }
 }

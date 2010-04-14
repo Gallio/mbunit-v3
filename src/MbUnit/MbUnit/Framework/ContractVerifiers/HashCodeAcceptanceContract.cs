@@ -198,7 +198,7 @@ namespace MbUnit.Framework.ContractVerifiers
             {
                 AssertionHelper.Verify(() =>
                 {
-                    double probability = store.ChiSquareGoodnessToFit();
+                    double probability = store.GetChiSquareGoodnessToFit();
                     TestLog.WriteLine("Actual Probability Statement = {0}", probability);
 
                     if (probability > uniformDistributionSignificanceLevel)
