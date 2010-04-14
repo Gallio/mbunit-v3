@@ -5,7 +5,7 @@ using System.Text;
 namespace Gallio.Common.Mathematics
 {
     /// <summary>
-    /// 
+    /// Helper methods to calculate the Gamma function (http://en.wikipedia.org/wiki/Gamma_function).
     /// </summary>
     public static class Gamma
     {
