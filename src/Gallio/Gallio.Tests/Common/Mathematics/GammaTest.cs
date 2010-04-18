@@ -19,6 +19,5 @@ namespace Gallio.Tests.Common.Mathematics
             double actual = Gamma.IncompleteGamma(degreesOfFreedom / 2d, chiSquareValue / 2d);
             Assert.AreApproximatelyEqual(expectedProbability, actual, 0.00001);
         }
-
     }
 }

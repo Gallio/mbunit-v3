@@ -28,7 +28,7 @@ namespace Gallio.Common.Mathematics
     {
         private readonly int degreesOfFreedom;
         private readonly double chiSquareValue;
-        private readonly double significanceProbability;
+        private readonly double twoTailedPValue;
 
         /// <summary>
         /// Gets the resulting number of degrees of freedom.
@@ -55,11 +55,11 @@ namespace Gallio.Common.Mathematics
         /// <summary>
         /// Gets the resulting significance probability.
         /// </summary>
-        public double SignificanceProbability
+        public double TwoTailedPValue
         {
             get
             {
-                return significanceProbability;
+                return twoTailedPValue;
             }
         }
 
@@ -98,7 +98,7 @@ namespace Gallio.Common.Mathematics
                 chiSquareValue += (delta * delta) / expected[i];
             }
 
-            significanceProbability = Gamma.IncompleteGamma(degreesOfFreedom / 2d, chiSquareValue / 2d);
+            twoTailedPValue = Gamma.IncompleteGamma(degreesOfFreedom / 2d, chiSquareValue / 2d);
         }
     }
 }

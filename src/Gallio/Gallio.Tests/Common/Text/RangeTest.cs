@@ -32,17 +32,32 @@ namespace Gallio.Tests.Common.Text
             ImplementsOperatorOverloads = false,
             EquivalenceClasses =
             {
-                { new Range(0, 0) },
-                { new Range(1, 1) },
-                { new Range(0, 1) },
-                { new Range(1, 0) }
+                new Range(0, 0),
+                new Range(1, 1),
+                new Range(0, 1),
+                new Range(1, 0)
             }
         };
+
+        [VerifyContract]
+        public readonly IContract HashCodeAcceptanceTests = new HashCodeAcceptanceContract<Range>
+        {
+            CollisionProbabilityLimit = CollisionProbability.Perfect,
+            UniformDistributionSignificanceLevel = UniformDistributionSignificance.Excellent,
+            DistinctInstances = GetDistinctInstances()
+        };
+
+        private static IEnumerable<Range> GetDistinctInstances()
+        {
+            for(int startIndex=0; startIndex<1000; startIndex++)
+                for(int length=0; length<1000; length++)
+                    yield return new Range(startIndex, length);
+        }
 
         [Test]
         public void ConstructorInitializesProperties()
         {
-            Range range = new Range(3, 4);
+            var range = new Range(3, 4);
             Assert.AreEqual(3, range.StartIndex);
             Assert.AreEqual(4, range.Length);
             Assert.AreEqual(7, range.EndIndex);
@@ -51,7 +66,7 @@ namespace Gallio.Tests.Common.Text
         [Test]
         public void BetweenInitializesProperties()
         {
-            Range range = Range.Between(3, 4);
+            var range = Range.Between(3, 4);
             Assert.AreEqual(3, range.StartIndex);
             Assert.AreEqual(1, range.Length);
             Assert.AreEqual(4, range.EndIndex);
@@ -77,14 +92,14 @@ namespace Gallio.Tests.Common.Text
         [Test]
         public void SubstringOfThrowsIfStringIsNull()
         {
-            Range range = new Range(0, 4);
+            var range = new Range(0, 4);
             Assert.Throws<ArgumentNullException>(() => range.SubstringOf(null));
         }
 
         [Test]
         public void SubstringOfThrowsIfRangeIsOutOfBounds()
         {
-            Range range = new Range(3, 4);
+            var range = new Range(3, 4);
             Assert.Throws<ArgumentOutOfRangeException>(() => range.SubstringOf("abcde"));
         }
 
@@ -97,16 +112,16 @@ namespace Gallio.Tests.Common.Text
         [Test]
         public void ExtendWithThrowsIfRangeIsDisjoint()
         {
-            Range a = new Range(2, 3);
-            Range b = new Range(4, 2);
+            var a = new Range(2, 3);
+            var b = new Range(4, 2);
             Assert.Throws<ArgumentException>(() => a.ExtendWith(b));
         }
 
         [Test]
         public void ExtendWithThrowsIfRangeOverlaps()
         {
-            Range a = new Range(2, 3);
-            Range b = new Range(3, 1);
+            var a = new Range(2, 3);
+            var b = new Range(3, 1);
             Assert.Throws<ArgumentException>(() => a.ExtendWith(b));
         }
 

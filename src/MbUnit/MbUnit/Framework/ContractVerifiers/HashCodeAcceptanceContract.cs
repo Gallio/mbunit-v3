@@ -70,7 +70,8 @@ namespace MbUnit.Framework.ContractVerifiers
     ///     [VerifyContract]
     ///     public readonly IContract HashCodeAcceptanceTests = new HashCodeAcceptanceContract<Foo>
     ///     {
-    ///         Tolerance = 0.01, // = 1% max. tolerated .
+    ///         CollisionProbabilityLimit = CollisionProbability.Good,
+    ///         UniformDistributionSignificanceLevel = UniformDistributionSignificance.Good,
     ///         DistinctInstances = GetDistinctInstances();
     ///     };
     /// 
@@ -86,8 +87,8 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <typeparam name="T">The type of the object for which the hash code generation must be evaluated.</typeparam>
     public class HashCodeAcceptanceContract<T> : AbstractContract
     {
-        private double collisionProbabilityLimit = 0.05; // Default at 5%.
-        private double uniformDistributionSignificanceLevel = 0.05; // Default at 5%.
+        private double collisionProbabilityLimit = CollisionProbability.Good;
+        private double uniformDistributionSignificanceLevel = UniformDistributionSignificance.Good;
 
         /// <summary>
         /// Gets or sets the maximum collision probability tolerated.
@@ -98,7 +99,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// than this limit, the test will fail.
         /// </para>
         /// <para>
-        /// The default is 0.05 (5%).
+        /// The default is 0.01 (1%).
         /// </para>
         /// </remarks>
         public double CollisionProbabilityLimit
@@ -122,7 +123,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// </summary>
         /// <remarks>
         /// <para>
-        /// If the actual probability calculated from the specified distinct instances is less than 
+        /// If the actual probability calculated from the specified distinct instances is greater than 
         /// the specified value, the test fails.
         /// </para>
         /// <para>
@@ -154,7 +155,6 @@ namespace MbUnit.Framework.ContractVerifiers
             set;
         }
 
-
         /// <summary>
         /// Constructs a contract verifier to evaluate the efficiency of the hash code generation algorithm for a given type.
         /// </summary>
@@ -173,53 +173,95 @@ namespace MbUnit.Framework.ContractVerifiers
 
         private Test CreateCollisionProbabilityTest(HashStore store)
         {
-            return new TestCase("CollisionProbabilityTest", () =>
+            return new TestCase("CollisionProbabilityTest", () => AssertionHelper.Verify(() =>
             {
-                AssertionHelper.Verify(() =>
-                {
-                    double probability = store.GetCollisionProbability();
-                    TestLog.WriteLine("Actual Collision Probability = {0}", probability);
+                double probability = store.GetCollisionProbability();
+                TestLog.WriteLine("Actual Collision Probability = {0}", probability);
 
-                    if (probability <= collisionProbabilityLimit)
-                        return null;
+                if (probability <= collisionProbabilityLimit)
+                    return null;
 
-                    return new AssertionFailureBuilder("Expected the collision probability to be less than the specified limit.")
-                        .AddRawExpectedValue(collisionProbabilityLimit)
-                        .AddRawActualValue(probability)
-                        .SetStackTrace(Context.GetStackTraceData())
-                        .ToAssertionFailure();
-                });
-            });
+                return new AssertionFailureBuilder("Expected the collision probability to be less than the specified limit.")
+                    .AddRawExpectedValue(collisionProbabilityLimit)
+                    .AddRawActualValue(probability)
+                    .SetStackTrace(Context.GetStackTraceData())
+                    .ToAssertionFailure();
+            }));
         }
 
         private Test CreateUniformDistributionTest(HashStore store)
         {
-            return new TestCase("UniformDistributionTest", () =>
+            return new TestCase("UniformDistributionTest", () => AssertionHelper.Verify(() =>
             {
-                AssertionHelper.Verify(() =>
-                {
-                    double probability = store.GetChiSquareGoodnessToFit();
-                    TestLog.WriteLine("Actual Probability Statement = {0}", probability);
+                var result = store.GetChiSquareGoodnessToFit();
+                TestLog.WriteLine("Chi square value = {0}", result.ChiSquareValue);
+                TestLog.WriteLine("Degrees of freedom = {0}", result.DegreesOfFreedom);
+                TestLog.WriteLine("Two-tailed P value = {0}", result.TwoTailedPValue);
 
-                    if (probability > uniformDistributionSignificanceLevel)
-                        return null;
+                if (1 - result.TwoTailedPValue <= uniformDistributionSignificanceLevel)
+                    return null;
 
-                    return new AssertionFailureBuilder("Expected the statement probability to be greater than the specified significance level.")
-                        .AddRawExpectedValue(uniformDistributionSignificanceLevel)
-                        .AddRawActualValue(probability)
-                        .SetStackTrace(Context.GetStackTraceData())
-                        .ToAssertionFailure();
-                });
-            });
+                return new AssertionFailureBuilder("Expected the statement probability to be greater than the specified significance level.")
+                    .AddRawExpectedValue(uniformDistributionSignificanceLevel)
+                    .AddRawActualValue(1 - result.TwoTailedPValue)
+                    .SetStackTrace(Context.GetStackTraceData())
+                    .ToAssertionFailure();
+            }));
         }
+    }
 
-        private Test CreateAvalancheTest(HashStore store)
-        {
-            return new TestCase("AvalancheTest", () =>
-            {
-                // TODO
-            });
-        }
+    /// <summary>
+    /// A list of common limits for the collision probability.
+    /// </summary>
+    /// <seealso cref="HashCodeAcceptanceContract{T}.CollisionProbabilityLimit"/>
+    public static class CollisionProbability
+    {
+        /// <summary>
+        /// No collision allowed (0%)
+        /// </summary>
+        public static readonly double Perfect = 0.0;
+
+        /// <summary>
+        /// Represents a very low probability of collision (less than 1%) 
+        /// </summary>
+        public static readonly double Good = 0.01;
+
+        /// <summary>
+        /// Represents a reasonable probability of collision (less than 5%) 
+        /// </summary>
+        public static readonly double Fair = 0.05;
+
+        /// <summary>
+        /// Represents a mediocre probability of collision (less than 10%) 
+        /// </summary>
+        public static readonly double Mediocre = 0.1;
+    }
+
+    /// <summary>
+    /// A list of common limits for the uniform distribution significance level.
+    /// </summary>
+    /// <seealso cref="HashCodeAcceptanceContract{T}.UniformDistributionSignificanceLevel"/>
+    public static class UniformDistributionSignificance
+    {
+        /// <summary>
+        /// Nearly uniform (less than 1% of deviation probability)
+        /// </summary>
+        public static readonly double Excellent = 0.01;
+
+        /// <summary>
+        /// Characterizes a roughly uniform distribution (less than 5% of deviation probability)
+        /// </summary>
+        public static readonly double Good = 0.05;
+
+        /// <summary>
+        /// Characterizes a reasonably uniform distribution (less than 10% of deviation probability)
+        /// </summary>
+        public static readonly double Fair = 0.1;
+
+        /// <summary>
+        /// Characterizes a poor uniform distribution (less than 20% of deviation probability) 
+        /// </summary>
+        public static readonly double Mediocre = 0.2;
     }
 }
 

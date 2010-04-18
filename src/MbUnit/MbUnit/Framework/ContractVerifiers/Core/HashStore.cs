@@ -85,10 +85,10 @@ namespace MbUnit.Framework.ContractVerifiers.Core
         }
         
         /// <summary>
-        /// Returns the Chi-Square probability level (one-tailed).
+        /// Returns the Chi-Square test result.
         /// </summary>
         /// <returns>The resulting probability level.</returns>
-        public double GetChiSquareGoodnessToFit()
+        public ChiSquareTest GetChiSquareGoodnessToFit()
         {
             int k = GetPrime(map.Count);
             var actual = new double[k];
@@ -102,8 +102,7 @@ namespace MbUnit.Framework.ContractVerifiers.Core
             }
 
             var expected = CollectionUtils.ConstantArray((double) count / k, k);
-            var test = new ChiSquareTest(expected, actual, 1);
-            return test.SignificanceProbability;
+            return new ChiSquareTest(expected, actual, 1);
         }
 
         private static int GetPrime(int n)
