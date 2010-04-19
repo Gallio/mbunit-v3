@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 using Gallio.Common;
+using Gallio.Common.Collections;
 
 namespace Gallio.Framework.Data.Generation
 {

@@ -299,6 +299,7 @@
     <Compile Include="Framework\Assertions\NamespaceDoc.cs" />
     <Compile Include="Framework\Capture.cs" />
     <Compile Include="Framework\ComparisonSemantics.cs" />
+    <Compile Include="Framework\Data\Generation\AbstractRandomGenerator.cs" />
     <Compile Include="Framework\IComparisonSemantics.cs" />
     <Compile Include="Framework\CustomEqualityComparers.cs" />
     <Compile Include="Framework\CustomComparers.cs" />

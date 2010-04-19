@@ -49,7 +49,6 @@ namespace Gallio.Framework.Data.Generation
         {
             if (Values == null)
                 throw new GenerationException("The 'Values' property must be initialized.");
-
             if (Values.Length == 0)
                 throw new GenerationException("The 'Values' property must contain at least one element.");
 
