@@ -36,17 +36,14 @@ namespace Gallio.Common.Reflection.Impl
     /// </remarks>
     public class CciDebugSymbolResolver : IDebugSymbolResolver
     {
-        private readonly bool avoidLocks;
         private readonly IDictionary<string, CciModuleCache> cache = new Dictionary<string, CciModuleCache>();
         private readonly IList<string> unavailable = new List<string>();
 
         /// <summary>
-        /// Creates a Mono debug symbol resolver.
+        /// Creates a Cci debug symbol resolver.
         /// </summary>
-        /// <param name="avoidLocks">If true, avoids taking a lock on the PDB files but may use more memory or storage.</param>
-        public CciDebugSymbolResolver(bool avoidLocks)
+        public CciDebugSymbolResolver()
         {
-            this.avoidLocks = avoidLocks;
         }
 
         /// <inheritdoc />
@@ -69,7 +66,7 @@ namespace Gallio.Common.Reflection.Impl
 
                 try
                 {
-                    data = new CciModuleCache(new FileSystem(), assemblyPath, avoidLocks);
+                    data = new CciModuleCache(new FileSystem(), assemblyPath);
                 }
                 catch (InvalidOperationException)
                 {

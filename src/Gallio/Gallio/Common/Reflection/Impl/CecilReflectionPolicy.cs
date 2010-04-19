@@ -384,7 +384,7 @@ namespace Gallio.Common.Reflection.Impl
         private CodeLocation GetMethodSourceLocation(MethodDefinition methodDefinition)
         {
             if (symbolResolver == null)
-                symbolResolver = DebugSymbolUtils.CreateResolver(true);
+                symbolResolver = DebugSymbolUtils.CreateResolver();
 
             string assemblyPath = assemblyResolver.GetAssemblyPath(methodDefinition.DeclaringType.Module.Assembly);
             int metadataToken = (int) methodDefinition.MetadataToken.ToUInt();

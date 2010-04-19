@@ -38,8 +38,7 @@ namespace Gallio.Common.Reflection.Impl
         /// </summary>
         /// <param name="fileSystem">File system wrapper.</param>
         /// <param name="assemblyPath">The path of the assembly to scan.</param>
-        /// <param name="avoidLocks">If true, avoids taking a lock on the PDB files but may use more memory or storage.</param>
-        public CciModuleCache(IFileSystem fileSystem, string assemblyPath, bool avoidLocks)
+        public CciModuleCache(IFileSystem fileSystem, string assemblyPath)
         {
             if (fileSystem == null)
                 throw new ArgumentNullException("fileSystem");
@@ -48,7 +47,7 @@ namespace Gallio.Common.Reflection.Impl
 
             this.fileSystem = fileSystem;
             this.assemblyPath = assemblyPath;
-            FeedMap(avoidLocks);
+            FeedMap();
         }
 
         /// <summary>
@@ -68,7 +67,7 @@ namespace Gallio.Common.Reflection.Impl
             return result;
         }
 
-        private void FeedMap(bool avoidLocks)
+        private void FeedMap()
         {
             var host = new PeReader.DefaultHost();
             var module = host.LoadUnitFrom(assemblyPath) as IModule;
@@ -76,7 +75,7 @@ namespace Gallio.Common.Reflection.Impl
             if (module == null)
                 throw new InvalidOperationException(String.Format("Cannot open or read the module '{0}'.", assemblyPath));
 
-            using (var pdbReader = new PdbReader(OpenPdbStream(avoidLocks), host))
+            using (var pdbReader = new PdbReader(OpenPdbStream(), host))
             {
                 foreach (INamedTypeDefinition typeDefinition in module.GetAllTypes())
                 {
@@ -88,19 +87,13 @@ namespace Gallio.Common.Reflection.Impl
             }
         }
 
-        private Stream OpenPdbStream(bool avoidLocks)
+        private Stream OpenPdbStream()
         {
             string pdbFileName = Path.ChangeExtension(assemblyPath, ".pdb");
 
             try
             {
-                if (!avoidLocks)
-                {
-                    return fileSystem.OpenRead(pdbFileName);
-                }
-
-                byte[] bytes = fileSystem.ReadAllBytes(pdbFileName);
-                return new MemoryStream(bytes, 0, bytes.Length, false, true);
+                return fileSystem.OpenRead(pdbFileName);
             }
             catch (FileNotFoundException exception)
             {

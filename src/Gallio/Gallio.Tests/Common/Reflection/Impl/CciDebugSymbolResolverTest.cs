@@ -31,13 +31,10 @@ namespace Gallio.Tests.Common.Reflection.Impl
     [TestsOn(typeof(CciDebugSymbolResolver))]
     public class CciDebugSymbolResolverTest
     {
-        [Column(true, false)]
-        public bool AvoidLocks;
-
         [Test, ExpectedArgumentNullException]
         public void GetSourceLocationForMethod_ThrowsIfAssemblyFileIsNull()
         {
-            new CciDebugSymbolResolver(AvoidLocks).GetSourceLocationForMethod(null, 0);
+            new CciDebugSymbolResolver().GetSourceLocationForMethod(null, 0);
         }
 
         [Test]
@@ -59,27 +56,27 @@ namespace Gallio.Tests.Common.Reflection.Impl
         [Test]
         public void GetSourceLocationForMethod_ReturnsUnknownIfAssemblyFileDoesNotExist()
         {
-            CodeLocation codeLocation = new CciDebugSymbolResolver(AvoidLocks).GetSourceLocationForMethod("NoSuchAssembly", 0);
+            CodeLocation codeLocation = new CciDebugSymbolResolver().GetSourceLocationForMethod("NoSuchAssembly", 0);
             Assert.AreEqual(CodeLocation.Unknown, codeLocation);
         }
 
         [Test]
         public void GetSourceLocationForMethod_ReturnsUnknownIfAssemblyExistsButThereIsNoPDB()
         {
-            CodeLocation codeLocation = new CciDebugSymbolResolver(AvoidLocks).GetSourceLocationForMethod(typeof(ILogger).Assembly.Location, 0);
+            CodeLocation codeLocation = new CciDebugSymbolResolver().GetSourceLocationForMethod(typeof(ILogger).Assembly.Location, 0);
             Assert.AreEqual(CodeLocation.Unknown, codeLocation);
         }
 
         [Test]
         public void GetSourceLocationForMethod_ReturnsUnknownIfMethodTokenNotValid()
         {
-            CodeLocation codeLocation = new CciDebugSymbolResolver(AvoidLocks).GetSourceLocationForMethod(GetType().Assembly.Location, 0);
+            CodeLocation codeLocation = new CciDebugSymbolResolver().GetSourceLocationForMethod(GetType().Assembly.Location, 0);
             Assert.AreEqual(CodeLocation.Unknown, codeLocation);
         }
 
         private CodeLocation GetSourceLocationForMethod(string methodName)
         {
-            var resolver = new CciDebugSymbolResolver(AvoidLocks);
+            var resolver = new CciDebugSymbolResolver();
             MethodInfo method = typeof(Sample).GetMethod(methodName, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
             return resolver.GetSourceLocationForMethod(method.DeclaringType.Assembly.Location, method.MetadataToken);
         }

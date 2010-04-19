@@ -32,12 +32,18 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Gets the singleton debug symbol resolver used by these utilities.
         /// </summary>
+        /// <remarks>
+        /// Because this resolver is a singleton, it's important to remember that it will
+        /// remain in memory for the lifetime of the process.  If you only need to load
+        /// symbols for a short time and then discard them, use <see cref="CreateResolver"/>
+        /// to create a new resolver.
+        /// </remarks>
         public static IDebugSymbolResolver Resolver
         {
             get
             {
                 if (resolver == null)
-                    Interlocked.CompareExchange(ref resolver, CreateResolver(false), null);
+                    Interlocked.CompareExchange(ref resolver, CreateResolver(), null);
                 return resolver;
             }
         }
@@ -45,14 +51,13 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Creates a new debug symbol resolver appropriate for this platform.
         /// </summary>
-        /// <param name="avoidLocks">If true, avoids taking a lock on the PDB files but may use more memory or storage.</param>
         /// <returns>The debug symbol resolver.</returns>
-        public static IDebugSymbolResolver CreateResolver(bool avoidLocks)
+        public static IDebugSymbolResolver CreateResolver()
         {
             if (DotNetRuntimeSupport.IsUsingMono)
-                return new MonoDebugSymbolResolver(avoidLocks);
+                return new MonoDebugSymbolResolver();
 
-            return new CciDebugSymbolResolver(avoidLocks);
+            return new CciDebugSymbolResolver();
         }
 
         /// <summary>
