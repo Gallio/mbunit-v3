@@ -117,6 +117,17 @@ namespace Gallio.Common.Markup
         public const string FlashVideo = "video/x-flv";
 
         /// <summary>
+        /// Gets all the registered mime types.
+        /// </summary>
+        public static IEnumerable<string> All
+        {
+            get
+            {
+                return extensionsByMimeType.Keys;
+            }
+        }
+
+        /// <summary>
         /// Guesses the mime type given a well-known extension.
         /// </summary>
         /// <param name="extension">The extension.</param>

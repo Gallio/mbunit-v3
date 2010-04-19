@@ -43,7 +43,7 @@ namespace Gallio.Tests.Common.Text
         public readonly IContract HashCodeAcceptanceTests = new HashCodeAcceptanceContract<Range>
         {
             CollisionProbabilityLimit = CollisionProbability.Perfect,
-            UniformDistributionSignificanceLevel = UniformDistributionSignificance.Excellent,
+            UniformDistributionQuality = UniformDistributionQuality.Excellent,
             DistinctInstances = GetDistinctInstances()
         };
 

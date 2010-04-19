@@ -13,12 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using Gallio.Common.Markup;
 using Gallio.Common.Markup.Tags;
+using Gallio.Common.Text.RegularExpression;
+using Gallio.Framework.Data.Generation;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 
@@ -27,10 +31,18 @@ namespace Gallio.Tests.Common.Markup.Tags
     public class TextTagTest : BaseTagTest<TextTag>
     {
         [VerifyContract]
-        public readonly IContract EqualityTests = new EqualityContract<TextTag>()
+        public readonly IContract EqualityTests = new EqualityContract<TextTag>
         {
             ImplementsOperatorOverloads = false,
             EquivalenceClasses = equivalenceClasses
+        };
+
+        [VerifyContract]
+        public readonly IContract HashCodeTests = new HashCodeAcceptanceContract<TextTag>
+        {
+            CollisionProbabilityLimit = CollisionProbability.VeryLow,
+            UniformDistributionQuality = UniformDistributionQuality.Excellent,
+            DistinctInstances = RandomGenerator.Regex.Run(100000, @"[A-Za-z0-9 ]{4,100}").Select(text => new TextTag(text)),
         };
 
         public override EquivalenceClassCollection<TextTag> GetEquivalenceClasses()
@@ -40,10 +52,10 @@ namespace Gallio.Tests.Common.Markup.Tags
 
         private static readonly EquivalenceClassCollection<TextTag> equivalenceClasses = new EquivalenceClassCollection<TextTag>
         {
-            { new TextTag("") },
-            { new TextTag("text") },
-            { new TextTag("other") },
-            { new TextTag("   \nsomething\nwith  embedded  newlines and significant whitespace to\nencode\n  ") }
+            new TextTag(""),
+            new TextTag("text"),
+            new TextTag("other"),
+            new TextTag("   \nsomething\nwith  embedded  newlines and significant whitespace to\nencode\n  ")
         };
 
         [Test, ExpectedArgumentNullException]
@@ -75,18 +87,13 @@ namespace Gallio.Tests.Common.Markup.Tags
             Description = "Embedded CDATA terminator")]
         public void RoundTripToXml(string text, string expectedXml)
         {
-            TextTag originalTag = new TextTag(text);
-
-            XmlSerializer serializer = new XmlSerializer(typeof(TextTag));
-            StringWriter writer = new StringWriter();
-
+            var originalTag = new TextTag(text);
+            var serializer = new XmlSerializer(typeof(TextTag));
+            var writer = new StringWriter();
             serializer.Serialize(writer, originalTag);
-
             string xml = writer.ToString();
             Assert.AreEqual(expectedXml, xml);
-
-            TextTag deserializedTag = (TextTag) serializer.Deserialize(new StringReader(xml));
-
+            var deserializedTag = (TextTag)serializer.Deserialize(new StringReader(xml));
             Assert.AreEqual(text, deserializedTag.Text);
         }
     }

@@ -70,8 +70,8 @@ namespace MbUnit.Framework.ContractVerifiers
     ///     [VerifyContract]
     ///     public readonly IContract HashCodeAcceptanceTests = new HashCodeAcceptanceContract<Foo>
     ///     {
-    ///         CollisionProbabilityLimit = CollisionProbability.Good,
-    ///         UniformDistributionSignificanceLevel = UniformDistributionSignificance.Good,
+    ///         CollisionProbabilityLimit = CollisionProbability.Low,
+    ///         UniformDistributionSignificanceLevel = UniformDistributionQuality.Low,
     ///         DistinctInstances = GetDistinctInstances();
     ///     };
     /// 
@@ -87,8 +87,8 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <typeparam name="T">The type of the object for which the hash code generation must be evaluated.</typeparam>
     public class HashCodeAcceptanceContract<T> : AbstractContract
     {
-        private double collisionProbabilityLimit = CollisionProbability.Good;
-        private double uniformDistributionSignificanceLevel = UniformDistributionSignificance.Good;
+        private double collisionProbabilityLimit = CollisionProbability.Low;
+        private double uniformDistributionQuality = ContractVerifiers.UniformDistributionQuality.Good;
 
         /// <summary>
         /// Gets or sets the maximum collision probability tolerated.
@@ -130,11 +130,11 @@ namespace MbUnit.Framework.ContractVerifiers
         /// The default is 0.05 (5%).
         /// </para>
         /// </remarks>
-        public double UniformDistributionSignificanceLevel
+        public double UniformDistributionQuality
         {
             get
             {
-                return uniformDistributionSignificanceLevel;
+                return uniformDistributionQuality;
             }
 
             set
@@ -142,7 +142,7 @@ namespace MbUnit.Framework.ContractVerifiers
                 if (value < 0 || value > 1)
                     throw new ArgumentOutOfRangeException("value", "The uniform distribution significance level must be between 0 and 1.");
 
-                uniformDistributionSignificanceLevel = value;
+                uniformDistributionQuality = value;
             }
         }
 
@@ -176,6 +176,7 @@ namespace MbUnit.Framework.ContractVerifiers
             return new TestCase("CollisionProbabilityTest", () => AssertionHelper.Verify(() =>
             {
                 double probability = store.GetCollisionProbability();
+                TestLog.WriteLine("Statistical Population = {0}", store.Count);
                 TestLog.WriteLine("Actual Collision Probability = {0}", probability);
 
                 if (probability <= collisionProbabilityLimit)
@@ -194,15 +195,16 @@ namespace MbUnit.Framework.ContractVerifiers
             return new TestCase("UniformDistributionTest", () => AssertionHelper.Verify(() =>
             {
                 var result = store.GetChiSquareGoodnessToFit();
+                TestLog.WriteLine("Statistical Population = {0}", store.Count);
                 TestLog.WriteLine("Chi square value = {0}", result.ChiSquareValue);
                 TestLog.WriteLine("Degrees of freedom = {0}", result.DegreesOfFreedom);
                 TestLog.WriteLine("Two-tailed P value = {0}", result.TwoTailedPValue);
 
-                if (1 - result.TwoTailedPValue <= uniformDistributionSignificanceLevel)
+                if (1 - result.TwoTailedPValue <= uniformDistributionQuality)
                     return null;
 
                 return new AssertionFailureBuilder("Expected the statement probability to be greater than the specified significance level.")
-                    .AddRawExpectedValue(uniformDistributionSignificanceLevel)
+                    .AddRawExpectedValue(uniformDistributionQuality)
                     .AddRawActualValue(1 - result.TwoTailedPValue)
                     .SetStackTrace(Context.GetStackTraceData())
                     .ToAssertionFailure();
@@ -224,24 +226,29 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// Represents a very low probability of collision (less than 1%) 
         /// </summary>
-        public static readonly double Good = 0.01;
+        public static readonly double VeryLow = 0.01;
 
         /// <summary>
-        /// Represents a reasonable probability of collision (less than 5%) 
+        /// Represents a low probability of collision (less than 5%) 
         /// </summary>
-        public static readonly double Fair = 0.05;
+        public static readonly double Low = 0.05;
 
         /// <summary>
-        /// Represents a mediocre probability of collision (less than 10%) 
+        /// Represents a reasonable probability of collision (less than 10%) 
         /// </summary>
-        public static readonly double Mediocre = 0.1;
+        public static readonly double Medium = 0.1;
+
+        /// <summary>
+        /// Represents a mediocre probability of collision (less than 30%) 
+        /// </summary>
+        public static readonly double High = 0.3;
     }
 
     /// <summary>
     /// A list of common limits for the uniform distribution significance level.
     /// </summary>
-    /// <seealso cref="HashCodeAcceptanceContract{T}.UniformDistributionSignificanceLevel"/>
-    public static class UniformDistributionSignificance
+    /// <seealso cref="HashCodeAcceptanceContract{T}.UniformDistributionQuality"/>
+    public static class UniformDistributionQuality
     {
         /// <summary>
         /// Nearly uniform (less than 1% of deviation probability)
@@ -259,9 +266,9 @@ namespace MbUnit.Framework.ContractVerifiers
         public static readonly double Fair = 0.1;
 
         /// <summary>
-        /// Characterizes a poor uniform distribution (less than 20% of deviation probability) 
+        /// Characterizes a poor uniform distribution (less than 30% of deviation probability) 
         /// </summary>
-        public static readonly double Mediocre = 0.2;
+        public static readonly double Mediocre = 0.3;
     }
 }
 
