@@ -85,11 +85,13 @@ namespace MbUnit.Framework
         /// </summary>
         /// <remarks>
         /// <para>
-        /// That property is used to define the sequence, when used with 2 other properties:
+        /// That property is used to define the sequence, when used with other properties:
         /// <list type="bullet">
-        /// <item><see cref="End"/> and <see cref="Count"/></item>
-        /// <item><see cref="Step"/> and <see cref="Count"/></item>
-        /// <item><see cref="End"/> and <see cref="Step"/></item>
+        /// <item><see cref="End"/> and <see cref="Count"/>.</item>
+        /// <item><see cref="Step"/> and <see cref="Count"/>.</item>
+        /// <item><see cref="End"/> and <see cref="Step"/>.</item>
+        /// <item><see cref="End"/> (default step of 1)</item>
+        /// <item><see cref="Count"/> (default step of 1)</item>
         /// </list>
         /// </para>
         /// </remarks>
@@ -115,6 +117,7 @@ namespace MbUnit.Framework
         /// <list type="bullet">
         /// <item><see cref="Start"/> and <see cref="Count"/></item>
         /// <item><see cref="Start"/> and <see cref="Step"/></item>
+        /// <item><see cref="Start"/> (default step of 1)</item>
         /// </list>
         /// </para>
         /// </remarks>
@@ -165,6 +168,7 @@ namespace MbUnit.Framework
         /// <list type="bullet">
         /// <item><see cref="Start"/> and <see cref="End"/></item>
         /// <item><see cref="Start"/> and <see cref="Step"/></item>
+        /// <item><see cref="Start"/> (default step of 1)</item>
         /// </list>
         /// </para>
         /// </remarks>

@@ -21,60 +21,74 @@ using System.Collections;
 namespace Gallio.Framework.Data.Generation
 {
     /// <summary>
-    /// Static helpers to quickly generate random constrained values.
+    /// Generic abstract generator of random values within a given range.
     /// </summary>
-    public static class RandomGenerator
+    /// <typeparam name="T">The type of the value to generate.</typeparam>
+    public abstract class RandomGenerator<T> : Generator<T>
+        where T : struct, IComparable<T>, IEquatable<T>
     {
         /// <summary>
-        /// A random number generator within a specified range.
+        /// A general purpose pseudo-random number generator.
         /// </summary>
-        public static class Number
-        {
-            /// <summary>
-            /// Returns the specified number of random numbers.
-            /// </summary>
-            /// <param name="count">The number of strings to generate.</param>
-            /// <param name="minimum">The lower bound of the range.</param>
-            /// <param name="maximum">The upper bound of the range.</param>
-            /// <returns>An enumeration of random number values.</returns>
-            /// <exception cref="GenerationException">Thrown if the specified parameters are inconsistent or invalid.</exception>
-            public static IEnumerable<decimal> Run(int count, decimal minimum, decimal maximum)
-            {
-                var generator = new RandomNumbersGenerator
-                {
-                    Count = count,
-                    Minimum = minimum,
-                    Maximum = maximum,
-                };
+        protected readonly static Random InnerGenerator = new Random();
 
-                foreach (decimal value in generator.Run())
-                    yield return value;
-            }
+        /// <summary>
+        /// Gets the lower bound of the range.
+        /// </summary>
+        public T? Minimum
+        {
+            get;
+            set;
         }
 
         /// <summary>
-        /// A random string generator based on a regular expression filter.
+        /// Gets the upper bound of the range.
         /// </summary>
-        public static class Regex
+        public T? Maximum
         {
-            /// <summary>
-            /// Returns the specified number of random strings.
-            /// </summary>
-            /// <param name="count">The number of strings to generate.</param>
-            /// <param name="regularExpressionPattern">The regular expression filter.</param>
-            /// <returns>An enumeration of random string values.</returns>
-            /// <exception cref="GenerationException">Thrown if the specified parameters are inconsistent or invalid.</exception>
-            public static IEnumerable<string> Run(int count, string regularExpressionPattern)
-            {
-                var generator = new RandomRegexLiteStringsGenerator
-                {
-                    Count = count,
-                    RegularExpressionPattern = regularExpressionPattern,
-                };
-
-                foreach (string value in generator.Run())
-                    yield return value;
-            }
+            get;
+            set;
         }
+
+        /// <summary>
+        /// Gets the length of the sequence of values
+        /// created by the generator.
+        /// </summary>
+        public int? Count
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        protected RandomGenerator()
+        {
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable Run()
+        {
+            if (!Minimum.HasValue)
+                throw new GenerationException("The 'Minimum' property must be initialized.");
+            if (!Maximum.HasValue)
+                throw new GenerationException("The 'Maximum' property must be initialized.");
+            if (!Count.HasValue)
+                throw new GenerationException("The 'Count' property must be initialized.");
+            if (Minimum.Value.CompareTo(Maximum.Value) > 0)
+                throw new GenerationException("The 'Minimum' property must be less than or equal to the 'Maximum' property.");
+            if (Count.Value < 0)
+                throw new GenerationException("The 'Count' property wich specifies the length of the sequence must be strictly positive.");
+
+            CheckProperty(Count.Value, "Count");
+            return GetSequence();
+        }
+
+        /// <summary>
+        /// Returns the sequence of random values.
+        /// </summary>
+        /// <returns>The sequence of values.</returns>
+        protected abstract IEnumerable<T> GetSequence();
     }
 }

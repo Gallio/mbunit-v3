@@ -22,7 +22,6 @@ using System.Xml.Serialization;
 using Gallio.Common.Markup;
 using Gallio.Common.Markup.Tags;
 using Gallio.Common.Text.RegularExpression;
-using Gallio.Framework.Data.Generation;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 
@@ -42,7 +41,7 @@ namespace Gallio.Tests.Common.Markup.Tags
         {
             CollisionProbabilityLimit = CollisionProbability.VeryLow,
             UniformDistributionQuality = UniformDistributionQuality.Excellent,
-            DistinctInstances = RandomGenerator.Regex.Run(100000, @"[A-Za-z0-9 ]{4,100}").Select(text => new TextTag(text)),
+            DistinctInstances = DataGenerators.Strings.Random(100000, @"[A-Za-z0-9 ]{4,100}").Select(text => new TextTag(text)),
         };
 
         public override EquivalenceClassCollection<TextTag> GetEquivalenceClasses()

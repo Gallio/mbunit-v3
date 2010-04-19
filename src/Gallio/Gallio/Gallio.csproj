@@ -299,7 +299,7 @@
     <Compile Include="Framework\Assertions\NamespaceDoc.cs" />
     <Compile Include="Framework\Capture.cs" />
     <Compile Include="Framework\ComparisonSemantics.cs" />
-    <Compile Include="Framework\Data\Generation\AbstractRandomGenerator.cs" />
+    <Compile Include="Framework\Data\Generation\RandomGenerator.cs" />
     <Compile Include="Framework\IComparisonSemantics.cs" />
     <Compile Include="Framework\CustomEqualityComparers.cs" />
     <Compile Include="Framework\CustomComparers.cs" />
@@ -327,7 +327,6 @@
     <Compile Include="Framework\Data\Generation\Generator.cs" />
     <Compile Include="Framework\Data\Generation\RandomNumbersGenerator.cs" />
     <Compile Include="Framework\Data\Generation\RandomStringsGenerator.cs" />
-    <Compile Include="Framework\Data\Generation\RandomGenerator.cs" />
     <Compile Include="Framework\Data\Generation\SequentialGenerator.cs" />
     <Compile Include="Common\Condition.cs" />
     <Compile Include="Common\ConditionContext.cs" />

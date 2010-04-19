@@ -22,7 +22,7 @@ namespace Gallio.Framework.Data.Generation
     /// <summary>
     /// Generator of random <see cref="Decimal"/> values within a given range.
     /// </summary>
-    public class RandomNumbersGenerator : AbstractRandomGenerator<decimal>
+    public class RandomNumbersGenerator : RandomGenerator<decimal>
     {
         /// <summary>
         /// Constructs a generator of random <see cref="Decimal"/> numbers.
