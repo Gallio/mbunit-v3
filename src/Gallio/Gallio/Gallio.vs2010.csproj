@@ -73,23 +73,23 @@
     </Reference>
     <Reference Include="Microsoft.Cci.MetadataHelper, Version=2.0.8.17659, Culture=neutral, PublicKeyToken=736440c9b414ea16, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\CciMetadata\WithInternalsVisibleToGallio\Microsoft.Cci.MetadataHelper.dll</HintPath>
+      <HintPath>..\libs\CciMetadata\Bin\Microsoft.Cci.MetadataHelper.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Cci.MetadataModel, Version=2.0.8.17659, Culture=neutral, PublicKeyToken=736440c9b414ea16, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\CciMetadata\WithInternalsVisibleToGallio\Microsoft.Cci.MetadataModel.dll</HintPath>
+      <HintPath>..\libs\CciMetadata\Bin\Microsoft.Cci.MetadataModel.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Cci.PdbReader, Version=2.0.8.17659, Culture=neutral, PublicKeyToken=736440c9b414ea16, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\CciMetadata\WithInternalsVisibleToGallio\Microsoft.Cci.PdbReader.dll</HintPath>
+      <HintPath>..\libs\CciMetadata\Bin\Microsoft.Cci.PdbReader.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Cci.PeReader, Version=2.0.8.17659, Culture=neutral, PublicKeyToken=736440c9b414ea16, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\CciMetadata\WithInternalsVisibleToGallio\Microsoft.Cci.PeReader.dll</HintPath>
+      <HintPath>..\libs\CciMetadata\Bin\Microsoft.Cci.PeReader.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Cci.SourceModel, Version=2.0.8.17659, Culture=neutral, PublicKeyToken=736440c9b414ea16, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\CciMetadata\WithInternalsVisibleToGallio\Microsoft.Cci.SourceModel.dll</HintPath>
+      <HintPath>..\libs\CciMetadata\Bin\Microsoft.Cci.SourceModel.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil, Version=0.6.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
       <SpecificVersion>False</SpecificVersion>
