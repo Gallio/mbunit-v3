@@ -1,0 +1,13 @@
+(Jeff)
+I found an unfortunate bug in the Cci PdbReader.
+
+Internal error: An unhandled exception occurred.
+System.NullReferenceException: Object reference not set to an instance of an object.
+  at Microsoft.Cci.PdbReader.Close()
+  at Microsoft.Cci.PdbReader.Finalize()
+
+I think what's happening here is that the PdbReader finalizer is attempting to read the sourceFilesOpenedByReader field in Close() and it's encountering a null.  I think the .Net GC may have already nulled out the field before calling the finalizer.  If it didn't go that, then sort of thing then it would have to resurrect the entire object graph which would be extremely expensive.  Interestingly, PdbReader.Dispose() calls GC.SuppressFinalize but the finalizer still gets called.  Then again, I guess suppressing finalization is really just a hint.
+
+In any case, I consider the finalizer itself to be a bug.  The PdbReader object isn't holding onto any unmanaged resources.  Moreover the streams being closed are already taken care of by the streams' own finalizers.
+
+So I think we should patch PdbReader to remove its finalizer and file a bug with the Cci team.
