@@ -42,23 +42,13 @@ namespace Gallio.Tests.Common.Markup.Tags
         {
             CollisionProbabilityLimit = CollisionProbability.VeryLow,
             UniformDistributionQuality = UniformDistributionQuality.Excellent,
-            DistinctInstances = GetDistinctInstances()
+            DistinctInstances = DataGenerators
+                .Join(DataGenerators.Random.Strings(200, @"[A-Za-z0-9]{5,30}")
+                        .Concat(Enumerable.Repeat<string>(null, 200)),
+                      MimeTypes.All, 
+                      DataGenerators.Random.Strings(200, @"[A-Za-z0-9 ]{5,50}"))
+                .Select(x => new TextAttachment(x.First, x.Second, x.Third))
         };
-
-        private static IEnumerable<TextAttachment> GetDistinctInstances()
-        {
-            foreach (var contentType in MimeTypes.All)
-            {
-                foreach (var text in DataGenerators.Strings.Random(200, @"[A-Za-z0-9 ]{5,50}"))
-                {
-                    foreach (var name in DataGenerators.Strings.Random(200, @"[A-Za-z0-9]{5,30}"))
-                        yield return new TextAttachment(name, contentType, text);
-
-                    for (int i = 0; i < 200; i++) // Null name will be replaced by a 64-bit hash.
-                        yield return new TextAttachment(null, contentType, text);
-                }
-            }
-        }
 
         [Test]
         public void NullAttachmentNamePicksAUniqueOne()

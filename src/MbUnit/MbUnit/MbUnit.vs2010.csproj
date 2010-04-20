@@ -62,6 +62,8 @@
     <Compile Include="Framework\ContractVerifiers\HashCodeAcceptanceContract.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClass.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassCollection.cs" />
+    <Compile Include="Framework\DataGenerators.Random.cs" />
+    <Compile Include="Framework\DataGenerators.Sequential.cs" />
     <Compile Include="Framework\CsvDataAttribute.cs" />
     <Compile Include="Framework\DataAttribute.cs" />
     <Compile Include="Framework\DependsOnAssemblyAttribute.cs" />
@@ -69,11 +71,12 @@
     <Compile Include="Framework\ExplicitAttribute.cs" />
     <Compile Include="Framework\ContentAttribute.cs" />
     <Compile Include="Framework\FactoryAttribute.cs" />
-    <Compile Include="Framework\DataGenerators.cs" />
+    <Compile Include="Framework\DataGenerators.Join.cs" />
     <Compile Include="Framework\HeaderAttribute.cs" />
     <Compile Include="Framework\FixtureInitializerAttribute.cs" />
     <Compile Include="Framework\IRetryOptions.cs" />
     <Compile Include="Framework\JoinAttribute.cs" />
+    <Compile Include="Framework\JoinStrategy.cs" />
     <Compile Include="Framework\Mirror.cs" />
     <Compile Include="Framework\MultipleAssertsAttribute.cs" />
     <Compile Include="Framework\NameAttribute.cs" />

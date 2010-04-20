@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
+using System.Linq;
 using Gallio.Common.Markup;
 using Gallio.Common.Markup.Tags;
 using MbUnit.Framework;
@@ -28,6 +28,14 @@ namespace Gallio.Tests.Common.Markup.Tags
         {
             ImplementsOperatorOverloads = false,
             EquivalenceClasses = equivalenceClasses
+        };
+
+        [VerifyContract]
+        public readonly IContract HashCodeTests = new HashCodeAcceptanceContract<EmbedTag>
+        {
+            CollisionProbabilityLimit = CollisionProbability.VeryLow,
+            UniformDistributionQuality = UniformDistributionQuality.Excellent,
+            DistinctInstances = DataGenerators.Random.Strings(1000000, @"[A-Za-z0-9 ]{5,50}").Select(x => new EmbedTag(x))
         };
 
         public override EquivalenceClassCollection<EmbedTag> GetEquivalenceClasses()

@@ -41,7 +41,7 @@ namespace Gallio.Tests.Common.Markup.Tags
         {
             CollisionProbabilityLimit = CollisionProbability.VeryLow,
             UniformDistributionQuality = UniformDistributionQuality.Excellent,
-            DistinctInstances = DataGenerators.Strings.Random(100000, @"[A-Za-z0-9 ]{4,100}").Select(text => new TextTag(text)),
+            DistinctInstances = DataGenerators.Random.Strings(100000, @"[A-Za-z0-9 ]{4,100}").Select(text => new TextTag(text)),
         };
 
         public override EquivalenceClassCollection<TextTag> GetEquivalenceClasses()
