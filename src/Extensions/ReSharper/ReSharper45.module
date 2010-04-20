@@ -16,7 +16,9 @@
       <ExcludeFromImage>true</ExcludeFromImage>
     </PdbFile>
 
+<!--
     <TestAssembly Include="Gallio.ReSharperRunner.Tests\bin\v4.5\Gallio.ReSharperRunner45.Tests.dll" />
+-->
 
     <Feature Include="FEATURE_RESHARPER_RUNNER" />
     <Feature Include="FEATURE_RESHARPER_RUNNER_45" />
