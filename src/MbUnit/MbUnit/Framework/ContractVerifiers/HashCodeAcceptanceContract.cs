@@ -1,4 +1,4 @@
-// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
+﻿// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -70,8 +70,8 @@ namespace MbUnit.Framework.ContractVerifiers
     ///     [VerifyContract]
     ///     public readonly IContract HashCodeAcceptanceTests = new HashCodeAcceptanceContract<Foo>
     ///     {
-    ///         CollisionProbabilityLimit = CollisionProbability.Low,
-    ///         UniformDistributionSignificanceLevel = UniformDistributionQuality.Low,
+    ///         CollisionProbabilityLimit = CollisionProbability.VeryLow,
+    ///         UniformDistributionSignificanceLevel = UniformDistributionQuality.Excellent,
     ///         DistinctInstances = GetDistinctInstances();
     ///     };
     /// 
@@ -177,12 +177,12 @@ namespace MbUnit.Framework.ContractVerifiers
             {
                 double probability = store.GetCollisionProbability();
                 TestLog.WriteLine("Statistical Population = {0}", store.Count);
-                TestLog.WriteLine("Actual Collision Probability = {0}", probability);
+                TestLog.WriteLine("Actual Collision Probability = {0} {1} {2}", probability, ((probability <= collisionProbabilityLimit) ? "≤" : ">"), collisionProbabilityLimit);
 
                 if (probability <= collisionProbabilityLimit)
                     return null;
 
-                return new AssertionFailureBuilder("Expected the collision probability to be less than the specified limit.")
+                return new AssertionFailureBuilder(String.Format("The actual collision probability {0} is higher than the specified limit of {1}.", probability, collisionProbabilityLimit))
                     .AddRawExpectedValue(collisionProbabilityLimit)
                     .AddRawActualValue(probability)
                     .SetStackTrace(Context.GetStackTraceData())
@@ -199,11 +199,13 @@ namespace MbUnit.Framework.ContractVerifiers
                 TestLog.WriteLine("Chi square value = {0}", result.ChiSquareValue);
                 TestLog.WriteLine("Degrees of freedom = {0}", result.DegreesOfFreedom);
                 TestLog.WriteLine("Two-tailed P value = {0}", result.TwoTailedPValue);
+                double deviationProbability = 1.0 - result.TwoTailedPValue;
+                TestLog.WriteLine("Deviation Probability = {0} {1} {2}", deviationProbability, ((deviationProbability <= uniformDistributionQuality) ? "≤" : ">"), uniformDistributionQuality);
 
-                if (1 - result.TwoTailedPValue <= uniformDistributionQuality)
+                if (deviationProbability <= uniformDistributionQuality)
                     return null;
 
-                return new AssertionFailureBuilder("Expected the statement probability to be greater than the specified significance level.")
+                return new AssertionFailureBuilder(String.Format("The distribution is not considered uniform because the actual probability of deviation {0} is higher than the specified limit of {1}.", deviationProbability, uniformDistributionQuality))
                     .AddRawExpectedValue(uniformDistributionQuality)
                     .AddRawActualValue(1 - result.TwoTailedPValue)
                     .SetStackTrace(Context.GetStackTraceData())

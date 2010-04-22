@@ -12,13 +12,13 @@ namespace MbUnit.Framework.ContractVerifiers.Core
     /// </summary>
     internal class HashStore
     {
-        private readonly IDictionary<int, int> map = new Dictionary<int, int>();
-        private readonly int count;
+        private readonly IDictionary<int, double> map = new Dictionary<int, double>();
+        private readonly double count;
 
         /// <summary>
         /// Gets the total number of hash codes stored in the map.
         /// </summary>
-        public int Count
+        public double Count
         {
             get
             {
@@ -45,9 +45,9 @@ namespace MbUnit.Framework.ContractVerifiers.Core
 
         private void Add(int hash)
         {
-            int occurences;
+            double occurences;
             bool exists = map.TryGetValue(hash, out occurences);
-            map[hash] = 1 + (exists ? occurences : 0);
+            map[hash] = 1.0 + (exists ? occurences : 0.0);
         }
 
         /// <summary>
@@ -55,11 +55,11 @@ namespace MbUnit.Framework.ContractVerifiers.Core
         /// </summary>
         /// <param name="hash">The searched hash code.</param>
         /// <returns>The number of occurences found.</returns>
-        public int this[int hash]
+        public double this[int hash]
         {
             get
             {
-                int occurences;
+                double occurences;
                 return map.TryGetValue(hash, out occurences) ? occurences : 0;
             }
         }
@@ -70,14 +70,14 @@ namespace MbUnit.Framework.ContractVerifiers.Core
         /// <returns>The probability of collision between 0 and 1.</returns>
         public double GetCollisionProbability()
         {
-            double result = 0d;
+            double result = 0.0;
 
             foreach (var pair in map)
             {
                 if (pair.Value > 1)
                 {
                     double occurences = pair.Value;
-                    result += (occurences / count) * ((occurences - 1d) / (count - 1d));
+                    result += (occurences / count) * ((occurences - 1.0) / (count - 1.0));
                 }
             }
 
@@ -101,7 +101,7 @@ namespace MbUnit.Framework.ContractVerifiers.Core
                 i++;
             }
 
-            var expected = CollectionUtils.ConstantArray((double) count / k, k);
+            var expected = CollectionUtils.ConstantArray(count / k, k);
             return new ChiSquareTest(expected, actual, 1);
         }
 

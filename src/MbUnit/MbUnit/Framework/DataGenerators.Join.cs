@@ -36,27 +36,37 @@ namespace MbUnit.Framework
         };
 
         /// <summary>
-        /// 
+        /// Joins the two specified enumerations of values into a single enumeration of paired values 
+        /// by applying the default combinatorial join strategy.
         /// </summary>
-        /// <typeparam name="T1"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <param name="values1"></param>
-        /// <param name="values2"></param>
-        /// <returns></returns>
+        /// <typeparam name="T1">The type of the values in the first enumeration.</typeparam>
+        /// <typeparam name="T2">The type of the values in the first enumeration.</typeparam>
+        /// <param name="values1">The first enumeration of values.</param>
+        /// <param name="values2">The second enumeration of values.</param>
+        /// <returns>The resulting enumeration of paired values.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="values1"/> or <paramref name="values2"/> is null.</exception>
+        /// <seealso cref="Join{T1,T2}(IEnumerable{T1},IEnumerable{T2},JoinStrategy)"/>
+        /// <seealso cref="CombinatorialJoinAttribute"/>
         public static IEnumerable<Pair<T1, T2>> Join<T1, T2>(IEnumerable<T1> values1, IEnumerable<T2> values2)
         {
             return Join(values1, values2, JoinStrategy.Combinatorial);
         }
 
         /// <summary>
-        /// 
+        /// Joins the two specified enumerations of values into a single enumeration of paired values 
+        /// by applying the specified join strategy.
         /// </summary>
-        /// <typeparam name="T1"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <param name="values1"></param>
-        /// <param name="values2"></param>
-        /// <param name="joinStrategy"></param>
-        /// <returns></returns>
+        /// <typeparam name="T1">The type of the values in the first enumeration.</typeparam>
+        /// <typeparam name="T2">The type of the values in the first enumeration.</typeparam>
+        /// <param name="values1">The first enumeration of values.</param>
+        /// <param name="values2">The second enumeration of values.</param>
+        /// <param name="joinStrategy">The join strategy to use.</param>
+        /// <returns>The resulting enumeration of paired values.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="values1"/> or <paramref name="values2"/> is null.</exception>
+        /// <seealso cref="Join{T1,T2}(IEnumerable{T1},IEnumerable{T2})"/>
+        /// <seealso cref="CombinatorialJoinAttribute"/>
+        /// <seealso cref="SequentialJoinAttribute"/>
+        /// <seealso cref="PairwiseJoinAttribute"/>
         public static IEnumerable<Pair<T1, T2>> Join<T1, T2>(IEnumerable<T1> values1, IEnumerable<T2> values2, JoinStrategy joinStrategy)
         {
             var providers = new List<IDataProvider>
@@ -66,7 +76,7 @@ namespace MbUnit.Framework
             };
 
             var binding = new DataBinding(0, null);
-            var bindings = new DataBinding[][] { new[] { binding }, new[] { binding } };
+            var bindings = new[] { new[] { binding }, new[] { binding } };
 
             foreach (var items in map[joinStrategy].Join(providers, bindings, false))
             {
@@ -77,31 +87,41 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// 
+        /// Joins the three specified enumerations of values into a single enumeration of triplet values 
+        /// by applying the default combinatorial join strategy.
         /// </summary>
-        /// <typeparam name="T1"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <param name="values1"></param>
-        /// <param name="values2"></param>
-        /// <param name="values3"></param>
-        /// <returns></returns>
+        /// <typeparam name="T1">The type of the values in the first enumeration.</typeparam>
+        /// <typeparam name="T2">The type of the values in the second enumeration.</typeparam>
+        /// <typeparam name="T3">The type of the values in the third enumeration.</typeparam>
+        /// <param name="values1">The first enumeration of values.</param>
+        /// <param name="values2">The second enumeration of values.</param>
+        /// <param name="values3">The third enumeration of values.</param>
+        /// <returns>The resulting enumeration of triplet values.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="values1"/>, <paramref name="values2"/>, or <paramref name="values3"/> is null.</exception>
+        /// <seealso cref="Join{T1,T2,T3}(IEnumerable{T1},IEnumerable{T2},IEnumerable{T3},JoinStrategy)"/>
+        /// <seealso cref="CombinatorialJoinAttribute"/>
         public static IEnumerable<Triple<T1, T2, T3>> Join<T1, T2, T3>(IEnumerable<T1> values1, IEnumerable<T2> values2, IEnumerable<T3> values3)
         {
             return Join(values1, values2, values3, JoinStrategy.Combinatorial);
         }
 
         /// <summary>
-        /// 
+        /// Joins the two specified enumerations of values into a single enumeration of triplet values 
+        /// by applying the specified join strategy.
         /// </summary>
-        /// <typeparam name="T1"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <param name="values1"></param>
-        /// <param name="values2"></param>
-        /// <param name="values3"></param>
-        /// <param name="joinStrategy"></param>
-        /// <returns></returns>
+        /// <typeparam name="T1">The type of the values in the first enumeration.</typeparam>
+        /// <typeparam name="T2">The type of the values in the second enumeration.</typeparam>
+        /// <typeparam name="T3">The type of the values in the third enumeration.</typeparam>
+        /// <param name="values1">The first enumeration of values.</param>
+        /// <param name="values2">The second enumeration of values.</param>
+        /// <param name="values3">The third enumeration of values.</param>
+        /// <param name="joinStrategy">The join strategy to use.</param>
+        /// <returns>The resulting enumeration of triplet values.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="values1"/>, <paramref name="values2"/>, or <paramref name="values3"/> is null.</exception>
+        /// <seealso cref="Join{T1,T2,T3}(IEnumerable{T1},IEnumerable{T2},IEnumerable{T3})"/>
+        /// <seealso cref="CombinatorialJoinAttribute"/>
+        /// <seealso cref="SequentialJoinAttribute"/>
+        /// <seealso cref="PairwiseJoinAttribute"/>
         public static IEnumerable<Triple<T1, T2, T3>> Join<T1, T2, T3>(IEnumerable<T1> values1, IEnumerable<T2> values2, IEnumerable<T3> values3, JoinStrategy joinStrategy)
         {
             var providers = new List<IDataProvider>
@@ -112,7 +132,7 @@ namespace MbUnit.Framework
             };
 
             var binding = new DataBinding(0, null);
-            var bindings = new DataBinding[][] { new[] { binding }, new[] { binding }, new[] { binding } };
+            var bindings = new[] { new[] { binding }, new[] { binding }, new[] { binding } };
 
             foreach (var items in map[joinStrategy].Join(providers, bindings, false))
             {
