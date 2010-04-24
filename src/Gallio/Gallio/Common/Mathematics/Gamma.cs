@@ -39,8 +39,8 @@ namespace Gallio.Common.Mathematics
         // Returns the incomplete Gamma function evaluated by its series representation.
         private static double IncompleteGammaSeries(double a, double x)
         {
-            if (x <= 0)
-                throw new ArgumentOutOfRangeException("a");
+            if (x < 0)
+                throw new ArgumentOutOfRangeException("x");
 
             double ap = a;
             double delta = 1 / a;

@@ -175,8 +175,8 @@ namespace MbUnit.Framework.ContractVerifiers
         {
             return new TestCase("CollisionProbabilityTest", () => AssertionHelper.Verify(() =>
             {
-                double probability = store.GetCollisionProbability();
-                TestLog.WriteLine("Statistical Population = {0}", store.Count);
+                var probability = (double)store.CollisionProbability;
+                TestLog.WriteLine("Statistical Population = {0}", store.StatisticalPopulation);
                 TestLog.WriteLine("Actual Collision Probability = {0} {1} {2}", probability, ((probability <= collisionProbabilityLimit) ? "≤" : ">"), collisionProbabilityLimit);
 
                 if (probability <= collisionProbabilityLimit)
@@ -194,20 +194,16 @@ namespace MbUnit.Framework.ContractVerifiers
         {
             return new TestCase("UniformDistributionTest", () => AssertionHelper.Verify(() =>
             {
-                var result = store.GetChiSquareGoodnessToFit();
-                TestLog.WriteLine("Statistical Population = {0}", store.Count);
-                TestLog.WriteLine("Chi square value = {0}", result.ChiSquareValue);
-                TestLog.WriteLine("Degrees of freedom = {0}", result.DegreesOfFreedom);
-                TestLog.WriteLine("Two-tailed P value = {0}", result.TwoTailedPValue);
-                double deviationProbability = 1.0 - result.TwoTailedPValue;
-                TestLog.WriteLine("Deviation Probability = {0} {1} {2}", deviationProbability, ((deviationProbability <= uniformDistributionQuality) ? "≤" : ">"), uniformDistributionQuality);
+                var probability = store.UniformDistributionDeviationProbability;
+                TestLog.WriteLine("Statistical Population = {0}", store.StatisticalPopulation);
+                TestLog.WriteLine("Deviation Probability = {0} {1} {2}", probability, ((probability <= uniformDistributionQuality) ? "≤" : ">"), uniformDistributionQuality);
 
-                if (deviationProbability <= uniformDistributionQuality)
+                if (probability <= uniformDistributionQuality)
                     return null;
 
-                return new AssertionFailureBuilder(String.Format("The distribution is not considered uniform because the actual probability of deviation {0} is higher than the specified limit of {1}.", deviationProbability, uniformDistributionQuality))
+                return new AssertionFailureBuilder(String.Format("The distribution is not considered uniform because the actual probability of deviation {0} is higher than the specified limit of {1}.", probability, uniformDistributionQuality))
                     .AddRawExpectedValue(uniformDistributionQuality)
-                    .AddRawActualValue(1 - result.TwoTailedPValue)
+                    .AddRawActualValue(probability)
                     .SetStackTrace(Context.GetStackTraceData())
                     .ToAssertionFailure();
             }));

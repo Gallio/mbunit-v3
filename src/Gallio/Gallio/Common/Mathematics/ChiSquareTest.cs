@@ -78,24 +78,19 @@ namespace Gallio.Common.Mathematics
         /// <param name="expected"></param>
         /// <param name="actual"></param>
         /// <param name="numberOfConstraints"></param>
-        public ChiSquareTest(double[] expected, double[] actual, int numberOfConstraints)
+        public ChiSquareTest(double expected, ICollection<double> actual, int numberOfConstraints)
         {
-            if (expected == null)
-                throw new ArgumentNullException("expected");
+            if (expected <= 0)
+                throw new ArgumentOutOfRangeException("The expected value is negative.", "expected");
             if (actual == null)
                 throw new ArgumentNullException("actual");
-            if (expected.Length != actual.Length)
-                throw new ArgumentException("The expected and the actual arrays have not the same length.", "actual");
 
-            degreesOfFreedom = expected.Length - numberOfConstraints;
+            degreesOfFreedom = actual.Count - numberOfConstraints;
 
-            for (int i = 0; i < actual.Length; i++)
+            foreach (double value in actual)
             {
-                if (expected[i] <= 0)
-                    throw new ArgumentException("At least one of the following expected values is negative.", "expected");
-
-                var delta = actual[i] - expected[i];
-                chiSquareValue += (delta * delta) / expected[i];
+                var delta = value - expected;
+                chiSquareValue += (delta * delta) / expected;
             }
 
             twoTailedPValue = Gamma.IncompleteGamma(degreesOfFreedom / 2d, chiSquareValue / 2d);

@@ -12,17 +12,41 @@ namespace MbUnit.Framework.ContractVerifiers.Core
     /// </summary>
     internal class HashStore
     {
-        private readonly IDictionary<int, double> map = new Dictionary<int, double>();
-        private readonly double count;
+        private readonly IDictionary<int, int> map = new Dictionary<int, int>();
+        private readonly int total;
+        private double collisionProbability;
+        private double uniformDistributionDeviationProbability;
 
         /// <summary>
         /// Gets the total number of hash codes stored in the map.
         /// </summary>
-        public double Count
+        public int StatisticalPopulation
         {
             get
             {
-                return count;
+                return total;
+            }
+        }
+
+        /// <summary>
+        /// Gets the probability that two values randomly chosen have the same hash code.
+        /// </summary>
+        public double CollisionProbability
+        {
+            get
+            {
+                return collisionProbability;
+            }
+        }
+
+        /// <summary>
+        /// Gets the probability of deviation from uniform distribution.
+        /// </summary>
+        public double UniformDistributionDeviationProbability
+        {
+            get
+            {
+                return uniformDistributionDeviationProbability;
             }
         }
 
@@ -32,88 +56,63 @@ namespace MbUnit.Framework.ContractVerifiers.Core
         /// <param name="hashes">An enumeration of hash codes.</param>
         public HashStore(IEnumerable<int> hashes)
         {
-            int n = 0;
+            int count = 0;
 
-            foreach(int hash in hashes)
+            foreach (int hash in hashes)
             {
-                Add(hash);
-                n++;
+                int n;
+                map[hash] = 1 + (map.TryGetValue(hash, out n) ? n : 0);
+                count++;
             }
 
-            count = n;
+            total = count;
+            CalculateStatistics();
         }
 
-        private void Add(int hash)
-        {
-            double occurences;
-            bool exists = map.TryGetValue(hash, out occurences);
-            map[hash] = 1.0 + (exists ? occurences : 0.0);
-        }
-
-        /// <summary>
-        /// Gets the number of occurences for the specified hash code.
-        /// </summary>
-        /// <param name="hash">The searched hash code.</param>
-        /// <returns>The number of occurences found.</returns>
-        public double this[int hash]
+        internal int this[int hash]
         {
             get
             {
-                double occurences;
-                return map.TryGetValue(hash, out occurences) ? occurences : 0;
+                int n;
+                return map.TryGetValue(hash, out n) ? n : 0;
             }
         }
 
-        /// <summary>
-        /// Returns the probability of collision.
-        /// </summary>
-        /// <returns>The probability of collision between 0 and 1.</returns>
-        public double GetCollisionProbability()
+        private void CalculateStatistics()
         {
-            double result = 0.0;
+            int bucketSize = GetBucketSize();
+            var bucket = new double[bucketSize];
+            collisionProbability = 0;
 
-            foreach (var pair in map)
+            foreach(var pair in map)
             {
+                bucket[pair.Key % bucketSize] += pair.Value;
+
                 if (pair.Value > 1)
                 {
-                    double occurences = pair.Value;
-                    result += (occurences / count) * ((occurences - 1.0) / (count - 1.0));
+                    collisionProbability += (double)pair.Value / total * (pair.Value - 1) / (total - 1);
                 }
             }
 
-            return result;
+            Gallio.Framework.TestLog.WriteLine("Total = {0}", total);
+            Gallio.Framework.TestLog.WriteLine("bucketSize = {0}", bucketSize);
+            Gallio.Framework.TestLog.WriteLine("bucket = {0} {1}", bucket[0], bucket[1]);
+            var chiSquareTest = new ChiSquareTest((double)total / bucketSize, bucket, 1);
+            uniformDistributionDeviationProbability = 1.0 - chiSquareTest.TwoTailedPValue;
         }
-        
-        /// <summary>
-        /// Returns the Chi-Square test result.
-        /// </summary>
-        /// <returns>The resulting probability level.</returns>
-        public ChiSquareTest GetChiSquareGoodnessToFit()
-        {
-            int k = GetPrime(map.Count);
-            var actual = new double[k];
-            Array.Clear(actual, 0, k);
-            int i = 0;
 
-            foreach (var value in map.Values)
+        private int GetBucketSize()
+        {
+            const int threshold = 3;
+            var primes = new[] {103451, 14813, 3613, 223};
+
+            foreach (int prime in primes)
             {
-                actual[i % k] += value;
-                i++;
+                if (map.Count >= prime * threshold)
+                    return prime;
             }
 
-            var expected = CollectionUtils.ConstantArray(count / k, k);
-            return new ChiSquareTest(expected, actual, 1);
-        }
-
-        private static int GetPrime(int n)
-        {
-            if (n > 400)
-                return 113;
-
-            if (n > 80)
-                return 19;
-
-            return n;
+            return map.Count;
         }
     }
 }

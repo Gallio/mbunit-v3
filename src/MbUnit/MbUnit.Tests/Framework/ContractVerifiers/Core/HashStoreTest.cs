@@ -32,32 +32,45 @@ namespace MbUnit.Tests.Framework.ContractVerifiers.Core
         [Test]
         public void AddHashCodes()
         {
-            var map = new HashStore(new[] { 123, 456, 123, 456, 789, 123 });
-            Assert.AreEqual(6, map.Count);
-            Assert.AreEqual(3, map[123]);
-            Assert.AreEqual(2, map[456]);
-            Assert.AreEqual(1, map[789]);
-            Assert.AreEqual(0, map[666]);
+            var store = new HashStore(new[] { 123, 456, 123, 456, 789, 123 });
+            Assert.AreEqual(6, store.StatisticalPopulation);
+            Assert.AreEqual(3, store[123]);
+            Assert.AreEqual(2, store[456]);
+            Assert.AreEqual(1, store[789]);
+            Assert.AreEqual(0, store[666]);
         }
 
         [Test]
-        [Row(new[] { 1, 1, 2, 3 }, 0.1667)]
-        [Row(new[] { 1, 1, 2, 2 }, 0.3333)]
-        public void CalculateCollisionProbability(int[] hashes, double expectedProbability)
+        [Row(0.1667, new[] { 1, 1, 2, 3 })]
+        [Row(0.3333, new[] { 1, 1, 2, 2 })]
+        public void CalculateCollisionProbability(double expectedProbability, IEnumerable<int> hashes)
         {
-            var map = new HashStore(hashes);
-            double actualProbability = map.GetCollisionProbability();
+            var store = new HashStore(hashes);
+            double actualProbability = store.CollisionProbability;
             Assert.AreApproximatelyEqual(expectedProbability, actualProbability, 0.0001);
         }
 
         [Test]
-        public void ChiSquareTest()
+        public void CalculateCollisionProbabilityWithHighLoad()
         {
-            var map = new HashStore(new[] { 7, 7, 7, 8, 8, 8, 8, 9, 9, 6, 6, 6, 5, 5, 5, 5, 5, 5 });
-            var actual = map.GetChiSquareGoodnessToFit();
-            Assert.AreEqual(4, actual.DegreesOfFreedom);
-            Assert.AreApproximatelyEqual(0.634716, actual.TwoTailedPValue, 0.000001);
-            Assert.AreApproximatelyEqual(2.556, actual.ChiSquareValue, 0.001);
+            var store = new HashStore(GenerateHashLoad(Enumerable.Range(0, 10000), 5000));
+            double actualProbability = store.CollisionProbability;
+            Assert.AreApproximatelyEqual(9.998E-5, actualProbability, 1E-5);
+        }
+
+        private static IEnumerable<int> GenerateHashLoad(IEnumerable<int> hashes, int repeat)
+        {
+            foreach (int hash in hashes)
+                for (int i = 0; i < repeat; i++)
+                    yield return hash;
+        }
+
+        [Test]
+        public void DistributionDeviationProbability()
+        {
+            var store = new HashStore(new[] { 7, 7, 7, 8, 8, 8, 8, 9, 9, 6, 6, 6, 5, 5, 5, 5, 5, 5 });
+            double actual = store.UniformDistributionDeviationProbability;
+            Assert.AreApproximatelyEqual(0.365284, actual, 0.000001);
         }
     }
 }
