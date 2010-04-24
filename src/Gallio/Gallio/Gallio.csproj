@@ -329,8 +329,8 @@
     <Compile Include="Common\Text\RegularExpression\Quantifier.cs" />
     <Compile Include="Framework\Data\Generation\SequentialDecimalGenerator.cs" />
     <Compile Include="Framework\Data\Generation\Generator.cs" />
-    <Compile Include="Framework\Data\Generation\RandomNumbersGenerator.cs" />
-    <Compile Include="Framework\Data\Generation\RandomStringsGenerator.cs" />
+    <Compile Include="Framework\Data\Generation\RandomDecimalGenerator.cs" />
+    <Compile Include="Framework\Data\Generation\RandomStringGenerator.cs" />
     <Compile Include="Framework\Data\Generation\SequentialGenerator.cs" />
     <Compile Include="Common\Condition.cs" />
     <Compile Include="Common\ConditionContext.cs" />
