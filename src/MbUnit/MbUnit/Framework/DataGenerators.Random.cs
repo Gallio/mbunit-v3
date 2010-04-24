@@ -41,7 +41,7 @@ namespace MbUnit.Framework
             /// <exception cref="GenerationException">Thrown if the specified parameters are inconsistent or invalid.</exception>
             public static IEnumerable<decimal> Numbers(int count, decimal minimum, decimal maximum)
             {
-                var generator = new RandomNumbersGenerator
+                var generator = new RandomDecimalGenerator
                 {
                     Count = count,
                     Minimum = minimum,
@@ -49,6 +49,48 @@ namespace MbUnit.Framework
                 };
 
                 foreach (decimal value in generator.Run())
+                    yield return value;
+            }
+
+            /// <summary>
+            /// Returns the an enumeration of random numbers.
+            /// </summary>
+            /// <param name="count">The number of strings to generate.</param>
+            /// <param name="minimum">The lower bound of the range.</param>
+            /// <param name="maximum">The upper bound of the range.</param>
+            /// <returns>An enumeration of random number values.</returns>
+            /// <exception cref="GenerationException">Thrown if the specified parameters are inconsistent or invalid.</exception>
+            public static IEnumerable<double> Numbers(int count, double minimum, double maximum)
+            {
+                var generator = new RandomDoubleGenerator
+                {
+                    Count = count,
+                    Minimum = minimum,
+                    Maximum = maximum,
+                };
+
+                foreach (double value in generator.Run())
+                    yield return value;
+            }
+
+            /// <summary>
+            /// Returns the an enumeration of random numbers.
+            /// </summary>
+            /// <param name="count">The number of strings to generate.</param>
+            /// <param name="minimum">The lower bound of the range.</param>
+            /// <param name="maximum">The upper bound of the range.</param>
+            /// <returns>An enumeration of random number values.</returns>
+            /// <exception cref="GenerationException">Thrown if the specified parameters are inconsistent or invalid.</exception>
+            public static IEnumerable<int> Numbers(int count, int minimum, int maximum)
+            {
+                var generator = new RandomInt32Generator
+                {
+                    Count = count,
+                    Minimum = minimum,
+                    Maximum = maximum,
+                };
+
+                foreach (int value in generator.Run())
                     yield return value;
             }
 
@@ -61,7 +103,7 @@ namespace MbUnit.Framework
             /// <exception cref="GenerationException">Thrown if the specified parameters are inconsistent or invalid.</exception>
             public static IEnumerable<string> Strings(int count, string regularExpressionPattern)
             {
-                var generator = new RandomRegexLiteStringsGenerator
+                var generator = new RandomRegexLiteStringGenerator
                 {
                     Count = count,
                     RegularExpressionPattern = regularExpressionPattern,
@@ -80,7 +122,7 @@ namespace MbUnit.Framework
             /// <exception cref="GenerationException">Thrown if the specified parameters are inconsistent or invalid.</exception>
             public static IEnumerable<string> Strings(int count, RandomStringStock stock)
             {
-                var generator = new RandomStockStringsGenerator
+                var generator = new RandomStockStringGenerator
                 {
                     Count = count,
                     Values = RandomStringStockInfo.FromStock(stock).GetItems(),

@@ -86,7 +86,7 @@ namespace MbUnit.Framework.ContractVerifiers.Core
 
             foreach(var pair in map)
             {
-                bucket[pair.Key % bucketSize] += pair.Value;
+                bucket[Math.Abs(pair.Key) % bucketSize] += pair.Value;
 
                 if (pair.Value > 1)
                 {
@@ -94,9 +94,6 @@ namespace MbUnit.Framework.ContractVerifiers.Core
                 }
             }
 
-            Gallio.Framework.TestLog.WriteLine("Total = {0}", total);
-            Gallio.Framework.TestLog.WriteLine("bucketSize = {0}", bucketSize);
-            Gallio.Framework.TestLog.WriteLine("bucket = {0} {1}", bucket[0], bucket[1]);
             var chiSquareTest = new ChiSquareTest((double)total / bucketSize, bucket, 1);
             uniformDistributionDeviationProbability = 1.0 - chiSquareTest.TwoTailedPValue;
         }
@@ -104,7 +101,7 @@ namespace MbUnit.Framework.ContractVerifiers.Core
         private int GetBucketSize()
         {
             const int threshold = 3;
-            var primes = new[] {103451, 14813, 3613, 223};
+            var primes = new[] {14813, 3613, 223, 17};
 
             foreach (int prime in primes)
             {

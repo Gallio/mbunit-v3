@@ -24,7 +24,7 @@ namespace Gallio.Framework.Data.Generation
     /// <summary>
     /// Generator of random <see cref="String"/> objects from a predefined list of string values.
     /// </summary>
-    public class RandomStockStringsGenerator : RandomStringsGenerator
+    public class RandomStockStringGenerator : RandomStringGenerator
     {
         private readonly static Random InnerGenerator = new Random();
 
@@ -40,7 +40,7 @@ namespace Gallio.Framework.Data.Generation
         /// <summary>
         /// Constructs a generator of random <see cref="String"/> objects.
         /// </summary>
-        public RandomStockStringsGenerator()
+        public RandomStockStringGenerator()
         {
         }
 

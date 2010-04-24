@@ -162,7 +162,11 @@
     <Compile Include="Framework\CaptureTest.cs" />
     <Compile Include="Framework\CustomEqualityComparersTest.cs" />
     <Compile Include="Framework\CustomComparersTest.cs" />
-    <Compile Include="Framework\Data\Generation\RandomStockStringsGeneratorTest.cs" />
+    <Compile Include="Framework\Data\Generation\SequentialInt32GeneratorTest.cs" />
+    <Compile Include="Framework\Data\Generation\SequentialDoubleGeneratorTest.cs" />
+    <Compile Include="Framework\Data\Generation\RandomInt32GeneratorTest.cs" />
+    <Compile Include="Framework\Data\Generation\RandomDoubleGeneratorTest.cs" />
+    <Compile Include="Framework\Data\Generation\RandomStockStringGeneratorTest.cs" />
     <Compile Include="Framework\Data\Generation\GenerationExceptionTest.cs" />
     <Compile Include="Common\Text\RegularExpression\ElementSetTest.cs" />
     <Compile Include="Common\Text\RegularExpression\ElementGroupTest.cs" />
@@ -170,9 +174,9 @@
     <Compile Include="Common\Text\RegularExpression\RegexLiteExceptionTest.cs" />
     <Compile Include="Common\Text\RegularExpression\RegexLiteTest.cs" />
     <Compile Include="Common\Text\RegularExpression\QuantifierTest.cs" />
-    <Compile Include="Framework\Data\Generation\RandomRegexLiteStringsGeneratorTest.cs" />
-    <Compile Include="Framework\Data\Generation\SequentialNumbersGeneratorTest.cs" />
-    <Compile Include="Framework\Data\Generation\RandomNumbersGeneratorTest.cs" />
+    <Compile Include="Framework\Data\Generation\RandomRegexLiteStringGeneratorTest.cs" />
+    <Compile Include="Framework\Data\Generation\SequentialDecimalGeneratorTest.cs" />
+    <Compile Include="Framework\Data\Generation\RandomDecimalGeneratorTest.cs" />
     <Compile Include="Framework\Pattern\PatternTestExecutorIntegrationTest.cs" />
     <Compile Include="Framework\Pattern\FixtureMemberInvokerTest.cs" />
     <Compile Include="Framework\Pattern\PatternTestFrameworkExtensionInfoTest.cs" />

@@ -22,19 +22,19 @@ using Gallio.Common;
 namespace Gallio.Framework.Data.Generation
 {
     /// <summary>
-    /// Generator of sequential <see cref="Decimal"/> values.
+    /// Generator of sequential <see cref="int"/> values.
     /// </summary>
-    public class SequentialNumbersGenerator : SequentialGenerator<decimal>
+    public class SequentialInt32Generator : SequentialGenerator<int>
     {
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public SequentialNumbersGenerator()
+        public SequentialInt32Generator()
         {
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<decimal> GetStartStepCountSequence()
+        protected override IEnumerable<int> GetStartStepCountSequence()
         {
             CheckProperty(Start.Value, "Start");
             CheckProperty(Step.Value, "Step");
@@ -43,7 +43,7 @@ namespace Gallio.Framework.Data.Generation
             if (Count.Value < 0)
                 throw new GenerationException("The 'Count' property must be greater than or equal to zero.");
 
-            decimal d = Start.Value;
+            int d = Start.Value;
 
             for (int i = 0; i < Count; i++, d += Step.Value)
             {
@@ -55,7 +55,7 @@ namespace Gallio.Framework.Data.Generation
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<decimal> GetStartEndCountSequence()
+        protected override IEnumerable<int> GetStartEndCountSequence()
         {
             CheckProperty(Start.Value, "Start");
             CheckProperty(End.Value, "End");
@@ -64,8 +64,8 @@ namespace Gallio.Framework.Data.Generation
             if (Count.Value < 0)
                 throw new GenerationException("The 'Count' property must be greater than or equal to zero.");
 
-            decimal d = Start.Value;
-            decimal step = Count.Value <= 1 ? 1 : (End.Value - Start.Value) / (Count.Value - 1);
+            int d = Start.Value;
+            int step = Count.Value <= 1 ? 1 : (End.Value - Start.Value) / (Count.Value - 1);
 
             for (int i = 0; i < Count; i++, d += step)
             {
@@ -77,7 +77,7 @@ namespace Gallio.Framework.Data.Generation
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<decimal> GetStartEndStepSequence()
+        protected override IEnumerable<int> GetStartEndStepSequence()
         {
             CheckProperty(Start.Value, "Start");
             CheckProperty(End.Value, "End");
@@ -90,14 +90,14 @@ namespace Gallio.Framework.Data.Generation
                 throw new GenerationException("The sequence direction specified by the 'Start' and 'End' properties " +
                     "must be consistent with the sign of the 'Step' property.");
 
-            Func<decimal, bool> stopCriterion;
+            Func<int, bool> stopCriterion;
 
             if (Math.Sign(Step.Value) >= 0)
                 stopCriterion = d => (d <= End.Value);
             else
                 stopCriterion = d => (d >= End.Value);
 
-            for (decimal d = Start.Value; stopCriterion(d); d += Step.Value)
+            for (int d = Start.Value; stopCriterion(d); d += Step.Value)
             {
                 if (DoFilter(d))
                 {
@@ -109,7 +109,7 @@ namespace Gallio.Framework.Data.Generation
         /// <summary>
         /// Gets the default step.
         /// </summary>
-        protected override decimal DefaultStep
+        protected override int DefaultStep
         {
             get
             {

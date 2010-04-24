@@ -24,14 +24,13 @@ namespace Gallio.Framework.Data.Generation
     /// <summary>
     /// Generator of random <see cref="String"/> objects based on a regular expression filter mask.
     /// </summary>
-    public class RandomRegexLiteStringsGenerator : RandomStringsGenerator
+    public abstract class RandomStringGenerator : Generator<string>
     {
-        private RegexLite regex;
-
         /// <summary>
-        /// Gets or sets regular expression pattern that serves as a filter mask.
+        /// Gets or sets the length of the sequence of strings
+        /// created by the generator.
         /// </summary>
-        public string RegularExpressionPattern
+        public int? Count
         {
             get;
             set;
@@ -40,33 +39,42 @@ namespace Gallio.Framework.Data.Generation
         /// <summary>
         /// Constructs a generator of random <see cref="String"/> objects.
         /// </summary>
-        public RandomRegexLiteStringsGenerator()
+        protected RandomStringGenerator()
         {
         }
 
         /// <inheritdoc/>
         public override IEnumerable Run()
         {
-            if (RegularExpressionPattern == null)
-                throw new GenerationException("The 'RegularExpressionPattern' property must be initialized.");
+            if (!Count.HasValue)
+                throw new GenerationException("The 'Count' property must be initialized.");
 
-            try
-            {
-                regex = new RegexLite(RegularExpressionPattern);
-            }
-            catch (RegexLiteException exception)
-            {
-                throw new GenerationException(String.Format(
-                    "The specified regular expression cannot be parsed ({0}).", exception.Message), exception);
-            }
+            if (Count.Value < 0)
+                throw new GenerationException("The 'Count' property wich specifies the length of the sequence must be strictly positive.");
 
-            return base.Run();
+            return GetSequence();
         }
 
-        /// <inheritdoc/>
-        protected override string GetNextString()
+        private IEnumerable GetSequence()
         {
-            return regex.GetRandomString();
+            int i = 0;
+
+            while (i < Count.Value)
+            {
+                var value = GetNextString();
+
+                if (DoFilter(value))
+                {
+                    yield return value;
+                    i++;
+                }
+            }
         }
+
+        /// <summary>
+        /// Generates the next random string.
+        /// </summary>
+        /// <returns>A random string.</returns>
+        protected abstract string GetNextString();
     }
 }

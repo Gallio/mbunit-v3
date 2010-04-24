@@ -43,6 +43,28 @@ namespace MbUnit.Framework
             }
 
             /// <summary>
+            /// Generates a linear sequence of <see cref="double"/> numbers, with a step of 1.
+            /// </summary>
+            /// <param name="start">The first value of the sequence.</param>
+            /// <param name="end">The last value of the sequence.</param>
+            /// <exception cref="GenerationException">Thrown if the specified parameters are inconsistent or invalid.</exception>
+            public static IEnumerable<double> Numbers(double start, double end)
+            {
+                return NumbersImpl(start, end, 1, null);
+            }
+
+            /// <summary>
+            /// Generates a linear sequence of <see cref="int"/> numbers, with a step of 1.
+            /// </summary>
+            /// <param name="start">The first value of the sequence.</param>
+            /// <param name="end">The last value of the sequence.</param>
+            /// <exception cref="GenerationException">Thrown if the specified parameters are inconsistent or invalid.</exception>
+            public static IEnumerable<int> Numbers(int start, int end)
+            {
+                return NumbersImpl(start, end, 1, null);
+            }
+
+            /// <summary>
             /// Generates a linear sequence of <see cref="Decimal"/> numbers.
             /// </summary>
             /// <param name="start">The first value of the sequence.</param>
@@ -54,9 +76,33 @@ namespace MbUnit.Framework
                 return NumbersImpl(start, end, step, null);
             }
 
+            /// <summary>
+            /// Generates a linear sequence of <see cref="double"/> numbers.
+            /// </summary>
+            /// <param name="start">The first value of the sequence.</param>
+            /// <param name="end">The last value of the sequence.</param>
+            /// <param name="step">The step between each consecutive value.</param>
+            /// <exception cref="GenerationException">Thrown if the specified parameters are inconsistent or invalid.</exception>
+            public static IEnumerable<double> Numbers(double start, double end, double step)
+            {
+                return NumbersImpl(start, end, step, null);
+            }
+
+            /// <summary>
+            /// Generates a linear sequence of <see cref="int"/> numbers.
+            /// </summary>
+            /// <param name="start">The first value of the sequence.</param>
+            /// <param name="end">The last value of the sequence.</param>
+            /// <param name="step">The step between each consecutive value.</param>
+            /// <exception cref="GenerationException">Thrown if the specified parameters are inconsistent or invalid.</exception>
+            public static IEnumerable<int> Numbers(int start, int end, int step)
+            {
+                return NumbersImpl(start, end, step, null);
+            }
+
             private static IEnumerable<decimal> NumbersImpl(decimal? start, decimal? end, decimal? step, int? count)
             {
-                var generator = new SequentialNumbersGenerator
+                var generator = new SequentialDecimalGenerator
                 {
                     Start = start,
                     End = end,
@@ -65,6 +111,34 @@ namespace MbUnit.Framework
                 };
 
                 foreach (decimal value in generator.Run())
+                    yield return value;
+            }
+
+            private static IEnumerable<double> NumbersImpl(double? start, double? end, double? step, int? count)
+            {
+                var generator = new SequentialDoubleGenerator
+                {
+                    Start = start,
+                    End = end,
+                    Step = step,
+                    Count = count,
+                };
+
+                foreach (double value in generator.Run())
+                    yield return value;
+            }
+
+            private static IEnumerable<int> NumbersImpl(int? start, int? end, int? step, int? count)
+            {
+                var generator = new SequentialInt32Generator
+                {
+                    Start = start,
+                    End = end,
+                    Step = step,
+                    Count = count,
+                };
+
+                foreach (int value in generator.Run())
                     yield return value;
             }
         }

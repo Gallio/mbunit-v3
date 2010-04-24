@@ -183,7 +183,7 @@ namespace MbUnit.Framework
             {
                 if (stock.HasValue)
                 {
-                    return new RandomStockStringsGenerator
+                    return new RandomStockStringGenerator
                     {
                         Values = RandomStringStockInfo.FromStock(stock.Value).GetItems(),
                         Count = count,
@@ -192,7 +192,7 @@ namespace MbUnit.Framework
                 }
                 else
                 {
-                    return new RandomRegexLiteStringsGenerator
+                    return new RandomRegexLiteStringGenerator
                     {
                         RegularExpressionPattern = Pattern,
                         Count = count,

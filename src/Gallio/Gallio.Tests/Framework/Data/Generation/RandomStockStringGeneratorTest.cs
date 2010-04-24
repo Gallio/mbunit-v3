@@ -24,13 +24,13 @@ using Gallio.Framework;
 namespace Gallio.Tests.Framework.Data.Generation
 {
     [TestFixture]
-    [TestsOn(typeof(RandomStockStringsGenerator))]
-    public class RandomStockStringsGeneratorTest
+    [TestsOn(typeof(RandomStockStringGenerator))]
+    public class RandomStockStringGeneratorTest
     {
         [Test]
         public void Generate_sequence_ok(RandomStringStock stock, int count)
         {
-            var generator = new RandomStockStringsGenerator
+            var generator = new RandomStockStringGenerator
             {
                 Values = new[] { "A", "B", "C", "D" },
                 Count = count
@@ -50,7 +50,7 @@ namespace Gallio.Tests.Framework.Data.Generation
         [Test]
         public void Constructs_with_negative_count_should_throw_exception(string pattern, int count)
         {
-            var generator = new RandomStockStringsGenerator
+            var generator = new RandomStockStringGenerator
             {
                 Values = new[] { "A", "B", "C", "D" },
                 Count = -1

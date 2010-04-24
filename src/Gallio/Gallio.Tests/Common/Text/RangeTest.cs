@@ -44,15 +44,11 @@ namespace Gallio.Tests.Common.Text
         {
             CollisionProbabilityLimit = CollisionProbability.Perfect,
             UniformDistributionQuality = UniformDistributionQuality.Excellent,
-            DistinctInstances = GetDistinctInstances()
+            DistinctInstances = DataGenerators.Join(
+                DataGenerators.Sequential.Numbers(0, 1000),
+                DataGenerators.Sequential.Numbers(0, 1000))
+                .Select(x => new Range(x.First, x.Second))
         };
-
-        private static IEnumerable<Range> GetDistinctInstances()
-        {
-            for(int startIndex=0; startIndex<1000; startIndex++)
-                for(int length=0; length<1000; length++)
-                    yield return new Range(startIndex, length);
-        }
 
         [Test]
         public void ConstructorInitializesProperties()

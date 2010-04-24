@@ -154,7 +154,7 @@ namespace MbUnit.Framework
             
             try
             {
-                return new RandomNumbersGenerator
+                return new RandomDecimalGenerator
                 {
                     Minimum = (decimal?)minimum,
                     Maximum = (decimal?)maximum, 

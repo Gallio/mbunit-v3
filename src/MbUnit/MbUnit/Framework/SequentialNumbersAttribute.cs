@@ -234,7 +234,7 @@ namespace MbUnit.Framework
 
             try
             {
-                return new SequentialNumbersGenerator
+                return new SequentialDecimalGenerator
                 {
                     Start = (decimal?)start,
                     End = (decimal?)end,

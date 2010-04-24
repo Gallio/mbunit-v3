@@ -9,7 +9,7 @@ namespace Gallio.Common.Mathematics
     /// </summary>
     public static class Gamma
     {
-        private const int MaxIterations = 100; // Maximum allowed number of iterations.
+        private const int MaxIterations = 1000; // Maximum allowed number of iterations.
         private const double Accuracy = 3E-7; // Relative accuracy
         private const double Epsilon = 1E-30;
 

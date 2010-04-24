@@ -25,8 +25,8 @@ using System.Collections;
 namespace Gallio.Tests.Framework.Data.Generation
 {
     [TestFixture]
-    [TestsOn(typeof(SequentialNumbersGenerator))]
-    public class SequentialNumbersGeneratorTest
+    [TestsOn(typeof(SequentialDecimalGenerator))]
+    public class SequentialDecimalGeneratorTest
     {
         [Test]
         [Row(0, 0, 0, new double[] { })]
@@ -37,7 +37,7 @@ namespace Gallio.Tests.Framework.Data.Generation
         [Row(-3.5, 2.26, 6, new[] { -3.5, -1.24, 1.02, 3.28, 5.54, 7.8 })]
         public void Generate_start_step_count_sequence_ok(decimal start, decimal step, int count, decimal[] expectedOutput)
         {
-            var generator = new SequentialNumbersGenerator
+            var generator = new SequentialDecimalGenerator
             {
                 Start = start,
                 Step = step,
@@ -57,7 +57,7 @@ namespace Gallio.Tests.Framework.Data.Generation
         [Row(-3.5, 7.8, 6, new[] { -3.5, -1.24, 1.02, 3.28, 5.54, 7.8 })]
         public void Generate_start_stop_count_sequence_ok(decimal start, decimal stop, int count, decimal[] expectedOutput)
         {
-            var generator = new SequentialNumbersGenerator
+            var generator = new SequentialDecimalGenerator
             {
                 Start = start,
                 End = stop,
@@ -76,7 +76,7 @@ namespace Gallio.Tests.Framework.Data.Generation
         [Row(-3.5, 7.8, 2.26, new[] { -3.5, -1.24, 1.02, 3.28, 5.54, 7.8 })]
         public void Generate_start_stop_step_sequence_ok(decimal start, decimal stop, decimal step, decimal[] expectedOutput)
         {
-            var generator = new SequentialNumbersGenerator
+            var generator = new SequentialDecimalGenerator
             {
                 Start = start,
                 End = stop,
@@ -107,7 +107,7 @@ namespace Gallio.Tests.Framework.Data.Generation
         [Test, Factory("GetInvalidProperyValues")]
         public void Generate_sequence_with_invalid_property_settings_should_throw_exception(decimal? start, decimal? stop, decimal? step, int? count)
         {
-            var generator = new SequentialNumbersGenerator
+            var generator = new SequentialDecimalGenerator
             {
                 Start = start,
                 End = stop,
@@ -121,7 +121,7 @@ namespace Gallio.Tests.Framework.Data.Generation
         [Test]
         public void Generate_filtered_sequence()
         {
-            var generator = new SequentialNumbersGenerator
+            var generator = new SequentialDecimalGenerator
             {
                 Start = 0,
                 End = 100,

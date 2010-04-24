@@ -24,28 +24,28 @@ using Gallio.Framework;
 namespace Gallio.Tests.Framework.Data.Generation
 {
     [TestFixture]
-    [TestsOn(typeof(RandomNumbersGenerator))]
-    public class RandomNumbersGeneratorTest
+    [TestsOn(typeof(RandomInt32Generator))]
+    public class RandomInt32GeneratorTest
     {
         [Test]
         [Row(0, 1, 0)]
         [Row(-1, 1, 1)]
         [Row(-10, 10, 123)]
         [Row(0, 100000, 3)]
-        public void Generate_sequence_ok(decimal minimum, decimal maximum, int count)
+        public void Generate_sequence_ok(int minimum, int maximum, int count)
         {
-            var generator = new RandomNumbersGenerator
+            var generator = new RandomInt32Generator
             {
                 Minimum = minimum,
                 Maximum = maximum,
                 Count = count
             };
 
-            var values = generator.Run().Cast<decimal>().ToArray();
+            var values = generator.Run().Cast<int>().ToArray();
             Assert.AreEqual(count, values.Length);
             Assert.Multiple(() =>
             {
-                foreach (decimal value in values)
+                foreach (int value in values)
                 {
                     Assert.Between(value, minimum, maximum);
                 }
@@ -54,45 +54,45 @@ namespace Gallio.Tests.Framework.Data.Generation
 
         private IEnumerable<object[]> GetInvalidProperyValues()
         {
-            yield return new object[] { Decimal.MinValue, 10, 1 };
-            yield return new object[] { Decimal.MaxValue, 10, 1 };
-            yield return new object[] { 10, Decimal.MinValue, 1 };
-            yield return new object[] { 10, Decimal.MaxValue, 1 };
+            yield return new object[] { Int32.MinValue, 10, 1 };
+            yield return new object[] { Int32.MaxValue, 10, 1 };
+            yield return new object[] { 10, Int32.MinValue, 1 };
+            yield return new object[] { 10, Int32.MaxValue, 1 };
             yield return new object[] { 10, 5, 1, }; // Minimum greater than maximum!
             yield return new object[] { 10, 20, -1 }; // Negative count!
         }
 
         [Test, Factory("GetInvalidProperyValues")]
-        public void Constructs_with_invalid_property_should_throw_exception(decimal minimum, decimal maximum, int count)
+        public void Constructs_with_invalid_property_should_throw_exception(int minimum, int maximum, int count)
         {
-            var generator = new RandomNumbersGenerator
+            var generator = new RandomInt32Generator
             {
                 Minimum = minimum,
                 Maximum = maximum,
                 Count = count
             };
 
-            Assert.Throws<GenerationException>(() => generator.Run().Cast<decimal>().ToArray());
+            Assert.Throws<GenerationException>(() => generator.Run().Cast<int>().ToArray());
         }
 
         [Test]
         public void Generate_filtered_sequence()
         {
-            var generator = new RandomNumbersGenerator
+            var generator = new RandomInt32Generator
             {
                 Minimum = 0,
                 Maximum = 100,
                 Count = 50,
-                Filter = d => ((int)d % 2) == 0
+                Filter = d => (d % 2) == 0
             };
 
-            var values = generator.Run().Cast<decimal>().ToArray();
+            var values = generator.Run().Cast<int>().ToArray();
             Assert.AreEqual(50, values.Length);
             Assert.Multiple(() =>
             {
-                foreach (decimal value in values)
+                foreach (int value in values)
                 {
-                    Assert.AreEqual(0, (int)value % 2);
+                    Assert.AreEqual(0, value % 2);
                 }
             });
         }

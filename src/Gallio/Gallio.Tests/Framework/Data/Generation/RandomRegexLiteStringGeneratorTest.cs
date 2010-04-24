@@ -24,14 +24,14 @@ using Gallio.Framework;
 namespace Gallio.Tests.Framework.Data.Generation
 {
     [TestFixture]
-    [TestsOn(typeof(RandomRegexLiteStringsGenerator))]
-    public class RandomRegexLiteStringsGeneratorTest
+    [TestsOn(typeof(RandomRegexLiteStringGenerator))]
+    public class RandomRegexLiteStringGeneratorTest
     {
         [Test]
         [Row(@"[0-9]{4,10}", @"^[0-9]{4,10}$", 100)]
         public void Generate_sequence_ok(string pattern, string expected, int count)
         {
-            var generator = new RandomRegexLiteStringsGenerator
+            var generator = new RandomRegexLiteStringGenerator
             {
                 RegularExpressionPattern = pattern,
                 Count = count
@@ -58,7 +58,7 @@ namespace Gallio.Tests.Framework.Data.Generation
         [Test, Factory("GetInvalidProperyValues")]
         public void Constructs_with_invalid_property_should_throw_exception(string pattern, int count)
         {
-            var generator = new RandomRegexLiteStringsGenerator
+            var generator = new RandomRegexLiteStringGenerator
             {
                 RegularExpressionPattern = pattern,
                 Count = count

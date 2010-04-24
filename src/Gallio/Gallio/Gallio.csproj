@@ -299,6 +299,10 @@
     <Compile Include="Framework\Assertions\NamespaceDoc.cs" />
     <Compile Include="Framework\Capture.cs" />
     <Compile Include="Framework\ComparisonSemantics.cs" />
+    <Compile Include="Framework\Data\Generation\SequentialInt32Generator.cs" />
+    <Compile Include="Framework\Data\Generation\SequentialDoubleGenerator.cs" />
+    <Compile Include="Framework\Data\Generation\RandomInt32Generator.cs" />
+    <Compile Include="Framework\Data\Generation\RandomDoubleGenerator.cs" />
     <Compile Include="Framework\Data\Generation\RandomGenerator.cs" />
     <Compile Include="Framework\IComparisonSemantics.cs" />
     <Compile Include="Framework\CustomEqualityComparers.cs" />
@@ -309,8 +313,8 @@
     <Compile Include="Framework\Pattern\PatternTestExplorer.cs" />
     <Compile Include="Framework\Pattern\PatternTestModel.cs" />
     <Compile Include="Framework\TriggerEvent.cs" />
-    <Compile Include="Framework\Data\Generation\RandomStockStringsGenerator.cs" />
-    <Compile Include="Framework\Data\Generation\RandomRegexLiteStringsGenerator.cs" />
+    <Compile Include="Framework\Data\Generation\RandomStockStringGenerator.cs" />
+    <Compile Include="Framework\Data\Generation\RandomRegexLiteStringGenerator.cs" />
     <Compile Include="Framework\Data\Generation\NamespaceDoc.cs" />
     <Compile Include="Common\Text\RegularExpression\ElementSet.cs" />
     <Compile Include="Common\Text\RegularExpression\IElement.cs" />
@@ -323,7 +327,7 @@
     <Compile Include="Common\Text\RegularExpression\ParsingInfo.cs" />
     <Compile Include="Common\Text\RegularExpression\RegexLite.cs" />
     <Compile Include="Common\Text\RegularExpression\Quantifier.cs" />
-    <Compile Include="Framework\Data\Generation\SequentialNumbersGenerator.cs" />
+    <Compile Include="Framework\Data\Generation\SequentialDecimalGenerator.cs" />
     <Compile Include="Framework\Data\Generation\Generator.cs" />
     <Compile Include="Framework\Data\Generation\RandomNumbersGenerator.cs" />
     <Compile Include="Framework\Data\Generation\RandomStringsGenerator.cs" />

@@ -62,6 +62,27 @@ namespace Gallio.Framework.Data.Generation
         /// <summary>
         /// Checks for the specified value to be not one of the following:
         /// <list type="bullet">
+        /// <item><see cref="Double.MinValue"/></item>
+        /// <item><see cref="Double.MaxValue"/></item>
+        /// <item><see cref="Double.PositiveInfinity"/></item>
+        /// <item><see cref="Double.NegativeInfinity"/></item>
+        /// <item><see cref="Double.NaN"/></item>
+        /// </list>
+        /// </summary>
+        /// <param name="propertyValue">The <see cref="double"/> property value to be checked.</param>
+        /// <param name="propertyName">A friendly name for the property.</param>
+        /// <exception cref="GenerationException">The specified property value is invalid.</exception>
+        protected static void CheckProperty(double propertyValue, string propertyName)
+        {
+            if (Double.IsInfinity(propertyValue) || Double.IsNaN(propertyValue) ||
+                propertyValue == Double.MinValue || propertyValue == Double.MaxValue)
+                throw new GenerationException(String.Format("The '{0}' property cannot be one of the following: " +
+                    "Double.MinValue, Double.MaxValue, Double.NaN, Double.PositiveInfinity, Double.NegativeInfinity.", propertyName));
+        }
+
+        /// <summary>
+        /// Checks for the specified value to be not one of the following:
+        /// <list type="bullet">
         /// <item><see cref="Decimal.MinValue"/></item>
         /// <item><see cref="Decimal.MaxValue"/></item>
         /// </list>
