@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Gallio.Common;
 using Gallio.Framework.Data.Generation;
 using MbUnit.Framework;
 using Gallio.Framework;
@@ -28,6 +29,8 @@ namespace Gallio.Tests.Framework.Data.Generation
     [TestsOn(typeof(SequentialDoubleGenerator))]
     public class SequentialDoubleGeneratorTest
     {
+        private readonly EqualityComparison<double> approximative = (x, y) => Math.Abs(x - y) < 0.01;
+
         [Test]
         [Row(0, 0, 0, new double[] { })]
         [Row(0, 0, 1, new[] { 0 })]
@@ -45,7 +48,7 @@ namespace Gallio.Tests.Framework.Data.Generation
             };
 
             var actualOutput = generator.Run().Cast<double>();
-            Assert.AreElementsEqual(expectedOutput, actualOutput);
+            Assert.AreElementsEqual(expectedOutput, actualOutput, approximative);
         }
 
         [Test]
@@ -65,7 +68,7 @@ namespace Gallio.Tests.Framework.Data.Generation
             };
 
             var actualOutput = generator.Run().Cast<double>();
-            Assert.AreElementsEqual(expectedOutput, actualOutput);
+            Assert.AreElementsEqual(expectedOutput, actualOutput, approximative);
         }
 
         [Test]
@@ -84,7 +87,7 @@ namespace Gallio.Tests.Framework.Data.Generation
             };
 
             var actualOutput = generator.Run().Cast<double>();
-            Assert.AreElementsEqual(expectedOutput, actualOutput);
+            Assert.AreElementsEqual(expectedOutput, actualOutput, approximative);
         }
 
         private IEnumerable<object[]> GetInvalidProperyValues()
@@ -135,7 +138,7 @@ namespace Gallio.Tests.Framework.Data.Generation
                 Start = 0,
                 End = 100,
                 Step = 1,
-                Filter = d => IsPrime(d)
+                Filter = IsPrime
             };
 
             var actualOutput = generator.Run().Cast<double>();

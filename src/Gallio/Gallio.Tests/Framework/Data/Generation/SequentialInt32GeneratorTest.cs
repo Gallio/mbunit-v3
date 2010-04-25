@@ -34,7 +34,6 @@ namespace Gallio.Tests.Framework.Data.Generation
         [Row(1, 1, 1, new[] { 1 })]
         [Row(1, 1, 10, new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 })]
         [Row(10, -1, 10, new[] { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 })]
-        [Row(-3.5, 2.26, 6, new[] { -3.5, -1.24, 1.02, 3.28, 5.54, 7.8 })]
         public void Generate_start_step_count_sequence_ok(int start, int step, int count, int[] expectedOutput)
         {
             var generator = new SequentialInt32Generator
@@ -54,7 +53,6 @@ namespace Gallio.Tests.Framework.Data.Generation
         [Row(1, 1, 1, new[] { 1 })]
         [Row(1, 10, 10, new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 })]
         [Row(10, 1, 10, new[] { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 })]
-        [Row(-3.5, 7.8, 6, new[] { -3.5, -1.24, 1.02, 3.28, 5.54, 7.8 })]
         public void Generate_start_stop_count_sequence_ok(int start, int stop, int count, int[] expectedOutput)
         {
             var generator = new SequentialInt32Generator
@@ -73,7 +71,6 @@ namespace Gallio.Tests.Framework.Data.Generation
         [Row(1, 1, 1, new[] { 1 })]
         [Row(1, 10, 1, new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 })]
         [Row(10, 1, -1, new[] { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 })]
-        [Row(-3.5, 7.8, 2.26, new[] { -3.5, -1.24, 1.02, 3.28, 5.54, 7.8 })]
         public void Generate_start_stop_step_sequence_ok(int start, int stop, int step, int[] expectedOutput)
         {
             var generator = new SequentialInt32Generator
