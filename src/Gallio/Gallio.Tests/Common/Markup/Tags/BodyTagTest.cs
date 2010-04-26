@@ -61,7 +61,7 @@ namespace Gallio.Tests.Common.Markup.Tags
             for (int i = 0; i < 10000; i++)
             {
                 var tag = new BodyTag();
-                int count = random.Next(0, 10);
+                int count = random.Next(1, 10);
 
                 for (int j = 0; j < count; j++)
                     tag.Contents.Add(new TextTag(nameGenerator.GetRandomString()));

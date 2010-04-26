@@ -91,54 +91,36 @@ namespace MbUnit.Tests.Framework
             Assert.AreElementsEqualIgnoringOrder(new[] 
             { 
                 new object[] { "A", 1, 5.0, 'U' },
-                new object[] { "A", 1, 5.0, 'U' },
-                new object[] { "A", 1, 5.0, 'V' },
                 new object[] { "A", 1, 5.0, 'V' },
                 new object[] { "A", 1, 9.0, 'U' },
-                new object[] { "A", 1, 9.0, 'U' },
-                new object[] { "A", 1, 9.0, 'V' },
                 new object[] { "A", 1, 9.0, 'V' },
                 new object[] { "A", 2, 5.0, 'U' },
-                new object[] { "A", 2, 5.0, 'U' },
-                new object[] { "A", 2, 5.0, 'V' },
                 new object[] { "A", 2, 5.0, 'V' },
                 new object[] { "A", 2, 9.0, 'U' },
-                new object[] { "A", 2, 9.0, 'U' },
-                new object[] { "A", 2, 9.0, 'V' },
                 new object[] { "A", 2, 9.0, 'V' },
                 new object[] { "A", 3, 5.0, 'U' },
-                new object[] { "A", 3, 5.0, 'U' },
-                new object[] { "A", 3, 5.0, 'V' },
                 new object[] { "A", 3, 5.0, 'V' },
                 new object[] { "A", 3, 9.0, 'U' },
-                new object[] { "A", 3, 9.0, 'U' },
-                new object[] { "A", 3, 9.0, 'V' },
                 new object[] { "A", 3, 9.0, 'V' },
                 new object[] { "B", 1, 5.0, 'U' },
-                new object[] { "B", 1, 5.0, 'U' },
-                new object[] { "B", 1, 5.0, 'V' },
                 new object[] { "B", 1, 5.0, 'V' },
                 new object[] { "B", 1, 9.0, 'U' },
-                new object[] { "B", 1, 9.0, 'U' },
-                new object[] { "B", 1, 9.0, 'V' },
                 new object[] { "B", 1, 9.0, 'V' },
                 new object[] { "B", 2, 5.0, 'U' },
-                new object[] { "B", 2, 5.0, 'U' },
-                new object[] { "B", 2, 5.0, 'V' },
                 new object[] { "B", 2, 5.0, 'V' },
                 new object[] { "B", 2, 9.0, 'U' },
-                new object[] { "B", 2, 9.0, 'U' },
-                new object[] { "B", 2, 9.0, 'V' },
                 new object[] { "B", 2, 9.0, 'V' },
                 new object[] { "B", 3, 5.0, 'U' },
-                new object[] { "B", 3, 5.0, 'U' },
-                new object[] { "B", 3, 5.0, 'V' },
                 new object[] { "B", 3, 5.0, 'V' },
                 new object[] { "B", 3, 9.0, 'U' },
-                new object[] { "B", 3, 9.0, 'U' },
                 new object[] { "B", 3, 9.0, 'V' },
-                new object[] { "B", 3, 9.0, 'V' },
-           }, actual);
+           }, actual, 
+           (u, v) => u.Length == v.Length 
+               && u.Length == 4 
+               && (string)u[0] == (string)v[0]
+               && (int)u[1] == (int)v[1]
+               && (double)u[2] == (double)v[2]
+               && (char)u[3] == (char)v[3]);
         }
     }
 }
