@@ -17,6 +17,7 @@ using System;
 using System.Xml.Serialization;
 using Gallio.Common;
 using Gallio.Common.Collections;
+using Gallio.Common.Security;
 using Gallio.Common.Xml;
 
 namespace Gallio.Common.Markup.Tags
@@ -32,7 +33,7 @@ namespace Gallio.Common.Markup.Tags
         /// <inheritdoc />
         new public BodyTag Clone()
         {
-            BodyTag copy = new BodyTag();
+            var copy = new BodyTag();
             CopyTo(copy);
             return copy;
         }
@@ -53,7 +54,9 @@ namespace Gallio.Common.Markup.Tags
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return 1 ^ Contents.Count;
+            return new FnvHasher(719)
+              .Add(Contents)
+              .ToValue();
         }
 
         internal override Tag CloneImpl()

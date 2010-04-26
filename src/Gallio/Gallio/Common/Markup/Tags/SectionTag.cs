@@ -17,6 +17,7 @@ using System;
 using System.Xml.Serialization;
 using Gallio.Common;
 using Gallio.Common.Collections;
+using Gallio.Common.Security;
 using Gallio.Common.Xml;
 
 namespace Gallio.Common.Markup.Tags
@@ -69,7 +70,7 @@ namespace Gallio.Common.Markup.Tags
         /// <inheritdoc />
         new public SectionTag Clone()
         {
-            SectionTag copy = new SectionTag(name);
+            var copy = new SectionTag(name);
             CopyTo(copy);
             return copy;
         }
@@ -91,7 +92,10 @@ namespace Gallio.Common.Markup.Tags
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return 3 ^ Contents.Count;
+            return new FnvHasher(1483)
+                .Add(name)
+                .Add(Contents)
+                .ToValue();
         }
 
         internal override Tag CloneImpl()

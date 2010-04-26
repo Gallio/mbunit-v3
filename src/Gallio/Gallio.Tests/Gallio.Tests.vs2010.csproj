@@ -93,6 +93,7 @@
     <Compile Include="Common\Markup\Tags\TextAttachmentTest.cs" />
     <Compile Include="Common\Markup\Tags\TextTagTest.cs" />
     <Compile Include="Common\Markup\TextualMarkupDocumentWriterTest.cs" />
+    <Compile Include="Common\Mathematics\ChiSquareTestTest.cs" />
     <Compile Include="Common\Mathematics\GammaTest.cs" />
     <Compile Include="Common\Media\BitmapVideoFrameTest.cs" />
     <Compile Include="Common\Media\CaptionOverlayTest.cs" />

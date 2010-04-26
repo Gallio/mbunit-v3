@@ -175,7 +175,7 @@ namespace MbUnit.Framework.ContractVerifiers
         {
             return new TestCase("CollisionProbabilityTest", () => AssertionHelper.Verify(() =>
             {
-                var probability = (double)store.CollisionProbability;
+                var probability = store.CollisionProbability;
                 TestLog.WriteLine("Statistical Population = {0}", store.StatisticalPopulation);
                 TestLog.WriteLine("Actual Collision Probability = {0} {1} {2}", probability, ((probability <= collisionProbabilityLimit) ? "≤" : ">"), collisionProbabilityLimit);
 

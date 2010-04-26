@@ -37,10 +37,10 @@ namespace Gallio.Tests.Common.Markup.Tags
         };
 
         [VerifyContract]
-        public readonly IContract HashCodeTests = new HashCodeAcceptanceContract<TextTag>
+        public readonly IContract HashCodeAcceptanceTests = new HashCodeAcceptanceContract<TextTag>
         {
             CollisionProbabilityLimit = CollisionProbability.VeryLow,
-            UniformDistributionQuality = 1,//UniformDistributionQuality.Excellent,
+            UniformDistributionQuality = UniformDistributionQuality.Excellent,
             DistinctInstances = DataGenerators.Random.Strings(100000, @"[A-Za-z0-9 ]{4,100}").Select(text => new TextTag(text)),
         };
 

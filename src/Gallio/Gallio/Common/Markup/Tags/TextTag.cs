@@ -18,6 +18,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using Gallio.Common;
+using Gallio.Common.Security;
 using Gallio.Common.Xml;
 
 namespace Gallio.Common.Markup.Tags
@@ -90,7 +91,9 @@ namespace Gallio.Common.Markup.Tags
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return 2 ^ text.GetHashCode();
+            return new FnvHasher(149)
+                .Add(text)
+                .ToValue();
         }
 
         internal override Tag CloneImpl()

@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Gallio.Common.Markup.Tags;
+using Gallio.Common.Text.RegularExpression;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 
@@ -37,11 +38,36 @@ namespace Gallio.Tests.Common.Markup.Tags
             return equivalenceClasses;
         }
 
-        private static EquivalenceClassCollection<SectionTag> equivalenceClasses = new EquivalenceClassCollection<SectionTag>
+        private readonly static EquivalenceClassCollection<SectionTag> equivalenceClasses = new EquivalenceClassCollection<SectionTag>
         {
-            { new SectionTag("section") },
-            { new SectionTag("section") { Contents = { new TextTag("text") }}},
-            { new SectionTag("section") { Contents = { new TextTag("text"), new TextTag("more") }}}
+            new SectionTag("section"),
+            new SectionTag("section") { Contents = { new TextTag("text") }},
+            new SectionTag("section") { Contents = { new TextTag("text"), new TextTag("more") }}
         };
+
+        [VerifyContract]
+        public readonly IContract HashCodeAcceptanceTests = new HashCodeAcceptanceContract<SectionTag>
+        {
+            CollisionProbabilityLimit = CollisionProbability.VeryLow,
+            UniformDistributionQuality = UniformDistributionQuality.Excellent,
+            DistinctInstances = GetDistinctInstances()
+        };
+
+        private static IEnumerable<SectionTag> GetDistinctInstances()
+        {
+            var nameGenerator = new RegexLite(@"[A-Za-z0-9]{5,30}");
+            var random = new Random();
+
+            for(int i=0; i<10000; i++)
+            {
+                var tag = new SectionTag(nameGenerator.GetRandomString());
+                int count = random.Next(0, 10);
+
+                for (int j = 0; j < count; j++)
+                    tag.Contents.Add(new TextTag(nameGenerator.GetRandomString()));
+
+                yield return tag;
+            }
+        }
     }
 }

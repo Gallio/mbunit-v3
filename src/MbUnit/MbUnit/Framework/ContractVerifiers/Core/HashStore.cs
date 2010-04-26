@@ -83,10 +83,11 @@ namespace MbUnit.Framework.ContractVerifiers.Core
             int bucketSize = GetBucketSize();
             var bucket = new double[bucketSize];
             collisionProbability = 0;
+            int i = 0;
 
             foreach(var pair in map)
             {
-                bucket[Math.Abs(pair.Key) % bucketSize] += pair.Value;
+                bucket[i++ % bucketSize] += pair.Value;
 
                 if (pair.Value > 1)
                 {
@@ -100,8 +101,8 @@ namespace MbUnit.Framework.ContractVerifiers.Core
 
         private int GetBucketSize()
         {
-            const int threshold = 3;
-            var primes = new[] {14813, 3613, 223, 17};
+            const int threshold = 10;
+            var primes = new[] { 14813, 3613, 223, 17 };
 
             foreach (int prime in primes)
             {

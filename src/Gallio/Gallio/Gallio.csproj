@@ -240,6 +240,7 @@
     <Compile Include="Common\Remoting\IServerChannel.cs" />
     <Compile Include="Common\Remoting\LongLivedMarshalByRefObject.cs" />
     <Compile Include="Common\Remoting\NamespaceDoc.cs" />
+    <Compile Include="Common\Security\FnvHasher.cs" />
     <Compile Include="Common\Text\NamespaceDoc.cs" />
     <Compile Include="Common\Text\RegularExpression\NamespaceDoc.cs" />
     <Compile Include="Common\Time\Clock.cs" />

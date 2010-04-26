@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using Gallio.Common;
 using Gallio.Common.Collections;
+using Gallio.Common.Security;
 using Gallio.Common.Xml;
 
 namespace Gallio.Common.Markup.Tags
@@ -100,7 +101,7 @@ namespace Gallio.Common.Markup.Tags
         /// <inheritdoc />
         new public MarkerTag Clone()
         {
-            MarkerTag copy = new MarkerTag();
+            var copy = new MarkerTag();
             copy.@class = @class;
             foreach (Attribute attribute in attributes)
                 copy.attributes.Add(new Attribute(attribute.Name, attribute.Value));
@@ -125,7 +126,11 @@ namespace Gallio.Common.Markup.Tags
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return 4 ^ Contents.Count;
+            return new FnvHasher(631)
+               .Add(@class)
+               .Add(attributes)
+               .Add(Contents)
+               .ToValue();
         }
 
         internal override Tag CloneImpl()

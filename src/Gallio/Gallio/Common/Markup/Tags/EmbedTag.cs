@@ -16,6 +16,7 @@
 using System;
 using System.Xml.Serialization;
 using Gallio.Common;
+using Gallio.Common.Security;
 using Gallio.Common.Xml;
 
 namespace Gallio.Common.Markup.Tags
@@ -82,13 +83,15 @@ namespace Gallio.Common.Markup.Tags
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return 6 ^ attachmentName.GetHashCode();
+            return new FnvHasher(3209)
+                .Add(attachmentName)
+                .ToValue();
         }
 
         /// <inheritdoc />
         new public EmbedTag Clone()
         {
-            EmbedTag copy = new EmbedTag();
+            var copy = new EmbedTag();
             copy.attachmentName = attachmentName;
             return copy;
         }

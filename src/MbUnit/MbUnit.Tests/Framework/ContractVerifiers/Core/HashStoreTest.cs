@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Gallio.Framework;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers.Core;
 using Gallio.Tests;
@@ -72,5 +73,26 @@ namespace MbUnit.Tests.Framework.ContractVerifiers.Core
             double actual = store.UniformDistributionDeviationProbability;
             Assert.AreApproximatelyEqual(0.365284, actual, 0.000001);
         }
+
+        [Test]
+        public void MethodName()
+        {
+            for(int i=0; i<10; i++)
+            {
+                TestLog.WriteLine("i = {0}", i);
+                var store = new HashStore(DataGenerators.Random.Numbers(100000, -10000000, 10000000));
+                
+                
+
+
+
+            }
+
+        }
+
+
+
+
+
     }
 }

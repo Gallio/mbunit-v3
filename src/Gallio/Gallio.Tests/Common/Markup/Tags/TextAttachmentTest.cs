@@ -38,10 +38,10 @@ namespace Gallio.Tests.Common.Markup.Tags
         };
 
         [VerifyContract]
-        public readonly IContract HashCodeTests = new HashCodeAcceptanceContract<TextAttachment>
+        public readonly IContract HashCodeAcceptanceTests = new HashCodeAcceptanceContract<TextAttachment>
         {
             CollisionProbabilityLimit = CollisionProbability.VeryLow,
-            UniformDistributionQuality = 1,//UniformDistributionQuality.Excellent,
+            UniformDistributionQuality = UniformDistributionQuality.Excellent,
             DistinctInstances = DataGenerators
                 .Join(DataGenerators.Random.Strings(200, @"[A-Za-z0-9]{5,30}")
                         .Concat(Enumerable.Repeat<string>(null, 200)),

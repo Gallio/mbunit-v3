@@ -31,11 +31,11 @@ namespace Gallio.Tests.Common.Markup.Tags
         };
 
         [VerifyContract]
-        public readonly IContract HashCodeTests = new HashCodeAcceptanceContract<EmbedTag>
+        public readonly IContract HashCodeAcceptanceTests = new HashCodeAcceptanceContract<EmbedTag>
         {
             CollisionProbabilityLimit = CollisionProbability.VeryLow,
-            UniformDistributionQuality = 1,//UniformDistributionQuality.Excellent,
-            DistinctInstances = DataGenerators.Random.Strings(100000, @"[A-Za-z0-9 ]{5,50}").Select(x => new EmbedTag(x))
+            UniformDistributionQuality = UniformDistributionQuality.Excellent,
+            DistinctInstances = DataGenerators.Random.Strings(100000, @"[A-Za-z0-9]{5,30}").Select(x => new EmbedTag(x))
         };
 
         public override EquivalenceClassCollection<EmbedTag> GetEquivalenceClasses()
@@ -43,7 +43,7 @@ namespace Gallio.Tests.Common.Markup.Tags
             return equivalenceClasses;
         }
 
-        private static EquivalenceClassCollection<EmbedTag> equivalenceClasses = new EquivalenceClassCollection<EmbedTag>
+        private readonly static EquivalenceClassCollection<EmbedTag> equivalenceClasses = new EquivalenceClassCollection<EmbedTag>
         {
             new EmbedTag("attachment1"),
             new EmbedTag("attachment2"),
