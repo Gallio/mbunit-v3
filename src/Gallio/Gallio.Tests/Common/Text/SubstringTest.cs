@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Gallio.Common.Text;
+using Gallio.Framework;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 
@@ -39,6 +40,14 @@ namespace Gallio.Tests.Common.Text
                 { new Substring("12345"), 
                   new Substring("9912345", new Range(2, 5)) }
             }
+        };
+
+        [VerifyContract]
+        public readonly IContract HashCodeAcceptanceTests = new HashCodeAcceptanceContract<Substring>
+        {
+            CollisionProbabilityLimit = CollisionProbability.VeryLow,
+            UniformDistributionQuality = UniformDistributionQuality.Excellent,
+            DistinctInstances = DataGenerators.Random.Strings(10000, "[A-Za-z0-9 ]{5,200}").Select(x => new Substring(x))
         };
 
         [Test, ExpectedArgumentNullException]

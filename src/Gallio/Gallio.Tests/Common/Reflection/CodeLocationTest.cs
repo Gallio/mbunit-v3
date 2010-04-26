@@ -15,6 +15,7 @@
 
 
 using System;
+using System.Linq;
 using Gallio.Common.Reflection;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
@@ -40,6 +41,18 @@ namespace Gallio.Tests.Common.Reflection
             }
         };
 
+        [VerifyContract]
+        public readonly IContract HashCodeAcceptanceTests = new HashCodeAcceptanceContract<CodeLocation>
+        {
+            CollisionProbabilityLimit = CollisionProbability.VeryLow,
+            UniformDistributionQuality = UniformDistributionQuality.Excellent,
+            DistinctInstances = DataGenerators.Join(
+                DataGenerators.Random.Strings(100, @"[A-Za-z0-9]{5,30}"),
+                DataGenerators.Random.Numbers(100, 1, 10000),
+                DataGenerators.Random.Numbers(10, 1, 200))
+                .Select(x => new CodeLocation(x.First, x.Second, x.Third))
+        };
+
         [Test]
         public void UnknownIsDefinedWithANullPath()
         {
@@ -57,7 +70,7 @@ namespace Gallio.Tests.Common.Reflection
         [Row(null, 1, 0, ExpectedException = typeof(ArgumentException))]
         public void Constructor(string filename, int line, int column)
         {
-            CodeLocation location = new CodeLocation(filename, line, column);
+            var location = new CodeLocation(filename, line, column);
             Assert.AreEqual(filename, location.Path);
             Assert.AreEqual(line, location.Line);
             Assert.AreEqual(column, location.Column);

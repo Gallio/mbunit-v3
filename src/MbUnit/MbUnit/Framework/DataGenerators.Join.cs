@@ -142,5 +142,55 @@ namespace MbUnit.Framework
                     (T3)items[2].GetValue(binding));
             }
         }
+
+        /// <summary>
+        /// Joins the two specified enumerations of values into a single enumeration of paired values 
+        /// by applying the default combinatorial join strategy.
+        /// </summary>
+        /// <param name="values">An array of enumerations of values.</param>
+        /// <returns>The resulting enumeration of combined values in arrays.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="values"/> is null.</exception>
+        /// <seealso cref="Join(JoinStrategy, IEnumerable[])"/>
+        /// <seealso cref="CombinatorialJoinAttribute"/>
+        public static IEnumerable<object[]> Join(params IEnumerable[] values)
+        {
+            return Join(JoinStrategy.Combinatorial, values);
+        }
+
+        /// <summary>
+        /// Joins the two specified enumerations of values into a single enumeration of paired values 
+        /// by applying the specified join strategy.
+        /// </summary>
+        /// <param name="joinStrategy">The join strategy to use.</param>
+        /// <param name="values">An array of enumerations of values.</param>
+        /// <returns>The resulting enumeration of paired values.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="values"/> is null.</exception>
+        /// <seealso cref="Join(IEnumerable[])"/>
+        /// <seealso cref="CombinatorialJoinAttribute"/>
+        /// <seealso cref="SequentialJoinAttribute"/>
+        /// <seealso cref="PairwiseJoinAttribute"/>
+        public static IEnumerable<object[]> Join(JoinStrategy joinStrategy, params IEnumerable[] values)
+        {
+            int size = values.Length;
+            var binding = new DataBinding(0, null);
+            var bindings = new DataBinding[size][];
+            var providers = new List<IDataProvider>();
+
+            for(int i =0; i<size; i++)
+            {
+                providers.Add(new ValueSequenceDataSet(values[i], null, false));
+                bindings[i] = new[] { binding };
+            }
+
+            foreach (var items in map[joinStrategy].Join(providers, bindings, false))
+            {
+                var array = new object[size];
+
+                for(int i =0; i<size; i++)
+                    array[i] = items[i].GetValue(binding);
+
+                yield return array;
+            }
+        }
     }
 }

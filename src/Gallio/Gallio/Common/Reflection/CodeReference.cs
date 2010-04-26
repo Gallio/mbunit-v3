@@ -20,6 +20,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using Gallio.Common.Normalization;
+using Gallio.Common.Security;
 using Gallio.Common.Xml;
 using Gallio.Properties;
 
@@ -302,11 +303,13 @@ namespace Gallio.Common.Reflection
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return (assemblyName != null ? assemblyName.GetHashCode() : 0)
-                   ^ (namespaceName != null ? namespaceName.GetHashCode() : 0)
-                   ^ (typeName != null ? typeName.GetHashCode() : 0)
-                   ^ (memberName != null ? memberName.GetHashCode() : 0)
-                   ^ (parameterName != null ? parameterName.GetHashCode() : 0);
+            return new FnvHasher(15467)
+                .Add(assemblyName)
+                .Add(namespaceName)
+                .Add(typeName)
+                .Add(memberName)
+                .Add(parameterName)
+                .ToValue();
         }
         #endregion
 

@@ -78,5 +78,67 @@ namespace MbUnit.Tests.Framework
                 new Triple<string, int, double>("B", 1, 5.0),
             }, actual);
         }
+
+        [Test]
+        public void CombinatorialJoin_with_high_rank()
+        {
+            var w = new[] { "A", "B" };
+            var x = new[] { 1, 2, 3 };
+            var y = new[] { 5.0, 9.0 };
+            var z = new[] { 'U', 'V' };
+            var actual = DataGenerators.Join(w, x, y, z);
+
+            Assert.AreElementsEqualIgnoringOrder(new[] 
+            { 
+                new object[] { "A", 1, 5.0, 'U' },
+                new object[] { "A", 1, 5.0, 'U' },
+                new object[] { "A", 1, 5.0, 'V' },
+                new object[] { "A", 1, 5.0, 'V' },
+                new object[] { "A", 1, 9.0, 'U' },
+                new object[] { "A", 1, 9.0, 'U' },
+                new object[] { "A", 1, 9.0, 'V' },
+                new object[] { "A", 1, 9.0, 'V' },
+                new object[] { "A", 2, 5.0, 'U' },
+                new object[] { "A", 2, 5.0, 'U' },
+                new object[] { "A", 2, 5.0, 'V' },
+                new object[] { "A", 2, 5.0, 'V' },
+                new object[] { "A", 2, 9.0, 'U' },
+                new object[] { "A", 2, 9.0, 'U' },
+                new object[] { "A", 2, 9.0, 'V' },
+                new object[] { "A", 2, 9.0, 'V' },
+                new object[] { "A", 3, 5.0, 'U' },
+                new object[] { "A", 3, 5.0, 'U' },
+                new object[] { "A", 3, 5.0, 'V' },
+                new object[] { "A", 3, 5.0, 'V' },
+                new object[] { "A", 3, 9.0, 'U' },
+                new object[] { "A", 3, 9.0, 'U' },
+                new object[] { "A", 3, 9.0, 'V' },
+                new object[] { "A", 3, 9.0, 'V' },
+                new object[] { "B", 1, 5.0, 'U' },
+                new object[] { "B", 1, 5.0, 'U' },
+                new object[] { "B", 1, 5.0, 'V' },
+                new object[] { "B", 1, 5.0, 'V' },
+                new object[] { "B", 1, 9.0, 'U' },
+                new object[] { "B", 1, 9.0, 'U' },
+                new object[] { "B", 1, 9.0, 'V' },
+                new object[] { "B", 1, 9.0, 'V' },
+                new object[] { "B", 2, 5.0, 'U' },
+                new object[] { "B", 2, 5.0, 'U' },
+                new object[] { "B", 2, 5.0, 'V' },
+                new object[] { "B", 2, 5.0, 'V' },
+                new object[] { "B", 2, 9.0, 'U' },
+                new object[] { "B", 2, 9.0, 'U' },
+                new object[] { "B", 2, 9.0, 'V' },
+                new object[] { "B", 2, 9.0, 'V' },
+                new object[] { "B", 3, 5.0, 'U' },
+                new object[] { "B", 3, 5.0, 'U' },
+                new object[] { "B", 3, 5.0, 'V' },
+                new object[] { "B", 3, 5.0, 'V' },
+                new object[] { "B", 3, 9.0, 'U' },
+                new object[] { "B", 3, 9.0, 'U' },
+                new object[] { "B", 3, 9.0, 'V' },
+                new object[] { "B", 3, 9.0, 'V' },
+           }, actual);
+        }
     }
 }

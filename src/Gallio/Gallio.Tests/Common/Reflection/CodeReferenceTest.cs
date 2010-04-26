@@ -14,15 +14,16 @@
 // limitations under the License.
 
 using System;
+using System.Linq;
 using System.Reflection;
 using Gallio.Common.Reflection;
 using MbUnit.Framework;
+using MbUnit.Framework.ContractVerifiers;
 
 namespace Gallio.Tests.Common.Reflection
 {
     [TestFixture]
     [TestsOn(typeof(CodeReference))]
-    [Author("Jeff", "jeff@ingenio.com")]
     public class CodeReferenceTest
     {
         private Assembly assembly;
@@ -41,6 +42,20 @@ namespace Gallio.Tests.Common.Reflection
             parameter = member.GetParameters()[0];
         }
 
+        [VerifyContract]
+        public readonly IContract HashCodeAcceptanceTests = new HashCodeAcceptanceContract<CodeReference>
+        {
+            CollisionProbabilityLimit = CollisionProbability.VeryLow,
+            UniformDistributionQuality = UniformDistributionQuality.Excellent,
+            DistinctInstances = DataGenerators.Join(
+                DataGenerators.Random.Strings(10, @"[A-Za-z0-9]{5,30}"),
+                DataGenerators.Random.Strings(10, @"[A-Za-z0-9]{5,30}"),
+                DataGenerators.Random.Strings(10, @"[A-Za-z0-9]{5,30}"),
+                DataGenerators.Random.Strings(10, @"[A-Za-z0-9]{5,30}"),
+                DataGenerators.Random.Strings(10, @"[A-Za-z0-9]{5,30}"))
+                .Select(x => new CodeReference((string)x[0], (string)x[1], (string)x[2], (string)x[3], (string)x[4]))
+        };
+
         [Test]
         public void Unknown_IsDefinedAsAllNulls()
         {
@@ -56,7 +71,7 @@ namespace Gallio.Tests.Common.Reflection
         [Test]
         public void CreateByNameAndResolve()
         {
-            CodeReference r = new CodeReference(assembly.FullName, type.Namespace, type.FullName, member.Name, parameter.Name);
+            var r = new CodeReference(assembly.FullName, type.Namespace, type.FullName, member.Name, parameter.Name);
             Assert.AreEqual(assembly.FullName, r.AssemblyName);
             Assert.AreEqual(type.Namespace, r.NamespaceName);
             Assert.AreEqual(type.FullName, r.TypeName);
@@ -69,7 +84,7 @@ namespace Gallio.Tests.Common.Reflection
         [Test]
         public void CreateFromAssembly()
         {
-            CodeReference r = CodeReference.CreateFromAssembly(assembly);
+            var r = CodeReference.CreateFromAssembly(assembly);
             Assert.AreEqual(assembly.FullName, r.AssemblyName);
             Assert.IsNull(r.NamespaceName);
             Assert.IsNull(r.TypeName);
@@ -107,7 +122,7 @@ namespace Gallio.Tests.Common.Reflection
         [Test]
         public void CreateFromType()
         {
-            CodeReference r = CodeReference.CreateFromType(type);
+            var r = CodeReference.CreateFromType(type);
             Assert.AreEqual(assembly.FullName, r.AssemblyName);
             Assert.AreEqual(@namespace, r.NamespaceName);
             Assert.AreEqual(type.FullName, r.TypeName);
@@ -126,7 +141,7 @@ namespace Gallio.Tests.Common.Reflection
         [Test]
         public void CreateFromMember()
         {
-            CodeReference r = CodeReference.CreateFromMember(member);
+            var r = CodeReference.CreateFromMember(member);
             Assert.AreEqual(assembly.FullName, r.AssemblyName);
             Assert.AreEqual(@namespace, r.NamespaceName);
             Assert.AreEqual(type.FullName, r.TypeName);
@@ -145,7 +160,7 @@ namespace Gallio.Tests.Common.Reflection
         [Test]
         public void CreateFromParameter()
         {
-            CodeReference r = CodeReference.CreateFromParameter(parameter);
+            var r = CodeReference.CreateFromParameter(parameter);
             Assert.AreEqual(assembly.FullName, r.AssemblyName);
             Assert.AreEqual(@namespace, r.NamespaceName);
             Assert.AreEqual(type.FullName, r.TypeName);

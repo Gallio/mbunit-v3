@@ -16,6 +16,7 @@
 using System;
 using Gallio.Common.Collections;
 using Gallio.Common.Normalization;
+using Gallio.Common.Security;
 
 namespace Gallio.Common.Markup
 {
@@ -88,7 +89,7 @@ namespace Gallio.Common.Markup
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return Name.GetHashCode() ^ ContentType.GetHashCode() ^ -1;
+            return new FnvHasher(11831).Add(Name).Add(ContentType).Add(bytes.Length).ToValue();
         }
     }
 }

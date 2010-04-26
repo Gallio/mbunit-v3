@@ -13,7 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
 using Gallio.Common.Markup;
+using Gallio.Common.Text.RegularExpression;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 
@@ -38,6 +41,28 @@ namespace Gallio.Tests.Common.Markup.Tags
         public void NullAttachmentNamePicksAUniqueOne()
         {
             Assert.IsNotNull(new BinaryAttachment(null, MimeTypes.PlainText, new byte[0]));
+        }
+
+        [VerifyContract]
+        public readonly IContract HashCodeAcceptanceTests = new HashCodeAcceptanceContract<BinaryAttachment>
+        {
+            CollisionProbabilityLimit = CollisionProbability.VeryLow,
+            UniformDistributionQuality = UniformDistributionQuality.Excellent,
+            DistinctInstances = GetDistinctInstances()
+        };
+
+        private static IEnumerable<BinaryAttachment> GetDistinctInstances()
+        {
+            var nameGenerator = new RegexLite(@"[A-Za-z0-9]{5,30}");
+            var random = new Random();
+
+            for (int i = 0; i < 10000; i++)
+                foreach (var mimeType in MimeTypes.All)
+                {
+                    var bytes = new byte[random.Next(0, 1000)];
+                    random.NextBytes(bytes);
+                    yield return new BinaryAttachment(nameGenerator.GetRandomString(), mimeType, bytes);
+                }
         }
     }
 }

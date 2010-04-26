@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common.Security;
 
 namespace Gallio.Common.Text
 {
@@ -194,8 +195,9 @@ namespace Gallio.Common.Text
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            // FIXME: Optimize this.
-            return ToString().GetHashCode();
+            return new FnvHasher(36319)
+                .Add(range.SubstringOf(content))
+                .ToValue();
         }
 
         /// <summary>

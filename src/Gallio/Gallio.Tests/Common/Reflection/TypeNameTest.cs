@@ -196,7 +196,7 @@ namespace Gallio.Tests.Common.Reflection
         }
 
         [VerifyContract]
-        public readonly IContract EqualityAndHashCode = new EqualityContract<TypeName>()
+        public readonly IContract EqualityTests = new EqualityContract<TypeName>()
         {
             ImplementsOperatorOverloads = false,
             EquivalenceClasses =
@@ -206,6 +206,17 @@ namespace Gallio.Tests.Common.Reflection
                 { new TypeName("Type, DifferentAssembly") },
                 { new TypeName("Type, Assembly, Version=1.2.3.4") }
             }
+        };
+
+        [VerifyContract]
+        public readonly IContract HashCodeAcceptanceTests = new HashCodeAcceptanceContract<TypeName>
+        {
+            CollisionProbabilityLimit = CollisionProbability.VeryLow,
+            UniformDistributionQuality = UniformDistributionQuality.Excellent,
+            DistinctInstances = DataGenerators.Join(
+                DataGenerators.Random.Strings(10, @"[A-Za-z0-9]{5,30}"),
+                DataGenerators.Random.Strings(10, @"[A-Za-z0-9]{5,30}"))
+                .Select(x => new TypeName(x.First + ", " + x.Second))
         };
 
         private class Dummy<T>

@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.Linq;
+using Gallio.Common.Reflection;
 using Gallio.Common.Text;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
@@ -33,6 +35,24 @@ namespace Gallio.Tests.Common.Text
                 { new Diff(DiffKind.Change, new Range(0, 9), new Range(0, 10)) },
                 { new Diff(DiffKind.Change, new Range(0, 9), new Range(0, 9)) },
             }
+        };
+
+        [VerifyContract]
+        public readonly IContract HashCodeAcceptanceTests = new HashCodeAcceptanceContract<Diff>
+        {
+            CollisionProbabilityLimit = CollisionProbability.VeryLow,
+            UniformDistributionQuality = UniformDistributionQuality.Excellent,
+            DistinctInstances = DataGenerators.Join(
+                Enum.GetValues(typeof(DiffKind)).Cast<DiffKind>(),
+                DataGenerators.Join(
+                    DataGenerators.Random.Numbers(10, 0, 100),
+                    DataGenerators.Random.Numbers(10, 0, 100))
+                    .Select(x => new Range(x.First, x.Second)),
+                DataGenerators.Join(
+                    DataGenerators.Random.Numbers(10, 0, 100),
+                    DataGenerators.Random.Numbers(10, 0, 100))
+                    .Select(x => new Range(x.First, x.Second)))
+                .Select(x => new Diff(x.First, x.Second, x.Third))
         };
 
         [Test]

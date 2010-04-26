@@ -83,7 +83,7 @@
     <Compile Include="Common\Markup\StructuredDocumentWriterTest.cs" />
     <Compile Include="Common\Markup\StructuredTextTest.cs" />
     <Compile Include="Common\Markup\Tags\BaseTagTest.cs" />
-    <Compile Include="Common\Markup\Tags\BinaryAttachmentTest.cs" />
+    <Compile Include="Common\Markup\BinaryAttachmentTest.cs" />
     <Compile Include="Common\Markup\Tags\BodyTagTest.cs" />
     <Compile Include="Common\Markup\Tags\ContainerTagTest.cs" />
     <Compile Include="Common\Markup\Tags\EmbedTagTest.cs" />

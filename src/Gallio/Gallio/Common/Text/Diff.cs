@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common.Security;
 using Gallio.Common.Text;
 
 namespace Gallio.Common.Text
@@ -86,7 +87,11 @@ namespace Gallio.Common.Text
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return leftRange.GetHashCode() ^ rightRange.GetHashCode() ^ (int)kind;
+            return new FnvHasher(33329)
+                .Add(leftRange)
+                .Add(rightRange)
+                .Add(kind)
+                .ToValue();
         }
 
         /// <summary>

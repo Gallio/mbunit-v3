@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using Gallio.Common.Security;
 using Gallio.Runtime.Extensibility;
 
 namespace Gallio.Common.Reflection
@@ -148,7 +149,10 @@ namespace Gallio.Common.Reflection
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return fullName.GetHashCode() ^ assemblyName.FullName.GetHashCode();
+            return new FnvHasher(22739)
+                .Add(fullName)
+                .Add(assemblyName.FullName)
+                .ToValue();
         }
 
         /// <inheritdoc />
