@@ -65,5 +65,11 @@ namespace Gallio.Tests.Framework
                 TestLog.WriteLine("Found method '{0}'", sourceMethod.Name);
             }
         }
+
+        [Test]
+        public void MethodName()
+        {
+            TestLog.WriteLine("Hello");
+        }
     }
 }

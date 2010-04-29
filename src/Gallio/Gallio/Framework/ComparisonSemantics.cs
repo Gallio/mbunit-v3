@@ -58,7 +58,9 @@ namespace Gallio.Framework
             {
                 if (instance == null)
                 {
-                    instance = (IComparisonSemantics)Runtime.RuntimeAccessor.ServiceLocator.ResolveByComponentId("Gallio.ComparisonSemantics");
+                    instance = Runtime.RuntimeAccessor.IsInitialized
+                        ? (IComparisonSemantics)Runtime.RuntimeAccessor.ServiceLocator.ResolveByComponentId("Gallio.ComparisonSemantics")
+                        : new DefaultComparisonSemantics(new DefaultExtensionPoints());
                 }
 
                 return instance;
