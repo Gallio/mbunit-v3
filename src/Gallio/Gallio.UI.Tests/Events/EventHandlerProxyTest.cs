@@ -13,10 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Icarus.Events;
+using Gallio.UI.Events;
 using MbUnit.Framework;
 
-namespace Gallio.Icarus.Tests.Events
+namespace Gallio.UI.Tests.Events
 {
     [Category("Events"), TestsOn(typeof(EventHandlerProxy<>))]
     public class EventHandlerProxyTest

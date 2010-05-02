@@ -23,6 +23,7 @@ using Gallio.Icarus.Tests.Utilities;
 using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.DataBinding;
+using Gallio.UI.Events;
 using MbUnit.Framework;
 using Rhino.Mocks;
 

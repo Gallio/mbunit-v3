@@ -29,6 +29,7 @@ using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime;
 using Gallio.Runtime.Debugging;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.Events;
 using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers

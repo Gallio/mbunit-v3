@@ -141,15 +141,21 @@ namespace Gallio.Icarus
                 }
             };
 
-            taskManager.ProgressUpdate += (s, e) =>
-            {
-                toolStripProgressBar.ProgressChanged(taskManager.ProgressMonitor);
-                toolStripStatusLabel.ProgressChanged(taskManager.ProgressMonitor);
-            };
-            
             progressController = RuntimeAccessor.ServiceLocator.Resolve<IProgressController>();
-            progressController.DisplayProgressDialog += (s, e) => Sync.Invoke(this, () => 
-                new ProgressMonitorDialog(taskManager.ProgressMonitor).Show(this));
+            progressController.Status.PropertyChanged += (s, e) =>
+            {
+                toolStripStatusLabel.Text = progressController.Status;
+            };
+            progressController.TotalWork.PropertyChanged += (s, e) =>
+            {
+                toolStripProgressBar.TotalWork = progressController.TotalWork;
+            };
+            progressController.CompletedWork.PropertyChanged += (s, e) =>
+            {
+                toolStripProgressBar.CompletedWork = progressController.CompletedWork;
+            };
+            progressController.DisplayProgressDialog += (s, e) => Sync.Invoke(this, () =>
+                new ProgressMonitorDialog(e.ProgressMonitor).Show(this));
 
             commandFactory = RuntimeAccessor.ServiceLocator.Resolve<ICommandFactory>();
             testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();

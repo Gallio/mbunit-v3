@@ -26,6 +26,7 @@ using Gallio.Icarus.TestResults;
 using Gallio.Model;
 using Gallio.Runner.Reports.Schema;
 using Gallio.UI.DataBinding;
+using Gallio.UI.Events;
 using SortOrder=Gallio.Icarus.Models.SortOrder;
 
 namespace Gallio.Icarus.Controllers

@@ -22,6 +22,7 @@ using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Model;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.Events;
 using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.TestExplorer

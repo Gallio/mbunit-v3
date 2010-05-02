@@ -18,6 +18,7 @@ using System.Reflection;
 using Gallio.Common.Reflection;
 using Gallio.Icarus.Events;
 using Gallio.Runtime.Extensibility;
+using Gallio.UI.Events;
 using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Runtime
@@ -60,7 +61,7 @@ namespace Gallio.Icarus.Runtime
 
             foreach (var interfaceType in type.GetInterfaces())
             {
-                if (interfaceType.Assembly != assembly && interfaceType != typeof(ICommand))
+                if (false == RelevantInterface(interfaceType, assembly))
                     continue;
 
                 if (IsOpenGenericType(interfaceType))
@@ -76,6 +77,20 @@ namespace Gallio.Icarus.Runtime
             }
         }
 
+        private static bool RelevantInterface(Type interfaceType, Assembly assembly)
+        {
+            if (interfaceType.Assembly == assembly)
+                return true;
+
+            if (interfaceType == typeof(ICommand))
+                return true;
+
+            if (IsAnEventHandler(interfaceType))
+                return true;
+
+            return false;
+        }
+
         private static bool IsOpenGenericType(Type interfaceType)
         {
             return interfaceType.IsGenericType && interfaceType.ContainsGenericParameters;
@@ -87,11 +102,8 @@ namespace Gallio.Icarus.Runtime
             ComponentRegistration componentRegistration;
             if (IsAnEventHandler(interfaceType))
             {
-                var proxyType = typeof(EventHandlerProxy<>).MakeGenericType(interfaceType.GetGenericArguments());
-                typeName = new TypeName(proxyType).ConvertToPartialAssemblyName();
-                componentRegistration = new ComponentRegistration(plugin, serviceDescriptor, 
-                    Guid.NewGuid().ToString(), typeName);
-                componentRegistration.ComponentProperties.Add("target", string.Format("${{{0}}}", componentId));
+                componentRegistration = RegisterEventHandlerProxy(interfaceType, plugin, 
+                    serviceDescriptor, componentId);
             }
             else
             {
@@ -99,6 +111,20 @@ namespace Gallio.Icarus.Runtime
                     componentId, typeName);
             }
             registry.RegisterComponent(componentRegistration);
+        }
+
+        private static ComponentRegistration RegisterEventHandlerProxy(Type interfaceType, IPluginDescriptor plugin, 
+            IServiceDescriptor serviceDescriptor, string componentId)
+        {
+            var proxyType = typeof(EventHandlerProxy<>).MakeGenericType(interfaceType.GetGenericArguments());
+            var typeName = new TypeName(proxyType).ConvertToPartialAssemblyName();
+            
+            var componentRegistration = new ComponentRegistration(plugin, serviceDescriptor, 
+                Guid.NewGuid().ToString(), typeName);
+            
+            componentRegistration.ComponentProperties.Add("target", string.Format("${{{0}}}", componentId));
+            
+            return componentRegistration;
         }
 
         private static bool IsAnEventHandler(Type interfaceType)

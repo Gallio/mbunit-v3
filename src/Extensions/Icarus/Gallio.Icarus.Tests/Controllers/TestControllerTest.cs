@@ -33,6 +33,7 @@ using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.Logging;
+using Gallio.UI.Events;
 using MbUnit.Framework;
 using Rhino.Mocks;
 

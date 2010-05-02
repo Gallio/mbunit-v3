@@ -27,6 +27,9 @@ namespace Gallio.UI.Controls
         ///<summary>
         /// Constructor providing a menu command.
         ///</summary>
+        /// <remarks>
+        /// When clicked, the command will be run synchronously.
+        /// </remarks>
         ///<param name="command">The command to use.</param>
         public CommandToolStripMenuItem(MenuCommand command)
             : this(command, null)
@@ -35,6 +38,10 @@ namespace Gallio.UI.Controls
         /// <summary>
         /// Constructor providing a command and task manager.
         /// </summary>
+        /// <remarks>
+        /// When clicked, the command will be queued with the 
+        /// supplied task manager.
+        /// </remarks>
         /// <param name="command">The command to use.</param>
         /// <param name="taskManager">The task manager to use.</param>
         public CommandToolStripMenuItem(MenuCommand command, ITaskManager taskManager)

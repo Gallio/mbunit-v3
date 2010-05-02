@@ -44,6 +44,7 @@
       <HintPath>..\libs\Aga.Controls.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -150,10 +151,18 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ErrorReporting\ErrorDialogUnhandledExceptionHandler.cs" />
+    <Compile Include="Events\Event.cs" />
+    <Compile Include="Events\EventAggregator.cs" />
+    <Compile Include="Events\EventHandlerProxy.cs" />
+    <Compile Include="Events\Handles.cs" />
+    <Compile Include="Events\IEventAggregator.cs" />
     <Compile Include="Menus\MenuCommand.cs" />
-    <Compile Include="ProgressMonitoring\ToolStripStatusLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="ProgressMonitoring\ITaskQueue.cs" />
+    <Compile Include="ProgressMonitoring\ITaskRunner.cs" />
+    <Compile Include="ProgressMonitoring\TaskCancelled.cs" />
+    <Compile Include="ProgressMonitoring\TaskCompleted.cs" />
+    <Compile Include="ProgressMonitoring\TaskQueue.cs" />
+    <Compile Include="ProgressMonitoring\TaskRunner.cs" />
     <Compile Include="ProgressMonitoring\ICommand.cs" />
     <Compile Include="ProgressMonitoring\ITaskManager.cs" />
     <Compile Include="ProgressMonitoring\ProgressMonitorDialog.cs">
@@ -163,6 +172,7 @@
       <DependentUpon>ProgressMonitorDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="ProgressMonitoring\TaskManager.cs" />
+    <Compile Include="ProgressMonitoring\TaskStarted.cs" />
     <Compile Include="ProgressMonitoring\ToolStripProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>

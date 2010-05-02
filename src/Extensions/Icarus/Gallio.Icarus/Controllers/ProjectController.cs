@@ -36,6 +36,7 @@ using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Common.Policies;
 using Gallio.UI.Common.Synchronization;
 using Gallio.UI.DataBinding;
+using Gallio.UI.Events;
 using Path=System.IO.Path;
 
 namespace Gallio.Icarus.Controllers

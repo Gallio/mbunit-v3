@@ -18,6 +18,7 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Specifications;
+using Gallio.UI.Events;
 
 namespace Gallio.Icarus.Search
 {

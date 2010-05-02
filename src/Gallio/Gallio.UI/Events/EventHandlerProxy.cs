@@ -13,26 +13,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Runtime.Extensibility;
-
-namespace Gallio.Icarus.Events
+namespace Gallio.UI.Events
 {
-    /// <inheritdoc />
-    public class EventAggregator : IEventAggregator
+    ///<summary>
+    /// Proxy event handler.
+    ///</summary>
+    ///<typeparam name="T">The type of event.</typeparam>
+    public class EventHandlerProxy<T> : Handles<T> where T : Event
     {
-        private readonly IServiceLocator serviceLocator;
+        private readonly Handles<T> target;
 
-        public EventAggregator(IServiceLocator serviceLocator)
+        ///<summary>
+        /// Ctor.
+        ///</summary>
+        ///<param name="target">The handler to proxy for.</param>
+        public EventHandlerProxy(Handles<T> target)
         {
-            this.serviceLocator = serviceLocator;
+            this.target = target;
         }
 
-        public void Send<T>(T message) where T : Event
+        /// <inheritdoc />
+        public void Handle(T @event)
         {
-            foreach (var handler in serviceLocator.ResolveAll<Handles<T>>())
-            {
-                handler.Handle(message);
-            }
+            target.Handle(@event);
         }
     }
 }

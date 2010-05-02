@@ -240,4 +240,10 @@
         ndqL2BcRa68CfNtgAcNGicnBKwDAAAAAAElFTkSuQmCC
 </value>
   </data>
+	<data name="Execution_Log_Package_Execution_Log">
+		<value xml:space="preserve">Execution Log</value>
+	</data>
+	<data name="RunTestsCommand_Running_tests">
+		<value xml:space="preserve">Running tests</value>
+	</data>
 </root>

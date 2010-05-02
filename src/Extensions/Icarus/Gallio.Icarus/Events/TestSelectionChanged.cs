@@ -15,6 +15,7 @@
 
 using System.Collections.Generic;
 using Gallio.Icarus.Models;
+using Gallio.UI.Events;
 
 namespace Gallio.Icarus.Events
 {

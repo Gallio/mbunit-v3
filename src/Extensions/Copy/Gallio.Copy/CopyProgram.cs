@@ -65,8 +65,9 @@ namespace Gallio.Copy
                 var scanner = new ComponentScanner(RuntimeAccessor.Registry);
                 scanner.Scan();
 
-                var controller = RuntimeAccessor.ServiceLocator.Resolve<ICopyController>();
-                var copyForm = new CopyForm(controller);
+                var copyController = RuntimeAccessor.ServiceLocator.Resolve<ICopyController>();
+                var progressController = RuntimeAccessor.ServiceLocator.Resolve<IProgressController>();
+                var copyForm = new CopyForm(copyController, progressController);
 
                 ErrorDialogUnhandledExceptionHandler.RunApplicationWithHandler(copyForm);
             }

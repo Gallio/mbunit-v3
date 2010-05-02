@@ -15,8 +15,6 @@
 
 using System;
 using System.Windows.Forms;
-using Gallio.Common.Concurrency;
-using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.UI.ProgressMonitoring
 {
@@ -26,34 +24,38 @@ namespace Gallio.UI.ProgressMonitoring
     public class ToolStripProgressBar : System.Windows.Forms.ToolStripProgressBar
     {
         ///<summary>
-        /// Update the progress of the control.
+        /// Total work to do.
         ///</summary>
-        ///<param name="progressMonitor">The <see cref="ObservableProgressMonitor"/> to use.</param>
-        public void ProgressChanged(ObservableProgressMonitor progressMonitor)
+        public double TotalWork 
         {
-            if (Parent != null)
-                Sync.Invoke(Parent, () => UpdateProgress(progressMonitor));
-            else
-                UpdateProgress(progressMonitor);
+            set 
+            {
+                if (value == 0) 
+                {
+                    Maximum = 0;
+                    return;
+                }
+
+                if (!double.IsNaN(value))
+                {
+                    Style = ProgressBarStyle.Continuous;
+                    Maximum = Convert.ToInt32(value);
+                } 
+                else 
+                {
+                    Style = ProgressBarStyle.Marquee;
+                }
+            }
         }
 
-        private void UpdateProgress(ObservableProgressMonitor progressMonitor)
+        ///<summary>
+        /// Total work to do.
+        ///</summary>
+        public double CompletedWork
         {
-            if (progressMonitor.IsDone)
+            set 
             {
-                Maximum = 0;
-                return;
-            }
-
-            if (!double.IsNaN(progressMonitor.TotalWorkUnits))
-            {
-                Style = ProgressBarStyle.Continuous;
-                Maximum = Convert.ToInt32(progressMonitor.TotalWorkUnits);
-                Value = Convert.ToInt32(progressMonitor.CompletedWorkUnits);
-            }
-            else
-            {
-                Style = ProgressBarStyle.Marquee;
+                Value =  Convert.ToInt32(value);
             }
         }
     }

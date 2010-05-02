@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Properties;
 using Gallio.Icarus.Reports;
 using Gallio.Icarus.Services;
 using Gallio.Runtime.ProgressMonitoring;
@@ -44,7 +45,7 @@ namespace Gallio.Icarus.Commands
 
         public void Execute(IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask("Running tests", 100))
+            using (progressMonitor.BeginTask(Resources.RunTestsCommand_Running_tests, 100))
             {
                 ResetTestStatus(progressMonitor);
 

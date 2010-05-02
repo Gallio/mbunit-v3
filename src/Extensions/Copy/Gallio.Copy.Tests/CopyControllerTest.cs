@@ -15,8 +15,6 @@
 
 using Gallio.Common.IO;
 using Gallio.Copy.Commands;
-using Gallio.Runtime.ProgressMonitoring;
-using Gallio.UI.Common.Policies;
 using Gallio.UI.ProgressMonitoring;
 using MbUnit.Framework;
 using Rhino.Mocks;
@@ -28,14 +26,12 @@ namespace Gallio.Copy.Tests
         private ITaskManager taskManager;
         private CopyController controller;
         private IFileSystem fileSystem;
-        private IUnhandledExceptionPolicy unhandledExceptionPolicy;
 
         [SetUp]
         public void SetUp()
         {
             taskManager = MockRepository.GenerateStub<ITaskManager>();
             fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
             controller = new CopyController(taskManager, fileSystem);
         }
 
@@ -82,22 +78,9 @@ namespace Gallio.Copy.Tests
         [Test]
         public void Shutdown_should_clear_task_queue()
         {
-            taskManager.Stub(tm => tm.ProgressMonitor).Return(new ObservableProgressMonitor());
-
             controller.Shutdown();
 
             taskManager.AssertWasCalled(tm => tm.ClearQueue());
-        }
-
-        [Test]
-        public void Shutdown_should_cancel_current_progress()
-        {
-            var progressMonitor = new ObservableProgressMonitor();
-            taskManager.Stub(tm => tm.ProgressMonitor).Return(progressMonitor);
-
-            controller.Shutdown();
-
-            Assert.IsTrue(progressMonitor.IsCanceled);
         }
     }
 }

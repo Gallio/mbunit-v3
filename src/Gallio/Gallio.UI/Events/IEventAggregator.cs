@@ -13,12 +13,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Gallio.Icarus.Events
+namespace Gallio.UI.Events
 {
     /// <summary>
-    /// Marker class for Events.
+    /// An event aggregator.
+    /// http://martinfowler.com/eaaDev/EventAggregator.html
     /// </summary>
-    public abstract class Event
+    public interface IEventAggregator
     {
+        ///<summary>
+        /// Send an event to all interested parties (synchronous).
+        ///</summary>
+        ///<param name="message">The message to send.</param>
+        ///<typeparam name="T">The type of event.</typeparam>
+        void Send<T>(T message) where T : Event;
     }
 }

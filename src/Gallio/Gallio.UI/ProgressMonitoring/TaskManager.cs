@@ -14,131 +14,73 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
+using System.Configuration;
 using System.Threading;
 using Gallio.Common;
-using Gallio.Common.Concurrency;
-using Gallio.Common.Policies;
-using Gallio.Runtime.ProgressMonitoring;
-using Gallio.UI.Common.Policies;
 
 namespace Gallio.UI.ProgressMonitoring
 {
     /// <inheritdoc />
     public class TaskManager : ITaskManager
     {
-        private Task currentWorkerTask;
-        private readonly Queue<ICommand> queue = new Queue<ICommand>();
-        private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
-        private ObservableProgressMonitor progressMonitor;
+        private readonly ITaskQueue taskQueue;
+        private readonly ITaskRunner taskRunner;
+        private string defaultQueueId;
 
-        /// <inheritdoc />
-        public event EventHandler ProgressUpdate;
-
-        /// <inheritdoc />
-        public ObservableProgressMonitor ProgressMonitor
+        private string DefaultQueueId
         {
-            get { return progressMonitor; }
-            private set
+            get
             {
-                progressMonitor = value;
-                progressMonitor.Changed += (sender, e) => 
-                    EventHandlerPolicy.SafeInvoke(ProgressUpdate, this, EventArgs.Empty);
+                if (defaultQueueId == null)
+                {
+                    defaultQueueId = ConfigurationManager.AppSettings["TaskManager.DefaultQueueId"] ?? 
+                        "Gallio.UI.TaskManager";
+                }
+                return defaultQueueId;
             }
         }
-        /// <inheritdoc />
-        public bool TaskRunning
-        {
-            get { return (currentWorkerTask != null); }
-        }
-
-        /// <inheritdoc />
-        public event EventHandler TaskStarted;
-        /// <inheritdoc />
-        public event EventHandler TaskCompleted;
-        /// <inheritdoc />
-        public event EventHandler TaskCanceled;
 
         ///<summary>
         /// Default constructor.
         ///</summary>
-        ///<param name="unhandledExceptionPolicy">An unhandled exception policy.</param>
-        public TaskManager(IUnhandledExceptionPolicy unhandledExceptionPolicy)
+        ///<param name="taskQueue">A task queue.</param>
+        ///<param name="taskRunner">A task runner.</param>
+        public TaskManager(ITaskQueue taskQueue, ITaskRunner taskRunner)
         {
-            this.unhandledExceptionPolicy = unhandledExceptionPolicy;
-            ProgressMonitor = new ObservableProgressMonitor();
+            this.taskQueue = taskQueue;
+            this.taskRunner = taskRunner;
         }
 
         /// <inheritdoc />
         public void QueueTask(ICommand command)
         {
-            queue.Enqueue(command);
-
-            if (currentWorkerTask == null)
-                RunTask();
+            QueueTask(DefaultQueueId, command);
         }
 
         /// <inheritdoc />
+        public void QueueTask(string queueId, ICommand command)
+        {
+            taskQueue.AddTask(queueId, command);
+            taskRunner.RunTask(queueId);
+        }
+
+        /// <inheritdoc />
+        [Obsolete("Use a named queue instead.")]
         public void BackgroundTask(Action action)
         {
             ThreadPool.QueueUserWorkItem(cb => action());
         }
 
-        private void RunTask()
-        {
-            if (queue.Count == 0)
-                return;
-
-            var command = queue.Dequeue();
-
-            var workerTask = new ThreadTask("Icarus Worker", () =>
-            {
-                ProgressMonitor = new ObservableProgressMonitor();
-                command.Execute(ProgressMonitor);
-            });
-
-            currentWorkerTask = workerTask;
-
-            workerTask.Terminated += delegate
-            {
-                if (!workerTask.IsAborted)
-                {
-                    if (! workerTask.Result.HasValue)
-                    {
-                        if (workerTask.Result.Exception is OperationCanceledException)
-                        {
-                            EventHandlerPolicy.SafeInvoke(TaskCanceled, this, EventArgs.Empty);
-                        }
-                        else
-                        {
-                            unhandledExceptionPolicy.Report("An exception occurred while running a task.", 
-                                currentWorkerTask.Result.Exception);
-                        }
-                    }
-                }
-
-                lock (this)
-                {
-                    if (currentWorkerTask == workerTask)
-                        currentWorkerTask = null;
-                }
-
-                EventHandlerPolicy.SafeInvoke(TaskCompleted, this, EventArgs.Empty);
-
-                // if there's more to do, do it
-                if (queue.Count > 0)
-                    RunTask();
-            };
-
-            workerTask.Start();
-
-            EventHandlerPolicy.SafeInvoke(TaskStarted, this, EventArgs.Empty);
-        }
-
         /// <inheritdoc />
         public void ClearQueue()
         {
-            queue.Clear();
+            ClearQueue(DefaultQueueId);
+        }
+
+        /// <inheritdoc />
+        public void ClearQueue(string queueId)
+        {
+            taskQueue.RemoveAllTasks(queueId);
         }
     }
 }

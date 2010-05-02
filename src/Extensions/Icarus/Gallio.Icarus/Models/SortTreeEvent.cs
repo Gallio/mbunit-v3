@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Icarus.Events;
+using Gallio.UI.Events;
 
 namespace Gallio.Icarus.Models
 {

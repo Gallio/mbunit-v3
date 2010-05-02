@@ -30,6 +30,7 @@ using Gallio.Runner.Projects;
 using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Common.Policies;
+using Gallio.UI.Events;
 using MbUnit.Framework;
 using Rhino.Mocks;
 using System;

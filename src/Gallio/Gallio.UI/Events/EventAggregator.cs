@@ -13,20 +13,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Gallio.Icarus.Events
-{
-    public class EventHandlerProxy<T> : Handles<T> where T : Event
-    {
-        private readonly Handles<T> target;
+using Gallio.Runtime.Extensibility;
 
-        public EventHandlerProxy(Handles<T> target)
+namespace Gallio.UI.Events
+{
+    /// <inheritdoc />
+    public class EventAggregator : IEventAggregator
+    {
+        private readonly IServiceLocator serviceLocator;
+
+        ///<summary>
+        /// Ctor.
+        ///</summary>
+        ///<param name="serviceLocator">A service locator used to find registered handlers.</param>
+        public EventAggregator(IServiceLocator serviceLocator)
         {
-            this.target = target;
+            this.serviceLocator = serviceLocator;
         }
 
-        public void Handle(T @event)
+        /// <inheritdoc />
+        public void Send<T>(T message) where T : Event
         {
-            target.Handle(@event);
+            foreach (var handler in serviceLocator.ResolveAll<Handles<T>>())
+            {
+                handler.Handle(message);
+            }
         }
     }
 }

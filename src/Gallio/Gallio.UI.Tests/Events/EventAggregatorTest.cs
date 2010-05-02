@@ -14,12 +14,12 @@
 // limitations under the License.
 
 using System.Collections.Generic;
-using Gallio.Icarus.Events;
 using Gallio.Runtime.Extensibility;
+using Gallio.UI.Events;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
-namespace Gallio.Icarus.Tests.Events
+namespace Gallio.UI.Tests.Events
 {
     [TestsOn(typeof(EventAggregator))]
     public class EventAggregatorTest

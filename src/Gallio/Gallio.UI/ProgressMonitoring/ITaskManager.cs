@@ -13,9 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using Gallio.Common;
-using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.UI.ProgressMonitoring
 {
@@ -25,46 +23,26 @@ namespace Gallio.UI.ProgressMonitoring
     public interface ITaskManager
     {
         ///<summary>
-        /// The underlying progress monitor for the running task.
-        ///</summary>
-        ObservableProgressMonitor ProgressMonitor { get; }
-        ///<summary>
-        /// Returns true if a task is currently underway.
-        ///</summary>
-        bool TaskRunning { get; }
-
-        ///<summary>
-        /// Event fired when a progress update is received from a running task.
-        ///</summary>
-        event EventHandler ProgressUpdate;
-        ///<summary>
-        /// Event fired when a task starts.
-        ///</summary>
-        event EventHandler TaskStarted;
-        ///<summary>
-        /// Event fired when a task completes.
-        ///</summary>
-        event EventHandler TaskCompleted;
-        ///<summary>
-        /// Event fired if a task is canceled.
-        ///</summary>
-        event EventHandler TaskCanceled;
-
-        ///<summary>
         /// Run a task as a background action (uses ThreadPool). 
         /// No progress information will be displayed.
         ///</summary>
         ///<param name="action">The action to perform.</param>
         void BackgroundTask(Action action);
+        
         ///<summary>
         /// Empty the queue of tasks.
         ///</summary>
         void ClearQueue();
+        /// <inheritdoc />
+        void ClearQueue(string queueId);
+
         ///<summary>
         /// Add a task to the queue. If nothing is in the queue or 
         /// running, then the task will be executed.
         ///</summary>
         ///<param name="command">The command to queue.</param>
         void QueueTask(ICommand command);
+        /// <inheritdoc />
+        void QueueTask(string queueId, ICommand command);
     }
 }

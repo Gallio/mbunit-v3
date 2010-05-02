@@ -22,6 +22,7 @@ using Gallio.Icarus.TreeBuilders;
 using Gallio.Model.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.DataBinding;
+using Gallio.UI.Events;
 
 namespace Gallio.Icarus.Models
 {

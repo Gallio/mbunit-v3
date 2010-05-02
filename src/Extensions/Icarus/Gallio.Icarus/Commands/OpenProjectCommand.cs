@@ -18,6 +18,7 @@ using Gallio.Icarus.Events;
 using Gallio.Icarus.Properties;
 using Gallio.Icarus.Services;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.Events;
 using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands

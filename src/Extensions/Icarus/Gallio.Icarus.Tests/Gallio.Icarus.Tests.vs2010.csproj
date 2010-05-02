@@ -101,8 +101,6 @@
     <Compile Include="Controls\TestTreeViewTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Events\EventAggregatorTest.cs" />
-    <Compile Include="Events\EventHandlerProxyTest.cs" />
     <Compile Include="Models\TestStatusFilteredTreeModelTest.cs" />
     <Compile Include="Models\FilteredTreeModelTest.cs" />
     <Compile Include="Models\ProjectTreeNodes\FilesNodeTest.cs" />

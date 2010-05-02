@@ -20,6 +20,7 @@ using Gallio.Icarus.Events;
 using Gallio.Model;
 using Gallio.Model.Schema;
 using Gallio.Runner.Reports.Schema;
+using Gallio.UI.Events;
 
 namespace Gallio.Icarus.Controllers
 {

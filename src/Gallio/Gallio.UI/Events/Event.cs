@@ -13,15 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Gallio.Icarus.Events
+namespace Gallio.UI.Events
 {
     /// <summary>
-    /// Marker interface used by the EventAggregator to
-    /// locate classes interested in an event.
+    /// Marker class for Events.
     /// </summary>
-    /// <typeparam name="T">The type of event.</typeparam>
-    public interface Handles<T> where T: Event
+    public abstract class Event
     {
-        void Handle(T @event);
     }
 }

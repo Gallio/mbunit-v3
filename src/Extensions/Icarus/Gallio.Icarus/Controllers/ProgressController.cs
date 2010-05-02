@@ -14,19 +14,46 @@
 // limitations under the License.
 
 using System;
+using System.Configuration;
+using System.Text;
 using System.Timers;
 using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Properties;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.DataBinding;
+using Gallio.UI.Events;
 using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers
 {
-    internal class ProgressController : IProgressController
+    internal class ProgressController : IProgressController, Handles<TaskStarted>, 
+        Handles<TaskCancelled>, Handles<TaskCompleted>
     {
+        private readonly string queueId = ConfigurationManager.AppSettings["TaskManager.DefaultQueueId"];
+
         private readonly ITaskManager taskManager;
         private readonly Timer timer = new Timer { AutoReset = false };
+        private ObservableProgressMonitor progressMonitor;
+        
+        private ObservableProgressMonitor ProgressMonitor 
+        {
+            get
+            {
+                return progressMonitor;
+            }
+            set
+            {
+                progressMonitor = value;
+                progressMonitor.Changed += (s, e) => UpdateProgress();
+            }
+        }
 
-        public event EventHandler DisplayProgressDialog;
+        public event EventHandler<ProgressEvent> DisplayProgressDialog;
+
+        public Observable<string> Status { get; private set; }
+        public Observable<double> TotalWork { get; private set; }
+        public Observable<double> CompletedWork { get; private set; }
 
         public ProgressController(ITaskManager taskManager, IOptionsController optionsController)
         {
@@ -40,26 +67,83 @@ namespace Gallio.Icarus.Controllers
 
                 // HACK: we don't want to display the progress dialog when running tests
                 // but relying on the task name is not ideal
-                if (taskManager.ProgressMonitor.TaskName == "Running tests")
+                if (ProgressMonitor.TaskName == Resources.RunTestsCommand_Running_tests)
                     return;
 
                 EventHandlerPolicy.SafeInvoke(DisplayProgressDialog, this,
-                    System.EventArgs.Empty);
+                    new ProgressEvent(ProgressMonitor));
             };
 
-            taskManager.TaskStarted += (sender, e) => timer.Start();
-            taskManager.TaskCanceled += (sender, e) => timer.Stop();
-            taskManager.TaskCompleted += (sender, e) => timer.Stop();
+            Status = new Observable<string>();
+            TotalWork = new Observable<double>();
+            CompletedWork = new Observable<double>();
         }
 
         public void Cancel()
         {
-            // cancel any running work
-            if (taskManager.ProgressMonitor != null)
-                taskManager.ProgressMonitor.Cancel();
+            ProgressMonitor.Cancel();
+            taskManager.ClearQueue(queueId);
+        }
 
-            // remove anything else in the queue
-            taskManager.ClearQueue();
+        public void Handle(TaskStarted @event)
+        {
+            if (@event.QueueId != queueId)
+                return;
+
+            ProgressMonitor = @event.ProgressMonitor;
+            timer.Start();
+        }
+
+        public void Handle(TaskCancelled @event)
+        {
+            if (@event.QueueId != queueId)
+                return;
+
+            timer.Stop();
+        }
+
+        public void Handle(TaskCompleted @event)
+        {
+            if (@event.QueueId != queueId)
+                return;
+
+            timer.Stop();
+        }
+
+        private void UpdateProgress()
+        {
+            if (progressMonitor.IsDone)
+            {
+                Status.Value = "";
+                TotalWork.Value = 0;
+                CompletedWork.Value = 0;
+                return;
+            }
+
+            TotalWork.Value = progressMonitor.TotalWorkUnits;
+            CompletedWork.Value = progressMonitor.CompletedWorkUnits;
+
+            Status.Value = GetCurrentTask();
+        }
+
+        private string GetCurrentTask()
+        {
+            var builder = new StringBuilder();
+            builder.Append(progressMonitor.TaskName);
+
+            if (!string.IsNullOrEmpty(progressMonitor.LeafSubTaskName))
+            {
+                builder.Append(" - ");
+                builder.Append(progressMonitor.LeafSubTaskName);
+            }
+
+            if (progressMonitor.TotalWorkUnits > 0)
+            {
+                var progress = progressMonitor.CompletedWorkUnits / progressMonitor.TotalWorkUnits;
+                builder.Append(string.Format(" ({0:P0})", progress));
+            }
+
+            return builder.ToString();
         }
     }
 }

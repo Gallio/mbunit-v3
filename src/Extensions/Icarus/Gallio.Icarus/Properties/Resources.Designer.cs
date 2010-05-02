@@ -128,6 +128,15 @@ namespace Gallio.Icarus.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Execution Log.
+        /// </summary>
+        internal static string Execution_Log_Package_Execution_Log {
+            get {
+                return ResourceManager.GetString("Execution_Log_Package_Execution_Log", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Bitmap File {
             get {
                 object obj = ResourceManager.GetObject("File", resourceCulture);
@@ -281,6 +290,15 @@ namespace Gallio.Icarus.Properties {
             get {
                 object obj = ResourceManager.GetObject("Report", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Running tests.
+        /// </summary>
+        internal static string RunTestsCommand_Running_tests {
+            get {
+                return ResourceManager.GetString("RunTestsCommand_Running_tests", resourceCulture);
             }
         }
         

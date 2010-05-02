@@ -37,7 +37,7 @@ namespace Gallio.Copy
             this.copyButton = new System.Windows.Forms.Button();
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.taskNameStatusLabel = new Gallio.UI.ProgressMonitoring.ToolStripStatusLabel();
+            this.taskNameStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar = new Gallio.UI.ProgressMonitoring.ToolStripProgressBar();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.sourceGroupBox = new System.Windows.Forms.GroupBox();
@@ -288,7 +288,7 @@ namespace Gallio.Copy
         private System.Windows.Forms.ColumnHeader pluginIdColumnHeader;
         private System.Windows.Forms.ToolStripContainer toolStripContainer;
         private System.Windows.Forms.StatusStrip statusStrip;
-        private ToolStripStatusLabel taskNameStatusLabel;
+        private System.Windows.Forms.ToolStripStatusLabel taskNameStatusLabel;
         private ToolStripProgressBar toolStripProgressBar;
         private System.Windows.Forms.SplitContainer splitContainer;
         private System.Windows.Forms.Button selectSourcePluginFolderButton;

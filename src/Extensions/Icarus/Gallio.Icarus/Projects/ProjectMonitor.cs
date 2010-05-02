@@ -16,6 +16,7 @@
 using System.IO;
 using System.Timers;
 using Gallio.Icarus.Events;
+using Gallio.UI.Events;
 
 namespace Gallio.Icarus.Projects
 {

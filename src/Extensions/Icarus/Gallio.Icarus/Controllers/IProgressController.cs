@@ -14,12 +14,18 @@
 // limitations under the License.
 
 using System;
+using Gallio.UI.DataBinding;
 
 namespace Gallio.Icarus.Controllers
 {
     public interface IProgressController
     {
-        event EventHandler DisplayProgressDialog;
+        Observable<string> Status { get; }
+        Observable<double> TotalWork { get; }
+        Observable<double> CompletedWork { get; }
+        
+        event EventHandler<ProgressEvent> DisplayProgressDialog;
+        
         void Cancel();
     }
 }

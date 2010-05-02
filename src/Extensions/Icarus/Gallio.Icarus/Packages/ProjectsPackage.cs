@@ -28,7 +28,7 @@ namespace Gallio.Icarus.Packages
         private readonly IProjectController projectController;
         public static readonly string projectPropertiesWindowId = "Gallio.Icarus.ProjectProperties";
 
-        public ProjectsPackage(IWindowManager windowManager, 
+        public ProjectsPackage(IWindowManager windowManager,
             IProjectController projectController)
         {
             this.windowManager = windowManager;
@@ -60,7 +60,7 @@ namespace Gallio.Icarus.Packages
             windowManager.Register(projectPropertiesWindowId, () =>
             {
                 var projectPropertiesControl = new ProjectProperties(projectController);
-                windowManager.Add(projectPropertiesWindowId, projectPropertiesControl, 
+                windowManager.Add(projectPropertiesWindowId, projectPropertiesControl,
                     Resources.ProjectsPackage_AddMenuItem_Properties);
             });
         }

@@ -15,6 +15,7 @@
 
 using Gallio.Model.Schema;
 using Gallio.Runner.Reports.Schema;
+using Gallio.UI.Events;
 
 namespace Gallio.Icarus.Events
 {

@@ -15,38 +15,53 @@
 
 using System;
 using System.Windows.Forms;
+using Gallio.Common.Concurrency;
 using Gallio.Copy.Properties;
+using Gallio.UI.Common.Synchronization;
+using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Copy
 {
     internal partial class CopyForm : Form
     {
-        private readonly ICopyController controller;
+        private readonly ICopyController copyController;
+        private readonly IProgressController progressController;
 
-        public CopyForm(ICopyController controller)
+        public CopyForm(ICopyController copyController, IProgressController progressController)
         {
-            this.controller = controller;
+            this.copyController = copyController;
+            this.progressController = progressController;
 
             InitializeComponent();
 
-            controller.ProgressUpdate += (s, e) =>
+            copyController.SourcePluginFolder.PropertyChanged +=
+                (s, e) => sourcePluginFolderTextBox.Text = copyController.SourcePluginFolder;
+            copyController.TargetPluginFolder.PropertyChanged +=
+                (s, e) => targetPluginFolderTextBox.Text = copyController.TargetPluginFolder;
+
+            sourcePluginTreeView.Model = copyController.SourcePlugins;
+            targetPluginTreeView.Model = copyController.TargetPlugins;
+
+            progressController.Status.PropertyChanged += (s, e) =>
             {
-                toolStripProgressBar.ProgressChanged(controller.ProgressMonitor);
-                taskNameStatusLabel.ProgressChanged(controller.ProgressMonitor);
+                taskNameStatusLabel.Text = progressController.Status;
             };
-
-            controller.SourcePluginFolder.PropertyChanged +=
-                (s, e) => sourcePluginFolderTextBox.Text = controller.SourcePluginFolder;
-            controller.TargetPluginFolder.PropertyChanged +=
-                (s, e) => targetPluginFolderTextBox.Text = controller.TargetPluginFolder;
-
-            sourcePluginTreeView.Model = controller.SourcePlugins;
-            targetPluginTreeView.Model = controller.TargetPlugins;
+            progressController.TotalWork.PropertyChanged += (s, e) =>
+            {
+                toolStripProgressBar.TotalWork = progressController.TotalWork;
+            };
+            progressController.CompletedWork.PropertyChanged += (s, e) =>
+            {
+                toolStripProgressBar.CompletedWork = progressController.CompletedWork;
+            };
+            progressController.DisplayProgressDialog += (s, e) => Sync.Invoke(this, () =>
+                new ProgressMonitorDialog(e.ProgressMonitor).Show(this));
         }
 
         private void CloseButtonClick(object sender, EventArgs e)
         {
-            controller.Shutdown();
+            progressController.Cancel();
+            copyController.Shutdown();
             Close();
         }
 
@@ -59,7 +74,7 @@ namespace Gallio.Copy
                 return;
             }
 
-            controller.CopyPlugins();
+            copyController.CopyPlugins();
         }
 
         private void SelectSourcePluginFolderButtonClick(object sender, EventArgs e)
@@ -81,7 +96,7 @@ namespace Gallio.Copy
         private void UpdateSourcePluginFolder(string pluginFolder)
         {
             sourcePluginFolderTextBox.Text = pluginFolder;
-            controller.UpdateSourcePluginFolder(pluginFolder);
+            copyController.UpdateSourcePluginFolder(pluginFolder);
         }
 
         private void SelectTargetPluginFolderButtonClick(object sender, EventArgs e)
@@ -103,12 +118,15 @@ namespace Gallio.Copy
         private void UpdateTargetPluginFolder(string pluginFolder)
         {
             targetPluginFolderTextBox.Text = pluginFolder;
-            controller.UpdateTargetPluginFolder(pluginFolder);
+            copyController.UpdateTargetPluginFolder(pluginFolder);
         }
 
         private void CopyForm_Load(object sender, EventArgs e)
         {
-            controller.Load();
+            // provide WindowsFormsSynchronizationContext for cross-thread databinding
+            SynchronizationContext.Current = System.Threading.SynchronizationContext.Current;
+
+            copyController.Load();
         }
     }
 }

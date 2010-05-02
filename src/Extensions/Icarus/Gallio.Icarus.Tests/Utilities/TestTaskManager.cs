@@ -13,10 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using Gallio.Common.Policies;
 using System.Collections.Generic;
-using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;
 using Action=Gallio.Common.Action;
 
@@ -24,24 +21,7 @@ namespace Gallio.Icarus.Tests.Utilities
 {
     internal class TestTaskManager : ITaskManager
     {
-        public bool TaskRunning { get; private set; }
-
-        public ObservableProgressMonitor ProgressMonitor
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public event EventHandler ProgressUpdate;
-        public event EventHandler TaskStarted;
-        public event EventHandler TaskCompleted;
-        public event EventHandler TaskCanceled;
-
         private readonly List<ICommand> queue = new List<ICommand>();
-
-        public List<ICommand> Queue
-        {
-            get { return queue; }
-        }
 
         public void BackgroundTask(Action action)
         {
@@ -53,27 +33,19 @@ namespace Gallio.Icarus.Tests.Utilities
             queue.Add(command);
         }
 
-        public void ClearQueue()
-        { }
-
-        protected void OnTaskStarted(EventArgs e)
+        public void QueueTask(string queueId, ICommand command) 
         {
-            EventHandlerPolicy.SafeInvoke(TaskStarted, this, e);
+            QueueTask(command);
         }
 
-        protected void OnTaskCompleted(EventArgs e)
+        public void ClearQueue(string queueId) 
         {
-            EventHandlerPolicy.SafeInvoke(TaskCompleted, this, e);
+            ClearQueue();
         }
 
-        protected void OnTaskCanceled(EventArgs e)
+        public void ClearQueue() 
         {
-            EventHandlerPolicy.SafeInvoke(TaskCanceled, this, e);
-        }
-
-        protected void OnProgressUpdate(EventArgs e)
-        {
-            EventHandlerPolicy.SafeInvoke(ProgressUpdate, this, e);
+            queue.Clear();
         }
     }
 }

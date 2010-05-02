@@ -10,8 +10,8 @@
     <properties />
   </testPackage>
   <testFilters>
-    <testFilter filterName="LastRun" filterExpr="(Id: a4c4f798d5f23b6f or (Namespace: Gallio.UI.Tests.Controls or (Id: 21496e1528228550 or Id: f03923dc227b6d83 or Id: 8c6d0cd66c644ee3) or Namespace: Gallio.UI.Tests.ProgressMonitoring or Namespace: Gallio.UI.Tests.Tree.Node))" />
-    <testFilter filterName="AutoSave" filterExpr="(Id: a4c4f798d5f23b6f or (Namespace: Gallio.UI.Tests.Controls or (Id: 21496e1528228550 or Id: f03923dc227b6d83 or Id: 8c6d0cd66c644ee3) or Namespace: Gallio.UI.Tests.ProgressMonitoring or Namespace: Gallio.UI.Tests.Tree.Node))" />
+    <testFilter filterName="LastRun" filterExpr="(Id: a4c4f798d5f23b6f or (Namespace: Gallio.UI.Tests.ProgressMonitoring or Namespace: Gallio.UI.Tests.Events or Namespace: Gallio.UI.Tests.Controls or (Id: 21496e1528228550 or Id: f03923dc227b6d83 or Id: 8c6d0cd66c644ee3) or Namespace: Gallio.UI.Tests.Tree.Node))" />
+    <testFilter filterName="AutoSave" filterExpr="(Id: a4c4f798d5f23b6f or (Namespace: Gallio.UI.Tests.ProgressMonitoring or Namespace: Gallio.UI.Tests.Events or Namespace: Gallio.UI.Tests.Controls or (Id: 21496e1528228550 or Id: f03923dc227b6d83 or Id: 8c6d0cd66c644ee3) or Namespace: Gallio.UI.Tests.Tree.Node))" />
   </testFilters>
   <extensionSpecifications />
   <reportDirectory>..\..\..\..\..\Application Data\Gallio\Icarus\Reports</reportDirectory>

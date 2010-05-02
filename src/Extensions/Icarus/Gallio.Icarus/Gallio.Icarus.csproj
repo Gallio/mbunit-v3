@@ -104,7 +104,16 @@
     <Compile Include="Commands\OpenReportCommand.cs" />
     <Compile Include="Commands\RefreshTestTreeCommand.cs" />
     <Compile Include="Commands\ReloadCommand.cs" />
+    <Compile Include="Controllers\ExecutionLogController.cs" />
+    <Compile Include="Controllers\Interfaces\IExecutionLogController.cs" />
+    <Compile Include="Controllers\ProgressEvent.cs" />
     <Compile Include="Events\OptionsChanged.cs" />
+    <Compile Include="ExecutionLogWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ExecutionLogWindow.Designer.cs">
+      <DependentUpon>ExecutionLogWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Search\IModel.cs" />
     <Compile Include="Specifications\MetadataSpecification.cs" />
     <Compile Include="Specifications\NameSpecification.cs" />
@@ -159,7 +168,6 @@
     <Compile Include="Controllers\EventArgs\FileChangedEventArgs.cs" />
     <Compile Include="Controllers\EventArgs\ExecutionLogUpdatedEventArgs.cs" />
     <Compile Include="Controllers\EventArgs\ShowSourceCodeEventArgs.cs" />
-    <Compile Include="Controllers\ExecutionLogController.cs" />
     <Compile Include="Controllers\FilterController.cs" />
     <Compile Include="Controllers\IAboutController.cs" />
     <Compile Include="Controllers\IApplicationController.cs" />
@@ -262,11 +270,6 @@
     <Compile Include="Projects\ProjectReloadDialog.Designer.cs">
       <DependentUpon>ProjectReloadDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Events\Event.cs" />
-    <Compile Include="Events\EventAggregator.cs" />
-    <Compile Include="Events\EventHandlerProxy.cs" />
-    <Compile Include="Events\Handles.cs" />
-    <Compile Include="Events\IEventAggregator.cs" />
     <Compile Include="Logging\BlackBoxLogger.cs" />
     <Compile Include="Models\FilteredTreeModel.cs" />
     <Compile Include="Models\FilterTreeEvent.cs" />
@@ -348,7 +351,6 @@
       <DependentUpon>AnnotationsWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Controllers\EventArgs\RuntimeLogEventArgs.cs" />
-    <Compile Include="Controllers\Interfaces\IExecutionLogController.cs" />
     <Compile Include="Controllers\Interfaces\IOptionsController.cs" />
     <Compile Include="Controllers\Interfaces\IProjectController.cs" />
     <Compile Include="Helpers\IMenuListHelper.cs" />
@@ -428,12 +430,6 @@
     <Compile Include="RuntimeLogWindow.Designer.cs">
       <DependentUpon>RuntimeLogWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="ExecutionLogWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExecutionLogWindow.Designer.cs">
-      <DependentUpon>ExecutionLogWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="FiltersWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -456,10 +452,6 @@
     <Compile Include="Paths.cs" />
     <Compile Include="IcarusProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="ExecutionLogWindow.resx">
-      <DependentUpon>ExecutionLogWindow.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="FiltersWindow.resx">
       <DependentUpon>FiltersWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -565,6 +557,9 @@
       <DependentUpon>TreeViewCategoryPane.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="ExecutionLogWindow.resx">
+      <DependentUpon>ExecutionLogWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Projects\ProjectReloadDialog.resx">
       <DependentUpon>ProjectReloadDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -621,10 +616,8 @@
     <Content Include="Resources\Fixture.png" />
     <Content Include="Resources\folder_open.png" />
     <Content Include="Resources\Graph.png" />
+    <None Include="App.config" />
     <None Include="app.manifest" />
-    <None Include="Gallio.Icarus.exe.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Gallio.Icarus.plugin" />
     <None Include="Resources\Group.png" />
     <Content Include="Resources\help-browser.png" />

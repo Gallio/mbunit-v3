@@ -16,8 +16,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Aga.Controls.Tree;
-using Gallio.Icarus.Events;
 using Gallio.Model;
+using Gallio.UI.Events;
 
 namespace Gallio.Icarus.Models
 {

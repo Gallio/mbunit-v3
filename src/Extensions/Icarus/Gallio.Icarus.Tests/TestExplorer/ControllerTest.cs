@@ -20,6 +20,7 @@ using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.TestExplorer;
 using Gallio.Model;
+using Gallio.UI.Events;
 using Gallio.UI.ProgressMonitoring;
 using MbUnit.Framework;
 using Rhino.Mocks;

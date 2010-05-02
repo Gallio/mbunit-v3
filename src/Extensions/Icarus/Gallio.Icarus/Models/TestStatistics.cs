@@ -16,6 +16,7 @@
 using Gallio.Icarus.Events;
 using Gallio.Model;
 using Gallio.UI.DataBinding;
+using Gallio.UI.Events;
 
 namespace Gallio.Icarus.Models
 {

@@ -13,24 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.DataBinding;
 
 namespace Gallio.Copy
 {
     public interface ICopyController
     {
-        ObservableProgressMonitor ProgressMonitor { get; }
-        
         PluginTreeModel SourcePlugins { get; }
         PluginTreeModel TargetPlugins { get; }
         
         Observable<string> SourcePluginFolder { get; }
         Observable<string> TargetPluginFolder { get; }
-
-        event EventHandler ShowProgressDialog;
-        event EventHandler ProgressUpdate;
 
         void CopyPlugins();
         void UpdateSourcePluginFolder(string sourcePluginFolder);

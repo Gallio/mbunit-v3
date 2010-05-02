@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using Gallio.Common;
 using Gallio.Common.Collections;
-using Gallio.Common.Xml;
 using Gallio.Model;
 using Gallio.Common.Markup;
 using Gallio.Model.Schema;
@@ -162,6 +161,14 @@ namespace Gallio.Runner.Reports.Schema
         private static IEnumerable<TestStepRun> GetChildren(TestStepRun node)
         {
             return node.Children;
+        }
+
+        /// <summary>
+        /// Returns the name of the test step run.
+        /// </summary>
+        public override string ToString()
+        {
+            return step.Name;
         }
     }
 }

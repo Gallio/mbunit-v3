@@ -42,8 +42,17 @@
              serviceType="Gallio.UI.ControlPanel.Preferences.IPreferencePaneProvider, Gallio.UI"
              defaultComponentType="Gallio.UI.ControlPanel.Preferences.PlaceholderPreferencePaneProvider, Gallio.UI"/>
 
+    <service serviceId="Gallio.UI.EventAggregator"
+         serviceType="Gallio.UI.Events.IEventAggregator, Gallio.UI" />
+
     <service serviceId="Gallio.UI.TaskManager" 
              serviceType="Gallio.UI.ProgressMonitoring.ITaskManager, Gallio.UI" />
+
+    <service serviceId="Gallio.UI.TaskQueue"
+         serviceType="Gallio.UI.ProgressMonitoring.ITaskQueue, Gallio.UI" />
+
+    <service serviceId="Gallio.UI.TaskRunner"
+         serviceType="Gallio.UI.ProgressMonitoring.ITaskRunner, Gallio.UI" />
 
     <service serviceId="Gallio.UI.UnhandledExceptionPolicy"
          serviceType="Gallio.UI.Common.Policies.IUnhandledExceptionPolicy, Gallio.UI" />
@@ -95,10 +104,22 @@
                serviceId="Gallio.ElevatedCommand"
                componentType="Gallio.UI.ControlPanel.Preferences.RuntimePreferencePaneCommitterElevatedCommand, Gallio.UI" />
 
+    <component componentId="Gallio.UI.EventAggregator"
+           serviceId="Gallio.UI.EventAggregator"
+           componentType="Gallio.UI.Events.EventAggregator, Gallio.UI" />
+    
     <component componentId="Gallio.UI.TaskManager" 
                serviceId="Gallio.UI.TaskManager" 
                componentType="Gallio.UI.ProgressMonitoring.TaskManager, Gallio.UI" />
 
+    <component componentId="Gallio.UI.TaskQueue"
+           serviceId="Gallio.UI.TaskQueue"
+           componentType="Gallio.UI.ProgressMonitoring.TaskQueue, Gallio.UI" />
+
+    <component componentId="Gallio.UI.TaskRunner"
+           serviceId="Gallio.UI.TaskRunner"
+           componentType="Gallio.UI.ProgressMonitoring.TaskRunner, Gallio.UI" />
+    
     <component componentId="Gallio.UI.UnhandledExceptionPolicy" 
                serviceId="Gallio.UI.UnhandledExceptionPolicy" 
                componentType="Gallio.UI.Common.Policies.UnhandledExceptionPolicy, Gallio.UI" />

@@ -13,25 +13,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.IO;
 using System.Reflection;
 using Gallio.Common.IO;
-using Gallio.Common.Policies;
 using Gallio.Common.Reflection;
 using Gallio.Copy.Commands;
-using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.DataBinding;
 using Gallio.UI.ProgressMonitoring;
-using Timer = System.Timers.Timer;
 
 namespace Gallio.Copy
 {
     public class CopyController : ICopyController
     {
         private readonly ITaskManager taskManager;
-        private readonly Timer timer = new Timer { AutoReset = false };
-        private const int WaitToDisplayProgressDialogInSeconds = 2;
 
         public Observable<string> SourcePluginFolder { get; private set; }
         public Observable<string> TargetPluginFolder { get; private set; }
@@ -39,39 +33,15 @@ namespace Gallio.Copy
         public PluginTreeModel SourcePlugins { get; private set; }
         public PluginTreeModel TargetPlugins { get; private set; }
 
-        public ObservableProgressMonitor ProgressMonitor
-        {
-            get { return taskManager.ProgressMonitor; }
-        }
-
-        public event EventHandler ShowProgressDialog;
-        public event EventHandler ProgressUpdate;
-
         public CopyController(ITaskManager taskManager, IFileSystem fileSystem)
         {
             this.taskManager = taskManager;
-
-            taskManager.ProgressUpdate += (s, e) =>
-                EventHandlerPolicy.SafeInvoke(ProgressUpdate, this, EventArgs.Empty);
-            
-            SetupTimer();
 
             SourcePluginFolder = new Observable<string>();
             TargetPluginFolder = new Observable<string>();
 
             SourcePlugins = new PluginTreeModel(fileSystem);
             TargetPlugins = new PluginTreeModel(fileSystem);
-        }
-
-        private void SetupTimer()
-        {
-            taskManager.TaskStarted += (sender, e) => timer.Start();
-            taskManager.TaskCompleted += (sender, e) => timer.Stop();
-            taskManager.TaskCanceled += (sender, e) => timer.Stop();
-
-            timer.Interval = TimeSpan.FromSeconds(WaitToDisplayProgressDialogInSeconds).TotalMilliseconds;
-            timer.Elapsed += (s, e) => 
-                EventHandlerPolicy.SafeInvoke(ShowProgressDialog, this, EventArgs.Empty);
         }
 
         public void CopyPlugins()
@@ -86,7 +56,6 @@ namespace Gallio.Copy
         public void Shutdown()
         {
             taskManager.ClearQueue();
-            taskManager.ProgressMonitor.Cancel();
         }
 
         public void UpdateSourcePluginFolder(string sourcePluginFolder)

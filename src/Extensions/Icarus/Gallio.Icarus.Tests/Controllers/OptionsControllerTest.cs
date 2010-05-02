@@ -18,12 +18,12 @@ using Gallio.Common.IO;
 using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controls;
-using Gallio.Icarus.Events;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model;
 using Gallio.Runner;
 using Gallio.Runtime.Logging;
 using Gallio.UI.Common.Policies;
+using Gallio.UI.Events;
 using MbUnit.Framework;
 using Rhino.Mocks;
 

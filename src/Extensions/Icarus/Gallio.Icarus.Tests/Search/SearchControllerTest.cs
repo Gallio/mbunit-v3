@@ -14,10 +14,10 @@
 // limitations under the License.
 
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Search;
 using Gallio.Icarus.Specifications;
+using Gallio.UI.Events;
 using MbUnit.Framework;
 using Rhino.Mocks;
 

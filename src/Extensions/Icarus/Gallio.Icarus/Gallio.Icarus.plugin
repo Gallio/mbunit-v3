@@ -26,20 +26,13 @@
   <services>
     <service serviceId="Gallio.Icarus.OptionsController" 
              serviceType="Gallio.Icarus.Controllers.Interfaces.IOptionsController, Gallio.Icarus" />
-
-    <service serviceId="Gallio.Icarus.EventAggregator" 
-             serviceType="Gallio.Icarus.Events.IEventAggregator, Gallio.Icarus" />
   </services>
 
   <components>
     <component componentId="Gallio.Icarus.Controllers.OptionsController" 
                serviceId="Gallio.Icarus.OptionsController"
                componentType="Gallio.Icarus.Controllers.OptionsController, Gallio.Icarus" />
-
-    <component componentId="Gallio.Icarus.EventAggregator" 
-               serviceId="Gallio.Icarus.EventAggregator" 
-               componentType="Gallio.Icarus.Events.EventAggregator, Gallio.Icarus" />
-    
+  
     <!-- Control panel -->
 
     <component componentId="Gallio.Icarus.ControlPanel.RootPaneProvider"
