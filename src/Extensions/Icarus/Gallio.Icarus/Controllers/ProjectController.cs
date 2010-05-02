@@ -56,6 +56,7 @@ namespace Gallio.Icarus.Controllers
         private readonly List<string> testRunnerExtensions = new List<string>();
 
         private bool updating;
+        private string treeViewCategory;
 
         public event EventHandler<FileChangedEventArgs> FileChanged;
         public event EventHandler<ProjectChangedEventArgs> ProjectChanged;
@@ -81,9 +82,7 @@ namespace Gallio.Icarus.Controllers
             get { return projectTreeModel.FileName; }
         }
 
-        public Observable<IList<string>> CollapsedNodes { get; set; }
-
-        public string TreeViewCategory { get; private set; }
+        public Observable<IList<string>> CollapsedNodes { get; private set; }
 
         public string ReportDirectory
         {
@@ -145,7 +144,7 @@ namespace Gallio.Icarus.Controllers
             };
 
             // default tree view category
-            TreeViewCategory = "Namespace";
+            treeViewCategory = "Namespace";
             CollapsedNodes = new Observable<IList<string>>(new List<string>());
         }
 
@@ -236,7 +235,7 @@ namespace Gallio.Icarus.Controllers
                 try
                 {
                     var userOptions = xmlSerializer.LoadFromXml<UserOptions>(projectUserOptionsFile);
-                    TreeViewCategory = userOptions.TreeViewCategory;
+                    treeViewCategory = userOptions.TreeViewCategory;
                     eventAggregator.Send(new TreeViewCategoryChanged(userOptions.TreeViewCategory));
                     CollapsedNodes.Value = userOptions.CollapsedNodes;
                 }
@@ -313,7 +312,7 @@ namespace Gallio.Icarus.Controllers
             string projectUserOptionsFile = projectName + UserOptions.Extension;
             var userOptions = new UserOptions
             {
-                TreeViewCategory = TreeViewCategory,
+                TreeViewCategory = treeViewCategory,
                 CollapsedNodes = new List<string>(CollapsedNodes.Value)
             };
             progressMonitor.Worked(10);
@@ -364,7 +363,7 @@ namespace Gallio.Icarus.Controllers
 
         public void Handle(TreeViewCategoryChanged @event)
         {
-            TreeViewCategory = @event.TreeViewCategory;
+            treeViewCategory = @event.TreeViewCategory;
         }
     }
 }

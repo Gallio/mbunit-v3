@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Common;
 using Gallio.Common.Policies;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
@@ -28,7 +29,7 @@ using Gallio.UI.ProgressMonitoring;
 namespace Gallio.Icarus.TestExplorer
 {
     public class Controller : IController, Handles<ApplicationShutdown>, Handles<Reloading>, Handles<RunStarted>,
-        Handles<RunFinished>, Handles<ExploreStarted>, Handles<ExploreFinished>
+        Handles<RunFinished>, Handles<ExploreStarted>, Handles<ExploreFinished>, Handles<TreeViewCategoryChanged>
     {
         private readonly IModel model;
         private readonly IEventAggregator eventAggregator;
@@ -52,10 +53,6 @@ namespace Gallio.Icarus.TestExplorer
             model.InconclusiveColor.Value = optionsController.InconclusiveColor;
 
             model.TreeViewCategories = optionsController.SelectedTreeViewCategories;
-
-            model.CurrentTreeViewCategory.PropertyChanged += (s, e) => 
-                eventAggregator.Send(new TreeViewCategoryChanged(model.CurrentTreeViewCategory));           
-            model.CurrentTreeViewCategory.Value = projectController.TreeViewCategory;
 
             model.CollapsedNodes = projectController.CollapsedNodes;
         }
@@ -102,10 +99,12 @@ namespace Gallio.Icarus.TestExplorer
             taskManager.QueueTask(command);
         }
 
-        public void RefreshTree()
+        public void ChangeTreeCategory(Action<IProgressMonitor> continuation)
         {
+            eventAggregator.Send(new TreeViewCategoryChanged(model.CurrentTreeViewCategory));
             var command = commandFactory.CreateRefreshTestTreeCommand();
             taskManager.QueueTask(command);
+            taskManager.QueueTask(new DelegateCommand(continuation));
         }
 
         public void ShowSourceCode(string testId)
@@ -160,6 +159,12 @@ namespace Gallio.Icarus.TestExplorer
             EventHandlerPolicy.SafeInvoke(RestoreState, this,
                 EventArgs.Empty);
             model.CanEditTree.Value = true;
+        }
+
+        public void Handle(TreeViewCategoryChanged @event)
+        {
+            if (model.CurrentTreeViewCategory != @event.TreeViewCategory)
+                model.CurrentTreeViewCategory.Value = @event.TreeViewCategory;
         }
     }
 }

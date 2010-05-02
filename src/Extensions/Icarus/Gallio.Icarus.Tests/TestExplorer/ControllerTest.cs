@@ -195,7 +195,7 @@ namespace Gallio.Icarus.Tests.TestExplorer
         [Test]
         public void RefreshTree_should_retrieve_a_command_from_the_factory()
         {
-            controller.RefreshTree();
+            controller.ChangeTreeCategory(pm => { });
 
             commandFactory.AssertWasCalled(cf => cf.CreateRefreshTestTreeCommand());
         }
@@ -206,7 +206,7 @@ namespace Gallio.Icarus.Tests.TestExplorer
             var command = MockRepository.GenerateStub<ICommand>();
             commandFactory.Stub(cf => cf.CreateRefreshTestTreeCommand()).Return(command);
 
-            controller.RefreshTree();
+            controller.ChangeTreeCategory(pm => { });
 
             taskManager.AssertWasCalled(tm => tm.QueueTask(command));
         }

@@ -34,9 +34,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         Observable<IList<FilterInfo>> TestFilters { get; }
         BindingList<string> HintDirectories { get; }
         BindingList<string> TestRunnerExtensions { get; }
-        string ProjectFileName { get; }
-        Observable<IList<string>> CollapsedNodes { get; set; }
-        string TreeViewCategory { get; }
+        Observable<IList<string>> CollapsedNodes { get; }
         string ReportDirectory { get; }
         string ReportNameFormat { get; }
 

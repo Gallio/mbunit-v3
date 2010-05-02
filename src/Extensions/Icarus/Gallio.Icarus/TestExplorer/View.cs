@@ -21,7 +21,7 @@ using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Icarus.Utilities;
 using Gallio.Model;
-using SortOrder=Gallio.Icarus.Models.SortOrder;
+using SortOrder = Gallio.Icarus.Models.SortOrder;
 
 namespace Gallio.Icarus.TestExplorer
 {
@@ -44,7 +44,7 @@ namespace Gallio.Icarus.TestExplorer
 
             testTree.Model = model.TreeModel;
 
-            controller.RestoreState += (s,e) => RestoreState();
+            controller.RestoreState += (s, e) => RestoreState();
 
             model.CanEditTree.PropertyChanged += (s, e) => testTree.SetEditEnabled(model.CanEditTree);
 
@@ -105,21 +105,18 @@ namespace Gallio.Icarus.TestExplorer
 
         private void SetupTreeViewCategories()
         {
-            if (treeViewComboBox.ComboBox != null)
-            {
-                updateFlag = true;
-                treeViewComboBox.ComboBox.DataSource = model.TreeViewCategories.Value;
-                updateFlag = false;
-                treeViewComboBox.ComboBox.SelectedItem = model.CurrentTreeViewCategory;
-            }
+            updateFlag = true;
+            treeViewComboBox.ComboBox.DataSource = model.TreeViewCategories.Value;
+            updateFlag = false;
+
+            model.CurrentTreeViewCategory.PropertyChanged += (s, e) => 
+                treeViewComboBox.ComboBox.SelectedItem = model.CurrentTreeViewCategory.Value;
+            treeViewComboBox.ComboBox.SelectedItem = model.CurrentTreeViewCategory.Value;
 
             model.TreeViewCategories.PropertyChanged += (s, e) =>
             {
-                if (treeViewComboBox.ComboBox == null)
-                    return;
-
                 updateFlag = true;
-                treeViewComboBox.ComboBox.DataSource = model.TreeViewCategories;
+                treeViewComboBox.ComboBox.DataSource = model.TreeViewCategories.Value;
                 updateFlag = false;
             };
         }
@@ -128,13 +125,13 @@ namespace Gallio.Icarus.TestExplorer
         {
             testTree.SetPassedColor(model.PassedColor);
             model.PassedColor.PropertyChanged += (s, e) => testTree.SetPassedColor(model.PassedColor);
-            
+
             testTree.SetFailedColor(model.FailedColor);
             model.FailedColor.PropertyChanged += (s, e) => testTree.SetFailedColor(model.FailedColor);
-            
+
             testTree.SetInconclusiveColor(model.InconclusiveColor);
             model.InconclusiveColor.PropertyChanged += (s, e) => testTree.SetInconclusiveColor(model.InconclusiveColor);
-            
+
             testTree.SetSkippedColor(model.SkippedColor);
             model.SkippedColor.PropertyChanged += (s, e) => testTree.SetSkippedColor(model.SkippedColor);
         }
@@ -148,7 +145,7 @@ namespace Gallio.Icarus.TestExplorer
         {
             sortAscToolStripButton.Checked = (sortOrder == SortOrder.Ascending);
             sortDescToolStripButton.Checked = (sortOrder == SortOrder.Descending);
-            controller.SortTree(sortOrder);    
+            controller.SortTree(sortOrder);
         }
 
         private void removeFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -174,8 +171,7 @@ namespace Gallio.Icarus.TestExplorer
                 return;
 
             SaveState();
-            controller.RefreshTree();
-            RestoreState();
+            controller.ChangeTreeCategory(pm => RestoreState());
         }
 
         private void resetTestsMenuItem_Click(object sender, EventArgs e)
@@ -282,7 +278,7 @@ namespace Gallio.Icarus.TestExplorer
         }
 
         private void SaveState()
-        {            
+        {
             model.CollapsedNodes.Value = testTree.GetCollapsedNodes();
         }
 

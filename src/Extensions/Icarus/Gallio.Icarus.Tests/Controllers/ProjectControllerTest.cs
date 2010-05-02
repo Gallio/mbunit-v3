@@ -317,7 +317,6 @@ namespace Gallio.Icarus.Tests.Controllers
 
             projectController.OpenProject(progressMonitor, projectName);
 
-            Assert.AreEqual("Namespace", projectController.TreeViewCategory);
             Assert.AreEqual(0, projectController.CollapsedNodes.Value.Count);
         }
 

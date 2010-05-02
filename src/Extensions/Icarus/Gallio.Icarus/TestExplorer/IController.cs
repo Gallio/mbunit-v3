@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Gallio.Icarus.Models;
 using Gallio.Model;
+using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.TestExplorer
 {
@@ -30,7 +31,7 @@ namespace Gallio.Icarus.TestExplorer
         void AddFiles(string[] fileNames);
         void RemoveAllFiles();
         void RemoveFile(string fileName);
-        void RefreshTree();
+        void ChangeTreeCategory(Action<IProgressMonitor> continuation);
         void ShowSourceCode(string testId);
         void ResetTests();
         void SetTreeSelection(IList<TestTreeNode> nodes);
