@@ -6,6 +6,7 @@
     <name>TypeMock Integration Plugin</name>
     <version>0.0.0.0</version>
     <description>Provides support for running tests with TypeMock.</description>
+	<icon>plugin://Gallio.TypeMockIntegration/Resources/Typemock.ico</icon>
   </traits>
 
   <dependencies>
@@ -16,6 +17,7 @@
     <file path="Gallio.TypeMockIntegration.plugin" />
     <file path="Gallio.TypeMockIntegration.dll" />
     <file path="TypeMock.Integration.dll" />
+	<file path="Resources\Typemock.ico" />
   </files>
 
   <assemblies>

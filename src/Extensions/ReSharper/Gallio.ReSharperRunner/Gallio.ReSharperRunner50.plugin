@@ -6,6 +6,7 @@
     <name>ReSharper v5.0 Runner</name>
     <version>0.0.0.0</version>
     <description>Enables ReSharper v5.0 to run tests using Gallio.</description>
+	<icon>plugin://Gallio.ReSharperRunner50/Resources/resharper.ico</icon>
   </traits>
 
   <dependencies>
@@ -15,5 +16,6 @@
   <files>
     <file path="Gallio.ReSharperRunner50.plugin" />
     <file path="Gallio.ReSharperRunner50.dll" />
+	<file path="Resources\resharper.ico" />
   </files>
 </plugin>

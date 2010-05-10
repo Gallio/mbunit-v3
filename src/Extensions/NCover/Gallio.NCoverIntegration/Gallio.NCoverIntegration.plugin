@@ -6,6 +6,7 @@
     <name>NCover Integration Plugin</name>
     <version>0.0.0.0</version>
     <description>Provides support for running tests with NCover code coverage.</description>
+	<icon>plugin://Gallio.NCoverIntegration/Resources/ncover.ico</icon>
   </traits>
 
   <dependencies>
@@ -43,6 +44,8 @@
     <file path="libs\NCoverExplorer\NCoverExplorer.NCoverRunner.dll"/>
     <file path="libs\NCoverExplorer\NCoverExplorerFAQ.html"/>
     <file path="libs\NCoverExplorer\NCoverExplorerReleaseNotes.html"/>
+	
+	<file path="Resources\ncover.ico" />
   </files>
 
   <assemblies>
