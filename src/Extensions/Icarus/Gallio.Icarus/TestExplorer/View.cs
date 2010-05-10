@@ -163,7 +163,12 @@ namespace Gallio.Icarus.TestExplorer
 
         private void treeViewComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            model.CurrentTreeViewCategory.Value = (string)treeViewComboBox.SelectedItem;
+            var newValue = (string)treeViewComboBox.SelectedItem;
+
+            if (model.CurrentTreeViewCategory == newValue)
+                return;
+
+            model.CurrentTreeViewCategory.Value = newValue;
 
             // if updateFlag is set, then the index has changed because
             // we are populating the list, so no need to refresh!
