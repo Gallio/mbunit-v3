@@ -16,8 +16,10 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
+using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
+using Gallio.Icarus.TreeBuilders;
 using Gallio.Model.Filters;
 
 namespace Gallio.Icarus.Services
@@ -25,10 +27,12 @@ namespace Gallio.Icarus.Services
     public class FilterService : IFilterService
     {
         private readonly ITestTreeModel testTreeModel;
+        private readonly IOptionsController optionsController;
 
-        public FilterService(ITestTreeModel testTreeModel)
+        public FilterService(ITestTreeModel testTreeModel, IOptionsController optionsController)
         {
             this.testTreeModel = testTreeModel;
+            this.optionsController = optionsController;
         }
 
         public void ApplyFilterSet(FilterSet<ITestDescriptor> filterSet)
@@ -87,7 +91,7 @@ namespace Gallio.Icarus.Services
             return new FilterSet<ITestDescriptor>(filter);
         }
 
-        private static Filter<ITestDescriptor> CreateFilter(IEnumerable<Node> nodes)
+        private Filter<ITestDescriptor> CreateFilter(IEnumerable<Node> nodes)
         {
             var filters = new List<Filter<ITestDescriptor>>();
             foreach (var n in nodes)
@@ -109,7 +113,7 @@ namespace Gallio.Icarus.Services
                 : filters[0];
         }
 
-        private static Filter<ITestDescriptor> CreateFilterForNode(TestTreeNode node)
+        private Filter<ITestDescriptor> CreateFilterForNode(TestTreeNode node)
         {
             Filter<ITestDescriptor> filter = null;
             switch (node.CheckState)
@@ -128,13 +132,13 @@ namespace Gallio.Icarus.Services
             return filter;
         }
 
-        private static Filter<ITestDescriptor> GenerateFilter(TestTreeNode node)
+        private Filter<ITestDescriptor> GenerateFilter(TestTreeNode node)
         {
             var equalityFilter = new EqualityFilter<string>(node.Id);
 
             if (node is NamespaceNode)
             {
-                return new NamespaceFilter<ITestDescriptor>(equalityFilter);
+                return GetNamespaceFilter(node);
             }
 
             if (node is TestDataNode)
@@ -148,6 +152,35 @@ namespace Gallio.Icarus.Services
             }
 
             return CreateFilter(node.Nodes);
+        }
+
+        private Filter<ITestDescriptor> GetNamespaceFilter(TestTreeNode namespaceNode)
+        {
+            var equalityFilter = new EqualityFilter<string>(namespaceNode.Id);
+            var namespaceFilter = new NamespaceFilter<ITestDescriptor>(equalityFilter);
+            
+            if (optionsController.NamespaceHierarchy == NamespaceHierarchy.Flat)
+                return namespaceFilter;
+
+            var filters = new List<Filter<ITestDescriptor>> { namespaceFilter };
+
+            foreach (var n in namespaceNode.Nodes)
+            {
+                var node = n as NamespaceNode;
+
+                if (node == null)
+                    continue;
+
+                var filter = GetNamespaceFilter(node);
+
+                if (filter != null)
+                {
+                    filters.Add(filter);
+                }
+            }
+
+            return filters.Count > 1 ? new OrFilter<ITestDescriptor>(filters)
+                : filters[0];
         }
     }
 }

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using Aga.Controls.Tree;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Model.Schema;
@@ -36,45 +37,39 @@ namespace Gallio.Icarus.TreeBuilders
             progressMonitor.Worked(1);
 
             PopulateNamespaceTree(progressMonitor, testModelData.RootTest.Children, 
-                root, options.NamespaceHierarchy, root);
+                root, options);
 
             return root;
         }
 
         private static void PopulateNamespaceTree(IProgressMonitor progressMonitor, IList<TestData> list,
-            TestTreeNode parent, NamespaceHierarchy namespaceHierarchy, TestTreeNode rootNode)
+            TestTreeNode parent, TreeBuilderOptions options)
         {
-            for (int i = 0; i < list.Count; i++)
+            for (var i = 0; i < list.Count; i++)
             {
                 var testData = list[i];
 
                 var testTreeNode = AddNode(testData, parent, 
-                    namespaceHierarchy, rootNode);
+                    options);
 
                 // process child nodes
                 PopulateNamespaceTree(progressMonitor, testData.Children, testTreeNode,
-                    namespaceHierarchy, rootNode);
+                    options);
 
                 progressMonitor.Worked(1);
             }
         }
 
-        private static TestTreeNode AddNode(TestData testData, TestTreeNode parent, 
-            NamespaceHierarchy namespaceHierarchy, TestTreeNode rootNode)
+        private static TestTreeNode AddNode(TestData testData, TestTreeNode parent,
+            TreeBuilderOptions options)
         {
-            TestTreeNode testTreeNode = new TestDataNode(testData);
+            var testTreeNode = new TestDataNode(testData);
+            
             if (FixtureNode(testData))
-            {
-                // fixtures need special treatment to insert the namespace layer!
-                var namespaces = GetNamespaceArray(testData, namespaceHierarchy);
-
-                testTreeNode = BuildNamespaceNode(parent, testTreeNode, 
-                    rootNode, namespaces);
-            }
-            else
-            {
-                parent.Nodes.Add(testTreeNode);
-            }
+                parent = BuildNamespaceNode(testData, parent, options);
+            
+            parent.Nodes.Add(testTreeNode);
+         
             return testTreeNode;
         }
 
@@ -83,49 +78,63 @@ namespace Gallio.Icarus.TreeBuilders
             return testData.CodeReference.MemberName == null && testData.CodeReference.NamespaceName != null;
         }
 
-        private static TestTreeNode BuildNamespaceNode(TestTreeNode namespaceNode, TestTreeNode fixtureNode, 
-            TestTreeNode rootNode, IEnumerable<string> namespaces)
+        private static TestTreeNode BuildNamespaceNode(TestComponentData testData, 
+            TestTreeNode parent, TreeBuilderOptions options)
         {
-            foreach (var @namespace in namespaces)
+            var @namespace = testData.CodeReference.NamespaceName;
+
+            if (string.IsNullOrEmpty(@namespace))
+                return parent;
+
+            if (options.NamespaceHierarchy == NamespaceHierarchy.Flat)
             {
-                if (@namespace.Length == 0)
+                parent = FindOrAddNamespaceNode(parent, @namespace, @namespace);
+                return parent;
+            }
+
+            var namespaces = @namespace.Split('.');
+
+            foreach (var namespaceSegment in namespaces)
+            {
+                if (namespaceSegment.Length == 0)
                     continue;
 
-                namespaceNode = FindNamespaceNode(@namespace, rootNode, 
-                    namespaceNode);
+                parent = FindOrAddNamespaceNode(parent, @namespace, namespaceSegment);
             }
 
-            namespaceNode.Nodes.Add(fixtureNode);
-            return fixtureNode;
-        }
-
-        private static TestTreeNode FindNamespaceNode(string @namespace, 
-            TestTreeNode rootNode, TestTreeNode parent)
-        {
-            // find the namespace node (or add if it doesn't exist)
-            var nodes = rootNode.Find(@namespace, true);
-
-            if (nodes.Count > 0)
-            {
-                parent = nodes[0];
-            }
-            else
-            {
-                var namespaceNode = new NamespaceNode(@namespace);
-                parent.Nodes.Add(namespaceNode);
-                parent = namespaceNode;
-            }
-            
             return parent;
         }
 
-        private static IEnumerable<string> GetNamespaceArray(TestComponentData testComponentData, 
-            NamespaceHierarchy namespaceHierarchy)
+        private static TestTreeNode FindOrAddNamespaceNode(TestTreeNode parent, string @namespace, string text)
         {
-            var @namespace = testComponentData.CodeReference.NamespaceName;
+            var namespaceNode = FindNamespaceNode(parent, text) 
+                ?? new NamespaceNode(@namespace, text);
 
-            return namespaceHierarchy == NamespaceHierarchy.Tree ? @namespace.Split('.')
-                       : new[] { @namespace };
+            parent.Nodes.Add(namespaceNode);
+            parent = namespaceNode;
+
+            return parent;
+        }
+
+        private static TestTreeNode FindNamespaceNode(Node parent, string text)
+        {
+            foreach (var node in parent.Nodes)
+            {
+                var testTreeNode = node as TestTreeNode;
+                if (testTreeNode == null)
+                    continue;
+
+                if (testTreeNode.Text == text)
+                {
+                    return testTreeNode;
+                }
+
+                var namespaceNode = FindNamespaceNode(testTreeNode, text);
+                if (namespaceNode != null)
+                    return namespaceNode;
+            }
+            
+            return null;
         }
     }
 }

@@ -15,6 +15,7 @@
 
 using System.Windows.Forms;
 using Aga.Controls.Tree;
+using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Icarus.Services;
@@ -24,7 +25,7 @@ using Gallio.Model.Schema;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
-namespace Gallio.Icarus.Tests.Services
+namespace Gallio.Icarus.Tests.Services.Services
 {
     [TestsOn(typeof(FilterService))]
     public class FilterServiceTest
@@ -36,7 +37,8 @@ namespace Gallio.Icarus.Tests.Services
         public void SetUp()
         {
             testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
-            filterService = new FilterService(testTreeModel);
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            filterService = new FilterService(testTreeModel, optionsController);
         }
 
         [Test]
@@ -157,7 +159,7 @@ namespace Gallio.Icarus.Tests.Services
             };
             root.Nodes.Add(child);
             const string @namespace = "Gallio.Icarus.Tests.Services";
-            child.Nodes.Add(new NamespaceNode(@namespace)
+            child.Nodes.Add(new NamespaceNode(@namespace, @namespace)
             {
                 CheckState = CheckState.Checked
             });

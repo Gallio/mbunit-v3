@@ -23,8 +23,8 @@ namespace Gallio.Icarus.Models.TestTreeNodes
 {
     public sealed class NamespaceNode : TestTreeNode, ITestDescriptor
     {
-        public NamespaceNode(string @namespace)
-            : base(@namespace, @namespace)
+        public NamespaceNode(string @namespace, string text)
+            : base(@namespace, text)
         {
             CheckState = System.Windows.Forms.CheckState.Checked;
             CodeElement = Reflector.WrapNamespace(@namespace);
