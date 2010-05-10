@@ -103,5 +103,10 @@ namespace Gallio.Icarus.Models.TestTreeNodes
         {
             get { return testData.CodeReference; }
         }
+
+        public override string ToString()
+        {
+            return testData.ToString();
+        }
     }
 }
