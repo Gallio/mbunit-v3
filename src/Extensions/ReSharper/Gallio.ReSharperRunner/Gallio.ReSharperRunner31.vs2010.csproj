@@ -184,6 +184,7 @@
     <EmbeddedResource Include="Resources\Report.png" />
     <EmbeddedResource Include="Resources\Actions.xml" />
     <Content Include="Gallio.ReSharperRunner31.plugin" />
+    <Content Include="Resources\resharper.ico" />
     <None Include="Reflection\Known Limitations and Workarounds.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
