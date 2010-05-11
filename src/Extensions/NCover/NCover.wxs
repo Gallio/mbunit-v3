@@ -51,6 +51,13 @@
             </Component>
           </Directory>
         </Directory>
+		
+		<Directory Id="NCover.Resources" Name="Resources">
+			<Component Id="Gallio.NCover.Resources" Guid="{24D83D9F-405D-43fc-8DD2-31D07D85D2B0}" Win64="$(var.Win64Binary)">
+				<File Name="ncover.ico" KeyPath="yes" />
+			</Component>
+		</Directory>
+
       </Directory>
     </DirectoryRef>
 

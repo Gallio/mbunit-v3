@@ -213,6 +213,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Readme - Debugging.txt" />
+    <Content Include="Resources\resharper.ico" />
     <None Include="Gallio.ReSharperRunner50.plugin" />
     <None Include="Resources\GallioIcon.png" />
     <EmbeddedResource Include="Resources\Report.png" />

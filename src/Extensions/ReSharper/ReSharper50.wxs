@@ -27,6 +27,12 @@
                         <Component Id="Gallio.ReSharperRunner.V50.VS9.dll" Guid="{47C5C51A-7D7F-4603-82B0-94441925079F}" Win64="no">
                             <File Id="Gallio.ReSharperRunner.V50.VS9.dll" Source="$(var.GallioTargetDir)\bin\ReSharper\v5.0\Gallio.ReSharperRunner50.dll" KeyPath="yes" />
                         </Component>
+						
+						<Directory Id="Gallio.ReSharperRunner.V50.VS9.Resources" Name="Resources">
+							<Component Id="Gallio.ReSharperRunner.V50.VS9.Resources" Guid="{4F11EB47-8365-4d5d-AC08-0640C438551F}" Win64="$(var.Win64Binary)">
+								<File Name="resharper.ico" KeyPath="yes" />
+							</Component>
+						</Directory>
                     </Directory>
                 </Directory>
             </Directory>
@@ -37,6 +43,12 @@
                         <Component Id="Gallio.ReSharperRunner.V50.VS10.dll" Guid="{86160702-5E0F-45a7-ADF7-4654132568CD}" Win64="no">
                             <File Id="Gallio.ReSharperRunner.V50.VS10.dll" Source="$(var.GallioTargetDir)\bin\ReSharper\v5.0\Gallio.ReSharperRunner50.dll" KeyPath="yes" />
                         </Component>
+						
+						<Directory Id="Gallio.ReSharperRunner.V50.VS10.Resources" Name="Resources">
+							<Component Id="Gallio.ReSharperRunner.V50.VS10.Resources" Guid="{A6E2A370-2D08-408c-8624-7A4D9A7744C3}" Win64="$(var.Win64Binary)">
+								<File Name="resharper.ico" KeyPath="yes" />
+							</Component>
+						</Directory>
                     </Directory>
                 </Directory>
             </Directory>            

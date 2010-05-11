@@ -9,9 +9,16 @@
                     <File Name="Gallio.TypeMockIntegration.dll" KeyPath="yes" />
                     <File Name="Gallio.TypeMockIntegration.plugin" />
                 </Component>
-                <Component Id="TypeMock.Integration.dll" Guid="52dbfb41-73be-419d-8db0-54ab1c89bbb8" Win64="$(var.Win64Binary)">
+                
+				<Component Id="TypeMock.Integration.dll" Guid="52dbfb41-73be-419d-8db0-54ab1c89bbb8" Win64="$(var.Win64Binary)">
                     <File Name="TypeMock.Integration.dll" KeyPath="yes" />
                 </Component>
+				
+                <Directory Id="TypeMockIntegration.Resources" Name="Resources">
+                    <Component Id="Gallio.TypeMockIntegration.Resources" Guid="{1C9D9117-FCBD-4a28-AA5B-E7AF5CC014BD}" Win64="$(var.Win64Binary)">
+                        <File Name="Typemock.ico" KeyPath="yes" />
+                    </Component>
+                </Directory>
             </Directory>
         </DirectoryRef>
 

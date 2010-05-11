@@ -13,6 +13,12 @@
                 <Component Id="TeamCity.Readme.txt" Guid="{7E2D01EA-590D-4822-9748-691332285A1D}" Win64="$(var.Win64Binary)">
                     <File Id="TeamCity.Readme.txt" Name="Readme.txt" KeyPath="yes" />
                 </Component>
+				
+                <Directory Id="TeamCityIntegration.Resources" Name="Resources">
+                    <Component Id="Gallio.TeamCityIntegration.Resources" Guid="{7144C8C9-C73E-41c9-AA46-EF4C14783C5E}" Win64="$(var.Win64Binary)">
+                        <File Name="TeamCity.ico" KeyPath="yes" />
+                    </Component>
+                </Directory>
             </Directory>
         </DirectoryRef>
 
