@@ -6,7 +6,6 @@
     <name>ReSharper v3.1 Runner</name>
     <version>0.0.0.0</version>
     <description>Enables ReSharper v3.1 to run tests using Gallio.</description>
-	<icon>plugin://Gallio.ReSharperRunner31/Resources/resharper.ico</icon>
   </traits>
 
   <dependencies>

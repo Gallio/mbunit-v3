@@ -26,6 +26,7 @@
             Description='Provides integration with the TeamCity test reporting features.'>
             <ComponentRef Id="Gallio.TeamCityIntegration.dll"/>
             <ComponentRef Id="TeamCity.Readme.txt"/>
+			<ComponentRef Id="Gallio.TeamCityIntegration.Resources"/>
         </Feature>
     </Fragment>
 </Wix>

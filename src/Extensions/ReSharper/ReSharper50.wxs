@@ -29,7 +29,7 @@
                         </Component>
 						
 						<Directory Id="Gallio.ReSharperRunner.V50.VS9.Resources" Name="Resources">
-							<Component Id="Gallio.ReSharperRunner.V50.VS9.Resources" Guid="{4F11EB47-8365-4d5d-AC08-0640C438551F}" Win64="$(var.Win64Binary)">
+							<Component Id="Gallio.ReSharperRunner.V50.VS9.Icon" Guid="{4F11EB47-8365-4d5d-AC08-0640C438551F}" Win64="$(var.Win64Binary)">
 								<File Id="ReSharper_V50_VS90_Icon" Name="resharper.ico" KeyPath="yes" />
 							</Component>
 						</Directory>
@@ -45,7 +45,7 @@
                         </Component>
 						
 						<Directory Id="Gallio.ReSharperRunner.V50.VS10.Resources" Name="Resources">
-							<Component Id="Gallio.ReSharperRunner.V50.VS10.Resources" Guid="{A6E2A370-2D08-408c-8624-7A4D9A7744C3}" Win64="$(var.Win64Binary)">
+							<Component Id="Gallio.ReSharperRunner.V50.VS10.Icon" Guid="{A6E2A370-2D08-408c-8624-7A4D9A7744C3}" Win64="$(var.Win64Binary)">
 								<File Id="ReSharper_V50_VS100_Icon" Name="resharper.ico" KeyPath="yes" />
 							</Component>
 						</Directory>
@@ -63,11 +63,13 @@
             <Feature Id="feat_Gallio.ReSharper.V50.VS9" Title="Visual Studio 2008" Level="0" AllowAdvertise="no">
                 <Condition Level="1">RESHARPER_V50_VS9_INSTALLDIR</Condition>
                 <ComponentRef Id="Gallio.ReSharperRunner.V50.VS9.dll"/>
+				<ComponentRef Id="Gallio.ReSharperRunner.V50.VS9.Icon"/>
             </Feature>
 
             <Feature Id="feat_Gallio.ReSharper.V50.VS10" Title="Visual Studio 2010" Level="0" AllowAdvertise="no">
                 <Condition Level="1">RESHARPER_V50_VS10_INSTALLDIR</Condition>
                 <ComponentRef Id="Gallio.ReSharperRunner.V50.VS10.dll"/>
+				<ComponentRef Id="Gallio.ReSharperRunner.V50.VS10.Icon"/>
             </Feature> 
         </Feature>
     </Fragment>

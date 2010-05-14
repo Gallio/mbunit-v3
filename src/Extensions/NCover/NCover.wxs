@@ -68,6 +68,7 @@
       <ComponentRef Id="NCover.Program"/>
       <ComponentRef Id="NCoverExplorer.Readme"/>
       <ComponentRef Id="NCoverExplorer.Program"/>
+	  <ComponentRef Id="Gallio.NCover.Resources" />
     </Feature>
   </Fragment>
 </Wix>

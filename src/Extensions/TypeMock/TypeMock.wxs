@@ -26,6 +26,7 @@
             Description='Provides integration with the TypeMock.Net mock object framework.'>
             <ComponentRef Id="Gallio.TypeMockIntegration.dll"/>
             <ComponentRef Id="TypeMock.Integration.dll"/>
+			<ComponentRef Id="Gallio.TypeMockIntegration.Resources"/>
         </Feature>
     </Fragment>
 </Wix>
