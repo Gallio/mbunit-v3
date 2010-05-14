@@ -30,7 +30,7 @@
 						
 						<Directory Id="Gallio.ReSharperRunner.V50.VS9.Resources" Name="Resources">
 							<Component Id="Gallio.ReSharperRunner.V50.VS9.Resources" Guid="{4F11EB47-8365-4d5d-AC08-0640C438551F}" Win64="$(var.Win64Binary)">
-								<File Name="resharper.ico" KeyPath="yes" />
+								<File Id="ReSharper_V50_VS90_Icon" Name="resharper.ico" KeyPath="yes" />
 							</Component>
 						</Directory>
                     </Directory>
@@ -46,7 +46,7 @@
 						
 						<Directory Id="Gallio.ReSharperRunner.V50.VS10.Resources" Name="Resources">
 							<Component Id="Gallio.ReSharperRunner.V50.VS10.Resources" Guid="{A6E2A370-2D08-408c-8624-7A4D9A7744C3}" Win64="$(var.Win64Binary)">
-								<File Name="resharper.ico" KeyPath="yes" />
+								<File Id="ReSharper_V50_VS100_Icon" Name="resharper.ico" KeyPath="yes" />
 							</Component>
 						</Directory>
                     </Directory>
