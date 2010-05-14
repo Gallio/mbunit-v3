@@ -19,6 +19,10 @@
       <ImagePath>bin\TypeMock</ImagePath>
     </PluginFile>
     
+    <File Include="Gallio.TypeMockIntegration\Resources\Typemock.ico">
+      <ImagePath>bin\TypeMock\Resources</ImagePath>
+    </File>
+
     <TestAssembly Include="Gallio.TypeMockIntegration.Tests\bin\Gallio.TypeMockIntegration.Tests.dll" />
   </ItemGroup>
 </Project>

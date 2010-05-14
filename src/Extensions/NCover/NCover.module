@@ -15,6 +15,10 @@
       <ImagePath>bin\NCover</ImagePath>
     </PluginFile>
 
+    <File Include="Gallio.NCoverIntegration\Resources\ncover.ico">
+      <ImagePath>bin\NCover\Resources</ImagePath>
+    </File>
+
     <File Include="libs\NCover Readme.txt">
       <ImagePath>bin\NCover\libs</ImagePath>
     </File>

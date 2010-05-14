@@ -16,6 +16,10 @@
       <ExcludeFromImage>true</ExcludeFromImage>
     </PdbFile>
 
+    <File Include="Gallio.ReSharperRunner\Resources\resharper.ico">
+      <ImagePath>bin\ReSharper\v4.0\Resources</ImagePath>
+    </File>
+
     <TestAssembly Include="Gallio.ReSharperRunner.Tests\bin\v4.0\Gallio.ReSharperRunner40.Tests.dll" />
 
     <Feature Include="FEATURE_RESHARPER_RUNNER" />

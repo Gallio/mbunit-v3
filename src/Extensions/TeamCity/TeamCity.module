@@ -18,6 +18,10 @@
       <ImagePath>bin\TeamCity</ImagePath>
     </File>
     
+    <File Include="Gallio.TeamCityIntegration\Resources\TeamCity.ico">
+      <ImagePath>bin\TeamCity\Resources</ImagePath>
+    </File>
+
     <TestAssembly Include="Gallio.TeamCityIntegration.Tests\bin\Gallio.TeamCityIntegration.Tests.dll" />
   </ItemGroup>
 </Project>
