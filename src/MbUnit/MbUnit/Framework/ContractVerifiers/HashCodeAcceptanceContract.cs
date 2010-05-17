@@ -34,8 +34,12 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <list type="bullet">
     /// <item>
     /// <strong>CollisionProbabilityTest</strong> : The probability of hash code collision for the specified set of instances
-    /// is not greater than the specified limit.
+    /// is less than the specified limit.
     /// </item>
+	/// <item>
+	/// <strong>UniformDistributionTest</strong> : The probability of deviation from uniform distribution is less than
+	/// the specified limit.
+	/// </item>
     /// </list>
     /// </para>
     /// </remarks>
@@ -71,7 +75,7 @@ namespace MbUnit.Framework.ContractVerifiers
     ///     public readonly IContract HashCodeAcceptanceTests = new HashCodeAcceptanceContract<Foo>
     ///     {
     ///         CollisionProbabilityLimit = CollisionProbability.VeryLow,
-    ///         UniformDistributionSignificanceLevel = UniformDistributionQuality.Excellent,
+    ///         UniformDistributionQuality = UniformDistributionQuality.Excellent,
     ///         DistinctInstances = GetDistinctInstances();
     ///     };
     /// 
