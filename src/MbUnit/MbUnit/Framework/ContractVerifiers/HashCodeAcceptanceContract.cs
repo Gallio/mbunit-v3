@@ -93,6 +93,7 @@ namespace MbUnit.Framework.ContractVerifiers
     {
         private double collisionProbabilityLimit = CollisionProbability.Low;
         private double uniformDistributionQuality = ContractVerifiers.UniformDistributionQuality.Good;
+        private HashStoreResult result;
 
         /// <summary>
         /// Gets or sets the maximum collision probability tolerated.
@@ -170,17 +171,29 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <inheritdoc />
         protected override IEnumerable<Test> GetContractVerificationTests()
         {
-            var store = new HashStore(GenericCollectionUtils.Select(DistinctInstances, o => o.GetHashCode()));
-            yield return CreateCollisionProbabilityTest(store);
-            yield return CreateUniformDistributionTest(store);
+            yield return CreateCollisionProbabilityTest();
+            yield return CreateUniformDistributionTest();
         }
 
-        private Test CreateCollisionProbabilityTest(HashStore store)
+        private HashStoreResult GetResult()
+        {
+            if (result == null)
+            {
+                var store = new HashStore(GenericCollectionUtils.Select(DistinctInstances, o => o.GetHashCode()));
+                result = store.Result;
+            }
+
+            return result;
+        }
+
+
+        private Test CreateCollisionProbabilityTest()
         {
             return new TestCase("CollisionProbabilityTest", () => AssertionHelper.Verify(() =>
             {
-                var probability = store.CollisionProbability;
-                TestLog.WriteLine("Statistical Population = {0}", store.StatisticalPopulation);
+                var result = GetResult();
+                var probability = result.CollisionProbability;
+                TestLog.WriteLine("Statistical Population = {0}", result.StatisticalPopulation);
                 TestLog.WriteLine("Actual Collision Probability = {0} {1} {2}", probability, ((probability <= collisionProbabilityLimit) ? "≤" : ">"), collisionProbabilityLimit);
 
                 if (probability <= collisionProbabilityLimit)
@@ -194,12 +207,13 @@ namespace MbUnit.Framework.ContractVerifiers
             }));
         }
 
-        private Test CreateUniformDistributionTest(HashStore store)
+        private Test CreateUniformDistributionTest()
         {
             return new TestCase("UniformDistributionTest", () => AssertionHelper.Verify(() =>
             {
-                var probability = store.UniformDistributionDeviationProbability;
-                TestLog.WriteLine("Statistical Population = {0}", store.StatisticalPopulation);
+                var result = GetResult();
+                var probability = result.UniformDistributionDeviationProbability;
+                TestLog.WriteLine("Statistical Population = {0}", result.StatisticalPopulation);
                 TestLog.WriteLine("Deviation Probability = {0} {1} {2}", probability, ((probability <= uniformDistributionQuality) ? "≤" : ">"), uniformDistributionQuality);
 
                 if (probability <= uniformDistributionQuality)

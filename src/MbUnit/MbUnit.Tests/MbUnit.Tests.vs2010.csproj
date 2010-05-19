@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\ContractVerifiers\Core\HashStoreResultTest.cs" />
     <Compile Include="Framework\ContractVerifiers\Core\HashStoreTest.cs" />
     <Compile Include="Framework\ContractVerifiers\HashCodeAcceptanceContractTest.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassCollectionTest.cs" />

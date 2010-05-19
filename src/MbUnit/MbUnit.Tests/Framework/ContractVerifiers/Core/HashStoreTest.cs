@@ -33,9 +33,9 @@ namespace MbUnit.Tests.Framework.ContractVerifiers.Core
         [Test]
         public void AddHashCodes()
         {
-            var store = new HashStore(new[] { 123, 456, 123, 456, 789, 123 });
-            Assert.AreEqual(6, store.StatisticalPopulation);
-            Assert.AreEqual(3, store[123]);
+            var store = new HashStore(new[] { 123, 456, 123, 456, 789, 123, 123 });
+            Assert.AreEqual(7, store.Result.StatisticalPopulation);
+            Assert.AreEqual(4, store[123]);
             Assert.AreEqual(2, store[456]);
             Assert.AreEqual(1, store[789]);
             Assert.AreEqual(0, store[666]);
@@ -47,7 +47,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers.Core
         public void CalculateCollisionProbability(double expectedProbability, IEnumerable<int> hashes)
         {
             var store = new HashStore(hashes);
-            double actualProbability = store.CollisionProbability;
+            double actualProbability = store.Result.CollisionProbability;
             Assert.AreApproximatelyEqual(expectedProbability, actualProbability, 0.0001);
         }
 
@@ -55,7 +55,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers.Core
         public void CalculateCollisionProbabilityWithHighLoad()
         {
             var store = new HashStore(GenerateHashLoad(Enumerable.Range(0, 10000), 5000));
-            double actualProbability = store.CollisionProbability;
+            double actualProbability = store.Result.CollisionProbability;
             Assert.AreApproximatelyEqual(9.998E-5, actualProbability, 1E-5);
         }
 
@@ -67,32 +67,13 @@ namespace MbUnit.Tests.Framework.ContractVerifiers.Core
         }
 
         [Test]
-        public void DistributionDeviationProbability()
+        [Row(0.221199, new[] { 1, 1, 2, 3 })]
+        [Row(0.365284, new[] { 7, 7, 7, 8, 8, 8, 8, 9, 9, 6, 6, 6, 5, 5, 5, 5, 5, 5 })]
+        public void DistributionDeviationProbability(double expectedProbability, IEnumerable<int> hashes)
         {
-            var store = new HashStore(new[] { 7, 7, 7, 8, 8, 8, 8, 9, 9, 6, 6, 6, 5, 5, 5, 5, 5, 5 });
-            double actual = store.UniformDistributionDeviationProbability;
-            Assert.AreApproximatelyEqual(0.365284, actual, 0.000001);
+            var store = new HashStore(hashes);
+            double actual = store.Result.UniformDistributionDeviationProbability;
+            Assert.AreApproximatelyEqual(expectedProbability, actual, 0.000001);
         }
-
-        [Test]
-        public void MethodName()
-        {
-            for(int i=0; i<10; i++)
-            {
-                TestLog.WriteLine("i = {0}", i);
-                var store = new HashStore(DataGenerators.Random.Numbers(100000, -10000000, 10000000));
-                
-                
-
-
-
-            }
-
-        }
-
-
-
-
-
     }
 }

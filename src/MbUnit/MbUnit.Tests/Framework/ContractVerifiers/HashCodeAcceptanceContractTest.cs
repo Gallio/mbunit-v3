@@ -81,20 +81,14 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             private static IEnumerable<Sample> GetSampleInstancesFromFrequencies(params int[] frequencies)
             {
                 for (int i = 0; i < frequencies.Length; i++)
-                {
                     for (int j = 0; j < frequencies[i]; j++)
-                    {
                         yield return new Sample(i + 1);
-                    }
-                }
             }
 
             private static IEnumerable<Sample> GetSampleInstancesFromValues(params int[] hashes)
             {
                 for (int i = 0; i < hashes.Length; i++)
-                {
                     yield return new Sample(hashes[i]);
-                }
             }
         }
 
