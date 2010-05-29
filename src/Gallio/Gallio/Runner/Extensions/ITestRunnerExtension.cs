@@ -13,14 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using Gallio.Runner.Events;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.Runner.Extensions
 {
     /// <summary>
-    /// A test runner extension plugs augments the behavior oa <see cref="ITestRunner"/>
+    /// A test runner extension plugs augments the behavior of a <see cref="ITestRunner"/>
     /// by attaching new behaviors to its event handlers.
     /// </summary>
     /// <remarks>
