@@ -15,7 +15,7 @@
     <TargetFrameworkSubset>
     </TargetFrameworkSubset>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\Key.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
     <StartupObject>Gallio.ControlPanel.ControlPanelProgram</StartupObject>
     <ApplicationIcon>Resources\Gallio.ControlPanel.ico</ApplicationIcon>
   </PropertyGroup>
@@ -70,17 +70,17 @@
     <None Include="Gallio.ControlPanel.plugin" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Gallio.UI\Gallio.UI.csproj">
+    <None Include="Resources\Gallio.ControlPanel.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.csproj">
       <Project>{36B1F505-995B-41E7-AAC9-1E845B08F2D7}</Project>
       <Name>Gallio.UI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio\Gallio.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio %28Gallio\Gallio%29</Name>
+      <Name>Gallio</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Gallio.ControlPanel.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
