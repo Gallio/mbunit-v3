@@ -41,7 +41,7 @@ namespace Gallio.Icarus.Commands
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(95))
                 {
-                    testController.Explore(subProgressMonitor, projectController.TestRunnerExtensions);
+                    testController.Explore(subProgressMonitor, projectController.TestRunnerExtensionSpecifications);
                 }
             }
         }

@@ -68,7 +68,7 @@ namespace Gallio.Icarus.Commands
             using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
             {
                 var filterSet = filterService.GenerateFilterSetFromSelectedTests();
-                projectController.SaveFilterSet(subProgressMonitor, "LastRun", filterSet);
+                projectController.SaveFilterSet("LastRun", filterSet);
             }
         }
 
@@ -76,7 +76,7 @@ namespace Gallio.Icarus.Commands
         {
             using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(85))
                 testController.Run(AttachDebugger, subProgressMonitor, 
-                                   projectController.TestRunnerExtensions);
+                                   projectController.TestRunnerExtensionSpecifications);
         }
 
         private void GenerateReport(IProgressMonitor progressMonitor)

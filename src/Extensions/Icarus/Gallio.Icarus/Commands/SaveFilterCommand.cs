@@ -46,8 +46,8 @@ namespace Gallio.Icarus.Commands
                 if (progressMonitor.IsCanceled)
                     throw new OperationCanceledException();
 
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
-                    projectController.SaveFilterSet(subProgressMonitor, FilterName, filterSet);
+                using (progressMonitor.CreateSubProgressMonitor(50)) 
+                    projectController.SaveFilterSet(FilterName, filterSet);
             }
         }
     }

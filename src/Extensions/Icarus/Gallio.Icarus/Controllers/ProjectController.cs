@@ -37,11 +37,11 @@ using Gallio.UI.Common.Policies;
 using Gallio.UI.Common.Synchronization;
 using Gallio.UI.DataBinding;
 using Gallio.UI.Events;
-using Path=System.IO.Path;
+using Path = System.IO.Path;
 
 namespace Gallio.Icarus.Controllers
 {
-    public class ProjectController : NotifyController, IProjectController, Handles<ProjectChanged>, 
+    public class ProjectController : NotifyController, IProjectController, Handles<ProjectChanged>,
         Handles<TreeViewCategoryChanged>
     {
         private readonly IProjectTreeModel projectTreeModel;
@@ -52,18 +52,43 @@ namespace Gallio.Icarus.Controllers
         private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
         private readonly ITestProjectManager testProjectManager;
 
-        private readonly List<string> hintDirectories = new List<string>();
-        private readonly List<string> testRunnerExtensions = new List<string>();
-
         private bool updating;
         private string treeViewCategory;
+
+        public string WorkingDirectory
+        {
+            get
+            {
+                return TestPackage.WorkingDirectory != null ? 
+                    TestPackage.WorkingDirectory.FullName : "";
+            }
+        }
 
         public event EventHandler<FileChangedEventArgs> FileChanged;
         public event EventHandler<ProjectChangedEventArgs> ProjectChanged;
 
+        public string ApplicationBaseDirectory
+        {
+            get
+            {
+                return TestPackage.ApplicationBaseDirectory != null ?
+                    TestPackage.ApplicationBaseDirectory.FullName : "";
+            }
+        }
+
+        public IEnumerable<DirectoryInfo> HintDirectories
+        {
+            get { return TestPackage.HintDirectories; }
+        }
+
         public IProjectTreeModel Model
         {
             get { return projectTreeModel; }
+        }
+
+        public bool ShadowCopy
+        {
+            get { return TestPackage.ShadowCopy; }
         }
 
         public TestPackage TestPackage
@@ -73,9 +98,10 @@ namespace Gallio.Icarus.Controllers
 
         public Observable<IList<FilterInfo>> TestFilters { get; private set; }
 
-        public BindingList<string> HintDirectories { get; private set; }
-
-        public BindingList<string> TestRunnerExtensions { get; private set; }
+        public IEnumerable<string> TestRunnerExtensionSpecifications
+        {
+            get { return projectTreeModel.TestProject.TestRunnerExtensionSpecifications; }
+        }
 
         public string ProjectFileName
         {
@@ -94,7 +120,7 @@ namespace Gallio.Icarus.Controllers
             get { return projectTreeModel.TestProject.ReportNameFormat; }
         }
 
-        public ProjectController(IProjectTreeModel projectTreeModel, IEventAggregator eventAggregator, IFileSystem fileSystem, 
+        public ProjectController(IProjectTreeModel projectTreeModel, IEventAggregator eventAggregator, IFileSystem fileSystem,
             IXmlSerializer xmlSerializer, IFileWatcher fileWatcher, IUnhandledExceptionPolicy unhandledExceptionPolicy)
         {
             this.projectTreeModel = projectTreeModel;
@@ -113,28 +139,8 @@ namespace Gallio.Icarus.Controllers
                     return;
 
                 projectTreeModel.TestProject.ClearTestFilters();
-                GenericCollectionUtils.ForEach(TestFilters.Value, x => 
+                GenericCollectionUtils.ForEach(TestFilters.Value, x =>
                     projectTreeModel.TestProject.AddTestFilter(x));
-            };
-
-            HintDirectories = new BindingList<string>(hintDirectories);
-            HintDirectories.ListChanged += delegate
-            {
-                if (updating)
-                    return;
-
-                projectTreeModel.TestProject.TestPackage.ClearHintDirectories();
-                GenericCollectionUtils.ForEach(HintDirectories, x => projectTreeModel.TestProject.TestPackage.AddHintDirectory(new DirectoryInfo(x)));
-            };
-
-            TestRunnerExtensions = new BindingList<string>(testRunnerExtensions);
-            TestRunnerExtensions.ListChanged += delegate
-            {
-                if (updating)
-                    return;
-
-                projectTreeModel.TestProject.ClearTestRunnerExtensionSpecifications();
-                GenericCollectionUtils.ForEach(TestRunnerExtensions, x => projectTreeModel.TestProject.AddTestRunnerExtensionSpecification(x));
             };
 
             fileWatcher.FileChangedEvent += delegate(string fullPath)
@@ -152,22 +158,41 @@ namespace Gallio.Icarus.Controllers
         {
             using (progressMonitor.BeginTask(Resources.AddingFiles, (files.Count + 2)))
             {
-                IList<string> validFiles = new List<string>();
-                foreach (string file in files)
-                {
-                    string filePath = Path.GetFullPath(file);
+                var validFiles = GetValidFiles(progressMonitor, files);
 
-                    if (fileSystem.FileExists(filePath))
-                        validFiles.Add(filePath);
-                    progressMonitor.Worked(1);
-                }
+                GenericCollectionUtils.ForEach(validFiles, x =>
+                    TestPackage.AddFile(new FileInfo(x)));
 
-                GenericCollectionUtils.ForEach(validFiles, x => projectTreeModel.TestProject.TestPackage.AddFile(new FileInfo(x)));
                 projectTreeModel.NotifyTestProjectChanged();
 
                 progressMonitor.Worked(1);
                 fileWatcher.Add(validFiles);
             }
+        }
+
+        private IList<string> GetValidFiles(IProgressMonitor progressMonitor, IEnumerable<string> files)
+        {
+            var validFiles = new List<string>();
+
+            foreach (string file in files)
+            {
+                var filePath = Path.GetFullPath(file);
+
+                if (fileSystem.FileExists(filePath))
+                    validFiles.Add(filePath);
+                progressMonitor.Worked(1);
+            }
+            return validFiles;
+        }
+
+        public void AddHintDirectory(string hintDirectory)
+        {
+            TestPackage.AddHintDirectory(new DirectoryInfo(hintDirectory));
+        }
+
+        public void AddTestRunnerExtensionSpecification(string testRunnerExtensionSpecification)
+        {
+            projectTreeModel.TestProject.AddTestRunnerExtensionSpecification(testRunnerExtensionSpecification);
         }
 
         public void DeleteFilter(IProgressMonitor progressMonitor, FilterInfo filterInfo)
@@ -179,20 +204,30 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public void RemoveAllFiles(IProgressMonitor progressMonitor)
+        public void RemoveAllFiles()
         {
-            projectTreeModel.TestProject.TestPackage.ClearFiles();
+            TestPackage.ClearFiles();
             projectTreeModel.NotifyTestProjectChanged();
         }
 
-        public void RemoveFile(IProgressMonitor progressMonitor, string fileName)
+        public void RemoveFile(string fileName)
         {
-            string filePath = Path.GetFullPath(fileName);
-            projectTreeModel.TestProject.TestPackage.RemoveFile(new FileInfo(filePath));
+            var filePath = Path.GetFullPath(fileName);
+            TestPackage.RemoveFile(new FileInfo(filePath));
             projectTreeModel.NotifyTestProjectChanged();
         }
 
-        public void SaveFilterSet(IProgressMonitor progressMonitor, string filterName, FilterSet<ITestDescriptor> filterSet)
+        public void RemoveHintDirectory(string hintDirectory)
+        {
+            TestPackage.RemoveHintDirectory(new DirectoryInfo(hintDirectory));
+        }
+
+        public void RemoveTestRunnerExtensionSpecification(string testRunnerExtensionSpecification)
+        {
+            projectTreeModel.TestProject.RemoveTestRunnerExtensionSpecification(testRunnerExtensionSpecification);
+        }
+
+        public void SaveFilterSet(string filterName, FilterSet<ITestDescriptor> filterSet)
         {
             foreach (var filterInfo in TestFilters.Value)
             {
@@ -203,7 +238,7 @@ namespace Gallio.Icarus.Controllers
                 return;
             }
 
-            projectTreeModel.TestProject.AddTestFilter(new FilterInfo(filterName, 
+            projectTreeModel.TestProject.AddTestFilter(new FilterInfo(filterName,
                 filterSet.ToFilterSetExpr()));
             TestFilters.Value = new List<FilterInfo>(projectTreeModel.TestProject.TestFilters); // notify UI
         }
@@ -217,8 +252,6 @@ namespace Gallio.Icarus.Controllers
 
                 using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(30))
                     LoadUserOptions(subProgressMonitor, projectLocation);
-
-                eventAggregator.Send(new ProjectLoaded(projectLocation));
             }
         }
 
@@ -227,7 +260,7 @@ namespace Gallio.Icarus.Controllers
             using (progressMonitor.BeginTask("Loading user options", 100))
             {
                 string projectUserOptionsFile = projectLocation + UserOptions.Extension;
-                
+
                 if (!fileSystem.FileExists(projectUserOptionsFile))
                     return;
 
@@ -248,9 +281,9 @@ namespace Gallio.Icarus.Controllers
 
         private void LoadProjectFile(IProgressMonitor progressMonitor, string projectLocation)
         {
-            using (progressMonitor.BeginTask("Loading project file", 100))
+            using (progressMonitor.BeginTask(Resources.ProjectController_Loading_project_file, 100))
             {
-                TestProject testProject = new TestProject();
+                var testProject = new TestProject();
 
                 try
                 {
@@ -258,12 +291,14 @@ namespace Gallio.Icarus.Controllers
                 }
                 catch (Exception ex)
                 {
-                    unhandledExceptionPolicy.Report("Error loading project file.  The project file may not be compatible with this version of Gallio.", ex);
+                    unhandledExceptionPolicy.Report(Resources.ProjectController_Error_loading_project_file, ex);
                 }
 
                 progressMonitor.Worked(50);
 
                 LoadProject(testProject, projectLocation);
+
+                eventAggregator.Send(new ProjectLoaded());
             }
         }
 
@@ -284,9 +319,9 @@ namespace Gallio.Icarus.Controllers
             {
                 var projectName = Paths.DefaultProject;
                 var testProject = testProjectManager.NewProject(projectName);
-                
+
                 progressMonitor.Worked(50);
-                
+
                 LoadProject(testProject, projectName);
             }
         }
@@ -306,6 +341,28 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
+        public void SetApplicationBaseDirectory(string applicationBaseDirectory)
+        {
+            TestPackage.ApplicationBaseDirectory = string.IsNullOrEmpty(applicationBaseDirectory) == false ? 
+                new DirectoryInfo(applicationBaseDirectory) : null;
+        }
+
+        public void SetReportNameFormat(string reportNameFormat)
+        {
+            projectTreeModel.TestProject.ReportNameFormat = reportNameFormat;
+        }
+
+        public void SetShadowCopy(bool shadowCopy)
+        {
+            TestPackage.ShadowCopy = shadowCopy;
+        }
+
+        public void SetWorkingDirectory(string workingDirectory)
+        {
+            TestPackage.WorkingDirectory = string.IsNullOrEmpty(workingDirectory) == false ? 
+                new DirectoryInfo(workingDirectory) : null;
+        }
+
         private void SaveUserOptions(IProgressMonitor progressMonitor, string projectName)
         {
             progressMonitor.SetStatus("Saving user options");
@@ -322,7 +379,7 @@ namespace Gallio.Icarus.Controllers
 
         private void SaveProjectFile(IProgressMonitor progressMonitor, string projectName)
         {
-            string dir = Path.GetDirectoryName(projectName);
+            var dir = Path.GetDirectoryName(projectName);
             // create folder (if necessary)
             if (!fileSystem.DirectoryExists(dir))
                 fileSystem.CreateDirectory(dir);
@@ -340,14 +397,6 @@ namespace Gallio.Icarus.Controllers
                 updating = true;
 
                 TestFilters.Value = new List<FilterInfo>(projectTreeModel.TestProject.TestFilters);
-
-                HintDirectories.Clear();
-                foreach (var hintDirectory in TestPackage.HintDirectories)
-                    HintDirectories.Add(hintDirectory.ToString());
-
-                TestRunnerExtensions.Clear();
-                foreach (var testRunnerExtension in projectTreeModel.TestProject.TestRunnerExtensionSpecifications)
-                    TestRunnerExtensions.Add(testRunnerExtension);
 
                 OnPropertyChanged(new PropertyChangedEventArgs("TestPackage"));
 

@@ -22,15 +22,15 @@ using Gallio.Common.IO;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models.ProjectTreeNodes;
+using Gallio.Icarus.ProjectProperties;
 using Gallio.Icarus.Utilities;
 using Gallio.Icarus.WindowManager;
 using Gallio.Runtime;
-using Gallio.Icarus.Packages;
 using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus
 {
-    internal partial class ProjectExplorer : DockWindow, IView
+    internal partial class ProjectExplorer : DockWindow
     {
         private readonly IProjectController projectController;
         private readonly ITestController testController;
@@ -190,7 +190,7 @@ namespace Gallio.Icarus
         private static void ShowPropertiesWindow()
         {
             var windowManager = RuntimeAccessor.ServiceLocator.Resolve<IWindowManager>();
-            windowManager.Show(ProjectsPackage.projectPropertiesWindowId);
+            windowManager.Show(Package.WindowId);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

@@ -116,12 +116,6 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
-        public void HintDirectories_Test()
-        {
-            Assert.AreEqual(0, projectController.HintDirectories.Count);
-        }
-
-        [Test]
         public void ProjectFileName_Test()
         {
             const string fileName = "fileName";
@@ -139,7 +133,6 @@ namespace Gallio.Icarus.Tests.Controllers
             projectController.PropertyChanged += ((sender, e) => Assert.AreEqual("TestPackage", e.PropertyName));
             projectController.NewProject(progressMonitor);
             Assert.AreEqual(Paths.DefaultProject, projectTreeModel.FileName);
-            Assert.AreEqual(0, projectController.HintDirectories.Count);
             Assert.AreEqual(0, projectController.TestFilters.Value.Count);
         }
 
@@ -149,7 +142,7 @@ namespace Gallio.Icarus.Tests.Controllers
             projectTreeModel.TestProject = new TestProject();
             var progressMonitor = MockProgressMonitor.Instance;
 
-            projectController.RemoveAllFiles(progressMonitor);
+            projectController.RemoveAllFiles();
         }
 
         [Test]
@@ -162,7 +155,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var progressMonitor = MockProgressMonitor.Instance;           
             Assert.AreEqual(1, project.TestPackage.Files.Count);
             
-            projectController.RemoveFile(progressMonitor, fileName);
+            projectController.RemoveFile(fileName);
 
             Assert.AreEqual(0, project.TestPackage.Files.Count);
         }
@@ -174,11 +167,11 @@ namespace Gallio.Icarus.Tests.Controllers
             var progressMonitor = MockProgressMonitor.Instance;
             
             Assert.AreEqual(0, projectController.TestFilters.Value.Count);
-            projectController.SaveFilterSet(progressMonitor, "filterName", new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>()));
+            projectController.SaveFilterSet("filterName", new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>()));
             Assert.AreEqual(1, projectController.TestFilters.Value.Count);
-            projectController.SaveFilterSet(progressMonitor, "filterName", new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>()));
+            projectController.SaveFilterSet("filterName", new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>()));
             Assert.AreEqual(1, projectController.TestFilters.Value.Count);
-            projectController.SaveFilterSet(progressMonitor, "aDifferentFilterName", new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>()));
+            projectController.SaveFilterSet("aDifferentFilterName", new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>()));
             Assert.AreEqual(2, projectController.TestFilters.Value.Count);
         }
 
@@ -212,31 +205,77 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
-        public void Updating_HintDirectories_cascades_to_TestPackage()
+        public void Hint_directories_come_from_test_package()
         {
             var project = new TestProject();
             projectTreeModel.TestProject = project;
-            Assert.AreEqual(0, project.TestPackage.HintDirectories.Count);
+
+            var hintDirectories = projectController.HintDirectories;
             
-            const string hintDirectory = "test";
-            projectController.HintDirectories.Add(hintDirectory);
-            
-            Assert.AreEqual(1, project.TestPackage.HintDirectories.Count);
-            Assert.AreEqual(hintDirectory, project.TestPackage.HintDirectories[0].ToString());
+            Assert.AreEqual(hintDirectories, project.TestPackage.HintDirectories);
         }
 
         [Test]
-        public void Updating_TestRunnerExtensions_cascades_to_TestPackage()
+        public void Add_hint_directory_adds_to_test_package()
         {
             var project = new TestProject();
             projectTreeModel.TestProject = project;
-            Assert.AreEqual(0, project.TestRunnerExtensionSpecifications.Count);
+            const string hintDirectory = @"c:\test";
 
-            const string testRunnerExtension = "test";
-            projectController.TestRunnerExtensions.Add(testRunnerExtension);
+            projectController.AddHintDirectory(hintDirectory);
+
+            Assert.AreEqual(1, project.TestPackage.HintDirectories.Count);
+            Assert.AreEqual(hintDirectory, project.TestPackage.HintDirectories[0].FullName);
+        }
+
+        [Test]
+        public void Remove_hint_directory_removes_from_test_package()
+        {
+            var project = new TestProject();
+            projectTreeModel.TestProject = project;
+            const string hintDirectory = @"c:\test";
+            project.TestPackage.AddHintDirectory(new DirectoryInfo(hintDirectory));
+
+            projectController.RemoveHintDirectory(hintDirectory);
+
+            Assert.AreEqual(0, project.TestPackage.HintDirectories.Count);
+        }
+
+        [Test]
+        public void Test_runner_extension_specifications_come_from_project()
+        {
+            var project = new TestProject();
+            projectTreeModel.TestProject = project;
+
+            var testRunnerExtensionSpecifications = projectController.TestRunnerExtensionSpecifications;
+
+            Assert.AreEqual(testRunnerExtensionSpecifications, project.TestRunnerExtensionSpecifications);
+        }
+
+        [Test]
+        public void Add_test_runner_extension_specification_adds_to_test_package()
+        {
+            var project = new TestProject();
+            projectTreeModel.TestProject = project;
+            const string testRunnerExtensionSpecification = "testRunnerExtensionSpecification";
+
+            projectController.AddTestRunnerExtensionSpecification(testRunnerExtensionSpecification);
 
             Assert.AreEqual(1, project.TestRunnerExtensionSpecifications.Count);
-            Assert.AreEqual(testRunnerExtension, project.TestRunnerExtensionSpecifications[0]);
+            Assert.AreEqual(testRunnerExtensionSpecification, project.TestRunnerExtensionSpecifications[0]);
+        }
+
+        [Test]
+        public void Remove_test_runner_extension_specification_removes_from_test_package()
+        {
+            var project = new TestProject();
+            projectTreeModel.TestProject = project;
+            const string extensionSpecification = "extensionSpecification";
+            project.AddTestRunnerExtensionSpecification(extensionSpecification);
+
+            projectController.RemoveTestRunnerExtensionSpecification(extensionSpecification);
+
+            Assert.AreEqual(0, project.TestRunnerExtensionSpecifications.Count);
         }
 
         [Test]
@@ -279,8 +318,6 @@ namespace Gallio.Icarus.Tests.Controllers
             Assert.AreEqual(project.ReportNameFormat, projectTreeModel.TestProject.ReportNameFormat);
 
             Assert.AreEqual(1, projectController.TestFilters.Value.Count);
-            Assert.AreEqual(1, projectController.HintDirectories.Count);
-            Assert.AreEqual(1, projectController.TestRunnerExtensions.Count);
             Assert.AreEqual(true, propertyChangedFlag);
         }
 

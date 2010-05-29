@@ -246,4 +246,25 @@
 	<data name="RunTestsCommand_Running_tests">
 		<value xml:space="preserve">Running tests</value>
 	</data>
+	<data name="ProjectController_Loading_project_file">
+		<value xml:space="preserve">Loading project file</value>
+	</data>
+	<data name="ProjectController_Error_loading_project_file">
+		<value xml:space="preserve">Error loading project file. The project file may not be compatible with this version of Gallio.</value>
+	</data>
+	<data name="Controller_Invalid_hint_directory_path_">
+		<value xml:space="preserve">Invalid hint directory path</value>
+	</data>
+	<data name="View_Invalid_input">
+		<value xml:space="preserve">Invalid input</value>
+	</data>
+	<data name="Controller_Invalid_application_base_directory">
+		<value xml:space="preserve">Invalid application base directory</value>
+	</data>
+	<data name="Controller_Invalid_working_directory">
+		<value xml:space="preserve">Invalid working directory</value>
+	</data>
+	<data name="Controller_Invalid_test_runner_extension_specification">
+		<value xml:space="preserve">Invalid test runner extension specification</value>
+	</data>
 </root>

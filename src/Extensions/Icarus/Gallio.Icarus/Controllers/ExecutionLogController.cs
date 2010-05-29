@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Gallio.Common.Collections;
 using Gallio.Common.Policies;
+using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
@@ -35,6 +36,7 @@ namespace Gallio.Icarus.Controllers
         private readonly ITestTreeModel testTreeModel;
         private readonly ITaskManager taskManager;
         private readonly HashSet<string> selectedTestIds;
+        private string queueId = "Gallio.Icarus.ExecutionLog";
 
         public ExecutionLogController(ITestController testController, ITestTreeModel testTreeModel, 
             ITaskManager taskManager)
@@ -55,7 +57,8 @@ namespace Gallio.Icarus.Controllers
         {
             // Do this work in the background to avoid a possible deadlock acquiring the report lock
             // on the UI thread.
-            taskManager.BackgroundTask(() => testController.ReadReport(report =>
+            taskManager.ClearQueue(queueId);
+            taskManager.QueueTask(queueId, new DelegateCommand((pm => testController.ReadReport(report =>
             {
                 TestModelData = report.TestModel;
 
@@ -63,17 +66,22 @@ namespace Gallio.Icarus.Controllers
 
                 if (report.TestPackageRun != null)
                 {
-                    // only update log if the test is selected in the tree or, 
-                    // if no tests are selected, if it is the root.
-                    foreach (var run in report.TestPackageRun.AllTestStepRuns)
-                        if (selectedTestIds.Contains(run.Step.TestId) || 
-                            (selectedTestIds.Count == 0 && run.Step.TestId == testTreeModel.Root.Id))
-                            testStepRuns.Add(run);
+                    foreach (var testStepRun in report.TestPackageRun.AllTestStepRuns)
+                        if (RelevantStep(testStepRun))
+                            testStepRuns.Add(testStepRun);
                 }
 
                 EventHandlerPolicy.SafeInvoke(ExecutionLogUpdated, this, 
                     new ExecutionLogUpdatedEventArgs(testStepRuns));
-            }));
+            }))));
+        }
+
+        private bool RelevantStep(TestStepRun testStepRun)
+        {
+            // only update log if the test is selected in the tree or, 
+            // if no tests are selected, if it is the root.
+            return selectedTestIds.Contains(testStepRun.Step.TestId) || 
+                (selectedTestIds.Count == 0 && testStepRun.Step.TestId == testTreeModel.Root.Id);
         }
 
         public void Handle(RunStarted @event)

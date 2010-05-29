@@ -59,6 +59,9 @@
   <ItemGroup>
     <Compile Include="Controls\CommandToolStripMenuItemTest.cs" />
     <Compile Include="Controls\KeysParserTest.cs" />
+    <Compile Include="DataBinding\ObservableListTest.cs" />
+    <Compile Include="DataBinding\ObservableTest.cs" />
+    <Compile Include="DataBinding\TestSynchronizationContext.cs" />
     <Compile Include="Events\EventAggregatorTest.cs" />
     <Compile Include="Events\EventHandlerProxyTest.cs" />
     <Compile Include="ProgressMonitoring\TaskManagerTests.cs" />

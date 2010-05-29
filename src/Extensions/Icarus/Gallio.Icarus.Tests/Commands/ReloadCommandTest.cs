@@ -51,7 +51,7 @@ namespace Gallio.Icarus.Tests.Commands
         public void Execute_should_explore_with_test_runner_extensions()
         {
             var testRunnerExtensions = new BindingList<string>();
-            projectController.Stub(pc => pc.TestRunnerExtensions).Return(testRunnerExtensions);
+            projectController.Stub(pc => pc.TestRunnerExtensionSpecifications).Return(testRunnerExtensions);
             projectController.Stub(pc => pc.TestFilters).Return(new Observable<IList<FilterInfo>>(new List<FilterInfo>()));
 
             reloadCommand.Execute(MockProgressMonitor.Instance);
@@ -64,7 +64,7 @@ namespace Gallio.Icarus.Tests.Commands
         public void Execute_should_send_an_event()
         {
             var testRunnerExtensions = new BindingList<string>();
-            projectController.Stub(pc => pc.TestRunnerExtensions).Return(testRunnerExtensions);
+            projectController.Stub(pc => pc.TestRunnerExtensionSpecifications).Return(testRunnerExtensions);
             projectController.Stub(pc => pc.TestFilters).Return(new Observable<IList<FilterInfo>>(new List<FilterInfo>()));
 
             reloadCommand.Execute(MockProgressMonitor.Instance);

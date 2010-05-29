@@ -35,7 +35,7 @@ namespace Gallio.Icarus.Tests.Commands
             var testPackage = new TestPackage();
             projectController.Stub(pc => pc.TestPackage).Return(testPackage);
             var testRunnerExtensions = new System.ComponentModel.BindingList<string>(new List<string>());
-            projectController.Stub(pc => pc.TestRunnerExtensions).Return(testRunnerExtensions);
+            projectController.Stub(pc => pc.TestRunnerExtensionSpecifications).Return(testRunnerExtensions);
             var testController = MockRepository.GenerateStub<ITestController>();
             var command = new AddFilesCommand(projectController, testController);
             var files = new List<string>();

@@ -37,7 +37,7 @@ namespace Gallio.Icarus.Commands
             {
                 // remove all files from test package
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
-                    projectController.RemoveAllFiles(subProgressMonitor);
+                    projectController.RemoveAllFiles();
 
                 // reload
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))

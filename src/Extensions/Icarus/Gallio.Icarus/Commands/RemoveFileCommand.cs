@@ -41,7 +41,7 @@ namespace Gallio.Icarus.Commands
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
                 {
-                    projectController.RemoveFile(subProgressMonitor, FileName);
+                    projectController.RemoveFile(FileName);
                 }
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))

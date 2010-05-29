@@ -112,6 +112,7 @@
     <Compile Include="Models\TestTreeNodeTest.cs" />
     <Compile Include="Models\TreeModelDecoratorTest.cs" />
     <Compile Include="ProgressMonitoring\Win7TaskBarTest.cs" />
+    <Compile Include="ProjectProperties\ControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -133,7 +134,9 @@
     <Compile Include="TreeBuilders\MetadataTreeBuilderTest.cs" />
     <Compile Include="Utilities\MockProgressMonitor.cs" />
     <Compile Include="Utilities\SyncTestAttribute.cs" />
-    <Compile Include="Utilities\TestSynchronizationContext.cs" />
+    <Compile Include="Utilities\TestSynchronizationContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Utilities\TestTaskManager.cs" />
   </ItemGroup>
   <ItemGroup>

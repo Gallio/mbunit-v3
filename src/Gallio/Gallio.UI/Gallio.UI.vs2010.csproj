@@ -156,6 +156,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="DataBinding\Observable.cs" />
+    <Compile Include="DataBinding\ObservableList.cs" />
     <Compile Include="ErrorReporting\ErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>

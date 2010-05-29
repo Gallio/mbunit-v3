@@ -49,7 +49,7 @@ namespace Gallio.Icarus.Tests.Commands
             var testPackage = new TestPackage();
             projectController.Stub(pc => pc.TestPackage).Return(testPackage);
             var testRunnerExtensions = new BindingList<string>(new List<string>());
-            projectController.Stub(pc => pc.TestRunnerExtensions).Return(testRunnerExtensions);
+            projectController.Stub(pc => pc.TestRunnerExtensionSpecifications).Return(testRunnerExtensions);
             var testController = MockRepository.GenerateStub<ITestController>();
             var newProjectCommand = new NewProjectCommand(projectController, testController);
             var progressMonitor = MockProgressMonitor.Instance;

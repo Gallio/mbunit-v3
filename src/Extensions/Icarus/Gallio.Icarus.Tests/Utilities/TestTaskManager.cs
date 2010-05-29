@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;
 using Action=Gallio.Common.Action;
 
@@ -30,7 +31,7 @@ namespace Gallio.Icarus.Tests.Utilities
 
         public void QueueTask(ICommand command)
         {
-            queue.Add(command);
+            command.Execute(NullProgressMonitor.CreateInstance());
         }
 
         public void QueueTask(string queueId, ICommand command) 
@@ -45,7 +46,6 @@ namespace Gallio.Icarus.Tests.Utilities
 
         public void ClearQueue() 
         {
-            queue.Clear();
         }
     }
 }

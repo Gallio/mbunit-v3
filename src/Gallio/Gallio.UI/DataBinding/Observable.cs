@@ -22,6 +22,10 @@ namespace Gallio.UI.DataBinding
     /// Wrapper for a field, that implements INotifyPropertyChanged.
     /// </summary>
     /// <typeparam name="T">The type to wrap.</typeparam>
+    /// <remarks>
+    /// All credit to Ayende:
+    /// http://ayende.com/Blog/archive/2009/08/08/an-easier-way-to-manage-inotifypropertychanged.aspx
+    /// </remarks>
     public class Observable<T> : INotifyPropertyChanged
     {
         private T value;
@@ -53,7 +57,7 @@ namespace Gallio.UI.DataBinding
             set
             {
                 this.value = value;
-             
+
                 if (SynchronizationContext.Current != null)
                 {
                     SynchronizationContext.Post(delegate

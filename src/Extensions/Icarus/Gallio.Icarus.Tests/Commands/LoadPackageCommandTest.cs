@@ -56,7 +56,7 @@ namespace Gallio.Icarus.Tests.Commands
         public void Execute_should_explore()
         {
             var testRunnerExtensions = new BindingList<string>();
-            projectController.Stub(pc => pc.TestRunnerExtensions).Return(testRunnerExtensions);
+            projectController.Stub(pc => pc.TestRunnerExtensionSpecifications).Return(testRunnerExtensions);
 
             loadPackageCommand.Execute(progressMonitor);
 

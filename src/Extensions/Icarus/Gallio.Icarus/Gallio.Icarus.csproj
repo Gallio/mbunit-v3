@@ -114,6 +114,18 @@
     <Compile Include="ExecutionLogWindow.Designer.cs">
       <DependentUpon>ExecutionLogWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="ProjectProperties\Controller.cs" />
+    <Compile Include="ProjectProperties\IController.cs" />
+    <Compile Include="ProjectProperties\IModel.cs" />
+    <Compile Include="ProjectProperties\IView.cs" />
+    <Compile Include="ProjectProperties\Model.cs" />
+    <Compile Include="ProjectProperties\Package.cs" />
+    <Compile Include="ProjectProperties\View.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProjectProperties\View.Designer.cs">
+      <DependentUpon>View.cs</DependentUpon>
+    </Compile>
     <Compile Include="Search\IModel.cs" />
     <Compile Include="Specifications\MetadataSpecification.cs" />
     <Compile Include="Specifications\NameSpecification.cs" />
@@ -251,11 +263,12 @@
     </Compile>
     <Compile Include="Services\FilterService.cs" />
     <Compile Include="Services\IFilterService.cs" />
+    <Compile Include="Utilities\TestRunnerExtensionFactory.cs" />
+    <Compile Include="Utilities\ITestRunnerExtensionFactory.cs" />
     <Compile Include="WindowManager\MenuList.cs" />
     <Compile Include="WindowManager\MenuManager.cs" />
     <Compile Include="WindowManager\IMenuList.cs" />
     <Compile Include="WindowManager\IMenuManager.cs" />
-    <Compile Include="IView.cs" />
     <Compile Include="WindowManager\IWindowManager.cs" />
     <Compile Include="WindowManager\Location.cs" />
     <Compile Include="Models\FilterTestStatusEvent.cs" />
@@ -300,7 +313,6 @@
     <Compile Include="Models\TestTreeNodes\NamespaceNode.cs" />
     <Compile Include="Models\TestTreeNodes\TestDataNode.cs" />
     <Compile Include="Models\TreeModelDecorator.cs" />
-    <Compile Include="Packages\ProjectsPackage.cs" />
     <Compile Include="ProgressMonitoring\Win7TaskBar.cs" />
     <Compile Include="Remoting\FileChangedHandler.cs" />
     <Compile Include="Reports\ReportMonitor.cs" />
@@ -390,12 +402,6 @@
     </Compile>
     <Compile Include="Views\PluginBrowser\PluginBrowser.Designer.cs">
       <DependentUpon>PluginBrowser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Projects\ProjectProperties.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Views\Projects\ProjectProperties.Designer.cs">
-      <DependentUpon>ProjectProperties.cs</DependentUpon>
     </Compile>
     <Compile Include="Window.cs">
       <SubType>Form</SubType>
@@ -560,6 +566,9 @@
     <EmbeddedResource Include="ExecutionLogWindow.resx">
       <DependentUpon>ExecutionLogWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ProjectProperties\View.resx">
+      <DependentUpon>View.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Projects\ProjectReloadDialog.resx">
       <DependentUpon>ProjectReloadDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -579,10 +588,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\PluginBrowser\PluginBrowser.resx">
       <DependentUpon>PluginBrowser.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\Projects\ProjectProperties.resx">
-      <DependentUpon>ProjectProperties.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Window.resx">

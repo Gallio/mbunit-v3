@@ -17,13 +17,5 @@ using Gallio.UI.Events;
 
 namespace Gallio.Icarus.Events
 {
-    public class ProjectLoaded : Event
-    {
-        public string ProjectLocation { get; private set; }
-
-        public ProjectLoaded(string projectLocation)
-        {
-            ProjectLocation = projectLocation;
-        }
-    }
+    public class ProjectLoaded : Event { }
 }

@@ -14,25 +14,25 @@
 // limitations under the License.
 
 using Gallio.Icarus.Commands;
-using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Properties;
-using Gallio.Icarus.Views.Projects;
 using Gallio.Icarus.WindowManager;
 using Gallio.UI.Menus;
 
-namespace Gallio.Icarus.Packages
+namespace Gallio.Icarus.ProjectProperties
 {
-    public class ProjectsPackage : IPackage
+    public class Package : IPackage
     {
         private readonly IWindowManager windowManager;
-        private readonly IProjectController projectController;
-        public static readonly string projectPropertiesWindowId = "Gallio.Icarus.ProjectProperties";
+        private readonly IController controller;
+        private readonly IModel model;
+        public const string WindowId = "Gallio.Icarus.ProjectProperties";
 
-        public ProjectsPackage(IWindowManager windowManager,
-            IProjectController projectController)
+        public Package(IWindowManager windowManager, IController controller, 
+            IModel model)
         {
             this.windowManager = windowManager;
-            this.projectController = projectController;
+            this.model = model;
+            this.controller = controller;
         }
 
         public void Load()
@@ -47,7 +47,7 @@ namespace Gallio.Icarus.Packages
 
             var menuCommand = new MenuCommand
             {
-                Command = new DelegateCommand(pm => windowManager.Show(projectPropertiesWindowId)),
+                Command = new DelegateCommand(pm => windowManager.Show(WindowId)),
                 Text = Resources.ProjectsPackage_AddMenuItem_Properties,
                 Image = Resources.PropertiesImage
             };
@@ -57,12 +57,8 @@ namespace Gallio.Icarus.Packages
 
         private void RegisterWindow()
         {
-            windowManager.Register(projectPropertiesWindowId, () =>
-            {
-                var projectPropertiesControl = new ProjectProperties(projectController);
-                windowManager.Add(projectPropertiesWindowId, projectPropertiesControl,
-                    Resources.ProjectsPackage_AddMenuItem_Properties);
-            });
+            windowManager.Register(WindowId, () => windowManager.Add(WindowId, new View(controller, model), 
+                Resources.ProjectsPackage_AddMenuItem_Properties));
         }
 
         public void Dispose() { }

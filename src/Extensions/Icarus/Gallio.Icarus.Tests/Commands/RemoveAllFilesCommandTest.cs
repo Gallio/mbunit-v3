@@ -36,7 +36,7 @@ namespace Gallio.Icarus.Tests.Commands
 
             removeAllFilesCommand.Execute(progressMonitor);
 
-            projectController.AssertWasCalled(pc => pc.RemoveAllFiles(progressMonitor));
+            projectController.AssertWasCalled(pc => pc.RemoveAllFiles());
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace Gallio.Icarus.Tests.Commands
             var removeAllFilesCommand = new RemoveAllFilesCommand(testController, projectController);
             var progressMonitor = MockProgressMonitor.Instance;
             var testRunnerExtensions = new BindingList<string>();
-            projectController.Stub(pc => pc.TestRunnerExtensions).Return(testRunnerExtensions);
+            projectController.Stub(pc => pc.TestRunnerExtensionSpecifications).Return(testRunnerExtensions);
 
             removeAllFilesCommand.Execute(progressMonitor);
 

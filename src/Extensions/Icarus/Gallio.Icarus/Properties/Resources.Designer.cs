@@ -78,6 +78,42 @@ namespace Gallio.Icarus.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid application base directory.
+        /// </summary>
+        internal static string Controller_Invalid_application_base_directory {
+            get {
+                return ResourceManager.GetString("Controller_Invalid_application_base_directory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid hint directory path.
+        /// </summary>
+        internal static string Controller_Invalid_hint_directory_path_ {
+            get {
+                return ResourceManager.GetString("Controller_Invalid_hint_directory_path_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid test runner extension specification.
+        /// </summary>
+        internal static string Controller_Invalid_test_runner_extension_specification {
+            get {
+                return ResourceManager.GetString("Controller_Invalid_test_runner_extension_specification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid working directory.
+        /// </summary>
+        internal static string Controller_Invalid_working_directory {
+            get {
+                return ResourceManager.GetString("Controller_Invalid_working_directory", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Bitmap cross {
             get {
                 object obj = ResourceManager.GetObject("cross", resourceCulture);
@@ -246,6 +282,24 @@ namespace Gallio.Icarus.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error loading project file. The project file may not be compatible with this version of Gallio..
+        /// </summary>
+        internal static string ProjectController_Error_loading_project_file {
+            get {
+                return ResourceManager.GetString("ProjectController_Error_loading_project_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading project file.
+        /// </summary>
+        internal static string ProjectController_Loading_project_file {
+            get {
+                return ResourceManager.GetString("ProjectController_Loading_project_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Project &apos;{0}&apos; has been modified..
         /// </summary>
         internal static string ProjectModified {
@@ -376,6 +430,15 @@ namespace Gallio.Icarus.Properties {
             get {
                 object obj = ResourceManager.GetObject("tick", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid input.
+        /// </summary>
+        internal static string View_Invalid_input {
+            get {
+                return ResourceManager.GetString("View_Invalid_input", resourceCulture);
             }
         }
         

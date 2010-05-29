@@ -18,7 +18,8 @@ using System;
 namespace Gallio.UI.Common.Policies
 {
     ///<summary>
-    /// Wrapper for static UnhandledExceptionPolicy class (to improve testability).
+    /// Wrapper for static <see cref="Gallio.Common.Policies.UnhandledExceptionPolicy">UnhandledExceptionPolicy</see> 
+    /// class (to improve testability).
     ///</summary>
     public interface IUnhandledExceptionPolicy
     {

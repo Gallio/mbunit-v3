@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.IO;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Projects;
@@ -29,25 +29,36 @@ namespace Gallio.Icarus.Controllers.Interfaces
 {
     public interface IProjectController
     {
-        IProjectTreeModel Model { get; }
-        TestPackage TestPackage { get; }
-        Observable<IList<FilterInfo>> TestFilters { get; }
-        BindingList<string> HintDirectories { get; }
-        BindingList<string> TestRunnerExtensions { get; }
+        string ApplicationBaseDirectory { get; }
         Observable<IList<string>> CollapsedNodes { get; }
+        IEnumerable<DirectoryInfo> HintDirectories { get; }
+        IProjectTreeModel Model { get; }
         string ReportDirectory { get; }
         string ReportNameFormat { get; }
+        bool ShadowCopy { get; }
+        TestPackage TestPackage { get; }
+        Observable<IList<FilterInfo>> TestFilters { get; }
+        IEnumerable<string> TestRunnerExtensionSpecifications { get; }
+        string WorkingDirectory { get; }
 
         event EventHandler<FileChangedEventArgs> FileChanged;
+        event EventHandler<ProjectChangedEventArgs> ProjectChanged;
 
         void AddFiles(IProgressMonitor progressMonitor, IList<string> files);
+        void AddHintDirectory(string hintDirectory);
+        void AddTestRunnerExtensionSpecification(string testRunnerExtensionSpecification);
         void DeleteFilter(IProgressMonitor progressMonitor, FilterInfo filterInfo);
         void NewProject(IProgressMonitor progressMonitor);
         void OpenProject(IProgressMonitor progressMonitor, string projectLocation);
-        void RemoveAllFiles(IProgressMonitor progressMonitor);
-        void RemoveFile(IProgressMonitor progressMonitor, string fileName);
-        void SaveFilterSet(IProgressMonitor progressMonitor, string filterName, FilterSet<ITestDescriptor> filterSet);
+        void RemoveAllFiles();
+        void RemoveFile(string fileName);
+        void RemoveHintDirectory(string hintDirectory);
+        void RemoveTestRunnerExtensionSpecification(string testRunnerExtensionSpecification);
+        void SaveFilterSet(string filterName, FilterSet<ITestDescriptor> filterSet);
         void SaveProject(IProgressMonitor progressMonitor, string projectLocation);
-        event EventHandler<ProjectChangedEventArgs> ProjectChanged;
+        void SetApplicationBaseDirectory(string applicationBaseDirectory);
+        void SetReportNameFormat(string reportNameFormat);
+        void SetShadowCopy(bool shadowCopy);
+        void SetWorkingDirectory(string workingDirectory);
     }
 }

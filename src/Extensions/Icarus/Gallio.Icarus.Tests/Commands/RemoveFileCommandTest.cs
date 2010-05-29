@@ -34,7 +34,7 @@ namespace Gallio.Icarus.Tests.Commands
 
             removeFileCommand.Execute(progressMonitor);
 
-            projectController.AssertWasNotCalled(pc => pc.RemoveFile(Arg.Is(progressMonitor), Arg<string>.Is.Anything));
+            projectController.AssertWasNotCalled(pc => pc.RemoveFile(Arg<string>.Is.Anything));
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace Gallio.Icarus.Tests.Commands
 
             removeFileCommand.Execute(progressMonitor);
 
-            projectController.AssertWasCalled(pc => pc.RemoveFile(progressMonitor, filename));
+            projectController.AssertWasCalled(pc => pc.RemoveFile(filename));
         }
     }
 }

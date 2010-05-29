@@ -13,9 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Gallio.Icarus
+using System.Threading;
+
+namespace Gallio.UI.Tests.DataBinding
 {
-    internal interface IView
+    /// <summary>
+    /// Impl of SynchronizationContext that just executes the delegate.
+    /// </summary>
+    public class TestSynchronizationContext : SynchronizationContext
     {
+        public override void Send(SendOrPostCallback sendOrPostCallback, object state)
+        {
+            sendOrPostCallback(state);
+        }
+
+        public override void Post(SendOrPostCallback sendOrPostCallback, object state)
+        {
+            sendOrPostCallback(state);
+        }
     }
 }

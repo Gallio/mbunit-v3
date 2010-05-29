@@ -13,9 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Gallio.Icarus.Views.Projects
+namespace Gallio.Icarus.ProjectProperties
 {
-    partial class ProjectProperties
+    partial class View
     {
         /// <summary>
         /// Required designer variable.
@@ -43,7 +43,7 @@ namespace Gallio.Icarus.Views.Projects
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProjectProperties));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(View));
             this.propertiesTabControl = new Gallio.Icarus.Controls.PropertiesTabControl();
             this.hintDirectoriesTabPage = new System.Windows.Forms.TabPage();
             this.hintDirectoriesGroupBox = new System.Windows.Forms.GroupBox();
@@ -66,7 +66,7 @@ namespace Gallio.Icarus.Views.Projects
             this.newExtensionTextBox = new System.Windows.Forms.TextBox();
             this.removeExtensionButton = new System.Windows.Forms.Button();
             this.testRunnerExtensionsListBox = new System.Windows.Forms.ListBox();
-            this.addExtensionButton = new System.Windows.Forms.Button();
+            this.addTestRunnerExtensionButton = new System.Windows.Forms.Button();
             this.reportsTabPage = new System.Windows.Forms.TabPage();
             this.reportsGroupBox = new System.Windows.Forms.GroupBox();
             this.reportNameFormatTextBox = new System.Windows.Forms.TextBox();
@@ -219,6 +219,7 @@ namespace Gallio.Icarus.Views.Projects
             this.shadowCopyCheckBox.TabIndex = 12;
             this.shadowCopyCheckBox.Text = "Shadow copy";
             this.shadowCopyCheckBox.UseVisualStyleBackColor = true;
+            this.shadowCopyCheckBox.CheckedChanged += new System.EventHandler(this.shadowCopyCheckBox_CheckedChanged);
             // 
             // applicationBaseDirectoryLabel
             // 
@@ -248,6 +249,7 @@ namespace Gallio.Icarus.Views.Projects
             this.workingDirectoryTextBox.Name = "workingDirectoryTextBox";
             this.workingDirectoryTextBox.Size = new System.Drawing.Size(517, 20);
             this.workingDirectoryTextBox.TabIndex = 10;
+            this.workingDirectoryTextBox.Leave += new System.EventHandler(this.workingDirectoryTextBox_Leave);
             // 
             // applicationBaseDirectoryTextBox
             // 
@@ -257,6 +259,7 @@ namespace Gallio.Icarus.Views.Projects
             this.applicationBaseDirectoryTextBox.Name = "applicationBaseDirectoryTextBox";
             this.applicationBaseDirectoryTextBox.Size = new System.Drawing.Size(517, 20);
             this.applicationBaseDirectoryTextBox.TabIndex = 7;
+            this.applicationBaseDirectoryTextBox.Leave += new System.EventHandler(this.applicationBaseDirectoryTextBox_Leave);
             // 
             // workingDirectoryLabel
             // 
@@ -293,7 +296,7 @@ namespace Gallio.Icarus.Views.Projects
             this.testRunnerExtensionsGroupBox.Controls.Add(this.newExtensionTextBox);
             this.testRunnerExtensionsGroupBox.Controls.Add(this.removeExtensionButton);
             this.testRunnerExtensionsGroupBox.Controls.Add(this.testRunnerExtensionsListBox);
-            this.testRunnerExtensionsGroupBox.Controls.Add(this.addExtensionButton);
+            this.testRunnerExtensionsGroupBox.Controls.Add(this.addTestRunnerExtensionButton);
             this.testRunnerExtensionsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.testRunnerExtensionsGroupBox.Location = new System.Drawing.Point(0, 0);
             this.testRunnerExtensionsGroupBox.Name = "testRunnerExtensionsGroupBox";
@@ -321,6 +324,7 @@ namespace Gallio.Icarus.Views.Projects
             this.removeExtensionButton.Size = new System.Drawing.Size(30, 28);
             this.removeExtensionButton.TabIndex = 11;
             this.removeExtensionButton.UseVisualStyleBackColor = true;
+            this.removeExtensionButton.Click += new System.EventHandler(this.removeExtensionButton_Click);
             // 
             // testRunnerExtensionsListBox
             // 
@@ -333,15 +337,16 @@ namespace Gallio.Icarus.Views.Projects
             this.testRunnerExtensionsListBox.TabIndex = 9;
             this.testRunnerExtensionsListBox.SelectedIndexChanged += new System.EventHandler(this.testRunnerExtensionsListBox_SelectedIndexChanged);
             // 
-            // addExtensionButton
+            // addTestRunnerExtensionButton
             // 
-            this.addExtensionButton.AutoSize = true;
-            this.addExtensionButton.Location = new System.Drawing.Point(18, 55);
-            this.addExtensionButton.Name = "addExtensionButton";
-            this.addExtensionButton.Size = new System.Drawing.Size(85, 23);
-            this.addExtensionButton.TabIndex = 10;
-            this.addExtensionButton.Text = "Add Extension";
-            this.addExtensionButton.UseVisualStyleBackColor = true;
+            this.addTestRunnerExtensionButton.AutoSize = true;
+            this.addTestRunnerExtensionButton.Location = new System.Drawing.Point(18, 55);
+            this.addTestRunnerExtensionButton.Name = "addTestRunnerExtensionButton";
+            this.addTestRunnerExtensionButton.Size = new System.Drawing.Size(85, 23);
+            this.addTestRunnerExtensionButton.TabIndex = 10;
+            this.addTestRunnerExtensionButton.Text = "Add Extension";
+            this.addTestRunnerExtensionButton.UseVisualStyleBackColor = true;
+            this.addTestRunnerExtensionButton.Click += new System.EventHandler(this.addExtensionButton_Click);
             // 
             // reportsTabPage
             // 
@@ -375,6 +380,7 @@ namespace Gallio.Icarus.Views.Projects
             this.reportNameFormatTextBox.Name = "reportNameFormatTextBox";
             this.reportNameFormatTextBox.Size = new System.Drawing.Size(563, 20);
             this.reportNameFormatTextBox.TabIndex = 3;
+            this.reportNameFormatTextBox.Leave += new System.EventHandler(this.reportNameFormatTextBox_Leave);
             // 
             // reportDirectoryTextBox
             // 
@@ -404,12 +410,12 @@ namespace Gallio.Icarus.Views.Projects
             this.reportDirectoryLabel.TabIndex = 0;
             this.reportDirectoryLabel.Text = "Report Directory: ";
             // 
-            // ProjectProperties
+            // View
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.propertiesTabControl);
-            this.Name = "ProjectProperties";
+            this.Name = "View";
             this.Size = new System.Drawing.Size(739, 604);
             this.propertiesTabControl.ResumeLayout(false);
             this.hintDirectoriesTabPage.ResumeLayout(false);
@@ -453,7 +459,7 @@ namespace Gallio.Icarus.Views.Projects
         private System.Windows.Forms.TextBox newExtensionTextBox;
         private System.Windows.Forms.Button removeExtensionButton;
         private System.Windows.Forms.ListBox testRunnerExtensionsListBox;
-        private System.Windows.Forms.Button addExtensionButton;
+        private System.Windows.Forms.Button addTestRunnerExtensionButton;
         private System.Windows.Forms.GroupBox reportsGroupBox;
         private System.Windows.Forms.Label reportDirectoryLabel;
         private System.Windows.Forms.TextBox reportNameFormatTextBox;
