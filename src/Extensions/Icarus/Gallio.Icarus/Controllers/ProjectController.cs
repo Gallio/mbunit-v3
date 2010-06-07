@@ -20,7 +20,6 @@ using System.IO;
 using Gallio.Common.Collections;
 using Gallio.Common.IO;
 using Gallio.Common.Policies;
-using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
@@ -41,19 +40,16 @@ using Path = System.IO.Path;
 
 namespace Gallio.Icarus.Controllers
 {
-    public class ProjectController : NotifyController, IProjectController, Handles<ProjectChanged>,
-        Handles<TreeViewCategoryChanged>
+    public class ProjectController : NotifyController, IProjectController, Handles<ProjectChanged>
     {
         private readonly IProjectTreeModel projectTreeModel;
         private readonly IEventAggregator eventAggregator;
         private readonly IFileSystem fileSystem;
-        private readonly IXmlSerializer xmlSerializer;
         private readonly IFileWatcher fileWatcher;
         private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
         private readonly ITestProjectManager testProjectManager;
 
         private bool updating;
-        private string treeViewCategory;
 
         public string WorkingDirectory
         {
@@ -108,8 +104,6 @@ namespace Gallio.Icarus.Controllers
             get { return projectTreeModel.FileName; }
         }
 
-        public Observable<IList<string>> CollapsedNodes { get; private set; }
-
         public string ReportDirectory
         {
             get { return projectTreeModel.TestProject.ReportDirectory; }
@@ -120,17 +114,15 @@ namespace Gallio.Icarus.Controllers
             get { return projectTreeModel.TestProject.ReportNameFormat; }
         }
 
-        public ProjectController(IProjectTreeModel projectTreeModel, IEventAggregator eventAggregator, IFileSystem fileSystem,
-            IXmlSerializer xmlSerializer, IFileWatcher fileWatcher, IUnhandledExceptionPolicy unhandledExceptionPolicy)
+        public ProjectController(IProjectTreeModel projectTreeModel, IEventAggregator eventAggregator, IFileSystem fileSystem, 
+            IFileWatcher fileWatcher, IUnhandledExceptionPolicy unhandledExceptionPolicy, ITestProjectManager testProjectManager)
         {
             this.projectTreeModel = projectTreeModel;
             this.eventAggregator = eventAggregator;
             this.fileSystem = fileSystem;
-            this.xmlSerializer = xmlSerializer;
             this.fileWatcher = fileWatcher;
             this.unhandledExceptionPolicy = unhandledExceptionPolicy;
-
-            testProjectManager = new DefaultTestProjectManager(fileSystem, xmlSerializer);
+            this.testProjectManager = testProjectManager;
 
             TestFilters = new Observable<IList<FilterInfo>>(new List<FilterInfo>());
             TestFilters.PropertyChanged += (s, e) =>
@@ -148,10 +140,6 @@ namespace Gallio.Icarus.Controllers
                 string fileName = Path.GetFileName(fullPath);
                 EventHandlerPolicy.SafeInvoke(FileChanged, this, new FileChangedEventArgs(fileName));
             };
-
-            // default tree view category
-            treeViewCategory = "Namespace";
-            CollapsedNodes = new Observable<IList<string>>(new List<string>());
         }
 
         public void AddFiles(IProgressMonitor progressMonitor, IList<string> files)
@@ -180,8 +168,10 @@ namespace Gallio.Icarus.Controllers
 
                 if (fileSystem.FileExists(filePath))
                     validFiles.Add(filePath);
+
                 progressMonitor.Worked(1);
             }
+
             return validFiles;
         }
 
@@ -245,42 +235,6 @@ namespace Gallio.Icarus.Controllers
 
         public void OpenProject(IProgressMonitor progressMonitor, string projectLocation)
         {
-            using (progressMonitor.BeginTask(Resources.OpeningProject, 100))
-            {
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(70))
-                    LoadProjectFile(subProgressMonitor, projectLocation);
-
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(30))
-                    LoadUserOptions(subProgressMonitor, projectLocation);
-            }
-        }
-
-        private void LoadUserOptions(IProgressMonitor progressMonitor, string projectLocation)
-        {
-            using (progressMonitor.BeginTask("Loading user options", 100))
-            {
-                string projectUserOptionsFile = projectLocation + UserOptions.Extension;
-
-                if (!fileSystem.FileExists(projectUserOptionsFile))
-                    return;
-
-                // if it does, use it!
-                try
-                {
-                    var userOptions = xmlSerializer.LoadFromXml<UserOptions>(projectUserOptionsFile);
-                    treeViewCategory = userOptions.TreeViewCategory;
-                    eventAggregator.Send(new TreeViewCategoryChanged(userOptions.TreeViewCategory));
-                    CollapsedNodes.Value = userOptions.CollapsedNodes;
-                }
-                catch (Exception ex)
-                {
-                    unhandledExceptionPolicy.Report("Failed to load user options.", ex);
-                }
-            }
-        }
-
-        private void LoadProjectFile(IProgressMonitor progressMonitor, string projectLocation)
-        {
             using (progressMonitor.BeginTask(Resources.ProjectController_Loading_project_file, 100))
             {
                 var testProject = new TestProject();
@@ -295,34 +249,31 @@ namespace Gallio.Icarus.Controllers
                 }
 
                 progressMonitor.Worked(50);
-
                 LoadProject(testProject, projectLocation);
-
-                eventAggregator.Send(new ProjectLoaded());
             }
         }
 
-        private void LoadProject(TestProject testProject, string projectName)
+        private void LoadProject(TestProject testProject, string projectLocation)
         {
-            projectTreeModel.FileName = projectName;
+            projectTreeModel.FileName = projectLocation;
             projectTreeModel.TestProject = testProject;
 
             fileWatcher.Clear();
             GenericCollectionUtils.ForEach(testProject.TestPackage.Files, x => fileWatcher.Add(x.FullName));
 
             PublishUpdates();
+
+            eventAggregator.Send(new ProjectLoaded(projectLocation));
         }
 
         public void NewProject(IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Creating new project", 100))
             {
-                var projectName = Paths.DefaultProject;
-                var testProject = testProjectManager.NewProject(projectName);
-
+                var projectLocation = Paths.DefaultProject;
+                var testProject = testProjectManager.NewProject(projectLocation);
                 progressMonitor.Worked(50);
-
-                LoadProject(testProject, projectName);
+                LoadProject(testProject, projectLocation);
             }
         }
 
@@ -333,9 +284,15 @@ namespace Gallio.Icarus.Controllers
                 if (string.IsNullOrEmpty(projectLocation))
                     projectLocation = projectTreeModel.FileName;
 
-                SaveProjectFile(progressMonitor, projectLocation);
+                var dir = Path.GetDirectoryName(projectLocation);
 
-                SaveUserOptions(progressMonitor, projectLocation);
+                if (fileSystem.DirectoryExists(dir) == false)
+                    fileSystem.CreateDirectory(dir);
+
+                progressMonitor.Worked(10);
+
+                testProjectManager.SaveProject(projectTreeModel.TestProject, new FileInfo(projectLocation));
+                progressMonitor.Worked(50);
 
                 eventAggregator.Send(new ProjectSaved(projectLocation));
             }
@@ -363,32 +320,6 @@ namespace Gallio.Icarus.Controllers
                 new DirectoryInfo(workingDirectory) : null;
         }
 
-        private void SaveUserOptions(IProgressMonitor progressMonitor, string projectName)
-        {
-            progressMonitor.SetStatus("Saving user options");
-            string projectUserOptionsFile = projectName + UserOptions.Extension;
-            var userOptions = new UserOptions
-            {
-                TreeViewCategory = treeViewCategory,
-                CollapsedNodes = new List<string>(CollapsedNodes.Value)
-            };
-            progressMonitor.Worked(10);
-
-            xmlSerializer.SaveToXml(userOptions, projectUserOptionsFile);
-        }
-
-        private void SaveProjectFile(IProgressMonitor progressMonitor, string projectName)
-        {
-            var dir = Path.GetDirectoryName(projectName);
-            // create folder (if necessary)
-            if (!fileSystem.DirectoryExists(dir))
-                fileSystem.CreateDirectory(dir);
-            progressMonitor.Worked(10);
-
-            testProjectManager.SaveProject(projectTreeModel.TestProject, new FileInfo(projectName));
-            progressMonitor.Worked(50);
-        }
-
         private void PublishUpdates()
         {
             // need to deal with x-thread databinding
@@ -408,11 +339,6 @@ namespace Gallio.Icarus.Controllers
         {
             if (ProjectChanged != null)
                 ProjectChanged(this, new ProjectChangedEventArgs(@event.ProjectLocation));
-        }
-
-        public void Handle(TreeViewCategoryChanged @event)
-        {
-            treeViewCategory = @event.TreeViewCategory;
         }
     }
 }

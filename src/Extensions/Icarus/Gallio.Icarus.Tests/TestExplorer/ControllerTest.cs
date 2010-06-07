@@ -18,6 +18,7 @@ using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
+using Gallio.Icarus.Projects;
 using Gallio.Icarus.TestExplorer;
 using Gallio.Model;
 using Gallio.UI.Events;
@@ -43,10 +44,13 @@ namespace Gallio.Icarus.Tests.TestExplorer
             eventAggregator = MockRepository.GenerateStub<IEventAggregator>();
             model = new Icarus.TestExplorer.Model(MockRepository.GenerateStub<ISortedTreeModel>());
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var projectController = MockRepository.GenerateStub<IProjectController>();
+            var userOptionsController = MockRepository.GenerateStub<IUserOptionsController>();
+            userOptionsController.Stub(uoc => uoc.CollapsedNodes).Return(new string[0]);
             taskManager = MockRepository.GenerateStub<ITaskManager>();
             commandFactory = MockRepository.GenerateStub<ICommandFactory>();
-            controller = new Controller(model, eventAggregator, optionsController, projectController, taskManager, commandFactory);
+            
+            controller = new Controller(model, eventAggregator, optionsController, userOptionsController, 
+                taskManager, commandFactory);
         }
 
         [Test]
@@ -195,7 +199,7 @@ namespace Gallio.Icarus.Tests.TestExplorer
         [Test]
         public void RefreshTree_should_retrieve_a_command_from_the_factory()
         {
-            controller.ChangeTreeCategory(pm => { });
+            controller.ChangeTreeCategory("", pm => { });
 
             commandFactory.AssertWasCalled(cf => cf.CreateRefreshTestTreeCommand());
         }
@@ -206,7 +210,7 @@ namespace Gallio.Icarus.Tests.TestExplorer
             var command = MockRepository.GenerateStub<ICommand>();
             commandFactory.Stub(cf => cf.CreateRefreshTestTreeCommand()).Return(command);
 
-            controller.ChangeTreeCategory(pm => { });
+            controller.ChangeTreeCategory("", pm => { });
 
             taskManager.AssertWasCalled(tm => tm.QueueTask(command));
         }

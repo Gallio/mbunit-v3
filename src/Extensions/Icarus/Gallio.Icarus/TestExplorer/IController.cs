@@ -26,14 +26,15 @@ namespace Gallio.Icarus.TestExplorer
         event EventHandler SaveState;
         event EventHandler RestoreState;
 
-        void SortTree(SortOrder sortOrder);
-        void FilterStatus(TestStatus testStatus);
         void AddFiles(string[] fileNames);
+        void ChangeTreeCategory(string newCategory, Action<IProgressMonitor> continuation);
+        void FilterStatus(TestStatus testStatus);
         void RemoveAllFiles();
         void RemoveFile(string fileName);
-        void ChangeTreeCategory(Action<IProgressMonitor> continuation);
-        void ShowSourceCode(string testId);
         void ResetTests();
-        void SetTreeSelection(IList<TestTreeNode> nodes);
+        void ShowSourceCode(string testId);
+        void SetCollapsedNodes(IEnumerable<string> collapsedNodes);
+        void SetTreeSelection(IEnumerable<TestTreeNode> nodes);
+        void SortTree(SortOrder sortOrder);
     }
 }

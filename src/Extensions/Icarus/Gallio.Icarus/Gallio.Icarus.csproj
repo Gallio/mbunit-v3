@@ -126,6 +126,11 @@
     <Compile Include="ProjectProperties\View.Designer.cs">
       <DependentUpon>View.cs</DependentUpon>
     </Compile>
+    <Compile Include="Projects\IUserOptionsController.cs" />
+    <Compile Include="Projects\UserOptions.cs" />
+    <Compile Include="Projects\UserOptionsController.cs" />
+    <Compile Include="Projects\UserOptionsLoaded.cs" />
+    <Compile Include="Projects\UserOptionsSaved.cs" />
     <Compile Include="Search\IModel.cs" />
     <Compile Include="Specifications\MetadataSpecification.cs" />
     <Compile Include="Specifications\NameSpecification.cs" />
@@ -185,7 +190,6 @@
     <Compile Include="Controllers\IApplicationController.cs" />
     <Compile Include="Controllers\IFilterController.cs" />
     <Compile Include="Controllers\Interfaces\IAnnotationsController.cs" />
-    <Compile Include="Controllers\Interfaces\IErrorController.cs" />
     <Compile Include="Controllers\Interfaces\IReportController.cs" />
     <Compile Include="Controllers\Interfaces\ISourceCodeController.cs" />
     <Compile Include="Controllers\Interfaces\ITestResultsController.cs" />
@@ -482,7 +486,6 @@
     </Compile>
     <Compile Include="Services\ReportService.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="UserOptions.cs" />
     <Compile Include="WindowManager\WindowManager.cs" />
   </ItemGroup>
   <ItemGroup>

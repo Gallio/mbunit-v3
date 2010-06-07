@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using Gallio.Common;
 
-namespace Gallio.Icarus
+namespace Gallio.Icarus.Projects
 {
     [Serializable]
     [XmlRoot("userOptions", Namespace = SchemaConstants.XmlNamespace)]
@@ -26,20 +26,19 @@ namespace Gallio.Icarus
     public class UserOptions
     {
         public static readonly string Extension = ".user";
+        public const string DefaultTreeViewCategory = "Namespace";
 
         [XmlElement("treeViewCategory")]
-        public string TreeViewCategory
-        {
-            get;
-            set;
-        }
+        public string TreeViewCategory { get; set; }
 
         [XmlArray("collapsedNodes", IsNullable = false)]
         [XmlArrayItem("collapsedNode", typeof(string), IsNullable = false)]
-        public List<string> CollapsedNodes
+        public List<string> CollapsedNodes { get; set; }
+
+        public UserOptions()
         {
-            get;
-            set;
+            TreeViewCategory = DefaultTreeViewCategory;
+            CollapsedNodes = new List<string>();
         }
     }
 }

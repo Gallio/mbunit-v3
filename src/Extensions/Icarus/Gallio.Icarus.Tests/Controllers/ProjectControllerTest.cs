@@ -14,21 +14,18 @@
 // limitations under the License.
 
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using Gallio.Common.IO;
-using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
-using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
+using Gallio.Icarus.Properties;
 using Gallio.Icarus.Remoting;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects;
 using Gallio.Runner.Projects.Schema;
-using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Common.Policies;
 using Gallio.UI.Events;
 using MbUnit.Framework;
@@ -38,28 +35,29 @@ using Path = System.IO.Path;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
-    [MbUnit.Framework.Category("Controllers"), Author("Graham Hay"), TestsOn(typeof(ProjectController))]
-    internal class ProjectControllerTest
+    [Category("Controllers"), Author("Graham Hay"), TestsOn(typeof(ProjectController))]
+    public class ProjectControllerTest
     {
         private ProjectController projectController;
         private IProjectTreeModel projectTreeModel;
         private IFileSystem fileSystem;
-        private IXmlSerializer xmlSerializer;
         private IFileWatcher fileWatcher;
         private IUnhandledExceptionPolicy unhandledExceptionPolicy;
         private IEventAggregator eventAggregator;
+        private ITestProjectManager testProjectManager;
 
         [SetUp]
         public void SetUp()
         {
             projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
             fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
             fileWatcher = MockRepository.GenerateStub<IFileWatcher>();
             unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
             eventAggregator = MockRepository.GenerateStub<IEventAggregator>();
-            projectController = new ProjectController(projectTreeModel, eventAggregator, fileSystem, 
-                xmlSerializer, fileWatcher, unhandledExceptionPolicy);
+            testProjectManager = MockRepository.GenerateStub<ITestProjectManager>();
+            
+            projectController = new ProjectController(projectTreeModel, eventAggregator, fileSystem, fileWatcher, 
+                unhandledExceptionPolicy, testProjectManager);
         }
 
         [Test]
@@ -124,23 +122,21 @@ namespace Gallio.Icarus.Tests.Controllers
             Assert.AreEqual(fileName, projectController.ProjectFileName);
         }
 
-        [SyncTest]
-        public void NewProject_Test()
+        [Test]
+        public void New_project_creates_the_default_project()
         {
-            var progressMonitor = MockRepository.GenerateStub<IProgressMonitor>();
-            progressMonitor.Stub(x => x.BeginTask(Arg<string>.Is.Anything, Arg<double>.Is.Anything)).Return(new ProgressMonitorTaskCookie(progressMonitor));
+            testProjectManager.Stub(tpm => tpm.NewProject(Arg<string>.Is.Anything))
+                .Return(new TestProject());
 
-            projectController.PropertyChanged += ((sender, e) => Assert.AreEqual("TestPackage", e.PropertyName));
-            projectController.NewProject(progressMonitor);
-            Assert.AreEqual(Paths.DefaultProject, projectTreeModel.FileName);
-            Assert.AreEqual(0, projectController.TestFilters.Value.Count);
+            projectController.NewProject(MockProgressMonitor.Instance);
+
+            testProjectManager.AssertWasCalled(tpm => tpm.NewProject(Paths.DefaultProject));
         }
 
         [Test]
         public void RemoveAllFiles_Test()
         {
             projectTreeModel.TestProject = new TestProject();
-            var progressMonitor = MockProgressMonitor.Instance;
 
             projectController.RemoveAllFiles();
         }
@@ -152,7 +148,6 @@ namespace Gallio.Icarus.Tests.Controllers
             string fileName = Path.GetFullPath("test");
             project.TestPackage.AddFile(new FileInfo(fileName));
             projectTreeModel.TestProject = project;
-            var progressMonitor = MockProgressMonitor.Instance;           
             Assert.AreEqual(1, project.TestPackage.Files.Count);
             
             projectController.RemoveFile(fileName);
@@ -164,7 +159,6 @@ namespace Gallio.Icarus.Tests.Controllers
         public void SaveFilter_Test()
         {
             projectTreeModel.TestProject = new TestProject();
-            var progressMonitor = MockProgressMonitor.Instance;
             
             Assert.AreEqual(0, projectController.TestFilters.Value.Count);
             projectController.SaveFilterSet("filterName", new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>()));
@@ -178,30 +172,29 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void SaveProject_Test()
         {
-            TestProject testProject = new TestProject();
+            var testProject = new TestProject();
             projectTreeModel.TestProject = testProject;
-            var progressMonitor = MockProgressMonitor.Instance;
-
             const string projectName = "projectName";
-            projectController.SaveProject(progressMonitor, projectName);
-            xmlSerializer.AssertWasCalled(x => x.SaveToXml(Arg<UserOptions>.Is.Anything, 
-                Arg.Is(projectName + UserOptions.Extension)));
+            
+            projectController.SaveProject(MockProgressMonitor.Instance, projectName);
+
+            testProjectManager.AssertWasCalled(tpm => tpm.SaveProject(Arg.Is(testProject), 
+                Arg<FileInfo>.Matches(fi => fi.Name == projectName)));
         }
 
         [Test]
-        public void SaveDefaultProject_Test()
+        public void Create_directory_for_project_if_necessary()
         {
-            TestProject testProject = new TestProject();
+            var testProject = new TestProject();
             projectTreeModel.TestProject = testProject;
             projectTreeModel.FileName = Paths.DefaultProject;
             var progressMonitor = MockProgressMonitor.Instance;
+            fileSystem.Stub(fs => fs.DirectoryExists(Paths.IcarusAppDataFolder))
+                .Return(false);
 
-            projectController.SaveProject(progressMonitor, string.Empty);
+            projectController.SaveProject(progressMonitor, "");
 
-            fileSystem.AssertWasCalled(fs => fs.DirectoryExists(Paths.IcarusAppDataFolder));
             fileSystem.AssertWasCalled(fs => fs.CreateDirectory(Paths.IcarusAppDataFolder));
-            xmlSerializer.AssertWasCalled(xs => xs.SaveToXml(Arg<UserOptions>.Is.Anything, 
-                Arg.Is(Paths.DefaultProject + UserOptions.Extension)));
         }
 
         [Test]
@@ -292,95 +285,39 @@ namespace Gallio.Icarus.Tests.Controllers
             Assert.AreEqual(true, changedFlag);
         }
 
-        [SyncTest]
-        public void OpenProject_Test()
+        [Test]
+        public void Open_project_loads_the_file()
         {
-            string projectName = Path.GetFullPath("projectName");
-            fileSystem.Stub(fs => fs.FileExists(projectName)).Return(true);
-            var project = new TestProjectData { ReportNameFormat = "foo" };
-            project.TestFilters.Add(new FilterInfo("None", new NoneFilter<ITestDescriptor>().ToFilterExpr()));
-            project.TestPackage.HintDirectories.Add("hintDirectory");
-            project.TestRunnerExtensions.Add("testRunnerExtensions");
-            xmlSerializer.Stub(xs => xs.LoadFromXml<TestProjectData>(projectName)).Return(project);
-            var progressMonitor = MockProgressMonitor.Instance;
-            var propertyChangedFlag = false;
-            projectController.PropertyChanged += delegate(object sender, PropertyChangedEventArgs e)
-            {
-                if (e.PropertyName != "TestPackage")
-                    return;
+            var projectName = Path.GetFullPath("projectName");
+            testProjectManager.Stub(tpm => tpm.LoadProject(Arg<FileInfo>.Is.Anything))
+                .Return(new TestProject());
 
-                propertyChangedFlag = true;
-            };
+            projectController.OpenProject(MockProgressMonitor.Instance, projectName);
 
-            projectController.OpenProject(progressMonitor, projectName);
-
-            Assert.AreEqual(projectName, projectTreeModel.FileName);
-            Assert.AreEqual(project.ReportNameFormat, projectTreeModel.TestProject.ReportNameFormat);
-
-            Assert.AreEqual(1, projectController.TestFilters.Value.Count);
-            Assert.AreEqual(true, propertyChangedFlag);
+            testProjectManager.AssertWasCalled(tpm => tpm.LoadProject(Arg<FileInfo>.Matches(fi => 
+                fi.FullName == projectName)));
         }
 
         [Test]
-        public void OpenProject_should_fail_if_loading_project_throws_exception()
+        public void Opening_project_should_succeed_even_if_file_cannot_be_loaded()
         {
-            string projectName = Path.GetFullPath("projectName");
-            fileSystem.Stub(fs => fs.FileExists(projectName)).Return(true);
+            testProjectManager.Stub(tpm => tpm.LoadProject(Arg<FileInfo>.Is.Anything))
+                .Throw(new Exception());
+
+            Assert.DoesNotThrow(() => projectController.OpenProject(MockProgressMonitor.Instance, 
+                Path.GetFullPath("projectName")));
+        }
+
+        [Test]
+        public void Opening_project_should_report_any_errors_that_occur()
+        {
             var exception = new Exception();
-            xmlSerializer.Stub(xs => xs.LoadFromXml<TestProjectData>(projectName)).Throw(exception);
-            var progressMonitor = MockProgressMonitor.Instance;
+            testProjectManager.Stub(tpm => tpm.LoadProject(Arg<FileInfo>.Is.Anything)).Throw(exception);
 
-            projectController.OpenProject(progressMonitor, projectName);
+            projectController.OpenProject(MockProgressMonitor.Instance, Path.GetFullPath("projectName"));
 
-            unhandledExceptionPolicy.AssertWasCalled(uep => uep.Report(Arg<string>.Is.Anything, Arg.Is(exception)));
-        }
-
-        [Test]
-        public void OpenProject_should_succeed_even_if_loading_user_options_throws_exception()
-        {
-            string projectName = Path.GetFullPath("projectName");
-            fileSystem.Stub(fs => fs.FileExists(projectName)).Return(true);
-
-            xmlSerializer.Stub(xs => xs.LoadFromXml<TestProjectData>(projectName)).Return(new TestProjectData());
-            string projectUserOptionsFile = projectName + UserOptions.Extension;
-            fileSystem.Stub(fs => fs.FileExists(projectUserOptionsFile)).Return(true);
-            xmlSerializer.Stub(xs => xs.LoadFromXml<UserOptions>(projectUserOptionsFile)).Throw(new Exception());
-            var progressMonitor = MockProgressMonitor.Instance;
-            projectController.PropertyChanged += (sender, e) =>
-            {
-                if (e.PropertyName == "TreeViewCategory")
-                    Assert.Fail();
-            };
-
-            projectController.OpenProject(progressMonitor, projectName);
-
-            Assert.AreEqual(0, projectController.CollapsedNodes.Value.Count);
-        }
-
-        // TODO: split this into multiple tests
-        [SyncTest]
-        public void User_options_should_be_applied_when_available_after_loading_a_project()
-        {
-            string projectName = Path.GetFullPath("projectName");
-            fileSystem.Stub(fs => fs.FileExists(projectName)).Return(true);
-            xmlSerializer.Stub(xs => xs.LoadFromXml<TestProjectData>(projectName)).Return(new TestProjectData());
-            string projectUserOptionsFile = projectName + UserOptions.Extension;
-            fileSystem.Stub(fs => fs.FileExists(projectUserOptionsFile)).Return(true);
-            const string treeViewCategory = "treeViewCategory";
-            var collapsedNodes = new List<string>(new[] { "one", "two", "three" });
-            var userOptions = new UserOptions
-            {
-                TreeViewCategory = treeViewCategory,
-                CollapsedNodes = collapsedNodes
-            };
-            xmlSerializer.Stub(xs => xs.LoadFromXml<UserOptions>(projectUserOptionsFile)).Return(userOptions);
-            var progressMonitor = MockProgressMonitor.Instance;
-
-            projectController.OpenProject(progressMonitor, projectName);
-
-            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<TreeViewCategoryChanged>.Matches(tvcc => 
-                tvcc.TreeViewCategory == treeViewCategory)));
-            Assert.AreEqual(collapsedNodes, projectController.CollapsedNodes.Value);
+            unhandledExceptionPolicy.AssertWasCalled(uep => uep.Report(Arg.Is(Resources.ProjectController_Error_loading_project_file), 
+                Arg.Is(exception)));
         }
     }
 }

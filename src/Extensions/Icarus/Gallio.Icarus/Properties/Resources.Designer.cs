@@ -434,6 +434,15 @@ namespace Gallio.Icarus.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to load user options..
+        /// </summary>
+        internal static string UserOptionsController_Failed_to_load_user_options_ {
+            get {
+                return ResourceManager.GetString("UserOptionsController_Failed_to_load_user_options_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid input.
         /// </summary>
         internal static string View_Invalid_input {

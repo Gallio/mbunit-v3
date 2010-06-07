@@ -15,12 +15,12 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Common;
 using Gallio.Common.Policies;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
+using Gallio.Icarus.Projects;
 using Gallio.Model;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Events;
@@ -29,10 +29,11 @@ using Gallio.UI.ProgressMonitoring;
 namespace Gallio.Icarus.TestExplorer
 {
     public class Controller : IController, Handles<ApplicationShutdown>, Handles<Reloading>, Handles<RunStarted>,
-        Handles<RunFinished>, Handles<ExploreStarted>, Handles<ExploreFinished>, Handles<TreeViewCategoryChanged>
+        Handles<RunFinished>, Handles<ExploreStarted>, Handles<ExploreFinished>, Handles<UserOptionsLoaded>
     {
         private readonly IModel model;
         private readonly IEventAggregator eventAggregator;
+        private readonly IUserOptionsController userOptionsController;
         private readonly ITaskManager taskManager;
         private readonly ICommandFactory commandFactory;
 
@@ -40,11 +41,12 @@ namespace Gallio.Icarus.TestExplorer
         public event EventHandler RestoreState;
 
         public Controller(IModel model, IEventAggregator eventAggregator, IOptionsController optionsController, 
-            IProjectController projectController, ITaskManager taskManager, ICommandFactory commandFactory)
+            IUserOptionsController userOptionsController, ITaskManager taskManager, ICommandFactory commandFactory)
         {
             this.model = model;
             this.commandFactory = commandFactory;
             this.eventAggregator = eventAggregator;
+            this.userOptionsController = userOptionsController;
             this.taskManager = taskManager;
 
             model.PassedColor.Value = optionsController.PassedColor;
@@ -54,7 +56,7 @@ namespace Gallio.Icarus.TestExplorer
 
             model.TreeViewCategories = optionsController.SelectedTreeViewCategories;
 
-            model.CollapsedNodes = projectController.CollapsedNodes;
+            model.CollapsedNodes.Value = new List<string>(userOptionsController.CollapsedNodes);
         }
 
         public void SortTree(SortOrder sortOrder)
@@ -99,9 +101,10 @@ namespace Gallio.Icarus.TestExplorer
             taskManager.QueueTask(command);
         }
 
-        public void ChangeTreeCategory(Action<IProgressMonitor> continuation)
+        public void ChangeTreeCategory(string newCategory, Action<IProgressMonitor> continuation)
         {
-            eventAggregator.Send(new TreeViewCategoryChanged(model.CurrentTreeViewCategory));
+            model.CurrentTreeViewCategory.Value = newCategory;
+            eventAggregator.Send(new TreeViewCategoryChanged(newCategory));
             var command = commandFactory.CreateRefreshTestTreeCommand();
             taskManager.QueueTask(command);
             taskManager.QueueTask(new DelegateCommand(continuation));
@@ -113,13 +116,18 @@ namespace Gallio.Icarus.TestExplorer
             taskManager.QueueTask(command);
         }
 
+        public void SetCollapsedNodes(IEnumerable<string> collapsedNodes)
+        {
+            userOptionsController.SetCollapsedNodes(collapsedNodes);
+        }
+
         public void ResetTests()
         {
             var command = commandFactory.CreateResetTestsCommand();
             taskManager.QueueTask(command);
         }
 
-        public void SetTreeSelection(IList<TestTreeNode> nodes)
+        public void SetTreeSelection(IEnumerable<TestTreeNode> nodes)
         {
             eventAggregator.Send(new TestSelectionChanged(nodes));
         }
@@ -161,10 +169,10 @@ namespace Gallio.Icarus.TestExplorer
             model.CanEditTree.Value = true;
         }
 
-        public void Handle(TreeViewCategoryChanged @event)
+        public void Handle(UserOptionsLoaded @event)
         {
-            if (model.CurrentTreeViewCategory != @event.TreeViewCategory)
-                model.CurrentTreeViewCategory.Value = @event.TreeViewCategory;
+            model.CollapsedNodes.Value = new List<string>(userOptionsController.CollapsedNodes);
+            model.CurrentTreeViewCategory.Value = userOptionsController.TreeViewCategory;
         }
     }
 }

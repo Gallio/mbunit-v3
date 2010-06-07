@@ -30,7 +30,6 @@ namespace Gallio.Icarus.Controllers.Interfaces
     public interface IProjectController
     {
         string ApplicationBaseDirectory { get; }
-        Observable<IList<string>> CollapsedNodes { get; }
         IEnumerable<DirectoryInfo> HintDirectories { get; }
         IProjectTreeModel Model { get; }
         string ReportDirectory { get; }

@@ -168,15 +168,13 @@ namespace Gallio.Icarus.TestExplorer
             if (model.CurrentTreeViewCategory == newValue)
                 return;
 
-            model.CurrentTreeViewCategory.Value = newValue;
-
             // if updateFlag is set, then the index has changed because
             // we are populating the list, so no need to refresh!
             if (updateFlag)
                 return;
 
             SaveState();
-            controller.ChangeTreeCategory(pm => RestoreState());
+            controller.ChangeTreeCategory(newValue, pm => RestoreState());
         }
 
         private void resetTestsMenuItem_Click(object sender, EventArgs e)
@@ -284,7 +282,8 @@ namespace Gallio.Icarus.TestExplorer
 
         private void SaveState()
         {
-            model.CollapsedNodes.Value = testTree.GetCollapsedNodes();
+            var collapsedNodes = testTree.GetCollapsedNodes();
+            controller.SetCollapsedNodes(collapsedNodes);
         }
 
         private void RestoreState()

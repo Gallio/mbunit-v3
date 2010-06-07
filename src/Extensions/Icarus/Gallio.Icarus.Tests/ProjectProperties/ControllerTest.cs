@@ -280,7 +280,7 @@ namespace Gallio.Icarus.Tests.ProjectProperties
                 flag = true;
             };
 
-            controller.Handle(new ProjectLoaded());
+            controller.Handle(new ProjectLoaded(""));
 
             Assert.IsTrue(flag);
         }
