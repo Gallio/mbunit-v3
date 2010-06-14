@@ -21,6 +21,9 @@ namespace Gallio.Icarus.Specifications
     {
         public ISpecification<TestTreeNode> Create(string metadataType, string searchText)
         {
+            if (string.IsNullOrEmpty(searchText))
+                return new AnySpecification<TestTreeNode>();
+
             switch (metadataType)
             {
                 case "Name":

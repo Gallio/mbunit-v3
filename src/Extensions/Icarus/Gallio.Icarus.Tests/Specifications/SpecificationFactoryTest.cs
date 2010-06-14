@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Icarus.Models;
 using Gallio.Icarus.Specifications;
 using MbUnit.Framework;
 
@@ -26,6 +27,20 @@ namespace Gallio.Icarus.Tests.Specifications
         public void SetUp()
         {
             factory = new SpecificationFactory();
+        }
+
+        [Test]
+        public void If_search_text_is_null_an_any_specification_is_returned() {
+            var specification = factory.Create("Name", null);
+
+            Assert.IsInstanceOfType<AnySpecification<TestTreeNode>>(specification);
+        }
+
+        [Test]
+        public void If_search_text_is_empty_an_any_specification_is_returned() {
+            var specification = factory.Create("Name", "");
+
+            Assert.IsInstanceOfType<AnySpecification<TestTreeNode>>(specification);
         }
 
         [Test]
