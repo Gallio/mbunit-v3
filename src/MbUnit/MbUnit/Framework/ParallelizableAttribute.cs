@@ -69,7 +69,7 @@ namespace MbUnit.Framework
     /// <para>
     /// This C# example shows a fixture all of whose tests are parallelizable.
     /// <code><![CDATA[
-    /// [Parallizable(TestScope.Descendants)]
+    /// [Parallelizable(TestScope.Descendants)]
     /// public class Fixture
     /// {
     ///     public void Test1() { ... }
@@ -83,7 +83,7 @@ namespace MbUnit.Framework
     /// <para>
     /// This C# example shows a test assembly all of whose tests are parallelizable.
     /// <code><![CDATA[
-    /// [assembly: Parallizable(TestScope.All)]
+    /// [assembly: Parallelizable(TestScope.All)]
     /// ]]></code>
     /// </para>
     /// </example>
