@@ -53,6 +53,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner45.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner50.Tests", "Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner50.Tests.csproj", "{CFC4B4EC-4E57-461A-B6CB-33F8C0DF9238}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner51", "Gallio.ReSharperRunner\Gallio.ReSharperRunner51.csproj", "{B5C0DE79-312A-475C-B2F9-2FF97DDF4D6D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner51.Tests", "Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner51.Tests.csproj", "{8CF2DDC1-824D-47BD-B626-3016F7207EAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -151,6 +155,14 @@ Global
 		{CFC4B4EC-4E57-461A-B6CB-33F8C0DF9238}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFC4B4EC-4E57-461A-B6CB-33F8C0DF9238}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFC4B4EC-4E57-461A-B6CB-33F8C0DF9238}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5C0DE79-312A-475C-B2F9-2FF97DDF4D6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5C0DE79-312A-475C-B2F9-2FF97DDF4D6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5C0DE79-312A-475C-B2F9-2FF97DDF4D6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5C0DE79-312A-475C-B2F9-2FF97DDF4D6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CF2DDC1-824D-47BD-B626-3016F7207EAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CF2DDC1-824D-47BD-B626-3016F7207EAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CF2DDC1-824D-47BD-B626-3016F7207EAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CF2DDC1-824D-47BD-B626-3016F7207EAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -179,5 +191,7 @@ Global
 		{BA294887-CBB1-4BAC-A9D6-009459AFE519} = {7388C03C-D1A4-432B-B6FA-364F8143D382}
 		{4D4C9967-94B4-4102-81C0-069245469B4E} = {7388C03C-D1A4-432B-B6FA-364F8143D382}
 		{CFC4B4EC-4E57-461A-B6CB-33F8C0DF9238} = {7388C03C-D1A4-432B-B6FA-364F8143D382}
+		{B5C0DE79-312A-475C-B2F9-2FF97DDF4D6D} = {7388C03C-D1A4-432B-B6FA-364F8143D382}
+		{8CF2DDC1-824D-47BD-B626-3016F7207EAE} = {7388C03C-D1A4-432B-B6FA-364F8143D382}
 	EndGlobalSection
 EndGlobal

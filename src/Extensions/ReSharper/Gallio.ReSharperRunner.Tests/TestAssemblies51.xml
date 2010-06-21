@@ -1,0 +1,407 @@
+﻿<?xml version="1.0"?>
+<!-- Assembly config for the platform. -->
+<!-- Even though it's not used by any product, it's spawned for Platform Tests. Make sure you have the Test config right for unit tests, and Visual Studio related configs for the platform Integration tests. -->
+<!-- Platform assembly names depend on the product that owns them. Use the ReSharper macro in place of the assembly name when authoring assembly entries. A pre-build task on the Shell project will substitute them with the actual name. -->
+<AllAssemblies xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Product="JetBrains.ReSharper" xmlns="urn:shemas-jetbrains-com:all-assemblies-xml">
+  <KnownConfigurations>
+    <!-- Editions. -->
+    <KnownConfiguration Name="Csharp" Description="C# Edition." />
+    <KnownConfiguration Name="Vbnet" Description="VB.NET Edition." />
+
+    <!-- NetFX versions. -->
+    <KnownConfiguration Name="Netfx20" Description="Can be shipped with requirements for .NET Framework 2.0 only." />
+    <KnownConfiguration Name="Netfx30" Description="Can be shipped with requirements for .NET Framework 3.0 only." />
+
+    <!-- Public/Internal Modes. -->
+    <KnownConfiguration Name="InternalMode" Description="Internal mode." />
+    <KnownConfiguration Name="PublicMode" Description="Public mode." />
+
+    <!-- Visual Studio versions. -->
+    <KnownConfiguration Name="VS0800" Description="Visual Studio 8 integration mode." />
+    <KnownConfiguration Name="VS0900" Description="Visual Studio 9 integration mode." />
+    <KnownConfiguration Name="VS1000" Description="Visual Studio 10 integration mode." />
+
+    <!-- Shipment. -->
+    <KnownConfiguration Name="Installer" Description="Eligible for installation." />
+
+    <!-- Tests. -->
+    <KnownConfiguration Name="TestShell" Description="Assemblies to be loaded in the Test Shell." />
+    <KnownConfiguration Name="TestsNunit" Description="Run with NUnit." />
+    <KnownConfiguration Name="TestsMstest" Description="Run with MSTest." />
+    <KnownConfiguration Name="TestsIntegration" Description="Integration Tests." />
+  </KnownConfigurations>
+  <ConfigurationAliases>
+    <!---->
+    <!-- Temporary aliases for defining other aliases. -->
+    <!---->
+    <!-- Just an alias for any VS version. -->
+    <ConfigurationAlias Name="_AnyVS" Configurations="VS0800 VS0900 VS1000 OR OR" />
+    <!-- Unit (non-integration) tests to be run with NUnit. Also load this DLL with TestShell. -->
+    <ConfigurationAlias Name="_UnitTests" Configurations="TestsNunit TestShell OR" />
+    <!-- Integration Tests. Do not load into the Test Shell. -->
+    <ConfigurationAlias Name="_InTests" Configurations="TestsNunit TestsIntegration AND" />
+    <!---->
+    <!---->
+    <!-- Aliases to be used on assemblies. -->
+    <!---->
+    <!-- Recommended. A common product assembly. Runs in VS and in tests. Shipped. -->
+    <ConfigurationAlias Name="Common" Configurations="PublicMode InternalMode OR _AnyVS AND Installer OR _UnitTests OR TestsIntegration OR" />
+    <!-- Mostly like Common, but does not run in Visual Studio unless the Internal mode is activated. Runs in tests. Shipped. -->
+    <ConfigurationAlias Name="Internal" Configurations="_AnyVS InternalMode AND Installer OR _UnitTests OR TestsIntegration OR" />
+    <!-- Runs in Visual Studio only. Does not run in tests. Shipped. -->
+    <ConfigurationAlias Name="VisualStudio" Configurations="PublicMode InternalMode OR _AnyVS AND Installer OR TestsIntegration OR" />
+    <!-- Runs in Visual Studio 8, 9 only. Does not run in tests. Shipped. -->
+    <ConfigurationAlias Name="VisualStudioWhidbey" Configurations="PublicMode InternalMode OR VS0800 VS0900 OR AND Installer OR TestsIntegration OR" />
+    <!-- Runs in Visual Studio 10 only. Does not run in tests. Shipped. -->
+    <ConfigurationAlias Name="VisualStudioDevTen" Configurations="PublicMode InternalMode OR VS1000 AND Installer OR TestsIntegration OR" />
+    <!-- Loaded in tests only. Not shipped. -->
+    <ConfigurationAlias Name="Tests" Configurations="_UnitTests" />
+    <!-- Netfx 3 assemblies. Special case: public in VS 10, internal in VS 8-9. Tests. Shipped. -->
+    <ConfigurationAlias Name="SpecialAvalon" Configurations="PublicMode InternalMode OR VS1000 AND InternalMode VS0800 VS0900 OR AND OR Installer OR _UnitTests OR TestsIntegration OR" />
+  </ConfigurationAliases>
+  <ProductEditions>
+    <ProductEdition Name="Full" DisplayName="Full" Description="The Full edition includes all the supported languages.">
+      <AssemblyConfigurationRef Name="Csharp" />
+      <AssemblyConfigurationRef Name="Vbnet" />
+    </ProductEdition>
+    <ProductEdition Name="Csharp" DisplayName="C#" Description="Supports C#, but does not support VB.NET.">
+      <AssemblyConfigurationRef Name="Csharp" />
+    </ProductEdition>
+    <ProductEdition Name="Vbnet" DisplayName="VB.NET" Description="Supports VB.NET, but does not support C#.">
+      <AssemblyConfigurationRef Name="Vbnet" />
+    </ProductEdition>
+  </ProductEditions>
+  <Assemblies>
+    <!-- Link to self -->
+    <Assembly Name="Gallio.ReSharperRunner50.Tests" Configurations="Tests" MsiComponentGuid="{3D96623F-9F4F-4FFD-B03C-84AB247FF9AC}" HasXmlSerializers="false"/>
+
+    <!-- JetBrains .NET Platform. -->
+    <!-- Note: the ReSharper macro gets replaced with the assembly name infix, as suitable by the current product, during the build. -->
+    <!-- A custom build step creates a resource with its Logical Name “JetBrains.Shell.resources.config.AllAssemblies.xml”.-->
+    <Assembly Name="JetBrains.Platform.ReSharper.Interop.WinApi" Configurations="Common" MsiComponentGuid="{FF37F08D-5311-4D5D-856F-454DDFB30F1E}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.Shell" Configurations="Common" MsiComponentGuid="{1DBABDA4-6449-43D5-962B-6493BE183C8D}" />
+    <!--
+    <Assembly Name="JetBrains.Platform.ReSharper.UI" Configurations="Common" MsiComponentGuid="{0178CCD4-5A17-4998-8023-C8778E1813ED}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.UI.Avalon" Configurations="Common Netfx30 AND" MsiComponentGuid="{5C6535A5-D23C-4979-A09B-A6D6DFF871A0}" />
+    -->
+    <Assembly Name="JetBrains.Platform.ReSharper.Util" Configurations="Common" MsiComponentGuid="{C3F8647A-A598-4852-980A-AEF86D47DDF1}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.Metadata" Configurations="Common" MsiComponentGuid="{B4D85CFB-16E2-43A5-85F4-9F807E624034}" />
+    <!--
+    <Assembly Name="JetBrains.Platform.ReSharper.ActionManagement" Configurations="Common" MsiComponentGuid="{1C54DEF1-756E-431E-878F-8A46B311EB5E}" />
+    -->
+    <Assembly Name="JetBrains.Platform.ReSharper.ProjectModel" Configurations="Common" MsiComponentGuid="{D1E8FF1C-3A03-4808-BF17-32DC525DA9C9}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.DocumentModel" Configurations="Common" MsiComponentGuid="{7CFCC25C-ADAB-470A-9E47-E568B09FE041}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.DocumentManager" Configurations="Common" MsiComponentGuid="{068ECD1B-A30E-42CA-923E-E850398A464D}" />
+    <!--
+    <Assembly Name="JetBrains.Platform.ReSharper.IDE" Configurations="Common" MsiComponentGuid="{5519E2CB-2BC9-472C-B5B3-A65EB53869AC}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.TextControl" Configurations="Common" MsiComponentGuid="{BED96E4F-8403-4C98-AA30-7077905F0DA8}" />
+    -->
+    <!--
+    <Assembly Name="JetBrains.Platform.ReSharper.VSIntegration" Configurations="VisualStudio" MsiComponentGuid="{6C14B66F-DE6E-4156-A365-C34BD86E70F8}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.VsIntegration.Whidbey" Configurations="VS0800 VS0900 OR" MsiComponentGuid="{4C775D4C-2A3C-4662-B120-11283C8A5F7C}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.VsIntegration.DevTen" Configurations="VS1000" MsiComponentGuid="{B5A85994-C790-4B0A-8434-7E3C523A69BE}" />
+    -->
+    <Assembly Name="JetBrains.Platform.ReSharper.ActivityTracking" Configurations="Common" MsiComponentGuid="{9ADCAA23-1140-4D15-B930-EB00F398CC53}" />
+    <!--
+    <Assembly Name="JetBrains.Platform.ReSharper.ProjectModelTests" Configurations="Tests" MsiComponentGuid="{DD74967C-9FFF-48BA-987D-D0209EA00CCB}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.TestUtil" Configurations="Tests" MsiComponentGuid="{89CC3CF2-4FFE-4ABC-AC53-71EB6B6AFD10}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.TestUI" Configurations="Tests" MsiComponentGuid="{BFF8736E-F0FA-4D05-A9F1-ADB745EE32A2}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.TestVsIntegration" Configurations="Tests" MsiComponentGuid="{D2522A16-AA14-439E-B363-5EB4BB43BCC6}" />
+    -->
+    <Assembly Name="JetBrains.Platform.ReSharper.AbstractTreeBuilder" Configurations="Common" MsiComponentGuid="{0A0A1C21-7E44-4855-8425-7E948E49A28C}" />
+    <!--
+    <Assembly Name="JetBrains.Platform.ReSharper.Satellite" Configurations="Common" MsiComponentGuid="{0383DF2D-836E-4403-8326-88730136CBFB}" />
+    -->
+
+    <!---->
+    <!-- Assemblies with special names. -->
+    <Assembly Name="JetBrains.Annotations" Configurations="Common" MsiComponentGuid="{69061016-B6D4-4260-AFF0-23F7A6F46981}" />
+    <Assembly Name="JetBrains.Platform.CommonServices" Configurations="Common" MsiComponentGuid="{5F7B4664-B8A9-4BE8-9B62-DB895808B334}" />
+
+    <!-- R#-specific. -->
+
+    <!-- PSI section. -->
+    <Assembly Name="JetBrains.ReSharper.Psi" Configurations="Common" MsiComponentGuid="{BACCDAC4-B43A-4D5D-8937-12840E9699C6}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.CSharp" Configurations="Common" MsiComponentGuid="{D33C58C7-C349-4EEA-82CF-A1D49D8AC33E}" />
+    <!--
+    <Assembly Name="JetBrains.ReSharper.Psi.VB" Configurations="Common" MsiComponentGuid="{F83A87CB-A00A-48BE-85CF-290155834009}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.VB.ConstantCalculatorLib" Configurations="Common" MsiComponentGuid="{DE1E795B-89DE-4BE1-BD2B-C72296894D32}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.Xml" Configurations="Common" MsiComponentGuid="{A8E54253-6049-443F-B72F-ECC73431D003}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.Xaml" Configurations="Common" MsiComponentGuid="{7523EE46-943F-4B66-9A81-E830B2DE8844}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.Xaml.CSharp" Configurations="Common" MsiComponentGuid="{A546FD48-8AC1-4D87-92AD-CE012C247925}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.Xaml.VB" Configurations="Common" MsiComponentGuid="{F2CE17F9-892D-453D-865F-186DBF59705F}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.WebConfig" Configurations="Common" MsiComponentGuid="{CB2A6A15-561E-4A33-825A-5686327EB745}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.BuildScripts" Configurations="Common" MsiComponentGuid="{80DFA14C-695B-458F-BB31-A3F04DA30371}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.BuildScripts.NAnt" Configurations="Common" MsiComponentGuid="{55C52ADA-409C-4922-A65B-6D50658BDEC8}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.BuildScripts.MSBuild" Configurations="Common" MsiComponentGuid="{95C212EE-C16D-4578-AD21-7BF425708FBF}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.Web" Configurations="Common" MsiComponentGuid="{E21EC203-A2F6-455A-9BEB-886CC30C5879}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.Asp" Configurations="Common" MsiComponentGuid="{6AF5256F-954F-4172-8B06-D46E3946BEAE}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.Asp.CSharp" Configurations="Common" MsiComponentGuid="{B4CA8A1C-34E6-44B4-B886-E5398F4F8E3C}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.Asp.VB" Configurations="Common" MsiComponentGuid="{1CB899C1-2A30-4186-A9F0-F8932106A2BD}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.Asxx" Configurations="Common" MsiComponentGuid="{A09484F8-E291-446D-8E0F-7C2AC1DA7682}" />
+    -->
+    <!-- PSI Services. -->
+    <Assembly Name="JetBrains.ReSharper.Psi.Services" Configurations="Common" MsiComponentGuid="{4AC4A2AC-8BD3-4099-8F5C-77AC29BE8168}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.Services.CSharp" Configurations="Common" MsiComponentGuid="{DAC4F35A-8089-4BE8-BC2F-D017DDA35FD9}" />
+    <!--
+    <Assembly Name="JetBrains.ReSharper.Psi.Services.VB" Configurations="Common" MsiComponentGuid="{BC803A3A-9F79-421B-B541-2D64E782499A}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.Services.Xml" Configurations="Common" MsiComponentGuid="{C4E28D23-B3F1-4C9B-A858-8FB3454D74A0}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.Services.Xaml" Configurations="Common" MsiComponentGuid="{9C0BC655-BF80-4AC8-B1F4-632985AB6A6F}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.Services.Asp" Configurations="Common" MsiComponentGuid="{8AC422D5-3D91-40F6-8E33-53E827A28653}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.Services.Asp.CSharp" Configurations="Common" MsiComponentGuid="{294EFEE2-AC93-484D-9778-26A203143B96}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.Services.Asp.VB" Configurations="Common" MsiComponentGuid="{F1499EAE-F546-4890-97A7-4C8CC0D69D6F}" />
+    -->
+
+    <!-- Feature Services. -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.Feature.Services" Configurations="Common" MsiComponentGuid="{9E1DB446-43C3-4FDB-9DFA-36124A6747BD}" />
+    <Assembly Name="JetBrains.ReSharper.Feature.Services.Asp" Configurations="Common" MsiComponentGuid="{BB6AA1BB-4D33-4B59-ACDE-1C5353F6C424}" />
+    <Assembly Name="JetBrains.ReSharper.Feature.Services.Asp.CSharp" Configurations="Common" MsiComponentGuid="{B8D84346-AAE6-49FE-BE25-31DF72AD1689}" />
+    <Assembly Name="JetBrains.ReSharper.Feature.Services.Asp.VB" Configurations="Common" MsiComponentGuid="{B7B31AD3-2666-44B2-9208-CD95E98AFF1C}" />
+    <Assembly Name="JetBrains.ReSharper.Feature.Services.Asxx" Configurations="Common" MsiComponentGuid="{CDD25C01-7536-4386-895F-4D4660DFE315}" />
+    <Assembly Name="JetBrains.ReSharper.Feature.Services.Asxx.CSharp" Configurations="Common" MsiComponentGuid="{0FFD22E6-9800-47CC-A3C7-5E758D90D76A}" />
+    <Assembly Name="JetBrains.ReSharper.Feature.Services.Web" Configurations="Common" MsiComponentGuid="{2EC4D00B-A7FD-47CE-8B56-7C547D4B94BD}" />
+    -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.Feature.Services.CSharp" Configurations="Common" MsiComponentGuid="{352DF8FA-25B5-4852-9606-1E98D41E52F3}" />
+    -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.Feature.Services.VB" Configurations="Common" MsiComponentGuid="{7379F493-F6CD-4125-82C9-13557557EDB3}" />
+    <Assembly Name="JetBrains.ReSharper.Feature.Services.Xml" Configurations="Common" MsiComponentGuid="{DAFA1A61-607B-4105-9039-4B745037EF44}" />
+    <Assembly Name="JetBrains.ReSharper.Feature.Services.Xaml" Configurations="Common" MsiComponentGuid="{952F6AEF-C912-4BBE-8249-9FAF00EA9528}" />
+    <Assembly Name="JetBrains.ReSharper.Feature.Services.WebConfig" Configurations="Common" MsiComponentGuid="{46AD01E5-BE95-40AF-842B-B57F04D5449C}" />
+    <Assembly Name="JetBrains.ReSharper.Feature.Services.BuildScripts" Configurations="Common" MsiComponentGuid="{CDB9DEBE-B074-4314-B71D-96892BC2FD19}" />
+    <Assembly Name="JetBrains.ReSharper.Feature.Services.ExternalSources" Configurations="Common" MsiComponentGuid="{A5EB6E87-691C-404A-B27F-9E40E5832D13}" />
+    -->
+
+    <!-- Features. -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.Features.Common" Configurations="Common" MsiComponentGuid="{BD86F4C7-4CF9-44F6-93E8-2ED4EC72D840}" />
+    <Assembly Name="JetBrains.ReSharper.Features.Intellisense" Configurations="Common" MsiComponentGuid="{C4CAED51-D738-4E30-87FB-030B681C9C9B}" />
+    <Assembly Name="JetBrains.ReSharper.Features.Browsing" Configurations="VisualStudio" MsiComponentGuid="{E67BAC24-0D3E-4405-8B22-964F05177DA3}" />
+-->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.Features.Analyses" Configurations="Common" MsiComponentGuid="{1485BA40-9F87-4261-94C9-15A3389CEAF1}" />
+-->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.Features.Finding" Configurations="Common" MsiComponentGuid="{BD213D7B-9395-4E04-A6BC-30DC54C6F86F}" />
+    <Assembly Name="JetBrains.ReSharper.Features.Altering" Configurations="Common" MsiComponentGuid="{67F7550E-8E5F-471A-A141-CAC66FE265E1}" />
+    <Assembly Name="JetBrains.ReSharper.Features.Environment" Configurations="Common" MsiComponentGuid="{E8C292D2-3DD6-4A23-84AE-26D49ADFD331}" />
+-->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.Features.Functionalize" Configurations="Common" MsiComponentGuid="{ECA0D905-58CB-499E-A7E1-F0DD124F3EA3}" />
+    <Assembly Name="JetBrains.ReSharper.Features.InplaceRefactorings" Configurations="Common" MsiComponentGuid="{B49C94F3-1E04-4860-9218-DCF0DFCF97D2}" />
+    <Assembly Name="JetBrains.ReSharper.Features.StructuralSearch" Configurations="Common" MsiComponentGuid="{AD258720-D015-43E3-83A9-B537FEA9C502}" />
+    <Assembly Name="JetBrains.ReSharper.Features.Internal" Configurations="Internal" MsiComponentGuid="{A27A0C29-EF9D-4BCD-9317-726981A655D8}" />
+    <Assembly Name="JetBrains.ReSharper.ExternalSources" Configurations="VisualStudio" MsiComponentGuid="{DDBB864C-C617-4613-BF40-F65C701173F6}" />
+    -->
+
+    <!-- Orangy. -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.TodoExplorer" Configurations="Common" MsiComponentGuid="{47F4EF59-FCC5-493F-BFA7-9F14A214CC43}" />
+    -->
+
+    <!-- Unit Testing Support -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.UnitTestFramework" Configurations="Common" MsiComponentGuid="{8EA95BF8-0FEF-4BC0-976A-56652A70B1F1}" />
+    <Assembly Name="JetBrains.ReSharper.UnitTestExplorer" Configurations="VisualStudio" MsiComponentGuid="{6934FD6C-580F-438C-AFD0-466377AFDC48}" />
+    <Assembly Name="JetBrains.ReSharper.UnitTestProvider.nUnit" Configurations="Common" MsiComponentGuid="{1B59AC82-9B92-48CD-B459-5EB04F20FBEF}" />
+    <Assembly Name="JetBrains.ReSharper.UnitTestProvider.MSTest" Configurations="Common" MsiComponentGuid="{AE6E9FEE-1BA5-466E-8F69-AEF84C3A6BFA}" />
+    <Assembly Name="JetBrains.ReSharper.TaskRunnerFramework" Configurations="Common" MsiComponentGuid="{32005CDB-EF63-4A92-A115-61AAF0943D0D}" />
+
+    <Assembly Name="JetBrains.ReSharper.UnitTestSupportTests" Configurations="Tests" MsiComponentGuid="{7463DFCB-7BF9-47F1-ABE7-BFC9A77C208E}" />
+    -->
+    
+    <!-- Daemon. -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.Daemon" Configurations="Common" MsiComponentGuid="{CA1939B6-2ECB-4AB4-893F-FD014C7A8CFE}" />
+    -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.Daemon.Specific" Configurations="Common" MsiComponentGuid="{76CC26F5-1D4F-4A07-9C8B-2246E123CCB8}" />
+    <Assembly Name="JetBrains.ReSharper.Daemon.Asp" Configurations="Common" MsiComponentGuid="{1DDFCB41-E02B-49EF-A77A-905FD571AADF}" />
+    <Assembly Name="JetBrains.ReSharper.Daemon.Asp.CSharp" Configurations="Common" MsiComponentGuid="{59BA4B3C-F412-4B10-B6C6-94A085019665}" />
+    <Assembly Name="JetBrains.ReSharper.Daemon.Asp.VB" Configurations="Common" MsiComponentGuid="{3D0BFD96-1C31-45D6-B876-FCBA7149FD52}" />
+    -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.Daemon.CSharp" Configurations="Common" MsiComponentGuid="{81507274-F342-401F-8333-9AA37802E459}" />
+    -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.Daemon.VB" Configurations="Common" MsiComponentGuid="{7F924ECC-E782-4004-A341-6192FCE0E617}" />
+    <Assembly Name="JetBrains.ReSharper.Daemon.Xml" Configurations="Common" MsiComponentGuid="{97371B86-C8E5-4332-BBBB-0D49971523E5}" />
+    <Assembly Name="JetBrains.ReSharper.Daemon.Xaml" Configurations="Common" MsiComponentGuid="{5025B9CA-2032-47DA-99D5-A5F47ACF0BB1}" />
+    <Assembly Name="JetBrains.ReSharper.Daemon.WebConfig" Configurations="Common" MsiComponentGuid="{D78CE325-3DDC-49B4-863C-99D0B5485EF6}" />
+    <Assembly Name="JetBrains.ReSharper.Daemon.BuildScripts" Configurations="Common" MsiComponentGuid="{805F39E0-F969-4A73-9D32-58D7D23C06E3}" />
+    -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.SolutionAnalysis" Configurations="Common" MsiComponentGuid="{D8F9E219-B7CF-4186-B3C9-153DFA8FDDA3}" />
+    -->
+
+    <!-- Intentions. -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.Intentions" Configurations="Common" MsiComponentGuid="{B7C82E82-F2D3-4694-815E-CBEEED2FB265}" />
+    -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.Intentions.Asp" Configurations="Common" MsiComponentGuid="{C11F2844-C9B6-4740-A23F-42A7F9C49E57}" />
+    <Assembly Name="JetBrains.ReSharper.Intentions.Asp.CSharp" Configurations="Common" MsiComponentGuid="{27048EC6-8F21-46FA-9EAE-801EBCC23110}" />
+    <Assembly Name="JetBrains.ReSharper.Intentions.Asp.VB" Configurations="Common" MsiComponentGuid="{6C0BB78B-9978-478D-A740-6A7D6A806D61}" />
+    -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.Intentions.CSharp" Configurations="Common" MsiComponentGuid="{28D23EC4-9AC1-4F6B-B5A1-68D7C66E6B27}" />
+    -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.Intentions.VB" Configurations="Common" MsiComponentGuid="{B22CCD7A-64DB-4318-988C-B2C15D2EFD70}" />
+    <Assembly Name="JetBrains.ReSharper.Intentions.Xml" Configurations="Common" MsiComponentGuid="{760E5652-F236-4B2A-9AD9-D78A22044643}" />
+    <Assembly Name="JetBrains.ReSharper.Intentions.Xaml" Configurations="Common" MsiComponentGuid="{DFB850E3-8F5C-4958-8328-34384C3BDCA9}" />
+    <Assembly Name="JetBrains.ReSharper.Intentions.WebConfig" Configurations="Common" MsiComponentGuid="{1F8B0EF8-0843-48A2-B4DF-CD3A88C194E8}" />
+    <Assembly Name="JetBrains.ReSharper.Intentions.BuildScripts" Configurations="Common" MsiComponentGuid="{CEF0B63A-8C14-47B6-A8DD-A3A5CB6CE0C2}" />
+    -->
+
+    <!-- Refactorings. -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.NewRefactorings" Configurations="Common" MsiComponentGuid="{14DD0AE6-FC9B-4148-A5DA-B4E2ABA8B73B}" />
+    <Assembly Name="JetBrains.ReSharper.Refactorings.Asp" Configurations="Common" MsiComponentGuid="{06568721-1E63-4B1A-8561-239A9E5B2121}" />
+    <Assembly Name="JetBrains.ReSharper.Refactorings.CSharp" Configurations="Common" MsiComponentGuid="{03DA90D2-5CE0-4380-8C34-325D4A0BA47E}" />
+    <Assembly Name="JetBrains.ReSharper.Refactorings.Xaml" Configurations="Common" MsiComponentGuid="{5D9A4339-EBC0-4E84-8C4B-3804EA44914C}" />
+    <Assembly Name="JetBrains.ReSharper.Refactorings.VB" Configurations="Common" MsiComponentGuid="{D0567613-6D95-4419-AD05-724AE3B76963}" />
+    <Assembly Name="JetBrains.ReSharper.Refactorings.WebConfig" Configurations="Common" MsiComponentGuid="{AC291C55-C2C8-45AF-A0EF-A98BA35D8790}" />
+    <Assembly Name="JetBrains.ReSharper.Refactorings.BuildScripts" Configurations="Common" MsiComponentGuid="{8876AE9E-6CBF-4E79-9B09-812BC27F4462}" />
+    -->
+    
+    <!-- LiveTemplates. -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.LiveTemplates" Configurations="Common" MsiComponentGuid="{565EC92E-3415-4EFE-9774-FF3F2A2753DA}" />
+    <Assembly Name="JetBrains.ReSharper.LiveTemplates.Asp" Configurations="Common" MsiComponentGuid="{408FB3FF-9D65-4DC3-BBD4-D60BC5A88DF9}" />
+    <Assembly Name="JetBrains.ReSharper.LiveTemplates.CSharp" Configurations="Common" MsiComponentGuid="{344EFD52-DAC0-45EA-9561-635F1CB0BD45}" />
+    <Assembly Name="JetBrains.ReSharper.LiveTemplates.VB" Configurations="Common" MsiComponentGuid="{D0E0CA60-56FA-4E34-A56E-129143A448BA}" />
+    <Assembly Name="JetBrains.ReSharper.LiveTemplates.Xml" Configurations="Common" MsiComponentGuid="{420B7A7B-A4AF-489E-B7A6-97536B10AF04}" />
+    -->
+    
+    <!-- Unsorted. -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.PsiTests" Configurations="Tests" MsiComponentGuid="{5CC542EA-7085-46B9-8DFC-DACE4D3353D7}" />
+    -->
+    <Assembly Name="JetBrains.ReSharper.Resources" Configurations="Common" MsiComponentGuid="{226EF1C6-A740-429F-8FE3-85F81310577F}" />
+    <Assembly Name="JetBrains.ReSharper.ExternalProcessStorage" Configurations="Common" MsiComponentGuid="{D2CCA6F4-FD83-4B61-8096-3025EA687201}" />
+    <!--
+    <Assembly Name="JetBrains.ReSharper.VS" Configurations="VisualStudio" MsiComponentGuid="{D6F68554-510A-435E-ABE2-6D4E6AD619FE}" ComSelfRegister="false" />
+    <Assembly Name="JetBrains.ReSharper.VSI" Configurations="VisualStudio PublicMode NOT AND" MsiComponentGuid="{90C8AAEB-7749-4F94-AB71-CFDC347430D7}" />
+    -->
+
+    <!-- Unsorted. -->
+    <Assembly Name="JetBrains.ReSharper.TestFramework" Configurations="Common" MsiComponentGuid="{AD52ECC8-4042-4FAE-881B-A50554E08725}" />
+    <Assembly Name="JetBrains.ReSharper.SolutionBuilder" Configurations="Common" MsiComponentGuid="{E9ACE02C-A6BF-4ACC-9A1C-1A17A32003B3}" />
+    <!--
+    <Assembly Name="JetBrains.ReSharper.SolutionBuilder.VS" Configurations="FALSE" MsiComponentGuid="{2E4B8772-15ED-48F7-A584-8AE3F209EDD2}" />
+    <Assembly Name="JetBrains.ReSharper.TextControlTests" Configurations="Tests" MsiComponentGuid="{0102D802-1ED9-4645-B152-703D70D453D1}" />
+    <Assembly Name="JetBrains.ReSharper.AspTests" Configurations="Tests" MsiComponentGuid="{F84335A3-24D9-47FE-8519-FC8573EE179D}" />
+    <Assembly Name="JetBrains.ReSharper.SolutionAnalysisTests" Configurations="Tests" MsiComponentGuid="{8257EAC4-662A-401E-A213-1C5423EB2839}" />
+    <Assembly Name="JetBrains.ReSharper.BuildScriptTests" Configurations="Tests" MsiComponentGuid="{84A55E78-CFAD-4C2F-92AE-263EE4EAFB23}" />
+    <Assembly Name="JetBrains.ReSharper.StructuralSearchTests" Configurations="Tests" MsiComponentGuid="{ADF6FAAB-F078-4D2F-A420-4E0A792350C7}" />
+    <Assembly Name="JetBrains.ReSharper.ExternalSources.Tests" Configurations="Tests" MsiComponentGuid="{CD0D336F-1320-420A-9D48-5643E525B578}" />
+    -->
+
+    <!-- Unsorted. -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.DependencyChecker" Configurations="Internal" MsiComponentGuid="{32B17CB3-3F97-430E-8B3D-E225CC53CE0E}" />
+    -->
+    
+    <!-- i18n. -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.Psi.Resx" Configurations="Common" MsiComponentGuid="{A1C48241-23DA-4795-A8C8-EFFE6CD89CA3}" />
+    <Assembly Name="JetBrains.ReSharper.Daemon.Resx" Configurations="Common" MsiComponentGuid="{67EC80CF-4178-41CB-8001-096F6902F636}" />
+    <Assembly Name="JetBrains.ReSharper.I18n.Services" Configurations="Common" MsiComponentGuid="{ED3F354E-0CE8-42D0-AA29-5B3F95D80298}" />
+    <Assembly Name="JetBrains.ReSharper.I18n.Services.VB" Configurations="Common" MsiComponentGuid="{510C613B-D1DA-4F57-9F82-EDF146213F46}" />
+    <Assembly Name="JetBrains.ReSharper.I18n.Services.CSharp" Configurations="Common" MsiComponentGuid="{44122656-C3D5-4547-A2FC-49074897BB70}" />
+    <Assembly Name="JetBrains.ReSharper.I18n.Services.Asp" Configurations="Common" MsiComponentGuid="{B28544D1-87FF-4311-A9F8-D04F192C7B83}" />
+    <Assembly Name="JetBrains.ReSharper.I18n.Services.Asp.VB" Configurations="Common" MsiComponentGuid="{72A2B154-6243-4819-B150-9757B5AE4F22}" />
+    <Assembly Name="JetBrains.ReSharper.I18n.Services.Asp.CSharp" Configurations="Common" MsiComponentGuid="{166BA9AC-C6D9-43C2-BF4F-EB0A186D6A22}" />
+    <Assembly Name="JetBrains.ReSharper.Feature.Services.Resx" Configurations="Common" MsiComponentGuid="{FA000401-FF86-43C2-8EF8-387EFDE282F9}" />
+    <Assembly Name="JetBrains.ReSharper.LiveTemplates.Resx" Configurations="Common" MsiComponentGuid="{922993EC-FA9F-490A-9322-C645EB9C57B3}" />
+    <Assembly Name="JetBrains.ReSharper.I18n.Tests" Configurations="Tests" MsiComponentGuid="{C23366D5-A69F-4C5F-820E-F41C4ED135AD}" />
+    -->
+    
+    <!-- Executables. -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.TaskRunner" Configurations="Common" MsiComponentGuid="{32D64BE5-D953-4E41-B6C9-CF34FFC0AB0A}" HasAppConfig="false" />
+    -->
+    <!-- Note: JetBrains.ReSharper.TaskRunner is marked as having no AppConfig because it will be patched with BindingRedirections and installed as an installation-data-file, see InstallBindingRedirectionsConfigFileAttribute assembly attribute. -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.ExternalProcessStorage.Process" Configurations="Common" MsiComponentGuid="{DF321D9E-1E02-4472-952A-6650088B65BD}" />
+    -->
+
+    <!-- Tests to be run with NUnit but not to included in TestShell. -->
+    <!-- IntegrationTestsFramework is a R# plugin that drives IntegrationTests. Has sample intests inside. Do not ever load normally.-->
+    <!--
+    <Assembly Name="JetBrains.IntegrationTestsFramework" Configurations="_InTests" MsiComponentGuid="{FA8D87C4-8A8D-4BB2-AF39-C2F08AC7470A}" />
+    -->
+    <!-- Bulk of the integration tests. -->
+    <!--
+    <Assembly Name="JetBrains.ReSharper.VSIntegrationTests" Configurations="_InTests" MsiComponentGuid="{FC0E18F7-5D0B-4C58-B18C-D43B4557A9B3}" />
+    -->
+
+    <!-- Supports writing tests for the plugins. -->
+    <!--
+                <Assembly Name="JetBrains.ReSharper.TestFramework" Configurations="Common" MsiComponentGuid="{E611FF04-C4B9-4831-A6EA-6637E13971C5}" />
+                        -->
+
+  </Assemblies>
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  <!-- Refs. -->
+  <PlatformReferences>
+    <!-- Platform Core. -->
+    <Reference Name="CookComputing.XmlRpc" MsiComponentGuid="{5103F594-ADFA-4BD1-8048-01295922833C}" Configurations="Common" />
+    <Reference Name="DevExpress.Data.v7.1" MsiComponentGuid="{F5C98B0D-0CE6-4E20-8D69-686A9D55A63B}" HasXmlDoc="true" Configurations="Common" />
+    <Reference Name="DevExpress.Utils.v7.1" MsiComponentGuid="{9F949A89-1A12-4D0E-B584-55FA06D91756}" HasXmlDoc="true" Configurations="Common" />
+    <Reference Name="DevExpress.XtraEditors.v7.1" MsiComponentGuid="{F10A7552-8467-49EE-B057-A767F8464C0B}" HasXmlDoc="true" Configurations="Common" />
+    <Reference Name="DevExpress.XtraTreeList.v7.1" MsiComponentGuid="{0B6B7B2C-2691-4B34-B334-4062DCA82051}" HasXmlDoc="true" Configurations="Common" />
+    <Reference Name="nunit.framework" MsiComponentGuid="{6EBF5782-D621-47D1-9414-F17D14149E56}" Configurations="Common" />
+    <!-- Platform Devenv. -->
+    <Reference Name="JetBrains.ReSharper.VSIP.Helper" MsiComponentGuid="{6F463D49-8AF6-4C15-BE8D-3B107A93FEB6}" Configurations="Common" />
+    <Reference Name="VsWebSite.Interop" MsiComponentGuid="{6CC94CF3-1333-4C37-8B7B-4EA8B76BDB1B}" Configurations="Common" />
+    <!-- Note: Microsoft.VisualStudio.Shell.Interop is of a private version, it's been replaced with one from the hotfix, so we should take it along with the installation. -->
+    <Reference Name="Microsoft.VisualStudio.Shell.Interop" MsiComponentGuid="{4766CB27-A079-4F34-9031-41D0F86A51EE}" Configurations="Common" />
+  </PlatformReferences>
+  <ProductReferences/>
+  <GacReferences>
+    <!-- Production references: system. -->
+    <Gac Name="mscorlib" Configurations="Common" />
+    <Gac Name="System" Configurations="Common" />
+    <Gac Name="System.Data" Configurations="Common" />
+    <Gac Name="System.Design" Configurations="Common" />
+    <Gac Name="System.Drawing" Configurations="Common" />
+    <Gac Name="System.Web" Configurations="Common" />
+    <Gac Name="System.Windows.Forms" Configurations="Common" />
+    <Gac Name="System.Xml" Configurations="Common" />
+    <Gac Name="Microsoft.Build.Framework" Configurations="Common" />
+    <Gac Name="Microsoft.Build.Utilities" Configurations="Common" />
+    <Gac Name="stdole" Configurations="Common" />
+    <!-- Production references: installed with DevEnv. -->
+    <Gac Name="EnvDTE" Configurations="Common" />
+    <Gac Name="EnvDTE80" Configurations="Common" />
+    <Gac Name="Extensibility" Configurations="Common" />
+    <Gac Name="VSLangProj" Configurations="Common" />
+    <Gac Name="VSLangProj80" Configurations="Common" />
+    <Gac Name="Microsoft.VisualStudio" Configurations="Common" />
+    <Gac Name="Microsoft.VisualStudio.CommandBars" Configurations="Common" />
+    <Gac Name="Microsoft.VisualStudio.OLE.Interop" Configurations="Common" />
+    <Gac Name="Microsoft.VisualStudio.Shell" Configurations="Common" />
+    <!--		 Note: this DLL has been replaced with a specific newer version from a hotfix.
+		<Gac Name="Microsoft.VisualStudio.Shell.Interop" Configurations="Common" />-->
+    <Gac Name="Microsoft.VisualStudio.Shell.Interop.8.0" Configurations="Common" />
+    <!--		Is not actually used.
+		<Gac Name="Microsoft.VisualStudio.Shell.Interop.9.0" Configurations="ReSharper_AddIn_Internal" />-->
+    <Gac Name="Microsoft.VisualStudio.TextManager.Interop" Configurations="Common" />
+    <Gac Name="Microsoft.VisualStudio.TextManager.Interop.8.0" Configurations="Common" />
+    <Gac Name="Microsoft.VisualStudio.VSHelp80" Configurations="Common" />
+    <!-- Internal-only references. -->
+    <!-- Should not be included into the default Netfx20 shipment configurations. -->
+    <Gac Name="PresentationCore" Configurations="Netfx30 Tests OR" />
+    <Gac Name="PresentationFramework" Configurations="Netfx30 Tests OR" />
+    <Gac Name="WindowsBase" Configurations="Netfx30 Tests OR" />
+    <Gac Name="WindowsFormsIntegration" Configurations="Netfx30 Tests OR" />
+    <Gac Name="System.Speech" Configurations="Netfx30 Tests OR" />
+  </GacReferences>
+</AllAssemblies>
