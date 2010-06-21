@@ -574,7 +574,7 @@ namespace Gallio.Runner
 
             // Generate reports even if the test run is canceled, unless this step
             // also gets canceled.
-            if (result.Report.TestPackageRun != null)
+            if (result.Report.TestPackageRun != null || DoNotRun)
                 GenerateReports(result, reportManager, consolidatedTestProject, ref wasCanceled);
 
             // Done.
