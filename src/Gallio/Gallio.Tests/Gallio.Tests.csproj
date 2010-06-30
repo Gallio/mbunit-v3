@@ -265,6 +265,7 @@
     <Compile Include="Runtime\Conversions\BaseConverterTest.cs" />
     <Compile Include="Runtime\Conversions\ConversionCostTest.cs" />
     <Compile Include="Runtime\Conversions\ConvertibleToConvertibleConversionRuleTest.cs" />
+    <Compile Include="Runtime\Conversions\StringToEnumConversionRuleTest.cs" />
     <Compile Include="Runtime\Conversions\CustomConvertersTest.cs" />
     <Compile Include="Runtime\Conversions\NullConverterTest.cs" />
     <Compile Include="Runtime\Conversions\ObjectToStringConversionRuleTest.cs" />

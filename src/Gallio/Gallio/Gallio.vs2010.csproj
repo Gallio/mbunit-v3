@@ -448,6 +448,7 @@
     <Compile Include="Runner\Reports\ReportContainerFactory.cs" />
     <Compile Include="Runtime\Conversions\Conversion.cs" />
     <Compile Include="Runtime\Conversions\ConversionKey.cs" />
+    <Compile Include="Runtime\Conversions\StringToEnumConversionRule.cs" />
     <Compile Include="Runtime\Conversions\CustomConversionRule.cs" />
     <Compile Include="Runtime\Conversions\CustomConverters.cs" />
     <Compile Include="Runtime\Extensibility\IExtensionPoints.cs" />
