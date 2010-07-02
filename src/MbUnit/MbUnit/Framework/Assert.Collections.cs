@@ -14,12 +14,14 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using Gallio.Common;
+using Gallio.Common.Collections;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
-using System.Collections;
 
 namespace MbUnit.Framework
 {
@@ -874,6 +876,144 @@ namespace MbUnit.Framework
                     .SetMessage(messageFormat, messageArgs)
                     .ToAssertionFailure();
             });
+        }
+
+        #endregion
+
+        #region Count
+
+        /// <summary>
+        /// Verifies that the specified sequence, collection, or array contains the expected number of elements.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The assertion counts the elements according to the underlying type of the sequence.
+        /// <list type="bullet">
+        /// <item>Uses <see cref="Array.Length"/> if the sequence is an array.</item>
+        /// <item>Uses <see cref="ICollection.Count"/> if the sequence is a collection such as <see cref="List{T}"/> or <see cref="Dictionary{K,V}"/>.</item>
+        /// <item>Enumerates and counts the elements if the sequence is a simple <see cref="IEnumerable"/>.</item>
+        /// </list>
+        /// </para>
+        /// </remarks>
+        /// <param name="expectedCount">The expected number of elements.</param>
+        /// <param name="values">The enumeration of elements to count.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="expectedCount"/> is negative.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="values"/> is null.</exception>
+        public static void Count(int expectedCount, IEnumerable values)
+        {
+            Count(expectedCount, values, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that the specified sequence, collection, or array contains the expected number of elements.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The assertion counts the elements according to the underlying type of the sequence.
+        /// <list type="bullet">
+        /// <item>Uses <see cref="Array.Length"/> if the sequence is an array.</item>
+        /// <item>Uses <see cref="ICollection.Count"/> if the sequence is a collection such as <see cref="List{T}"/> or <see cref="Dictionary{K,V}"/>.</item>
+        /// <item>Enumerates and counts the elements if the sequence is a simple <see cref="IEnumerable"/>.</item>
+        /// </list>
+        /// </para>
+        /// </remarks>
+        /// <param name="expectedCount">The expected number of elements.</param>
+        /// <param name="values">The enumeration of elements to count.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="expectedCount"/> is negative.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="values"/> is null.</exception>
+        public static void Count(int expectedCount, IEnumerable values, string messageFormat, params object[] messageArgs)
+        {
+            if (expectedCount < 0)
+                throw new ArgumentOutOfRangeException("expectedCount", "The expected count value must be greater than or equal to 0.");
+            if (values == null)
+                throw new ArgumentNullException("values");
+
+            AssertionHelper.Verify(() =>
+            {
+                var methods = new CountImpl[]
+                {
+                    CountInArray,
+                    CountInCollection,
+                    CountInEnumerable
+                };
+
+                foreach (var method in methods)
+                {
+                    AssertionFailure assertionFailure;
+
+                    if (method(out assertionFailure, expectedCount, values, messageFormat, messageArgs))
+                        return assertionFailure;
+                }
+
+                throw new InvalidOperationException();
+            });
+        }
+
+        private delegate bool CountImpl(out AssertionFailure assertionFailure, int expectedCount, IEnumerable values, string messageFormat, params object[] messageArgs);
+
+        private static bool CountInCollection(out AssertionFailure assertionFailure, int expectedCount, IEnumerable values, string messageFormat, params object[] messageArgs)
+        {
+            assertionFailure = null;
+            var collection = values as ICollection;
+
+            if (collection == null)
+                return false;
+
+            if (collection.Count != expectedCount)
+            {
+                assertionFailure = new AssertionFailureBuilder("Expected the collection to contain a certain number of elements.")
+                    .AddRawExpectedValue(expectedCount)
+                    .AddRawLabeledValue("Actual Value (Count)", collection.Count)
+                    .SetMessage(messageFormat, messageArgs)
+                    .ToAssertionFailure();
+            }
+
+            return true;
+        }
+
+        private static bool CountInArray(out AssertionFailure assertionFailure, int expectedCount, IEnumerable values, string messageFormat, params object[] messageArgs)
+        {
+            assertionFailure = null;
+            var array = values as Array;
+
+            if (array == null)
+                return false;
+
+            if (array.Length != expectedCount)
+            {
+                assertionFailure = new AssertionFailureBuilder("Expected the array to contain a certain number of elements.")
+                    .AddRawExpectedValue(expectedCount)
+                    .AddRawLabeledValue("Actual Value (Length)", array.Length)
+                    .SetMessage(messageFormat, messageArgs)
+                    .ToAssertionFailure();
+            }
+
+            return true;
+        }
+
+        private static bool CountInEnumerable(out AssertionFailure assertionFailure, int expectedCount, IEnumerable values, string messageFormat, params object[] messageArgs)
+        {
+            assertionFailure = null;
+            int count = 0;
+            var enumerator = values.GetEnumerator();
+
+            while (enumerator.MoveNext())
+                count++;
+
+            if (count != expectedCount)
+            {
+                assertionFailure = new AssertionFailureBuilder("Expected the sequence to contain a certain number of elements.")
+                    .AddRawExpectedValue(expectedCount)
+                    .AddRawActualValue(count)
+                    .SetMessage(messageFormat, messageArgs)
+                    .ToAssertionFailure();
+            }
+
+            return true;
         }
 
         #endregion

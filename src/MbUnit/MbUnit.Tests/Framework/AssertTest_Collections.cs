@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -397,6 +398,110 @@ namespace MbUnit.Tests.Framework
             AssertionFailure[] failures = Capture(() => Assert.Exists(data, x => x == "D'Artagnan"));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected at least one element of the sequence to meet the specified condition, but none passed.", failures[0].Description);
+        }
+
+        #endregion
+
+        #region Count
+
+        private static IEnumerable GetEnumeration()
+        {
+            yield return "Tintin in America";
+            yield return "Cigars of the Pharaoh";
+            yield return "Explorers on the Moon";
+            yield return "The Castafiore Emerald";
+        }
+
+        private static ICollection GetNonGenericCollection()
+        {
+            var collection = new ArrayList();
+
+            foreach (var o in GetEnumeration())
+                collection.Add(o);
+
+            return collection;
+        }
+
+        private static ICollection<string> GetGenericCollection()
+        {
+            return new List<string>(GetEnumeration().Cast<string>());
+        }
+
+        private static string[] GetArray()
+        {
+            return GetEnumeration().Cast<string>().ToArray();
+        }
+
+        [Test]
+        public void Count_in_enumerable_pass()
+        {
+            Assert.Count(4, GetEnumeration());
+        }
+
+        [Test]
+        public void Count_in_non_generic_collection_pass()
+        {
+            Assert.Count(4, GetNonGenericCollection());
+        }
+
+        [Test]
+        public void Count_in_generic_collection_pass()
+        {
+            Assert.Count(4, GetGenericCollection());
+        }
+
+        [Test]
+        public void Count_in_array_pass()
+        {
+            Assert.Count(4,  GetArray());
+        }
+
+        [Test]
+        public void Count_in_enumerable_fail()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.Count(666, GetEnumeration()));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected the sequence to contain a certain number of elements.", failures[0].Description);
+            Assert.AreEqual("Expected Value", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("666", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("Actual Value", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("4", failures[0].LabeledValues[1].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void Count_in_non_generic_collection_fail()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.Count(666, GetNonGenericCollection()));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected the collection to contain a certain number of elements.", failures[0].Description);
+            Assert.AreEqual("Expected Value", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("666", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("Actual Value (Count)", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("4", failures[0].LabeledValues[1].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void Count_in_generic_collection_fail()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.Count(666, GetGenericCollection()));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected the collection to contain a certain number of elements.", failures[0].Description);
+            Assert.AreEqual("Expected Value", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("666", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("Actual Value (Count)", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("4", failures[0].LabeledValues[1].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void Count_in_array_fail()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.Count(666, GetArray()));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected the array to contain a certain number of elements.", failures[0].Description);
+            Assert.AreEqual("Expected Value", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("666", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("Actual Value (Length)", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("4", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
 
         #endregion
