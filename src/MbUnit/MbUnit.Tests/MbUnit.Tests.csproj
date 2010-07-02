@@ -204,6 +204,7 @@
     <EmbeddedResource Include="Framework\SolarSystemSchema.xsd" />
     <EmbeddedResource Include="Framework\SolarSystemWithErrors.xml" />
     <EmbeddedResource Include="Framework\SampleBinaryResource.bin" />
+    <EmbeddedResource Include="Framework\CsvDataWithEmptyCellsTest.csv" />
     <None Include="MbUnit.Tests.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

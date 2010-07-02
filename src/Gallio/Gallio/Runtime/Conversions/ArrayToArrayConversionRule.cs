@@ -34,7 +34,7 @@ namespace Gallio.Runtime.Conversions
         }
 
         /// <inheritdoc />
-        public object Convert(object sourceValue, Type targetType, IConverter elementConverter)
+        public object Convert(object sourceValue, Type targetType, IConverter elementConverter, bool nullable)
         {
             var sourceArray = (Array)sourceValue;
             int length = sourceArray.Length;

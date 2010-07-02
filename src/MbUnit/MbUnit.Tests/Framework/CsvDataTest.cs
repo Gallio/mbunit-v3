@@ -36,6 +36,8 @@ namespace MbUnit.Tests.Framework
         [Row("ExplicitlyScopedResourceWithHeader", new[] { "Apples: 1.00", "Bananas: 1.50", "Cookies: 2.00" })]
         [Row("AbsolutelyScopedResourceWithHeader", new[] { "Apples: 1.00", "Bananas: 1.50", "Cookies: 2.00" })]
         [Row("FileWithHeader", new[] { "Apples: 1.00", "Bananas: 1.50", "Cookies: 2.00" })]
+        [Row("FileWithEmptyCellsOnStringTypes", new[] { "Sirius: <1.42> <9>", "Betelgeuse: <> <640>", "Rigel: <-6.7> <>" })]
+        [Row("FileWithEmptyCellsOnNullableTypes", new[] { "Sirius: <1.42> <9>", "Betelgeuse: <null> <640>", "Rigel: <-6.7> <null>" })]
         public void VerifySampleOutput(string sampleName, string[] output)
         {
             TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(CsvDataSample).GetMethod(sampleName)));
@@ -106,6 +108,22 @@ namespace MbUnit.Tests.Framework
             public void FileWithHeader(decimal price, string item)
             {
                 TestLog.WriteLine("{0}: {1}", item, price);
+            }
+
+            [Test]
+            [CsvData(FilePath = @"..\Framework\CsvDataWithEmptyCellsTest.csv", HasHeader = true)]
+            public void FileWithEmptyCellsOnStringTypes(string star, string magnitude, string distance)
+            {
+                TestLog.WriteLine("{0}: <{1}> <{2}>", star, magnitude ?? "null", distance ?? "null");
+            }
+
+            [Test]
+            [CsvData(FilePath = @"..\Framework\CsvDataWithEmptyCellsTest.csv", HasHeader = true)]
+            public void FileWithEmptyCellsOnNullableTypes(string star, double? magnitude, int? distance)
+            {
+                TestLog.WriteLine("{0}: <{1}> <{2}>", star, 
+                    magnitude.HasValue ? magnitude.ToString() : "null",
+                    distance.HasValue ? distance.ToString() : "null");
             }
         }
     }

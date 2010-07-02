@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Common.Reflection;
 using Gallio.Runtime.Extensibility;
 
 namespace Gallio.Runtime.Conversions
@@ -72,6 +73,7 @@ namespace Gallio.Runtime.Conversions
             if (sourceValue == null)
                 return ConvertNull(targetType);
 
+            bool nullable = ReflectionUtils.IsNullable(targetType);
             targetType = GetUnderlyingTypeOfNullableIfPresent(targetType);
             if (targetType.IsInstanceOfType(sourceValue))
                 return sourceValue;
@@ -79,15 +81,14 @@ namespace Gallio.Runtime.Conversions
             Type sourceType = sourceValue.GetType();
             ConversionInfo conversion = GetConversion(sourceType, targetType);
             if (conversion.Cost.IsInvalid)
-                throw new InvalidOperationException(String.Format("There is no registered conversion rule to convert a value of type '{0}' to type '{1}'.",
-                    sourceType, targetType));
+                throw new InvalidOperationException(String.Format("There is no registered conversion rule to convert a value of type '{0}' to type '{1}'.", sourceType, targetType));
 
-            return conversion.Rule.Convert(sourceValue, targetType, this);
+            return conversion.Rule.Convert(sourceValue, targetType, this, nullable);
         }
 
         private static object ConvertNull(Type targetType)
         {
-            if (targetType.IsValueType && Nullable.GetUnderlyingType(targetType) == null)
+            if (!ReflectionUtils.IsNullable(targetType))
                 throw new InvalidOperationException(String.Format("Cannot convert a null value to the non-nullable value type '{0}'.", targetType));
 
             return null;

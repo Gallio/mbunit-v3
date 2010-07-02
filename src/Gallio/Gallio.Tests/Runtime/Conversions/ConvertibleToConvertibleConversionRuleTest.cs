@@ -25,9 +25,7 @@ namespace Gallio.Tests.Runtime.Conversions
         [Test]
         public void TransitiveConversion()
         {
-            int sourceValue = 42;
-            string targetValue = (string)Converter.Convert(sourceValue, typeof(string));
-
+            string targetValue = (string)Converter.Convert(42, typeof(string));
             Assert.AreEqual("42", targetValue);
         }
 
@@ -36,6 +34,17 @@ namespace Gallio.Tests.Runtime.Conversions
         {
             Assert.IsFalse(Converter.CanConvert(typeof(int[]), typeof(int)));
             Assert.IsFalse(Converter.CanConvert(typeof(int), typeof(int[])));
+        }
+
+        [Test]
+        [Row("42", 42)]
+        [Row("", null)]
+        [Row(null, null)]
+        public void ConvertNullToNullableValue(string sourceValue, int? expectedValue)
+        {
+            Assert.IsTrue(Converter.CanConvert(typeof(string), typeof(int?)));
+            var actualValue = (int?)Converter.Convert(sourceValue, typeof(int?));
+            Assert.AreEqual(expectedValue, actualValue);
         }
     }
 }

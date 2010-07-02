@@ -75,8 +75,8 @@ namespace Gallio.Tests.Runtime.Conversions
             var converter = new RuleBasedConverter(new DefaultExtensionPoints(), new[] { mockRule0, mockRule1 });
             mockRule0.Expect(x => x.GetConversionCost(typeof(int), typeof(string), converter)).Return(ConversionCost.Invalid);
             mockRule1.Expect(x => x.GetConversionCost(typeof(int), typeof(string), converter)).Return(ConversionCost.Default);
-            mockRule1.Expect(x => x.Convert(42, typeof(string), converter)).Return("42");
-            mockRule1.Expect(x => x.Convert(53, typeof(string), converter)).Return("53");
+            mockRule1.Expect(x => x.Convert(42, typeof(string), converter, true)).Return("42");
+            mockRule1.Expect(x => x.Convert(53, typeof(string), converter, true)).Return("53");
             Assert.AreEqual("42", converter.Convert(42, typeof(string)));
             Assert.AreEqual("53", converter.Convert(53, typeof(string)));
             mockRule0.VerifyAllExpectations();

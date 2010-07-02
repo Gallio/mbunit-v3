@@ -55,7 +55,8 @@ namespace Gallio.Runtime.Conversions
         /// <param name="targetType">The target type, never null.</param>
         /// <param name="elementConverter">A converter that may be used to recursively
         /// convert the contents of a composite object from one type to another, never null.</param>
+        /// <param name="nullable"></param>
         /// <returns>The converted value.</returns>
-        object Convert(object sourceValue, Type targetType, IConverter elementConverter);
+        object Convert(object sourceValue, Type targetType, IConverter elementConverter, bool nullable);
     }
 }

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Runtime.Conversions
 {
@@ -33,9 +34,17 @@ namespace Gallio.Runtime.Conversions
         }
 
         /// <inheritdoc />
-        public object Convert(object sourceValue, Type targetType, IConverter elementConverter)
+        public object Convert(object sourceValue, Type targetType, IConverter elementConverter, bool nullable)
         {
-            return System.Convert.ChangeType(sourceValue, targetType);
+            return EmptyStringToNull(sourceValue, nullable) ? null : System.Convert.ChangeType(sourceValue, targetType);
+        }
+
+        // Special case: convert empty and blank strings to 'null' if the target type is nullable.
+        private static bool EmptyStringToNull(object sourceValue, bool nullable)
+        {
+            return nullable
+                && sourceValue is string
+                && ((string)sourceValue).Trim().Length == 0;
         }
     }
 }
