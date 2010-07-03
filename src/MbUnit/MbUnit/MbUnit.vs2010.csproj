@@ -55,6 +55,7 @@
     <Compile Include="Framework\AnnotationAttribute.cs" />
     <Compile Include="Framework\ApartmentStateAttribute.cs" />
     <Compile Include="Framework\AssemblyFixtureAttribute.cs" />
+    <Compile Include="Framework\Assert.Count.cs" />
     <Compile Include="Framework\BindAttribute.cs" />
     <Compile Include="Framework\ColumnAttribute.cs" />
     <Compile Include="Framework\CombinatorialJoinAttribute.cs" />
