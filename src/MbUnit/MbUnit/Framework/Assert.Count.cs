@@ -36,7 +36,7 @@ namespace MbUnit.Framework
         /// The assertion counts the elements according to the underlying type of the sequence.
         /// <list type="bullet">
         /// <item>Uses <see cref="Array.Length"/> if the sequence is an array.</item>
-        /// <item>Uses <see cref="ICollection.Count"/> if the sequence is a collection such as <see cref="List{T}"/> or <see cref="Dictionary{K,V}"/>.</item>
+        /// <item>Uses <see cref="ICollection.Count"/> or <see cref="ICollection{T}.Count"/> if the sequence is a collection such as <see cref="List{T}"/> or <see cref="Dictionary{K,V}"/>. It enumerates and counts the elements as well.</item>
         /// <item>Enumerates and counts the elements if the sequence is a simple <see cref="IEnumerable"/>.</item>
         /// </list>
         /// </para>
@@ -59,7 +59,7 @@ namespace MbUnit.Framework
         /// The assertion counts the elements according to the underlying type of the sequence.
         /// <list type="bullet">
         /// <item>Uses <see cref="Array.Length"/> if the sequence is an array.</item>
-        /// <item>Uses <see cref="ICollection.Count"/> if the sequence is a collection such as <see cref="List{T}"/> or <see cref="Dictionary{K,V}"/>.</item>
+        /// <item>Uses <see cref="ICollection.Count"/> or <see cref="ICollection{T}.Count"/> if the sequence is a collection such as <see cref="List{T}"/> or <see cref="Dictionary{K,V}"/>. It enumerates and counts the elements as well.</item>
         /// <item>Enumerates and counts the elements if the sequence is a simple <see cref="IEnumerable"/>.</item>
         /// </list>
         /// </para>
@@ -81,8 +81,8 @@ namespace MbUnit.Framework
             AssertionHelper.Verify(() =>
             {
                 return ForArray(expectedCount, values, messageFormat, messageArgs)
-                    ?? ForNonGenericCollection(expectedCount, values, messageFormat, messageArgs)
                     ?? ForGenericCollection(expectedCount, values, messageFormat, messageArgs)
+                    ?? ForNonGenericCollection(expectedCount, values, messageFormat, messageArgs)
                     ?? ForSimpleEnumerable(expectedCount, values, messageFormat, messageArgs);
             });
         }
