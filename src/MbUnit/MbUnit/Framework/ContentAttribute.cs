@@ -20,6 +20,8 @@ using System.Text;
 using Gallio.Common.IO;
 using Gallio.Framework.Pattern;
 using Gallio.Common.Reflection;
+using Gallio.Framework;
+using Gallio.Model;
 
 namespace MbUnit.Framework
 {
@@ -123,6 +125,29 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
+        /// Gets or sets the outcome of the test when an error occured 
+        /// while opening or reading the data file or the resource.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The default outcome is <see cref="MbUnit.Framework.OutcomeOnFileError.Failed"/>.
+        /// </para>
+        /// </remarks>
+        public OutcomeOnFileError OutcomeOnFileError
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        protected ContentAttribute()
+        {
+            OutcomeOnFileError = OutcomeOnFileError.Failed;
+        }
+
+        /// <summary>
         /// Gets the name of the location that is providing the data, or null if none.
         /// </summary>
         /// <remarks>
@@ -172,7 +197,36 @@ namespace MbUnit.Framework
         {
             var content = GetContent();
             content.CodeElementInfo = codeElementInfo;
-            return content.OpenTextReader();
+
+            try
+            {
+                return content.OpenTextReader();
+            }
+            catch (FileNotFoundException exception)
+            {
+                OnDataError(exception);
+                throw;
+            }
+            catch (UnauthorizedAccessException exception)
+            {
+                OnDataError(exception);
+                throw;
+            }
+        }
+
+        private void OnDataError(Exception exception)
+        {
+            switch (OutcomeOnFileError)
+            {
+                case OutcomeOnFileError.Inconclusive:
+                    throw new TestInconclusiveException("An exception occurred while getting data items.", exception);
+
+                case OutcomeOnFileError.Skipped:
+                    throw new TestTerminatedException(TestOutcome.Skipped, "An exception occurred while getting data items.", exception);
+
+                default:
+                    break;
+            }
         }
 
         /// <summary>
@@ -232,5 +286,31 @@ namespace MbUnit.Framework
 
             return new ContentEmbeddedResource(ResourcePath, ResourceScope);
         }
+    }
+
+    /// <summary>
+    /// Determines the outcome of data-driven test when an error occured while 
+    /// opening or reading the external data file or resource. 
+    /// </summary>
+    public enum OutcomeOnFileError
+    {
+        /// <summary>
+        /// The test is skipped on file error.
+        /// </summary>
+        /// <seealso cref="TestOutcome.Skipped"/>
+        Skipped,
+
+        /// <summary>
+        /// The test is inconclusive on file error.
+        /// </summary>
+        /// <seealso cref="TestOutcome.Inconclusive"/>
+        Inconclusive,
+
+        /// <summary>
+        /// The test failed on file error.
+        /// </summary>
+        /// <seealso cref="TestOutcome.Failed"/>
+        /// <seealso cref="TestOutcome.Error"/>
+        Failed,
     }
 }

@@ -51,6 +51,15 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
+        [Row("FileErrorGetFailedTestByDefault", TestStatus.Failed)]
+        [Row("FileErrorGetInconclusiveTest", TestStatus.Inconclusive)]
+        public void OnFileError(string sampleName, TestStatus expectedTestStatus)
+        {
+            TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(CsvDataSample).GetMethod(sampleName)));
+            Assert.AreEqual(expectedTestStatus, run.Result.Outcome.Status);
+        }
+
+        [Test]
         public void Metadata()
         {
             TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(CsvDataSample).GetMethod("FileWithHeader")));
@@ -104,7 +113,7 @@ namespace MbUnit.Tests.Framework
             }
 
             [Test]
-            [CsvData(FilePath = @"..\Framework\CsvDataTest.csv", HasHeader = true)]
+            [CsvData(FilePath = @"D:\Temp\profile.xlsx", HasHeader = true)]
             public void FileWithHeader(decimal price, string item)
             {
                 TestLog.WriteLine("{0}: {1}", item, price);
@@ -124,6 +133,18 @@ namespace MbUnit.Tests.Framework
                 TestLog.WriteLine("{0}: <{1}> <{2}>", star, 
                     magnitude.HasValue ? magnitude.ToString() : "null",
                     distance.HasValue ? distance.ToString() : "null");
+            }
+
+            [Test]
+            [CsvData(FilePath = @"..\Framework\FileDoesNotExist.csv", OutcomeOnFileError = OutcomeOnFileError.Inconclusive)]
+            public void FileErrorGetInconclusiveTest(string x, string y)
+            {
+            }
+
+            [Test]
+            [CsvData(FilePath = @"..\Framework\FileDoesNotExist.csv")]
+            public void FileErrorGetFailedTestByDefault(string x, string y)
+            {
             }
         }
     }

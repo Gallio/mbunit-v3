@@ -358,6 +358,19 @@ namespace Gallio.Framework.Pattern
                                                     outcome = TestOutcome.Skipped;
                                                 }
                                             }
+                                            catch (TestException ex)
+                                            {
+                                                if (ex.Outcome.Status == TestStatus.Failed)
+                                                {
+                                                    TestLog.Failures.WriteException(ex, String.Format("An exception occurred while getting data items for test '{0}'.", testState.Test.FullName));
+                                                }
+                                                else
+                                                {
+                                                    TestLog.Warnings.WriteException(ex);
+                                                }
+
+                                                outcome = ex.Outcome;
+                                            }
                                             catch (Exception ex)
                                             {
                                                 TestLog.Failures.WriteException(ex, String.Format("An exception occurred while getting data items for test '{0}'.", testState.Test.FullName));
