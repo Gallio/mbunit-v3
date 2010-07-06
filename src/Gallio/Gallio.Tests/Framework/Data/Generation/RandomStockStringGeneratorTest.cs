@@ -28,16 +28,16 @@ namespace Gallio.Tests.Framework.Data.Generation
     public class RandomStockStringGeneratorTest
     {
         [Test]
-        public void Generate_sequence_ok(RandomStringStock stock, int count)
+        public void Generate_sequence_ok()
         {
             var generator = new RandomStockStringGenerator
             {
                 Values = new[] { "A", "B", "C", "D" },
-                Count = count
+                Count = 8
             };
 
             var values = generator.Run().Cast<string>().ToArray();
-            Assert.AreEqual(count, values.Length);
+            Assert.Count(8, values);
             Assert.Multiple(() =>
             {
                 foreach (string value in values)
@@ -48,7 +48,7 @@ namespace Gallio.Tests.Framework.Data.Generation
         }
 
         [Test]
-        public void Constructs_with_negative_count_should_throw_exception(string pattern, int count)
+        public void Constructs_with_negative_count_should_throw_exception()
         {
             var generator = new RandomStockStringGenerator
             {
