@@ -69,7 +69,7 @@ namespace Gallio.NAntTasks.Tests
                 Assert.AreEqual(ReportArchive.Normal, launcher.TestProject.ReportArchive);
                 Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, launcher.TestProject.TestRunnerFactoryName);
                 Assert.IsFalse(launcher.TestProject.IsTestRunnerFactoryNameSpecified);
-                Assert.AreEqual(0, launcher.TestProject.TestRunnerExtensions.Count);
+                Assert.Count(0, launcher.TestProject.TestRunnerExtensions);
                 Assert.AreElementsEqual(new string[] { }, launcher.TestProject.TestRunnerExtensionSpecifications);
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
                 Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTask).Assembly)), launcher.RuntimeSetup.RuntimePath);

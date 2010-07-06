@@ -34,18 +34,18 @@ namespace Gallio.RSpecAdapter.Tests.Integration
         {
             TestModelData testModel = Runner.Report.TestModel;
 
-            Assert.AreEqual(1, testModel.RootTest.Children.Count, "Root test contain top level test.");
+            Assert.Count(1, testModel.RootTest.Children, "Root test contain top level test.");
 
             TestData fileTest = testModel.RootTest.Children[0];
             Assert.AreEqual("nested_example_groups_spec", fileTest.Name, "Top level test is named for the file.");
             Assert.EndsWith(fileTest.Metadata.GetValue(MetadataKeys.File), "nested_example_groups_spec.rb", "Top level test has correct file path metadata.");
             Assert.AreEqual("RSpec File", fileTest.Metadata.GetValue(MetadataKeys.TestKind), "Top level test should have correct kind.");
-            Assert.AreEqual(1, fileTest.Children.Count, "Top level test contains example group.");
+            Assert.Count(1, fileTest.Children, "Top level test contains example group.");
 
             TestData outerExampleGroupTest = fileTest.Children[0];
             Assert.AreEqual("Outer", outerExampleGroupTest.Name, "Example group is named as in 'describe' syntax.");
             Assert.AreEqual("RSpec Example Group", outerExampleGroupTest.Metadata.GetValue(MetadataKeys.TestKind), "Example group test should have correct kind.");
-            Assert.AreEqual(4, outerExampleGroupTest.Children.Count, "Example group test contains other example groups and examples.");
+            Assert.Count(4, outerExampleGroupTest.Children, "Example group test contains other example groups and examples.");
 
             TestData outerExample1Test = outerExampleGroupTest.Children[0];
             Assert.AreEqual("Outer Example1", outerExample1Test.Name, "Example is named as in 'it' syntax.");
@@ -58,7 +58,7 @@ namespace Gallio.RSpecAdapter.Tests.Integration
             TestData innerExampleGroup1Test = outerExampleGroupTest.Children[2];
             Assert.AreEqual("Inner1", innerExampleGroup1Test.Name, "Example group is named as in 'describe' syntax.");
             Assert.AreEqual("RSpec Example Group", innerExampleGroup1Test.Metadata.GetValue(MetadataKeys.TestKind), "Example group test should have correct kind.");
-            Assert.AreEqual(2, innerExampleGroup1Test.Children.Count, "Example group test contains other example groups and examples.");
+            Assert.Count(2, innerExampleGroup1Test.Children, "Example group test contains other example groups and examples.");
 
             TestData inner1Example1Test = innerExampleGroup1Test.Children[0];
             Assert.AreEqual("Inner1 Example1", inner1Example1Test.Name, "Example is named as in 'it' syntax.");
@@ -71,7 +71,7 @@ namespace Gallio.RSpecAdapter.Tests.Integration
             TestData innerExampleGroup2Test = outerExampleGroupTest.Children[3];
             Assert.AreEqual("Inner2", innerExampleGroup2Test.Name, "Example group is named as in 'describe' syntax.");
             Assert.AreEqual("RSpec Example Group", innerExampleGroup2Test.Metadata.GetValue(MetadataKeys.TestKind), "Example group test should have correct kind.");
-            Assert.AreEqual(2, innerExampleGroup2Test.Children.Count, "Example group test contains other example groups and examples.");
+            Assert.Count(2, innerExampleGroup2Test.Children, "Example group test contains other example groups and examples.");
 
             TestData inner2Example1Test = innerExampleGroup2Test.Children[0];
             Assert.AreEqual("Inner2 Example1", inner2Example1Test.Name, "Example is named as in 'it' syntax.");

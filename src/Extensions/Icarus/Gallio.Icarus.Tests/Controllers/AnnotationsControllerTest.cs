@@ -51,9 +51,9 @@ namespace Gallio.Icarus.Tests.Controllers
             
             // Assert
             Assert.IsFalse(annotationsController.ShowErrors);
-            Assert.AreEqual(0, annotationsController.Annotations.Count);
+            Assert.Count(0, annotationsController.Annotations);
             annotationsController.ShowErrors = true;
-            Assert.AreEqual(1, annotationsController.Annotations.Count);
+            Assert.Count(1, annotationsController.Annotations);
             Assert.AreEqual("1 Error", annotationsController.ErrorsText);
         }
 
@@ -65,9 +65,9 @@ namespace Gallio.Icarus.Tests.Controllers
             annotationsController.Handle(new ExploreFinished());
 
             Assert.IsFalse(annotationsController.ShowWarnings);
-            Assert.AreEqual(0, annotationsController.Annotations.Count);
+            Assert.Count(0, annotationsController.Annotations);
             annotationsController.ShowWarnings = true;
-            Assert.AreEqual(1, annotationsController.Annotations.Count);
+            Assert.Count(1, annotationsController.Annotations);
             Assert.AreEqual("1 Warning", annotationsController.WarningsText);
         }
 
@@ -79,9 +79,9 @@ namespace Gallio.Icarus.Tests.Controllers
             annotationsController.Handle(new ExploreFinished());
 
             Assert.IsFalse(annotationsController.ShowInfos);
-            Assert.AreEqual(0, annotationsController.Annotations.Count);
+            Assert.Count(0, annotationsController.Annotations);
             annotationsController.ShowInfos = true;
-            Assert.AreEqual(1, annotationsController.Annotations.Count);
+            Assert.Count(1, annotationsController.Annotations);
             Assert.AreEqual("1 Info", annotationsController.InfoText);
         }
 

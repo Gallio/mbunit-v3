@@ -35,7 +35,7 @@ namespace Gallio.NUnitAdapter.Tests.Integration
             var runs = new List<TestStepRun>(Runner.GetTestStepRuns(
                 CodeReference.CreateFromMember(typeof(AddinsTest).GetMethod("RowTest"))));
 
-            Assert.AreEqual(2, runs.Count);
+            Assert.Count(2, runs);
 
             // Note: Description not set by NUnit.
             // Bug: http://sourceforge.net/tracker/index.php?func=detail&aid=2125208&group_id=10749&atid=110749

@@ -25,7 +25,7 @@ namespace Gallio.Icarus.Tests.Controls
         public void Constructor_Test()
         {
             ProjectTreeView projectTreeView = new ProjectTreeView();
-            Assert.AreEqual(2, projectTreeView.NodeControls.Count);
+            Assert.Count(2, projectTreeView.NodeControls);
             
             NodeIcon nodeIcon = (NodeIcon)projectTreeView.NodeControls[0];
             Assert.AreEqual("Image", nodeIcon.DataPropertyName);

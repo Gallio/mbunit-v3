@@ -38,7 +38,7 @@ namespace Gallio.MSTestAdapter.Tests.Integration
             Assert.AreEqual(TestOutcome.Failed, theoryRun.Result.Outcome);
             Assert.IsTrue(theoryRun.Step.IsPrimary);
             Assert.IsFalse(theoryRun.Step.IsDynamic);
-            Assert.AreEqual(3, theoryRun.Children.Count);
+            Assert.Count(3, theoryRun.Children);
 
             TestStepRun run1 = theoryRun.Children[0]; // 3, 4, 5
             Assert.AreEqual("Pythagoras", run1.Step.Name);

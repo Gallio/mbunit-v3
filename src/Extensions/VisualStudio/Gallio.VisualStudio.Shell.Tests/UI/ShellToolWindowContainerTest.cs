@@ -41,7 +41,7 @@ namespace Gallio.VisualStudio.Shell.Tests.UI
             container.ToolWindow = null;
 
             Assert.IsNull(container.ToolWindow);
-            Assert.AreEqual(0, container.Controls.Count);
+            Assert.Count(0, container.Controls);
         }
 
         [Test]

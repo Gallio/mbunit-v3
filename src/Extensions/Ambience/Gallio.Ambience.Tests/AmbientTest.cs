@@ -90,7 +90,7 @@ namespace Gallio.Ambience.Tests
             Assert.AreNotEqual(0, Ambient.Data.Query<Item>().Count());
 
             Ambient.Data.DeleteAll();
-            Assert.AreEqual(0, Ambient.Data.Query<Item>().Count());
+            Assert.Count(0, Ambient.Data.Query<Item>());
         }
 
         [Test]
@@ -141,7 +141,7 @@ namespace Gallio.Ambience.Tests
             Ambient.Data.Delete(new Item { Name = "A", Value = 1 });
 
             IList<Item> items = Ambient.Data.Query<Item>();
-            Assert.AreEqual(0, items.Count());
+            Assert.Count(0, items);
         }
 
         [Test]
@@ -173,7 +173,7 @@ namespace Gallio.Ambience.Tests
                 new Item { Name = "B", Value = 4 }
             }, items);
 
-            Assert.AreEqual(4, items.Count());
+            Assert.Count(4, items);
         }
 
         [Test]

@@ -67,7 +67,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var flag = false;
             executionLogController.ExecutionLogUpdated += (sender, e) =>
             {
-                Assert.AreEqual(1, e.TestStepRuns.Count);
+                Assert.Count(1, e.TestStepRuns);
                 flag = true;
             };
             var testData = new TestData("root", "name", "fullName")

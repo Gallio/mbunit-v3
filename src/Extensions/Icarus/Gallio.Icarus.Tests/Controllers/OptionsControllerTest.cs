@@ -156,7 +156,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             SetUpOptionsController(new Settings());
 
-            Assert.AreEqual(5, optionsController.SelectedTreeViewCategories.Value.Count);
+            Assert.Count(5, optionsController.SelectedTreeViewCategories.Value);
         }
 
         [Test]

@@ -53,7 +53,7 @@ namespace Gallio.Echo.Tests
 
             Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, launcher.TestProject.TestRunnerFactoryName);
             Assert.IsFalse(launcher.TestProject.IsTestRunnerFactoryNameSpecified);
-            Assert.AreEqual(0, launcher.TestProject.TestRunnerExtensions.Count);
+            Assert.Count(0, launcher.TestProject.TestRunnerExtensions);
             Assert.AreElementsEqual(new string[] { }, launcher.TestProject.TestRunnerExtensionSpecifications);
 
             Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
@@ -124,14 +124,14 @@ namespace Gallio.Echo.Tests
 
             Assert.AreEqual(StandardTestRunnerFactoryNames.Local, launcher.TestProject.TestRunnerFactoryName);
             Assert.IsTrue(launcher.TestProject.IsTestRunnerFactoryNameSpecified);
-            Assert.AreEqual(0, launcher.TestProject.TestRunnerExtensions.Count);
+            Assert.Count(0, launcher.TestProject.TestRunnerExtensions);
             Assert.AreElementsEqual(new[] { "DebugExtension,Gallio" }, launcher.TestProject.TestRunnerExtensionSpecifications);
 
             Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
             Assert.IsNull(launcher.RuntimeSetup.RuntimePath);
             Assert.AreElementsEqual(new[] { "plugin" }, launcher.RuntimeSetup.PluginDirectories);
 
-            Assert.AreEqual(1, launcher.FilePatterns.Count);
+            Assert.Count(1, launcher.FilePatterns);
             Assert.AreElementsEqual(new[] { "hint1", "hint2" }, from x in launcher.TestProject.TestPackage.HintDirectories select x.ToString());
 
             Assert.AreEqual("baseDir", launcher.TestProject.TestPackage.ApplicationBaseDirectory.ToString());

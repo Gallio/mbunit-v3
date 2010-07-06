@@ -42,7 +42,7 @@ namespace Gallio.Icarus.Tests.Projects
         [Test]
         public void Collapsed_nodes_defaults_to_empty_list()
         {
-            Assert.AreEqual(0, controller.CollapsedNodes.Count());
+            Assert.Count(0, controller.CollapsedNodes);
         }
 
         [Test]
@@ -96,7 +96,7 @@ namespace Gallio.Icarus.Tests.Projects
 
             controller.Handle(new ProjectLoaded("test.gallio"));
 
-            Assert.AreEqual(0, controller.CollapsedNodes.Count());
+            Assert.Count(0, controller.CollapsedNodes);
         }
 
         [Test]

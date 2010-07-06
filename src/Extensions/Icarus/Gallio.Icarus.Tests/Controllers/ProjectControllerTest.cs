@@ -69,11 +69,11 @@ namespace Gallio.Icarus.Tests.Controllers
             List<string> list = new List<string>(new[] { fileName });
             fileSystem.Stub(fs => fs.FileExists(fileName)).Return(true);
             var progressMonitor = MockProgressMonitor.Instance;
-            Assert.AreEqual(0, projectController.TestPackage.Files.Count);
+            Assert.Count(0, projectController.TestPackage.Files);
 
             projectController.AddFiles(progressMonitor, list);
             
-            Assert.AreEqual(1, projectController.TestPackage.Files.Count);
+            Assert.Count(1, projectController.TestPackage.Files);
             Assert.AreEqual(fileName, projectController.TestPackage.Files[0].ToString());
         }
 
@@ -84,12 +84,12 @@ namespace Gallio.Icarus.Tests.Controllers
             projectTreeModel.TestProject = testProject;
             var progressMonitor = MockProgressMonitor.Instance;
             
-            Assert.AreEqual(0, projectController.TestFilters.Value.Count);
+            Assert.Count(0, projectController.TestFilters.Value);
             FilterInfo filterInfo = new FilterInfo("filterName", new NoneFilter<ITestDescriptor>().ToFilterExpr());
             projectController.TestFilters.Value.Add(filterInfo);
-            Assert.AreEqual(1, projectController.TestFilters.Value.Count);
+            Assert.Count(1, projectController.TestFilters.Value);
             projectController.DeleteFilter(progressMonitor, filterInfo);
-            Assert.AreEqual(0, projectController.TestFilters.Value.Count);
+            Assert.Count(0, projectController.TestFilters.Value);
         }
 
         [Test]
@@ -110,7 +110,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void TestFilters_Test()
         {
-            Assert.AreEqual(0, projectController.TestFilters.Value.Count);
+            Assert.Count(0, projectController.TestFilters.Value);
         }
 
         [Test]
@@ -148,25 +148,25 @@ namespace Gallio.Icarus.Tests.Controllers
             string fileName = Path.GetFullPath("test");
             project.TestPackage.AddFile(new FileInfo(fileName));
             projectTreeModel.TestProject = project;
-            Assert.AreEqual(1, project.TestPackage.Files.Count);
+            Assert.Count(1, project.TestPackage.Files);
             
             projectController.RemoveFile(fileName);
 
-            Assert.AreEqual(0, project.TestPackage.Files.Count);
+            Assert.Count(0, project.TestPackage.Files);
         }
 
         [Test]
         public void SaveFilter_Test()
         {
             projectTreeModel.TestProject = new TestProject();
-            
-            Assert.AreEqual(0, projectController.TestFilters.Value.Count);
+
+            Assert.Count(0, projectController.TestFilters.Value);
             projectController.SaveFilterSet("filterName", new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>()));
-            Assert.AreEqual(1, projectController.TestFilters.Value.Count);
+            Assert.Count(1, projectController.TestFilters.Value);
             projectController.SaveFilterSet("filterName", new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>()));
-            Assert.AreEqual(1, projectController.TestFilters.Value.Count);
+            Assert.Count(1, projectController.TestFilters.Value);
             projectController.SaveFilterSet("aDifferentFilterName", new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>()));
-            Assert.AreEqual(2, projectController.TestFilters.Value.Count);
+            Assert.Count(2, projectController.TestFilters.Value);
         }
 
         [Test]
@@ -217,7 +217,7 @@ namespace Gallio.Icarus.Tests.Controllers
 
             projectController.AddHintDirectory(hintDirectory);
 
-            Assert.AreEqual(1, project.TestPackage.HintDirectories.Count);
+            Assert.Count(1, project.TestPackage.HintDirectories);
             Assert.AreEqual(hintDirectory, project.TestPackage.HintDirectories[0].FullName);
         }
 
@@ -231,7 +231,7 @@ namespace Gallio.Icarus.Tests.Controllers
 
             projectController.RemoveHintDirectory(hintDirectory);
 
-            Assert.AreEqual(0, project.TestPackage.HintDirectories.Count);
+            Assert.Count(0, project.TestPackage.HintDirectories);
         }
 
         [Test]
@@ -254,7 +254,7 @@ namespace Gallio.Icarus.Tests.Controllers
 
             projectController.AddTestRunnerExtensionSpecification(testRunnerExtensionSpecification);
 
-            Assert.AreEqual(1, project.TestRunnerExtensionSpecifications.Count);
+            Assert.Count(1, project.TestRunnerExtensionSpecifications);
             Assert.AreEqual(testRunnerExtensionSpecification, project.TestRunnerExtensionSpecifications[0]);
         }
 
@@ -268,7 +268,7 @@ namespace Gallio.Icarus.Tests.Controllers
 
             projectController.RemoveTestRunnerExtensionSpecification(extensionSpecification);
 
-            Assert.AreEqual(0, project.TestRunnerExtensionSpecifications.Count);
+            Assert.Count(0, project.TestRunnerExtensionSpecifications);
         }
 
         [Test]

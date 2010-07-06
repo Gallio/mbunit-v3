@@ -98,7 +98,7 @@ namespace Gallio.NUnitAdapter.Tests.Model
             TestModel testModel = PopulateTestTree();
 
             Test fixture = GetDescendantByName(testModel.RootTest, typeof(AmbiguousMatchSample).Name);
-            Assert.AreEqual(1, fixture.Children.Count);
+            Assert.Count(1, fixture.Children);
 
             Test test =  fixture.Children[0];
             Assert.AreEqual("Test", test.Name);

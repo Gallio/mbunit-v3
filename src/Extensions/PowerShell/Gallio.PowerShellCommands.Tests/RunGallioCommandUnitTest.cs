@@ -134,7 +134,7 @@ namespace Gallio.PowerShellCommands.Tests
 
                 Assert.AreEqual(StandardTestRunnerFactoryNames.Local, launcher.TestProject.TestRunnerFactoryName);
                 Assert.IsTrue(launcher.TestProject.IsTestRunnerFactoryNameSpecified);
-                Assert.AreEqual(0, launcher.TestProject.TestRunnerExtensions.Count);
+                Assert.Count(0, launcher.TestProject.TestRunnerExtensions);
                 Assert.AreElementsEqual(new string[] { "DebugExtension,Gallio" }, launcher.TestProject.TestRunnerExtensionSpecifications);
 
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
