@@ -37,7 +37,7 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(() =>
                 Assert.GreaterThan(new Exception(), new Exception()));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("System.InvalidOperationException: No ordering comparison defined on values of type System.Exception and System.Exception."
                 , failures[0].Exceptions[0].ToString());
         }
@@ -47,7 +47,7 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(() =>
                 Assert.GreaterThan(5, 5));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("5", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("5", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
@@ -57,7 +57,7 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(() =>
                 Assert.GreaterThan(null, "abc"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected left to be greater than right.", failures[0].Description);
             Assert.AreEqual("Left Value", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("null", failures[0].LabeledValues[0].FormattedValue.ToString());
@@ -69,7 +69,7 @@ namespace MbUnit.Tests.Framework
         public void GreaterThan_fail_when_left_value_is_null_with_custom_message()
         {
             AssertionFailure[] failures = Capture(() => Assert.GreaterThan(null, "abc", "custom message."));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("custom message.", failures[0].Message);
         }
 
@@ -77,7 +77,7 @@ namespace MbUnit.Tests.Framework
         public void GreaterThan_fail_when_left_value_is_null_with_custom_message_and_argument()
         {
             AssertionFailure[] failures = Capture(() => Assert.GreaterThan(null, "abc", "{0} message.", "MbUnit"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("MbUnit message.", failures[0].Message);
         }
 
@@ -145,7 +145,7 @@ namespace MbUnit.Tests.Framework
         public void GreaterThanOrEqual_fails_when_left_value_is_not_greater_or_equal_than_right()
         {
             AssertionFailure[] failures = Capture(() => Assert.GreaterThanOrEqualTo(5, 6));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected left to be greater or equal than right.", failures[0].Description);
         }
 
@@ -153,7 +153,7 @@ namespace MbUnit.Tests.Framework
         public void GreaterThanOrEqual_fail_when_left_value_is_null()
         {
             AssertionFailure[] failures = Capture(() => Assert.GreaterThanOrEqualTo(null, "abc"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Left Value", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("Right Value", failures[0].LabeledValues[1].Label);
             Assert.AreEqual("null", failures[0].LabeledValues[0].FormattedValue.ToString());
@@ -164,7 +164,7 @@ namespace MbUnit.Tests.Framework
         public void GreaterThanOrEqual_fail_when_left_value_is_null_with_custom_message()
         {
             AssertionFailure[] failures = Capture(() => Assert.GreaterThanOrEqualTo(null, "abc", "custom message."));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("custom message.", failures[0].Message);
         }
 
@@ -172,7 +172,7 @@ namespace MbUnit.Tests.Framework
         public void GreaterThanOrEqual_fail_when_left_value_is_null_with_custom_message_and_argument()
         {
             AssertionFailure[] failures = Capture(() => Assert.GreaterThanOrEqualTo(null, "abc", "{0} message.", "MbUnit"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("MbUnit message.", failures[0].Message);
         }
 
@@ -241,7 +241,7 @@ namespace MbUnit.Tests.Framework
         public void LessThan_fails_when_left_value_is_not_less_than_right()
         {
             AssertionFailure[] failures = Capture(() => Assert.LessThan("mb", "mb"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected left to be less than right.", failures[0].Description);
         }
 
@@ -249,7 +249,7 @@ namespace MbUnit.Tests.Framework
         public void LessThan_on_failure_test_with_values_only()
         {
             AssertionFailure[] failures = Capture(() => Assert.LessThan("abc", null));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Left Value", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("Right Value", failures[0].LabeledValues[1].Label);
             Assert.AreEqual("\"abc\"", failures[0].LabeledValues[0].FormattedValue.ToString());
@@ -260,7 +260,7 @@ namespace MbUnit.Tests.Framework
         public void LessThan_fail_when_left_value_is_null_with_custom_message()
         {
             AssertionFailure[] failures = Capture(() => Assert.LessThan(5, 1.1, "custom message."));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("custom message.", failures[0].Message);
         }
 
@@ -274,7 +274,7 @@ namespace MbUnit.Tests.Framework
         public void LessThan_check_custom_message_and_argument_on_failure()
         {
             AssertionFailure[] failures = Capture(() => Assert.LessThan("d", "abc", "{0} message.", "MbUnit"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("MbUnit message.", failures[0].Message);
         }
 
@@ -335,7 +335,7 @@ namespace MbUnit.Tests.Framework
         public void LessThanOrEqual_fails_when_left_value_is_not_less_or_equal_than_right()
         {
             AssertionFailure[] failures = Capture(() => Assert.LessThanOrEqualTo("ms", "mb"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected left to be less or equal than right.", failures[0].Description);
         }
 
@@ -343,14 +343,14 @@ namespace MbUnit.Tests.Framework
         public void LessThanOrEqual_fail_when_left_value_is_null()
         {
             AssertionFailure[] failures = Capture(() => Assert.LessThanOrEqualTo("abc", null));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
         }
 
         [Test]
         public void LessThanOrEqual_fail_when_left_value_is_null_with_custom_message()
         {
             AssertionFailure[] failures = Capture(() => Assert.LessThanOrEqualTo("abc", null, "custom message."));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("custom message.", failures[0].Message);
         }
 
@@ -358,7 +358,7 @@ namespace MbUnit.Tests.Framework
         public void LessThanOrEqual_fail_when_left_value_is_null_with_custom_message_and_argument()
         {
             AssertionFailure[] failures = Capture(() => Assert.LessThanOrEqualTo("k", "abc", "{0} message.", "MbUnit"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("MbUnit message.", failures[0].Message);
         }
 
@@ -429,7 +429,7 @@ namespace MbUnit.Tests.Framework
         public void Between_fails_when_test_value_is_left_of_the_range()
         {
             AssertionFailure[] failures = Capture(() => Assert.Between(0, 1, 3));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("The actual value should be between the minimum and maximum values.", failures[0].Description);
             Assert.AreEqual("Actual Value", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("0", failures[0].LabeledValues[0].FormattedValue.ToString());
@@ -465,7 +465,7 @@ namespace MbUnit.Tests.Framework
         public void NotBetween_fails_when_test_value_is_left_of_the_range()
         {
             AssertionFailure[] failures = Capture(() => Assert.NotBetween(1, 1, 3));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("The actual value should not be between the minimum and maximum values.", failures[0].Description);
             Assert.AreEqual("Actual Value", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("1", failures[0].LabeledValues[0].FormattedValue.ToString());

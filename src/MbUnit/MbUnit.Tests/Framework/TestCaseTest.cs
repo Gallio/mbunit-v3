@@ -93,11 +93,11 @@ namespace MbUnit.Tests.Framework
         {
             TestData factoryData = Runner.GetTestData(CodeReference.CreateFromMember(
                 typeof(DynamicSample).GetMethod("Factory")));
-            Assert.AreEqual(0, factoryData.Children.Count);
+            Assert.Count(0, factoryData.Children);
 
             TestStepRun factoryRun = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(
                 typeof(DynamicSample).GetMethod("Factory")));
-            Assert.AreEqual(1, factoryRun.Children.Count);
+            Assert.Count(1, factoryRun.Children);
 
             TestStepRun testRun = factoryRun.Children[0];
             Assert.AreEqual("Test", testRun.Step.Name);
@@ -108,14 +108,14 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("Me", testRun.Step.Metadata.GetValue(MetadataKeys.AuthorName));
             Assert.AreEqual(TestKinds.Test, testRun.Step.Metadata.GetValue(MetadataKeys.TestKind));
             Assert.AreEqual("*** Log ***\n\nSetup->Execute->TearDown\n", testRun.TestLog.ToString());
-            Assert.AreEqual(0, testRun.Children.Count);
+            Assert.Count(0, testRun.Children);
         }
 
         [Test]
         public void StaticRun()
         {
             TestData fixtureData = Runner.GetTestData(CodeReference.CreateFromType(typeof(StaticSample)));
-            Assert.AreEqual(1, fixtureData.Children.Count);
+            Assert.Count(1, fixtureData.Children);
 
             TestData testData = fixtureData.Children[0];
             Assert.AreEqual("Test", testData.Name);
@@ -123,10 +123,10 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("System.Int32", testData.CodeReference.TypeName);
             Assert.AreEqual("Me", testData.Metadata.GetValue(MetadataKeys.AuthorName));
             Assert.AreEqual(TestKinds.Test, testData.Metadata.GetValue(MetadataKeys.TestKind));
-            Assert.AreEqual(0, testData.Children.Count);
+            Assert.Count(0, testData.Children);
 
             TestStepRun fixtureRun = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromType(typeof(StaticSample)));
-            Assert.AreEqual(1, fixtureRun.Children.Count);
+            Assert.Count(1, fixtureRun.Children);
 
             TestStepRun testRun = fixtureRun.Children[0];
             Assert.AreEqual("Test", testRun.Step.Name);
@@ -137,7 +137,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("Me", testRun.Step.Metadata.GetValue(MetadataKeys.AuthorName));
             Assert.AreEqual(TestKinds.Test, testRun.Step.Metadata.GetValue(MetadataKeys.TestKind));
             Assert.AreEqual("*** Log ***\n\nSetup->Execute->TearDown\n", testRun.TestLog.ToString());
-            Assert.AreEqual(0, testRun.Children.Count);
+            Assert.Count(0, testRun.Children);
         }
 
         private static readonly Test[] tests = new Test[]

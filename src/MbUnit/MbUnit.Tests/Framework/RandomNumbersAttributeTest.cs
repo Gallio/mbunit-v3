@@ -49,7 +49,7 @@ namespace MbUnit.Tests.Framework
         public void GenerateRandomValues(string testMethod, decimal expectedMinimum, decimal expectedMaximum, int expectedCount)
         {
             var values = GetActualValues(testMethod);
-            Assert.AreEqual(expectedCount, values.Count());
+            Assert.Count(expectedCount, values);
             Assert.Multiple(() =>
             {
                 foreach (decimal value in values)
@@ -63,7 +63,7 @@ namespace MbUnit.Tests.Framework
         public void GenerateRandomFilteredValues()
         {
             var values = GetActualValues("RandomOddNumbers");
-            Assert.AreEqual(500, values.Count());
+            Assert.Count(500, values);
             Assert.Multiple(() =>
             {
                 foreach (decimal value in values)

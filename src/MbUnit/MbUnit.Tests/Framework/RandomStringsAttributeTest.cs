@@ -49,7 +49,7 @@ namespace MbUnit.Tests.Framework
         public void GenerateRandomValuesFromRegularExpression(string testMethod, string expectedMatch, int expectedCount)
         {
             var values = GetActualValues(testMethod);
-            Assert.AreEqual(100, values.Count());
+            Assert.Count(100, values);
             Assert.Multiple(() =>
             {
                 foreach (string value in values)
@@ -63,7 +63,7 @@ namespace MbUnit.Tests.Framework
         public void GenerateFilteredRandomValuesFromRegularExpression()
         {
             var values = GetActualValues("FilteredRegexSequence");
-            Assert.AreEqual(100, values.Count());
+            Assert.Count(100, values);
             Assert.Multiple(() =>
             {
                 foreach (string value in values)

@@ -35,7 +35,7 @@ namespace MbUnit.Tests.Framework
         {
             var stub = new FormattableStub(123);
             AssertionFailure[] failures = Capture(() => Assert.IsNull(stub));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             var actualValue = failures[0].LabeledValues.Single(x => x.Label == "Actual Value");
             Assert.AreEqual("CustomFormatter: FormattableStub's value is 123.", actualValue.FormattedValue.ToString());
         }

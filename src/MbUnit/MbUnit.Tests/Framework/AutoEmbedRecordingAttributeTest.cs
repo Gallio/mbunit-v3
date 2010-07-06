@@ -45,12 +45,12 @@ namespace MbUnit.Tests.Framework
             {
                 if (triggered)
                 {
-                    Assert.AreEqual(1, run.TestLog.Attachments.Count);
+                    Assert.Count(1, run.TestLog.Attachments);
                     Assert.AreEqual(MimeTypes.FlashVideo, run.TestLog.Attachments[0].ContentType);
                 }
                 else
                 {
-                    Assert.AreEqual(0, run.TestLog.Attachments.Count);
+                    Assert.Count(0, run.TestLog.Attachments);
                 }
             }
             else

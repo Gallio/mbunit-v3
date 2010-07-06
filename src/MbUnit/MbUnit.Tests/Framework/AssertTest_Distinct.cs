@@ -113,7 +113,7 @@ namespace MbUnit.Tests.Framework
             }
             else
             {
-                Assert.AreEqual(1, failures.Length);
+                Assert.Count(1, failures);
                 Assert.AreEqual("Expected the elements to be distinct but several instances represents the same value.", failures[0].Description);
                 Assert.AreEqual(expectedDuplicates, failures[0].LabeledValues.Count(x => x.Label == "Duplicated Value"));
             }

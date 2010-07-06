@@ -40,7 +40,7 @@ namespace MbUnit.Tests.Framework
             }
             else
             {
-                Assert.AreEqual(1, failures.Length);
+                Assert.Count(1, failures);
                 Assert.StartsWith(failures[0].Description, "The 'Retry.Until' operation has failed");
             }
         }

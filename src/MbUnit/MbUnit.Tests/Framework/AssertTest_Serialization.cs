@@ -36,7 +36,7 @@ namespace MbUnit.Tests.Framework
         public void IsXmlSerializableType_fails_if_type_is_non_serializable()
         {
             AssertionFailure[] failures = Capture(() => Assert.IsXmlSerializableType(typeof(NonXmlSerializableClass)));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected the type to support Xml serialization but an exception was thrown while constructing an XmlSerializer.", failures[0].Description);
         }
 
@@ -44,14 +44,14 @@ namespace MbUnit.Tests.Framework
         public void IsXmlSerializableType_passes_if_type_is_serializable()
         {
             AssertionFailure[] failures = Capture(() => Assert.IsXmlSerializableType(typeof(XmlSerializableClass)));
-            Assert.AreEqual(0, failures.Length);
+            Assert.Count(0, failures);
         }
 
         [Test]
         public void XmlSerialize_fails_if_value_is_null()
         {
             AssertionFailure[] failures = Capture(() => Assert.XmlSerialize(null));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Could not serialize the value because it is null.", failures[0].Description);
         }
 
@@ -59,7 +59,7 @@ namespace MbUnit.Tests.Framework
         public void XmlSerialize_fails_if_value_is_not_serializable()
         {
             AssertionFailure[] failures = Capture(() => Assert.XmlSerialize(new NonXmlSerializableClass(null)));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Could not serialize the value.", failures[0].Description);
         }
 
@@ -76,7 +76,7 @@ namespace MbUnit.Tests.Framework
         public void XmlDeserialize_fails_if_xml_is_null()
         {
             AssertionFailure[] failures = Capture(() => Assert.XmlDeserialize<XmlSerializableClass>(null));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Could not deserialize the value because the xml is null.", failures[0].Description);
         }
 
@@ -84,7 +84,7 @@ namespace MbUnit.Tests.Framework
         public void XmlDeserialize_fails_if_value_is_not_deserializable()
         {
             AssertionFailure[] failures = Capture(() => Assert.XmlDeserialize<XmlSerializableClass>("<Root/>"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Could not deserialize the value.", failures[0].Description);
         }
 
@@ -99,7 +99,7 @@ namespace MbUnit.Tests.Framework
         public void XmlSerializeThenDeserialize_fails_if_value_is_null()
         {
             AssertionFailure[] failures = Capture(() => Assert.XmlSerializeThenDeserialize<object>(null));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Could not serialize the value because it is null.", failures[0].Description);
         }
 
@@ -107,7 +107,7 @@ namespace MbUnit.Tests.Framework
         public void XmlSerializeThenDeserialize_fails_if_value_is_not_serializable()
         {
             AssertionFailure[] failures = Capture(() => Assert.XmlSerializeThenDeserialize(new NonXmlSerializableClass(null)));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Could not serialize the value.", failures[0].Description);
         }
 
@@ -128,7 +128,7 @@ namespace MbUnit.Tests.Framework
         public void IsSerializableType_fails_if_type_is_non_serializable()
         {
             AssertionFailure[] failures = Capture(() => Assert.IsSerializableType(typeof(NonSerializableClass)));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected the type to support binary serialization but it lacks the [Serializable] attribute.", failures[0].Description);
         }
 
@@ -136,14 +136,14 @@ namespace MbUnit.Tests.Framework
         public void IsSerializableType_passes_if_type_is_serializable()
         {
             AssertionFailure[] failures = Capture(() => Assert.IsSerializableType(typeof(SerializableClass)));
-            Assert.AreEqual(0, failures.Length);
+            Assert.Count(0, failures);
         }
 
         [Test]
         public void IsSerializableType_fails_if_type_is_custom_serializable_but_missing_deserialization_constructor()
         {
             AssertionFailure[] failures = Capture(() => Assert.IsSerializableType(typeof(CustomBinarySerializableClassMissingDeserializationConstructor)));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected the type to support binary serialization but it implements ISerializable and is missing a deserialization constructor with signature .ctor(SerializationInfo, StreamingContext).", failures[0].Description);
         }
 
@@ -151,7 +151,7 @@ namespace MbUnit.Tests.Framework
         public void IsSerializableType_passes_if_type_is_custom_serializable_and_has_deserialization_constructor()
         {
             AssertionFailure[] failures = Capture(() => Assert.IsSerializableType(typeof(CustomBinarySerializableClass)));
-            Assert.AreEqual(0, failures.Length);
+            Assert.Count(0, failures);
         }
 
         [Test]
@@ -164,7 +164,7 @@ namespace MbUnit.Tests.Framework
         public void Serialize_fails_if_value_is_null()
         {
             AssertionFailure[] failures = Capture(() => Assert.Serialize(null, CreateObjectSerializationFormatter()));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Could not serialize the value because it is null.", failures[0].Description);
         }
 
@@ -172,7 +172,7 @@ namespace MbUnit.Tests.Framework
         public void Serialize_fails_if_value_is_not_serializable()
         {
             AssertionFailure[] failures = Capture(() => Assert.Serialize(new NonSerializableClass(), CreateObjectSerializationFormatter()));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Could not serialize the value.", failures[0].Description);
         }
 
@@ -194,7 +194,7 @@ namespace MbUnit.Tests.Framework
         public void Deserialize_fails_if_stream_is_null()
         {
             AssertionFailure[] failures = Capture(() => Assert.Deserialize<SerializableClass>(null, CreateObjectSerializationFormatter()));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Could not deserialize the value because the stream is null.", failures[0].Description);
         }
 
@@ -202,7 +202,7 @@ namespace MbUnit.Tests.Framework
         public void Deserialize_fails_if_value_is_not_deserializable()
         {
             AssertionFailure[] failures = Capture(() => Assert.Deserialize<SerializableClass>(new MemoryStream(), CreateObjectSerializationFormatter()));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Could not deserialize the value.", failures[0].Description);
         }
 
@@ -225,7 +225,7 @@ namespace MbUnit.Tests.Framework
         public void SerializeThenDeserialize_fails_if_value_is_null()
         {
             AssertionFailure[] failures = Capture(() => Assert.SerializeThenDeserialize<object>(null, CreateObjectSerializationFormatter()));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Could not serialize the value because it is null.", failures[0].Description);
         }
 
@@ -233,7 +233,7 @@ namespace MbUnit.Tests.Framework
         public void SerializeThenDeserialize_fails_if_value_is_not_serializable()
         {
             AssertionFailure[] failures = Capture(() => Assert.SerializeThenDeserialize(new NonSerializableClass(), CreateObjectSerializationFormatter()));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Could not serialize the value.", failures[0].Description);
         }
 
@@ -248,7 +248,7 @@ namespace MbUnit.Tests.Framework
         public void BinarySerialize_fails_if_value_is_null()
         {
             AssertionFailure[] failures = Capture(() => Assert.BinarySerialize(null));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Could not serialize the value because it is null.", failures[0].Description);
         }
 
@@ -256,7 +256,7 @@ namespace MbUnit.Tests.Framework
         public void BinarySerialize_fails_if_value_is_not_serializable()
         {
             AssertionFailure[] failures = Capture(() => Assert.BinarySerialize(new NonSerializableClass()));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Could not serialize the value.", failures[0].Description);
         }
 
@@ -272,7 +272,7 @@ namespace MbUnit.Tests.Framework
         public void BinaryDeserialize_fails_if_stream_is_null()
         {
             AssertionFailure[] failures = Capture(() => Assert.BinaryDeserialize<SerializableClass>(null));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Could not deserialize the value because the stream is null.", failures[0].Description);
         }
 
@@ -280,7 +280,7 @@ namespace MbUnit.Tests.Framework
         public void BinaryDeserialize_fails_if_value_is_not_deserializable()
         {
             AssertionFailure[] failures = Capture(() => Assert.BinaryDeserialize<SerializableClass>(new MemoryStream()));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Could not deserialize the value.", failures[0].Description);
         }
 
@@ -297,7 +297,7 @@ namespace MbUnit.Tests.Framework
         public void BinarySerializeThenDeserialize_fails_if_value_is_null()
         {
             AssertionFailure[] failures = Capture(() => Assert.BinarySerializeThenDeserialize<object>(null));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Could not serialize the value because it is null.", failures[0].Description);
         }
 
@@ -305,7 +305,7 @@ namespace MbUnit.Tests.Framework
         public void BinarySerializeThenDeserialize_fails_if_value_is_not_serializable()
         {
             AssertionFailure[] failures = Capture(() => Assert.BinarySerializeThenDeserialize(new NonSerializableClass()));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Could not serialize the value.", failures[0].Description);
         }
 

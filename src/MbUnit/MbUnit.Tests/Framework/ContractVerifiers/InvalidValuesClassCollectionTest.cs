@@ -29,7 +29,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         {
             var collection = new InvalidValuesClassCollection<int>();
             Assert.IsEmpty(collection);
-            Assert.AreEqual(0, collection.Count);
+            Assert.Count(0, collection);
         }
 
         [Test]
@@ -73,7 +73,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             collection.Add(typeof(ArgumentOutOfRangeException), 1, 2, 3);
             collection.Add(new InvalidValuesClass<int>(typeof(ArgumentException)) { 4, 5, 6 });
             collection.Add(typeof(InvalidOperationException), 7, 8, 9);
-            Assert.AreEqual(3, collection.Count);
+            Assert.Count(3, collection);
             Assert.AreElementsEqualIgnoringOrder(new[] { typeof(ArgumentOutOfRangeException), typeof(ArgumentException), typeof(InvalidOperationException) }, collection.Select(x => x.ExpectedExceptionType));        
         }
     }

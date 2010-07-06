@@ -30,7 +30,7 @@ namespace MbUnit.Tests.Framework
         public void Fail_without_parameters()
         {
             AssertionFailure[] failures = Capture(Assert.Fail);
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("An assertion failed.", failures[0].Description);
             Assert.IsNull(failures[0].Message);
         }
@@ -39,7 +39,7 @@ namespace MbUnit.Tests.Framework
         public void Fail_with_message_and_arguments()
         {
             AssertionFailure[] failures = Capture(() => Assert.Fail("{0} {1}.", "MbUnit", "message"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("An assertion failed.", failures[0].Description);
             Assert.AreEqual("MbUnit message.", failures[0].Message);
         }
@@ -116,7 +116,7 @@ namespace MbUnit.Tests.Framework
 
             Assert.IsTrue(executed);
             Assert.AreEqual("There was 1 failure within the multiple assertion block.", failures[0].Description);
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual(null, failures[0].Message);
 
             Assert.AreEqual(0, failures[0].InnerFailures.Count, "Should not contain inner failures because they are logged immediately.");
@@ -136,10 +136,10 @@ namespace MbUnit.Tests.Framework
 
             Assert.IsTrue(executed);
             Assert.AreEqual("There were 2 failures within the multiple assertion block.", failures[0].Description);
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual(null, failures[0].Message);
 
-            Assert.AreEqual(0, failures[0].InnerFailures.Count, "Should not contain inner failures because they are logged immediately.");
+            Assert.Count(0, failures[0].InnerFailures, "Should not contain inner failures because they are logged immediately.");
         }
 
         [Test]
@@ -155,10 +155,10 @@ namespace MbUnit.Tests.Framework
             }, "{0} {1}", "MbUnit", "message"));
 
             Assert.IsTrue(executed);
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("MbUnit message", failures[0].Message);
 
-            Assert.AreEqual(0, failures[0].InnerFailures.Count, "Should not contain inner failures because they are logged immediately.");
+            Assert.Count(0, failures[0].InnerFailures, "Should not contain inner failures because they are logged immediately.");
         }
 
         [Test]
@@ -169,10 +169,10 @@ namespace MbUnit.Tests.Framework
                 throw new AssertionFailureException(new AssertionFailureBuilder("Boom").ToAssertionFailure(), false);
             }, "{0} {1}", "MbUnit", "message"));
 
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("MbUnit message", failures[0].Message);
 
-            Assert.AreEqual(0, failures[0].InnerFailures.Count, "Should contain inner failures because it was not logged.");
+            Assert.Count(0, failures[0].InnerFailures, "Should contain inner failures because it was not logged.");
         }
 
         [Test]
@@ -197,7 +197,7 @@ namespace MbUnit.Tests.Framework
 
             Assert.IsTrue(executed);
             Assert.IsFalse(wasPending);
-            Assert.AreEqual(0, failures.Length);
+            Assert.Count(0, failures);
         }
 
         [Test]
@@ -214,7 +214,7 @@ namespace MbUnit.Tests.Framework
 
             Assert.IsTrue(executed);
             Assert.IsTrue(wasPending);
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
         }
     }
 }

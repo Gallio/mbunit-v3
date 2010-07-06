@@ -50,7 +50,7 @@ namespace MbUnit.Tests.Framework
         public void AreEqual_fails_when_simple_values_different()
         {
             AssertionFailure[] failures = Capture(() => Assert.AreEqual(1, 2));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected values to be equal.", failures[0].Description);
             Assert.AreEqual("Expected Value", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("1", failures[0].LabeledValues[0].FormattedValue.ToString());
@@ -62,7 +62,7 @@ namespace MbUnit.Tests.Framework
         public void AreEqual_fails_when_expected_value_is_null()
         {
             AssertionFailure[] failures = Capture(() => Assert.AreEqual(null, "2"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("null", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("\"2\"", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
@@ -71,7 +71,7 @@ namespace MbUnit.Tests.Framework
         public void AreEqual_fails_when_actual_value_is_null()
         {
             AssertionFailure[] failures = Capture(() => Assert.AreEqual("2", null));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("\"2\"", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("null", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
@@ -81,7 +81,7 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(() =>
                 Assert.AreEqual(new List<string>(new[] { "1", "2" }), new List<string>(new[] { "1", "2", "3" })));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("[\"1\", \"2\"]", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("[\"1\", \"2\", \"3\"]", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
@@ -90,7 +90,7 @@ namespace MbUnit.Tests.Framework
         public void AreEqual_fails_with_custom_message()
         {
             AssertionFailure[] failures = Capture(() => Assert.AreEqual(1, 2, "{0} message", "custom"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("custom message", failures[0].Message);
         }
 
@@ -108,7 +108,7 @@ namespace MbUnit.Tests.Framework
             Array array1 = new[,] {{1, 2}, {3, 4}, {5, 6}};
             Array array2 = new[,,] {{{1, 2}}, {{3, 4}}, {{5, 6}}};
             AssertionFailure[] failures = Capture(() => Assert.AreEqual(array1, array2));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
         }
 
         [Test]
@@ -117,7 +117,7 @@ namespace MbUnit.Tests.Framework
             Array array1 = new[,] {{1, 2}, {3, 4}, {5, 6}};
             Array array2 = new[,] {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
             AssertionFailure[] failures = Capture(() => Assert.AreEqual(array1, array2));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
         }
 
         [Test]
@@ -126,7 +126,7 @@ namespace MbUnit.Tests.Framework
             Array array1 = new[,] { { 1, 2 }, { 3, 4 }, { 5, 6 } };
             Array array2 = new[,] { { 1, 2 }, { 3, 444 }, { 5, 6 } };
             AssertionFailure[] failures = Capture(() => Assert.AreEqual(array1, array2));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
         }
 
         #endregion
@@ -144,7 +144,7 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(() =>
                 Assert.AreApproximatelyEqual(2.4, 2.5, 0.05));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("2.4", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("2.5", failures[0].LabeledValues[1].FormattedValue.ToString());
             Assert.AreEqual("0.05", failures[0].LabeledValues[2].FormattedValue.ToString());
@@ -155,7 +155,7 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(() =>
                 Assert.AreApproximatelyEqual(2.4, 2.5, 0.05, "{0} message", "custom"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("2.4", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("2.5", failures[0].LabeledValues[1].FormattedValue.ToString());
             Assert.AreEqual("0.05", failures[0].LabeledValues[2].FormattedValue.ToString());
@@ -177,7 +177,7 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(() =>
                 Assert.AreNotApproximatelyEqual(2.4, 2.5, 0.2));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("2.4", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("2.5", failures[0].LabeledValues[1].FormattedValue.ToString());
             Assert.AreEqual("0.2", failures[0].LabeledValues[2].FormattedValue.ToString());
@@ -188,7 +188,7 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(() =>
                 Assert.AreNotApproximatelyEqual(2.4, 2.5, 0.2, "{0} message", "custom"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("2.4", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("2.5", failures[0].LabeledValues[1].FormattedValue.ToString());
             Assert.AreEqual("0.2", failures[0].LabeledValues[2].FormattedValue.ToString());

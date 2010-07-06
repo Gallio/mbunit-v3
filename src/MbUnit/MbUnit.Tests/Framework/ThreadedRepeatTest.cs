@@ -42,7 +42,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(TestOutcome.Failed, testRun.Result.Outcome);
 
             IList<TestStepRun> testSteps = testRun.Children;
-            Assert.AreEqual(10, testSteps.Count, "Expected 10 repetitions represented as steps.");
+            Assert.Count(10, testSteps, "Expected 10 repetitions represented as steps.");
 
             for (int i = 0; i < 10; i++)
             {
@@ -71,13 +71,13 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(TestOutcome.Failed, fixtureRun.Result.Outcome);
 
             IList<TestStepRun> fixtureSteps = fixtureRun.Children;
-            Assert.AreEqual(10, fixtureSteps.Count, "Expected 10 repetitions represented as steps.");
+            Assert.Count(10, fixtureSteps, "Expected 10 repetitions represented as steps.");
 
             for (int i = 0; i < 10; i++)
             {
                 string name = "Threaded Repetition #" + (i + 1);
                 TestStepRun fixtureStep = GenericCollectionUtils.Find(fixtureSteps, candidate => candidate.Step.Name == name);
-                Assert.AreEqual(1, fixtureStep.Children.Count);
+                Assert.Count(1, fixtureStep.Children);
 
                 TestStepRun testRun = fixtureStep.Children[0];
                 AssertLogContains(testRun, "Run: " + name);

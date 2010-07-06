@@ -81,7 +81,7 @@ namespace MbUnit.Tests.Framework
         public void Count_fail(IEnumerable values)
         {
             AssertionFailure[] failures = Capture(() => Assert.Count(666, GetEnumeration()));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.Like(failures[0].Description, @"^Expected the (sequence|collection|array) to contain a certain number of elements.$");
             Assert.AreEqual("Expected Value", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("666", failures[0].LabeledValues[0].FormattedValue.ToString());

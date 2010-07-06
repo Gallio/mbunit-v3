@@ -34,7 +34,7 @@ namespace MbUnit.Tests.Integration
             Assert.Multiple(() =>
             {
                 Assert.IsNotNull(run);
-                Assert.AreEqual(0, run.Children.Count);
+                Assert.Count(0, run.Children);
 
                 Assert.AreEqual(TestOutcome.Skipped, run.Result.Outcome);
                 AssertLogContains(run, "Test skipped because it is parameterized but no data was provided.", MarkupStreamNames.Warnings);

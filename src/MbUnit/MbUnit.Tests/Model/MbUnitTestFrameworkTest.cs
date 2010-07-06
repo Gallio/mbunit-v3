@@ -65,7 +65,7 @@ namespace MbUnit.Tests.Model
             Assert.IsNull(rootTest.Parent);
             Assert.AreEqual(TestKinds.Root, rootTest.Kind);
             Assert.IsNull(rootTest.CodeElement);
-            Assert.AreEqual(1, rootTest.Children.Count);
+            Assert.Count(1, rootTest.Children);
 
             Test assemblyTest = rootTest.Children[0];
             Assert.AreSame(rootTest, assemblyTest.Parent);
@@ -82,7 +82,7 @@ namespace MbUnit.Tests.Model
             Assert.AreEqual(CodeReference.CreateFromType(typeof(SimpleTest)), typeTest.CodeElement.CodeReference);
             Assert.AreEqual(typeof(SimpleTest), ((ITypeInfo) typeTest.CodeElement).Resolve(true));
             Assert.AreEqual("SimpleTest", typeTest.Name);
-            Assert.AreEqual(2, typeTest.Children.Count);
+            Assert.Count(2, typeTest.Children);
 
             Test passTest = GetDescendantByName(typeTest, "Pass");
             Assert.IsNotNull(passTest, "Could not find the Pass test.");

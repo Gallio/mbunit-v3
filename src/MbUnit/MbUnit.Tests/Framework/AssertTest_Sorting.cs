@@ -137,12 +137,12 @@ namespace MbUnit.Tests.Framework
                     break;
                 
                 case ExpectedResult.Unsorted:
-                    Assert.AreEqual(1, failures.Length);
+                    Assert.Count(1, failures);
                     Assert.AreEqual("Expected the elements to be sorted in a specific order but the sequence of values mismatches at one position at least.", failures[0].Description);
                     break;
                 
                 case ExpectedResult.Uncomparable:
-                    Assert.AreEqual(1, failures.Length);
+                    Assert.Count(1, failures);
                     Assert.AreEqual("Expected the elements to be sorted in a specific order but no implicit ordering comparison can be found for the subject type.", failures[0].Description);
                     break;
             }
@@ -167,7 +167,7 @@ namespace MbUnit.Tests.Framework
                     break;
 
                 case ExpectedResult.Unsorted:
-                    Assert.AreEqual(1, failures.Length);
+                    Assert.Count(1, failures);
                     Assert.AreEqual("Expected the elements to be sorted in a specific order but the sequence of values mismatches at one position at least.", failures[0].Description);
                     break;
             }

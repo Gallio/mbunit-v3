@@ -42,7 +42,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
                 {8, 9}
             };
 
-            Assert.AreEqual(3, collection.Count());
+            Assert.Count(3, collection);
             Assert.AreElementsEqual(new[] { 1, 2, 3 }, collection.ElementAt(0));
             Assert.AreElementsEqual(new[] { 4, 5, 6, 7 }, collection.ElementAt(1));
             Assert.AreElementsEqual(new[] { 8, 9 }, collection.ElementAt(2));
@@ -66,7 +66,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         public void ConstructWithParameter()
         {
             var collection = new EquivalenceClassCollection<int>(new[] { 1, 2, 3 });
-            Assert.AreEqual(3, collection.Count());
+            Assert.Count(3, collection);
             Assert.AreElementsEqual(new[] { 1 }, collection.ElementAt(0));
             Assert.AreElementsEqual(new[] { 2 }, collection.ElementAt(1));
             Assert.AreElementsEqual(new[] { 3 }, collection.ElementAt(2));

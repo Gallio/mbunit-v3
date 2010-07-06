@@ -72,7 +72,7 @@ namespace MbUnit.Tests.Integration
         public void WhenFixtureSetUpFails_TestDoesNotRun()
         {
             var fixtureRun = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromType(typeof(FixtureWithFailingFixtureSetUp)));
-            Assert.AreEqual(0, fixtureRun.Children.Count);
+            Assert.Count(0, fixtureRun.Children);
         }
 
         [Test]

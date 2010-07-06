@@ -134,11 +134,11 @@ namespace MbUnit.Tests.Framework
         {
             TestData factoryData = Runner.GetTestData(CodeReference.CreateFromMember(
                 typeof(DynamicSample).GetMethod("Factory")));
-            Assert.AreEqual(0, factoryData.Children.Count);
+            Assert.Count(0, factoryData.Children);
 
             TestStepRun factoryRun = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(
                 typeof(DynamicSample).GetMethod("Factory")));
-            Assert.AreEqual(1, factoryRun.Children.Count);
+            Assert.Count(1, factoryRun.Children);
 
             TestStepRun suiteRun = factoryRun.Children[0];
             Assert.AreEqual("Suite", suiteRun.Step.Name);
@@ -150,7 +150,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("Me", suiteRun.Step.Metadata.GetValue(MetadataKeys.AuthorName));
             Assert.AreEqual(TestKinds.Suite, suiteRun.Step.Metadata.GetValue(MetadataKeys.TestKind));
             Assert.AreEqual("*** Log ***\n\nSuiteSetUp\nSuiteTearDown\n", suiteRun.TestLog.ToString());
-            Assert.AreEqual(3, suiteRun.Children.Count);
+            Assert.Count(3, suiteRun.Children);
 
             // Order matters.
             TestStepRun test1Run = suiteRun.Children[0];
@@ -182,7 +182,7 @@ namespace MbUnit.Tests.Framework
         public void StaticRun()
         {
             TestData fixtureData = Runner.GetTestData(CodeReference.CreateFromType(typeof(StaticSample)));
-            Assert.AreEqual(1, fixtureData.Children.Count);
+            Assert.Count(1, fixtureData.Children);
 
             TestData suiteData = fixtureData.Children[0];
             Assert.AreEqual("Suite", suiteData.Name);
@@ -190,7 +190,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("System.Int32", suiteData.CodeReference.TypeName);
             Assert.AreEqual("Me", suiteData.Metadata.GetValue(MetadataKeys.AuthorName));
             Assert.AreEqual(TestKinds.Suite, suiteData.Metadata.GetValue(MetadataKeys.TestKind));
-            Assert.AreEqual(3, suiteData.Children.Count);
+            Assert.Count(3, suiteData.Children);
 
             // Order matters.
             TestData test1Data = suiteData.Children[0];
@@ -203,7 +203,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("Test2", test2Data.Name);
 
             TestStepRun fixtureRun = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromType(typeof(StaticSample)));
-            Assert.AreEqual(1, fixtureRun.Children.Count);
+            Assert.Count(1, fixtureRun.Children);
 
             TestStepRun suiteRun = fixtureRun.Children[0];
             Assert.AreEqual("Suite", suiteRun.Step.Name);
@@ -215,7 +215,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("Me", suiteRun.Step.Metadata.GetValue(MetadataKeys.AuthorName));
             Assert.AreEqual(TestKinds.Suite, suiteRun.Step.Metadata.GetValue(MetadataKeys.TestKind));
             Assert.AreEqual("*** Log ***\n\nSuiteSetUp\nSuiteTearDown\n", suiteRun.TestLog.ToString());
-            Assert.AreEqual(3, suiteRun.Children.Count);
+            Assert.Count(3, suiteRun.Children);
 
             // Order matters.
             TestStepRun test1Run = suiteRun.Children[0];

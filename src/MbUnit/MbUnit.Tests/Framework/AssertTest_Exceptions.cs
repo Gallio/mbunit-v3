@@ -105,10 +105,10 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(()
                 => Assert.Throws<InvalidOperationException>(() => { }));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.IsNull(failures[0].Message);
             Assert.AreEqual("Expected the block to throw an exception.", failures[0].Description);
-            Assert.AreEqual(0, failures[0].Exceptions.Count);
+            Assert.Count(0, failures[0].Exceptions);
         }
 
         [Test]
@@ -116,10 +116,10 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(()
                 => Assert.Throws<InvalidOperationException>(() => { }, "Hello {0}", "World"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Hello World", failures[0].Message);
             Assert.AreEqual("Expected the block to throw an exception.", failures[0].Description);
-            Assert.AreEqual(0, failures[0].Exceptions.Count);
+            Assert.Count(0, failures[0].Exceptions);
         }
 
         [Test]
@@ -127,10 +127,10 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(()
                 => Assert.Throws(typeof(InvalidOperationException), () => { }));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.IsNull(failures[0].Message);
             Assert.AreEqual("Expected the block to throw an exception.", failures[0].Description);
-            Assert.AreEqual(0, failures[0].Exceptions.Count);
+            Assert.Count(0, failures[0].Exceptions);
         }
 
         [Test]
@@ -138,10 +138,10 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(()
                 => Assert.Throws(typeof(InvalidOperationException), () => { }, "Hello {0}", "World"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Hello World", failures[0].Message);
             Assert.AreEqual("Expected the block to throw an exception.", failures[0].Description);
-            Assert.AreEqual(0, failures[0].Exceptions.Count);
+            Assert.Count(0, failures[0].Exceptions);
         }
 
         [Test]
@@ -149,10 +149,10 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(()
                 => Assert.Throws<InvalidOperationException>(() => { throw new Exception("Wrong exception type."); }));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.IsNull(failures[0].Message);
             Assert.AreEqual("The block threw an exception of a different type than was expected.", failures[0].Description);
-            Assert.AreEqual(1, failures[0].Exceptions.Count);
+            Assert.Count(1, failures[0].Exceptions);
             Assert.AreEqual("Wrong exception type.", failures[0].Exceptions[0].Message);
         }
 
@@ -161,10 +161,10 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(()
                 => Assert.Throws<InvalidOperationException>(() => { throw new NotSupportedException("Wrong exception type."); }));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.IsNull(failures[0].Message);
             Assert.AreEqual("The block threw an exception of a different type than was expected.", failures[0].Description);
-            Assert.AreEqual(1, failures[0].Exceptions.Count);
+            Assert.Count(1, failures[0].Exceptions);
             Assert.AreEqual("Wrong exception type.", failures[0].Exceptions[0].Message);
         }
 
@@ -192,10 +192,10 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(()
                 => Assert.DoesNotThrow(() => { throw new NotSupportedException("Boom."); }));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.IsNull(failures[0].Message);
             Assert.AreEqual("The block threw an exception but none was expected.", failures[0].Description);
-            Assert.AreEqual(1, failures[0].Exceptions.Count);
+            Assert.Count(1, failures[0].Exceptions);
             Assert.AreEqual("Boom.", failures[0].Exceptions[0].Message);
         }
 
@@ -204,7 +204,7 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(()
                 => Assert.DoesNotThrow(() => { throw new NotSupportedException("Boom."); }, "Hello {0}", "World"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Hello World", failures[0].Message);
             Assert.AreEqual("The block threw an exception but none was expected.", failures[0].Description);
             Assert.AreEqual("Boom.", failures[0].Exceptions[0].Message);
@@ -240,7 +240,7 @@ namespace MbUnit.Tests.Framework
                 {
                     throw new InvalidOperationException("Exception");
                 }));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.IsNull(failures[0].Message);
             Assert.AreEqual("The block threw an exception of the expected type, but having no inner expection.", failures[0].Description);
         }
@@ -253,7 +253,7 @@ namespace MbUnit.Tests.Framework
                 {
                     throw new InvalidOperationException("Exception", new NotSupportedException());
                 }));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.IsNull(failures[0].Message);
             Assert.AreEqual("The block threw an exception of the expected type, but having an unexpected inner expection.", failures[0].Description);
         }

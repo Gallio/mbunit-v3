@@ -38,7 +38,7 @@ namespace MbUnit.Tests.Framework
         public void VerifySampleOutput(string sampleName, string expectedOutput)
         {
             TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(BinaryDataSample).GetMethod(sampleName)));
-            Assert.AreEqual(1, run.Children.Count, "Different number of runs than expected.");
+            Assert.Count(1, run.Children, "Different number of runs than expected.");
             AssertLogContains(run.Children[0], expectedOutput);
         }
 

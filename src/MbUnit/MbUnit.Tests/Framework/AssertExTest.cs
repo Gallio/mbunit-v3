@@ -38,7 +38,7 @@ namespace MbUnit.Tests.Framework
                 () => AssertEx.That(() => true,
                     "Hello {0}.", "World"));
 
-            Assert.AreEqual(0, failures.Length);
+            Assert.Count(0, failures);
         }
 
 
@@ -50,7 +50,7 @@ namespace MbUnit.Tests.Framework
                 () => AssertEx.That(() => x == 5,
                     "Hello {0}.", "World"));
 
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected the condition to evaluate to true.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
             Assert.AreElementsEqual(new[] 
@@ -59,7 +59,7 @@ namespace MbUnit.Tests.Framework
                     new AssertionFailure.LabeledValue("x", "4")
                 }, failures[0].LabeledValues);
 
-            Assert.AreEqual(0, failures[0].InnerFailures.Count);
+            Assert.Count(0, failures[0].InnerFailures);
         }
 
         [Test, Explicit("Examples for manual inspection.")]

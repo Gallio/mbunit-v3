@@ -51,7 +51,7 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(()
                 => Assert.AreElementsEqual(new[] { 1, 2 }, new List<int> { 2, 1 }));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected elements to be equal but they differ in at least one position.", failures[0].Description);
             Assert.AreEqual("Expected Sequence", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("[1, 2]", failures[0].LabeledValues[0].FormattedValue.ToString());
@@ -69,7 +69,7 @@ namespace MbUnit.Tests.Framework
         public void AreElementsEqual_fails_with_custom_message()
         {
             AssertionFailure[] failures = Capture(() => Assert.AreElementsEqual("1", "2", "{0} message", "custom"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("custom message", failures[0].Message);
         }
 
@@ -99,7 +99,7 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(()
                 => Assert.AreElementsNotEqual(new[] { 1, 2 }, new List<int> { 1, 2 }));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected the unexpected and actual sequence to have different elements but all elements were equal.", failures[0].Description);
             Assert.AreEqual("Unexpected Sequence", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("[1, 2]", failures[0].LabeledValues[0].FormattedValue.ToString());
@@ -111,7 +111,7 @@ namespace MbUnit.Tests.Framework
         public void AreElementsNotEqual_fails_with_custom_message()
         {
             AssertionFailure[] failures = Capture(() => Assert.AreElementsNotEqual("2", "2", "{0} message", "custom"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("custom message", failures[0].Message);
         }
 
@@ -141,7 +141,7 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(()
                 => Assert.AreElementsEqualIgnoringOrder(new[] { 1, 2, 3, 2, 3, 1 }, new List<int> { 4, 2, 1, 1, 4, 1, 4 }));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected elements to be equal but possibly in a different order.", failures[0].Description);
             Assert.AreEqual("Equal Elements", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("[1, 1, 2]", failures[0].LabeledValues[0].FormattedValue.ToString());
@@ -155,7 +155,7 @@ namespace MbUnit.Tests.Framework
         public void AreElementsEqualIgnoringOrder_fails_with_custom_message()
         {
             AssertionFailure[] failures = Capture(() => Assert.AreElementsEqualIgnoringOrder("1", "2", "{0} message", "custom"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("custom message", failures[0].Message);
         }
 
@@ -185,7 +185,7 @@ namespace MbUnit.Tests.Framework
             var o2 = new object();
             AssertionFailure[] failures = Capture(()
                 => Assert.AreElementsSame(new[] { o1, o2 }, new List<object> { o2, o1 }));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected elements to be referentially equal but they differ in at least one position.", failures[0].Description);
         }
 
@@ -195,7 +195,7 @@ namespace MbUnit.Tests.Framework
             var o1 = new object();
             var o2 = new object();
             AssertionFailure[] failures = Capture(() => Assert.AreElementsSame(new[] { o1 }, new[] { o2 }, "{0} message", "custom"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("custom message", failures[0].Message);
         }
 
@@ -224,7 +224,7 @@ namespace MbUnit.Tests.Framework
         {
             var o = new object();
             AssertionFailure[] failures = Capture(() => Assert.AreElementsNotSame(new[] { o }, new[] { o }, "{0} message", "custom"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("custom message", failures[0].Message);
         }
 
@@ -250,7 +250,7 @@ namespace MbUnit.Tests.Framework
             var o4 = new object();
             AssertionFailure[] failures = Capture(()
                 => Assert.AreElementsSameIgnoringOrder(new[] { o1, o2, o3, o2, o3, o1 }, new List<object> { o4, o2, o1, o1, o4, o1, o4 }));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected elements to be referentially equal but possibly in a different order.", failures[0].Description);
         }
 
@@ -260,7 +260,7 @@ namespace MbUnit.Tests.Framework
             var o1 = new object();
             var o2 = new object();
             AssertionFailure[] failures = Capture(() => Assert.AreElementsSameIgnoringOrder(new[] { o1 }, new[] { o2 }, "{0} message", "custom"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("custom message", failures[0].Message);
         }
 
@@ -290,7 +290,7 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(() =>
                 Assert.Contains(new List<int>(listItems), 4));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected the value to appear within the enumeration.", failures[0].Description);
             Assert.AreEqual("Expected Value", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("4", failures[0].LabeledValues[0].FormattedValue.ToString());
@@ -305,7 +305,7 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = Capture(() =>
                 Assert.Contains(new List<string>(listItems), testValue));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected the value to appear within the enumeration.", failures[0].Description);
             Assert.AreEqual("Expected Value", failures[0].LabeledValues[0].Label);
             Assert.AreEqual(expectedLabledValue, failures[0].LabeledValues[0].FormattedValue.ToString());
@@ -333,7 +333,7 @@ namespace MbUnit.Tests.Framework
             };
             AssertionFailure[] failures = Capture(() =>
                 Assert.ContainsKey(dictionary, 0));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected the key to appear within the dictionary.", failures[0].Description);
             Assert.AreEqual("Expected Key", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("0", failures[0].LabeledValues[0].FormattedValue.ToString());
@@ -351,7 +351,7 @@ namespace MbUnit.Tests.Framework
             };
             AssertionFailure[] failures = Capture(() =>
                 Assert.ContainsKey(dictionary, new List<int>(new[] { 5 }), "{0} message.", "custom"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected the key to appear within the dictionary.", failures[0].Description);
             Assert.AreEqual("Expected Key", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("[5]", failures[0].LabeledValues[0].FormattedValue.ToString());
@@ -376,7 +376,7 @@ namespace MbUnit.Tests.Framework
         {
             var data = new[] { "Athos", "Porthos", "Aramis" };
             AssertionFailure[] failures = Capture(() => Assert.ForAll(data, x => x.StartsWith("A")));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected all the elements of the sequence to meet the specified condition, but at least one failed.", failures[0].Description);
         }
 
@@ -396,7 +396,7 @@ namespace MbUnit.Tests.Framework
         {
             var data = new[] { "Athos", "Porthos", "Aramis" };
             AssertionFailure[] failures = Capture(() => Assert.Exists(data, x => x == "D'Artagnan"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected at least one element of the sequence to meet the specified condition, but none passed.", failures[0].Description);
         }
 

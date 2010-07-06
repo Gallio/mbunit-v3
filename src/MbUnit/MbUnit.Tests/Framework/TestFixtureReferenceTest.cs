@@ -50,18 +50,18 @@ namespace MbUnit.Tests.Framework
         public void StaticRun()
         {
             TestData fixtureTest = Runner.GetTestData(CodeReference.CreateFromType(typeof(StaticSample)));
-            Assert.AreEqual(1, fixtureTest.Children.Count);
+            Assert.Count(1, fixtureTest.Children);
 
             TestData referenceData = fixtureTest.Children[0];
             Assert.AreEqual("ReferencedFixture", referenceData.Name);
             Assert.IsFalse(referenceData.IsTestCase);
-            Assert.AreEqual(1, referenceData.Children.Count);
+            Assert.Count(1, referenceData.Children);
 
             TestData testData = referenceData.Children[0];
             Assert.AreEqual("Test", testData.Name);
 
             TestStepRun fixtureRun = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromType(typeof(StaticSample)));
-            Assert.AreEqual(1, fixtureRun.Children.Count);
+            Assert.Count(1, fixtureRun.Children);
 
             TestStepRun suiteRun = fixtureRun.Children[0];
             Assert.AreEqual("ReferencedFixture", suiteRun.Step.Name);
@@ -69,7 +69,7 @@ namespace MbUnit.Tests.Framework
             Assert.IsTrue(suiteRun.Step.IsPrimary);
             Assert.IsFalse(suiteRun.Step.IsTestCase);
             Assert.AreEqual("", suiteRun.TestLog.ToString());
-            Assert.AreEqual(1, suiteRun.Children.Count);
+            Assert.Count(1, suiteRun.Children);
 
             TestStepRun testRun = suiteRun.Children[0];
             Assert.AreEqual("Test", testRun.Step.Name);

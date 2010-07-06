@@ -93,8 +93,8 @@ namespace MbUnit.Tests.Framework
 
             if (expectedErrors > 0)
             {
-                Assert.AreEqual(1, failures.Length);
-                Assert.AreEqual(expectedErrors, failures[0].InnerFailures.Count());
+                Assert.Count(1, failures);
+                Assert.Count(expectedErrors, failures[0].InnerFailures);
             }
             else
             {

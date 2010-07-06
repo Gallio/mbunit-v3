@@ -34,7 +34,7 @@ namespace MbUnit.Tests.Framework
         public void AreEqualIgnoreCase_fails_when_simple_values_different()
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.AreEqual("test", "tEsm", StringComparison.InvariantCultureIgnoreCase));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected values to be equal according to string comparison type.", failures[0].Description);
             Assert.AreEqual("Comparison Type", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("InvariantCultureIgnoreCase", failures[0].LabeledValues[0].FormattedValue.ToString());
@@ -48,7 +48,7 @@ namespace MbUnit.Tests.Framework
         public void AreEqualIgnoreCase_fails_when_one_of_the_values_is_null()
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.AreEqual("test", null, StringComparison.InvariantCultureIgnoreCase));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("InvariantCultureIgnoreCase", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("\"test\"", failures[0].LabeledValues[1].FormattedValue.ToString());
             Assert.AreEqual("null", failures[0].LabeledValues[2].FormattedValue.ToString());
@@ -59,7 +59,7 @@ namespace MbUnit.Tests.Framework
         public void AreEqualIgnoreCase_fails_with_custom_message()
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.AreEqual(null, "test", "{0} message {1}", "MB1", "Mb2", StringComparison.InvariantCultureIgnoreCase));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("null", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("\"test\"", failures[0].LabeledValues[1].FormattedValue.ToString());
             Assert.AreEqual("MB1 message Mb2", failures[0].Message);
@@ -98,14 +98,14 @@ namespace MbUnit.Tests.Framework
         public void FullMatch_fails_when_testValue_is_null()
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.FullMatch(null, new Regex(@"[\d]{6}")));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
         }
 
         [Test]
         public void FullMatch_fails_when_testValue_does_not_match_regex_pattern()
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.FullMatch("mbTest", new Regex(@"[\d]{6}")));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected a string to exactly match a regular expression pattern.", failures[0].Description);
             Assert.AreEqual("Actual Value", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("\"mbTest\"", failures[0].LabeledValues[0].FormattedValue.ToString());
@@ -117,7 +117,7 @@ namespace MbUnit.Tests.Framework
         public void FullMatch_fails_when_testValue_matches_regex_pattern_but_lenght_is_different()
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.FullMatch("mbTest", new Regex(@"[\w]{7}")));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("\"mbTest\"", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("\"[\\\\w]{7}\"", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
@@ -126,7 +126,7 @@ namespace MbUnit.Tests.Framework
         public void FullMatch_fail_test_with_custom_message()
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.FullMatch("mbTest", new Regex(@"[\w]{7}"), "{0} message {1}", "MB1", "Mb2"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("MB1 message Mb2", failures[0].Message);
         }
 
@@ -150,7 +150,7 @@ namespace MbUnit.Tests.Framework
         public void Like_fails_when_testValue_is_null()
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.Like(null, new Regex(@"[\d]+")));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
         }
 
         [Test, ExpectedArgumentNullException]
@@ -171,7 +171,7 @@ namespace MbUnit.Tests.Framework
         public void Like_fails_when_testValue_does_not_match_regex_pattern()
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.Like("mbTest", new Regex(@"[\d]+")));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected a string to contain a full or partial match of a regular expression pattern.", failures[0].Description);
             Assert.AreEqual("Actual Value", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("\"mbTest\"", failures[0].LabeledValues[0].FormattedValue.ToString());
@@ -183,7 +183,7 @@ namespace MbUnit.Tests.Framework
         public void Like_fail_test_with_custom_message()
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.Like("mbTest", new Regex(@"[\w]{7}"), "{0} message {1}", "MB1", "Mb2"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("MB1 message Mb2", failures[0].Message);
         }
 
@@ -207,7 +207,7 @@ namespace MbUnit.Tests.Framework
         public void NotLike_fails_when_testValue_is_null()
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.NotLike(null, new Regex(@"[\w]+")));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
         }
 
         [Test, ExpectedArgumentNullException]
@@ -228,7 +228,7 @@ namespace MbUnit.Tests.Framework
         public void NotLike_fails_when_testValue_does_not_match_regex_pattern()
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.NotLike("mbTest", new Regex(@"[\w]+")));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected a string to not contain a full or partial match of a regular expression pattern.", failures[0].Description);
             Assert.AreEqual("Actual Value", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("\"mbTest\"", failures[0].LabeledValues[0].FormattedValue.ToString());
@@ -240,7 +240,7 @@ namespace MbUnit.Tests.Framework
         public void NotLike_fail_test_with_custom_message()
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.NotLike("mbTest", new Regex(@"[\w]{6}"), "{0} message {1}", "MB1", "Mb2"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("MB1 message Mb2", failures[0].Message);
         }
 
@@ -258,7 +258,7 @@ namespace MbUnit.Tests.Framework
         public void StartsWith_fails_when_testValue_is_null()
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.StartsWith(null, ""));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
         }
 
         [Test, ExpectedArgumentNullException]
@@ -271,7 +271,7 @@ namespace MbUnit.Tests.Framework
         public void StartsWith_fails_when_testValue_does_not_start_with_pattern()
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.StartsWith("mbTest", "jb"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected string to start with the specified text.", failures[0].Description);
             Assert.AreEqual("Actual Value", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("\"mbTest\"", failures[0].LabeledValues[0].FormattedValue.ToString());
@@ -283,7 +283,7 @@ namespace MbUnit.Tests.Framework
         public void StartsWith_fail_test_with_custom_message()
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.StartsWith("mbTest", "jb", "{0} message {1}", "MB1", "Mb2"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("MB1 message Mb2", failures[0].Message);
         }
 
@@ -301,7 +301,7 @@ namespace MbUnit.Tests.Framework
         public void EndsWith_fails_when_testValue_is_null()
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.EndsWith(null, ""));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
         }
 
         [Test, ExpectedArgumentNullException]
@@ -314,7 +314,7 @@ namespace MbUnit.Tests.Framework
         public void EndsWith_fails_when_testValue_does_not_start_with_pattern()
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.EndsWith("mbTest", "jb"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected string to end with the specified text.", failures[0].Description);
             Assert.AreEqual("Actual Value", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("\"mbTest\"", failures[0].LabeledValues[0].FormattedValue.ToString());
@@ -326,7 +326,7 @@ namespace MbUnit.Tests.Framework
         public void EndsWith_fail_test_with_custom_message()
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.EndsWith("mbTest", "jb", "{0} message {1}", "MB1", "Mb2"));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("MB1 message Mb2", failures[0].Message);
         }
 

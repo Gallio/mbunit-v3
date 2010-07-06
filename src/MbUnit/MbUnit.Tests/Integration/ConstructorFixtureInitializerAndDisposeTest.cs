@@ -73,7 +73,7 @@ namespace MbUnit.Tests.Integration
         public void WhenConstructorFails_TestDoesNotRun()
         {
             var fixtureRun = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromType(typeof(FixtureWithFailingConstructor)));
-            Assert.AreEqual(0, fixtureRun.Children.Count);
+            Assert.Count(0, fixtureRun.Children);
         }
 
         [Test]
@@ -92,7 +92,7 @@ namespace MbUnit.Tests.Integration
         public void WhenFixtureInitializerFails_TestDoesNotRun()
         {
             var fixtureRun = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromType(typeof(FixtureWithFailingFixtureInitializer)));
-            Assert.AreEqual(0, fixtureRun.Children.Count);
+            Assert.Count(0, fixtureRun.Children);
         }
 
         [Test]

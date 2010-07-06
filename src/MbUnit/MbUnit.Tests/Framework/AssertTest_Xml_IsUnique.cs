@@ -78,7 +78,7 @@ namespace MbUnit.Tests.Framework
         {
             var xml = GetTextResource("MbUnit.Tests.Framework.SolarSystem.xml");
             AssertionFailure[] failures = Capture(() => Assert.Xml.IsUnique(xml, XmlPath.Element("SolarSystem").Element("Moons"), XmlOptions.Default));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected the XML fragment to contain only once the searched XML element or attribute, but none was found.", failures[0].Description);
             Assert.AreEqual("/SolarSystem/Moons", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("0", failures[0].LabeledValues[1].FormattedValue.ToString());
@@ -89,7 +89,7 @@ namespace MbUnit.Tests.Framework
         {
             var xml = GetTextResource("MbUnit.Tests.Framework.SolarSystem.xml");
             AssertionFailure[] failures = Capture(() => Assert.Xml.IsUnique(xml, XmlPath.Element("SolarSystem").Element("Planets").Element("Planet"), XmlOptions.Default));
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected the XML fragment to contain only once the searched XML element or attribute, But several were found.", failures[0].Description);
             Assert.AreEqual("/SolarSystem/Planets/Planet", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("8", failures[0].LabeledValues[1].FormattedValue.ToString());

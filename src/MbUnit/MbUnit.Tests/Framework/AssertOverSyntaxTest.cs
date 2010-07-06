@@ -32,7 +32,7 @@ namespace MbUnit.Tests.Framework
                 () => Assert.Over.Pairs((int[]) null, (int[]) null, Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
-            Assert.AreEqual(0, failures.Length);
+            Assert.Count(0, failures);
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace MbUnit.Tests.Framework
                 () => Assert.Over.Pairs(new int[] { }, new int[] { }, Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
-            Assert.AreEqual(0, failures.Length);
+            Assert.Count(0, failures);
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace MbUnit.Tests.Framework
                 () => Assert.Over.Pairs(new[] { 1, 2, 3 }, new[] { -1, 2, 0 }, Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
-            Assert.AreEqual(0, failures.Length);
+            Assert.Count(0, failures);
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace MbUnit.Tests.Framework
                 () => Assert.Over.Pairs(new[] { 1, 2, 3 }, new[] { -1, 2, 4 }, Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Assertion failed on two values at a particular index within both sequences.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
             Assert.AreElementsEqual(new[] 
@@ -72,7 +72,7 @@ namespace MbUnit.Tests.Framework
                     new AssertionFailure.LabeledValue("Right Sequence", "[-1, 2, 4]")
                 }, failures[0].LabeledValues);
 
-            Assert.AreEqual(1, failures[0].InnerFailures.Count);
+            Assert.Count(1, failures[0].InnerFailures);
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace MbUnit.Tests.Framework
                 () => Assert.Over.Pairs(new[] { 1, 2 }, new[] { -1, 2, 4 }, Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected the left and right sequences to have the same number of elements.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
             Assert.AreElementsEqual(new[] 
@@ -93,7 +93,7 @@ namespace MbUnit.Tests.Framework
                     new AssertionFailure.LabeledValue("Right Sequence", "[-1, 2, 4]")
                 }, failures[0].LabeledValues);
 
-            Assert.AreEqual(0, failures[0].InnerFailures.Count);
+            Assert.Count(0, failures[0].InnerFailures);
         }
 
         [Test]
@@ -103,7 +103,7 @@ namespace MbUnit.Tests.Framework
                 () => Assert.Over.Pairs(new[] { 1, 2, 5, 0 }, new[] { -1, 2, 4 }, Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected the left and right sequences to have the same number of elements.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
             Assert.AreElementsEqual(new[] 
@@ -114,7 +114,7 @@ namespace MbUnit.Tests.Framework
                     new AssertionFailure.LabeledValue("Right Sequence", "[-1, 2, 4]")
                 }, failures[0].LabeledValues);
 
-            Assert.AreEqual(0, failures[0].InnerFailures.Count);
+            Assert.Count(0, failures[0].InnerFailures);
         }
 
         [Test]
@@ -124,7 +124,7 @@ namespace MbUnit.Tests.Framework
                 () => Assert.Over.Pairs((int[])null, new[] { -1, 2, 4 }, Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected the left and right sequences to either both be null or both be non-null.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
             Assert.AreElementsEqual(new[] 
@@ -133,7 +133,7 @@ namespace MbUnit.Tests.Framework
                     new AssertionFailure.LabeledValue("Right Sequence", "[-1, 2, 4]")
                 }, failures[0].LabeledValues);
 
-            Assert.AreEqual(0, failures[0].InnerFailures.Count);
+            Assert.Count(0, failures[0].InnerFailures);
         }
 
         [Test]
@@ -143,7 +143,7 @@ namespace MbUnit.Tests.Framework
                 () => Assert.Over.Pairs(new[] { -1, 2, 4 }, (int[])null, Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected the left and right sequences to either both be null or both be non-null.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
             Assert.AreElementsEqual(new[] 
@@ -152,7 +152,7 @@ namespace MbUnit.Tests.Framework
                     new AssertionFailure.LabeledValue("Right Sequence", "null")
                 }, failures[0].LabeledValues);
 
-            Assert.AreEqual(0, failures[0].InnerFailures.Count);
+            Assert.Count(0, failures[0].InnerFailures);
         }
 
         [Test]
@@ -165,7 +165,7 @@ namespace MbUnit.Tests.Framework
                     Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
-            Assert.AreEqual(0, failures.Length);
+            Assert.Count(0, failures);
         }
 
         [Test]
@@ -178,7 +178,7 @@ namespace MbUnit.Tests.Framework
                     Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
-            Assert.AreEqual(0, failures.Length);
+            Assert.Count(0, failures);
         }
 
         [Test]
@@ -191,7 +191,7 @@ namespace MbUnit.Tests.Framework
                     Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
-            Assert.AreEqual(0, failures.Length);
+            Assert.Count(0, failures);
         }
 
         [Test]
@@ -204,7 +204,7 @@ namespace MbUnit.Tests.Framework
                     Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Assertion failed on two pairs with a particular key in both dictionaries.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
             Assert.AreElementsEqual(new[] 
@@ -214,7 +214,7 @@ namespace MbUnit.Tests.Framework
                     new AssertionFailure.LabeledValue("Right Dictionary", "[1: \"a\", 2: \"c\"]")
                 }, failures[0].LabeledValues);
 
-            Assert.AreEqual(1, failures[0].InnerFailures.Count);
+            Assert.Count(1, failures[0].InnerFailures);
         }
 
         [Test]
@@ -227,7 +227,7 @@ namespace MbUnit.Tests.Framework
                     Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected the left and right dictionaries to have the same number of items.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
             Assert.AreElementsEqual(new[] 
@@ -238,7 +238,7 @@ namespace MbUnit.Tests.Framework
                     new AssertionFailure.LabeledValue("Right Dictionary", "[1: \"a\", 2: \"b\"]")
                 }, failures[0].LabeledValues);
 
-            Assert.AreEqual(0, failures[0].InnerFailures.Count);
+            Assert.Count(0, failures[0].InnerFailures);
         }
 
         [Test]
@@ -251,7 +251,7 @@ namespace MbUnit.Tests.Framework
                     Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected the left and right dictionaries to have the same number of items.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
             Assert.AreElementsEqual(new[] 
@@ -262,7 +262,7 @@ namespace MbUnit.Tests.Framework
                     new AssertionFailure.LabeledValue("Right Dictionary", "[2: \"b\"]")
                 }, failures[0].LabeledValues);
 
-            Assert.AreEqual(0, failures[0].InnerFailures.Count);
+            Assert.Count(0, failures[0].InnerFailures);
         }
 
         [Test]
@@ -275,7 +275,7 @@ namespace MbUnit.Tests.Framework
                     Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected the left and right dictionaries to either both be null or both be non-null.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
             Assert.AreElementsEqual(new[] 
@@ -284,7 +284,7 @@ namespace MbUnit.Tests.Framework
                     new AssertionFailure.LabeledValue("Right Dictionary", "[]")
                 }, failures[0].LabeledValues);
 
-            Assert.AreEqual(0, failures[0].InnerFailures.Count);
+            Assert.Count(0, failures[0].InnerFailures);
         }
 
         [Test]
@@ -297,7 +297,7 @@ namespace MbUnit.Tests.Framework
                     Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Expected the left and right dictionaries to either both be null or both be non-null.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
             Assert.AreElementsEqual(new[] 
@@ -306,7 +306,7 @@ namespace MbUnit.Tests.Framework
                     new AssertionFailure.LabeledValue("Right Dictionary", "null")
                 }, failures[0].LabeledValues);
 
-            Assert.AreEqual(0, failures[0].InnerFailures.Count);
+            Assert.Count(0, failures[0].InnerFailures);
         }
     }
 }

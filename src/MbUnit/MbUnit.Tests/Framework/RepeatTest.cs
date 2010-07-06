@@ -40,7 +40,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(TestOutcome.Failed, testRun.Result.Outcome);
 
             IList<TestStepRun> testSteps = testRun.Children;
-            Assert.AreEqual(4, testSteps.Count, "Expected 4 repetitions represented as steps.");
+            Assert.Count(4, testSteps, "Expected 4 repetitions represented as steps.");
 
             Assert.AreEqual("Repetition #1", testSteps[0].Step.Name);
             AssertLogContains(testSteps[0], "Run: Repetition #1");
@@ -68,12 +68,12 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(TestOutcome.Failed, fixtureRun.Result.Outcome);
 
             IList<TestStepRun> fixtureSteps = fixtureRun.Children;
-            Assert.AreEqual(4, fixtureSteps.Count, "Expected 4 repetitions represented as steps.");
+            Assert.Count(4, fixtureSteps, "Expected 4 repetitions represented as steps.");
 
             Assert.AreEqual("Repetition #1", fixtureSteps[0].Step.Name);
             Assert.AreEqual(TestOutcome.Passed, fixtureSteps[0].Result.Outcome);
 
-            Assert.AreEqual(1, fixtureSteps[0].Children.Count);
+            Assert.Count(1, fixtureSteps[0].Children);
             Assert.AreEqual("Test", fixtureSteps[0].Children[0].Step.Name);
             AssertLogContains(fixtureSteps[0].Children[0], "Run: Repetition #1");
             Assert.AreEqual(TestOutcome.Passed, fixtureSteps[0].Children[0].Result.Outcome);
@@ -81,7 +81,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("Repetition #2", fixtureSteps[1].Step.Name);
             Assert.AreEqual(TestOutcome.Failed, fixtureSteps[1].Result.Outcome);
 
-            Assert.AreEqual(1, fixtureSteps[1].Children.Count);
+            Assert.Count(1, fixtureSteps[1].Children);
             Assert.AreEqual("Test", fixtureSteps[1].Children[0].Step.Name);
             AssertLogContains(fixtureSteps[1].Children[0], "Run: Repetition #2");
             AssertLogContains(fixtureSteps[1].Children[0], "Boom", MarkupStreamNames.Failures);
@@ -90,7 +90,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("Repetition #3", fixtureSteps[2].Step.Name);
             Assert.AreEqual(TestOutcome.Passed, fixtureSteps[2].Result.Outcome);
 
-            Assert.AreEqual(1, fixtureSteps[2].Children.Count);
+            Assert.Count(1, fixtureSteps[2].Children);
             Assert.AreEqual("Test", fixtureSteps[2].Children[0].Step.Name);
             AssertLogContains(fixtureSteps[2].Children[0], "Run: Repetition #3");
             Assert.AreEqual(TestOutcome.Passed, fixtureSteps[2].Children[0].Result.Outcome);
@@ -98,7 +98,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("Repetition #4", fixtureSteps[3].Step.Name);
             Assert.AreEqual(TestOutcome.Passed, fixtureSteps[3].Result.Outcome);
 
-            Assert.AreEqual(1, fixtureSteps[3].Children.Count);
+            Assert.Count(1, fixtureSteps[3].Children);
             Assert.AreEqual("Test", fixtureSteps[3].Children[0].Step.Name);
             AssertLogContains(fixtureSteps[3].Children[0], "Run: Repetition #4");
             Assert.AreEqual(TestOutcome.Passed, fixtureSteps[3].Children[0].Result.Outcome);
