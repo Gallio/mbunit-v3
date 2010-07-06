@@ -35,7 +35,7 @@ namespace Gallio.Tests.Common.Collections
         public void ConstantArray_with_zero_length()
         {
             var array = CollectionUtils.ConstantArray(9, 0);
-            Assert.AreEqual(0, array.Length);
+            Assert.Count(0, array);
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace Gallio.Tests.Common.Collections
         {
             var array = CollectionUtils.ConstantArray(123.456, 66);
             Assert.IsInstanceOfType<double[]>(array);
-            Assert.AreEqual(66, array.Length);
+            Assert.Count(66, array);
             Assert.ForAll(array, x => x == 123.456);
         }
     }

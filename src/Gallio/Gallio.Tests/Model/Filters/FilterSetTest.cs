@@ -39,7 +39,7 @@ namespace Gallio.Tests.Model.Filters
             var filter = new AnyFilter<object>();
             var filterSet = new FilterSet<object>(filter);
 
-            Assert.AreEqual(1, filterSet.Rules.Count);
+            Assert.Count(1, filterSet.Rules);
             Assert.AreEqual(FilterRuleType.Inclusion, filterSet.Rules[0].RuleType);
             Assert.AreEqual(filter, filterSet.Rules[0].Filter);
         }
@@ -112,7 +112,7 @@ namespace Gallio.Tests.Model.Filters
         {
             var empty = FilterSet<object>.Empty;
 
-            Assert.AreEqual(0, empty.Rules.Count);
+            Assert.Count(0, empty.Rules);
         }
 
         [Test]

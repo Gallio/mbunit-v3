@@ -151,7 +151,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Assert.IsInstanceOfType<IService[]>(result.Value);
 
                     IService[] resultValue = (IService[])result.Value;
-                    Assert.AreEqual(2, resultValue.Length);
+                    Assert.Count(2, resultValue);
                     Assert.AreSame(service1, resultValue[0]);
                     Assert.AreSame(service2, resultValue[1]);
                 });
@@ -178,7 +178,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Assert.IsTrue(result.IsSatisfied);
 
                     var resultValue = (ComponentHandle<IService, Traits>[])result.Value;
-                    Assert.AreEqual(2, resultValue.Length);
+                    Assert.Count(2, resultValue);
                     Assert.AreSame(componentHandle1, resultValue[0]);
                     Assert.AreSame(componentHandle2, resultValue[1]);
                 });

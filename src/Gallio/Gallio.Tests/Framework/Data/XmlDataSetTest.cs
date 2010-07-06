@@ -51,7 +51,7 @@ namespace Gallio.Tests.Framework.Data
 
             XmlDataSet dataSet = new XmlDataSet(delegate { return document; }, "//row", isDynamic);
             List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, true));
-            Assert.AreEqual(1, items.Count);
+            Assert.Count(1, items);
             Assert.AreEqual(isDynamic, items[0].IsDynamic);
         }
 
@@ -63,7 +63,7 @@ namespace Gallio.Tests.Framework.Data
 
             XmlDataSet dataSet = new XmlDataSet(delegate { return document; }, "//row", true);
             List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, false));
-            Assert.AreEqual(0, items.Count);
+            Assert.Count(0, items);
         }
 
         [Test]

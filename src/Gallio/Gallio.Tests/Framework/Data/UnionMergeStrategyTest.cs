@@ -61,7 +61,7 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Playback())
             {
                 List<IDataItem> items = new List<IDataItem>(UnionMergeStrategy.Instance.Merge(providers, bindings, true));
-                Assert.AreEqual(4, items.Count);
+                Assert.Count(4, items);
 
                 Assert.AreEqual(1, items[0].GetValue(bindings[0]));
                 Assert.IsTrue(items[0].IsDynamic);

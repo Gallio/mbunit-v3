@@ -32,7 +32,7 @@ namespace Gallio.Tests.Common.Mathematics
             };
 
             Assert.AreEqual(1E5, data.Sum());
-            Assert.AreEqual(223, data.Length);
+            Assert.Count(223, data);
             var test = new ChiSquareTest(1E5 / 223, data, 1);
             Assert.AreEqual(222, test.DegreesOfFreedom);
             Assert.AreApproximatelyEqual(207.677, test.ChiSquareValue, 0.001);

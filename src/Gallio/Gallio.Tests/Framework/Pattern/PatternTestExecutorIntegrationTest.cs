@@ -38,7 +38,7 @@ namespace Gallio.Tests.Framework.Pattern
             Assert.Multiple(() =>
             {
                 Assert.IsNotNull(run, "Primary test should have run.");
-                Assert.AreEqual(0, run.Children.Count, "Should have no children.");
+                Assert.Count(0, run.Children, "Should have no children.");
                 Assert.AreEqual(TestOutcome.Skipped, run.Result.Outcome, "Outcome should be skipped.");
                 AssertLogContains(run, "Test skipped because it is parameterized but no data was provided.", MarkupStreamNames.Warnings);
             });

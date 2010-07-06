@@ -33,7 +33,7 @@ namespace Gallio.Tests.Framework.Data
             IDataProvider[] providers = new IDataProvider[0];
 
             List<IList<IDataItem>> items = new List<IList<IDataItem>>(PairwiseJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
-            Assert.AreEqual(0, items.Count);
+            Assert.Count(0, items);
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Playback())
             {
                 List<IList<IDataItem>> items = new List<IList<IDataItem>>(PairwiseJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
-                Assert.AreEqual(2, items.Count);
+                Assert.Count(2, items);
 
                 Assert.AreSame(itemsPerProvider[0][0], items[0][0]);
                 Assert.AreSame(itemsPerProvider[0][1], items[1][0]);
@@ -99,7 +99,7 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Playback())
             {
                 List<IList<IDataItem>> items = new List<IList<IDataItem>>(PairwiseJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
-                Assert.AreEqual(0, items.Count);
+                Assert.Count(0, items);
             }
         }
 

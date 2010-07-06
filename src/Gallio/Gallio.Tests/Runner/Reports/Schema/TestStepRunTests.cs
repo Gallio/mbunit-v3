@@ -48,7 +48,7 @@ namespace Gallio.Tests.Runner.Reports.Schema
             TestStepData step = new TestStepData("id", "name", "fullName", "testId");
             TestStepRun testStepRun = new TestStepRun(step);
             Assert.AreSame(step, testStepRun.Step);
-            Assert.AreEqual(0, testStepRun.Children.Count);
+            Assert.Count(0, testStepRun.Children);
         }
 
         [Test]

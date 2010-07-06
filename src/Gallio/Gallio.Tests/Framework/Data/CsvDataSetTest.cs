@@ -156,7 +156,7 @@ namespace Gallio.Tests.Framework.Data
         {
             CsvDataSet dataSet = new CsvDataSet(delegate { return new StringReader(""); }, true);
             List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, false));
-            Assert.AreEqual(0, items.Count);
+            Assert.Count(0, items);
         }
 
         [Test]

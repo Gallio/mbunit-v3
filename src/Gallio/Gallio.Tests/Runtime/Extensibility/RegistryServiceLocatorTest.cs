@@ -216,7 +216,7 @@ namespace Gallio.Tests.Runtime.Extensibility
 
                 var result = serviceLocator.ResolveAll(typeof(DummyService));
 
-                Assert.AreEqual(2, result.Count);
+                Assert.Count(2, result);
                 Assert.IsInstanceOfType<DummyComponent>(result[0]);
                 Assert.IsInstanceOfType<DummyComponent2>(result[1]);
             }
@@ -255,7 +255,7 @@ namespace Gallio.Tests.Runtime.Extensibility
 
                 var result = serviceLocator.ResolveAll<DummyService>();
 
-                Assert.AreEqual(2, result.Count);
+                Assert.Count(2, result);
                 Assert.IsInstanceOfType<DummyComponent>(result[0]);
                 Assert.IsInstanceOfType<DummyComponent2>(result[1]);
             }
@@ -477,7 +477,7 @@ namespace Gallio.Tests.Runtime.Extensibility
 
                 var result = serviceLocator.ResolveAllHandles(typeof(DummyService));
 
-                Assert.AreEqual(2, result.Count);
+                Assert.Count(2, result);
                 Assert.AreSame(component1Descriptor, result[0].Descriptor);
                 Assert.AreSame(component2Descriptor, result[1].Descriptor);
             }
@@ -516,7 +516,7 @@ namespace Gallio.Tests.Runtime.Extensibility
 
                 var result = serviceLocator.ResolveAllHandles<DummyService, DummyTraits>();
 
-                Assert.AreEqual(2, result.Count);
+                Assert.Count(2, result);
                 Assert.AreSame(component1Descriptor, result[0].Descriptor);
                 Assert.AreSame(component2Descriptor, result[1].Descriptor);
             }

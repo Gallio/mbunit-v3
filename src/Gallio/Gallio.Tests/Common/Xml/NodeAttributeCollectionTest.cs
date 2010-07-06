@@ -44,7 +44,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var collection = NodeAttributeCollection.Empty;
             Assert.IsEmpty(collection);
-            Assert.AreEqual(0, collection.Count);
+            Assert.Count(0, collection);
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace Gallio.Tests.Common.Xml
             var attribute3 = new Gallio.Common.Xml.NodeAttribute(789, "name3", "value3", 999);
             var array = new[] { attribute1, attribute2, attribute3 };
             var collection = new NodeAttributeCollection(array);
-            Assert.AreEqual(3, collection.Count);
+            Assert.Count(3, collection);
             Assert.AreElementsSame(array, collection);
         }
 

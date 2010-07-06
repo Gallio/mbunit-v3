@@ -54,7 +54,7 @@ namespace Gallio.Tests.Common.Xml
 
             // Level 0.
             var children = fragment.Children.ToList();
-            Assert.AreEqual(1, children.Count);
+            Assert.Count(1, children);
             Assert.IsInstanceOfType<NodeElement>(children[0]);
             Assert.AreEqual("Root", ((NodeElement)children[0]).Name);
             Assert.IsTrue(children[0].IsFirst);
@@ -76,12 +76,12 @@ namespace Gallio.Tests.Common.Xml
 
             // Level 3 - Child 1.
             children = children[1].Children.ToList();
-            Assert.AreEqual(2, children.Count);
+            Assert.Count(2, children);
             Assert.IsInstanceOfType<NodeElement>(children[0]);
             Assert.AreEqual("Child", ((NodeElement)children[0]).Name);
             Assert.IsTrue(children[0].IsFirst);
             Assert.IsFalse(children[0].IsLast);
-            Assert.AreEqual(1, ((NodeElement)children[0]).Attributes.Count);
+            Assert.Count(1, ((NodeElement)children[0]).Attributes);
             Assert.AreEqual("id", ((NodeElement)children[0]).Attributes[0].Name);
             Assert.AreEqual("123", ((NodeElement)children[0]).Attributes[0].Value);
             Assert.IsTrue(((NodeElement)children[0]).Attributes[0].IsFirst);
@@ -91,7 +91,7 @@ namespace Gallio.Tests.Common.Xml
             // Level 3 - Child 2.
             Assert.IsInstanceOfType<NodeElement>(children[1]);
             Assert.AreEqual("Child", ((NodeElement)children[1]).Name);
-            Assert.AreEqual(1, ((NodeElement)children[1]).Attributes.Count);
+            Assert.Count(1, ((NodeElement)children[1]).Attributes);
             Assert.IsFalse(children[1].IsFirst);
             Assert.IsTrue(children[1].IsLast);
             Assert.AreEqual("id", ((NodeElement)children[1]).Attributes[0].Name);

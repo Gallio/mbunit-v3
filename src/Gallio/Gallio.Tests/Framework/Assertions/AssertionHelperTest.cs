@@ -109,9 +109,9 @@ namespace Gallio.Tests.Framework.Assertions
                 });
             });
 
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("An exception occurred while verifying an assertion.", failures[0].Description);
-            Assert.AreEqual(1, failures[0].Exceptions.Count);
+            Assert.Count(1, failures[0].Exceptions);
             Assert.Contains(failures[0].Exceptions[0].ToString(), "Boom");
         }
 
@@ -183,9 +183,9 @@ namespace Gallio.Tests.Framework.Assertions
                         .ToAssertionFailure());
             });
 
-            Assert.AreEqual(1, failures.Length);
+            Assert.Count(1, failures);
             Assert.AreEqual("Outer reason", failures[0].Description);
-            Assert.AreEqual(1, failures[0].InnerFailures.Count);
+            Assert.Count(1, failures[0].InnerFailures);
             Assert.AreEqual("Inner reason", failures[0].InnerFailures[0].Message);
         }
 

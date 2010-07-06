@@ -76,7 +76,7 @@ namespace Gallio.Tests.Common.Markup
         public void ConstructorWithTextInitializesProperties()
         {
             StructuredText text = new StructuredText("blah");
-            Assert.AreEqual(0, text.Attachments.Count);
+            Assert.Count(0, text.Attachments);
 
             Assert.AreEqual(new BodyTag() { Contents = { new TextTag("blah") } }, text.BodyTag);
         }
@@ -85,7 +85,7 @@ namespace Gallio.Tests.Common.Markup
         public void ConstructorWithBodyTagInitializesProperties()
         {
             StructuredText text = new StructuredText(Example.BodyTag);
-            Assert.AreEqual(0, text.Attachments.Count);
+            Assert.Count(0, text.Attachments);
 
             Assert.AreEqual(Example.BodyTag, text.BodyTag);
         }

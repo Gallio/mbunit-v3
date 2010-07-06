@@ -42,7 +42,7 @@ namespace Gallio.Tests.Framework.Data.Generation
             };
 
             var values = generator.Run().Cast<double>().ToArray();
-            Assert.AreEqual(count, values.Length);
+            Assert.Count(count, values);
             Assert.Multiple(() =>
             {
                 foreach (double value in values)
@@ -93,7 +93,7 @@ namespace Gallio.Tests.Framework.Data.Generation
             };
 
             var values = generator.Run().Cast<double>().ToArray();
-            Assert.AreEqual(50, values.Length);
+            Assert.Count(50, values);
             Assert.Multiple(() =>
             {
                 foreach (double value in values)

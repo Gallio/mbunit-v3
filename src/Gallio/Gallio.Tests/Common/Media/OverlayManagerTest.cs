@@ -62,7 +62,7 @@ namespace Gallio.Tests.Common.Media
 
             overlayManager.RemoveOverlay(overlay);
 
-            Assert.AreEqual(0, overlayManager.Overlays.Count);
+            Assert.Count(0, overlayManager.Overlays);
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace Gallio.Tests.Common.Media
 
             overlayManager.RemoveOverlay(overlay);
 
-            Assert.AreEqual(0, overlayManager.Overlays.Count);
+            Assert.Count(0, overlayManager.Overlays);
         }
 
         [Test]

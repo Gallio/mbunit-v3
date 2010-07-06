@@ -40,7 +40,7 @@ namespace Gallio.Tests.Framework.Data
         {
             ScalarDataItem<object> item = new ScalarDataItem<object>(null, null, false);
             PropertyBag metadata = DataItemUtils.GetMetadata(item);
-            Assert.AreEqual(0, metadata.Count);
+            Assert.Count(0, metadata);
         }
 
         [Test]
@@ -51,7 +51,7 @@ namespace Gallio.Tests.Framework.Data
             ScalarDataItem<object> item = new ScalarDataItem<object>("abc", metadataPairs, false);
 
             PropertyBag map = DataItemUtils.GetMetadata(item);
-            Assert.AreEqual(1, map.Count);
+            Assert.Count(1, map);
             Assert.AreEqual("Bar", map.GetValue("Foo"));
         }
 

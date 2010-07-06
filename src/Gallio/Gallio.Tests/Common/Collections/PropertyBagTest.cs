@@ -142,7 +142,7 @@ namespace Gallio.Tests.Common.Collections
             serializer.Serialize(output, container);
 
             MetadataContainer result = (MetadataContainer)serializer.Deserialize(new StringReader(output.ToString()));
-            Assert.AreEqual(0, result.Metadata.Count);
+            Assert.Count(0, result.Metadata);
             Assert.AreEqual(1, result.FollowingElement);
         }
 

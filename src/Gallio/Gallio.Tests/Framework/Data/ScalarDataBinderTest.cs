@@ -85,7 +85,7 @@ namespace Gallio.Tests.Framework.Data
                 Assert.IsTrue(context.DataSets.Contains(source), "The data sets list should contain the source that was resolved during binder registration.");
 
                 List<IDataItem> items = new List<IDataItem>(context.GetItems(true));
-                Assert.AreEqual(2, items.Count);
+                Assert.Count(2, items);
 
                 Assert.AreEqual(42, accessor.GetValue(items[0]));
                 Assert.AreEqual("42", accessor.GetValue(items[1]));

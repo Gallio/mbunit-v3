@@ -38,7 +38,7 @@ namespace Gallio.Tests.Framework.Data.Generation
             };
 
             var values = generator.Run().Cast<string>().ToArray();
-            Assert.AreEqual(count, values.Length);
+            Assert.Count(count, values);
             Assert.Multiple(() =>
             {
                 foreach (string value in values)

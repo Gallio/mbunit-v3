@@ -50,7 +50,7 @@ namespace Gallio.Tests.Common.Collections
             string[] input = new[] { "one", "one", "two" };
             List<string> output = new List<string>();
             GenericCollectionUtils.AddAllIfNotAlreadyPresent(input, output);
-            Assert.AreEqual(2, output.Count);
+            Assert.Count(2, output);
             Assert.AreElementsEqual(new[] { "one" ,"two" }, output);
         }
 

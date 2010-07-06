@@ -88,9 +88,9 @@ namespace Gallio.Tests.Framework.Assertions
                     throw new InvalidOperationException("Boom");
                 }, AssertionFailureBehavior.LogAndThrow, true);
 
-                Assert.AreEqual(1, failures.Length);
+                Assert.Count(1, failures);
                 Assert.AreEqual("An exception occurred.", failures[0].Description);
-                Assert.AreEqual(1, failures[0].Exceptions.Count);
+                Assert.Count(1, failures[0].Exceptions);
                 Assert.Contains(failures[0].Exceptions[0].ToString(), "Boom");
             }
 

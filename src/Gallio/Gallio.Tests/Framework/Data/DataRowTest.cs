@@ -61,7 +61,7 @@ namespace Gallio.Tests.Framework.Data
             Assert.AreEqual("abc", row.GetValue(new DataBinding(0, null)));
 
             PropertyBag map = DataItemUtils.GetMetadata(row);
-            Assert.AreEqual(4, map.Count);
+            Assert.Count(4, map);
             Assert.AreEqual("Frumious", map.GetValue("Description"));
             Assert.AreEqual("Bandersnatch", map.GetValue("Name"));
             Assert.AreEqual("Lewis Carroll", map.GetValue("Author"));

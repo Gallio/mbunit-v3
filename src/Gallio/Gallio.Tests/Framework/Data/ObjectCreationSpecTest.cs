@@ -379,12 +379,12 @@ namespace Gallio.Tests.Framework.Data
             Assert.AreElementsEqual(new object[] { 1 }, spec.ResolvedConstructorArguments);
 
             List<KeyValuePair<FieldInfo, object>> fieldValues = new List<KeyValuePair<FieldInfo,object>>(spec.ResolvedFieldValues);
-            Assert.AreEqual(1, fieldValues.Count);
+            Assert.Count(1, fieldValues);
             Assert.AreEqual(field, Reflector.Wrap(fieldValues[0].Key));
             Assert.AreEqual(2, fieldValues[0].Value);
 
             List<KeyValuePair<PropertyInfo, object>> propertyValues = new List<KeyValuePair<PropertyInfo, object>>(spec.ResolvedPropertyValues);
-            Assert.AreEqual(1, propertyValues.Count);
+            Assert.Count(1, propertyValues);
             Assert.AreEqual(property, Reflector.Wrap(propertyValues[0].Key));
             Assert.AreEqual(3, propertyValues[0].Value);
         }
@@ -396,7 +396,7 @@ namespace Gallio.Tests.Framework.Data
 
             ObjectCreationSpec spec = new ObjectCreationSpec(AbstractClassInfo, slotValues, NullConverter.Instance);
             Assert.IsNull(spec.ResolvedConstructor);
-            Assert.AreEqual(0, spec.ResolvedConstructorArguments.Length);
+            Assert.Count(0, spec.ResolvedConstructorArguments);
         }
 
         [Test]

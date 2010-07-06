@@ -64,7 +64,7 @@ namespace Gallio.Tests.Framework.Assertions
                 new AssertionFailure.LabeledValue("Condition", "x.Equals(null)"),
                 new AssertionFailure.LabeledValue("x", "null"),
             }, failure.LabeledValues);
-            Assert.AreEqual(1, failure.Exceptions.Count);
+            Assert.Count(1, failure.Exceptions);
             Assert.Contains(failure.Exceptions[0].ToString(), "NullReferenceException");
         }
 

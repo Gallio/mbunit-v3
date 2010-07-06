@@ -31,7 +31,7 @@ namespace Gallio.Tests.Framework.Data
             IDataProvider[] providers = new IDataProvider[0];
 
             List<IList<IDataItem>> items = new List<IList<IDataItem>>(CombinatorialJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
-            Assert.AreEqual(0, items.Count);
+            Assert.Count(0, items);
         }
 
         [Test]
@@ -75,7 +75,7 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Playback())
             {
                 List<IList<IDataItem>> items = new List<IList<IDataItem>>(CombinatorialJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
-                Assert.AreEqual(12, items.Count);
+                Assert.Count(12, items);
 
                 int index = 0;
                 for (int i = 0; i < itemsPerProvider[0].Length; i++)

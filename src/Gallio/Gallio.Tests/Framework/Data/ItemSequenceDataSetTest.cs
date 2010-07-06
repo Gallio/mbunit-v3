@@ -63,7 +63,7 @@ namespace Gallio.Tests.Framework.Data
             ItemSequenceDataSet dataSet = new ItemSequenceDataSet(items, 5);
 
             List<IDataItem> result = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, false));
-            Assert.AreEqual(1, result.Count);
+            Assert.Count(1, result);
             Assert.AreSame(items[1], result[0]);
         }
 

@@ -69,7 +69,7 @@ namespace Gallio.Tests.Common.Policies
                 args = (List<CorrelatedExceptionEventArgs>)host.GetHostService().Do<object, object>(PolicyHandlesUnhandledExceptionsAndRecursionCallback, null);
             }
 
-            Assert.AreEqual(3, args.Count);
+            Assert.Count(3, args);
             Assert.AreEqual("Error.", args[0].Exception.Message);
             Assert.IsFalse(args[0].IsRecursive);
             Assert.AreEqual("Correlation error.", args[1].Exception.Message);

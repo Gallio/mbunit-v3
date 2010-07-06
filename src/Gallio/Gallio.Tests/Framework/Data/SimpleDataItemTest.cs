@@ -41,7 +41,7 @@ namespace Gallio.Tests.Framework.Data
             SimpleDataItem item = new StubDataItem(null, false);
 
             PropertyBag map = DataItemUtils.GetMetadata(item);
-            Assert.AreEqual(0, map.Count);
+            Assert.Count(0, map);
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace Gallio.Tests.Framework.Data
             BaseDataItem item = new StubDataItem(metadataPairs, false);
 
             PropertyBag map = DataItemUtils.GetMetadata(item);
-            Assert.AreEqual(1, map.Count);
+            Assert.Count(1, map);
             Assert.AreEqual("Bar", map.GetValue("Foo"));
         }
 

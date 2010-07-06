@@ -46,7 +46,7 @@ namespace Gallio.Tests.Framework.Data
         {
             ListDataItem<object> item = new ListDataItem<object>(EmptyArray<object>.Instance, null, false);
             PropertyBag metadata = DataItemUtils.GetMetadata(item);
-            Assert.AreEqual(0, metadata.Count);
+            Assert.Count(0, metadata);
         }
 
         [Test]
@@ -58,7 +58,7 @@ namespace Gallio.Tests.Framework.Data
             ListDataItem<object> item = new ListDataItem<object>(EmptyArray<object>.Instance, metadataPairs, false);
 
             PropertyBag map = DataItemUtils.GetMetadata(item);
-            Assert.AreEqual(1, map.Count);
+            Assert.Count(1, map);
             Assert.AreEqual("Bar", map.GetValue("Foo"));
         }
 

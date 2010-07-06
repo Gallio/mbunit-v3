@@ -43,7 +43,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var collection = NodeCollection.Empty;
             Assert.IsEmpty(collection);
-            Assert.AreEqual(0, collection.Count);
+            Assert.Count(0, collection);
         }
 
         [Test]
@@ -54,7 +54,7 @@ namespace Gallio.Tests.Common.Xml
             var mockMarkup3 = MockRepository.GenerateStub<INode>();
             var array = new[] { mockMarkup1, mockMarkup2, mockMarkup3 };
             var collection = new NodeCollection(array);
-            Assert.AreEqual(3, collection.Count);
+            Assert.Count(3, collection);
             Assert.AreElementsSame(array, collection);
         }
 

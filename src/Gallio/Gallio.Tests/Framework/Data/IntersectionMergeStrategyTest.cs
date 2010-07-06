@@ -35,7 +35,7 @@ namespace Gallio.Tests.Framework.Data
             IDataProvider[] providers = new IDataProvider[0];
 
             List<IDataItem> items = new List<IDataItem>(IntersectionMergeStrategy.Instance.Merge(providers, bindings, true));
-            Assert.AreEqual(0, items.Count);
+            Assert.Count(0, items);
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Playback())
             {
                 List<IDataItem> items = new List<IDataItem>(IntersectionMergeStrategy.Instance.Merge(providers, bindings, true));
-                Assert.AreEqual(3, items.Count);
+                Assert.Count(3, items);
 
                 Assert.AreEqual(1, items[0].GetValue(bindings[0]));
                 Assert.IsTrue(items[0].IsDynamic);
@@ -120,7 +120,7 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Playback())
             {
                 List<IDataItem> items = new List<IDataItem>(IntersectionMergeStrategy.Instance.Merge(providers, bindings, true));
-                Assert.AreEqual(3, items.Count);
+                Assert.Count(3, items);
 
                 Assert.AreEqual(1, items[0].GetValue(bindings[0]));
                 Assert.IsFalse(items[0].IsDynamic);

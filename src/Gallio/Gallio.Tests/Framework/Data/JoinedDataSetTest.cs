@@ -227,7 +227,7 @@ namespace Gallio.Tests.Framework.Data
                     Assert.IsTrue(includeDynamicItems);
                     Assert.AreElementsEqual(new IDataProvider[] { dataSet1, dataSet2 }, joinProviders);
 
-                    Assert.AreEqual(2, joinBindingsPerProvider.Count);
+                    Assert.Count(2, joinBindingsPerProvider);
 
                     Assert.AreElementsEqual(new DataBinding[] { pathBinding, indexZeroBinding, pathBinding }, joinBindingsPerProvider[0]);
                     Assert.AreElementsEqual(new DataBinding[] { indexZeroBinding, indexOneBinding }, joinBindingsPerProvider[1]);
@@ -239,7 +239,7 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Playback())
             {
                 List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(bindings, true));
-                Assert.AreEqual(items.Count, 2);
+                Assert.Count(2, items);
 
                 Assert.Throws<ArgumentNullException>(delegate { items[0].GetValue(null); });
 
@@ -251,7 +251,7 @@ namespace Gallio.Tests.Framework.Data
                 Assert.AreEqual(5, items[0].GetValue(bindings[5]));
 
                 PropertyBag map = DataItemUtils.GetMetadata(items[0]);
-                Assert.AreEqual(3, map.Count);
+                Assert.Count(3, map);
                 Assert.AreEqual("123", map.GetValue("abc"));
                 Assert.AreEqual("456", map.GetValue("def"));
                 Assert.AreEqual("789", map.GetValue("ghi"));
@@ -266,7 +266,7 @@ namespace Gallio.Tests.Framework.Data
                 Assert.AreEqual(-5, items[1].GetValue(bindings[5]));
 
                 map = DataItemUtils.GetMetadata(items[1]);
-                Assert.AreEqual(1, map.Count);
+                Assert.Count(1, map);
                 Assert.AreEqual("789", map.GetValue("ghi"));
 
                 Assert.IsTrue(items[1].IsDynamic);

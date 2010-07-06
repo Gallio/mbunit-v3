@@ -112,7 +112,7 @@ namespace Gallio.Tests.Framework.Data
             };
 
             List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(bindings, true));
-            Assert.AreEqual(3, items.Count);
+            Assert.Count(3, items);
 
             Assert.AreEqual(1, items[0].GetValue(bindings[0]));
             Assert.AreEqual(2, items[1].GetValue(bindings[0]));

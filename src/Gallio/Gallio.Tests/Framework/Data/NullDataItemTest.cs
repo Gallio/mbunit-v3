@@ -29,7 +29,7 @@ namespace Gallio.Tests.Framework.Data
         public void HasNoMetadata()
         {
             PropertyBag metadata = DataItemUtils.GetMetadata(NullDataItem.Instance);
-            Assert.AreEqual(0, metadata.Count);
+            Assert.Count(0, metadata);
         }
 
         [Test]

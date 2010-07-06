@@ -34,7 +34,7 @@ namespace Gallio.Tests.Model.Filters
         {
             FilterLexer lexer = new FilterLexer(filter);
             Assert.IsNotNull(lexer);
-            Assert.AreEqual(0, lexer.Tokens.Count);
+            Assert.Count(0, lexer.Tokens);
             Assert.IsNull(lexer.GetNextToken());
             Assert.IsNull(lexer.LookAhead(1));
             Assert.IsNull(lexer.GetNextToken());
@@ -45,7 +45,7 @@ namespace Gallio.Tests.Model.Filters
         {
             FilterLexer lexer = new FilterLexer("a");
             Assert.IsNotNull(lexer);
-            Assert.AreEqual(1, lexer.Tokens.Count);
+            Assert.Count(1, lexer.Tokens);
             Assert.IsNull(lexer.LookAhead(0));
             Assert.IsNotNull(lexer.LookAhead(1));
             Assert.IsNull(lexer.LookAhead(2));
@@ -62,7 +62,7 @@ namespace Gallio.Tests.Model.Filters
         {
             FilterLexer lexer = new FilterLexer("a:");
             Assert.IsNotNull(lexer);
-            Assert.AreEqual(2, lexer.Tokens.Count);
+            Assert.Count(2, lexer.Tokens);
             Assert.IsNull(lexer.LookAhead(0));
             Assert.IsNotNull(lexer.LookAhead(1));
             Assert.IsNotNull(lexer.LookAhead(2));
@@ -101,7 +101,7 @@ namespace Gallio.Tests.Model.Filters
         public void SingleElement(string filter, string type)
         {
             FilterLexer lexer = new FilterLexer(filter);
-            Assert.AreEqual(lexer.Tokens.Count, 1);
+            Assert.Count(1, lexer.Tokens);
             FilterToken filterToken = lexer.Tokens[0];
             Assert.AreEqual(filterToken.Type, ParseTokenType(type));
             Assert.AreEqual(filterToken.Position, 0);
@@ -138,7 +138,7 @@ namespace Gallio.Tests.Model.Filters
         public void TwoElements(string filter, string type1, string type2)
         {
             FilterLexer lexer = new FilterLexer(filter);
-            Assert.AreEqual(lexer.Tokens.Count, 2);
+            Assert.Count(2, lexer.Tokens);
 
             FilterToken filterToken = lexer.Tokens[0];
             Assert.AreEqual(filterToken.Type, Enum.Parse(typeof(FilterTokenType), type1));
@@ -157,7 +157,7 @@ namespace Gallio.Tests.Model.Filters
         {
             string filter = key + colon + value;
             FilterLexer lexer = new FilterLexer(filter);
-            Assert.AreEqual(lexer.Tokens.Count, 3);
+            Assert.Count(3, lexer.Tokens);
             {
                 FilterToken firstFilterToken = lexer.Tokens[0];
                 Assert.AreEqual(firstFilterToken.Type, FilterTokenType.Word);
@@ -188,7 +188,7 @@ namespace Gallio.Tests.Model.Filters
         public void DelimitedElement(string filter, string type)
         {
             FilterLexer lexer = new FilterLexer(filter);
-            Assert.AreEqual(lexer.Tokens.Count, 1);
+            Assert.Count(1, lexer.Tokens);
             FilterToken firstFilterToken = lexer.Tokens[0];
             Assert.AreEqual(firstFilterToken.Type, ParseTokenType(type));
             Assert.AreEqual(firstFilterToken.Position, 0);
@@ -205,7 +205,7 @@ namespace Gallio.Tests.Model.Filters
         public void DelimitedElementWithMissingEndDelimiter(string filter)
         {
             FilterLexer lexer = new FilterLexer(filter);
-            Assert.AreEqual(lexer.Tokens.Count, 1);
+            Assert.Count(1, lexer.Tokens);
             FilterToken token = lexer.Tokens[0];
             Assert.AreEqual(token.Type, FilterTokenType.Error);
             Assert.AreEqual(token.Position, filter.Length - 1);
@@ -222,7 +222,7 @@ namespace Gallio.Tests.Model.Filters
         public void DelimitedElementWithEscapedDelimiter(string filter, string tokenType)
         {
             FilterLexer lexer = new FilterLexer(filter);
-            Assert.AreEqual(lexer.Tokens.Count, 1);
+            Assert.Count(1, lexer.Tokens);
             FilterToken firstFilterToken = lexer.Tokens[0];
             Assert.AreEqual(firstFilterToken.Type, ParseTokenType(tokenType));
             Assert.AreEqual(firstFilterToken.Position, 0);
@@ -243,7 +243,7 @@ namespace Gallio.Tests.Model.Filters
         public void DelimitersAreUnescaped(string filter, string expected, string tokenType)
         {
             FilterLexer lexer = new FilterLexer(filter);
-            Assert.AreEqual(lexer.Tokens.Count, 1);
+            Assert.Count(1, lexer.Tokens);
             FilterToken firstFilterToken = lexer.Tokens[0];
             Assert.AreEqual(firstFilterToken.Type, ParseTokenType(tokenType));
             Assert.AreEqual(firstFilterToken.Position, 0);
@@ -257,7 +257,7 @@ namespace Gallio.Tests.Model.Filters
         {
             string filter = key;
             FilterLexer lexer = new FilterLexer(filter);
-            Assert.AreEqual(lexer.Tokens.Count, 1);
+            Assert.Count(1, lexer.Tokens);
 
             FilterToken firstFilterToken = lexer.Tokens[0];
             Assert.AreEqual(firstFilterToken.Type, FilterTokenType.RegexWord);
@@ -272,7 +272,7 @@ namespace Gallio.Tests.Model.Filters
         {
             string filter = key;
             FilterLexer lexer = new FilterLexer(filter);
-            Assert.AreEqual(lexer.Tokens.Count, 2);
+            Assert.Count(2, lexer.Tokens);
             {
                 FilterToken firstFilterToken = lexer.Tokens[0];
                 Assert.AreEqual(firstFilterToken.Type, FilterTokenType.RegexWord);
@@ -296,7 +296,7 @@ namespace Gallio.Tests.Model.Filters
         {
             string filter = key;
             FilterLexer lexer = new FilterLexer(filter);
-            Assert.AreEqual(lexer.Tokens.Count, 2);
+            Assert.Count(2, lexer.Tokens);
 
             FilterToken firstFilterToken = lexer.Tokens[0];
             Assert.AreEqual(firstFilterToken.Type, FilterTokenType.RegexWord);
@@ -315,7 +315,7 @@ namespace Gallio.Tests.Model.Filters
         {
             string filter = key + colon + value;
             FilterLexer lexer = new FilterLexer(filter);
-            Assert.AreEqual(lexer.Tokens.Count, 3);
+            Assert.Count(3, lexer.Tokens);
             {
                 FilterToken firstFilterToken = lexer.Tokens[0];
                 Assert.AreEqual(firstFilterToken.Type, FilterTokenType.Word);
@@ -370,7 +370,7 @@ namespace Gallio.Tests.Model.Filters
         public void FilterWithOneValue(string filter, string text)
         {
             FilterLexer lexer = new FilterLexer(filter);
-            Assert.AreEqual(lexer.Tokens.Count, 3);
+            Assert.Count(3, lexer.Tokens);
             {
                 FilterToken firstFilterToken = lexer.Tokens[0];
                 Assert.AreEqual(firstFilterToken.Type, FilterTokenType.Word);
@@ -401,7 +401,7 @@ namespace Gallio.Tests.Model.Filters
         public void FilterWithTwovalues(string filter)
         {
             FilterLexer lexer = new FilterLexer(filter);
-            Assert.AreEqual(lexer.Tokens.Count, 5);
+            Assert.Count(5, lexer.Tokens);
 
             {
                 FilterToken firstFilterToken = lexer.Tokens[0];
@@ -443,7 +443,7 @@ namespace Gallio.Tests.Model.Filters
         public void BackslashesShouldBeFollowedByAnotherCharacter(string filter, int tokenCount)
         {
             FilterLexer lexer = new FilterLexer(filter);
-            Assert.AreEqual(lexer.Tokens.Count, tokenCount);
+            Assert.Count(tokenCount, lexer.Tokens);
             {
                 FilterToken errorToken = lexer.Tokens[tokenCount - 1];
                 Assert.AreEqual(errorToken.Type, FilterTokenType.Error);
@@ -462,7 +462,7 @@ namespace Gallio.Tests.Model.Filters
         public void BackslashesShouldBeFollowedByAnEscapableCharacter(string filter, int tokenCount)
         {
             FilterLexer lexer = new FilterLexer(filter);
-            Assert.AreEqual(lexer.Tokens.Count, tokenCount);
+            Assert.Count(tokenCount, lexer.Tokens);
             {
                 FilterToken errorToken = lexer.Tokens[tokenCount - 1];
                 Assert.AreEqual(errorToken.Type, FilterTokenType.Error);
@@ -475,7 +475,7 @@ namespace Gallio.Tests.Model.Filters
         {
             string filter = key + ":" + value1 + "," + value2;
             FilterLexer lexer = new FilterLexer(filter);
-            Assert.AreEqual(lexer.Tokens.Count, 5);
+            Assert.Count(5, lexer.Tokens);
 
             {
                 FilterToken firstFilterToken = lexer.Tokens[0];

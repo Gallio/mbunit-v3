@@ -63,7 +63,7 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Playback())
             {
                 List<IList<IDataItem>> items = new List<IList<IDataItem>>(SequentialJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
-                Assert.AreEqual(3, items.Count);
+                Assert.Count(3, items);
 
                 Assert.AreSame(itemsPerProvider[0][0], items[0][0]);
                 Assert.AreSame(NullDataItem.Instance, items[0][1]);

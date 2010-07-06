@@ -145,7 +145,7 @@ namespace Gallio.Tests.Model
         {
             TestModel testModel = PopulateTestTree(typeof(int).Assembly);
 
-            Assert.AreEqual(0, testModel.RootTest.Children.Count);
+            Assert.Count(0, testModel.RootTest.Children);
         }
 
         [Test]
@@ -158,7 +158,7 @@ namespace Gallio.Tests.Model
             Assert.AreEqual(TestKinds.Root, rootTest.Kind);
             Assert.IsNull(rootTest.CodeElement);
             Assert.IsFalse(rootTest.IsTestCase);
-            Assert.AreEqual(1, rootTest.Children.Count);
+            Assert.Count(1, rootTest.Children);
 
             Test assemblyTest = rootTest.Children[0];
             Assert.AreSame(rootTest, assemblyTest.Parent);
@@ -175,7 +175,7 @@ namespace Gallio.Tests.Model
                 fixtureTest.CodeElement.CodeReference);
             Assert.AreEqual("SimpleTest", fixtureTest.Name);
             Assert.IsFalse(fixtureTest.IsTestCase);
-            Assert.AreEqual(2, fixtureTest.Children.Count);
+            Assert.Count(2, fixtureTest.Children);
 
             Test passTest = GetDescendantByName(fixtureTest, PassTestName);
             Test failTest = GetDescendantByName(fixtureTest, FailTestName);
@@ -189,7 +189,7 @@ namespace Gallio.Tests.Model
                 passTest.CodeElement.CodeReference);
             Assert.AreEqual(PassTestName, passTest.Name);
             Assert.IsTrue(passTest.IsTestCase);
-            Assert.AreEqual(0, passTest.Children.Count);
+            Assert.Count(0, passTest.Children);
 
             Assert.AreSame(fixtureTest, failTest.Parent);
             Assert.AreEqual(TestKinds.Test, failTest.Kind);
@@ -197,7 +197,7 @@ namespace Gallio.Tests.Model
                 failTest.CodeElement.CodeReference);
             Assert.AreEqual(FailTestName, failTest.Name);
             Assert.IsTrue(failTest.IsTestCase);
-            Assert.AreEqual(0, failTest.Children.Count);
+            Assert.Count(0, failTest.Children);
         }
 
         [Test]

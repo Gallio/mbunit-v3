@@ -59,7 +59,7 @@ namespace Gallio.Tests.Framework.Data
             List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, true));
 
             PropertyBag map = DataItemUtils.GetMetadata(items[0]);
-            Assert.AreEqual(0, map.Count);
+            Assert.Count(0, map);
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace Gallio.Tests.Framework.Data
             List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, true));
 
             PropertyBag map = DataItemUtils.GetMetadata(items[0]);
-            Assert.AreEqual(1, map.Count);
+            Assert.Count(1, map);
             Assert.AreEqual("Bar", map.GetValue("Foo"));
         }
 
@@ -82,7 +82,7 @@ namespace Gallio.Tests.Framework.Data
             ValueSequenceDataSet dataSet = new ValueSequenceDataSet(new object[] { "a", "b" }, null, false);
             List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, true));
 
-            Assert.AreEqual(2, items.Count);
+            Assert.Count(2, items);
 
             Assert.AreEqual("a", items[0].GetValue(new DataBinding(0, null)));
             Assert.AreEqual("b", items[1].GetValue(new DataBinding(0, null)));
@@ -97,7 +97,7 @@ namespace Gallio.Tests.Framework.Data
             ValueSequenceDataSet dataSet = new ValueSequenceDataSet(new object[] { "a" }, null, true);
             List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, false));
 
-            Assert.AreEqual(0, items.Count);
+            Assert.Count(0, items);
         }
 
         [Test]

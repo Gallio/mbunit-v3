@@ -52,7 +52,7 @@ namespace Gallio.Tests.Framework.Data
         {
             IConverter converter = Mocks.Stub<IConverter>();
             DataBindingContext context = new DataBindingContext(converter);
-            Assert.AreEqual(0, context.DataSets.Count);
+            Assert.Count(0, context.DataSets);
         }
 
         [Test, ExpectedArgumentNullException]
@@ -98,7 +98,7 @@ namespace Gallio.Tests.Framework.Data
             IDataAccessor accessor2 = context.RegisterBinding(dataSet2, new DataBinding(0, null));
 
             List<IDataItem> combinatorialItems = new List<IDataItem>(context.GetItems(true));
-            Assert.AreEqual(4, combinatorialItems.Count);
+            Assert.Count(4, combinatorialItems);
             Assert.AreEqual(1, accessor1.GetValue(combinatorialItems[0]));
             Assert.AreEqual(10, accessor2.GetValue(combinatorialItems[0]));
             Assert.AreEqual(1, accessor1.GetValue(combinatorialItems[1]));
@@ -111,7 +111,7 @@ namespace Gallio.Tests.Framework.Data
             context.Strategy = SequentialJoinStrategy.Instance;
 
             List<IDataItem> sequentialItems = new List<IDataItem>(context.GetItems(true));
-            Assert.AreEqual(2, sequentialItems.Count);
+            Assert.Count(2, sequentialItems);
             Assert.AreEqual(1, accessor1.GetValue(sequentialItems[0]));
             Assert.AreEqual(10, accessor2.GetValue(sequentialItems[0]));
             Assert.AreEqual(2, accessor1.GetValue(sequentialItems[1]));
@@ -134,7 +134,7 @@ namespace Gallio.Tests.Framework.Data
             DataBindingContext context = new DataBindingContext(Mocks.Stub<IConverter>());
 
             List<IDataItem> items = new List<IDataItem>(context.GetItems(false));
-            Assert.AreEqual(1, items.Count);
+            Assert.Count(1, items);
             Assert.AreSame(NullDataItem.Instance, items[0]);
         }
     }

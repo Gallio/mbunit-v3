@@ -88,7 +88,7 @@ namespace Gallio.Tests.Framework.Data
 
                 IDataAccessor accessor = binder.Register(context, resolver);
                 List<IDataItem> items = new List<IDataItem>(context.GetItems(true));
-                Assert.AreEqual(1, items.Count);
+                Assert.Count(1, items);
 
                 Holder<int> holder = (Holder<int>)accessor.GetValue(items[0]);
                 Assert.AreEqual(42, holder.Value, "Should have set the value via the constructor parameter.");
