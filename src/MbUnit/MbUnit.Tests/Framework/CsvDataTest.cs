@@ -63,13 +63,10 @@ namespace MbUnit.Tests.Framework
         public void Metadata()
         {
             TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(CsvDataSample).GetMethod("FileWithHeader")));
-
             Assert.AreEqual(@"..\Framework\CsvDataTest.csv(2)", run.Children[0].Step.Metadata.GetValue(MetadataKeys.DataLocation));
             Assert.AreEqual(@"Worm", run.Children[0].Step.Metadata.GetValue("ConsumedBy"));
-
             Assert.AreEqual(@"..\Framework\CsvDataTest.csv(3)", run.Children[1].Step.Metadata.GetValue(MetadataKeys.DataLocation));
             Assert.AreEqual(@"Monkey", run.Children[1].Step.Metadata.GetValue("ConsumedBy"));
-
             Assert.AreEqual(@"..\Framework\CsvDataTest.csv(4)", run.Children[2].Step.Metadata.GetValue(MetadataKeys.DataLocation));
             Assert.AreEqual(@"Cookie Monster", run.Children[2].Step.Metadata.GetValue("ConsumedBy"));
         }
@@ -113,7 +110,7 @@ namespace MbUnit.Tests.Framework
             }
 
             [Test]
-            [CsvData(FilePath = @"D:\Temp\profile.xlsx", HasHeader = true)]
+            [CsvData(FilePath = @"..\Framework\CsvDataTest.csv", HasHeader = true)]
             public void FileWithHeader(decimal price, string item)
             {
                 TestLog.WriteLine("{0}: {1}", item, price);
