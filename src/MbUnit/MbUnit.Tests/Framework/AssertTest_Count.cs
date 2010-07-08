@@ -59,6 +59,39 @@ namespace MbUnit.Tests.Framework
             return new HashSet<string>(GetEnumeration().Cast<string>());
         }
 
+        private static IEnumerable GetCountableEnumerable()
+        {
+            return new CountableEnumerable(GetEnumeration().Cast<string>());
+        }
+
+        private class CountableEnumerable : IEnumerable<string>
+        {
+            private readonly List<string> data;
+
+            public CountableEnumerable(IEnumerable<string> values)
+            {
+                data = values.ToList();
+            }
+
+            public int Count
+            {
+                get
+                {
+                    return data.Count;
+                }
+            }
+
+            public IEnumerator<string> GetEnumerator()
+            {
+                return data.GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return data.GetEnumerator();
+            }
+        }
+
         private IEnumerable<object[]> DataProvider
         {
             get
@@ -68,6 +101,7 @@ namespace MbUnit.Tests.Framework
                 yield return new object[] { GetStronglyTypedList() };
                 yield return new object[] { GetArray() };
                 yield return new object[] { GetHashSet() };
+                yield return new object[] { GetCountableEnumerable() };
             }
         }
 

@@ -80,62 +80,123 @@ namespace MbUnit.Framework
 
             AssertionHelper.Verify(() =>
             {
-                return ForArray(expectedCount, values, messageFormat, messageArgs)
-                    ?? ForGenericCollection(expectedCount, values, messageFormat, messageArgs)
-                    ?? ForNonGenericCollection(expectedCount, values, messageFormat, messageArgs)
-                    ?? ForSimpleEnumerable(expectedCount, values, messageFormat, messageArgs);
+                var methods = new CountDelegate[]
+                {
+                    ForArray,
+                    ForGenericCollection,
+                    ForNonGenericCollection,
+                };
+
+                foreach (var method in methods)
+                {
+                    Result result = method(expectedCount, values, messageFormat, messageArgs);
+
+                    if (result.IsHandled)
+                        return result.AssertionFailure;
+                }
+
+                return ForSimpleEnumerable(expectedCount, values, messageFormat, messageArgs).AssertionFailure;
             });
         }
 
-        private static AssertionFailure ForArray(int expectedCount, IEnumerable values, string messageFormat, params object[] messageArgs)
-        {
-            if (values is Array)
-                return CountFromLengthProperty(expectedCount, ((Array)values).Length, messageFormat, messageArgs);
+        #region Core
 
-            return null;
+        private delegate Result CountDelegate(int expectedCount, IEnumerable values, string messageFormat, params object[] messageArgs);
+
+        private class Result
+        {
+            private readonly bool isHandled;
+            private readonly AssertionFailure assertionFailure;
+
+            public bool IsHandled
+            {
+                get { return isHandled; }
+            }
+
+            public AssertionFailure AssertionFailure
+            {
+                get { return assertionFailure; }
+            }
+
+            private Result(bool isHandled, AssertionFailure assertionFailure)
+            {
+                this.isHandled = isHandled;
+                this.assertionFailure = assertionFailure;
+            }
+
+            public static readonly Result Unhandled = new Result(false, null);
+
+            public static Result Handled(AssertionFailure assertionFailure)
+            {
+                return new Result(true, assertionFailure);
+            }
         }
 
-        private static AssertionFailure ForNonGenericCollection(int expectedCount, IEnumerable values, string messageFormat, params object[] messageArgs)
+        private static Result ForArray(int expectedCount, IEnumerable values, string messageFormat, params object[] messageArgs)
+        {
+            if (values is Array)
+                return Result.Handled(CountFromLengthProperty(expectedCount, ((Array)values).Length, messageFormat, messageArgs));
+
+            return Result.Unhandled;
+        }
+
+        private static Result ForNonGenericCollection(int expectedCount, IEnumerable values, string messageFormat, params object[] messageArgs)
         {
             if (values is ICollection)
             {
-                return CountFromCountProperty(expectedCount, ((ICollection)values).Count, messageFormat, messageArgs)
-                    ?? CountByEnumeratingElements(expectedCount, values, messageFormat, messageArgs);
+                return Result.Handled(
+                       CountFromCountProperty(expectedCount, ((ICollection)values).Count, "collection", messageFormat, messageArgs)
+                    ?? CountByEnumeratingElements(expectedCount, values, messageFormat, messageArgs));
             }
 
-            return null;
+            return Result.Unhandled;
         }
 
-        private static AssertionFailure ForGenericCollection(int expectedCount, IEnumerable values, string messageFormat, params object[] messageArgs)
+        private static Result ForGenericCollection(int expectedCount, IEnumerable values, string messageFormat, params object[] messageArgs)
         {
             foreach (Type type in values.GetType().GetInterfaces())
             {
                 if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ICollection<>))
                 {
                     var actualCount = (int)type.GetProperty("Count").GetValue(values, null);
-                    return CountFromCountProperty(expectedCount, actualCount, messageFormat, messageArgs)
-                        ?? CountByEnumeratingElements(expectedCount, values, messageFormat, messageArgs);
+                    return Result.Handled(
+                           CountFromCountProperty(expectedCount, actualCount, "collection", messageFormat, messageArgs)
+                        ?? CountByEnumeratingElements(expectedCount, values, messageFormat, messageArgs));
                 }
             }
 
-            return null;
+            return Result.Unhandled;
         }
 
-        private static AssertionFailure ForSimpleEnumerable(int expectedCount, IEnumerable values, string messageFormat, params object[] messageArgs)
+        private static Result ForSimpleEnumerable(int expectedCount, IEnumerable values, string messageFormat, params object[] messageArgs)
         {
-            return CountByEnumeratingElements(expectedCount, values, messageFormat, messageArgs);
+            return Result.Handled(
+                   CountByEnumeratingElements(expectedCount, values, messageFormat, messageArgs)
+                ?? CountByReflectedCountProperty(expectedCount, values, messageFormat, messageArgs));
         }
 
-        private static AssertionFailure CountFromCountProperty(int expectedCount, int actualCount, string messageFormat, params object[] messageArgs)
+        private static AssertionFailure CountFromCountProperty(int expectedCount, int actualCount, string label, string messageFormat, params object[] messageArgs)
         {
             if (actualCount == expectedCount)
                 return null;
             
-            return new AssertionFailureBuilder("Expected the collection to contain a certain number of elements.")
+            return new AssertionFailureBuilder(String.Format("Expected the {0} to contain a certain number of elements.", label))
                 .AddRawExpectedValue(expectedCount)
                 .AddRawLabeledValue("Actual Value (Count)", actualCount)
                 .SetMessage(messageFormat, messageArgs)
                 .ToAssertionFailure();
+        }
+
+        private static AssertionFailure CountByReflectedCountProperty(int expectedCount, IEnumerable values, string messageFormat, params object[] messageArgs)
+        {
+            var type = values.GetType();
+            var property = type.GetProperty("Count", BindingFlags.GetProperty | BindingFlags.Public, null, typeof(int), EmptyArray<Type>.Instance, null);
+
+            if (property == null)
+                return null;
+
+            var actualCount = (int)property.GetValue(values, null);
+            return CountFromCountProperty(expectedCount, actualCount, "sequence", messageFormat, messageArgs);
         }
 
         private static AssertionFailure CountFromLengthProperty(int expectedLength, int actualLength, string messageFormat, params object[] messageArgs)
@@ -167,5 +228,7 @@ namespace MbUnit.Framework
                 .SetMessage(messageFormat, messageArgs)
                 .ToAssertionFailure();
         }
+
+        #endregion
     }
 }
