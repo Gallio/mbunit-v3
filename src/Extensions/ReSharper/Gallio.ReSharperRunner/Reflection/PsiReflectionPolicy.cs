@@ -250,10 +250,12 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             foreach (IProject project in psiManager.Solution.GetAllProjects())
             {
-                try
-                {
+                try {
+#if RESHARPER_51
+                    if (BuildSettingsManager.HasInstance(project) == false)
+                        continue;
+#endif
                     IAssemblyFile assemblyFile = BuildSettingsManager.GetInstance(project).GetOutputAssemblyFile();
-
 #if RESHARPER_50_OR_NEWER
                     if (assemblyFile != null && IsMatchingAssemblyName(assemblyName, new AssemblyName(assemblyFile.AssemblyName.FullName)))
 #else
@@ -516,7 +518,8 @@ namespace Gallio.ReSharperRunner.Reflection
 #if RESHARPER_45_OR_NEWER
         private IPsiModule GetPsiModule(IModule moduleHandle)
         {
-            return PsiModuleManager.GetInstance(psiManager.Solution).GetPrimaryPsiModule(moduleHandle);
+            var moduleManager = PsiModuleManager.GetInstance(psiManager.Solution);
+            return moduleManager.GetPrimaryPsiModule(moduleHandle);
         }
 #endif
 

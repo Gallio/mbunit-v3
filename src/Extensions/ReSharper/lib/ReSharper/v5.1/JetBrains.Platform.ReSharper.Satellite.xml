@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.Platform.ReSharper.Satellite</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.Util.Satellite.SatelliteProcess">
+            <summary>
+            A means for starting a separate process and conveying arbitrary structural arguments and actions to be executed in it.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.Satellite.SatelliteProcess.Main(System.String[],System.Boolean)">
+            <summary>
+            The main function to which the process should delegate upon start.
+            </summary>
+            <param name="args">Process arguments, as passed to its main function. Must not include the process executable name.</param>
+            <param name="gui">Whether to report startup errors in a message box (<c>True</c>), or to console (<c>False</c>).</param>
+        </member>
+        <member name="M:JetBrains.Util.Satellite.SatelliteProcess.Run(JetBrains.Util.Satellite.ISatelliteProcessArgument)">
+            <summary>
+            Runs a separate process by starting the <see cref="T:JetBrains.Util.Satellite.SatelliteProcess"/> assembly, passes it the serialized <paramref name="argument"/>, and executes the <see cref="M:JetBrains.Util.Satellite.ISatelliteProcessArgument.Run"/> method on it.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.Satellite.SatelliteProcess.RunEx(System.IO.FileInfo,JetBrains.Util.Satellite.ISatelliteProcessArgument)">
+            <summary>
+            Runs a separate process by starting the <param name="executable"/>, passes it the serialized <paramref name="argument"/>, and executes the <see cref="M:JetBrains.Util.Satellite.ISatelliteProcessArgument.Run"/> method on it.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.Satellite.SatelliteProcess.RunEx(System.Reflection.Assembly,JetBrains.Util.Satellite.ISatelliteProcessArgument)">
+            <summary>
+            Runs a separate process by starting the <param name="assembly"/>'s executable, passes it the serialized <paramref name="argument"/>, and executes the <see cref="M:JetBrains.Util.Satellite.ISatelliteProcessArgument.Run"/> method on it.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Util.Satellite.ISatelliteProcessArgument">
+            <summary>
+            A program argument that can be run in the separate process.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Util.Satellite.LoadAssemblyArgument">
+            <summary>
+            If the argument instance is defined in other assembly than the process runner, loads the argument's assembly first, before deserializing the argument.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Satellite.SampleArguments.RunChildProcessWatchdogArgument">
+            <summary>
+            Monitors the child process running. If the parent process terminates, shuts down the child process too.
+            Exits when child process ends.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Satellite.SampleArguments.RunChildProcessWatchdogArgument.GracefulShutdownTimeout">
+            <summary>
+            Allow one minute for shutting down gracefully, by closing the main window, then kill process.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Util.Satellite.SatelliteProcessArgumentConverter">
+            <summary>
+            Converts <see cref="T:JetBrains.Util.Satellite.ISatelliteProcessArgument"/> to string and back.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.Satellite.SatelliteProcessArgumentConverter.Deserialize(System.String)">
+            <summary>
+            Parses the string argument, as passed to the satellite process command line, and deserializes the <see cref="T:JetBrains.Util.Satellite.ISatelliteProcessArgument"/> object.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.Satellite.SatelliteProcessArgumentConverter.Serialize(System.Object)">
+            <summary>
+            Serializes the <see cref="T:JetBrains.Util.Satellite.ISatelliteProcessArgument"/> object to be passed to the satellite process in its command line.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Util.Satellite.ShowMessageBoxArgument">
+            <summary>
+            A sample satellite process argument implementation for testing the functionality.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,584 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Feature.Services.CSharp</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCleanup.IHighlightingsCleanupItem.IsAvailable(JetBrains.ReSharper.Feature.Services.CodeCleanup.CodeCleanupProfile)">
+            <summary>
+            Check if this cleanup item is available according to profile
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCleanup.IHighlightingsCleanupItem.IsValid">
+            <summary>
+            Check if corresponding tree elements are valid
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCleanup.IHighlightingsCleanupItem.Execute">
+            <summary>
+            Proceed with cleanup
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.ISmartCompletionType">
+            <summary>
+            Smart completion type interface represents logic for some type of smart code completion
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.AutocompletionBehaviour">
+            <summary>
+            Enumerates possible autoinsert mode foced by context
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext">
+            <summary>
+            Code completion context represents an actualised code completion - that is a point in code where code completion was
+            called and all data which can make use for lookup list evaluation.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.myManager">
+            <summary>
+            The <see cref="T:JetBrains.ReSharper.Psi.PsiManager"/> to use for operations 
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.myOriginalFile">
+            <summary>
+            Reference to the original PSI file
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.myProjectFile">
+            <summary>
+            The project file of the context
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.myPsiModule">
+            <summary>
+            ThePSI module of the context
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.mySelectionRange">
+            <summary>
+            Document range to build context for
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.mySelectionTreeRange">
+            <summary>
+            PSI range to build fontext for
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.mySolution">
+            <summary>
+            The solution where the completion occurs
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.myTextControl">
+            <summary>
+            The text control where the code completion takes place.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.myAutocompletionBehaviour">
+            <summary>
+            Requested mode of autoinsertion
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.myShowSignatures">
+            <summary>
+            Flag indicating whether to show signatures in the list
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.GetResult">
+            <summary>
+            Gets the list of completion variants
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.myAccessContext">
+            <summary>
+            Stores access context (based on original file) 
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.myCompletionRangeMarker">
+            <summary>
+            Range marker to track the completion range.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.myContextStatisticsUID">
+            <summary>
+            The completion context unique identifier (used in statistics)
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.myElement">
+            <summary>
+            The tree node being completed. It is used to clue to particular source tree position in miscellaneous filters, etc. 
+            which work with PSI context. 
+            Note that this node is from chemical tree which also contains reference suffix and terminator.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.myHasArgumentsList">
+            <summary>
+            Holds flag indicating whether there are any arguments list in this context.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.myHasRPar">
+            <summary>
+            Contains flag indicating whether there is right parenthesis at the context.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.myReference">
+            <summary>
+            The reference being completed. May be <c>null</c> if the completion is not reference-based (completing variable name)
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.myResult">
+            <summary>
+            The precalculated completion result
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.myShortCompletionRangeMarker">
+            <summary>
+            Range marker to track the short completion range.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.CalculateReplaceRange(JetBrains.ReSharper.Psi.Tree.IElement,JetBrains.Util.TextRange,System.Boolean)">
+            <summary>
+            Calculates completion range for the specified reference
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.BuildBasicResult">
+            <returns>Empty list and <c>null</c> make a huge difference: empty list means we can work here, but produced no results; <c>null</c> means code 
+            completion doesn't work at all in this context.</returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.Solution">
+            <summary>
+            The solution where the completion occurs
+            </summary>    
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.ProjectFile">
+            <summary>
+            Gets project file where the context is built
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.PsiModule">
+            <summary>
+            Gets PSI module where the context is built
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.TextControl">
+            <summary>
+            Gets the text control to build context in
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.ShowSignatures">
+            <summary>
+            Flag indicating whether to show signatures in the list
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.AutomaticPopup">
+            <summary>
+            Gets or sets flag indicating wheter pre-filtering by prefix should be applied
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.AccessContext">
+            <summary>
+            Stores access context (based on original file) 
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.AutocompletionBehaviour">
+            <summary>
+            Gets the autoinsert mode
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.Element">
+            <summary>
+            Gets the tree node to complete at
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.Reference">
+            <summary>
+            The reference to complete
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.HasArgumentsList">
+            <summary>
+            Holds flag indicating whether there are any arguments list in this context.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.LParRange">
+            <summary>
+            Gets the left parenthesis offset
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.HasRPar">
+            <summary>
+            Gets the value indicating whether the left parenthesis is present
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.RParRange">
+            <summary>
+            Gets the right parenthesis offset. If there's no right parenthesis it returns predicted right parenthesis offset.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.ReplaceRange">
+            <summary>
+            Gets the full range to replace with replace completion.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.NameRange">
+            <summary>
+            Gets the short range to replace with replace completion.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext.ContextStatisticsUID">
+            <summary>
+            Gets the context identifier
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CSharpCodeCompletionSession">
+            <summary>
+            Represents one session of using code completion
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.KeywordCompletionUtil.Suggest(JetBrains.ReSharper.Psi.Tree.IElement,System.Int32,System.String)">
+            <summary>
+            Suggest the keyword which could be placed insted of the given tree node
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.LookupItemFactory">
+            <summary>
+            Creates code completion items for certain scanarios
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.LookupItemFactory.IsLBraceRightAfterCaret">
+            <summary>
+            Checks if the left brace is right after caret. This means that there's only whitespace between caret and left brace
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.NamePreferencePolicy">
+            <summary>
+            Determines which name should be preferred
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.NewStatementSmartCompletionType">
+            <summary>
+            Smart completion logic after new
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Rules.AliasRule">
+            <summary>
+            Add the aliases to completion list
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.ICodeCompletionListTransformationRule">
+            <summary>
+            Represents a code completion rule
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.ICodeCompletionListTransformationRule.IsApplicable(JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext)">
+            <summary>
+            Determines whether the rule is applicable in the given context
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.ICodeCompletionListTransformationRule.Apply(JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionContext,JetBrains.ReSharper.Feature.Services.Lookup.GroupedItemsCollector)">
+            <summary>
+            Applies the rule
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.ICodeCompletionListTransformationRule.CanGenerate">
+            <summary>
+            Gets flag indicating whether the rule can generate members
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Rules.MethodNameCompletionTransformationRule`1">
+            <summary>
+            Rule to remove trailing parenthesis in methods
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Rules.AttributeListRule">
+            <summary>
+            Decorates attributes in declaration list
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Rules.BaseClassesRule">
+            <summary>
+            Rule for filtering classes in base classes list
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Rules.DelegateExpectedRule">
+            <summary>
+            Rule for completing methods in delegate creation expressions
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionListTransformationRuleAttribute">
+            <summary>
+            Apply this attribute to automatically add your rule to the code completion pipeline
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CodeCompletionListTransformationRuleAttribute.DependOnRules">
+            <summary>
+            Rules which should precede this
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Rules.IndexersRule">
+            <summary>
+            Adds indexers after dot
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Rules.KeywordCompletionRule">
+            <summary>
+            Adds matching keywords to the lookup
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Rules.NameSuggestionRule">
+            <summary>
+            Rule which is run in initializers
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Rules.NewStatementRule">
+            <summary>
+            Rule which runs when completing in the new statement
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.SmartCompletion.AttributeSmartCompletionType">
+            <summary>
+            Smart completion logic for completing attributes
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.SmartCompletion.CastSmartCompletionType">
+            <summary>
+            Smart completion logic for casts
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateAnonymousDelegateLookupItem.Shrink">
+            <summary>
+            Shrinks lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateAnonymousDelegateLookupItem.Unshrink">
+            <summary>
+            Restores unshrinked lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateAnonymousDelegateLookupItem.Accept(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange,JetBrains.ReSharper.Feature.Services.Lookup.LookupItemInsertType,JetBrains.ReSharper.Feature.Services.Lookup.Suffix,JetBrains.ProjectModel.ISolution,System.Boolean)">
+            <summary>
+            Completes the item at the specified range.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateAnonymousDelegateLookupItem.GetVisualReplaceRange(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange)">
+            <summary>
+            Gets visual replace range
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateAnonymousDelegateLookupItem.Image">
+            <summary>
+            Gets lookup item image
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateAnonymousDelegateLookupItem.DisplayName">
+            <summary>
+            Gets lookup item display name
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateAnonymousDelegateLookupItem.DisplayTypeName">
+            <summary>
+            Gets type display name 
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateDelegateLookupItem.Shrink">
+            <summary>
+            Shrinks lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateDelegateLookupItem.Unshrink">
+            <summary>
+            Restores unshrinked lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateDelegateLookupItem.Accept(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange,JetBrains.ReSharper.Feature.Services.Lookup.LookupItemInsertType,JetBrains.ReSharper.Feature.Services.Lookup.Suffix,JetBrains.ProjectModel.ISolution,System.Boolean)">
+            <summary>
+            Completes the item at the specified range.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateDelegateLookupItem.GetVisualReplaceRange(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange)">
+            <summary>
+            Gets visual replace range
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateDelegateLookupItem.Image">
+            <summary>
+            Gets lookup item image
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateDelegateLookupItem.DisplayName">
+            <summary>
+            Gets lookup item display name
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateDelegateLookupItem.DisplayTypeName">
+            <summary>
+            Gets type display name 
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLambdaLookupItem.Shrink">
+            <summary>
+            Shrinks lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLambdaLookupItem.Unshrink">
+            <summary>
+            Restores unshrinked lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLambdaLookupItem.Accept(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange,JetBrains.ReSharper.Feature.Services.Lookup.LookupItemInsertType,JetBrains.ReSharper.Feature.Services.Lookup.Suffix,JetBrains.ProjectModel.ISolution,System.Boolean)">
+            <summary>
+            Completes the item at the specified range.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLambdaLookupItem.GetVisualReplaceRange(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange)" -->
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLambdaLookupItem.Image">
+            <summary>
+            Gets lookup item image
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLambdaLookupItem.DisplayName">
+            <summary>
+            Gets lookup item display name
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLambdaLookupItem.DisplayTypeName">
+            <summary>
+            Gets type display name 
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLocalVariableLookupItem.Shrink">
+            <summary>
+            Shrinks lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLocalVariableLookupItem.Unshrink">
+            <summary>
+            Restores unshrinked lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLocalVariableLookupItem.Accept(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange,JetBrains.ReSharper.Feature.Services.Lookup.LookupItemInsertType,JetBrains.ReSharper.Feature.Services.Lookup.Suffix,JetBrains.ProjectModel.ISolution,System.Boolean)">
+            <summary>
+            Completes the item at the specified range.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLocalVariableLookupItem.GetVisualReplaceRange(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange)">
+            <summary>
+            Gets visual replace range
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLocalVariableLookupItem.Image">
+            <summary>
+            Gets lookup item image
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLocalVariableLookupItem.DisplayName">
+            <summary>
+            Gets lookup item display name
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLocalVariableLookupItem.DisplayTypeName">
+            <summary>
+            Gets type display name 
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.SmartCompletion.DelegateSmartCompletionType">
+            <summary>
+            Smart completion logic for completing methods matching to delegates by signature
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.EventDeclarationSmartCompletionType">
+            <summary>
+            Smart completion logic for event declaration
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.SmartCompletion.ExpressionSmartCompletionType">
+            <summary>
+            Generates smart completion result for expression completion
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.ISmartCompleatebleReference">
+            <summary>
+            Reference with custom smart completion
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.SmartCompletion.StatementSmartCompletionType">
+            <summary>
+            Smart completion in empty statement
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.Intentions.CSharpImplementInterfaceIntention.Implement(JetBrains.ReSharper.Psi.ITypeElement,JetBrains.ReSharper.Psi.IDeclaredType[])">
+            <summary>
+            Implements interfaces
+            </summary>
+            <param name="implementor">Type to implement interface for</param>
+            <param name="interfacesToImplement">Interfaces to implement</param>
+            <returns>Post-execute action to run template for generated methods body</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.Intentions.CSharpImplementInterfaceIntention.Implement(JetBrains.ReSharper.Psi.CSharp.Tree.IClassLikeDeclaration,JetBrains.ReSharper.Psi.IDeclaredType[])">
+            <summary>
+            Implements interfaces
+            </summary>
+            <param name="declaration">Declaration to implement intarfaces</param>
+            <param name="interfacesToImplement">Interfaces to implement</param>
+            <returns>Post-execute action to run template for generated methods body</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.ParameterInfo.CsParameterInfoInvocationContext.CreateInvocationContext(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.TreeOffset,JetBrains.ReSharper.Psi.TreeOffset,JetBrains.ReSharper.Feature.Services.CSharp.ParameterInfo.CsParameterInfoInvocationContext.UseParentContext)">
+            <summary>
+            Finds appropriate invocation seeking at the specified tree node
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.ParameterInfo.CsParameterInfoInvocationContext.BoundsRange">
+            <summary>
+            Offsets within this range allow showing parameter information.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.ParameterInfo.CsParameterInfoInvocationContext.Arguments">
+            <summary>
+            Actual arguments of invocation. Convert them to nodes and use to find on which argument caret is.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.SelectEmbracingConstruct.CSharpSelectEmbracingConstructProvider.ExtendRangeSelection(JetBrains.ReSharper.Psi.Tree.IFileNode,JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Try to build the tree range selection leaving it on the same tree level (i.e. don't walk to parent)
+            Return null if such selection couldn't be built
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.SelectEmbracingConstruct.CSharpSelectEmbracingConstructProvider.BuildNodeSelection(JetBrains.ReSharper.Psi.Tree.IFileNode,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Try to build selection from the given node
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.SelectEmbracingConstruct.CSharpSelectEmbracingConstructProvider.TryFindStatementRange(JetBrains.ReSharper.Psi.Tree.IFileNode,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Try to find a group of statements separated by blank lines
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Test.CSharpCodeCompletionListTest">
+            <summary>
+            Tests the completion list contents
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CSharpCodeCompletionTest">
+            <summary>
+            Tests the completion logic part of the code completion action
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Test.CSharpCodeCompletionTestBase.myCompleteItem">
+            <summary>
+            The item to complete
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Test.CSharpCodeCompletionTestBase.myShowSignatures">
+            <summary>
+            Indicates whether the result should contain signatures
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Test.CSharpCodeCompletionTestBase.myLookupItemInsertType">
+            <summary>
+            Completion type
+            </summary>
+        </member>
+    </members>
+</doc>

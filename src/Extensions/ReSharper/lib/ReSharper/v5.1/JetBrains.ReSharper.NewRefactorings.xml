@@ -1,0 +1,1707 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.NewRefactorings</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Refactorings.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.AdjustNamespacesPage_Description_No_files_were_found_with_inconsistent_namespaces">
+            <summary>
+              Looks up a localized string similar to No files were found with inconsistent namespaces.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.AdjustNamespacesPage_Description_Please_review_files_that_have_inconsistent_namespace_names">
+            <summary>
+              Looks up a localized string similar to Please review files that have inconsistent namespace names.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.AdjustNamespacesPage_Title_Inconsistent_files_review">
+            <summary>
+              Looks up a localized string similar to Inconsistent files review.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.AdjustNamespacesPage_Title_Nothing_to_fix">
+            <summary>
+              Looks up a localized string similar to Nothing to fix.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.Anonymous2DeclaredWindow_Description_Specify_parameters_of_new_type_declaration___">
+            <summary>
+              Looks up a localized string similar to Specify parameters of new type declaration....
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.Anonymous2DeclaredWindow_Title_Configure_type">
+            <summary>
+              Looks up a localized string similar to Configure type.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.ChangeSignaturePage_Description_Specify_new_name__return_type_and_parameters__then_ensure_that_signature_preview_shows_the_correct_signature_">
+            <summary>
+              Looks up a localized string similar to Specify new name, return type and parameters, then ensure that signature preview shows the correct signature..
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.ChangeSignaturePage_Title_Define_signature_changes">
+            <summary>
+              Looks up a localized string similar to Define signature changes.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.CheckDeclarationsToMakePublicPage_Description">
+            <summary>
+              Looks up a localized string similar to Refactoring has detected that followind types and members should be made public.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.CheckDeclarationsToMakePublicPage_Title">
+            <summary>
+              Looks up a localized string similar to Choose declarations to make public.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.ConflictsPage_Description">
+            <summary>
+              Looks up a localized string similar to ReSharper has found that the refactoring has some conflicts with the existing code. You can look through the list of conflicts and fix them by either manually editing code or choosing one of quickfixes if any are available.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.ConflictsPage_Description_CanNotExecute">
+            <summary>
+              Looks up a localized string similar to Refactoring can not be executed.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.ConflictsPage_Description_ReviewProblems">
+            <summary>
+              Looks up a localized string similar to Please review possible problems before executing refactorings.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.ConflictsPage_Title">
+            <summary>
+              Looks up a localized string similar to Conflicts were found.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.Constructor2FactoryMethodWindow_Description">
+            <summary>
+              Looks up a localized string similar to Specify options.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.Constructor2FactoryMethodWindow_Title">
+            <summary>
+              Looks up a localized string similar to Define factory method name and type where factory method should be created.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.CopyTypePage_Description">
+            <summary>
+              Looks up a localized string similar to Specify name of type copy and namespace to put it into..
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.CopyTypePage_Title">
+            <summary>
+              Looks up a localized string similar to Options.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.EncapsulateFieldPage_Description">
+            <summary>
+              Looks up a localized string similar to Specify name and modifiers of the new property.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.EncapsulateFieldPage_Title">
+            <summary>
+              Looks up a localized string similar to Options.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.ExtractClassFromParamsControl_Description">
+            <summary>
+              Looks up a localized string similar to Select parameters to wrap and define extracted type properties.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.ExtractClassFromParamsControl_Title">
+            <summary>
+              Looks up a localized string similar to Specify options.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.ExtractInterfaceWindow_Description">
+            <summary>
+              Looks up a localized string similar to that you want to move to base type.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.ExtractInterfaceWindow_Title">
+            <summary>
+              Looks up a localized string similar to Select base type and members.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.ExtractMethodPage_Description">
+            <summary>
+              Looks up a localized string similar to Enter name of the method to be created and change signature if needed..
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.ExtractMethodPage_Title">
+            <summary>
+              Looks up a localized string similar to Options.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.ExtractSuperclassWindow_Description">
+            <summary>
+              Looks up a localized string similar to and members that you want to pull into this class.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.ExtractSuperclassWindow_Title">
+            <summary>
+              Looks up a localized string similar to Specify base type name.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.InlineMethodWindow_Description">
+            <summary>
+              Looks up a localized string similar to for inlining {0}.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.InlineMethodWindow_Title">
+            <summary>
+              Looks up a localized string similar to Specify options.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.IntroduceParameterWindow_Description">
+            <summary>
+              Looks up a localized string similar to Specify name.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.IntroduceParameterWindow_Title">
+            <summary>
+              Looks up a localized string similar to for the introduced parameter.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.IntroFieldWindow_Description">
+            <summary>
+              Looks up a localized string similar to of the introduced field and define its modifiers.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.IntroFieldWindow_Title">
+            <summary>
+              Looks up a localized string similar to Specify name.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.MakeMethodNonStaticPage_Description">
+            <summary>
+              Looks up a localized string similar to Select method instance parameter and visibility.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.MakeMethodNonStaticPage_Title">
+            <summary>
+              Looks up a localized string similar to Specify options.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.MakeStaticPage_Description">
+            <summary>
+              Looks up a localized string similar to Define how to transform usages of instance members.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.MakeStaticPage_Title">
+            <summary>
+              Looks up a localized string similar to Specify Options.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.MoveFileRemoveEmptyFilePage_Description">
+            <summary>
+              Looks up a localized string similar to Source file contains no more declarations.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.MoveFileRemoveEmptyFilePage_Title">
+            <summary>
+              Looks up a localized string similar to Remove empty files?.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.MoveIntoMatchingFilesPage_Description">
+            <summary>
+              Looks up a localized string similar to Specify declarations that should be moved into the separate files.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.MoveIntoMatchingFilesPage_Title">
+            <summary>
+              Looks up a localized string similar to Options.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.MoveStaticMembersControl_Description">
+            <summary>
+              Looks up a localized string similar to and members that you want to move into target type.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.MoveStaticMembersControl_Title">
+            <summary>
+              Looks up a localized string similar to Specify target type.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.MoveToFilePage_Description">
+            <summary>
+              Looks up a localized string similar to Specify name of new or existing file.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.MoveToFilePage_Title">
+            <summary>
+              Looks up a localized string similar to Specify name of file.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.MoveToNamespacePage_Description">
+            <summary>
+              Looks up a localized string similar to 
+             .
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.MoveToNamespacePage_Title">
+            <summary>
+              Looks up a localized string similar to Specify namespace.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.MoveTypeToOuterScopePage_Description">
+            <summary>
+              Looks up a localized string similar to (if you want it to be different).
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.MoveTypeToOuterScopePage_Title">
+            <summary>
+              Looks up a localized string similar to Specify name.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.Property2FunctionWindow_Description">
+            <summary>
+              Looks up a localized string similar to that you want to create and specify names.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.Property2FunctionWindow_Title">
+            <summary>
+              Looks up a localized string similar to Check accessors.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.PushDownWindow_Description">
+            <summary>
+              Looks up a localized string similar to and members that you want to push to derived classes.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.PushDownWindow_Title">
+            <summary>
+              Looks up a localized string similar to Choose inheritors.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.RenameDerived_Title">
+            <summary>
+              Looks up a localized string similar to Rename Related Symbols.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.RenameDerived_Title_UsageChanged">
+            <summary>
+              Looks up a localized string similar to {0} usage was changed. .
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.RenameDerived_Title_UsagesChanged">
+            <summary>
+              Looks up a localized string similar to {0} usages were changed. .
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.RenameDerivedElementsPage_Description">
+            <summary>
+              Looks up a localized string similar to There are declarations that seem to have names related to the name of the type to be renamed. You can change their names to match the new type name. You can agree to the suggested names or edit them by clicking on the new name cells..
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.RenameInitialControl_Description">
+            <summary>
+              Looks up a localized string similar to to the {0}.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.RenameInitialControl_Title">
+            <summary>
+              Looks up a localized string similar to sdf.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.RenameMainForm_Title">
+            <summary>
+              Looks up a localized string similar to Give a new name.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.RenameNamespaceControl_Description">
+            <summary>
+              Looks up a localized string similar to for namespace {0}..
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.RenameNamespaceControl_Title">
+            <summary>
+              Looks up a localized string similar to Specify New Name.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.SafeDeleteFolderPage_Description">
+            <summary>
+              Looks up a localized string similar to Refactoring will show you usages of the removed code and then remove files.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.SafeDeleteFolderPage_Title">
+            <summary>
+              Looks up a localized string similar to Confirm Remove.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.SafeDeletePage2TypeElement_Description">
+            <summary>
+              Looks up a localized string similar to {0} has inheritors. Would you like to delete the whole hierarchy?.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.SafeDeletePage2TypeElement_Title">
+            <summary>
+              Looks up a localized string similar to Delete hierarchy?.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.SafeDeletePageOverridableMember_Description">
+            <summary>
+              Looks up a localized string similar to {0} is a member of hierarchy. What members do you want to delete?.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.SafeDeletePageOverridableMember_Title">
+            <summary>
+              Looks up a localized string similar to Remove overrides?.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.SafeDeletePageReplaceTypeUsages_Description">
+            <summary>
+              Looks up a localized string similar to There are usages.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.SafeDeletePageReplaceTypeUsages_Title">
+            <summary>
+              Looks up a localized string similar to of {0}. Specify how to treat these usages..
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.SafeDeleteRemoveFilesConfirmation_Description">
+            <summary>
+              Looks up a localized string similar to Some files may become empty. Refactoring may optionally remove these files..
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.SafeDeleteRemoveFilesConfirmation_Title">
+            <summary>
+              Looks up a localized string similar to Remove empty files?.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.SelectTypePartWindow_Description">
+            <summary>
+              Looks up a localized string similar to where you want to put members.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.SelectTypePartWindow_Title">
+            <summary>
+              Looks up a localized string similar to Choose declaration of {0}.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.TextualChangesPage_Description">
+            <summary>
+              Looks up a localized string similar to ReSharper has found some textual occurences in comments and string literals which might .
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.TextualChangesPage_Title">
+            <summary>
+              Looks up a localized string similar to Usages in Comments and String Literals.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.TypeSuggestionPage_Description">
+            <summary>
+              Looks up a localized string similar to You have entered types in the change signature dialog which cannot be resolved or resolved ambiguously. Please choose exact types in the table below or check which types cannot be resolved..
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.TypeSuggestionPage_Title_Specify_unresolved_types">
+            <summary>
+              Looks up a localized string similar to Specify unresolved types.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.UseBaseTypeMainWindow_Description">
+            <summary>
+              Looks up a localized string similar to that you want to use instead of original.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.UseBaseTypeMainWindow_Title">
+            <summary>
+              Looks up a localized string similar to Select base type.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.VBFunction2PropertyPage_Description">
+            <summary>
+              Looks up a localized string similar to of the new property.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Properties.Resources.VBFunction2PropertyPage_Title">
+            <summary>
+              Looks up a localized string similar to Specify name.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage">
+            <summary>
+            Represents custom UI page of refactoring workflow
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.Commit(JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+            Commits page
+            </summary>
+            <returns>Next pa ge if any</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.Initialize(JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+            Initializes page. Called before each show of the page which is caused by "Continue" button.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.RefreshContents(JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+            Refreshes internal page pointers. Returns <c>false</c> if refresh is unsuccessfull and refactoring should be canceled.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.ContinueEnabled">
+            <summary>
+            Gets flag indicating whether the Continue button is enabled.
+            This is ANDed with parent statuses, that include {not running workflow execution} and {validation passes}.
+            This means that you don't have to check the validator. If it's the only thing you can think of — just return <c>True</c>.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.Description">
+            <summary>
+            Gets page description
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.Title">
+            <summary>
+            Gets page title
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.View">
+            <summary>
+            Gets the page view that is inserted into the refactoring view.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.ExtractMethod2.ExtractMethodFirstPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.ExtractMethod2.ExtractMethodFirstPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.ExtractMethod2.ExtractMethodFirstPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.IWorkflowExec">
+            <summary>
+            Grouping interface for language specific helper of refactoring workflow.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringWorkflow">
+            <summary>
+            Represents a refactoring workflow
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Move.AdjustNamespaces.Impl.AdjustNamespacesPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Move.AdjustNamespaces.Impl.AdjustNamespacesPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Move.AdjustNamespaces.Impl.AdjustNamespacesPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringWorkflowProvider">
+            <summary>
+            Provides yet another refactoring for the given action (Ex: 'Move to outer scope' adds functionality to the Move action. )
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Move.AdjustNamespaces.Impl.ClassPartsCollector.myFqnToElements">
+            <summary>
+            Element names collisions...
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Move.AdjustNamespaces.Impl.ClassPartsCollector.myDeclaredElementsToNamespaces">
+            <summary>
+            List of type parts with new namespaces...
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Move.AdjustNamespaces.Impl.ClassPartsCollector.myOutOfScopeParts">
+            <summary>
+            Elements having parts out of refactoring scope...
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Move.AdjustNamespaces.Impl.ClassPartsCollector.ImportedSymbols">
+            <summary>
+            Imported symbols of files are collected and then are explicitly inserted into new files.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Move.AdjustNamespaces.Impl.ClassPartsCollector.TopmostElements">
+            <summary>
+            Elements that can be used externally without qualifier...
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Move.Conflicts.ConflictsPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Move.Conflicts.ConflictsPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Move.Conflicts.ConflictsPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Move.MoveIntoMatchingFile.MoveIntoMatchingFilesPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Move.MoveIntoMatchingFile.MoveIntoMatchingFilesPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Move.MoveIntoMatchingFile.MoveIntoMatchingFilesPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Move.MoveToFolder.Impl.MoveToFolderHierarchyItem.CreatedProjectFile">
+            <summary>
+            Create project file for this item...
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.MoveWorkflowProvider">
+            <summary>
+            'Move' refactoring workflow provider.
+            Usage:
+            <code>
+            [RefactoringWorkflowProvider]
+            internal class CustomMoveProvider : IMoveWorkflowProvider
+            {
+              public RefactoringWorkflow CreateWorkflow(ISolution solution)
+              {
+                return new CustomMoveWorkflow(solution);
+              }
+            }
+            </code>
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Move.MoveToFolder.Pages.CheckDeclarationsToMakePublicPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Move.MoveToFolder.Pages.CheckDeclarationsToMakePublicPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Move.MoveToFolder.Pages.CheckDeclarationsToMakePublicPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Move.MoveToFolder.Pages.MoveToFolderPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Move.MoveToFolder.Pages.MoveToFolderPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Move.MoveToFolder.Pages.MoveToFolderPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Move.MoveToNamespace.MoveToNamespacePage.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Move.MoveToNamespace.MoveToNamespacePage.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Move.MoveToNamespace.MoveToNamespacePage.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Move.MoveTypeDeclarationToFile.MoveFileRemoveEmptyFilePage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Move.MoveTypeDeclarationToFile.MoveFileRemoveEmptyFilePage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Move.MoveTypeDeclarationToFile.MoveFileRemoveEmptyFilePage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Move.MoveTypeDeclarationToFile.MoveToFilePage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Move.MoveTypeDeclarationToFile.MoveToFilePage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Move.MoveTypeDeclarationToFile.MoveToFilePage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Rename.ParameterInOverloadRenameEvaluator">
+            <summary>
+            Correcponding parameter of overload.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.SafeDeleteFolder.Impl.SafeDeleteFolderPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.SafeDeleteFolder.Impl.SafeDeleteFolderPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.SafeDeleteFolder.Impl.SafeDeleteFolderPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.SafeDeleteTheSecond.SafeDeleteWorkflowProvider">
+            <summary>
+            'SafeDelete' refactoring workflow provider.
+            Usage:
+            <code>
+            [RefactoringWorkflowProvider]
+            internal class CustomSafeDeleteProvider : ISafeDeleteWorkflowProvider
+            {
+              public RefactoringWorkflow CreateWorkflow(ISolution solution)
+              {
+                return new CustomSafeDeleteWorkflow(solution);
+              }
+            }
+            </code>
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.SafeDeleteTheSecond.SafeDeleteRemoveFilesConfirmation.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.SafeDeleteTheSecond.SafeDeleteRemoveFilesConfirmation.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.SafeDeleteTheSecond.SafeDeleteRemoveFilesConfirmation.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.SafeDeleteTheSecond.SafeDeletePage2TypeElement.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.SafeDeleteTheSecond.SafeDeletePage2TypeElement.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.SafeDeleteTheSecond.SafeDeletePage2TypeElement.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.SafeDeleteTheSecond.SafeDeletePageOverridableMember.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.SafeDeleteTheSecond.SafeDeletePageOverridableMember.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.SafeDeleteTheSecond.SafeDeletePageOverridableMember.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.SafeDeleteTheSecond.SafeDeletePageReplaceTypeUsages.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.SafeDeleteTheSecond.SafeDeletePageReplaceTypeUsages.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.SafeDeleteTheSecond.SafeDeletePageReplaceTypeUsages.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.SafeDeleteTheSecond.SafeDeletePageStart.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.SafeDeleteTheSecond.SafeDeletePageStart.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.SafeDeleteTheSecond.SafeDeletePageStart.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.ChangeStaticness.ToStatic.Model.ThisUsagesCollector.myThisUsages">
+            <summary>
+            occurrences of 'this' ('me')
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.ChangeStaticness.ToStatic.Model.ThisUsagesCollector.myReadUsages">
+            <summary>
+            occurrences of instance type members that are not accessed for writing
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.ChangeStaticness.ToStatic.Model.ThisUsagesCollector.myWriteUsages">
+            <summary>
+            occurrences of instance members accessed for writing
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.ChangeStaticness.ToStatic.Model.ThisUsagesCollector.myExpressions">
+            <summary>
+            Expression to present
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.ChangeStaticness.ToStatic.UI.MakeStaticPage.myContainer">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.ChangeStaticness.ToStatic.UI.MakeStaticPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.ChangeStaticness.ToStatic.UI.MakeStaticPage.InitializeComponent(System.Boolean,System.Boolean)">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.CommonUI.IMemberInfo">
+            <summary>
+            Represents member row in member list control
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.CommonUI.IMemberInfo.DeclaredElement">
+            <summary>
+            Gets associated declared element
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.CommonUI.IMemberInfo.HasWarning">
+            <summary>
+            Gets flag indicating whether the item is under warning
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.CommonUI.IMemberInfo.HasError">
+            <summary>
+            Gets flag indicating whether the item is under error
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.CommonUI.IMemberInfo.MakeAbstract">
+            <summary>
+            Gets or sets flag indincating whether to make the member abstract 
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.CommonUI.IMemberInfo.Included">
+            <summary>
+            Gets or sets flag indicating whether the item is included to operation
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.CommonUI.IMemberInfo.CanChangeAbstract">
+            <summary>
+            Gets flag indicating whether the item can change its make abstract setting
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.CommonUI.IMemberInfo.CanHaveAbstract">
+            <summary>
+            Gets flag indicating whether the make abstract field makes sense for this item
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.CommonUI.IMemberInfo.ToolTip">
+            <summary>
+            Gets tooltip
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.CommonUI.IMemberInfo.Enabled">
+            <summary>
+            not enabled item cannot be checked
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Conflicts.IConflict">
+            <summary>
+            Represents a conflict
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Conflicts.IConflict.IsValid">
+            <summary>
+            Gets flag indicating whether data related to the conflict is valid
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Conflicts.IConflict.Description">
+            <summary>
+            Gets conflict description
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Conflicts.IConflict.Severity">
+            <summary>
+            Gets conflict severity
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.InlineParameter.Impl.SubExpressionSearcher.myQualifier">
+            <summary>
+            Qualifier of invoced expression
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.InlineParameter.Impl.SubExpressionSearcher.myHasThisQualifier">
+            <summary>
+            Qualifier of invoced expression is this (or omitted)
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.InlineParameter.Data.InlineParameterDataModel.ArgumentInfoOfThisParameter">
+            <summary>
+            Not included argument with value 'this'
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.InlineParameter.Data.InlineParameterDataModel.ThisSuggestion">
+            <summary>
+            Suggested parameter for unresolved this
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.InlineParameter.InvocationsPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.InlineParameter.InvocationsPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.InlineParameter.InvocationsPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MoveInnerClass.IMoveTypeToOuterScope.NeedsTypeParameterOfOuterClass(JetBrains.ReSharper.Psi.ITypeParameter,JetBrains.ReSharper.Psi.Tree.IDeclaration)">
+            <summary>
+            STEP 2: Calculate new CLR name of a type, including its type parameters<br/>
+             phase a: is given parameter of outer class needed in a body of new class?
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MoveInnerClass.IMoveTypeToOuterScope.SaveLocalReferences(System.Collections.Generic.ICollection{JetBrains.ReSharper.Psi.Tree.IDeclaration})">
+            <summary>
+            STEP 4: Prepare to move; save information about references inside your declarations
+            </summary>
+            <param name="declarations"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MoveInnerClass.IMoveTypeToOuterScope.CutDeclaration(JetBrains.ReSharper.Psi.Tree.IDeclaration)">
+            <summary>
+            STEP 5a: Prepare to changing declarations
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MoveInnerClass.IMoveTypeToOuterScope.PasteDeclarations(JetBrains.Util.Pair{JetBrains.ReSharper.Psi.Tree.IDeclaration,JetBrains.ReSharper.Psi.Tree.IDeclaration})">
+            <summary>
+            STEP 5b: Change declarations; resulting class should have correct CLR name as given by SetNewCLRName
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MoveInnerClass.IMoveTypeToOuterScope.RestoreLocalReferences(System.Collections.Generic.ICollection{JetBrains.ReSharper.Psi.Tree.IDeclaration})">
+            <summary>
+            STEP 6: Restore references inside new declarations
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.RenameModel.RenameBase.GetPossibleReferenceNames(JetBrains.ReSharper.Psi.IDeclaredElement,System.String)">
+            <summary>
+             Returns list of names that <paramref name="element" /> may hide if renamed to <paramref name="newName" /></summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.InlineParameter.InlineParameterPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.InlineParameter.InlineParameterPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.InlineParameter.InlineParameterPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.IntroduceField.IntroFieldWindow.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.IntroduceField.IntroFieldWindow.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.IntroduceField.IntroFieldWindow.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.MoveMembers.UI.SelectTypePartWindow.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MoveMembers.UI.SelectTypePartWindow.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MoveMembers.UI.SelectTypePartWindow.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.IntroduceParameter.IntroduceParameterWindow.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.IntroduceParameter.IntroduceParameterWindow.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.IntroduceParameter.IntroduceParameterWindow.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Anotype2DeclaredType.Anonymous2DeclaredWindow.InitControls">
+            <summary> 
+            Required method for Designer support.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.ChangeSignature.ChangeSignatureRefactoring">
+            <summary>
+            Change signature refactoring
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.ChangeSignature.ChangeSignaturePage.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.ChangeSignature.Impl.ChangeSignatureConflictSearcher">
+            <summary>
+            Searches conflicts when changing signature
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Conflicts.IConflictSearcher">
+            <summary>
+            Interface for creating conflict searchers
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Conflicts.IConflictSearcher.SearchConflicts(JetBrains.Application.Progress.IProgressIndicator,System.Boolean)">
+            <summary>
+            </summary>
+            <param name="progressIndicator"></param>
+            <param name="canPerformRefactoring">Determines if refactoring can perform refactoring during conflict search...</param>
+            <returns></returns>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.ChangeSignature.TypeSuggestionPage.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.ChangeSignature.TypeSuggestionPage.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.ChangeSignature.TypeSuggestionPage.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.ClassFromParameters.Util.SignatureGenerifier.BuildSubstitution(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.IType)">
+            <summary>
+            Example:
+            mostGenericType = List{T[], T1}
+            specializedType = List}string[], U}
+            result is T -> string, T1 -> U. 
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Conflicts.CompositeConflictSearcher">
+            <summary>
+            Composites multiple conflict searchers
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Conflicts.ConflictSearchResult">
+            <summary>
+            Result of conflict searching
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Conflicts.ConflictSearchResult.PerformedRefactoring">
+            <summary>
+            Gets flag indicating whether the refactoring was performed during conflict evaluation
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Conflicts.ConflictSeverity">
+            <summary>
+            Defines possible conflict severity
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Conflicts.ConflictWithDeclaredElement">
+            <summary>
+            Conflict for case when a created declared element conflicts with another one
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Constructor2FactoryMethod.Constructor2FactoryMethodWindow.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.ExtractMethod.ExtractMethodPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.ExtractMethod.ExtractMethodPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.ExtractMethod.ExtractMethodPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.ILanguageSpecificRefactoringService">
+            <summary>
+            Tag interface for all language-specific refactroing services
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.WorkflowNew.FunctionWrapper`1">
+            <summary>
+            Wraps action with exception handlers. 
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.WorkflowNew.SimpleWorkflowHost.CreateTaskExecutor">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.WorkflowNew.WorkflowHostWithWizardForm">
+            <summary>
+            Runs refactoring on the refactoring wizard form...
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Workflow.IOverridingWorkflowProvider">
+            <summary>
+            Overrides refactoring action (Ex: Inline rename overrides basic rename for local variables)
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.IOverridingWorkflowProvider.HideOtherActions(JetBrains.ActionManagement.IDataContext)">
+            <summary>
+            Returns if all other refactorings should be hidden in this context...
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Workflow.RefactoringAction">
+            <summary>
+            Implements the standard action that spawns a refactoring.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Workflow.RefactoringAction.myAfterRefactoringExecuted">
+            <summary>
+            Executes after the refactoring completes successfully.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.RefactoringAction.#ctor(System.Func{JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.Refactorings.Workflow.IRefactoringWorkflow})">
+            <summary>
+            Inits with a functor that produces the refactoring workflow.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.RefactoringAction.Execute(JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.DelegateExecute)">
+            <summary>
+            Executes action. Called after Update, that set ActionPresentation.Enabled to true.
+            </summary>
+            <param name="context">DataContext</param>
+            <param name="nextExecute">delegate to call</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.RefactoringAction.Update(JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
+            <summary>
+            Updates action visual presentation. If presentation.Enabled is set to false, Execute
+            will not be called.
+            </summary>
+            <param name="context">DataContext</param>
+            <param name="presentation">presentation to update</param>
+            <param name="nextUpdate">delegate to call</param>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.RefactoringAction.AfterRefactoringExecuted">
+            <summary>
+            If non-Null, executes after the refactoring completes successfully.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Function2Property.CsFunction2PropertyWindow.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Function2Property.CsFunction2PropertyWindow.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Function2Property.CsFunction2PropertyWindow.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Function2Property.VBFunction2PropertyPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Function2Property.VBFunction2PropertyPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Function2Property.VBFunction2PropertyPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.MakeMethodNonStatic.MakeMethodNonStaticControl.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MakeMethodNonStatic.MakeMethodNonStaticControl.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MakeMethodNonStatic.MakeMethodNonStaticControl.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.MoveMembers.Analysis.IMoveAnalyser.BaseClass2MemberInfosMap">
+            <summary>
+            Table of methods that should be declared abstract in the base classes.
+            This is only actual for Pull Up refactoring.  
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.MoveMembers.Common.MemberInfo`1.RemovedDeclaredElement">
+            <summary>
+            Stores declared element even when it was removed.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MoveMembers.Common.IImageCollector.GetMemberImages(JetBrains.ReSharper.Psi.IDeclaredElement,JetBrains.ReSharper.Psi.ITypeElement)">
+            <summary>
+            Return all images of a given type member.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.MoveMembers.UI.ExtractInterfaceWindow.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MoveMembers.UI.ExtractInterfaceWindow.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MoveMembers.UI.ExtractInterfaceWindow.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.MoveMembers.UI.ExtractSuperclassWindow.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MoveMembers.UI.ExtractSuperclassWindow.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MoveMembers.UI.ExtractSuperclassWindow.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.MoveMembers.UI.PushDownWindow.myComponents">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MoveMembers.UI.PushDownWindow.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MoveMembers.UI.PushDownWindow.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.MoveMembers.Util.MemberListDataProvider.mySelectedMembers">
+            <summary>
+            Selected members, eg 1,4,6
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.MoveMembers.Util.MemberListDataProvider.myAbstract">
+            <summary>
+            Members selected abstract, eg 1,6
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Workflow.RefactoringsTaskExecutor">
+            <summary>
+            Facilitates implementation of UI-based ITaskExecutors
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.RefactoringsTaskExecutor.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.PostRename.PostRenameModel.NameChanges">
+            <summary>
+            Manages list of possible name changes
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Property2Function.Property2FunctionWindow.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Property2Function.Property2FunctionWindow.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Property2Function.Property2FunctionWindow.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.MoveMembers.UI.PullUpWindow.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MoveMembers.UI.PullUpWindow.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MoveMembers.UI.PullUpWindow.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.UseBaseType.UI.UseBaseTypeMainWindow.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Util.ReferenceSorter">
+            <summary>
+            Sorts references for transforming them in correct order
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.WorkflowW.ConflictsPage">
+            <summary>
+            Summary description for ConflictsPage.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.WorkflowW.ConflictsPage.myComponents">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.WorkflowW.ConflictsPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.WorkflowW.ConflictsPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm">
+            <summary>
+            Summary description for RefactoringWizardForm.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.ContentContinueEnabled">
+            <summary>
+            Binds to the <see cref="P:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.ContinueEnabled"/> of the current <see cref="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.Content"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myBorderedBottom">
+            <summary>
+            On <see cref="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myGridBody"/>, hosts <see cref="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myGridNavigation"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myBorderedTop">
+            <summary>
+            On <see cref="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myGridBody"/>, hosts <see cref="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myHeading"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myBtnBack">
+            <summary>
+            On <see cref="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myGridNavigation"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myBtnCancel">
+            <summary>
+            On <see cref="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myGridNavigation"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myBtnContinue">
+            <summary>
+            On <see cref="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myGridNavigation"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myCheckBoxOpenFiles">
+            <summary>
+            On <see cref="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myGridNavigation"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myGridBody">
+            <summary>
+            The body vert stack-panel that spans the whole dialog client area. Lives on <see cref="T:System.Windows.Forms.Form"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myGridNavigation">
+            <summary>
+            The bottom horz stack-panel with checkbox and the buttons. Lives on <see cref="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myBorderedBottom"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myHeading">
+            <summary>
+            Heading, on <see cref="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myBorderedTop"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myPanelContent">
+            <summary>
+            A panel that hosts the UI content provided by refactorings. Lives in <see cref="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myGridBody"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myProgress">
+            <summary>
+            Progress at the bottom, on <see cref="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.myGridBody"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.Content">
+            <summary>
+            The page displayed in the dialog, or <c>Null</c> before any is assigned.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.RunningTaskExecutor">
+            <summary>
+            While a task executor is in use, displays its instance.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.CreateTaskExecutor_AttachUi(JetBrains.Application.Progress.IProgressIndicatorModel,JetBrains.DataFlow.Disposables)">
+            <summary>
+            When a task executor is created, binds its status to the dialog UI.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.IsBusy">
+            <summary>
+            Gets or sets whether the workflow is currently running some process, so that the navigation buttons should be disabled.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.EncapsulateField.EncapsulateFieldPage.myComponents">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.EncapsulateField.EncapsulateFieldPage.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.EncapsulateField.EncapsulateFieldPage.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Conflicts.NewLocalElementConflictSearcher">
+            <summary>
+            Searches conflicts caused by adding a new local declaration
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Conflicts.TypeMemberQualifier">
+            <summary>
+            Remembers all references to type members in a scope and resurrects the broken ones by qualifying them
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.CopyType.CopyTypePage.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Inline.InlineWorkflowProvider">
+            <summary>
+            'Inline' refactoring workflow provider.
+            Usage:
+            <code>
+            [InlineWorkflowProvider]
+            internal class CustomInlineProvider : IInlineWorkflowProvider
+            {
+              public RefactoringWorkflow CreateWorkflow(ISolution solution)
+              {
+                return new CustomInlineWorkflow(solution);
+              }
+            }
+            </code>
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MoveStaticMembers.MoveStaticMembersControl.GetAccessRightsUIText(System.Int32)">
+            <summary>
+            Text for the <see cref="M:JetBrains.ReSharper.Refactorings.MoveStaticMembers.MoveStaticMembersControl.GetAccessRights(System.Int32)"/> mapping, for placing on the UI controls.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MoveStaticMembers.MoveStaticMembersControl.GetAccessRightsIndex">
+            <summary>
+            Checks which of the <see cref="F:JetBrains.ReSharper.Refactorings.MoveStaticMembers.MoveStaticMembersControl.myRadioButtons"/> is checked, and returns the index.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.MoveStaticMembers.MoveStaticMembersControl.InitControls">
+            <summary> 
+            Required method for Designer support.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.MoveStaticMembers.MoveStaticMembersControl.Validators">
+            <summary>
+            Gets the list of validators to add.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.RenameNamespace.RenameNamespaceControl">
+            <summary>
+            Summary description for RenameNamespaceControl.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.RenameNamespace.RenameNamespaceControl.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Util.ColdTypeMemberRenameConflictSearcher">
+            <summary>
+            Searches conflicts when renaming type member
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Rename.Impl.NamespaceRenameConflictSearcher">
+            <summary>
+            Searches conflicts when renaming a namespace.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Rename.RenameWorkflowProvider">
+            <summary>
+            'Rename' refactoring workflow provider.
+            Usage:
+            <code>
+            [RefactoringWorkflowProvider]
+            internal class CustomRenameProvider : IRenameWorkflowProvider
+            {
+              public RefactoringWorkflow CreateWorkflow(ISolution solution)
+              {
+                return new CustomRenameWorkflow(solution);
+              }
+            }
+            </code>
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Rename.TypeRenameConflictSearcher">
+            <summary>
+            Searches conflicts when renaming type.
+            
+            There are only one kind of conflicts: there is already a type with this name
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.PostRename.RenameDerivedElementsPage">
+            <summary>
+            Summary description for RenameDerivedElementsPage.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.PostRename.RenameDerivedElementsPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.PostRename.RenameDerivedElementsPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Rename.RenameInitialControl">
+            <summary>
+            Summary description for RenameInitialControl.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Rename.RenameWorkflow">
+            <summary>
+            Workflow for the rename refactoring
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.ChangeSignatureTestBase">
+            <summary>
+            Tests the change signature refactoring
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.IntroduceVariableTest">
+            <summary>
+            Tests introduce variable refactoring
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Util.ProjectModificationUtil">
+            <summary>
+            Utility class for project modifications needed by refactorings (e.g. adding a file to project)
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Util.ProjectModificationUtil.ConfirmUseExistingFileInRefactoring(JetBrains.Util.FileSystemPath)">
+            <summary>
+            The default confirmation function for the <see cref="M:JetBrains.ReSharper.Refactorings.Util.ProjectModificationUtil.CreateFileNearby(JetBrains.ProjectModel.IProjectFile,System.String,System.Func{JetBrains.Util.FileSystemPath,System.Boolean})"/> func.
+            Shows a message box, silently confirms in tests.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Util.ProjectModificationUtil.CreateFileNearby(JetBrains.ProjectModel.IProjectFile,System.String,System.Func{JetBrains.Util.FileSystemPath,System.Boolean})">
+            <summary>
+            <c>Null</c> when reusing an existing file.
+            </summary>
+            <param name="projectFile">Near whom?</param>
+            <param name="newFileName">With what name?</param>
+            <param name="onConfirmUseExisting">If a file already exists, confirms that it should be reused (<c>True</c> retval).</param>
+            <returns>(1) The file nearby. (2) Whether a new file was created for that.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.RefactoringWorkflowUtil.AcquireContext_TypeDeclaration(JetBrains.ActionManagement.IDataContext,JetBrains.DataFlow.IPropertyBag)">
+            <summary>
+            Tries to locate some type declaration to run on.
+            Returns whether one was found.
+            Sets <see cref="F:JetBrains.ReSharper.Refactorings.Workflow.RefactoringWorkflowUtil.Const.TypeDeclaration"/> and <see cref="F:JetBrains.ReSharper.Refactorings.Workflow.RefactoringWorkflowUtil.Const.InvokedOnDeclarationNotReference"/>.
+            </summary>
+        </member>
+    </members>
+</doc>

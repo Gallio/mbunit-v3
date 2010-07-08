@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using JetBrains.ReSharper.TaskRunnerFramework;
 using Gallio.Loader.Isolation;
@@ -91,7 +92,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
         {
             get
             {
-                try
+                try 
                 {
                     // TODO: Should ask for a better way of doing this.
                     object taskRunnerProxy = server.WithoutProxy;
@@ -100,7 +101,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
                     return (string)property.GetValue(taskRunnerProxy, null);
 #elif RESHARPER_40 || RESHARPER_41 || RESHARPER_45
                     return ((TaskRunnerProxy) taskRunnerProxy).SessionId;
-#else
+#elif RESHARPER_50
                     // taskRunnerProxy is a ClientControllerServerWrapper that wraps a
                     // ThreadProxyTaskServer that wraps a TaskRunnerProxy that has what we need.
                     // We actually get a RunId but that's ok.  We handle those elsewhere.
@@ -108,6 +109,12 @@ namespace Gallio.ReSharperRunner.Provider.Facade
                     IRemoteTaskServer threadProxyTaskServer = (IRemoteTaskServer)myServerField.GetValue(taskRunnerProxy);
                     IRemoteTaskServer realTaskRunnerProxy = threadProxyTaskServer.WithoutProxy;
                     FieldInfo myRunIdField = realTaskRunnerProxy.GetType().GetField("myRunId", BindingFlags.NonPublic | BindingFlags.Instance);
+                    return (string)myRunIdField.GetValue(realTaskRunnerProxy);
+#else
+                    var myServerField = server.GetType().GetField("myServer", BindingFlags.NonPublic | BindingFlags.Instance);
+                    var remoteTaskServer = (ThreadProxyTaskServer)myServerField.GetValue(server);
+                    var realTaskRunnerProxy = remoteTaskServer.WithoutProxy;
+                    var myRunIdField = realTaskRunnerProxy.GetType().GetField("myRunId", BindingFlags.NonPublic | BindingFlags.Instance);
                     return (string)myRunIdField.GetValue(realTaskRunnerProxy);
 #endif
                 }

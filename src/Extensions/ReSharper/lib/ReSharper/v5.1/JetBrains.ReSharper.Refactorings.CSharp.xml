@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Refactorings.CSharp</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Refactorings.ChangeSignature.TypeSuggestion">
+            <summary>
+            Suggestion for an unresolved type
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.CSharp.Rename.ConstructorParameterdRenameEvaluator">
+            <summary>
+            Constructor parameter to:
+            1. initialized field...
+            2. Base constructor parameter...
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.CSharp.Rename.EventRenameEvaluator">
+            <summary>
+            Constructor parameter to:
+            1. initialized field...
+            2. Base constructor parameter...
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.CSharp.Rename.FieldDerivedRenames">
+            <summary>
+            Add renames derived from field. 
+            1. Not virtual property. +
+            2. Event handler. +
+            3. Constructor parameter. 
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.CSharp.Rename.PropertyDerivedRenameEvaluator">
+            <summary>
+            Property to it's backing field...
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.CSharp.Util.CSharpAbstractor.MakeDeclaration``1(JetBrains.ReSharper.Psi.Tree.IDeclaration,System.Boolean)">
+            <summary>
+            Create CS abstracts declaration
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="?"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

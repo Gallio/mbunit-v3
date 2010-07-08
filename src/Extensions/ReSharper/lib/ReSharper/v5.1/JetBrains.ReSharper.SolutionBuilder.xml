@@ -1,0 +1,565 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.SolutionBuilder</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.CollectedFiles">
+            <summary>
+            Stores the items collected by an <see cref="T:JetBrains.ReSharper.SolutionBuilder.IFilesCollector"/>.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.SolutionBuilder.CollectedFiles.AllFiles">
+            <summary>
+            All the files included in the project.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.BuildOutputDisplay.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.BuildResultsControl.DumpLogs">
+            <summary>
+            Dumps the collected build output and logs to the appropriate pages in an instant.
+            Must be invoked on the UI thread.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.BuildResultsTree">
+            <summary>
+            The control for build output
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.BuildResultsTree.NodeWithErrors">
+            <summary>
+            Nodes data
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.BuildResultsTree.NodeWithErrors.ourBoldStyle">
+            <summary>
+            bold font
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.BuildResultsTree.NodeWithErrors.myBuildFinished">
+            <summary>
+            Is build process finished
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.BuildResultsTree.NodeWithErrors.myName">
+            <summary>
+            Name of the node
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.BuildResultsTree.NodeWithErrors.myNErrors">
+            <summary>
+            Current number of errors and warnings
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.BuildResultsTree.NodeWithErrors.myNWarnings">
+            <summary>
+            Current number of errors and warnings
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.SolutionBuilder.BuildResultsTree.NodeWithErrors.Type">
+            <summary>
+            Solution or Project
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompiler">
+            <summary>
+            Public facade for the MSBuild Compiler component.
+            The implementation should be internal-only.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompiler.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="P:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompiler.Instance">
+            <summary>
+            Gets the per-solution cached builder.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompiler.TryInstance">
+            <summary>
+            Gets the per-solution cached builder.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompiler.IMSBuildCompilerImpl">
+            <summary>
+            An interface for the internal-only implementation.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompiler.IMSBuildCompilerImpl.OutputLine">
+            <summary>
+            Fires when the compiler sends a line to the output.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.Impl.ProjectInfo">
+            <summary>
+            Project information
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.Impl.BuildEventRunner.GetMacros(JetBrains.ProjectModel.IManagedProjectConfiguration)">
+            <summary>
+            Collects the macros that could be used in custom build events. Leftovers of useful code after the old SolutionBuilder.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.Impl.CompiledResourceInfo.Equals(JetBrains.ReSharper.SolutionBuilder.Impl.CompiledResourceInfo)">
+            <summary>
+            Indicates whether the current object is equal to another object of the same type.
+            </summary>
+            <returns>
+            true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
+            </returns>
+            <param name="other">An object to compare with this object.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.Impl.CompiledResourceInfo.GetHashCode">
+            <summary>
+            Serves as a hash function for a particular type. 
+            </summary>
+            <returns>
+            A hash code for the current <see cref="T:System.Object" />.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.Impl.BuildFileUtil.DeleteFile(JetBrains.Util.FileSystemPath)">
+            <summary>
+            delete 
+            </summary>
+            <param name="file"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.Impl.BuildFileUtil.DeleteFile(JetBrains.Util.FileSystemPath,System.Boolean,System.Boolean)">
+            <summary>
+            selete file 
+            </summary>
+            <param name="file"></param>
+            <param name="force">delete all if true</param>
+            <param name="justLocked">delete just locked file if true</param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.Impl.BuildFileUtil.DeleteFile(JetBrains.Util.FileSystemPath,System.Boolean)">
+            <summary>
+            selete file 
+            </summary>
+            <param name="file"></param>
+            <param name="force">delete all if true</param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.Impl.BuildFileUtil.RemoveShadowFiles(JetBrains.Util.FileSystemPath)">
+            <summary>
+            used to remove shafow files created in DeleteFile function
+            </summary>
+            <param name="file"></param>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.Impl.ProjectSignature.myCollectedFiles">
+            <summary>
+            Collected by file collector.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.SolutionBuilder.Impl.ProjectSignature.CollectedFiles">
+            <summary>
+            Collected by file collector.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession">
+            <summary>
+            The data object for the Solution Builder build session.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession.BuildEventsNonProject">
+            <summary>
+            Build events for the session (errors, warnings, console output, and status messages from the engine) that do not fall into any of the projects.
+            The success/failure state of the whole build session is derived from presense of any errors messages in these events and the events of all the projects.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession.BuildSeverity">
+            <summary>
+            How severe should the rebuild be.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession.Dispatcher">
+            <summary>
+            Identifies the main thread. All of the non-constant access should occur on this thread.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession.Projects">
+            <summary>
+            The list of projects known to this session, in various build states. Initially empty, filled with project when the build gets <see cref="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionState.Running"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession.State">
+            <summary>
+            Build session state.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession.#ctor(JetBrains.Util.FileSystemPath,JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionSeverity,JetBrains.Util.FileSystemPath[],System.String,System.String)">
+            <summary>
+            Ctor.
+            </summary>
+            <param name="solutionfile">URI of the solution file to be built.</param>
+            <param name="severity">How severe should the build be.</param>
+            <param name="pathProjectsMustBeBuilt">The projects that must be built (when we build up to them, we might stop). Empty to build the full set of projects.</param>
+            <param name="sConfigurationName">Name of the solution configuration. Project configurations are taken from the configuration manager that maps solution-wide configs to per-project configs.</param>
+            <param name="sPlatformName">Name of the solution platform. Project platforms are taken from the configuration manager that maps solution-wide platforms to per-project platforms.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionErrorStatus">
+            <summary>
+            Whether the build session has errors, warnings, etc, or not.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionErrorStatus.Clean">
+            <summary>
+            No errors, no warnings.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionErrorStatus.Warnings">
+            <summary>
+            The project has some warnings (but no errors).
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionErrorStatus.Errors">
+            <summary>
+            The project has some errors (maybe also warnings).
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionEx.CreateBuildEventsAddRemove(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession)">
+            <summary>
+            A composite signal that fires whenever a build event is added to session events or to any of the projects in the session.
+            A new instance is created each time you call the method.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionEx.CreateProjectErrorStatus(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProject)">
+            <summary>
+            Creates a property that accumulates the project error status from the project's build events.
+            A new property and new event watcher is created each time you call the method.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionEx.CreateProjectFullPathCache(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession)">
+            <summary>
+            Creates a cache for getting the build setting project by its full path (cache throws if the element is missing).
+            Note: every time you call this method, a NEW cache is created, whose lifetime is as long as <paramref name="session"/>'s.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionEx.CreateSessionErrorStatus(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession)">
+            <summary>
+            Creates a property that accumulates the project error status from the project's build events.
+            A new property and new event watcher is created each time you call the method.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionEx.GetAllBuildEvents(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession)">
+            <summary>
+            Gets all of the build events for the current build session, which includes the project-related events for all of the projects and non-project build events.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionEx.IsSuccessful(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProject)">
+            <summary>
+            Tells if the project had no compilation errors.
+            Looks up its <see cref="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProject.BuildEvents"/> for those of the <see cref="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.SolBuildEventKind.Error"/> kind.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionEx.IsSuccessful(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession)">
+            <summary>
+            Tells if the session had no compilation errors.
+            Looks up its <see cref="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession.BuildEventsNonProject"/> and <see cref="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProject.BuildEvents"/> of all of the projects for those of the <see cref="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.SolBuildEventKind.Error"/> kind.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProject">
+            <summary>
+            Represents a single project in the build process.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProject.BuildEvents">
+            <summary>
+            Build events for the current project (errors, warnings, console output, and status messages from the engine).
+            The success/failure state of the project is derived from presense of any errors messages in the events.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProject.BuildState">
+            <summary>
+            State of the project within the current build process.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProject.FullPath">
+            <summary>
+            <para>The identity of the project, usually, a path to the project file.</para>
+            <para>You MUST NOT assume that this is the project file, or if it is a file at all.</para>
+            <para>To transition between the <see cref="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProject.FullPath"/> and the corresponding <see cref="T:JetBrains.ProjectModel.IProject"/>, if any, use the <see cref="M:JetBrains.ReSharper.SolutionBuilder.SolutionBuilder.GetProjectFullPath(JetBrains.ProjectModel.IProject)"/> and <see cref="M:JetBrains.ProjectModel.ProjectUtil.GetProjectByFullPath(JetBrains.ProjectModel.ISolution,JetBrains.Util.FileSystemPath)"/> functions.</para>
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProject.ToString">
+            <summary>
+            Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+            </summary>
+            
+            <returns>
+            A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="P:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProject.Name">
+            <summary>
+            Gets the short name of the project.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProjectBuildState">
+            <summary>
+            Build state for a project in the build session.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProjectBuildState.Excluded">
+            <summary>
+            Will not be built in this session.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProjectBuildState.Pending">
+            <summary>
+            Will be built in this session.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProjectBuildState.Running">
+            <summary>
+            Is currently being built.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProjectBuildState.Completed">
+            <summary>
+            Has been built (or skipped due to being up-to-date, see error status).
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProjectErrorStatus">
+            <summary>
+            Whether the project has errors, warnings, etc, or not.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProjectErrorStatus.Clean">
+            <summary>
+            No errors, no warnings.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProjectErrorStatus.Warnings">
+            <summary>
+            The project has some warnings (but no errors).
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionProjectErrorStatus.Errors">
+            <summary>
+            The project has some errors (maybe also warnings).
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionSeverity">
+            <summary>
+            How severe should the rebuild be.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionSeverity.Clean">
+            <summary>
+            All of the projects should be cleaned up.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionSeverity.Rebuild">
+            <summary>
+            All of the projects should be rebuilt (cleaned up and built).
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionSeverity.Build">
+            <summary>
+            Only those project whose inputs were modified in respect to their outputs should be built. This represents the classical build algorithm.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionState">
+            <summary>
+            Possible build session states.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionState.Waiting">
+            <summary>
+            The session has just been created and is waiting for someone to run its build (which is not guaranteed to happen).
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionState.Running">
+            <summary>
+            The build is currently running.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionState.Completed">
+            <summary>
+            The build has completed, either successfully or with errors.
+            <see cref="T:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession"/> is <c>1</c>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.SolBuildEvent">
+            <summary>
+            A build event that occured while building of the project.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.SolBuildEventImportance">
+            <summary>
+            The importance of a build event. Originates from the MSBuild importance enum.
+            Linear order: the lower the value, the more important is the event.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.SolBuildEventKind.Output">
+            <summary>
+            Just some logger output, either from tasks' logging, or captured cmdline tool console output.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.SolBuildEventKind.Service">
+            <summary>
+            Service messages from the engine.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.SolBuildEventKind.Warning">
+            <summary>
+            A warning (either logged, or captured cmdline tool console output that qualifies against the warning pattern).
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.SolBuildEventKind.Error">
+            <summary>
+            An error (either logged, or captured cmdline tool console output that qualifies against the error pattern).
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.SolBuildEventWithLocation">
+            <summary>
+            A build event, plus file-line-column info.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.EmptySolutionBuilder">
+            <summary>
+            A stub so that the <see cref="F:JetBrains.ReSharper.SolutionBuilder.SolutionBuilder.Implementations"/> always had at least one item to have its <see cref="F:JetBrains.ReSharper.SolutionBuilder.SolutionBuilder.ActiveImplementation"/> non-<c>Null</c>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.ISolutionBuilder">
+            <summary>
+            The base interface for manipulating a solution builder.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.ISolutionBuilder.Abort">
+            <summary>
+            Aborts the <see cref="P:JetBrains.ReSharper.SolutionBuilder.ISolutionBuilder.RunningSession"/>, does nothing if not running.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.ISolutionBuilder.BeginRun(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession)">
+            <summary>
+            Begins running a build of the session (from <see cref="M:JetBrains.ReSharper.SolutionBuilder.ISolutionBuilder.CreateSession(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionSeverity,JetBrains.ProjectModel.IProject[])"/>), async.
+            It's an error to invoke this method when <see cref="P:JetBrains.ReSharper.SolutionBuilder.ISolutionBuilder.RunningSession"/> is present.
+            </summary>
+            <param name="session">The session to run the build of. Must not be used yet.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.ISolutionBuilder.CreateSession(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionSeverity,JetBrains.ProjectModel.IProject[])">
+            <summary>
+            Creates a new build session.
+            </summary>
+            <param name="severity">How to build the projects.</param>
+            <param name="projectsToBuild">The projects that must be included in the build (others might be included as needed), or an empty array to build the whole solution.</param>
+            <returns>The new session on which the build could be started and the progress could be tracked.</returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.SolutionBuilder.ISolutionBuilder.RunningSession">
+            <summary>
+            Gets the build session being currently run by the solution builder. <c>Null</c> if idle.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.EmptySolutionBuilder.Abort">
+            <summary>
+            Aborts the <see cref="P:JetBrains.ReSharper.SolutionBuilder.ISolutionBuilder.RunningSession"/>, does nothing if not running.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.EmptySolutionBuilder.BeginRun(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession)">
+            <summary>
+            Begins running a build of the session (from <see cref="M:JetBrains.ReSharper.SolutionBuilder.ISolutionBuilder.CreateSession(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionSeverity,JetBrains.ProjectModel.IProject[])"/>), async.
+            It's an error to invoke this method when <see cref="P:JetBrains.ReSharper.SolutionBuilder.ISolutionBuilder.RunningSession"/> is present.
+            </summary>
+            <param name="session">The session to run the build of. Must not be used yet.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.EmptySolutionBuilder.CreateSession(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionSeverity,JetBrains.ProjectModel.IProject[])">
+            <summary>
+            Creates a new build session.
+            </summary>
+            <param name="severity">How to build the projects.</param>
+            <param name="projectsToBuild">The projects that must be included in the build (others might be included as needed), or an empty array to build the whole solution.</param>
+            <returns>The new session on which the build could be started and the progress could be tracked.</returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.SolutionBuilder.EmptySolutionBuilder.RunningSession">
+            <summary>
+            Gets the build session being currently run by the solution builder. <c>Null</c> if idle.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.SolutionBuilder.Implementations">
+            <summary>
+            Lists the available Solution Builder implementations, of which the one with the highest priority is the <see cref="F:JetBrains.ReSharper.SolutionBuilder.SolutionBuilder.ActiveImplementation"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolutionBuilder.GetProjectFullPath(JetBrains.ProjectModel.IProject)">
+            <summary>
+            Gets the SolBuilder-suitable full path identity of the project.
+            Preferrably, the project file; otherwise, the project folder.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolutionBuilder.IsProject(JetBrains.ProjectModel.IProject)">
+            <summary>
+            <para>Gets whether this <see cref="T:JetBrains.ProjectModel.IProject"/> is a valid project from SolBuilder's point of view.</para>
+            <para>The Project Model contains a number of projects that would not map to any real projects in Visual Studio, but rather to solution folders and various other stuff.</para>
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolutionBuilder.InitImplementations">
+            <summary>
+            List of impls => active.
+            Active impls coming and going.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolutionBuilder.Abort">
+            <summary>
+            Aborts the <see cref="P:JetBrains.ReSharper.SolutionBuilder.ISolutionBuilder.RunningSession"/>, does nothing if not running.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolutionBuilder.BeginRun(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession)">
+            <summary>
+            Begins running a build of the session (from <see cref="M:JetBrains.ReSharper.SolutionBuilder.ISolutionBuilder.CreateSession(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionSeverity,JetBrains.ProjectModel.IProject[])"/>), async.
+            It's an error to invoke this method when <see cref="P:JetBrains.ReSharper.SolutionBuilder.ISolutionBuilder.RunningSession"/> is present.
+            </summary>
+            <param name="session">The session to run the build of. Must not be used yet.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolutionBuilder.CreateSession(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionSeverity,JetBrains.ProjectModel.IProject[])">
+            <summary>
+            Creates a new build session.
+            </summary>
+            <param name="severity">How to build the projects.</param>
+            <param name="projectsToBuild">The projects that must be included in the build (others might be included as needed), or an empty array to build the whole solution.</param>
+            <returns>The new session on which the build could be started and the progress could be tracked.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolutionBuilder.System#IDisposable#Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolutionBuilder.JetBrains#ComponentModel#IComponent#Init">
+            <summary>
+            <para>Initializes the component. Called by the component container after the component is created.</para>
+            <para><see cref="M:System.IDisposable.Dispose"/> is the pairing method that's guaranteed to be called by the component container to tear down your component.</para>
+            <para>You must not access other components before your <see cref="M:JetBrains.ComponentModel.IComponent.Init"/> method is called.</para>
+            <para>All of the components that you access from <see cref="M:JetBrains.ComponentModel.IComponent.Init"/> are guaranteed to exist when your <see cref="M:System.IDisposable.Dispose"/> is called. Any other component might be missing by that time, and trying to get it will throw an exception.</para>
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.SolutionBuilder.SolutionBuilder.RunningSession">
+            <summary>
+            Gets the build session being currently run by the solution builder. <c>Null</c> if idle.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolutionBuilderEx.GetSolutionBuilder(JetBrains.ProjectModel.ISolution)">
+            <summary>
+            Gets the solution builder for a solution.
+            </summary>
+        </member>
+    </members>
+</doc>

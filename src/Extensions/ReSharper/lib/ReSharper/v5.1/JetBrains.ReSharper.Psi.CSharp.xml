@@ -1,0 +1,772 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.CSharp</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.CodeStyle.CSharpFormatterHelper.ArrangeThisQualifier(JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpFile,JetBrains.ReSharper.Psi.IPsiRangeMarker)">
+            <summary>
+            Manage 'this.' qualifier in given range according to code style settings
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.CodeStyle.CustomIndentHandler">
+            <summary>
+            Provide custom indentation for the node to format correctly in ASP
+            </summary>
+            <param name="node">node to get the indent for</param>
+            <param name="indentType">type of requested custom indent</param>
+            <param name="globalSettings"></param>
+            <param name="settings"></param>
+            <returns><c>null</c> if default indentation should be used, or string which will be used as an indent</returns>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.ExpectedTypes.IsEnumerableConstraint">
+            <summary>
+            Accepts only types which can be enumerated
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.CodeStyle.CSharpCodeFormatter.FormatDeletedNodes(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Format code during WritePSI action
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.CodeStyle.CSharpCodeStyleSettings">
+            <summary>
+            Used for storing and managing of code style settings
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.CodeStyle.CSharpCodeStyleSettings.CustomMembersReorderingPatterns">
+            <summary>
+            Set to <c>null</c> to use default patterns
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.ControlFlow2.CSharp.CSharpPassThroughFinallyRibInfo">
+            <summary>
+            Attached to rib which exits from 'finally' block
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.ControlFlow2.CSharp.CSharpPassThroughFinallyRibInfo.TryStatement">
+            <summary>
+            'try' statement itself
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.ControlFlow2.CSharp.CSharpPassThroughFinallyRibInfo.ExitFromFinallyRib">
+            <summary>
+            That rib which exits from 'try' block
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.ControlFlow2.CSharp.CSharpExitFromFinallyRibInfo">
+            <summary>
+            Attached to rib which exits from 'finally' block
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.ControlFlow2.CSharp.CSharpExitFromFinallyRibInfo.PassThroughFinally">
+            <summary>
+            That rib which exits from 'try' block
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.ControlFlow2.CSharp.CSharpControlFlowRibExtensions.GetActualSourceElement(JetBrains.ReSharper.Psi.ControlFlow2.CSharp.ICSharpControlFlowRib)">
+            <summary>
+            Get the actual element which initiates this rib. For try/finally block, check pass through finally to get the element in 'try' block
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.CodeStyle.MemberReordering.IMatchFunction.Evaluate(System.Xml.XmlElement,JetBrains.ReSharper.Psi.IDeclaredElement,System.Int32@)">
+            <summary>
+            Evaluate the boolean match function over given declared element. If evaluated to <c>true</c>, then add it's weight to <paramref name="weight"/>
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.CodeStyle.MemberReordering.ISortKey.Compare(JetBrains.ReSharper.Psi.IDeclaredElement,JetBrains.ReSharper.Psi.IDeclaredElement,System.Xml.XmlElement)">
+            <summary>
+            Compare given declared elements.
+            Refer to key for additional options (if any)
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.CodeStyle.MemberReordering.IGroupKey.Compare(JetBrains.ReSharper.Psi.IDeclaredElement,JetBrains.ReSharper.Psi.IDeclaredElement,System.Xml.XmlElement)">
+            <summary>
+            Compare given declared elements.
+            Refer to key for additional options (if any)
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.CodeStyle.MemberReordering.IGroupKey.MacroValue(JetBrains.ReSharper.Psi.IDeclaredElement,System.Xml.XmlElement)">
+            <summary>
+            Get the macro text corresponding to this key. 
+            Return empty string if this key is not applicable to this declared element
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.CodeStyle.MemberReordering.MemberReorderingProcess.RemoveAutoGeneratedRegions">
+            <summary>
+            Remove regions from the type declaration. Depending on the option, removes all regions, or anly auto-generated ones
+            </summary>
+            <returns>List of remaining regions in type declaration</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.CodeStyle.MemberReordering.MemberReorderingProcess.ReorderMembers(System.Collections.Generic.IList{JetBrains.ReSharper.Psi.CSharp.Tree.IClassMemberDeclaration},System.Collections.Generic.IList{JetBrains.ReSharper.Psi.CSharp.Tree.IClassMemberDeclaration})">
+            <summary>
+            Do reorder members according to given new order
+            Warning: this methods breaks the identity of class member declarations!
+            </summary>
+            <returns>list of new sorted declarations</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.CodeStyle.MemberReordering.MemberReorderingProcess.ApplyGrouping(System.Collections.Generic.IList{JetBrains.ReSharper.Psi.CSharp.Tree.IClassMemberDeclaration},System.Boolean)">
+            <returns>Entry ranges</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowGrafInspector.GetPossibleAssignedTypes(JetBrains.ReSharper.Psi.Tree.IElement,JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowContext)">
+            <summary>
+            Tries to infer types which are assigned to element with given 'write element' (see <see cref="T:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowGrafInspector.PatchAccessInfoHandler"/>)
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowGrafInspector.PatchContextBySpecialMethodCall(JetBrains.ReSharper.Psi.CSharp.Tree.IInvocationExpression,JetBrains.ReSharper.Psi.ControlFlow2.IControlFlowElement,JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowContext)">
+            <summary>
+            Try to recognize invocation of special methods, and patch context accordingly
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowGrafInspector.IsCheckOfCodeInvariant(JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression)">
+            <summary>
+            Check if this expression is precondition, i.e. somehig like
+            <code>
+            Logger.Assert(nonNullableEntity != null, "The condition (nonNullableEntity != null) is false.");
+            -or-
+            if (nonNullableEntity == null)
+                throw Exception();
+            -or-
+            if (nonNullableEntity == null)
+            Logger.LogError();
+            </code>
+            At the beginning of the method
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowGrafInspector.IsSubjectToNullnessCheck(JetBrains.ReSharper.Psi.Tree.IElement,JetBrains.ReSharper.Psi.ControlFlow2.IControlFlowRib)">
+            <summary>
+            Check if possible NRE should be checked if jump to <paramref name="target"/> by <paramref name="rib"/>
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowGrafInspector.FindInfoByExpression(JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression)">
+            <summary>
+            Attempt to retrieve info slot from expression
+            </summary>
+            <returns><c>null</c> is not found</returns>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowGrafInspector.myAccessToModifiedClosure">
+            <summary>
+            Write access to variables outside anonymous method, when the variable is read inside anonymous method
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowGrafInspector.myFinalVariables">
+            <summary>
+            if dictionary value is <c>true</c>, then variable is supposed to be final variable, I.e. assigned/initialized only once
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.InitialContextBuilder">
+            <summary>
+            Builder of the control flow initial state (i.t. the context of the graf entry point)
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowVariableState.UNKNOWN">
+            <summary>
+            Variable state is completely unknown
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowVariableState.WEAK_UNKNOWN">
+            <summary>
+            Special value for unchecked variables indicating that value is unknown and possible NRE shouldn't be reported
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowVariableState.WEAK_NOT_NULL">
+            <summary>
+            Special value for unchecked variables indicating that value is though known to be non NULL
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowVariableState.WEAK_CANBENULL">
+            <summary>
+            Special value for unchecked variables indicating that value is unknown, but though can be null
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.MemorySnapshotHive">
+            <summary>
+            Set of the possible memory snapshots
+            This class is immutable! (i.e. any modification makes new copy of the class)
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.VariableIndex.AddVariable(JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.VariableInfo)">
+            <summary>
+            Add new variable into index
+            </summary>
+            <param name="info"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.VariableIndex.GetHistoryCheckPoint(JetBrains.ReSharper.Psi.ControlFlow2.IControlFlowElement)">
+            <summary>
+            Check if history check point is assotiated with given element, and returns it
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.VariableIndex.GetInvalidatedHistoryCheckPoints(JetBrains.ReSharper.Psi.ControlFlow2.IControlFlowElement,JetBrains.ReSharper.Psi.ControlFlow2.IControlFlowElement)">
+            <summary>
+            Enumerate history check points which runs out of scope when control flow moves from <paramref name="from"/> to <paramref name="to"/>
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.VariableIndex.Find(JetBrains.ReSharper.Psi.IDeclaredElement)">
+            <summary>
+            Find info by declared element - only for top-level elements
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.VariableIndex.Find(JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression)">
+            <summary>
+            Find info by expression - look into unchecked variables, and into fields of managed variable (cache results)
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.VariableIndex.HasInQualifier(JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression)">
+            <summary>
+            Search for unchecked infos, where given expr is found in qualifier (cache results)
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.VariableIndex.HasInQualifier(JetBrains.ReSharper.Psi.IDeclaredElement)">
+            <summary>
+            Search for unchecked infos, where given local variable or parameter is found in qualifier (cache results)
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.VariableIndex.This">
+            <summary>
+            'this' struct variable info for instance struct ctor
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.VariableIndex.Count">
+            <summary>
+            Get number of variables in index
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.Impl.CSharpReferenceProviderFactory.ComponentNameReference">
+            <summary>
+            Reference to component name in WinForm generated code
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.CSharp.Impl.DeclaredElement.CSharpOverridableMember`1.myRetrievingInheritedXMLDoc">
+            <summary>
+            Anti-recursion in retrieving XML docs
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Resolve.ICSharpDocCommentReference.GetSignatureRange">
+            <summary>
+            Obtains the range of the signature (i.e (...))
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.Resolve.ICSharpDocCommentReference.LocalOffset">
+            <summary>
+            Offset of the reference start from the comment
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.Impl.DocComments.IDocCommentXmlPsi">
+            <summary>
+            Manages xml doc comment PSI
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.Impl.Resolve.EnumInitializerFilter">
+            <summary>
+            Preferes enum member in enum initializer
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.Impl.Resolve.Filters.UseLocalVariableBeforeDeclarationFilter">
+            <summary>
+            Filter local variable declarations by their position in the tree
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Tree.IStatement.ReplaceBy``1(``0)">
+            <summary>
+            Replace this statement in the tree by the copy of the given statement
+            </summary>
+            <param name="stmt"></param>
+            <returns>The clone of the original statement which was added into the tree </returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Tree.IStatement.GetContainingStatement">
+            <summary>
+            Gets the statement in which the given statement is located
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.Tree.IStatement.IsEmbeddedStatement">
+            <summary>
+            Checks if this statement is valid embedded statement according to C# specs
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.CSharp.Parsing.CSharpTokenType.EOF">
+            <summary>
+            Special token for some implementation details.
+            It should never be returned from C# lexer
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression.GetContainingExpression">
+            <summary>
+            Gets the expression which uses the current expression as an operand
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression.GetContainingStatement">
+            <summary>
+            Gets the statement which uses the current expression as an operand
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression.ReplaceBy``1(``0)">
+            <summary>
+            Replace this expression by the copy of the given expression.
+            Insert parentheses if necessary
+            </summary>
+            <param name="expr"></param>
+            <returns>The copy of given expression which was actually inserted into tree</returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression.IsClassifiedAsVariable">
+            <summary>
+            Check if the expression could be classified as a variable according to C# spec 5.4
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression.IsLValue">
+            <summary>
+            Check if the expression is l-value
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpFunctionDeclaration.IsIterator">
+            <summary>
+            According to C# specs 22.1, function body block is iterator if it contains one or more 'yield' statements
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.Tree.IInvocationExpressionReference.IsPassThrough">
+            <summary>
+            Check if this reference emulates reference on invoked expression
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.Resolve.CSharpOperatorResolver.GetApplicableOperatorsInType(System.String,System.Collections.Generic.List{JetBrains.ReSharper.Psi.IDeclaredType},System.Collections.Generic.HashSet{JetBrains.ReSharper.Psi.ITypeElement},JetBrains.ReSharper.Psi.IType,System.Collections.Generic.IList{JetBrains.ReSharper.Psi.CSharp.Resolve.OverloadResolution.CandidateWithResolveContext}@)">
+            Parameter 'visited' is needed for optimization in case of getting tables for not unary operator arguments
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.Tree.CSharpExpressionBase.GetContainingExpression">
+            <summary>
+            Gets the expression which uses the current expression as an operand
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.Tree.CSharpExpressionBase.NeedToParenthesize(JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression)">
+            <summary>
+            Check if this expression should be enclosed in parentheses if it will be replaced by 'expr'
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.Resolve.Invocation.CheckForArrayLength(System.String,JetBrains.ReSharper.Psi.Resolve.IResolveResult@,JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve.IResolveInfo@)">
+            <summary>
+            Workaround for compiler bug existed in C# 3.0.
+            See https://connect.microsoft.com/VisualStudio/feedback/details/328765/cannot-invoke-extension-method-named-length-on-an-array
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.Tree.ITryStatement.CatchesAllExceptions">
+            <summary>
+            <c>true</c> if the statement contains catch{...} or catch(Exception){...} clause
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.Tree.ITypeArgumentListNode.TypeArgumentNodes">
+            <summary>
+            Get the list of type arguments. Corresponding item in list is <c>null</c> if none is written in the source code, for example:
+            <c>typeof(C&lt;&gt;)</c>
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Tree.ITypeParameterConstraintsClause.AddTypeParameterConstraint``1(``0)">
+            <summary>
+            Adds type parameter constraint to appropriate place.
+            It's caller's responsibility to remove conflicting constraints.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Parsing.CSharpParser.parseInitializerAux(JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.CompositeNodeType,JetBrains.ReSharper.Psi.CSharp.Parsing.CSharpParser.InitializerElementParseFunction,JetBrains.ReSharper.Psi.CSharp.Parsing.CSharpParser.ErrorHandle)">
+            <summary>Special variant of parsing routine allowing parsing optional comma</summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Parsing.CSharpParser.parseAttributeList(JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.TreeElement)">
+            <summary>Special variant of parsing routine allowing parsing optional comma</summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.CSharp.Parsing.ParserNodeTypeSets.DECISION_CHAR_FOR_TYPE_ARGUMENT_LIST">
+            <summary>
+            Reference to C# specs 4.5.4.2 with nikov's comments
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.CSharpDeclaredElementUtil.IsCSharpTypeMember(JetBrains.ReSharper.Psi.ITypeMember)">
+            <summary>
+            Check if the member is visible as C# type member
+            I.e. it skips accessors except to properties with parameters
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.CSharpElementFactory">
+            <summary>
+            Factory for C# IElements creation
+            Format string is specified with $0, $1, ... as placeholders for arguments
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.ExpectedTypes.CSharpExpectedTypesUtil">
+            <summary>
+            Manager for retrieving expected types context from source
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.ExpectedTypes.CSharpExpectedTypesUtil.GetExpectedType(JetBrains.ReSharper.Psi.Tree.IExpression)">
+            <summary>
+            Get all posiible types which could present at expression's place
+            If there are more than 1 type, then the first is more preferrable.
+            For example:
+            <code>
+              Foo(int);
+              Foo(string);
+            ........
+              Foo({caret}"");
+            </code>
+            expected types at caret will be (string, int), but the string is first
+            </summary>
+            <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.CodeStyle.CSharpDecorationStage.BuildAttributeSectionGroup(System.Collections.Generic.IEnumerable{JetBrains.ReSharper.Psi.CSharp.Tree.IAttributeSectionNode})">
+            <summary>
+            Divide attribute sections into groups with the same target
+            </summary>
+            <param name="sections">Plain array of sections</param>
+            <returns>Groups of attribute sectinos with the same target</returns>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.ControlFlowHistoryCheckPointInfo">
+            <summary>
+            Denotes to expression state at specified point
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowContext">
+            <summary>
+            State of the single node in the control flow graf
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowContext.myVariableIndex">
+            <summary>
+            Shared between all instances of context
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowContext.myStates">
+            <summary>
+            State for each fariable from <see cref="F:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowContext.myVariableIndex"/>.
+            Array is immutable
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowContext.myMemorySnapshotHive">
+            <summary>
+            The set af possible memory states at this point
+            Is <c>null</c> if the number of states greater than threshold, 
+            and thus the cyclomatic complexity of the code is too large
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowContext.IVariableState.TypeSpecification">
+            <summary>
+            For every controlled variable, it contains the stack of type specifications (by 'is' expression)
+            Empty list corresponds to unspecified type, i.e. the type by which variable was declared
+            The list for every index is immutable, i.e. any change in it leads to new list instance
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowContext.IVariableState.RecentAssignments">
+            <summary>
+            The table of variables which should be controlled for possible redundant assignments
+            For each key, the value contains the set of PSI elements where the last unused assignment occurs.
+            If the value set is empty, then all assignments are used
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowContext.IVariableState.RecentAccessInClosure">
+            <summary>
+            Variables which were read-accessed from closure up to this moment
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.CSharpReferenceBindingUtil.GetRequiredExternAlias(JetBrains.ReSharper.Psi.IPsiModule,JetBrains.ReSharper.Psi.IDeclaredElement)">
+            <summary>
+            Get the required extern alias.
+            </summary>
+            <returns><c>null</c> if module is not referenced, <c>String.Empty</c> for no alias (i.e. == global)</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.CSharpReferenceBindingUtil.UseExistingAlias(JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve.IQualifiableReference,System.Func{JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve.IQualifiableReference,System.Boolean})">
+            <summary>
+            Try to replaced qualified reference by any existing alias
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.CSharpReferenceBindingUtil.ExtractQualifierReference(JetBrains.ReSharper.Psi.Resolve.IReference)">
+            <summary>
+            Try to extract the qualifier reference of the given reference' element
+            i.e. extract reference to B from reference to C in expression A.B.C
+            </summary>
+            <param name="reference"></param>
+            <returns>null if reference could not be extracted</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.CSharpTypeConversionRule.ImplicitReferenceConversionExist(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.IType)">
+            <summary>
+            C# 2.0 spec 13.1.4
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.MultipleDeclarationUtil.ExtractDeclaration(JetBrains.ReSharper.Psi.CSharp.Tree.IMultipleDeclarationMemberNode)">
+            <summary>
+            Extract single declaration from multiple declaration node, if necessary
+            All declarations are not invalidated!
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.MultipleDeclarationUtil.SplitDeclarationBefore(JetBrains.ReSharper.Psi.CSharp.Tree.IMultipleDeclarationMemberNode)">
+            <summary>
+            Split the multiple declaration list so that given member will be the first declaration in the list
+            All declarations are not invalidated!
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.MultipleDeclarationUtil.SplitDeclarationAfter(JetBrains.ReSharper.Psi.CSharp.Tree.IMultipleDeclarationMemberNode)">
+            <summary>
+            Split the multiple declaration list so that given member will be the last declaration in the list
+            All declarations are not invalidated!
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.MultipleDeclarationUtil.RemoveDeclaration(JetBrains.ReSharper.Psi.CSharp.Tree.IMultipleDeclarationMemberNode)">
+            <summary>
+            Delete the given member declaration from the multiple declaration
+            If the member is the single in the multiple node, then delete whole multiple node
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.Resolve.CSharpResolveUtil.ShouldApplyEmbeddedComInteropTypeRule(JetBrains.ReSharper.Psi.ITypeMember,System.Func{JetBrains.ReSharper.Psi.IPsiModule})">
+            <summary>
+            When using COM interop type members with "Embed Interop Types" property, return values of methods, properties and indexers are 'dynamic' instead of 'object'
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.Resolve.CSharpResolveUtil.ShouldApplyEmbeddedComInteropTypeRule(JetBrains.ReSharper.Psi.Resolve.IResolveResult,System.Func{JetBrains.ReSharper.Psi.IPsiModule})">
+            <summary>
+            When using COM interop type members with "Embed Interop Types" property, return values of methods, properties and indexers are 'dynamic' instead of 'object'
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.CSharpTypeFactory.CreateDeclaredType(JetBrains.ReSharper.Psi.IPsiModule,JetBrains.ReSharper.Psi.Parsing.TokenNodeType)">
+            <summary>tokenType should be type of token of one of predefined types.</summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.Impl.DeclaredTypeFromReferenceName">
+            <summary>
+            NOTE: Do not hold IReferenceName
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.UsingUtil.GetUsingOf(JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve.IQualifiableReference)">
+            <summary>
+            Get the corresponding using directive (if any) which is used to import references' target
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.UsingUtil.GetImportConflicts(JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpTypeAndNamespaceHolderDeclaration,JetBrains.ReSharper.Psi.INamespace,System.String,JetBrains.Util.Key{JetBrains.ReSharper.Psi.DeclaredElementInstance},JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve.IQualifiableReference,System.Action{JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve.IQualifiableReference})">
+            <summary>
+            Builds the list of conflicts which will occur if the given namespace will be imported into given scope.
+            References with existing value in UserData by the given key will not be included
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Parsing.CSharpMissingTokensInserter.Run(JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.TreeElement)">
+            <remarks>
+            This code relies that TokenStart and TokenEnd return -1 when it reaches end of file.
+            </remarks>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.Parsing.CSharpMissingTokensInserter.PreProcessorParser">
+            <summary>
+            Try to parse the preprocessor directive from given lexer up to given limit.
+            Returns parsed tree node, or <c>null</c> if none
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Resolve.IResolvePatcher.PatchResolve(JetBrains.ReSharper.Psi.CSharp.Tree.IReferenceName,JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve.IResolveInfo@)">
+            <summary>
+            Overrides default resolve algorithm for given IReferenceName
+            </summary>
+            <param name="referenceName">reference to resolve</param>
+            <returns>result of resolution, or <c>null</c> to resolve reference by default algorithm</returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpArgument.ParameterNameReference">
+            <summary>
+            If argument is named, then returns reference to corresponding parameter.
+            If argument is positional, then returs <c>null</c>
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.Tree.IArrayCreationExpression.Dimensions">
+            <summary>
+            returns array of dimensions, e.g.
+              for 'new int[]'               returns { 1 }
+              for 'new int[10]'             returns { 1 }
+              for 'new int[,,,]'            returns { 4 }
+              for 'new int[,][,,][]'        returns { 2, 3, 1 }
+              for 'new int[5,6][,,][]'      returns { 2, 3, 1 }
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.Tree.IArrayCreationExpression.Sizes">
+            <summary>
+            returns list of 'size' expressions for first dimension, e.g.
+              for 'new int[]'               returns { null }
+              for 'new int[x]'              returns { x }
+              for 'new int[,,,]'            returns { null, null, null, null }
+              for 'new int[,][,,][]'        returns { null, null }
+              for 'new int[x + y,z][,,][]'  returns { x + y, z }
+                TODO: this is not implemented yet
+              for 'new int[5,,6][,,][]'     returns { 5, null, 6 }
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.CSharp.Tree.AttributeTarget.None">
+            <summary>
+             No tasrget is specified
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.CSharp.Tree.AttributeTarget.Unknown">
+            <summary>
+            Unrecognized target
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.Tree.IProperTypeDeclaration">
+            <summary>
+            Declarations of ITypeElements that are not type parameters
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Tree.IClassLikeDeclaration.InsertAtSpecificPosition``1(``0,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Insert given class member at the first safe place AFTER given token
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.Tree.IElementAccessExpressionReference.IsPassThrough">
+            <summary>
+            Check if this reference emulates reference on invoked expression
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.Tree.DocCommentBlock.BuildTypeMemberQualification(JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve.IDocCommentReference,JetBrains.ReSharper.Psi.ITypeMember,JetBrains.ReSharper.Psi.Resolve.ISubstitution)">
+            <summary>
+            Builds the qualified string to access to the given target from our reference point
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.Tree.LabelReferenceElement.GetCompletionSymbolTable">
+            <summary>
+            Returns symbol table for code completion
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpNamespaceDeclaration.ReplaceBy(JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpNamespaceDeclaration)">
+            <summary>
+            Replace this namespace declaration by the copy of the given 
+            </summary>
+            <param name="declaration"></param>
+            <returns>The clone of the original namespace which was added into the tree</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpNamespaceDeclaration.GetDeclaredNamespaces">
+            <summary>
+            Retunrns all namespaces declared by this decslaration.
+            </summary>
+            Example:
+            <code>
+            namespace X
+            { 
+               namespace Y.Z.W {} // (*)
+            }
+            </code>
+            <c>GetDeclaredNamespaces</c>> for (*) returns <c>X.Y.Z.W</c>,  <c>X.Y.Z</c> and  <c>X.Y</c> in that order.
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.Tree.NullCoalescingExpression.CalculateExpressionType(JetBrains.ReSharper.Psi.Resolve.Managed.IResolveContext)">
+            <summary>
+            According to C# specs 14.12
+            • If A is not a nullable type or a reference type, a compile-time error occurs. 
+            • If A is a nullable type and an implicit conversion exists from b to A0, the result type is A0. At run-time, a
+              is first evaluated. If a is not null, a is unwrapped to type A0, and this becomes the result. 
+              Otherwise, b is evaluated and converted to type A0, and this becomes the result.
+            • Otherwise, if an implicit conversion exists from b to A, the result type is A. At run-time, a is first
+              evaluated. If a is not null, a becomes the result. Otherwise, b is evaluated and converted to type A, 
+              and this becomes the result.
+            • Otherwise, if an implicit conversion exists from A0 to B, the result type is B. At run-time, a is first
+              evaluated. If a is not null, a is unwrapped to type A0 (unless A and A0 are the same type) and converted
+              to type B, and this becomes the result. Otherwise, b is evaluated and becomes the result.
+            • Otherwise, a and b are incompatible, and a compile-time error occurs.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.Tree.IObjectCreationExpression.TypeReference">
+            <summary>
+            This reference is NOT presented in GetReferences() list for this element
+            It is in GetReferences() of corresponding ReferenceName
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.CSharp.Tree.IReferenceExpression.IsExtensionMethod">
+            <summary>
+            Check if extension method is invoked as extension method (but not as static method)
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Tree.ISwitchStatement.GetGoverningType">
+            <summary>
+            Computes the governing type of the switch condition (according to p8.7.2 of C# spec)
+            If the condition expression is of the integral type or enum, then this type is returned.
+            Otherwise, there must be one and only one implicit conversion operator to integral type
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.Tree.TypeParameterOfMethodDeclaration.ConstraintIterator(System.Action{JetBrains.ReSharper.Psi.CSharp.Tree.ITypeParameterConstraintNode})">
+            <summary>
+            Iterates through constraints for this type parameter and call given delegate for each of them
+            </summary>
+            <param name="handler"></param>
+            <returns><c>true</c> if constraints clause was found</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.Tree.TypeParameterOfMethodDeclaration.FindInheritedTypeParameter">
+            <summary>
+            Tries to find the type parameter of the inherited method.
+            According to C# specs 25.6.2
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.AliasUtil.GetPossibleAliasesForElement(JetBrains.ReSharper.Psi.IDeclaredElement)">
+            <summary>
+            This function handles language-defined aliases
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.CSharpOperatorUtil.GetCustomImplicitOperator(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.IType)">
+            <summary>
+            Find custom implicit operator according to paragraph 6.4.3
+            </summary>
+            <param name="source"></param>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.CSharpOperatorUtil.CheckCustomConversionValidity(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.IType)">
+            <summary>
+            Check that any custom conversion operator could exist from <paramref name="source"/> to <paramref name="target"/>
+            According to C# specs 17.9.3. Both <paramref name="source"/> and <paramref name="target"/> should be unlifted
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.CSharpTypeUtil.IsVariantSafe(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.CSharp.Util.CSharpTypeVarianceSafe)">
+            <summary>
+            C# specs 23.5: Check type for variance safety
+            </summary>
+            <returns>
+            <list type="bullet">
+            <item><c>null</c> if type passes variance check</item>
+            <item>type parameter and necessary variance if type failed check</item>
+            </list>
+            </returns>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.Util.ExpressionUtil">
+            <summary>
+            Utility class for working with statements
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.ExpressionUtil.IsCondition(JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression,JetBrains.ReSharper.Psi.IOperator@)">
+            <summary>
+            Check if the expression could be used as boolean condition, i.e. imlicitly convertible
+            to <c>bool</c>, or contains <c>true</c>/<c>false</c> operators. According to C# specs draft 4, <c>bool?</c> is no more counted as condition.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.InvocationExpressionUtil.IsSkippedByCompiler(JetBrains.ReSharper.Psi.CSharp.Tree.IInvocationExpression,JetBrains.ReSharper.Psi.Resolve.Managed.IResolveContext)">
+            <summary>
+            Returns <c>true</c> if this invocation is skipped by compiler, becaouse of partial methos without implementation, or conditianal method
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Resolve.OverloadResolution.BetterFunctionMemberSelector.IsBetterFunctionMember(JetBrains.ReSharper.Psi.CSharp.Resolve.OverloadResolution.ApplicableCandidate,JetBrains.ReSharper.Psi.CSharp.Resolve.OverloadResolution.ApplicableCandidate)">
+            <summary>
+            "better function member" is defined in "C# Language Specification", 14.4.2.2
+            NOTE: Both methods should be applicable!
+            </summary>
+            <returns>
+            returns +1 if method1 is better function member for arguments
+            returns -1 if candidate2 is better function member for arguments
+            returns 0 otherwise
+            </returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.SwitchStatementUtil.ComputeGoverningType(JetBrains.ReSharper.Psi.IExpressionType,JetBrains.ReSharper.Psi.IPsiModule)">
+            <summary>
+            Computes the switch statement governing type by the type of switch expression.
+            </summary>
+            <returns>Unknown if governing type cannot be computed</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.CodeStyle.ThisQualifierUtil.ThisQualifierNecessaryByStyle(JetBrains.ReSharper.Psi.CSharp.Tree.IReferenceExpression,JetBrains.ReSharper.Psi.CSharp.CodeStyle.ThisQualifierStyle)">
+            <summary>
+            Look into code formatter settings to check if the "this." qualifier of the given expression should be
+            counted as redundant
+            </summary>
+            <param name="expression">expression, whos qualifier is "this."</param>
+            <param name="settings"></param>
+            <returns><c>true</c> if 'this' qualifier should be used</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.XmlDocTemplateUtil.GetDocTemplate(JetBrains.ReSharper.Psi.Tree.IDocCommentBlockOwnerNode,System.Int32@)">
+            <summary>
+            Get the empty XML doc template for the given element
+            </summary>
+            <param name="owner"></param>
+            <returns>XML text without any comments (i.e. "///"). 
+            Also the initial cursor position is returned in out parameter</returns>
+        </member>
+    </members>
+</doc>

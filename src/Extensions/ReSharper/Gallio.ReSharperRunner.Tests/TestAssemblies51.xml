@@ -73,7 +73,7 @@
   </ProductEditions>
   <Assemblies>
     <!-- Link to self -->
-    <Assembly Name="Gallio.ReSharperRunner50.Tests" Configurations="Tests" MsiComponentGuid="{3D96623F-9F4F-4FFD-B03C-84AB247FF9AC}" HasXmlSerializers="false"/>
+    <Assembly Name="Gallio.ReSharperRunner51.Tests" Configurations="Tests" MsiComponentGuid="{3D96623F-9F4F-4FFD-B03C-84AB247FF9AC}" HasXmlSerializers="false"/>
 
     <!-- JetBrains .NET Platform. -->
     <!-- Note: the ReSharper macro gets replaced with the assembly name infix, as suitable by the current product, during the build. -->
