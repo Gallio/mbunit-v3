@@ -1,6 +1,5 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <Import Project="$(RootDir)\bin\Module.targets" />
-  <Import Project="ReSharper51.targets" />
 
   <ItemGroup>
     <CSharpProject Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner51$(ProjectVariant).csproj" />
