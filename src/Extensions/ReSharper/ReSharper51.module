@@ -2,7 +2,7 @@
   <Import Project="$(RootDir)\bin\Module.targets" />
   <Import Project="ReSharper51.targets" />
 
-  <ItemGroup Condition="$(ReSharper51Installed)">
+  <ItemGroup>
     <CSharpProject Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner51$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner51.Tests$(ProjectVariant).csproj" />
 
