@@ -118,6 +118,9 @@
     <Compile Include="..\Extensions\ReSharper\ReSharper50.wxs">
       <Link>ReSharper50.wxs</Link>
     </Compile>
+	<Compile Include="..\Extensions\ReSharper\ReSharper51.wxs">
+      <Link>ReSharper51.wxs</Link>
+    </Compile>
     <Compile Include="..\Extensions\RSpec\RSpec.wxs">
       <Link>RSpec.wxs</Link>
     </Compile>
