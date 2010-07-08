@@ -138,7 +138,6 @@
             this.pluginDescriptionRichTextBox.Name = "pluginDescriptionRichTextBox";
             this.pluginDescriptionRichTextBox.ReadOnly = true;
             this.pluginDescriptionRichTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
-            this.pluginDescriptionRichTextBox.ShortcutsEnabled = false;
             this.pluginDescriptionRichTextBox.Size = new System.Drawing.Size(414, 54);
             this.pluginDescriptionRichTextBox.TabIndex = 2;
             this.pluginDescriptionRichTextBox.Text = "";
