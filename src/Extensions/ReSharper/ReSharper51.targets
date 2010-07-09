@@ -19,7 +19,7 @@
   </Choose>
 
   <Target Name="MissingReSharper">
-    <Warning Text="Skipped build for configuration.  ReSharper v5.1 is not installed or could not be located." />
+    <Warning Text="Skipped build for configuration. ReSharper v5.1 is not installed or could not be located." />
   </Target>
 </Project>
 
