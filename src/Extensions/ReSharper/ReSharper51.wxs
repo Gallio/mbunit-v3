@@ -25,7 +25,7 @@
                 <Directory Id="JetBrains.ReSharper.V51.VS9.PluginsDir" Name="Plugins">
                     <Directory Id="JetBrains.Resharper.V51.VS9.GallioDir" Name="Gallio">
                         <Component Id="Gallio.ReSharperRunner.V51.VS9.dll" Guid="{F32F20BD-69A1-49cb-9448-46588122032A}" Win64="no">
-                            <File Id="Gallio.ReSharperRunner.V51.VS9.dll" Source="$(var.GallioTargetDir)\bin\ReSharper\v5.0\Gallio.ReSharperRunner50.dll" KeyPath="yes" />
+                            <File Id="Gallio.ReSharperRunner.V51.VS9.dll" Source="$(var.GallioTargetDir)\bin\ReSharper\v5.1\Gallio.ReSharperRunner51.dll" KeyPath="yes" />
                         </Component>
 						
 						<Directory Id="Gallio.ReSharperRunner.V51.VS9.Resources" Name="Resources">
