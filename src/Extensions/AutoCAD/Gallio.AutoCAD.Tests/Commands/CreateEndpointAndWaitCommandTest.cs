@@ -25,15 +25,10 @@ namespace Gallio.AutoCAD.Tests.Commands
     {
         private CreateEndpointAndWaitCommand command;
 
-        [Row(null)]
-        [Row(@"c:\path\to\Gallio.Loader.dll")]
-        public string GallioLoaderAssemblyPath
-        { get; set; }
-
         [SetUp]
         public void SetUp()
         {
-            command = new CreateEndpointAndWaitCommand("MyIpcPort", Guid.NewGuid(), GallioLoaderAssemblyPath);
+            command = new CreateEndpointAndWaitCommand("MyIpcPort", Guid.NewGuid());
         }
 
         [Test]
@@ -48,7 +43,6 @@ namespace Gallio.AutoCAD.Tests.Commands
             {
                 yield return command.IpcPortName;
                 yield return command.LinkId.ToString();
-                yield return command.GallioLoaderAssemblyPath;
             }
         }
 
@@ -57,7 +51,7 @@ namespace Gallio.AutoCAD.Tests.Commands
         [Row("")]
         public static void Constructor_WhenIpcPortNameIsNullOrEmpty_ThrowsArgumentException(string ipcPortName)
         {
-            Assert.Throws<ArgumentException>(() => new CreateEndpointAndWaitCommand(ipcPortName, Guid.NewGuid(), null));
+            Assert.Throws<ArgumentException>(() => new CreateEndpointAndWaitCommand(ipcPortName, Guid.NewGuid()));
         }
     }
 }

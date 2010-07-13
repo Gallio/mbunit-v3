@@ -74,7 +74,7 @@ namespace Gallio.AutoCAD.ProcessManagement
         }
 
         /// <inheritdoc/>
-        public void Start(string ipcPortName, Guid linkId, string gallioLoaderAssemblyPath, DebuggerSetup debuggerSetup)
+        public void Start(string ipcPortName, Guid linkId, DebuggerSetup debuggerSetup)
         {
             if (ipcPortName == null)
                 throw new ArgumentNullException("ipcPortName");
@@ -88,7 +88,7 @@ namespace Gallio.AutoCAD.ProcessManagement
                 throw new InvalidOperationException("Unable to determine the location of Gallio.AutoCAD.Plugin.dll.");
 
             NetLoadPlugin(process, pluginLocation);
-            CreateEndpointAndWait(process, ipcPortName, linkId, gallioLoaderAssemblyPath);
+            CreateEndpointAndWait(process, ipcPortName, linkId);
         }
 
         private void NetLoadPlugin(IProcess process, string pluginPath)
@@ -121,9 +121,9 @@ namespace Gallio.AutoCAD.ProcessManagement
             throw new TimeoutException("Timeout waiting for AutoCAD to load assembly.");
         }
 
-        private void CreateEndpointAndWait(IProcess process, string ipcPortName, Guid linkId, string gallioLoaderAssemblyPath)
+        private void CreateEndpointAndWait(IProcess process, string ipcPortName, Guid linkId)
         {
-            var command = new CreateEndpointAndWaitCommand(ipcPortName, linkId, gallioLoaderAssemblyPath);
+            var command = new CreateEndpointAndWaitCommand(ipcPortName, linkId);
 
             // Run this command on a seperate thread since the command runner won't return
             // until the command has finished executing. The "create endpoint and wait"

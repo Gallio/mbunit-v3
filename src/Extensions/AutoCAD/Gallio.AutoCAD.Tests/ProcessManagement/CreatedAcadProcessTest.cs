@@ -64,7 +64,7 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
             {
                 actualProcess.Stub(x => x.HasExited).Return(true);
 
-                Assert.Throws<InvalidOperationException>(() => acadProcess.Start("IPC port name", Guid.Empty, null, null));
+                Assert.Throws<InvalidOperationException>(() => acadProcess.Start("IPC port name", Guid.Empty, null));
             }
 
             [Test]
@@ -74,7 +74,7 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
                 acadProcess.ReadyTimeout = TimeSpan.FromTicks(1);
                 actualProcess.Stub(x => x.IsModuleLoaded(Arg<string>.Is.Anything)).Return(false);
                 
-                Assert.Throws<TimeoutException>(() => acadProcess.Start("IPC port name", Guid.Empty, null, null));
+                Assert.Throws<TimeoutException>(() => acadProcess.Start("IPC port name", Guid.Empty, null));
             }
 
             public class PassesToProcessCreator
@@ -127,7 +127,7 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
                             return true;
                         });
 
-                    acadProcess.Start("IPC port name", Guid.Empty, null, null);
+                    acadProcess.Start("IPC port name", Guid.Empty, null);
 
                     processCreator.VerifyAllExpectations();
                 }
@@ -159,7 +159,7 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
             [Test]
             public void WhenCalledAfterStart_CallsKillAndDisposeOnActualProcess()
             {
-                acadProcess.Start("IPC port name", Guid.Empty, null, null);
+                acadProcess.Start("IPC port name", Guid.Empty, null);
 
                 acadProcess.Dispose();
 
@@ -176,7 +176,7 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
             [Test]
             public void WhenCalledAndActualProcessHasAlreadyExited_CallsDisposeButNotKill()
             {
-                acadProcess.Start("IPC port name", Guid.Empty, null, null);
+                acadProcess.Start("IPC port name", Guid.Empty, null);
                 actualProcess.Stub(x => x.HasExited).Return(true);
 
                 acadProcess.Dispose();

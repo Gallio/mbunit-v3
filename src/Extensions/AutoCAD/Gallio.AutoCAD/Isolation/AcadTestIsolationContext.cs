@@ -111,11 +111,10 @@ namespace Gallio.AutoCAD.Isolation
                 {
                     statusReporter("Attaching to AutoCAD.");
 
-                    string gallioLoaderAssemblyPath = GallioLoaderLocator.GetGallioLoaderAssemblyPath();
                     string ipcPortName = "AcadTestIsolationContext." + Hash64.CreateUniqueHash();
                     Guid uniqueId = Guid.NewGuid();
                     server = new TestIsolationServer(ipcPortName, uniqueId);
-                    process.Start(ipcPortName, uniqueId, gallioLoaderAssemblyPath, debuggerSetup);
+                    process.Start(ipcPortName, uniqueId, debuggerSetup);
                     return server;
                 }
                 catch

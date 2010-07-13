@@ -31,12 +31,11 @@ namespace Gallio.AutoCAD.Commands
     {
         private readonly string ipcPortName;
         private readonly Guid linkId;
-        private readonly string gallioLoaderAssemblyPath;
 
         /// <summary>
         /// Initializes a new <see cref="CreateEndpointAndWaitCommand"/> object.
         /// </summary>
-        public CreateEndpointAndWaitCommand(string ipcPortName, Guid linkId, string gallioLoaderAssemblyPath)
+        public CreateEndpointAndWaitCommand(string ipcPortName, Guid linkId)
             : base("CREATEENDPOINTANDWAIT")
         {
             if (string.IsNullOrEmpty(ipcPortName))
@@ -44,7 +43,6 @@ namespace Gallio.AutoCAD.Commands
 
             this.ipcPortName = ipcPortName;
             this.linkId = linkId;
-            this.gallioLoaderAssemblyPath = gallioLoaderAssemblyPath;
         }
 
         /// <inheritdoc/>
@@ -52,7 +50,6 @@ namespace Gallio.AutoCAD.Commands
         {
             yield return IpcPortName;
             yield return LinkId.ToString();
-            yield return GallioLoaderAssemblyPath;
         }
 
         /// <summary>
@@ -69,15 +66,6 @@ namespace Gallio.AutoCAD.Commands
         public Guid LinkId
         {
             get { return linkId; }
-        }
-
-        /// <summary>
-        /// Gets or sets the path of the Gallio.Loader.dll assembly or null if it is
-        /// to be loaded from the GAC.
-        /// </summary>
-        public string GallioLoaderAssemblyPath
-        {
-            get { return gallioLoaderAssemblyPath; }
         }
     }
 }

@@ -52,13 +52,6 @@ namespace Gallio.AutoCAD.Plugin
             if (!GetLinkId(out linkId))
                 return;
 
-            string gallioLoaderAssemblyPath;
-            if (!GetGallioLoaderAssemblyPath(out gallioLoaderAssemblyPath))
-                return;
-
-            if (!string.IsNullOrEmpty(gallioLoaderAssemblyPath))
-                Assembly.LoadFrom(gallioLoaderAssemblyPath);
-
             ShimWithLoader.Run(ipcPortName, linkId);
         }
 
@@ -78,11 +71,6 @@ namespace Gallio.AutoCAD.Plugin
 
             linkId = new Guid(result);
             return true;
-        }
-
-        private static bool GetGallioLoaderAssemblyPath(out string gallioLoaderAssemblyPath)
-        {
-            return Prompt("Gallio.Loader Assembly Path:", out gallioLoaderAssemblyPath);
         }
 
         private static bool Prompt(string promptMessage, out string result)

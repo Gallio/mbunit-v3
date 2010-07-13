@@ -28,10 +28,8 @@ namespace Gallio.AutoCAD.ProcessManagement
         /// </summary>
         /// <param name="ipcPortName">The IPC port name.</param>
         /// <param name="linkId">The unique id of the client/server pair.</param>
-        /// <param name="gallioLoaderAssemblyPath">The path of the Gallio.Loader assembly or null if it is
-        /// to be loaded from the GAC.</param>
         /// <param name="debuggerSetup">The debugger setup or null if the process shouldn't be debuggged.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="ipcPortName"/> is null.</exception>
-        void Start(string ipcPortName, Guid linkId, string gallioLoaderAssemblyPath, DebuggerSetup debuggerSetup);
+        void Start(string ipcPortName, Guid linkId, DebuggerSetup debuggerSetup);
     }
 }
