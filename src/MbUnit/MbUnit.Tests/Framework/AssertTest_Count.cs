@@ -114,13 +114,17 @@ namespace MbUnit.Tests.Framework
         [Test, Factory("DataProvider")]
         public void Count_fail(IEnumerable values)
         {
-            AssertionFailure[] failures = Capture(() => Assert.Count(666, GetEnumeration()));
+            AssertionFailure[] failures = Capture(() => Assert.Count(666, values));
             Assert.Count(1, failures);
-            Assert.Like(failures[0].Description, @"^Expected the (sequence|collection|array) to contain a certain number of elements.$");
+            Assert.Like(failures[0].Description, @"^Expected the sequence to contain a certain number of elements but \d+ counting strateg(y has|ies have) failed.$");
             Assert.AreEqual("Expected Value", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("666", failures[0].LabeledValues[0].FormattedValue.ToString());
-            Assert.Like(failures[0].LabeledValues[1].Label, @"^Actual Value( \((Count|Length)\))?$");
-            Assert.AreEqual("4", failures[0].LabeledValues[1].FormattedValue.ToString());
+
+            for (int i = 1; i <= failures[0].LabeledValues.Count - 1; i++)
+            {
+                Assert.Like(failures[0].LabeledValues[i].Label, @"^Actual Value \([\w ]+\)?$");
+                Assert.AreEqual("4", failures[0].LabeledValues[i].FormattedValue.ToString());
+            }
         }
     }
 }

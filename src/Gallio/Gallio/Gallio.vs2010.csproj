@@ -108,6 +108,7 @@
   <ItemGroup>
     <Compile Include="Common\Accessor.cs" />
     <Compile Include="Common\Action.cs" />
+    <Compile Include="Common\Collections\EnumerableCounter.cs" />
     <Compile Include="Common\Comparison.cs" />
     <Compile Include="Common\Concurrency\DegreeOfParallelismProvider.cs" />
     <Compile Include="Common\Concurrency\IProcess.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="Common\IO\ContentEmbeddedResource.cs" />
     <Compile Include="Common\IO\ContentFile.cs" />
     <Compile Include="Common\IO\ContentInline.cs" />
+    <Compile Include="Common\Lazy.cs" />
     <Compile Include="Common\Markup\AttachmentType.cs" />
     <Compile Include="Common\Markup\MarkupNormalizationUtils.cs" />
     <Compile Include="Common\Mathematics\ChiSquareTest.cs" />

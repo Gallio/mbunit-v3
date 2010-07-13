@@ -18,6 +18,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Gallio.Common.Collections;
 using Gallio.Framework.Assertions;
 using MbUnit.Framework;
 
@@ -398,6 +399,39 @@ namespace MbUnit.Tests.Framework
             AssertionFailure[] failures = Capture(() => Assert.Exists(data, x => x == "D'Artagnan"));
             Assert.Count(1, failures);
             Assert.AreEqual("Expected at least one element of the sequence to meet the specified condition, but none passed.", failures[0].Description);
+        }
+
+        #endregion
+
+        #region IsEmpty
+
+        private static IEnumerable GetEmptyEnumeration()
+        {
+            yield break;
+        }
+
+        [Test]
+        public void IsEmpty_pass()
+        {
+            Assert.IsEmpty(EmptyArray<int>.Instance);
+            Assert.IsEmpty(new List<int>());
+            Assert.IsEmpty(GetEmptyEnumeration());
+        }
+
+        [Test]
+        public void IsEmpty_fail()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.IsEmpty(new[] { 123, 456, 789 }));
+            Assert.Count(1, failures);
+            Assert.Like(failures[0].Description, @"^Expected the sequence to be empty but \d+ counting strateg(y has|ies have) failed.$");
+            Assert.AreEqual("Expected Value", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("0", failures[0].LabeledValues[0].FormattedValue.ToString());
+
+            for (int i = 1; i <= failures[0].LabeledValues.Count - 1; i++)
+            {
+                Assert.Like(failures[0].LabeledValues[i].Label, @"^Actual Value \([\w ]+\)?$");
+                Assert.AreEqual("3", failures[0].LabeledValues[i].FormattedValue.ToString());
+            }
         }
 
         #endregion

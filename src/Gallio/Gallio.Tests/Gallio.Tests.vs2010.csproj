@@ -57,6 +57,7 @@
     <Compile Include="Common\ActionChainTestForTwoParameters.cs" />
     <Compile Include="BaseTestWithMocks.cs" />
     <Compile Include="Common\Collections\CollectionUtilsTest.cs" />
+    <Compile Include="Common\Collections\EnumerableCounterTest.cs" />
     <Compile Include="Common\Collections\GenericCollectionUtilsTest.cs" />
     <Compile Include="Common\Collections\PropertyBagTest.cs" />
     <Compile Include="Common\Collections\PropertySetTest.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Common\IO\ContentFileTest.cs" />
     <Compile Include="Common\IO\ContentEmbeddedResourceTest.cs" />
     <Compile Include="Common\IO\FileUtilsTest.cs" />
+    <Compile Include="Common\LazyTest.cs" />
     <Compile Include="Common\Linq\ExpressionInstrumentorTest.cs" />
     <Compile Include="Common\Markup\AttachmentTest.cs" />
     <Compile Include="Common\Markup\MarkerTest.cs" />

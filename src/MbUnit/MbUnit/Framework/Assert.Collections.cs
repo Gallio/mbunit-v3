@@ -735,17 +735,37 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void IsEmpty(IEnumerable actualValue, string messageFormat, params object[] messageArgs)
         {
-            AssertionHelper.Verify(delegate
+            AssertionHelper.Verify(() =>
             {
-                if (!actualValue.GetEnumerator().MoveNext())
+                var counter = new EnumerableCounter(actualValue);
+                var failures = new List<ICountingStrategy>();
+
+                foreach (ICountingStrategy strategy in counter.Count())
+                {
+                    if (strategy.Count != 0)
+                    {
+                        failures.Add(strategy);
+                    }
+                }
+
+                if (failures.Count == 0)
                     return null;
 
-                return new AssertionFailureBuilder("Expected value to be empty.")
+                var builder = new AssertionFailureBuilder(String.Format(
+                    "Expected the sequence to be empty but {0} counting strateg{1} failed.", failures.Count, failures.Count > 1 ? "ies have" : "y has"))
+                    .AddRawExpectedValue(0);
+
+                foreach (var failure in failures)
+                {
+                    builder.AddRawLabeledValue(String.Format("Actual Value ({0})", failure.Description), failure.Count);
+                }
+
+                return builder
                     .SetMessage(messageFormat, messageArgs)
-                    .AddRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
+
         #endregion
 
         #region IsNotEmpty
@@ -768,14 +788,33 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void IsNotEmpty(IEnumerable actualValue, string messageFormat, params object[] messageArgs)
         {
-            AssertionHelper.Verify(delegate
+            AssertionHelper.Verify(() =>
             {
-                if (actualValue.GetEnumerator().MoveNext())
+                var counter = new EnumerableCounter(actualValue);
+                var failures = new List<ICountingStrategy>();
+
+                foreach (ICountingStrategy strategy in counter.Count())
+                {
+                    if (strategy.Count <= 0)
+                    {
+                        failures.Add(strategy);
+                    }
+                }
+
+                if (failures.Count == 0)
                     return null;
 
-                return new AssertionFailureBuilder("Expected value to be non-empty.")
+                var builder = new AssertionFailureBuilder(String.Format(
+                    "Expected the sequence to be non-empty but {0} counting strateg{1} failed.", failures.Count, failures.Count > 1 ? "ies have" : "y has"))
+                    .AddRawExpectedValue("Any value greater than zero.");
+
+                foreach (var failure in failures)
+                {
+                    builder.AddRawLabeledValue(String.Format("Actual Value ({0})", failure.Description), failure.Count);
+                }
+
+                return builder
                     .SetMessage(messageFormat, messageArgs)
-                    .AddRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
