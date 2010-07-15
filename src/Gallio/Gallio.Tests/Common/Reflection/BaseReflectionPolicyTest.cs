@@ -614,7 +614,7 @@ namespace Gallio.Tests.Common.Reflection
         }
 
         [Test]
-        public void ExhausiveComparison()
+        public void ExhaustiveComparison()
         {
             Assembly assembly = typeof(ReflectionPolicySample).Assembly;
             IAssemblyInfo info = GetAssembly(assembly);

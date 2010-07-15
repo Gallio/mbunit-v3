@@ -30,7 +30,7 @@ namespace Gallio.Common.Concurrency
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The process task provides a guarnatee that when you call <see cref="Task.Join" />
+    /// The process task provides a guarantee that when you call <see cref="Task.Join" />
     /// all redirected output from the console output and error streams will already
     /// have been captured and delivered to the event handlers, as appropriate.
     /// </para>

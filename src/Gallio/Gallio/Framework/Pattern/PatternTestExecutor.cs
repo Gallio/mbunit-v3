@@ -193,7 +193,7 @@ namespace Gallio.Framework.Pattern
                     }
 
                     // Actually run the test.
-                    // Yes, this is a monstruously long method due to the inlining optimzation to minimize stack depth.
+                    // Yes, this is a monstrously long method due to the inlining optimzation to minimize stack depth.
                     using (Sandbox sandbox = parentSandbox.CreateChild())
                     {
                         using (new ProcessIsolation())
