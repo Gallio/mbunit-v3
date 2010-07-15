@@ -57,8 +57,6 @@ namespace Gallio.Icarus.Commands
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                     restoreFilterCommand.Execute(subProgressMonitor);
-
-                eventAggregator.Send(new ProjectOpened(ProjectLocation));
             }
         }
     }

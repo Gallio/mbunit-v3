@@ -96,12 +96,6 @@ namespace Gallio.Icarus.Models
             OnStructureChanged(new TreePathEventArgs(new TreePath(projectRoot)));
         }
 
-        public void NotifyReportsChanged()
-        {
-            var treePath = new TreePath(new[] { projectRoot });
-            OnStructureChanged(new TreePathEventArgs(treePath));
-        }
-
         public ProjectTreeModel(IFileSystem fileSystem)
         {
             this.fileSystem = fileSystem;

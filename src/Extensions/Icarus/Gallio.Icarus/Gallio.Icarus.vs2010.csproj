@@ -295,7 +295,6 @@
     <Compile Include="Models\ISortedTreeModel.cs" />
     <Compile Include="Projects\ProjectChanged.cs" />
     <Compile Include="Projects\ProjectMonitor.cs" />
-    <Compile Include="Events\ProjectOpened.cs" />
     <Compile Include="Search\Controller.cs" />
     <Compile Include="Search\IController.cs" />
     <Compile Include="Search\View.cs">

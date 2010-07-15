@@ -32,7 +32,8 @@ using Gallio.UI.Events;
 
 namespace Gallio.Icarus.Controllers
 {
-    public class OptionsController : NotifyController, IOptionsController, Handles<ProjectOpened>, Handles<ProjectSaved>
+    public class OptionsController : NotifyController, IOptionsController, 
+        Handles<ProjectLoaded>, Handles<ProjectSaved>
     {
         private readonly IFileSystem fileSystem;
         private readonly IXmlSerializer xmlSerializer;
@@ -275,7 +276,7 @@ namespace Gallio.Icarus.Controllers
             Load();
         }
 
-        public void Handle(ProjectOpened @event)
+        public void Handle(ProjectLoaded @event)
         {
             RecentProjects.Add(@event.ProjectLocation);
         }

@@ -70,14 +70,5 @@ namespace Gallio.Icarus.Tests.Commands
 
             projectController.AssertWasCalled(pc => pc.OpenProject(progressMonitor, FileName));
         }
-
-        [Test]
-        public void Execute_should_notify_that_the_project_was_opened()
-        {
-            openProjectCommand.Execute(progressMonitor);
-
-            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<ProjectOpened>.Matches(po => 
-                po.ProjectLocation == FileName)));
-        }
     }
 }

@@ -20,7 +20,7 @@ using Gallio.UI.Events;
 
 namespace Gallio.Icarus.Projects
 {
-    public class ProjectMonitor : IProjectMonitor, Handles<ProjectOpened>, Handles<ApplicationShutdown>
+    public class ProjectMonitor : IProjectMonitor, Handles<ProjectLoaded>, Handles<ApplicationShutdown>
     {
         private readonly IEventAggregator eventAggregator;
         private FileSystemWatcher fileSystemWatcher;
@@ -31,7 +31,7 @@ namespace Gallio.Icarus.Projects
             this.eventAggregator = eventAggregator;
         }
 
-        public void Handle(ProjectOpened @event)
+        public void Handle(ProjectLoaded @event)
         {
             var directoryName = Path.GetDirectoryName(@event.ProjectLocation);
 
