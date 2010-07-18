@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\AbstractTestFixtureAttribute.cs" />
     <Compile Include="Framework\AnnotationAttribute.cs" />
     <Compile Include="Framework\ApartmentStateAttribute.cs" />
     <Compile Include="Framework\AssemblyFixtureAttribute.cs" />

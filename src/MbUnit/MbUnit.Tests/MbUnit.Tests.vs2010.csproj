@@ -53,7 +53,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Framework\AbstractTestFixtureAttribute.cs" />
     <Compile Include="Framework\AssertTest_Count.cs" />
     <Compile Include="Framework\ContractVerifiers\Core\HashStoreResultTest.cs" />
     <Compile Include="Framework\ContractVerifiers\Core\HashStoreTest.cs" />
@@ -64,6 +63,7 @@
     <Compile Include="Framework\MirrorTest.cs" />
     <Compile Include="Framework\MirrorExceptionTest.cs" />
     <Compile Include="Framework\RetryTest.cs" />
+    <Compile Include="Framework\StaticTestFactoryAttributeTest.cs" />
     <Compile Include="Integration\ConfigurationFileTest.cs" />
     <Compile Include="Framework\RepeatTest.cs" />
     <Compile Include="Framework\ExplicitTest.cs" />
