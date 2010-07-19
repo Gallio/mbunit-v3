@@ -60,10 +60,10 @@
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassCollectionTest.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassTest.cs" />
     <Compile Include="Framework\DataGeneratorsTest_Join.cs" />
+    <Compile Include="Framework\DisableAttributeTest.cs" />
     <Compile Include="Framework\MirrorTest.cs" />
     <Compile Include="Framework\MirrorExceptionTest.cs" />
     <Compile Include="Framework\RetryTest.cs" />
-    <Compile Include="Framework\StaticTestFactoryAttributeTest.cs" />
     <Compile Include="Integration\ConfigurationFileTest.cs" />
     <Compile Include="Framework\RepeatTest.cs" />
     <Compile Include="Framework\ExplicitTest.cs" />

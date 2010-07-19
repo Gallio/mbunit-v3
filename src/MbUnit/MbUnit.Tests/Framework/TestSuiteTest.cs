@@ -303,7 +303,7 @@ namespace MbUnit.Tests.Framework
             }
         }
 
-        [AbstractTestFixture, Explicit("Sample")]
+        [Disable, Explicit("Sample")]
         public abstract class AbstractStaticSample<T>
         {
             [StaticTestFactory]

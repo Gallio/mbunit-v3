@@ -15,30 +15,34 @@
 
 using System;
 using Gallio.Common.Reflection;
+using Gallio.Framework;
 using Gallio.Framework.Pattern;
+using Gallio.Model;
 
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// Specifies that a class represents an abstract test fixture used as a base class for concrete fixture types.
+    /// Specifies that a test fixture or a test method is abstract and should not run.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The attribute hides the test methods in the current test fixture, so they can be consumed properly in the
-    /// desired context from any derived concrete test fixtures.
+    /// The attribute hides the test methods in the current test fixture or a test method itself, 
+    /// so they can be consumed properly in the desired context from any derived concrete test fixtures.
     /// </para>
     /// <para>
     /// This attribute is not inherited.
     /// </para>
     /// </remarks>
-    [AttributeUsage(PatternAttributeTargets.TestType, AllowMultiple = false, Inherited = false)]
-    public class AbstractTestFixtureAttribute : TestFixtureAttribute
+    [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = false)]
+    public class DisableAttribute : TestDecoratorPatternAttribute
     {
         /// <inheritdoc />
-        public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
+        protected override void DecorateTest(IPatternScope scope, ICodeElementInfo codeElement)
         {
-            // Nothing here!
-            // Just eat up the consumption of the test methods.
+            scope.TestBuilder.TestActions.BeforeTestChain.Before(state =>
+            {
+                 throw new SilentTestException(TestOutcome.Skipped, "Abstract test method/fixture.");
+            });
         }
     }
 }
