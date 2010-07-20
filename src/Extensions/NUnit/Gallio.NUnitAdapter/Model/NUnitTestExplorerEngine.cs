@@ -66,18 +66,26 @@ namespace Gallio.NUnitAdapter.Model
             {
 #if NUNIT248
                 case @"Test Case":
-#else
+#elif NUNIT253
                 case @"NUnitTestMethod":
-#endif
+#elif NUNITLATEST
+                case @"TestMethod":
+#else
+#error "Unrecognized NUnit framework version."
+#endif                   
                     kind = TestKinds.Test;
                     codeElement = ParseTestCaseName(assembly, nunitTest.TestName.FullName);
                     break;
 
 #if NUNIT248
                 case @"Test Fixture":
-#else
+#elif NUNIT253
                 case @"NUnitTestFixture":
-#endif
+#elif NUNITLATEST
+                case @"TestFixture":
+#else
+#error "Unrecognized NUnit framework version."
+#endif                    
                     kind = TestKinds.Fixture;
                     codeElement = ParseTestFixtureName(assembly, nunitTest.TestName.FullName);
                     break;

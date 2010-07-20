@@ -163,8 +163,10 @@ namespace Gallio.NUnitAdapter.Model
 
 #if NUNIT248
             void EventListener.TestFinished(TestCaseResult nunitResult)
-#else
+#elif (NUNIT253 || NUNITLATEST)
             void EventListener.TestFinished(NUnit.Core.TestResult nunitResult)
+#else
+#error "Unrecognized NUnit framework version."
 #endif
             {
                 HandleTestOrSuiteFinished(nunitResult);
@@ -202,8 +204,10 @@ namespace Gallio.NUnitAdapter.Model
 
 #if NUNIT248
             void EventListener.SuiteFinished(TestSuiteResult nunitResult)
-#else
+#elif (NUNIT253 || NUNITLATEST)
             void EventListener.SuiteFinished(NUnit.Core.TestResult nunitResult)
+#else
+#error "Unrecognized NUnit framework version."
 #endif
             {
                 HandleTestOrSuiteFinished(nunitResult);
@@ -301,7 +305,7 @@ namespace Gallio.NUnitAdapter.Model
                     case RunState.Explicit:
                         return TestOutcome.Skipped;
                 }
-#else
+#elif (NUNIT253 || NUNITLATEST)
                 switch (nunitResult.ResultState)
                 {
                     case ResultState.Success:
@@ -319,6 +323,8 @@ namespace Gallio.NUnitAdapter.Model
                     case ResultState.Error:
                         return TestOutcome.Error;
                 }
+#else
+#error "Unrecognized NUnit framework version."
 #endif
             }
             #endregion

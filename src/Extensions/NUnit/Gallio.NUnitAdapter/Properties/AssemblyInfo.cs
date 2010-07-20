@@ -48,8 +48,10 @@ using System.Runtime.InteropServices;
 
 #if NUNIT248
 [assembly: InternalsVisibleTo("Gallio.NUnitAdapter248.Tests")]
-#elif NUNIT25
-[assembly: InternalsVisibleTo("Gallio.NUnitAdapter25.Tests")]
+#elif NUNIT253
+[assembly: InternalsVisibleTo("Gallio.NUnitAdapter253.Tests")]
+#elif NUNITLATEST
+[assembly: InternalsVisibleTo("Gallio.NUnitAdapterLatest.Tests")]
 #else
 #error "Unrecognized NUnit framework version."
 #endif

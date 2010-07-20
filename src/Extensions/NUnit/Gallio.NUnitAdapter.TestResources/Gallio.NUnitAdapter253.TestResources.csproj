@@ -8,37 +8,37 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.NUnitAdapter.TestResources</RootNamespace>
-    <AssemblyName>Gallio.NUnitAdapter25.TestResources</AssemblyName>
-    <BaseIntermediateOutputPath>obj\v2.5\</BaseIntermediateOutputPath>
+    <AssemblyName>Gallio.NUnitAdapter253.TestResources</AssemblyName>
+    <BaseIntermediateOutputPath>obj\v2.5.3\</BaseIntermediateOutputPath>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\v2.5\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NUNIT25</DefineConstants>
+    <OutputPath>bin\v2.5.3\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NUNIT253</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\v2.5\Gallio.NUnitAdapter25.TestResources.xml</DocumentationFile>
+    <DocumentationFile>bin\v2.5.3\Gallio.NUnitAdapter253.TestResources.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\v2.5</OutputPath>
-    <DefineConstants>TRACE;NUNIT25</DefineConstants>
+    <OutputPath>bin\v2.5.3</OutputPath>
+    <DefineConstants>TRACE;NUNIT253</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\v2.5\Gallio.NUnitAdapter25.TestResources.xml</DocumentationFile>
+    <DocumentationFile>bin\v2.5.3\Gallio.NUnitAdapter253.TestResources.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+    <Reference Include="nunit.framework, Version=2.5.3.9345, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\v2.5\nunit.framework.dll</HintPath>
+      <HintPath>..\libs\v2.5.3\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

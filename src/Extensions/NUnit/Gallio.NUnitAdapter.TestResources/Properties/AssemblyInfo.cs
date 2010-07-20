@@ -23,9 +23,12 @@ using System.Runtime.InteropServices;
 #if NUNIT248
 [assembly: AssemblyDescription("A sample test assembly for NUnit v2.4.8.")]
 [assembly: AssemblyTitle("Gallio.NUnitAdapter248.TestResources")]
-#elif NUNIT25
-[assembly: AssemblyDescription("A sample test assembly for NUnit v2.5.")]
-[assembly: AssemblyTitle("Gallio.NUnitAdapter25.TestResources")]
+#elif NUNIT253
+[assembly: AssemblyDescription("A sample test assembly for NUnit v2.5.3.")]
+[assembly: AssemblyTitle("Gallio.NUnitAdapter253.TestResources")]
+#elif NUNITLATEST
+[assembly: AssemblyDescription("A sample test assembly for NUnit v2.5.4+.")]
+[assembly: AssemblyTitle("Gallio.NUnitAdapterLatest.TestResources")]
 #else
 #error "Unrecognized NUnit framework version."
 #endif

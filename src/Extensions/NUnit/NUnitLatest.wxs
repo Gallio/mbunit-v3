@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\..\Installer\Common.wxi ?>
+
+<?ifdef FEATURE_NUNIT_ADAPTER_LATEST ?>
+    <Fragment>
+        <DirectoryRef Id="NUnit" FileSource="$(var.GallioTargetDir)\bin\NUnit">
+          <Directory Id="NUnit.Latest" Name="v2.5.4+">
+            <Component Id="Gallio.NUnitAdapterLatest" Guid="{12D813FB-64FA-4709-B192-63A6807FFBB5}" Win64="$(var.Win64Binary)">
+              <File Id="NUnit.Latest.NUnitAdapterLatest.dll" Name="Gallio.NUnitAdapterLatest.dll" KeyPath="yes" />
+              <File Id="NUnit.Latest.NUnitAdapterLatest.plugin" Name="Gallio.NUnitAdapterLatest.plugin" />
+              <File Id="NUnit.Latest.nunit.license.txt" Name="license.txt" />
+              <File Id="NUnit.Latest.nunit.core.dll" Name="nunit.core.dll" />
+              <File Id="NUnit.Latest.nunit.core.interfaces.dll" Name="nunit.core.interfaces.dll" />
+              <File Id="NUnit.Latest.nunit.framework.dll" Name="nunit.framework.dll" />
+              <File Id="NUnit.Latest.nunit.framework.dll.tdnet" Name="nunit.framework.dll.tdnet" />
+              <File Id="NUnit.Latest.nunit.framework.xml" Name="nunit.framework.xml" />
+              <File Id="NUnit.Latest.nunit.util.dll" Name="nunit.util.dll" />
+              <File Id="NUnit.Latest.nunit.mocks.dll" Name="nunit.mocks.dll" />
+              <File Id="NUnit.Latest.nunit.Readme.txt" Name="Readme.txt" />
+            </Component>
+
+            <Directory Id="NUnit.Latest.Addins" Name="addins">
+              <Component Id="Gallio.NUnitAdapterLatest.Addins" Guid="{9304A432-4F14-439F-AF8D-09615E420D94}" Win64="$(var.Win64Binary)">
+                <File Id="NUnit.Latest.AddinsReadme.txt" Name="NUnit Addins Readme.txt" KeyPath="yes" />
+              </Component>
+            </Directory>
+	    
+            <Directory Id="NUnit.Latest.Resources" Name="Resources">
+              <Component Id="Gallio.NUnitAdapterLatest.Resources" Guid="{913495C8-0C39-4F1E-97E3-1907E1F2A670}" Win64="$(var.Win64Binary)">
+                <File Id="NUnit.Latest.NUnit.ico" Name="NUnit.ico" KeyPath="yes" />
+              </Component>
+            </Directory>
+          </Directory>
+        </DirectoryRef>
+
+        <Feature Id='feat_NUnitAdapterLatest' Title='v2.5.4+' Level='1' AllowAdvertise="no"
+            Description='Enables Gallio to run NUnit v2.5.4+ tests.'>
+          <ComponentRef Id="Gallio.NUnitAdapterLatest"/>
+          <ComponentRef Id="Gallio.NUnitAdapterLatest.Addins"/>
+          <ComponentRef Id="Gallio.NUnitAdapterLatest.Resources"/>
+        </Feature>
+    </Fragment>
+<?endif?>
+</Wix>

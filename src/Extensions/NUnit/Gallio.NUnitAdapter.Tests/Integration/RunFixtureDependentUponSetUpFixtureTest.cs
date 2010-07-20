@@ -34,6 +34,7 @@ namespace Gallio.NUnitAdapter.Tests.Integration
         public void VerifyThatSetUpFixtureRan()
         {
             TestStepRun methodRun = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(FixtureDependentUponSetUpFixture).GetMethod("VerifyThatSetUpFixtureRan")));
+            Assert.IsNotNull(methodRun);
             Assert.AreEqual(TestStatus.Passed, methodRun.Result.Outcome.Status);
 
             TestStepRun namespaceRun = Runner.GetPrimaryTestStepRun(x => x.Step.Name == "SetUpFixtureSample");

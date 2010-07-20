@@ -32,6 +32,7 @@ namespace Gallio.NUnitAdapter.Tests.Integration
         public void PassTestPassed()
         {
             TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Pass")));
+            Assert.IsNotNull(run);
             Assert.AreEqual(TestStatus.Passed, run.Result.Outcome.Status);
         }
 
@@ -39,6 +40,7 @@ namespace Gallio.NUnitAdapter.Tests.Integration
         public void FailTestFailed()
         {
             TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Fail")));
+            Assert.IsNotNull(run);
             Assert.AreEqual(TestStatus.Failed, run.Result.Outcome.Status);
             Assert.Contains(run.TestLog.GetStream(MarkupStreamNames.Failures).ToString(), "Boom");
         }
