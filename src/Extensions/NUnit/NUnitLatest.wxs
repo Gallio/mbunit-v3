@@ -5,7 +5,7 @@
 <?ifdef FEATURE_NUNIT_ADAPTER_LATEST ?>
     <Fragment>
         <DirectoryRef Id="NUnit" FileSource="$(var.GallioTargetDir)\bin\NUnit">
-          <Directory Id="NUnit.Latest" Name="v2.5.4+">
+          <Directory Id="NUnit.Latest" Name="Latest">
             <Component Id="Gallio.NUnitAdapterLatest" Guid="{12D813FB-64FA-4709-B192-63A6807FFBB5}" Win64="$(var.Win64Binary)">
               <File Id="NUnit.Latest.NUnitAdapterLatest.dll" Name="Gallio.NUnitAdapterLatest.dll" KeyPath="yes" />
               <File Id="NUnit.Latest.NUnitAdapterLatest.plugin" Name="Gallio.NUnitAdapterLatest.plugin" />
@@ -34,7 +34,7 @@
           </Directory>
         </DirectoryRef>
 
-        <Feature Id='feat_NUnitAdapterLatest' Title='v2.5.4+' Level='1' AllowAdvertise="no"
+        <Feature Id='feat_NUnitAdapterLatest' Title='Latest' Level='1' AllowAdvertise="no"
             Description='Enables Gallio to run NUnit v2.5.4+ tests.'>
           <ComponentRef Id="Gallio.NUnitAdapterLatest"/>
           <ComponentRef Id="Gallio.NUnitAdapterLatest.Addins"/>
