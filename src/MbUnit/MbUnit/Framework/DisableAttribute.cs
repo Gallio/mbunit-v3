@@ -36,12 +36,47 @@ namespace MbUnit.Framework
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = false)]
     public class DisableAttribute : TestDecoratorPatternAttribute
     {
+        private readonly string reason;
+
+        /// <summary>
+        /// Gets the reason that the test method/fixture is disabled.
+        /// </summary>
+        public string Reason
+        {
+            get
+            {
+                return reason;
+            }
+        }
+
+
+        /// <summary>
+        /// Indicates that this test method/fixture is disabled.
+        /// </summary>
+        public DisableAttribute()
+            : this("Explicitly disabled test method/fixture.")
+        {
+        }
+
+        /// <summary>
+        ///  Indicates that this test method/fixture is disabled and provides a reason.
+        /// </summary>
+        /// <param name="reason">The reason for which the test method/fixture is disabled.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reason"/> is null.</exception>
+        public DisableAttribute(string reason)
+        {
+            if (reason == null)
+                throw new ArgumentNullException("reason");
+
+            this.reason = reason;
+        }
+
         /// <inheritdoc />
         protected override void DecorateTest(IPatternScope scope, ICodeElementInfo codeElement)
         {
             scope.TestBuilder.TestActions.BeforeTestChain.Before(state =>
             {
-                 throw new SilentTestException(TestOutcome.Skipped, "Abstract test method/fixture.");
+                throw new SilentTestException(TestOutcome.Skipped, reason);
             });
         }
     }

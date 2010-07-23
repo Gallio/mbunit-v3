@@ -304,12 +304,12 @@ namespace MbUnit.Tests.Framework
         }
 
         [Disable, Explicit("Sample")]
-        public abstract class AbstractStaticSample<T>
+        public abstract class AbstractStaticSample
         {
             [StaticTestFactory]
             public static IEnumerable<Test> TestSuite()
             {
-                var methodInfo = typeof(T).GetMethod("SampleMethod");
+                var methodInfo = typeof(ConcreteStaticSample).GetMethod("SampleMethod");
 
                 yield return new TestSuite("SampleSuite")
                 {
@@ -322,7 +322,7 @@ namespace MbUnit.Tests.Framework
         }
 
         [TestFixture, Explicit("Sample")]
-        public class ConcreteStaticSample : AbstractStaticSample<ConcreteStaticSample>
+        public class ConcreteStaticSample : AbstractStaticSample
         {
             public static void SampleMethod()
             {
