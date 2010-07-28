@@ -43,10 +43,10 @@ namespace MbUnit.Framework
     /// [Row(2, "b")]
     /// public class Fixture
     /// {
-    ///     [TestParameter]
+    ///     [Parameter]
     ///     public int Parameter1;
     ///     
-    ///     [TestParameter]
+    ///     [Parameter]
     ///     public string Parameter2 { get; set; }
     /// }
     /// ]]></code>
