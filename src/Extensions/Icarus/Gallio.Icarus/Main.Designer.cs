@@ -88,7 +88,7 @@ namespace Gallio.Icarus
             this.aboutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripProgressBar = new ToolStripProgressBar();
+            this.toolStripProgressBar = new Gallio.UI.ProgressMonitoring.ToolStripProgressBar();
             this.projectToolStrip = new System.Windows.Forms.ToolStrip();
             this.newProjectToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openProjectToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -514,8 +514,8 @@ namespace Gallio.Icarus
             // 
             // toolStripContainer.ContentPanel
             // 
-            this.toolStripContainer.ContentPanel.Controls.Add(this.testsToolStrip);
-            this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1003, 0);
+            this.toolStripContainer.ContentPanel.Controls.Add(this.filesToolStrip);
+            this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1003, 25);
             this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Top;
             this.toolStripContainer.Location = new System.Drawing.Point(0, 24);
             this.toolStripContainer.Name = "toolStripContainer";
@@ -529,7 +529,7 @@ namespace Gallio.Icarus
             this.startButton,
             this.startTestsWithDebuggerButton,
             this.stopButton});
-            this.testsToolStrip.Location = new System.Drawing.Point(329, 0);
+            this.testsToolStrip.Location = new System.Drawing.Point(329, 24);
             this.testsToolStrip.Name = "testsToolStrip";
             this.testsToolStrip.Size = new System.Drawing.Size(168, 25);
             this.testsToolStrip.TabIndex = 12;
@@ -576,7 +576,7 @@ namespace Gallio.Icarus
             this.removeAllFilesToolStripButton,
             this.toolStripSeparator1,
             this.reloadToolbarButton});
-            this.filesToolStrip.Location = new System.Drawing.Point(79, 24);
+            this.filesToolStrip.Location = new System.Drawing.Point(79, 0);
             this.filesToolStrip.Name = "filesToolStrip";
             this.filesToolStrip.Size = new System.Drawing.Size(250, 25);
             this.filesToolStrip.TabIndex = 11;
@@ -619,9 +619,9 @@ namespace Gallio.Icarus
             this.dockPanel.ActiveAutoHideContent = null;
             this.dockPanel.AllowDrop = true;
             this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dockPanel.DockLeftPortion = 0.33;
-            this.dockPanel.DockRightPortion = 0.33;
-            this.dockPanel.DockTopPortion = 0.15;
+            this.dockPanel.DockLeftPortion = 0.33D;
+            this.dockPanel.DockRightPortion = 0.33D;
+            this.dockPanel.DockTopPortion = 0.15D;
             this.dockPanel.Location = new System.Drawing.Point(0, 49);
             this.dockPanel.Name = "dockPanel";
             this.dockPanel.Size = new System.Drawing.Size(1003, 636);
@@ -632,7 +632,7 @@ namespace Gallio.Icarus
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1003, 707);
-            this.Controls.Add(this.filesToolStrip);
+            this.Controls.Add(this.testsToolStrip);
             this.Controls.Add(this.projectToolStrip);
             this.Controls.Add(this.dockPanel);
             this.Controls.Add(this.toolStripContainer);
@@ -643,9 +643,9 @@ namespace Gallio.Icarus
             this.MainMenuStrip = this.menuStrip;
             this.Name = "Main";
             this.Text = "Gallio Icarus {0}.{1}.{2} build {3}";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.Load += new System.EventHandler(this.Form_Load);
             this.SizeChanged += new System.EventHandler(this.Main_SizeChanged);
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.statusStrip.ResumeLayout(false);
