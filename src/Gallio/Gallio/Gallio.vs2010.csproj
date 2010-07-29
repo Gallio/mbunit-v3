@@ -398,7 +398,6 @@
     <Compile Include="Model\Isolation\BaseTestIsolationContext.cs" />
     <Compile Include="Model\Isolation\BaseTestIsolationProvider.cs" />
     <Compile Include="Model\Isolation\Messages\IsolatedTaskFinishedMessage.cs" />
-    <Compile Include="Model\Isolation\Messages\PingMessage.cs" />
     <Compile Include="Model\Isolation\Messages\RunIsolatedTaskMessage.cs" />
     <Compile Include="Model\Isolation\Messages\ShutdownMessage.cs" />
     <Compile Include="Model\Isolation\TestIsolationException.cs" />
