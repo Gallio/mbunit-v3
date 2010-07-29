@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Gallio.Common.Concurrency;
 
 namespace Gallio.AutoCAD.Commands
@@ -23,10 +24,18 @@ namespace Gallio.AutoCAD.Commands
     public interface IAcadCommandRunner
     {
         /// <summary>
-        /// Runs a command in the specified AutoCAD process.
+        /// Begins an asynchronous command in the specified AutoCAD process.
         /// </summary>
         /// <param name="command">The command to run.</param>
         /// <param name="process">The AutoCAD process.</param>
-        void Run(AcadCommand command, IProcess process);
+        /// <param name="completionCallback">A method to be called when the asynchronous command is completed.</param>
+        /// <param name="asyncState">A object that can be used to distinguish this asynchronous command from others.</param>
+        IAsyncResult BeginRun(AcadCommand command, IProcess process, AsyncCallback completionCallback, object asyncState);
+
+        /// <summary>
+        /// Ends an asynchronous command, blocking until the command has completed.
+        /// </summary>
+        /// <param name="result">The pending asynchronous command.</param>
+        void EndRun(IAsyncResult result);
     }
 }

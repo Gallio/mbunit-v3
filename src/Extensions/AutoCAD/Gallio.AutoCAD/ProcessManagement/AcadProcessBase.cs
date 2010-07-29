@@ -38,7 +38,7 @@ namespace Gallio.AutoCAD.ProcessManagement
         private TimeSpan? readyTimeout;
         private readonly IAcadCommandRunner commandRunner;
         private readonly ILogger logger;
-        private Thread activeCommand;
+        private IAsyncResult activeCommand;
 
         /// <summary>
         /// Creates a new <see cref="AcadProcessBase"/> instance.
@@ -71,6 +71,24 @@ namespace Gallio.AutoCAD.ProcessManagement
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {
+            if (disposing)
+            {
+                IAsyncResult result = Interlocked.Exchange(ref activeCommand, null);
+                try
+                {
+                    // We wait on the handle directly instead of using EndCommand() since
+                    // that may rethrow an exception on this thread that occured on the
+                    // command runner's thread. Since we're no longer using the AutoCAD
+                    // process anyway we ignore this exception.
+                    if (result != null)
+                        result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(2.0));
+                }
+                finally
+                {
+                    if (result != null)
+                        result.AsyncWaitHandle.Close();
+                }
+            }
         }
 
         /// <inheritdoc/>
@@ -87,13 +105,15 @@ namespace Gallio.AutoCAD.ProcessManagement
             if (pluginLocation == null)
                 throw new InvalidOperationException("Unable to determine the location of Gallio.AutoCAD.Plugin.dll.");
 
-            NetLoadPlugin(process, pluginLocation);
-            CreateEndpointAndWait(process, ipcPortName, linkId);
+            NetLoadPlugin(pluginLocation, process);
+
+            // Run the create endpoint command asynchronously. This command runs for the duration of the test run.
+            activeCommand = commandRunner.BeginRun(new CreateEndpointAndWaitCommand(ipcPortName, linkId), process, null, null);
         }
 
-        private void NetLoadPlugin(IProcess process, string pluginPath)
+        private void NetLoadPlugin(string pluginLocation, IProcess process)
         {
-            var command = new NetLoadCommand(pluginPath);
+            var command = new NetLoadCommand(pluginLocation);
 
             var stopwatch = Stopwatch.StartNew();
             do
@@ -101,50 +121,18 @@ namespace Gallio.AutoCAD.ProcessManagement
                 if (process.HasExited)
                     throw new InvalidOperationException("Process has exited before assembly could be loaded.");
 
-                commandRunner.Run(command, process);
+                IAsyncResult result = commandRunner.BeginRun(command, process, null, null);
 
-                // Give it some time to perform the Load.
-                Thread.Sleep(ReadyPollInterval);
+                // Run the netload command synchronously. This loads the create endpoint command into AutoCAD.
+                commandRunner.EndRun(result);
+
                 process.Refresh();
-
-                if (process.IsModuleLoaded(pluginPath))
+                if (process.IsModuleLoaded(pluginLocation))
                     return;
 
-            } while (TimeRemaining(stopwatch.Elapsed));
-        }
+            } while (stopwatch.Elapsed < ReadyTimeout);
 
-        private bool TimeRemaining(TimeSpan elapsed)
-        {
-            if (elapsed < ReadyTimeout)
-                return true;
-            
             throw new TimeoutException("Timeout waiting for AutoCAD to load assembly.");
-        }
-
-        private void CreateEndpointAndWait(IProcess process, string ipcPortName, Guid linkId)
-        {
-            var command = new CreateEndpointAndWaitCommand(ipcPortName, linkId);
-
-            // Run this command on a seperate thread since the command runner won't return
-            // until the command has finished executing. The "create endpoint and wait"
-            // command runs for the duration of the test run in order to hold on to the
-            // AutoCAD document thread (fiber).
-            var thread = new Thread(delegate()
-            {
-                try
-                {
-                    activeCommand = Thread.CurrentThread;
-                    commandRunner.Run(command, process);
-                }
-                finally
-                {
-                    activeCommand = null;
-                }
-            });
-            thread.IsBackground = true;
-            thread.Name = command.GlobalName;
-
-            thread.Start();
         }
 
         /// <summary>
@@ -154,18 +142,6 @@ namespace Gallio.AutoCAD.ProcessManagement
         /// <param name="debuggerSetup">The debugger setup or null if the debugger shouldn't be used.</param>
         /// <returns>A <see cref="IProcess"/> instance.</returns>
         protected abstract IProcess StartProcess(DebuggerSetup debuggerSetup);
-
-        /// <summary>
-        /// Blocks until the currently active command completes.
-        /// </summary>
-        public bool WaitForActiveCommand(TimeSpan timeout)
-        {
-            var thread = activeCommand;
-            if (thread != null)
-                return thread.Join(timeout);
-
-            return true;
-        }
 
         /// <summary>
         /// The logger.
