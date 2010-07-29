@@ -217,7 +217,7 @@ namespace Gallio.MSBuildTasks
         /// The default is false.
         /// </para>
         /// </summary>
-        public bool? ShadowCopy
+        public bool ShadowCopy
         {
             private get;
             set;
@@ -231,7 +231,7 @@ namespace Gallio.MSBuildTasks
         /// The default is false.
         /// </para>
         /// </summary>
-        public bool? Debug
+        public bool Debug
         {
             private get;
             set;
@@ -816,9 +816,8 @@ namespace Gallio.MSBuildTasks
                 launcher.TestProject.TestPackage.ApplicationBaseDirectory = new DirectoryInfo(ApplicationBaseDirectory.ItemSpec);
             if (WorkingDirectory != null)
                 launcher.TestProject.TestPackage.WorkingDirectory = new DirectoryInfo(WorkingDirectory.ItemSpec);
-            if (ShadowCopy.HasValue)
-                launcher.TestProject.TestPackage.ShadowCopy = ShadowCopy.Value;
-            if (Debug.HasValue && Debug.Value)
+            launcher.TestProject.TestPackage.ShadowCopy = ShadowCopy;
+            if (Debug)
                 launcher.TestProject.TestPackage.DebuggerSetup = new DebuggerSetup();
             if (RuntimeVersion != null)
                 launcher.TestProject.TestPackage.RuntimeVersion = RuntimeVersion;

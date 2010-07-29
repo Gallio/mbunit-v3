@@ -79,9 +79,7 @@ namespace Gallio.MSBuildTasks.Tests
                 Assert.IsNull(launcher.TestProject.TestPackage.WorkingDirectory);
                 Assert.IsFalse(launcher.TestProject.TestPackage.IsWorkingDirectorySpecified);
                 Assert.IsFalse(launcher.TestProject.TestPackage.ShadowCopy);
-                Assert.IsFalse(launcher.TestProject.TestPackage.IsShadowCopySpecified);
                 Assert.IsNull(launcher.TestProject.TestPackage.DebuggerSetup);
-                Assert.IsFalse(launcher.TestProject.TestPackage.IsDebuggerSetupSpecified);
                 Assert.IsNull(launcher.TestProject.TestPackage.RuntimeVersion);
                 Assert.IsFalse(launcher.TestProject.TestPackage.IsRuntimeVersionSpecified);
                 Assert.AreEqual(new PropertySet(), launcher.TestRunnerOptions.Properties);
