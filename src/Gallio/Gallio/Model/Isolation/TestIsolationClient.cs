@@ -14,8 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics;
-using System.Threading;
 using Gallio.Common.Diagnostics;
 using Gallio.Model.Isolation.Messages;
 using Gallio.Common.Messaging;
@@ -30,7 +28,6 @@ namespace Gallio.Model.Isolation
     public class TestIsolationClient : IDisposable
     {
         private static readonly TimeSpan PollTimeout = TimeSpan.FromSeconds(2);
-        private static readonly TimeSpan PingInterval = TimeSpan.FromSeconds(5);
 
         private readonly BinaryIpcClientChannel clientChannel;
         private readonly BinaryIpcServerChannel serverChannel;
@@ -81,37 +78,21 @@ namespace Gallio.Model.Isolation
             try
             {
                 var link = (IMessageExchangeLink)clientChannel.GetService(typeof(IMessageExchangeLink), TestIsolationServer.GetMessageExchangeLinkServiceName(linkId));
-                using (new Timer(dummy => Ping(link), null, TimeSpan.Zero, PingInterval))
+                for (; ; )
                 {
-                    for (; ; )
-                    {
-                        Message message = link.Receive(PollTimeout);
-                        if (message == null)
-                            continue;
+                    Message message = link.Receive(PollTimeout);
+                    if (message == null)
+                        continue;
 
-                        if (message is ShutdownMessage)
-                            break;
+                    if (message is ShutdownMessage)
+                        break;
 
-                        RunIsolatedTask(link, (RunIsolatedTaskMessage)message);
-                    }
+                    RunIsolatedTask(link, (RunIsolatedTaskMessage)message);
                 }
             }
             catch (Exception ex)
             {
                 UnhandledExceptionPolicy.Report("An exception occurred while processing messages.  Assuming the server is no longer available.", ex);
-            }
-        }
-
-        [DebuggerNonUserCode]
-        private static void Ping(IMessageExchangeLink link)
-        {
-            try
-            {
-                link.Send(new PingMessage());
-            }
-            catch (Exception ex)
-            {
-                UnhandledExceptionPolicy.Report("An exception occurred while sending a ping.  Ignoring it.", ex);
             }
         }
 

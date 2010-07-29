@@ -15,12 +15,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using Gallio.Common.Diagnostics;
 using Gallio.Model.Isolation.Messages;
 using Gallio.Common.Messaging;
-using Gallio.Common.Policies;
 using Gallio.Common.Remoting;
 
 namespace Gallio.Model.Isolation
@@ -31,9 +29,6 @@ namespace Gallio.Model.Isolation
     public class TestIsolationServer : IDisposable
     {
         private const string MessageExchangeLinkServicePrefix = "TestIsolationServer.MessageExchangeLink.";
-
-        private static readonly TimeSpan PollInterval = TimeSpan.FromSeconds(2);
-        private static readonly TimeSpan PingTimeout = TimeSpan.FromSeconds(30);
 
         private readonly BinaryIpcClientChannel clientChannel;
         private readonly BinaryIpcServerChannel serverChannel;
@@ -57,7 +52,6 @@ namespace Gallio.Model.Isolation
             activeTasks = new Dictionary<Guid, IsolatedTaskState>();
 
             MessageConsumer messageConsumer = new MessageConsumer()
-                .Handle<PingMessage>(HandlePingMessage)
                 .Handle<IsolatedTaskFinishedMessage>(HandleIsolatedTaskFinished);
 
             messageExchange = new MessageExchange(messageConsumer);
@@ -142,15 +136,6 @@ namespace Gallio.Model.Isolation
             messageExchange.WaitForPublishedMessagesToBeReceived(timeout);
         }
 
-        private void HandlePingMessage(PingMessage message)
-        {
-            lock (activeTasks)
-            {
-                foreach (var state in activeTasks.Values)
-                    state.Ping();
-            }
-        }
-
         private void HandleIsolatedTaskFinished(IsolatedTaskFinishedMessage message)
         {
             lock (activeTasks)
@@ -163,55 +148,30 @@ namespace Gallio.Model.Isolation
 
         private sealed class IsolatedTaskState
         {
-            private bool isFinished;
             private object result;
             private ExceptionData exception;
 
-            private readonly Stopwatch pingStopwatch;
+            private readonly ManualResetEvent finish;
 
             public IsolatedTaskState()
             {
-                pingStopwatch = Stopwatch.StartNew();
+                finish = new ManualResetEvent(false);
             }
 
             public object WaitForCompletion()
             {
-                lock (this)
-                {
-                    while (!isFinished)
-                    {
-                        TimeSpan elapsed = pingStopwatch.Elapsed;
-                        if (elapsed > PingTimeout)
-                            throw new TestIsolationException(string.Format("Aborting isolated task because the last ping from the client was received {0} seconds ago.", elapsed));
+                finish.WaitOne();
 
-                        Monitor.Wait(this, PollInterval);
-                    }
-
-                    if (exception != null)
-                        throw new TestIsolationException(string.Format("The isolated task thread an exception: {0}", exception));
-                    return result;
-                }
-            }
-
-            public void Ping()
-            {
-                lock (this)
-                {
-                    pingStopwatch.Reset();
-                    pingStopwatch.Start();
-                }
+                if (exception != null)
+                    throw new TestIsolationException(string.Format("The isolated task thread an exception: {0}", exception));
+                return result;
             }
 
             public void Finished(object result, ExceptionData exception)
             {
-                lock (this)
-                {
-                    isFinished = true;
-                    this.result = result;
-                    this.exception = exception;
-
-                    Monitor.PulseAll(this);
-                }
+                this.result = result;
+                this.exception = exception;
+                finish.Set();
             }
         }
     }
