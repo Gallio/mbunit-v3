@@ -25,7 +25,7 @@ using Gallio.NUnitAdapter.TestResources;
 
 namespace Gallio.NUnitAdapter.Tests.Integration
 {
-#if NUNIT253
+#if !NUNIT248
     [TestFixture]
     [RunSample(typeof(FixtureDependentUponSetUpFixture))]
     public class FixtureDependentUponSetUpFixtureTest : BaseTestWithSampleRunner

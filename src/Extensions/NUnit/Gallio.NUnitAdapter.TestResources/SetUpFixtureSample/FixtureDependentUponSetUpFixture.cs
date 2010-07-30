@@ -20,7 +20,7 @@ using NUnit.Framework;
 
 namespace Gallio.NUnitAdapter.TestResources.SetUpFixtureSample
 {
-    [SetUpFixture]
+    [TestFixture]
     public class FixtureDependentUponSetUpFixture
     {
         /// <summary>
