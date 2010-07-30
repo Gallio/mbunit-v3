@@ -25,7 +25,7 @@ using Gallio.NUnitAdapter.TestResources;
 
 namespace Gallio.NUnitAdapter.Tests.Integration
 {
-#if ! NUNIT248 // does not support v2.4.8
+#if NUNIT253
     [TestFixture]
     [RunSample(typeof(FixtureDependentUponSetUpFixture))]
     public class FixtureDependentUponSetUpFixtureTest : BaseTestWithSampleRunner
