@@ -38,6 +38,8 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [Row("DistributionTestFail", "UniformDistributionTest", TestStatus.Failed)]
         [Row("DistributionTestPass", "CollisionProbabilityTest", TestStatus.Passed)]
         [Row("DistributionTestPass", "UniformDistributionTest", TestStatus.Passed)]
+        [Row("NotEnoughInstances", "CollisionProbabilityTest", TestStatus.Failed)]
+        [Row("NotEnoughInstances", "UniformDistributionTest", TestStatus.Failed)]
         public void VerifySampleAccessorContract(string groupName, string testMethodName, TestStatus expectedTestStatus)
         {
             VerifySampleContract(groupName, typeof(SampleTest), testMethodName, expectedTestStatus);
@@ -76,6 +78,12 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
                 CollisionProbabilityLimit = 0.2,
                 UniformDistributionQuality = UniformDistributionQuality.Mediocre,
                 DistinctInstances = GetSampleInstancesFromFrequencies(17, 8, 8, 6, 10, 16, 15, 19)
+            };
+
+            [VerifyContract]
+            public readonly IContract NotEnoughInstances = new HashCodeAcceptanceContract<Sample>
+            {
+                DistinctInstances = GetSampleInstancesFromValues(1)
             };
 
             private static IEnumerable<Sample> GetSampleInstancesFromFrequencies(params int[] frequencies)

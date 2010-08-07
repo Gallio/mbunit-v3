@@ -12,6 +12,7 @@ namespace MbUnit.Framework.ContractVerifiers.Core
     /// </summary>
     public class HashStore
     {
+        private const int minimumHashCount = 2;
         private readonly HashSet<int> one = new HashSet<int>();
         private readonly HashSet<int> two = new HashSet<int>();
         private readonly IDictionary<int, int> more = new Dictionary<int, int>();
@@ -41,6 +42,9 @@ namespace MbUnit.Framework.ContractVerifiers.Core
                 Add(hash);
                 count++;
             }
+
+            if (count < minimumHashCount)
+                throw new NotEnoughHashesException(minimumHashCount, count);
 
             result = CalculateResults(count);
         }

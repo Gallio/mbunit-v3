@@ -191,7 +191,20 @@ namespace MbUnit.Framework.ContractVerifiers
         {
             return new TestCase("CollisionProbabilityTest", () => AssertionHelper.Verify(() =>
             {
-                var result = GetResult();
+                HashStoreResult result;
+                
+                try
+                {
+                    result = GetResult();
+                }
+                catch (NotEnoughHashesException exception)
+                {
+                    return new AssertionFailureBuilder("Not enough hash code samples were provided to the hash code acceptance contract.")
+                        .AddException(exception)
+                        .SetStackTrace(Context.GetStackTraceData())
+                        .ToAssertionFailure();
+                }
+
                 var probability = result.CollisionProbability;
                 TestLog.WriteLine("Statistical Population = {0}", result.StatisticalPopulation);
                 TestLog.WriteLine("Actual Collision Probability = {0} {1} {2}", probability, ((probability <= collisionProbabilityLimit) ? "≤" : ">"), collisionProbabilityLimit);

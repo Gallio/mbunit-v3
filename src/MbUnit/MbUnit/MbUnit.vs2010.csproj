@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\ContractVerifiers\Core\NotEnoughHashesException.cs" />
     <Compile Include="Framework\DisableAttribute.cs" />
     <Compile Include="Framework\AnnotationAttribute.cs" />
     <Compile Include="Framework\ApartmentStateAttribute.cs" />
