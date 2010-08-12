@@ -34,21 +34,21 @@
               codeBase="Gallio.NUnitAdapterLatest.dll"
               qualifyPartialName="true" />
 
-    <assembly fullName="nunit.core, Version=2.5.6.10205, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
+    <assembly fullName="nunit.core, Version=2.5.7.10213, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
               codeBase="nunit.core.dll">
       <bindingRedirects>
         <bindingRedirect oldVersion="2.5.4.0-2.5.65535.65535" />
       </bindingRedirects>
     </assembly>
 
-    <assembly fullName="nunit.core.interfaces, Version=2.5.6.10205, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
+    <assembly fullName="nunit.core.interfaces, Version=2.5.7.10213, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
               codeBase="nunit.core.interfaces.dll">
       <bindingRedirects>
         <bindingRedirect oldVersion="2.5.4.0-2.5.65535.65535" />
       </bindingRedirects>
     </assembly>
 
-    <assembly fullName="nunit.util, Version=2.5.6.10205, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
+    <assembly fullName="nunit.util, Version=2.5.7.10213, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
               codeBase="nunit.util.dll">
       <bindingRedirects>
         <bindingRedirect oldVersion="2.5.4.0-2.5.65535.65535" />
@@ -67,7 +67,7 @@
       <traits>
         <name>NUnit v2.5.4+</name>
         <frameworkAssemblies>nunit.framework, Version=2.5.4.0-2.5.65535.65535</frameworkAssemblies>
-        <version>2.5.6.10205</version>
+        <version>2.5.7.10213</version>
         <fileTypes>Assembly</fileTypes>
         <icon>plugin://Gallio.NUnitAdapterLatest/Resources/NUnit.ico</icon>
       </traits>
