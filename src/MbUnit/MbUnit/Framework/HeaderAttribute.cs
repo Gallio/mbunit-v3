@@ -32,19 +32,23 @@ namespace MbUnit.Framework
     /// </remarks>
     /// <example>
     /// <code><![CDATA[
-    /// [Test]
-    /// [Header("username", "password")]
+    /// [TestFixture]
+    /// [Header("UserName", "Password")]
     /// [Row("jeff", "letmein")]
     /// [Row("liz", "password")]
-    /// public void Test([BindObject] Credentials credentials)
+    /// public class CredentialsTest
     /// {
-    ///     // ...
-    /// }
-    /// 
-    /// public class Credentials
-    /// {
+    ///     [Bind("UserName")]
     ///     public string UserName;
+    /// 
+    ///     [Bind("Password")]
     ///     public string Password;
+    /// 
+    ///     [Test]
+    ///     public void Test()
+    ///     {
+    ///         // ...
+    ///     }
     /// }
     /// ]]></code>
     /// </example>
