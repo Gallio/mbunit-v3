@@ -92,8 +92,11 @@ namespace Gallio.Common.Reflection
             {
                 if (peFormat == PEFormat.PE32Plus)
                     return ProcessorArchitecture.Amd64;
-                if ((corflags & CorFlags.F32BitsRequired) != 0)
+
+                // Issue 704 - If ILOnly is false, we must run x86
+                if ((corflags & CorFlags.F32BitsRequired) != 0 || (corflags & CorFlags.ILOnly) == 0)
                     return ProcessorArchitecture.X86;
+
                 return ProcessorArchitecture.MSIL;
             }
         }
