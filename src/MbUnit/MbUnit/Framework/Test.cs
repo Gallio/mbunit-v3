@@ -94,8 +94,6 @@ namespace MbUnit.Framework
                 throw new ArgumentNullException("declaringCodeElement");
             if (tests == null)
                 throw new ArgumentNullException("tests");
-            if (GenericCollectionUtils.Exists(tests, test => test == null))
-                throw new ArgumentNullException("tests", "Test enumeration should not contain null.");
 
             // HACK: Preserve exact test ordering.  No easy way to decorate all newly created tests at this time
             //       so we assume newly added ones must be at the end.
@@ -103,7 +101,12 @@ namespace MbUnit.Framework
             int originalCount = originalChildren.Count;
 
             foreach (Test test in tests)
+            {
+                if (test == null)
+                    throw new ArgumentNullException("tests", "Test enumeration should not contain null.");
+
                 test.BuildStaticTest(containingScope, declaringCodeElement);
+            }
 
             var children = containingScope.TestBuilder.ToTest().Children;
             for (int i = originalCount; i < children.Count; i++)
