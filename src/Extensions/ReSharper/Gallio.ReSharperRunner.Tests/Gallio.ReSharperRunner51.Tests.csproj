@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8CF2DDC1-824D-47bd-B626-3016F7207EAE}</ProjectGuid>
+    <ProjectGuid>{A268C6C4-5B94-49df-9AC0-FE9F65112A25}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.ReSharperRunner.Tests</RootNamespace>
@@ -299,7 +299,7 @@
       <Name>MbUnit %28MbUnit\MbUnit%29</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gallio.ReSharperRunner\Gallio.ReSharperRunner51.csproj">
-      <Project>{B5C0DE79-312A-475c-B2F9-2FF97DDF4D6D}</Project>
+      <Project>{E836E643-5FB8-4446-8B25-B577E822F0D1}</Project>
       <Name>Gallio.ReSharperRunner50</Name>
     </ProjectReference>
   </ItemGroup>
@@ -315,6 +315,7 @@
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\ReSharper51.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -13,8 +13,8 @@ if not defined MSBUILD_ARGS (
   exit /b 1
 )
 
-if not defined MSBUILD set MSBUILD=%SystemRoot%\Microsoft.Net\Framework\v4.0.30319\MSBuild.exe
-if not defined MSBUILD set MSBUILD=%SystemRoot%\Microsoft.Net\Framework\v3.5\MSBuild.exe
+call :FIND_MSBUILD %SystemRoot%\Microsoft.Net\Framework\v4.0.30319\MSBuild.exe
+call :FIND_MSBUILD %SystemRoot%\Microsoft.Net\Framework\v3.5\MSBuild.exe
 if not defined MSBUILD (
   echo Could not find path to MSBuild.exe.
   exit /b 1
@@ -41,4 +41,10 @@ for /F "tokens=*" %%V in ('echo %%%~1%%') do set SANITIZE_TEMP=%%~dpnxV
 if "%SANITIZE_TEMP:~-1%"=="\" set SANITIZE_TEMP=%SANITIZE_TEMP:~0,-1%
 set %~1=%SANITIZE_TEMP%
 set SANITIZE_TEMP=
+exit /b 0
+
+
+:FIND_MSBUILD
+if defined MSBUILD exit /b 0
+if exist "%~1" set MSBUILD=%~1
 exit /b 0

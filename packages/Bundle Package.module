@@ -133,9 +133,11 @@
       <Inherit>true</Inherit>
     </Module>
 	
+    <!--
 	<Module Include="$(SourceDir)\Archimedes\Archimedes.module">
       <Inherit>true</Inherit>
 	</Module>
+    -->
 	
 	<Module Include="$(SourceDir)\SDK\SDK.module">
       <Inherit>true</Inherit>
