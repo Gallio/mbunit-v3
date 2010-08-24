@@ -68,8 +68,6 @@ namespace Gallio.Icarus
 
         internal Main(IApplicationController applicationController)
         {
-            InitializeComponent();
-
             this.applicationController = applicationController;
 
             testController = RuntimeAccessor.ServiceLocator.Resolve<ITestController>();
@@ -122,6 +120,10 @@ namespace Gallio.Icarus
             filtersWindow = new FiltersWindow(filterController, projectController);
             executionLogWindow = new ExecutionLogWindow(executionLogController);
             annotationsWindow = new AnnotationsWindow(annotationsController, sourceCodeController);
+
+            // moved this below the service locator calls as the optionsController was being used _before_ it was initialised :(
+            // TODO: remove as many dependencies from the shell as possible
+            InitializeComponent();
 
             SetupReportMenus();
 
