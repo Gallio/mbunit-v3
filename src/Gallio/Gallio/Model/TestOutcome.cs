@@ -135,7 +135,8 @@ namespace Gallio.Model
         /// <seealso cref="TestStatus"/> for test status severity ranking information.
         public TestOutcome CombineWith(TestOutcome other)
         {
-            if (other.status > status)
+            // NOTE: If the statuses are equal, but the other status has a Category and this one doesn't, then we must use the other to avoid losing it's Category (http://code.google.com/p/mb-unit/issues/detail?id=715)
+            if ((other.status > status) || ((other.status == status) && (category == null) && (other.Category != null)))
                 return other;
             return this;
         }

@@ -74,6 +74,34 @@ namespace Gallio.Tests.Model
         }
 
         [Test]
+        [Row(false, null, null)]
+        [Row(false, "same", "same")]
+        [Row(false, "current", "other")]
+        [Row(false, "current", null)]
+        [Row(true, null, "other")]
+        [Row(true, null, "passed")]
+        [Row(true, null, "failed")]
+        [Row(true, null, "ignored")]
+        [Row(true, null, "error")]
+        [Row(false, "passed", "passed")]
+        [Row(false, "failed", "passed")]
+        [Row(false, "ignored", "passed")]
+        [Row(false, "error", "passed")]
+        [Row(false, "passed", "failed")]
+        [Row(false, "failed", "failed")]
+        [Row(false, "ignored", "failed")]
+        [Row(false, "error", "failed")]
+        public void CombineWithChoosesOutcomeBasedOnCategoryWhenSameSeverity(bool expectCurrentCategoryToChange, 
+            string currentCategory, string otherCategory, [EnumData(typeof(TestStatus))] TestStatus status)
+        {
+            var expected = new TestOutcome(status, expectCurrentCategoryToChange ? otherCategory : currentCategory);
+            var current = new TestOutcome(status, currentCategory);
+            var other = new TestOutcome(status, otherCategory);
+            var combined = current.CombineWith(other);
+            Assert.AreEqual(expected, combined);
+        }
+        
+        [Test]
         public void GeneralizeOmitsCategory()
         {
             Assert.AreEqual(TestOutcome.Failed, TestOutcome.Failed.Generalize());
