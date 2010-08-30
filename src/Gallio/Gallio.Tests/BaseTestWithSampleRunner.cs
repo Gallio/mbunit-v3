@@ -102,7 +102,11 @@ namespace Gallio.Tests
 
         protected static void AssertLogContains(TestStepRun run, string expectedOutput, string streamName)
         {
-            Assert.Contains(run.TestLog.GetStream(streamName).ToString(), expectedOutput);
+            if (run == null)
+                throw new ArgumentNullException("run");
+
+            StructuredStream stream = run.TestLog.GetStream(streamName);
+            Assert.Contains((stream == null) ? String.Empty : stream.ToString(), expectedOutput);
         }
 
         protected static void AssertLogDoesNotContain(TestStepRun run, string expectedOutput)
@@ -112,7 +116,11 @@ namespace Gallio.Tests
 
         protected static void AssertLogDoesNotContain(TestStepRun run, string expectedOutput, string streamName)
         {
-            Assert.DoesNotContain(run.TestLog.GetStream(streamName).ToString(), expectedOutput);
+            if (run == null)
+                throw new ArgumentNullException("run");
+
+            StructuredStream stream = run.TestLog.GetStream(streamName);
+            Assert.DoesNotContain((stream == null) ? String.Empty : stream.ToString(), expectedOutput);
         }
     }
 }
