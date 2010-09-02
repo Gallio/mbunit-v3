@@ -94,23 +94,23 @@ namespace Gallio.Icarus
             this.saveProjectToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-            this.testsToolStrip = new System.Windows.Forms.ToolStrip();
-            this.startButton = new System.Windows.Forms.ToolStripButton();
-            this.startTestsWithDebuggerButton = new System.Windows.Forms.ToolStripButton();
-            this.stopButton = new System.Windows.Forms.ToolStripButton();
             this.filesToolStrip = new System.Windows.Forms.ToolStrip();
             this.addFilesToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.removeAllFilesToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.reloadToolbarButton = new System.Windows.Forms.ToolStripButton();
+            this.testsToolStrip = new System.Windows.Forms.ToolStrip();
+            this.startButton = new System.Windows.Forms.ToolStripButton();
+            this.startTestsWithDebuggerButton = new System.Windows.Forms.ToolStripButton();
+            this.stopButton = new System.Windows.Forms.ToolStripButton();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.projectToolStrip.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer.SuspendLayout();
-            this.testsToolStrip.SuspendLayout();
             this.filesToolStrip.SuspendLayout();
+            this.testsToolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -463,7 +463,7 @@ namespace Gallio.Icarus
             this.newProjectToolStripButton,
             this.openProjectToolStripButton,
             this.saveProjectToolStripButton});
-            this.projectToolStrip.Location = new System.Drawing.Point(3, 25);
+            this.projectToolStrip.Location = new System.Drawing.Point(3, 0);
             this.projectToolStrip.Name = "projectToolStrip";
             this.projectToolStrip.Size = new System.Drawing.Size(79, 25);
             this.projectToolStrip.TabIndex = 3;
@@ -507,7 +507,7 @@ namespace Gallio.Icarus
             // toolStripContainer.ContentPanel
             // 
             this.toolStripContainer.ContentPanel.Controls.Add(this.dockPanel);
-            this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1003, 611);
+            this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1003, 636);
             this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer.Location = new System.Drawing.Point(0, 24);
             this.toolStripContainer.Name = "toolStripContainer";
@@ -516,9 +516,9 @@ namespace Gallio.Icarus
             // 
             // toolStripContainer.TopToolStripPanel
             // 
+            this.toolStripContainer.TopToolStripPanel.Controls.Add(this.testsToolStrip);
             this.toolStripContainer.TopToolStripPanel.Controls.Add(this.projectToolStrip);
             this.toolStripContainer.TopToolStripPanel.Controls.Add(this.filesToolStrip);
-            this.toolStripContainer.TopToolStripPanel.Controls.Add(this.testsToolStrip);
             // 
             // dockPanel
             // 
@@ -531,54 +531,8 @@ namespace Gallio.Icarus
             this.dockPanel.DocumentStyle = WeifenLuo.WinFormsUI.Docking.DocumentStyle.DockingWindow;
             this.dockPanel.Location = new System.Drawing.Point(0, 0);
             this.dockPanel.Name = "dockPanel";
-            this.dockPanel.Size = new System.Drawing.Size(1003, 611);
+            this.dockPanel.Size = new System.Drawing.Size(1003, 636);
             this.dockPanel.TabIndex = 8;
-            // 
-            // testsToolStrip
-            // 
-            this.testsToolStrip.Dock = System.Windows.Forms.DockStyle.None;
-            this.testsToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.startButton,
-            this.startTestsWithDebuggerButton,
-            this.stopButton});
-            this.testsToolStrip.Location = new System.Drawing.Point(3, 0);
-            this.testsToolStrip.Name = "testsToolStrip";
-            this.testsToolStrip.Size = new System.Drawing.Size(168, 25);
-            this.testsToolStrip.TabIndex = 12;
-            this.testsToolStrip.Text = "Tests";
-            // 
-            // startButton
-            // 
-            this.startButton.Enabled = false;
-            this.startButton.Image = ((System.Drawing.Image)(resources.GetObject("startButton.Image")));
-            this.startButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(51, 22);
-            this.startButton.Text = "Start";
-            this.startButton.ToolTipText = "Start Tests";
-            this.startButton.Click += new System.EventHandler(this.startButton_Click);
-            // 
-            // startTestsWithDebuggerButton
-            // 
-            this.startTestsWithDebuggerButton.Enabled = false;
-            this.startTestsWithDebuggerButton.Image = ((System.Drawing.Image)(resources.GetObject("startTestsWithDebuggerButton.Image")));
-            this.startTestsWithDebuggerButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.startTestsWithDebuggerButton.Name = "startTestsWithDebuggerButton";
-            this.startTestsWithDebuggerButton.Size = new System.Drawing.Size(58, 22);
-            this.startTestsWithDebuggerButton.Text = "Debug";
-            this.startTestsWithDebuggerButton.ToolTipText = "Start Tests With Debugger";
-            this.startTestsWithDebuggerButton.Click += new System.EventHandler(this.startWithDebuggerToolStripMenuItem_Click);
-            // 
-            // stopButton
-            // 
-            this.stopButton.Enabled = false;
-            this.stopButton.Image = ((System.Drawing.Image)(resources.GetObject("stopButton.Image")));
-            this.stopButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.stopButton.Name = "stopButton";
-            this.stopButton.Size = new System.Drawing.Size(49, 22);
-            this.stopButton.Text = "Stop";
-            this.stopButton.ToolTipText = "Stop Tests";
-            this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
             // 
             // filesToolStrip
             // 
@@ -588,7 +542,7 @@ namespace Gallio.Icarus
             this.removeAllFilesToolStripButton,
             this.toolStripSeparator1,
             this.reloadToolbarButton});
-            this.filesToolStrip.Location = new System.Drawing.Point(82, 25);
+            this.filesToolStrip.Location = new System.Drawing.Point(82, 0);
             this.filesToolStrip.Name = "filesToolStrip";
             this.filesToolStrip.Size = new System.Drawing.Size(250, 25);
             this.filesToolStrip.TabIndex = 11;
@@ -626,6 +580,52 @@ namespace Gallio.Icarus
             this.reloadToolbarButton.Text = "Reload";
             this.reloadToolbarButton.Click += new System.EventHandler(this.reloadToolbarButton_Click);
             // 
+            // testsToolStrip
+            // 
+            this.testsToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.testsToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.startButton,
+            this.startTestsWithDebuggerButton,
+            this.stopButton});
+            this.testsToolStrip.Location = new System.Drawing.Point(335, 0);
+            this.testsToolStrip.Name = "testsToolStrip";
+            this.testsToolStrip.Size = new System.Drawing.Size(199, 25);
+            this.testsToolStrip.TabIndex = 12;
+            this.testsToolStrip.Text = "Tests";
+            // 
+            // startButton
+            // 
+            this.startButton.Enabled = false;
+            this.startButton.Image = ((System.Drawing.Image)(resources.GetObject("startButton.Image")));
+            this.startButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.startButton.Name = "startButton";
+            this.startButton.Size = new System.Drawing.Size(51, 22);
+            this.startButton.Text = "Start";
+            this.startButton.ToolTipText = "Start Tests";
+            this.startButton.Click += new System.EventHandler(this.startButton_Click);
+            // 
+            // startTestsWithDebuggerButton
+            // 
+            this.startTestsWithDebuggerButton.Enabled = false;
+            this.startTestsWithDebuggerButton.Image = ((System.Drawing.Image)(resources.GetObject("startTestsWithDebuggerButton.Image")));
+            this.startTestsWithDebuggerButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.startTestsWithDebuggerButton.Name = "startTestsWithDebuggerButton";
+            this.startTestsWithDebuggerButton.Size = new System.Drawing.Size(58, 22);
+            this.startTestsWithDebuggerButton.Text = "Debug";
+            this.startTestsWithDebuggerButton.ToolTipText = "Start Tests With Debugger";
+            this.startTestsWithDebuggerButton.Click += new System.EventHandler(this.startWithDebuggerToolStripMenuItem_Click);
+            // 
+            // stopButton
+            // 
+            this.stopButton.Enabled = false;
+            this.stopButton.Image = ((System.Drawing.Image)(resources.GetObject("stopButton.Image")));
+            this.stopButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stopButton.Name = "stopButton";
+            this.stopButton.Size = new System.Drawing.Size(49, 22);
+            this.stopButton.Text = "Stop";
+            this.stopButton.ToolTipText = "Stop Tests";
+            this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -653,10 +653,10 @@ namespace Gallio.Icarus
             this.toolStripContainer.TopToolStripPanel.PerformLayout();
             this.toolStripContainer.ResumeLayout(false);
             this.toolStripContainer.PerformLayout();
-            this.testsToolStrip.ResumeLayout(false);
-            this.testsToolStrip.PerformLayout();
             this.filesToolStrip.ResumeLayout(false);
             this.filesToolStrip.PerformLayout();
+            this.testsToolStrip.ResumeLayout(false);
+            this.testsToolStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

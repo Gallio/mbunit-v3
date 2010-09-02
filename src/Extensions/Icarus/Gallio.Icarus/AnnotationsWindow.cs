@@ -15,7 +15,6 @@
 
 using System;
 using System.Windows.Forms;
-using Gallio.Common.Concurrency;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Schema;
@@ -35,7 +34,7 @@ namespace Gallio.Icarus
             
             InitializeComponent();
 
-            annotationsController.Annotations.ListChanged += (sender, e) => Sync.Invoke(this, PopulateListView);
+            annotationsController.Annotations.ListChanged += (sender, e) => BeginInvoke((MethodInvoker) PopulateListView);
 
             showErrorsToolStripButton.DataBindings.Add("Checked", annotationsController, "ShowErrors", false, 
                 DataSourceUpdateMode.OnPropertyChanged);

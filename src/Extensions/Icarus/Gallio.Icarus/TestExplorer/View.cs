@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using Gallio.Common.Concurrency;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Icarus.Utilities;
@@ -240,7 +239,7 @@ namespace Gallio.Icarus.TestExplorer
 
         private void testTree_SelectionChanged(object sender, EventArgs e)
         {
-            Sync.Invoke(this, TreeSelectionChanged);
+            BeginInvoke((MethodInvoker)TreeSelectionChanged);
         }
 
         private void TreeSelectionChanged()

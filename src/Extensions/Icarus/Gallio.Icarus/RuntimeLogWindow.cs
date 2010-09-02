@@ -16,7 +16,6 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Gallio.Common.Concurrency;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runtime.Logging;
 
@@ -40,7 +39,7 @@ namespace Gallio.Icarus
 
         void runtimeLogController_LogMessage(object sender, Controllers.EventArgs.RuntimeLogEventArgs e)
         {
-            Sync.Invoke(this, () => AppendTextLine(e.Message, e.Color));
+            BeginInvoke((MethodInvoker)(() => AppendTextLine(e.Message, e.Color)));
         }
 
         private void AppendTextLine(string text, Color color)
@@ -51,9 +50,9 @@ namespace Gallio.Icarus
 
         private void AppendText(string text, Color color)
         {
-            int start = logBody.TextLength;
+            var start = logBody.TextLength;
             logBody.AppendText(text);
-            int end = logBody.TextLength;
+            var end = logBody.TextLength;
            
             // Textbox may transform chars, so (end-start) != text.Length
             logBody.Select(start, end - start);

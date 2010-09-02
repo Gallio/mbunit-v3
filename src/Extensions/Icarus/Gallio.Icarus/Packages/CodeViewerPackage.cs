@@ -15,10 +15,10 @@
 
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 using Gallio.Common.Reflection;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Views.CodeViewer;
-using Gallio.Common.Concurrency;
 using Gallio.Icarus.WindowManager;
 
 namespace Gallio.Icarus.Packages
@@ -44,7 +44,7 @@ namespace Gallio.Icarus.Packages
 
         private void ShowSourceCode(CodeLocation codeLocation)
         {
-            string identifier = codeLocation.Path ?? "(unknown)";
+            var identifier = codeLocation.Path ?? "(unknown)";
 
             if (WindowIsOpen(codeLocation))
             {
@@ -58,12 +58,12 @@ namespace Gallio.Icarus.Packages
 
         private bool WindowIsOpen(CodeLocation codeLocation)
         {
-            return !openWindows.Contains(codeLocation.Path);
+            return openWindows.Contains(codeLocation.Path) == false;
         }
 
         private void ActivateWindow(CodeLocation codeLocation, string identifier)
         {
-            Sync.Invoke(windowManager, () =>
+            windowManager.BeginInvoke((MethodInvoker) delegate
             {
                 var window = windowManager.Get(identifier);
                 var codeViewer = (CodeViewer)window.Content;
@@ -74,7 +74,7 @@ namespace Gallio.Icarus.Packages
                 }
 
                 windowManager.Show(identifier);
-            });
+            }, new object[0]);
         }
 
         private void AddWindow(CodeLocation codeLocation, string identifier)
@@ -90,8 +90,8 @@ namespace Gallio.Icarus.Packages
                     ?? "(unknown)";
             }
 
-            Sync.Invoke(windowManager, () => CreateWindow(codeLocation, 
-                identifier, caption));
+            windowManager.BeginInvoke((MethodInvoker) (() => CreateWindow(codeLocation, 
+                identifier, caption)), new object[0]);
         }
 
         private void CreateWindow(CodeLocation codeLocation, string identifier, 

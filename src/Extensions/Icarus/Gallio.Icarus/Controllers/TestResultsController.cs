@@ -42,7 +42,7 @@ namespace Gallio.Icarus.Controllers
         private int firstItem;
         private int lastItem;
         private int index;
-        private const int NO_IMAGE = -1;
+        private const int NoImage = -1;
         private IList<TestTreeNode> selectedTests = new List<TestTreeNode>();
         private readonly TestStepComparer testStepComparer = new TestStepComparer();
 
@@ -160,7 +160,7 @@ namespace Gallio.Icarus.Controllers
 
         private static ListViewItem EmptyListViewItem()
         {
-            var listViewItem = new ListViewItem("", NO_IMAGE);
+            var listViewItem = new ListViewItem("", NoImage);
             listViewItem.SubItems.AddRange(new[] { "", "", "", "", "" });
             return listViewItem;
         }
@@ -188,7 +188,9 @@ namespace Gallio.Icarus.Controllers
             if (index > lastItem && testStepComparer.SortColumn == TestStepComparer.NO_SORT)
                 return;
 
-            foreach (var tsr in node.TestStepRuns)
+            var testStepRuns = new List<TestStepRun>(node.TestStepRuns);
+
+            foreach (var tsr in testStepRuns)
                 AddTestStepRun(node.TestKind, tsr, indentCount);
 
             if (!(node is NamespaceNode) && testStepComparer.SortColumn == TestStepComparer.NO_SORT)
@@ -217,7 +219,7 @@ namespace Gallio.Icarus.Controllers
 
         private static int GetImageIndex(TestStatus testStatus)
         {
-            var imgIndex = NO_IMAGE;
+            var imgIndex = NoImage;
             switch (testStatus)
             {
                 case TestStatus.Failed:

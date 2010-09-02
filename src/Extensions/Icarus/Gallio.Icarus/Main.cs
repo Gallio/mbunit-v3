@@ -20,7 +20,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using Gallio.Common.Concurrency;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
@@ -71,26 +70,26 @@ namespace Gallio.Icarus
             this.applicationController = applicationController;
 
             testController = RuntimeAccessor.ServiceLocator.Resolve<ITestController>();
-            applicationController.RunStarted += (sender, e) => Sync.Invoke(this, delegate
+            applicationController.RunStarted += (sender, e) => BeginInvoke((MethodInvoker) delegate
             {
                 // enable/disable buttons
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = false;
                 startTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = false;
                 stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = true;
             });
-            applicationController.RunFinished += (sender, e) => Sync.Invoke(this, delegate
+            applicationController.RunFinished += (sender, e) => BeginInvoke((MethodInvoker) delegate
             {
                 // enable/disable buttons & menu items appropriately
                 stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
                 startTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
             });
-            applicationController.ExploreFinished += (sender, e) => Sync.Invoke(this, delegate
+            applicationController.ExploreFinished += (sender, e) => BeginInvoke((MethodInvoker) delegate
             {
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
                 startTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
             });
-            applicationController.TestsFailed += (s, e) => Sync.Invoke(this, Activate);
+            applicationController.TestsFailed += (s, e) => BeginInvoke((MethodInvoker) Activate);
 
             projectController = RuntimeAccessor.ServiceLocator.Resolve<IProjectController>();
 
@@ -156,8 +155,8 @@ namespace Gallio.Icarus
             {
                 toolStripProgressBar.CompletedWork = progressController.CompletedWork;
             };
-            progressController.DisplayProgressDialog += (s, e) => Sync.Invoke(this, () =>
-                new ProgressMonitorDialog(e.ProgressMonitor).Show(this));
+            progressController.DisplayProgressDialog += (s, e) => BeginInvoke((MethodInvoker) (() => 
+                new ProgressMonitorDialog(e.ProgressMonitor).Show(this)));
 
             commandFactory = RuntimeAccessor.ServiceLocator.Resolve<ICommandFactory>();
             testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
@@ -463,15 +462,14 @@ namespace Gallio.Icarus
 
         private void showWindowToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ToolStripMenuItem item = (ToolStripMenuItem)sender;
+            var item = (ToolStripMenuItem)sender;
             ShowWindow(item.Name);
         }
 
         private void ShowWindow(string window)
         {
-            Sync.Invoke(this, delegate
+            BeginInvoke((MethodInvoker)delegate
             {
-                // TODO: is there a better way to do this, rather than relying on the menu item?
                 switch (window)
                 {
                     case "testResultsToolStripMenuItem":

@@ -36,8 +36,9 @@ namespace Gallio.Icarus.Commands
         public void Execute(IProgressMonitor progressMonitor)
         {
             var testFilters = projectController.TestFilters.Value;
+            var totalWorkUnits = testFilters.Count > 0 ? testFilters.Count : 1;
 
-            using (progressMonitor.BeginTask("Restoring test filter", testFilters.Count))
+            using (progressMonitor.BeginTask("Restoring test filter", totalWorkUnits))
             {
                 foreach (var filterInfo in testFilters)
                 {
