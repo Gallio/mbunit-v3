@@ -1,0 +1,19 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(RootDir)\bin\Module.targets" />
+
+  <ItemGroup>
+    <File Include="Gallio.Testing.BaseTestWithSampleRunner.cs">
+      <ImagePath>sdk\Testing</ImagePath>
+    </File>
+    <File Include="Example.cs">
+      <ImagePath>sdk\Testing</ImagePath>
+    </File>
+    <File Include="Gallio.Testing.RunSampleAttribute.cs">
+      <ImagePath>sdk\Testing</ImagePath>
+    </File>
+    <File Include="Gallio.Testing.RunSampleFileAttribute.cs">
+      <ImagePath>sdk\Testing</ImagePath>
+    </File>
+	
+  </ItemGroup>
+</Project>

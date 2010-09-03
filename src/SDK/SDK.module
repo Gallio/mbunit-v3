@@ -8,6 +8,10 @@
 	  <Inherit>true</Inherit>
 	</Module>
   
+	<Module Include="Testing\Testing.module">
+	  <Inherit>true</Inherit>
+	</Module>
+  
     <File Include="Readme.txt">
 	  <ImagePath>sdk</ImagePath>
 	</File>

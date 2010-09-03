@@ -21,6 +21,15 @@
 					<File Name="Gallio.Loader.VersionPolicy.cs" />
 				</Component>
 			</Directory>
+
+			<Directory Id="SDK.Testing" Name="Testing">
+				<Component Id="SDK.Testing" Guid="{A05C2AA8-FF87-44C7-919B-D270FF30DD6C}" Win64="$(var.Win64Binary)">
+					<File Name="Gallio.Testing.BaseTestWithSampleRunner.cs" KeyPath="yes" />
+					<File Name="Example.cs" />
+					<File Name="Gallio.Testing.RunSampleAttribute.cs" />
+					<File Name="Gallio.Testing.RunSampleFileAttribute.cs" />
+				</Component>
+			</Directory>
         </DirectoryRef>
 
         <Feature Id="feat_SDK" Title="Gallio SDK" Level="1" Display="20" AllowAdvertise="no"
@@ -28,6 +37,7 @@
             <ComponentRef Id='SDK.Readme'/>
             <ComponentRef Id='SDK.ReportSchema'/>
             <ComponentRef Id='SDK.Loader'/>
+            <ComponentRef Id='SDK.Testing'/>
         </Feature>
     </Fragment>
 <?endif?>
