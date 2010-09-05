@@ -66,9 +66,10 @@ namespace MbUnit.Framework
     /// {
     ///     foreach (string searchTerm in File.ReadAllLines("SearchTerms.txt"))
     ///     {
-    ///         yield return new TestCase("Search Term: " + searchTerm, () => {
+	///			var copySearchTerm = searchTerm; // Local copy for the closure.
+    ///         yield return new TestCase("Search Term: " + copySearchTerm, () => {
     ///             var searchEngine = new SearchEngine();
-    ///             Assert.IsNotEmpty(searchEngine.GetSearchResults(searchTerm));
+    ///             Assert.IsNotEmpty(searchEngine.GetSearchResults(copySearchTerm));
     ///         });
     ///     }
     /// }
