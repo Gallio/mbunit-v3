@@ -72,6 +72,27 @@ namespace Gallio.Runtime
                 }
             }
 
+            if (string.Compare("framework", @namespace, StringComparison.InvariantCultureIgnoreCase) == 0)
+            {
+                switch (identifier.ToUpperInvariant())
+                {
+                    case "NET40":
+                        return DotNetFrameworkSupport.FrameworkVersion == DotNetFrameworkVersion.DotNet40;
+
+                    case "NET35":
+                        return DotNetFrameworkSupport.FrameworkVersion == DotNetFrameworkVersion.DotNet35;
+
+                    case "NET30":
+                        return DotNetFrameworkSupport.FrameworkVersion == DotNetFrameworkVersion.DotNet30;
+
+                    case "NET20":
+                        return DotNetFrameworkSupport.FrameworkVersion == DotNetFrameworkVersion.DotNet20;
+
+                    default:
+                        return false;
+                }
+            }
+
             if (string.Compare("process", @namespace, StringComparison.InvariantCultureIgnoreCase) == 0)
             {
                 ProcessModule module = Process.GetCurrentProcess().MainModule;
