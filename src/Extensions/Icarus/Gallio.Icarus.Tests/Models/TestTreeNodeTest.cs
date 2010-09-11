@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Windows.Forms;
 using Gallio.Icarus.Models;
 using Gallio.Model;
 using MbUnit.Framework;
@@ -33,6 +34,39 @@ namespace Gallio.Icarus.Tests.Models
             child1.TestStatus = TestStatus.Passed;
 
             Assert.AreEqual(TestStatus.Passed, parent.TestStatus);
+        }
+
+        [Test]
+        public void Filtering_node()
+        {
+            var node = new TestTreeNode("id", "text");
+
+            node.IsFiltered = true;
+
+            Assert.IsTrue(node.IsFiltered);
+        }
+
+        [Test]
+        public void Node_should_be_unchecked_when_filtered()
+        {
+            var node = new TestTreeNode("id", "text");
+
+            node.IsFiltered = true;
+
+            Assert.AreEqual(CheckState.Unchecked, node.CheckState);
+        }
+
+        [Test]
+        public void Node_check_status_should_be_unchanged_when_unfiltered()
+        {
+            var node = new TestTreeNode("id", "text")
+            {
+                CheckState = CheckState.Checked
+            };
+
+            node.IsFiltered = false;
+
+            Assert.AreEqual(CheckState.Checked, node.CheckState);
         }
     }
 }

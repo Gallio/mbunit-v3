@@ -56,7 +56,9 @@ namespace Gallio.Icarus.Models
             set
             {
                 isFiltered = value;
-                CheckState = CheckState.Unchecked;
+                
+                if (isFiltered)
+                    CheckState = CheckState.Unchecked;
             }
         }
 
