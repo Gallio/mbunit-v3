@@ -26,8 +26,6 @@ namespace Gallio.Framework.Data.Generation
     /// </summary>
     public class RandomStockStringGenerator : RandomStringGenerator
     {
-        private readonly static Random InnerGenerator = new Random();
-
         /// <summary>
         /// Gets or sets the predefined string values.
         /// </summary>
@@ -45,14 +43,14 @@ namespace Gallio.Framework.Data.Generation
         }
 
         /// <inheritdoc/>
-        public override IEnumerable Run()
+        protected override void Verify()
         {
+            base.Verify();
+
             if (Values == null)
                 throw new GenerationException("The 'Values' property must be initialized.");
             if (Values.Length == 0)
                 throw new GenerationException("The 'Values' property must contain at least one element.");
-
-            return base.Run();
         }
 
         /// <inheritdoc/>

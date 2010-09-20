@@ -22,7 +22,7 @@ namespace Gallio.Framework.Data.Generation
     /// <summary>
     /// Generator of random <see cref="double"/> values within a given range.
     /// </summary>
-    public class RandomDoubleGenerator : RandomGenerator<double>
+    public class RandomDoubleGenerator : RandomRangeGenerator<double>
     {
         /// <summary>
         /// Constructs a generator of random <see cref="double"/> numbers.

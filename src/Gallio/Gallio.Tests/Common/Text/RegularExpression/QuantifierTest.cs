@@ -82,12 +82,13 @@ namespace Gallio.Tests.Common.Text.RegularExpression
         public void GetRandomQuantity(int minimum, int maximum)
         {
             var quantifier = new Quantifier(minimum, maximum);
+            var random = new Random();
+
             Assert.Multiple(() =>
             {
-
                 for (int i = 0; i < 100; i++)
                 {
-                    var actual = quantifier.GetRandomRepeat();
+                    var actual = quantifier.GetRandomRepeat(random);
                     Assert.Between(actual, minimum, maximum);
                 }
             });

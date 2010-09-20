@@ -175,7 +175,6 @@ namespace MbUnit.Framework
 
             if (Pattern == null && stock == null)
                 throw new PatternUsageErrorException("You must specify how to generate random strings by setting either 'Pattern' or 'Stock' appropriately.");
-
             if (!String.IsNullOrEmpty(Pattern) && stock.HasValue)
                 throw new PatternUsageErrorException("You must specify how to generate random strings by setting either 'Pattern' or 'Stock' exclusively.");
 
@@ -187,18 +186,18 @@ namespace MbUnit.Framework
                     {
                         Values = RandomStringStockInfo.FromStock(stock.Value).GetItems(),
                         Count = count,
-                        Filter = invoker
+                        Filter = invoker,
+                        Seed = Seed,
                     };
                 }
-                else
+                
+                return new RandomRegexLiteStringGenerator
                 {
-                    return new RandomRegexLiteStringGenerator
-                    {
-                        RegularExpressionPattern = Pattern,
-                        Count = count,
-                        Filter = invoker
-                    };
-                }
+                    RegularExpressionPattern = Pattern,
+                    Count = count,
+                    Filter = invoker,
+                    Seed = Seed,
+                };
             }
             catch (GenerationException exception)
             {

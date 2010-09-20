@@ -27,7 +27,8 @@ namespace Gallio.Common.Text.RegularExpression
         /// <summary>
         /// Returns a random string that matches the regular expression element.
         /// </summary>
+        /// <param name="random">A random number generator.</param>
         /// <returns>A random string.</returns>
-        string GetRandomString();
+        string GetRandomString(Random random);
     }
 }

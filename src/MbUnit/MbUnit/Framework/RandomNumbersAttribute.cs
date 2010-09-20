@@ -22,6 +22,8 @@ using System.Collections;
 using System.Text;
 using Gallio.Framework;
 using Gallio.Common;
+using Gallio.Model;
+using Gallio.Model.Tree;
 
 namespace MbUnit.Framework
 {
@@ -53,6 +55,7 @@ namespace MbUnit.Framework
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
     public class RandomNumbersAttribute : GenerationDataAttribute
     {
+        private RandomDecimalGenerator generator;
         private double? minimum = null;
         private double? maximum = null;
         private int? count = null;
@@ -148,25 +151,46 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
+        public override void Process(IPatternScope scope, ICodeElementInfo codeElement)
+        {
+            base.Process(scope, codeElement);
+
+            // Display the actual seed applied to the random number generator as an annotation.
+            GetGeneratorImpl(scope);
+            string message = String.Format("Random Number Generator Seed = {0}", generator.Seed);
+            scope.TestModelBuilder.AddAnnotation(new Annotation(AnnotationType.Info, codeElement, message));
+        }
+
+        private RandomDecimalGenerator GetGeneratorImpl(IPatternScope scope)
+        {
+            if (generator == null)
+            {
+                var invoker = MakeFilterInvoker(scope);
+
+                try
+                {
+                    return generator = new RandomDecimalGenerator
+                    {
+                        Minimum = (decimal?)minimum,
+                        Maximum = (decimal?)maximum,
+                        Count = count,
+                        Filter = invoker,
+                        Seed = seed
+                    };
+                }
+                catch (GenerationException exception)
+                {
+                    throw new PatternUsageErrorException(String.Format("The random numbers generator was incorrectly initialized ({0}).", exception.Message), exception);
+                }
+            }
+
+            return generator;
+        }
+
+        /// <inheritdoc />
         protected override IGenerator GetGenerator(IPatternScope scope)
         {
-            var invoker = MakeFilterInvoker(scope);
-            
-            try
-            {
-                return new RandomDecimalGenerator
-                {
-                    Minimum = (decimal?)minimum,
-                    Maximum = (decimal?)maximum, 
-                    Count = count,
-                    Filter = invoker
-                };
-            }
-            catch (GenerationException exception)
-            {
-                throw new PatternUsageErrorException(String.Format(
-                    "The random numbers generator was incorrectly initialized ({0}).", exception.Message), exception);
-            }
+            return GetGeneratorImpl(scope);
         }
 
         private Predicate<decimal> MakeFilterInvoker(IPatternScope scope)

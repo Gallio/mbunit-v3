@@ -22,7 +22,7 @@ namespace Gallio.Framework.Data.Generation
     /// <summary>
     /// Generator of random <see cref="Decimal"/> values within a given range.
     /// </summary>
-    public class RandomDecimalGenerator : RandomGenerator<decimal>
+    public class RandomDecimalGenerator : RandomRangeGenerator<decimal>
     {
         /// <summary>
         /// Constructs a generator of random <see cref="Decimal"/> numbers.
@@ -61,7 +61,7 @@ namespace Gallio.Framework.Data.Generation
         // 0x204fce5dffffffffffffffff is the highest 96-bit integer number with the first 32-bits 
         // set to 1, and less than 10E28. Thus, the highest decimal value which can be obtained
         // with is method is 0x204fce5dffffffffffffffff / 10E28 = 0.9999999995522011979606654975.
-        private static decimal RandomDecimal()
+        private decimal RandomDecimal()
         {
             var data = new byte[8];
             InnerGenerator.NextBytes(data);
@@ -73,10 +73,10 @@ namespace Gallio.Framework.Data.Generation
 
         private static int ToInt32(byte[] bytes, int offset)
         {
-            return (int)bytes[offset] 
-                | ((int)bytes[offset + 1] << 8) 
-                | ((int)bytes[offset + 2] << 16) 
-                | ((int)bytes[offset + 3] << 24);
+            return bytes[offset] 
+                | (bytes[offset + 1] << 8) 
+                | (bytes[offset + 2] << 16) 
+                | (bytes[offset + 3] << 24);
         }
     }
 }

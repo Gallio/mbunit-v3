@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Framework;
 using Gallio.Framework.Data;
 using Gallio.Framework.Data.Generation;
 using Gallio.Framework.Pattern;
@@ -28,6 +29,27 @@ namespace MbUnit.Framework
     [CLSCompliant(false)]
     public abstract class GenerationDataAttribute : DataAttribute
     {
+        /// <summary>
+        /// The nullable seed value.
+        /// </summary>
+        protected int? seed = null;
+
+        /// <summary>
+        /// Gets or sets the seed value for the random generator.
+        /// </summary>
+        public int Seed
+        {
+            get
+            {
+                return seed ?? 0;
+            }
+
+            set
+            {
+                seed = value;
+            }
+        }
+
         /// <summary>
         /// Default constructor.
         /// </summary>

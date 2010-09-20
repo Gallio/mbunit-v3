@@ -49,13 +49,13 @@ namespace Gallio.Common.Text.RegularExpression
         }
 
         /// <inheritdoc />
-        protected override string GetRandomStringImpl()
+        protected override string GetRandomStringImpl(Random random)
         {
             var output = new StringBuilder();
 
             for (int i = 0; i < children.Length; i++)
             {
-                output.Append(children[i].GetRandomString());
+                output.Append(children[i].GetRandomString(random));
             }
 
             return output.ToString();

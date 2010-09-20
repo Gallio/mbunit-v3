@@ -79,10 +79,11 @@ namespace Gallio.Common.Text.RegularExpression
         /// <summary>
         /// Returns the random string that matches the regular expression pattern.
         /// </summary>
+        /// <param name="random">A random number generator.</param>
         /// <returns>A random string that matches the regular expression pattern.</returns>
-        public string GetRandomString()
+        public string GetRandomString(Random random)
         {
-            return root.GetRandomString();
+            return root.GetRandomString(random);
         }
     }
 }

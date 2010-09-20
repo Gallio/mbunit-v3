@@ -75,6 +75,22 @@ namespace MbUnit.Tests.Framework
             });
         }
 
+        [Test]
+        public void Using_the_same_seed_should_generate_the_same_sequence_from_stock()
+        {
+            var sequence1 = GetActualValues("RandomStockWithSeed1");
+            var sequence2 = GetActualValues("RandomStockWithSeed2");
+            Assert.AreElementsEqual(sequence1, sequence2);
+        }
+
+        [Test]
+        public void Using_the_same_seed_should_generate_the_same_sequence_from_regex()
+        {
+            var sequence1 = GetActualValues("RandomRegexWithSeed1");
+            var sequence2 = GetActualValues("RandomRegexWithSeed2");
+            Assert.AreElementsEqual(sequence1, sequence2);
+        }
+
         [TestFixture, Explicit("Sample")]
         public class RandomStringsSample
         {
@@ -99,6 +115,30 @@ namespace MbUnit.Tests.Framework
             public static bool MyFilter(string text)
             {
                 return !text.StartsWith("AAA") && !text.EndsWith("999");
+            }
+
+            [Test]
+            public void RandomStockWithSeed1([RandomStrings(Stock = RandomStringStock.EnCountries, Count = 50, Seed = 123456)] string country)
+            {
+                TestLog.WriteLine("[{0}]", country);
+            }
+
+            [Test]
+            public void RandomStockWithSeed2([RandomStrings(Stock = RandomStringStock.EnCountries, Count = 50, Seed = 123456)] string country)
+            {
+                TestLog.WriteLine("[{0}]", country);
+            }
+
+            [Test]
+            public void RandomRegexWithSeed1([RandomStrings(Pattern = @"[A-D]{3}[0-9]{3}", Count = 50, Seed = 123456)] string country)
+            {
+                TestLog.WriteLine("[{0}]", country);
+            }
+
+            [Test]
+            public void RandomRegexWithSeed2([RandomStrings(Pattern = @"[A-D]{3}[0-9]{3}", Count = 50, Seed = 123456)] string country)
+            {
+                TestLog.WriteLine("[{0}]", country);
             }
         }
     }

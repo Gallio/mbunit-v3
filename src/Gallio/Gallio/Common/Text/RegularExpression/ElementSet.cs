@@ -95,9 +95,9 @@ namespace Gallio.Common.Text.RegularExpression
         }
 
         /// <inheritdoc />
-        protected override string GetRandomStringImpl()
+        protected override string GetRandomStringImpl(Random random)
         {
-            int index = Generator.Next(0, characters.Length);
+            int index = random.Next(0, characters.Length);
             return characters[index].ToString();
         }
     }

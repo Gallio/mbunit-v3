@@ -61,11 +61,13 @@ namespace Gallio.Tests.Common.Text.RegularExpression
         public void Construct_with_pattern(string input, string expected)
         {
             var pattern = new RegexLite(input);
+            var random = new Random();
+
             Assert.Multiple(() =>
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    string actual = pattern.GetRandomString();
+                    string actual = pattern.GetRandomString(random);
                     TestLog.WriteLine(actual);
                     Assert.FullMatch(actual, expected);
                 }

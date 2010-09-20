@@ -25,7 +25,6 @@ namespace Gallio.Common.Text.RegularExpression
     /// </summary>
     internal sealed class Quantifier
     {
-        private readonly static Random generator = new Random();
         private readonly int minimum;
         private readonly int maximum;
 
@@ -83,10 +82,8 @@ namespace Gallio.Common.Text.RegularExpression
         {
             if (minimum < 0)
                 throw new ArgumentOutOfRangeException("minimum", "The specified number cannot be negative.");
-
             if (maximum < 0)
                 throw new ArgumentOutOfRangeException("maximum", "The specified number cannot be negative.");
-
             if (minimum > maximum)
                 throw new ArgumentException("minimum", "The specified minimum value must be greater than or equal to the maximum value");
 
@@ -97,10 +94,11 @@ namespace Gallio.Common.Text.RegularExpression
         /// <summary>
         /// Returns a random number within the range of the quantifier.
         /// </summary>
+        /// <param name="random">A random number generator.</param>
         /// <returns>A random number.</returns>
-        public int GetRandomRepeat()
+        public int GetRandomRepeat(Random random)
         {
-            return generator.Next(minimum, maximum + 1);
+            return random.Next(minimum, maximum + 1);
         }
     }
 }
