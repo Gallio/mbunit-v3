@@ -64,7 +64,7 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void DecorateTest(IPatternScope scope, ICodeElementInfo codeElement)
         {
-            scope.TestBuilder.Timeout = Timeout;
+            scope.TestBuilder.TimeoutFunc = () => Timeout;
         }
     }
 }

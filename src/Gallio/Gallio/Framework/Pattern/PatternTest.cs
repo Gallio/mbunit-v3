@@ -32,7 +32,7 @@ namespace Gallio.Framework.Pattern
     {
         private readonly PatternTestDataContext dataContext;
         private readonly PatternTestActions testActions;
-        private TimeSpan? timeout;
+        private Func<TimeSpan?> timeoutFunc = () => null;
         private ApartmentState apartmentState = ApartmentState.Unknown;
         private bool isParallelizable;
 
@@ -54,7 +54,7 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// Gets or sets the maximum amount of time the whole test including
+        /// Gets or sets a functon that returns the maximum amount of time the whole test including
         /// its setup, teardown and body should be permitted to run.
         /// </summary>
         /// <remarks>
@@ -63,17 +63,17 @@ namespace Gallio.Framework.Pattern
         /// The timeout may be null to indicate the absence of a timeout.
         /// </para>
         /// </remarks>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/>
-        /// represents a negative time span.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         /// <value>The timeout.  Default value is null.</value>
-        public TimeSpan? Timeout
+        public Func<TimeSpan?> TimeoutFunc
         {
-            get { return timeout; }
+            get { return timeoutFunc; }
             set
             {
-                if (value.HasValue && value.Value.Ticks < 0)
-                    throw new ArgumentOutOfRangeException(@"value");
-                timeout = value;
+                if (value == null)
+                    throw new ArgumentNullException("TimeoutFunc");
+
+                timeoutFunc = value;
             }
         }
 

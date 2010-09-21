@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using Gallio.Common;
 using Gallio.Common.Collections;
 using Gallio.Model;
 using Gallio.Common.Reflection;
@@ -62,10 +63,10 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public TimeSpan? Timeout
+        public Func<TimeSpan?> TimeoutFunc
         {
-            get { return test.Timeout; }
-            set { test.Timeout = value; }
+            get { return test.TimeoutFunc; }
+            set { test.TimeoutFunc = value; }
         }
 
         /// <inheritdoc />

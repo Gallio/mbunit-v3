@@ -137,7 +137,7 @@ namespace Gallio.Framework.Pattern
                 set { throw new NotImplementedException(); }
             }
 
-            public TimeSpan? Timeout
+            public Func<TimeSpan?> TimeoutFunc
             {
                 get { throw new NotImplementedException(); }
                 set { throw new NotImplementedException(); }

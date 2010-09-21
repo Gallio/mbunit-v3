@@ -125,7 +125,7 @@ namespace MbUnit.Framework
         {
             IPatternScope childTestScope = containingScope.CreateChildTestScope(Name, CodeElement ?? declaringCodeElement);
             childTestScope.TestBuilder.Kind = Kind;
-            childTestScope.TestBuilder.Timeout = Timeout;
+            childTestScope.TestBuilder.TimeoutFunc = () => Timeout;
             childTestScope.TestBuilder.IsTestCase = IsTestCase;
 
             foreach (var pair in Metadata.Pairs)
