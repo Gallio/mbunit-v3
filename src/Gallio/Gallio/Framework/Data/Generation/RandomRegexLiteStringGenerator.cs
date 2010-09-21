@@ -62,6 +62,10 @@ namespace Gallio.Framework.Data.Generation
             {
                 regex = new RegexLite(RegularExpressionPattern);
             }
+            catch (ArgumentNullException exception)
+            {
+                throw new GenerationException("The specified regular expression cannot be null.", exception);
+            }
             catch (RegexLiteException exception)
             {
                 throw new GenerationException(String.Format("The specified regular expression cannot be parsed ({0}).", exception.Message), exception);
