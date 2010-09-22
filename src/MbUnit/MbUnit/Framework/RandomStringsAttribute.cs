@@ -78,8 +78,9 @@ namespace MbUnit.Framework
     /// <seealso cref="ColumnAttribute"/>
     [CLSCompliant(false)]
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
-    public class RandomStringsAttribute : GenerationDataAttribute
+    public class RandomStringsAttribute : RandomGenerationDataAttribute
     {
+        private RandomStringGenerator generator;
         private int? count = null;
         private RandomStringStock? stock = null;
 
@@ -169,41 +170,56 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
+        protected override int? GetRandomGeneratorSeed(IPatternScope scope)
+        {
+            return GetGeneratorImpl(scope).Seed;
+        }
+
+        /// <inheritdoc />
         protected override IGenerator GetGenerator(IPatternScope scope)
         {
-            var invoker = MakeFilterInvoker(scope);
+            return GetGeneratorImpl(scope);
+        }
 
-            if (Pattern == null && stock == null)
-                throw new PatternUsageErrorException("You must specify how to generate random strings by setting either 'Pattern' or 'Stock' appropriately.");
-            if (!String.IsNullOrEmpty(Pattern) && stock.HasValue)
-                throw new PatternUsageErrorException("You must specify how to generate random strings by setting either 'Pattern' or 'Stock' exclusively.");
-
-            try
+        private RandomStringGenerator GetGeneratorImpl(IPatternScope scope)
+        {
+            if (generator == null)
             {
-                if (stock.HasValue)
+                var invoker = MakeFilterInvoker(scope);
+
+                if (Pattern == null && stock == null)
+                    throw new PatternUsageErrorException("You must specify how to generate random strings by setting either 'Pattern' or 'Stock' appropriately.");
+                if (!String.IsNullOrEmpty(Pattern) && stock.HasValue)
+                    throw new PatternUsageErrorException("You must specify how to generate random strings by setting either 'Pattern' or 'Stock' exclusively.");
+
+                try
                 {
-                    return new RandomStockStringGenerator
+                    if (stock.HasValue)
                     {
-                        Values = RandomStringStockInfo.FromStock(stock.Value).GetItems(),
+                        return generator = new RandomStockStringGenerator
+                        {
+                            Values = RandomStringStockInfo.FromStock(stock.Value).GetItems(),
+                            Count = count,
+                            Filter = invoker,
+                            Seed = NullableSeed,
+                        };
+                    }
+
+                    return generator = new RandomRegexLiteStringGenerator
+                    {
+                        RegularExpressionPattern = Pattern,
                         Count = count,
                         Filter = invoker,
-                        Seed = Seed,
+                        Seed = NullableSeed,
                     };
                 }
-                
-                return new RandomRegexLiteStringGenerator
+                catch (GenerationException exception)
                 {
-                    RegularExpressionPattern = Pattern,
-                    Count = count,
-                    Filter = invoker,
-                    Seed = Seed,
-                };
+                    throw new PatternUsageErrorException(String.Format("The random strings generator was incorrectly initialized ({0}).", exception.Message), exception);
+                }
             }
-            catch (GenerationException exception)
-            {
-                throw new PatternUsageErrorException(String.Format(
-                    "The random strings generator was incorrectly initialized ({0}).", exception.Message), exception);
-            }
+
+            return generator;
         }
 
         private Predicate<string> MakeFilterInvoker(IPatternScope scope)

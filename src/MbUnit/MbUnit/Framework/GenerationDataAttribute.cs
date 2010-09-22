@@ -30,27 +30,6 @@ namespace MbUnit.Framework
     public abstract class GenerationDataAttribute : DataAttribute
     {
         /// <summary>
-        /// The nullable seed value.
-        /// </summary>
-        protected int? seed = null;
-
-        /// <summary>
-        /// Gets or sets the seed value for the random generator.
-        /// </summary>
-        public int Seed
-        {
-            get
-            {
-                return seed ?? 0;
-            }
-
-            set
-            {
-                seed = value;
-            }
-        }
-
-        /// <summary>
         /// Default constructor.
         /// </summary>
         protected GenerationDataAttribute()
@@ -77,8 +56,7 @@ namespace MbUnit.Framework
             }
             catch (ArgumentException exception)
             {
-                throw new PatternUsageErrorException(String.Format(
-                    "The MbUnit data generator was incorrectly initialized ({0}).", exception.Message), exception);
+                throw new PatternUsageErrorException(String.Format("The MbUnit data generator was incorrectly initialized ({0}).", exception.Message), exception);
             }
         }
 

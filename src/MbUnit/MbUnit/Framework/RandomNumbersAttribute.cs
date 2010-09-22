@@ -53,7 +53,7 @@ namespace MbUnit.Framework
     /// <seealso cref="ColumnAttribute"/>
     [CLSCompliant(false)]
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
-    public class RandomNumbersAttribute : GenerationDataAttribute
+    public class RandomNumbersAttribute : RandomGenerationDataAttribute
     {
         private RandomDecimalGenerator generator;
         private double? minimum = null;
@@ -151,14 +151,15 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        public override void Process(IPatternScope scope, ICodeElementInfo codeElement)
+        protected override IGenerator GetGenerator(IPatternScope scope)
         {
-            base.Process(scope, codeElement);
+            return GetGeneratorImpl(scope);
+        }
 
-            // Display the actual seed applied to the random number generator as an annotation.
-            GetGeneratorImpl(scope);
-            string message = String.Format("Random Number Generator Seed = {0}", generator.Seed);
-            scope.TestModelBuilder.AddAnnotation(new Annotation(AnnotationType.Info, codeElement, message));
+        /// <inheritdoc />
+        protected override int? GetRandomGeneratorSeed(IPatternScope scope)
+        {
+            return GetGeneratorImpl(scope).Seed;
         }
 
         private RandomDecimalGenerator GetGeneratorImpl(IPatternScope scope)
@@ -175,7 +176,7 @@ namespace MbUnit.Framework
                         Maximum = (decimal?)maximum,
                         Count = count,
                         Filter = invoker,
-                        Seed = seed
+                        Seed = NullableSeed
                     };
                 }
                 catch (GenerationException exception)
@@ -185,12 +186,6 @@ namespace MbUnit.Framework
             }
 
             return generator;
-        }
-
-        /// <inheritdoc />
-        protected override IGenerator GetGenerator(IPatternScope scope)
-        {
-            return GetGeneratorImpl(scope);
         }
 
         private Predicate<decimal> MakeFilterInvoker(IPatternScope scope)
