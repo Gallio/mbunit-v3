@@ -26,10 +26,10 @@ namespace Gallio.Runtime.Formatting
     /// Formats values like: string, MyType.Nested, int[], byte*, similar to C#.
     /// </para>
     /// </remarks>
-    public sealed class TypeFormattingRule : IFormattingRule
+    public class TypeFormattingRule : IFormattingRule
     {
         /// <inheritdoc />
-        public int? GetPriority(Type type)
+        public virtual int? GetPriority(Type type)
         {
             if (typeof(Type).IsAssignableFrom(type))
                 return FormattingRulePriority.Best;
@@ -37,7 +37,7 @@ namespace Gallio.Runtime.Formatting
         }
 
         /// <inheritdoc />
-        public string Format(object obj, IFormatter formatter)
+        public virtual string Format(object obj, IFormatter formatter)
         {
             var value = (Type) obj;
             var result = new StringBuilder();

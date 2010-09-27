@@ -253,8 +253,8 @@ namespace Gallio.Common.Collections
             if (count != b.Count)
                 return false;
 
-            Dictionary<T, int> ca = new Dictionary<T, int>();
-            Dictionary<T, int> cb = new Dictionary<T, int>();
+            var ca = new Dictionary<T, int>();
+            var cb = new Dictionary<T, int>();
 
             foreach (T ea in a)
                 IncrementCounter(ea, ca);
@@ -272,12 +272,11 @@ namespace Gallio.Common.Collections
             table[elem] = counter;
         }
 
-
         /// <summary>
         /// Projects each element of a sequence into a new form.
         /// </summary>
-        /// <typeparam name="TInput"></typeparam>
-        /// <typeparam name="TOutput"></typeparam>
+        /// <typeparam name="TInput">The type of the elements of the input sequence.</typeparam>
+        /// <typeparam name="TOutput">The type of the elements of the output sequence.</typeparam>
         /// <param name="enumeration">The input sequence.</param>
         /// <param name="filter"></param>
         /// <returns>The output sequence</returns>
