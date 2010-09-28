@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Gallio.Framework;
 using Gallio.Model.Commands;
 using Gallio.Common.Reflection;
@@ -51,44 +52,50 @@ namespace MbUnit.Tests.Framework
     [RunSample(typeof(CombinatorialJoinStrategySample))]
     [RunSample(typeof(SequentialJoinStrategySample))]
     [RunSample(typeof(PairwiseJoinStrategySample))]
+    [RunSample(typeof(ConcreteFixtureSample))]
     public class DataBindingTest : BaseTestWithSampleRunner
     {
         [Test]
-        [Row(typeof(TypeParameterBindingInsideSample<>), "Test", new string[] { "System.Int32" })]
-        [Row(typeof(TypeParameterBindingOutsideSample<>), "Test", new string[] { "System.String" })]
-        [Row(typeof(ConstructorParameterBindingInsideSample), "Test", new string[] { "(Apples, 1)" })]
-        [Row(typeof(ConstructorParameterBindingOutsideSample), "Test", new string[] { "(Apples, 1)" })]
-        [Row(typeof(TypeParameterAndConstructorParameterBindingOutsideSample<>), "Test", new string[] { "System.String -> (Apples, 1)" })]
-        [Row(typeof(FieldBindingSample), "Test", new string[] { "(Apples, 1)" })]
-        [Row(typeof(PropertyBindingSample), "Test", new string[] { "(Apples, 1)" })]
-        [Row(typeof(MethodParameterBindingInsideSample), "Test", new string[] { "(Apples, 1)" })]
-        [Row(typeof(MethodParameterBindingOutsideSample), "Test", new string[] { "(Apples, 1)" })]
-        [Row(typeof(MethodParameterBindingOutsideSampleInherited), "Test", new string[] { "(Apples, 1)", "(Oranges, 2)" }, Description = "Should inherit rows.")]
-        [Row(typeof(ExplicitBindingByNameSample<>), "Test", new string[] { "System.String -> (Apples, 1) x 10, Empire" })]
-        [Row(typeof(ExplicitBindingByIndexSample<>), "Test", new string[] { "System.String -> (Apples, 1) x 10, Empire" })]
-        [Row(typeof(ImplicitBindingByNameSample<>), "Test", new string[] { "System.String -> (Apples, 1) x 10, Empire" })]
-        [Row(typeof(ImplicitBindingByIndexOnClassSample<,>), "Test", new string[] { "System.String, System.Decimal -> (Apples, 1)" })]
-        [Row(typeof(ImplicitBindingByIndexOnMethodSample), "Test", new string[] { "System.String, System.Decimal -> (Apples, 1)" })]
-        [Row(typeof(CombinatorialBindingOfClassAndMethodWithOrderingSample<>), "Test", new string[] {
+        [Row(typeof(TypeParameterBindingInsideSample<>), "Test", new[] { "System.Int32" })]
+        [Row(typeof(TypeParameterBindingOutsideSample<>), "Test", new[] { "System.String" })]
+        [Row(typeof(ConstructorParameterBindingInsideSample), "Test", new[] { "(Apples, 1)" })]
+        [Row(typeof(ConstructorParameterBindingOutsideSample), "Test", new[] { "(Apples, 1)" })]
+        [Row(typeof(TypeParameterAndConstructorParameterBindingOutsideSample<>), "Test", new[] { "System.String -> (Apples, 1)" })]
+        [Row(typeof(FieldBindingSample), "Test", new[] { "(Apples, 1)" })]
+        [Row(typeof(PropertyBindingSample), "Test", new[] { "(Apples, 1)" })]
+        [Row(typeof(MethodParameterBindingInsideSample), "Test", new[] { "(Apples, 1)" })]
+        [Row(typeof(MethodParameterBindingOutsideSample), "Test", new[] { "(Apples, 1)" })]
+        [Row(typeof(MethodParameterBindingOutsideSampleInherited), "Test", new[] { "(Apples, 1)", "(Oranges, 2)" }, Description = "Should inherit rows.")]
+        [Row(typeof(ExplicitBindingByNameSample<>), "Test", new[] { "System.String -> (Apples, 1) x 10, Empire" })]
+        [Row(typeof(ExplicitBindingByIndexSample<>), "Test", new[] { "System.String -> (Apples, 1) x 10, Empire" })]
+        [Row(typeof(ImplicitBindingByNameSample<>), "Test", new[] { "System.String -> (Apples, 1) x 10, Empire" })]
+        [Row(typeof(ImplicitBindingByIndexOnClassSample<,>), "Test", new[] { "System.String, System.Decimal -> (Apples, 1)" })]
+        [Row(typeof(ImplicitBindingByIndexOnMethodSample), "Test", new[] { "System.String, System.Decimal -> (Apples, 1)" })]
+        [Row(typeof(CombinatorialBindingOfClassAndMethodWithOrderingSample<>), "Test", new[] {
             "System.String, System.Int32 -> (abc, 456)",
             "System.String, System.String -> (abc, def)",
             "System.Int32, System.Int32 -> (123, 456)",
             "System.Int32, System.String -> (123, def)"
         })]
-        [Row(typeof(CombinatorialBindingOfMethodWithMultipleDataSourcesAndOrderingSample), "Test", new string[] {
+        [Row(typeof(CombinatorialBindingOfMethodWithMultipleDataSourcesAndOrderingSample), "Test", new[] {
             "System.String, System.Int32 -> (abc, 456)",
             "System.String, System.String -> (abc, def)",
             "System.Int32, System.Int32 -> (123, 456)",
             "System.Int32, System.String -> (123, def)"
         })]
-        [Row(typeof(CombinatorialJoinStrategySample), "Test", new string[] { "000", "001", "010", "011", "100", "101", "110", "111" })]
-        [Row(typeof(SequentialJoinStrategySample), "Test", new string[] { "000", "111" })]
-        [Row(typeof(PairwiseJoinStrategySample), "Test", new string[] { "111", "100", "010", "001" })]
+        [Row(typeof(CombinatorialJoinStrategySample), "Test", new[] { "000", "001", "010", "011", "100", "101", "110", "111" })]
+        [Row(typeof(SequentialJoinStrategySample), "Test", new[] { "000", "111" })]
+        [Row(typeof(PairwiseJoinStrategySample), "Test", new[] { "111", "100", "010", "001" })]
+        [Row(typeof(ConcreteFixtureSample), "BaseTest", new[] { "i = 123, s = ABC" })]
+        [Row(typeof(ConcreteFixtureSample), "ConcreteTest", new[] { "i = 123, s = ABC" })]
         public void VerifySampleOutput(Type fixtureType, string sampleName, string[] output)
         {
-            IList<TestStepRun> runs = Runner.GetTestCaseRunsWithin(CodeReference.CreateFromType(fixtureType));
+            IList<TestStepRun> runs = Runner
+                .GetTestCaseRunsWithin(CodeReference.CreateFromType(fixtureType))
+                .Where(run => run.Step.Name.StartsWith(sampleName))
+                .ToList();
 
-            Assert.AreEqual(output.Length, runs.Count, "Different number of runs than expected.");
+            Assert.Count(output.Length, runs, "Different number of runs than expected.");
 
             for (int i = 0; i < output.Length; i++)
                 AssertLogContains(runs[i], output[i]);
@@ -427,6 +434,31 @@ namespace MbUnit.Tests.Framework
             public void Test([Column(0, 1)] int a, [Column(0, 1)] int b, [Column(0, 1)] int c)
             {
                 TestLog.WriteLine("{0}{1}{2}", a, b, c);
+            }
+        }
+
+        [TestFixture, Disable]
+        internal abstract class AbstractFixtureSample
+        {
+            [Bind(0, Source = "DataSource1")]
+            public int i = 0;
+
+            [Test]
+            public void BaseTest([Bind(0, Source = "DataSource2")] string s)
+            {
+                TestLog.WriteLine("i = {0}, s = {1}", i, s);
+            }
+        }
+
+        [TestFixture, Explicit("Sample")]
+        [Column(123, SourceName = "DataSource1")]
+        [Column("ABC", SourceName = "DataSource2")]
+        internal class ConcreteFixtureSample : AbstractFixtureSample
+        {
+            [Test]
+            public void ConcreteTest([Bind(0, Source = "DataSource2")] string s)
+            {
+                TestLog.WriteLine("i = {0}, s = {1}", i, s);
             }
         }
     }

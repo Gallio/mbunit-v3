@@ -314,13 +314,13 @@ namespace Gallio.Framework.Data
                     case CodeElementKind.GenericParameter:
                     case CodeElementKind.Field:
                     case CodeElementKind.Property:
-                        IMemberInfo member = (IMemberInfo) slot;
-                        if (type.Equals(member.DeclaringType))
+                        var member = (IMemberInfo) slot;
+                        if (type.Equals(member.DeclaringType) || type.IsSubclassOf(member.DeclaringType))
                             continue;
                         break;
 
                     case CodeElementKind.Parameter:
-                        IParameterInfo parameter = (IParameterInfo) slot;
+                        var parameter = (IParameterInfo) slot;
                         if (type.Equals(parameter.Member.DeclaringType))
                             continue;
                         break;
