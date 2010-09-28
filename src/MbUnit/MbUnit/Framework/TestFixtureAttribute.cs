@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common.Reflection;
 using Gallio.Framework.Pattern;
 
 namespace MbUnit.Framework
@@ -48,5 +49,13 @@ namespace MbUnit.Framework
     [AttributeUsage(PatternAttributeTargets.TestType, AllowMultiple = false, Inherited = true)]
     public class TestFixtureAttribute : TestTypePatternAttribute
     {
+        /// <inheritdoc />
+        protected override void Validate(IPatternScope containingScope, ITypeInfo type)
+        {
+            base.Validate(containingScope, type);
+
+            if (type.IsAbstract && type.IsSealed)
+                ThrowUsageErrorException("This attribute cannot be used on a static class.");
+        }
     }
 }
