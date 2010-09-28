@@ -24,7 +24,7 @@
             <Directory Id="RESHARPER_V51_VS9_INSTALLDIR" Name="ReSharper_V51_VS90">
                 <Directory Id="JetBrains.ReSharper.V51.VS9.PluginsDir" Name="Plugins">
                     <Directory Id="JetBrains.Resharper.V51.VS9.GallioDir" Name="Gallio">
-                        <Component Id="Gallio.ReSharperRunner.V51.VS9.dll" Guid="{F32F20BD-69A1-49cb-9448-46588122032A}" Win64="$(var.Win64Binary)">
+                        <Component Id="Gallio.ReSharperRunner.V51.VS9.dll" Guid="{F32F20BD-69A1-49cb-9448-46588122032A}" Win64="no">
                             <File Id="Gallio.ReSharperRunner.V51.VS9.dll" Source="$(var.GallioTargetDir)\bin\ReSharper\v5.1\Gallio.ReSharperRunner51.dll" KeyPath="yes" />
                         </Component>
 						
@@ -40,7 +40,7 @@
             <Directory Id="RESHARPER_V51_VS10_INSTALLDIR" Name="ReSharper_V51_VS100">
                 <Directory Id="JetBrains.ReSharper.V51.VS10.PluginsDir" Name="Plugins">
                     <Directory Id="JetBrains.Resharper.V51.VS10.GallioDir" Name="Gallio">
-                        <Component Id="Gallio.ReSharperRunner.V51.VS10.dll" Guid="{388491BF-2934-4e3c-B8B5-E5BF44CA3BB5}" Win64="$(var.Win64Binary)">
+                        <Component Id="Gallio.ReSharperRunner.V51.VS10.dll" Guid="{388491BF-2934-4e3c-B8B5-E5BF44CA3BB5}" Win64="no">
                             <File Id="Gallio.ReSharperRunner.V51.VS10.dll" Source="$(var.GallioTargetDir)\bin\ReSharper\v5.1\Gallio.ReSharperRunner51.dll" KeyPath="yes" />
                         </Component>
 						
