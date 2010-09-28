@@ -143,8 +143,10 @@ namespace MbUnit.Framework
         private static TransactionScope CreateAndEnterTransactionScope(PatternTestInstanceState state)
         {
             TimeSpan timeout = TransactionManager.MaximumTimeout;
-            if (state.Test.Timeout.HasValue && state.Test.Timeout.Value < timeout)
-                timeout = state.Test.Timeout.Value;
+            TimeSpan? value = state.Test.TimeoutFunc();
+
+            if (value.HasValue && value.Value < timeout)
+                timeout = value.Value;
 
             var options = new TransactionOptions()
             {

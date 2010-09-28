@@ -198,7 +198,7 @@ namespace Gallio.Framework.Pattern
                     {
                         using (new ProcessIsolation())
                         {
-                            using (sandbox.StartTimer(test.Timeout))
+                            using (sandbox.StartTimer(test.TimeoutFunc()))
                             {
                                 TestOutcome outcome;
                                 PatternTestActions testActions = test.TestActions;

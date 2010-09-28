@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using Gallio.Common;
 using Gallio.Model;
 using Gallio.Common.Reflection;
 using Gallio.Model.Tree;
@@ -70,7 +71,7 @@ namespace Gallio.Framework.Pattern
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/>
         /// represents a negative time span.</exception>
         /// <value>The timeout.  Default value is null.</value>
-        TimeSpan? Timeout { get; set; }
+        Func<TimeSpan?> TimeoutFunc { get; set; }
 
         /// <summary>
         /// Gets whether this test represents an individual test case
