@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Gallio.Framework;
 using Gallio.Framework.Assertions;
 using MbUnit.Framework;
 
@@ -47,6 +48,16 @@ namespace MbUnit.Tests.Framework
         [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
         public class BarAttribute : Attribute
         {
+        }
+
+
+        [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
+        public class ChildFooAttribute : FooAttribute
+        {
+            public ChildFooAttribute(string text)
+                : base(text)
+            {
+            }
         }
 
         [Foo("Hello from type")]
@@ -93,6 +104,14 @@ namespace MbUnit.Tests.Framework
             public void SampleMethod()
             {
             }
+        }
+
+        [Foo("Foo #1")]
+        [Foo("Foo #2")]
+        [ChildFoo("Child Foo #1")]
+        [ChildFoo("Child Foo #2")]
+        public class SampleTypeWithChildFoo
+        {
         }
 
         #endregion
@@ -266,6 +285,13 @@ namespace MbUnit.Tests.Framework
             Assert.Count(1, failures);
             Assert.AreEqual("Expected to find 4 attribute instances but found 3.", failures[0].Description);
             AssertCommonFailureLabeledValues(failures[0], "SampleType2" + expectedTargetFormat, "FooAttribute");
+        }
+
+        [Test]
+        public void HasAttributes_finds_derived_types_as_well()
+        {
+            FooAttribute[] attributes = Assert.HasAttributes<FooAttribute>(typeof(SampleTypeWithChildFoo), 4);
+            Assert.AreElementsEqualIgnoringOrder(new[] { "Foo #1", "Foo #2", "Child Foo #1", "Child Foo #2" }, attributes.Select(x => x.Text));
         }
     }
 }
