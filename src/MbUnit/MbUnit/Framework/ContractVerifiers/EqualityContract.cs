@@ -171,16 +171,6 @@ namespace MbUnit.Framework.ContractVerifiers
             set;
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the contract verifier
-        /// should write in the test log which methods/properties are visited.
-        /// </summary>
-        public bool LogVisits
-        {
-            get;
-            set;
-        }
-
         /// <inheritdoc />
         protected override IEnumerable<Test> GetContractVerificationTests()
         {
@@ -250,8 +240,6 @@ namespace MbUnit.Framework.ContractVerifiers
             }
         }
 
-        #region Hash Code Tests
-        
         private Test CreateHashCodeTest()
         {
             return new TestCase("HashCode", () => Assert.Multiple(() =>
@@ -283,10 +271,6 @@ namespace MbUnit.Framework.ContractVerifiers
                     .AddInnerFailures(innerFailures)
                     .ToAssertionFailure());
         }
-
-        #endregion
-
-        #region Equality Tests
 
         private struct EqualitySpecifications
         {
@@ -366,8 +350,6 @@ namespace MbUnit.Framework.ContractVerifiers
                 ? (bool)methodInfo.Invoke(null, new[] { first, second })
                 : (bool)methodInfo.Invoke(first, new[] { second });
         }
-
-        #endregion
 
         #region Reflection Helpers
 
