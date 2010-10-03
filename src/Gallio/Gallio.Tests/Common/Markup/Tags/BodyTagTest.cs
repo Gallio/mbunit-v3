@@ -27,18 +27,18 @@ namespace Gallio.Tests.Common.Markup.Tags
     public class BodyTagTest : BaseTagTest<BodyTag>
     {
         [VerifyContract]
-        public readonly IContract EqualityTests = new EqualityContract<BodyTag>()
+        public readonly IContract EqualityTests = new EqualityContract<BodyTag>
         {
             ImplementsOperatorOverloads = false,
             EquivalenceClasses = equivalenceClasses
         };
 
-        public override EquivalenceClassCollection<BodyTag> GetEquivalenceClasses()
+        public override EquivalenceClassCollection GetEquivalenceClasses()
         {
             return equivalenceClasses;
         }
 
-        private readonly static EquivalenceClassCollection<BodyTag> equivalenceClasses = new EquivalenceClassCollection<BodyTag>
+        private readonly static EquivalenceClassCollection equivalenceClasses = new EquivalenceClassCollection
         {
             new BodyTag(),
             new BodyTag { Contents = { new TextTag("text") }},

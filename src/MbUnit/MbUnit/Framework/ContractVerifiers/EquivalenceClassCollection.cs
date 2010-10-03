@@ -62,7 +62,31 @@ namespace MbUnit.Framework.ContractVerifiers
         {
             equivalenceClasses = new List<EquivalenceClass<T>>();
         }
+        
+        /// <summary>
+        /// Gets the number of equivalence classes in the collection.
+        /// </summary>
+        internal int Count
+        {
+            get
+            {
+                return equivalenceClasses.Count;
+            }
+        }
 
+        /// <summary>
+        /// Gets the equivalence class located at the specified index.
+        /// </summary>
+        /// <param name="index">The searched index.</param>
+        /// <returns>The equivalence class at the specified index.</returns>
+        internal EquivalenceClass<T> this[int index]
+        {
+            get
+            {
+                return equivalenceClasses[index];
+            }
+        }
+        
         /// <summary>
         /// Constructs a collection of equivalence classes from the specified distinct object instances.
         /// </summary>
@@ -88,9 +112,7 @@ namespace MbUnit.Framework.ContractVerifiers
             : this()
         {
             if (distinctInstances == null)
-            {
                 throw new ArgumentNullException("distinctInstances");
-            }
 
             foreach (T instance in distinctInstances)
             {
@@ -105,16 +127,12 @@ namespace MbUnit.Framework.ContractVerifiers
         public void Add(params T[] equivalentInstances)
         {
             if (equivalentInstances == null)
-            {
                 throw new ArgumentNullException("equivalentInstances", "A collection of equivalence classes cannot contain a null reference class.");
-            }
 
             foreach (var instance in equivalentInstances)
             {
-                if (instance == null)
-                {
+                if (ReferenceEquals(instance, null))
                     throw new ArgumentException(String.Format("An equivalence class of type '{0}' cannot contain a null reference instance.", typeof(T)), "equivalentInstances");
-                }
             }
 
             equivalenceClasses.Add(new EquivalenceClass<T>(equivalentInstances));
@@ -141,5 +159,10 @@ namespace MbUnit.Framework.ContractVerifiers
         {
             return GetEnumerator();
         }
+    }
+
+    /// <inheritdoc />
+    public class EquivalenceClassCollection : EquivalenceClassCollection<object>
+    {
     }
 }

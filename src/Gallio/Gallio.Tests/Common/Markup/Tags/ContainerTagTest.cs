@@ -32,16 +32,16 @@ namespace Gallio.Tests.Common.Markup.Tags
             EquivalenceClasses = equivalenceClasses
         };
 
-        public override EquivalenceClassCollection<ContainerTag> GetEquivalenceClasses()
+        public override EquivalenceClassCollection GetEquivalenceClasses()
         {
             return equivalenceClasses;
         }
 
-        private static EquivalenceClassCollection<ContainerTag> equivalenceClasses = new EquivalenceClassCollection<ContainerTag>
+        private readonly static EquivalenceClassCollection equivalenceClasses = new EquivalenceClassCollection
         {
-            { new BodyTag() },
-            { new BodyTag { Contents = { new TextTag("text") }}},
-            { new BodyTag { Contents = { new TextTag("text"), new TextTag("more") }}}
+            new BodyTag(),
+            new BodyTag { Contents = { new TextTag("text") }},
+            new BodyTag { Contents = { new TextTag("text"), new TextTag("more") }}
         };
 
         [Test, ExpectedArgumentNullException]

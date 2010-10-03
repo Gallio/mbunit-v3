@@ -24,7 +24,7 @@ namespace Gallio.Tests.Common.Markup.Tags
     public class EmbedTagTest : BaseTagTest<EmbedTag>
     {
         [VerifyContract]
-        public readonly IContract EqualityTests = new EqualityContract<EmbedTag>()
+        public readonly IContract EqualityTests = new EqualityContract<EmbedTag>
         {
             ImplementsOperatorOverloads = false,
             EquivalenceClasses = equivalenceClasses
@@ -38,12 +38,12 @@ namespace Gallio.Tests.Common.Markup.Tags
             DistinctInstances = DataGenerators.Random.Strings(100000, @"[A-Za-z0-9]{5,30}").Select(x => new EmbedTag(x))
         };
 
-        public override EquivalenceClassCollection<EmbedTag> GetEquivalenceClasses()
+        public override EquivalenceClassCollection GetEquivalenceClasses()
         {
             return equivalenceClasses;
         }
 
-        private readonly static EquivalenceClassCollection<EmbedTag> equivalenceClasses = new EquivalenceClassCollection<EmbedTag>
+        private readonly static EquivalenceClassCollection equivalenceClasses = new EquivalenceClassCollection
         {
             new EmbedTag("attachment1"),
             new EmbedTag("attachment2"),

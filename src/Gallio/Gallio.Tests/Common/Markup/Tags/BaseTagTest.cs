@@ -25,12 +25,12 @@ namespace Gallio.Tests.Common.Markup.Tags
     public abstract class BaseTagTest<T>
         where T : Tag, ICloneable<T>
     {
-        public abstract EquivalenceClassCollection<T> GetEquivalenceClasses();
+        public abstract EquivalenceClassCollection GetEquivalenceClasses();
 
         [Test]
         public void CloneObject()
         {
-            foreach (EquivalenceClass<T> @class in GetEquivalenceClasses())
+            foreach (var @class in GetEquivalenceClasses())
             {
                 foreach (ICloneable item in @class)
                 {
@@ -42,7 +42,7 @@ namespace Gallio.Tests.Common.Markup.Tags
         [Test]
         public void CloneGeneric()
         {
-            foreach (EquivalenceClass<T> @class in GetEquivalenceClasses())
+            foreach (var @class in GetEquivalenceClasses())
             {
                 foreach (ICloneable<T> item in @class)
                 {
@@ -54,11 +54,11 @@ namespace Gallio.Tests.Common.Markup.Tags
         [Test]
         public void ToStringEqualsContentsReturnedByTagFormatter()
         {
-            foreach (EquivalenceClass<T> @class in GetEquivalenceClasses())
+            foreach (var @class in GetEquivalenceClasses())
             {
                 foreach (Tag item in @class)
                 {
-                    TagFormatter formatter = new TagFormatter();
+                    var formatter = new TagFormatter();
                     item.Accept(formatter);
 
                     Assert.AreEqual(formatter.ToString(), item.ToString());
@@ -69,11 +69,11 @@ namespace Gallio.Tests.Common.Markup.Tags
         [Test]
         public void WriteToReproducesTheContentExactly()
         {
-            foreach (EquivalenceClass<T> @class in GetEquivalenceClasses())
+            foreach (var @class in GetEquivalenceClasses())
             {
                 foreach (Tag item in @class)
                 {
-                    StructuredTextWriter writer = new StructuredTextWriter();
+                    var writer = new StructuredTextWriter();
                     PrepareLogWriterForWriteToTest(writer.Container);
                     item.WriteTo(writer);
 
@@ -85,7 +85,7 @@ namespace Gallio.Tests.Common.Markup.Tags
         [Test]
         public void CanSerializeToXmlRoundTrip()
         {
-            foreach (EquivalenceClass<T> @class in GetEquivalenceClasses())
+            foreach (var @class in GetEquivalenceClasses())
             {
                 foreach (Tag item in @class)
                 {

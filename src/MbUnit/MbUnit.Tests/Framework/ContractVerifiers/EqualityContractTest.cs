@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Gallio.Common;
+using Gallio.Framework;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 using Gallio.Tests;
@@ -26,11 +28,14 @@ using System.Reflection;
 
 namespace MbUnit.Tests.Framework.ContractVerifiers
 {
+    [TestFixture]
+    [TestsOn(typeof(EqualityContract<>))]
     [RunSample(typeof(FullContractOnSimpleSample))]
     [RunSample(typeof(PartialContractOnSimpleSample))]
     [RunSample(typeof(StaticPartialContractOnSimpleSample))]
     [RunSample(typeof(FullContractOnInterfaceSample))]
     [RunSample(typeof(FullContractOnSampleWithEqualityInheritance))]
+    [RunSample(typeof(PartialContractOnSampleWithMultipleUnrelatedEqualitable))]
     public class EqualityContractTest : AbstractContractTest
     {
         [Test]
@@ -53,8 +58,8 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [Row(typeof(FullContractOnInterfaceSample), "HashCode", TestStatus.Passed)]
         [Row(typeof(FullContractOnInterfaceSample), "EquatableEquals_ISampleEquatable", TestStatus.Passed)]
         [Row(typeof(FullContractOnInterfaceSample), "EquatableEquals_SampleParentEquatable", TestStatus.Passed)]
-        [Row(typeof(FullContractOnInterfaceSample), "OperatorEquals", TestStatus.Failed)]
-        [Row(typeof(FullContractOnInterfaceSample), "OperatorNotEquals", TestStatus.Failed)]
+        [Row(typeof(FullContractOnInterfaceSample), "OperatorEquals", TestStatus.Passed)]
+        [Row(typeof(FullContractOnInterfaceSample), "OperatorNotEquals", TestStatus.Passed)]
         [Row(typeof(FullContractOnSampleWithEqualityInheritance), "ObjectEquals", TestStatus.Passed)]
         [Row(typeof(FullContractOnSampleWithEqualityInheritance), "HashCode", TestStatus.Passed)]
         [Row(typeof(FullContractOnSampleWithEqualityInheritance), "EquatableEquals_ISampleEquatable", TestStatus.Passed)]
@@ -62,12 +67,19 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [Row(typeof(FullContractOnSampleWithEqualityInheritance), "EquatableEquals_SampleChildEquatable", TestStatus.Passed)]
         [Row(typeof(FullContractOnSampleWithEqualityInheritance), "OperatorEquals", TestStatus.Passed)]
         [Row(typeof(FullContractOnSampleWithEqualityInheritance), "OperatorNotEquals", TestStatus.Passed)]
+        [Row(typeof(PartialContractOnSampleWithMultipleUnrelatedEqualitable), "ObjectEquals", TestStatus.Passed)]
+        [Row(typeof(PartialContractOnSampleWithMultipleUnrelatedEqualitable), "HashCode", TestStatus.Passed)]
+        [Row(typeof(PartialContractOnSampleWithMultipleUnrelatedEqualitable), "EquatableEquals_String", TestStatus.Passed)]
+        [Row(typeof(PartialContractOnSampleWithMultipleUnrelatedEqualitable), "EquatableEquals_Int32", TestStatus.Passed)]
+        [Row(typeof(PartialContractOnSampleWithMultipleUnrelatedEqualitable), "EquatableEquals_SampleWithMultipleUnrelatedEquatable", TestStatus.Passed)]
+        [Row(typeof(PartialContractOnSampleWithMultipleUnrelatedEqualitable), "OperatorEquals", TestStatus.Inconclusive)]
+        [Row(typeof(PartialContractOnSampleWithMultipleUnrelatedEqualitable), "OperatorNotEquals", TestStatus.Inconclusive)]
         public void VerifySampleEqualityContract(Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
         {
             VerifySampleContract("EqualityTests", fixtureType, testMethodName, expectedTestStatus);
         }
 
-        [Explicit]
+        [TestFixture, Explicit("Sample")]
         private class FullContractOnSimpleSample
         {
             [VerifyContract]
@@ -79,11 +91,11 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
                     { new SampleSimpleEquatable(123) },
                     { new SampleSimpleEquatable(456) },
                     { new SampleSimpleEquatable(789) }
-                }                
+                }
             };
         }
 
-        [Explicit]
+        [TestFixture, Explicit("Sample")]
         private class PartialContractOnSimpleSample
         {
             [VerifyContract]
@@ -99,7 +111,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             };
         }
 
-        [Explicit]
+        [TestFixture, Explicit("Sample")]
         private class StaticPartialContractOnSimpleSample
         {
             [VerifyContract]
@@ -115,7 +127,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             };
         }
 
-        [Explicit]
+        [TestFixture, Explicit("Sample")]
         private class FullContractOnInterfaceSample
         {
             [VerifyContract]
@@ -131,7 +143,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             };
         }
 
-        [Explicit]
+        [TestFixture, Explicit("Sample")]
         private class FullContractOnSampleWithEqualityInheritance
         {
             [VerifyContract]
@@ -147,9 +159,32 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             };
         }
 
+        [TestFixture, Explicit("Sample")]
+        private class PartialContractOnSampleWithMultipleUnrelatedEqualitable
+        {
+            [VerifyContract]
+            public readonly static IContract EqualityTests = new EqualityContract<SampleWithMultipleUnrelatedEquatable>
+            {
+                ImplementsOperatorOverloads = false,
+                EquivalenceClasses =
+                {
+                    { new SampleWithMultipleUnrelatedEquatable("123"), new SampleWithMultipleUnrelatedEquatable(" 123 "), 123, "123", " 123 " },
+                    { new SampleWithMultipleUnrelatedEquatable("456"), new SampleWithMultipleUnrelatedEquatable(" 456 "), 456, "456", " 456 " },
+                    { new SampleWithMultipleUnrelatedEquatable("789"), new SampleWithMultipleUnrelatedEquatable(" 789 "), 789, "789", " 789 " },
+                }
+            };
+        }
+
+        #region Samples
+        
         private class SampleSimpleEquatable : IEquatable<SampleSimpleEquatable>
         {
-            private int value;
+            private readonly int value;
+
+            public int Value
+            {
+                get { return value; }
+            }
 
             public SampleSimpleEquatable(int value)
             {
@@ -189,7 +224,12 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
 
         private class SampleParentEquatable : ISampleEquatable, IEquatable<SampleParentEquatable>
         {
-            private int value;
+            private readonly int value;
+
+            public int Value
+            {
+                get { return value; }
+            }
 
             public SampleParentEquatable(int value)
             {
@@ -208,7 +248,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
 
             public bool Equals(SampleParentEquatable other)
             {
-                return (other != null) && (value == other.value);
+                return !ReferenceEquals(null, other) && (value == other.value);
             }
 
             bool IEquatable<ISampleEquatable>.Equals(ISampleEquatable other)
@@ -218,7 +258,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
 
             public static bool operator ==(SampleParentEquatable left, SampleParentEquatable right)
             {
-                return (ReferenceEquals(null, left) && ReferenceEquals(null, right)) 
+                return (ReferenceEquals(null, left) && ReferenceEquals(null, right))
                     || (!ReferenceEquals(null, left) && left.Equals(right));
             }
 
@@ -240,5 +280,53 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
                 return base.Equals(other);
             }
         }
+
+        private class SampleWithMultipleUnrelatedEquatable : IEquatable<SampleWithMultipleUnrelatedEquatable>, IEquatable<int>, IEquatable<string>
+        {
+            private readonly int value;
+
+            public int Value
+            {
+                get { return value; }
+            }
+
+            public SampleWithMultipleUnrelatedEquatable(string value)
+            {
+                this.value = Int32.Parse(value.Trim());
+            }
+
+            public override bool Equals(object obj)
+            {
+                return Equals(obj as SampleWithMultipleUnrelatedEquatable)
+                    || Equals(obj as string)
+                    || ((obj is int) ? Equals((int)obj) : false);
+            }
+
+            public bool Equals(SampleWithMultipleUnrelatedEquatable other)
+            {
+                return (other != null)
+                    && (value == other.value);
+            }
+
+            public bool Equals(int other)
+            {
+                return value == other;
+            }
+
+            public bool Equals(string other)
+            {
+                int otherValue;
+                return (other != null)
+                    && Int32.TryParse(other.Trim(), out otherValue)
+                    && value == otherValue;
+            }
+
+            public override int GetHashCode()
+            {
+                return value.GetHashCode();
+            }
+        }
+
+        #endregion
     }
 }

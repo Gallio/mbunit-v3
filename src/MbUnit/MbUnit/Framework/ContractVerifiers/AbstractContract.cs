@@ -68,14 +68,19 @@ namespace MbUnit.Framework.ContractVerifiers
         /// </summary>
         /// <param name="method">The method, or null if missing.</param>
         /// <param name="methodSignature">The expected method signature for diagnostic output.</param>
-        protected static void AssertMethodExists(MethodInfo method, string methodSignature)
+        /// <param name="failsIfNotExists">Thrown a assertion failure exception if the method does not exist.</param>
+        /// <returns>True if the method exists; otherwise false.</returns>
+        protected static bool MethodExists(MethodInfo method, string methodSignature, bool failsIfNotExists)
         {
-            AssertionHelper.Explain(() =>
-                Assert.IsNotNull(method),
-                innerFailures => new AssertionFailureBuilder("Expected a method to exist.")
-                    .AddLabeledValue("Expected Method", methodSignature)
-                    .AddInnerFailures(innerFailures)
-                    .ToAssertionFailure());
+            if (failsIfNotExists)
+                AssertionHelper.Explain(() =>
+                    Assert.IsNotNull(method),
+                    innerFailures => new AssertionFailureBuilder("Expected a method to exist.")
+                        .AddLabeledValue("Expected Method", methodSignature)
+                        .AddInnerFailures(innerFailures)
+                        .ToAssertionFailure());
+
+            return method != null;
         }
     }
 }

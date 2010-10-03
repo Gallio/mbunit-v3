@@ -57,30 +57,17 @@ namespace MbUnit.Framework.ContractVerifiers
         public EquivalenceClass(params T[] equivalentInstances)
         {
             if (equivalentInstances == null)
-            {
-                throw new ArgumentNullException("equivalentInstances", String.Format("An equivalence class " +
-                    "of type '{0}' cannot be initialized with a null reference.", typeof(T)));
-            }
-            else
-            {
-                if (equivalentInstances.Length == 0)
-                {
-                    throw new ArgumentException(String.Format("An equivalence class of type '{0}' must be " + 
-                        "initialized with at least one instance.", typeof(T)), "equivalentInstances");
-                }
+                throw new ArgumentNullException("equivalentInstances", String.Format("An equivalence class of type '{0}' cannot be initialized with a null reference.", typeof(T)));
+            if (equivalentInstances.Length == 0)
+                throw new ArgumentException(String.Format("An equivalence class of type '{0}' must be initialized with at least one instance.", typeof(T)), "equivalentInstances");
 
-                foreach (T item in equivalentInstances)
-                {
-                    if (Object.ReferenceEquals(item, null))
-                    {
-                        throw new ArgumentException(String.Format("An equivalence class " +
-                            "of type '{0}' cannot be initialized with a collection of instances containing " +
-                            "a null reference.", typeof(T), "equivalentInstances"));
-                    }
-                }
-
-                this.equivalentInstances = new List<T>(equivalentInstances);
+            foreach (T item in equivalentInstances)
+            {
+                if (ReferenceEquals(item, null))
+                    throw new ArgumentException(String.Format("An equivalence class of type '{0}' cannot be initialized with a collection of instances containing a null reference.", typeof(T), "equivalentInstances"));
             }
+
+            this.equivalentInstances = new List<T>(equivalentInstances);
         }
 
         /// <summary>
@@ -105,4 +92,25 @@ namespace MbUnit.Framework.ContractVerifiers
             return GetEnumerator();
         }
     }
+
+    //// <inheritdoc />
+    //public class EquivalenceClass : EquivalenceClass<object>
+    //{
+    //    /// <summary>
+    //    /// Constructs a class of equivalent instances.
+    //    /// </summary>
+    //    /// <remarks>
+    //    /// <para>
+    //    /// All the elements of the collection should be equal together, in
+    //    /// the sense of the local implementation of an equality contract
+    //    /// (<see cref="IEquatable{T}"/>) or a comparison contract 
+    //    /// (<see cref="IComparable{T}"/>).
+    //    /// </para>
+    //    /// </remarks>
+    //    /// <param name="equivalentInstances">The type of equivalent object instances.</param>
+    //    public EquivalenceClass(params object[] equivalentInstances)
+    //        : base(equivalentInstances)
+    //    {
+    //    }
+    //}
 }

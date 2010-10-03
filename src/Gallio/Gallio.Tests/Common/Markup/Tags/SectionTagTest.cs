@@ -33,12 +33,12 @@ namespace Gallio.Tests.Common.Markup.Tags
             EquivalenceClasses = equivalenceClasses
         };
 
-        public override EquivalenceClassCollection<SectionTag> GetEquivalenceClasses()
+        public override EquivalenceClassCollection GetEquivalenceClasses()
         {
             return equivalenceClasses;
         }
 
-        private readonly static EquivalenceClassCollection<SectionTag> equivalenceClasses = new EquivalenceClassCollection<SectionTag>
+        private readonly static EquivalenceClassCollection equivalenceClasses = new EquivalenceClassCollection
         {
             new SectionTag("section"),
             new SectionTag("section") { Contents = { new TextTag("text") }},

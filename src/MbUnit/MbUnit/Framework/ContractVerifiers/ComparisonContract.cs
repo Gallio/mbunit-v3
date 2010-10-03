@@ -214,7 +214,7 @@ namespace MbUnit.Framework.ContractVerifiers
         {
             return new TestCase(name, () =>
             {
-                AssertMethodExists(method, methodSignature);
+                MethodExists(method, methodSignature, true);
                 Func<object, object, TResult> comparer = comparerFactory(method);
 
                 Assert.Multiple(() =>

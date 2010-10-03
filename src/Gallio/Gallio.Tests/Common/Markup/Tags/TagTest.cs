@@ -26,22 +26,22 @@ namespace Gallio.Tests.Common.Markup.Tags
     public class TagTest : BaseTagTest<Tag>
     {
         [VerifyContract]
-        public readonly IContract EqualityTests = new EqualityContract<Tag>()
+        public readonly IContract EqualityTests = new EqualityContract<Tag>
         {
             ImplementsOperatorOverloads = false,
             EquivalenceClasses = equivalenceClasses
         };
 
-        public override EquivalenceClassCollection<Tag> GetEquivalenceClasses()
+        public override EquivalenceClassCollection GetEquivalenceClasses()
         {
             return equivalenceClasses;
         }
 
-        private static EquivalenceClassCollection<Tag> equivalenceClasses = new EquivalenceClassCollection<Tag>
+        private readonly static EquivalenceClassCollection equivalenceClasses = new EquivalenceClassCollection
         {
-            { new BodyTag() },
-            { new BodyTag { Contents = { new TextTag("text") }}},
-            { new BodyTag { Contents = { new TextTag("text"), new TextTag("more") }}}
+            new BodyTag(),
+            new BodyTag { Contents = { new TextTag("text") }},
+            new BodyTag { Contents = { new TextTag("text"), new TextTag("more") }}
         };
     }
 }
