@@ -164,5 +164,26 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <inheritdoc />
     public class EquivalenceClassCollection : EquivalenceClassCollection<object>
     {
-    }
+        /// <summary>
+        /// Constructs an empty collection of equivalence classes.
+        /// </summary>
+        public EquivalenceClassCollection()
+	    {
+	    }
+
+        /// <summary>
+        /// Constructs a collection of equivalence classes from the specified distinct object instances.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The resulting collection contains as many equivalence class as provided instances. Each equivalence
+        /// class contains one single object. To construct a collection with equivalence classes containing
+        /// several equivalent instances, use preferably the default constructor followed by a list initializer.
+        /// </para>
+        /// </remarks>
+        public EquivalenceClassCollection(IEnumerable<object> distinctInstances)
+            : base(distinctInstances)
+        { 
+        }
+  }
 }
