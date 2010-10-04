@@ -53,14 +53,13 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <typeparam name="T">The type of equivalent object instances.</typeparam>
     public class EquivalenceClassCollection<T> : IEnumerable<EquivalenceClass<T>>
     {
-        private readonly List<EquivalenceClass<T>> equivalenceClasses;
+        private readonly List<EquivalenceClass<T>> equivalenceClasses = new List<EquivalenceClass<T>>();
 
         /// <summary>
         /// Constructs an empty collection of equivalence classes.
         /// </summary>
         public EquivalenceClassCollection()
         {
-            equivalenceClasses = new List<EquivalenceClass<T>>();
         }
         
         /// <summary>
@@ -109,7 +108,6 @@ namespace MbUnit.Framework.ContractVerifiers
         /// </example>
         /// <param name="distinctInstances">An enumeration of distinct instances.</param>
         public EquivalenceClassCollection(IEnumerable<T> distinctInstances)
-            : this()
         {
             if (distinctInstances == null)
                 throw new ArgumentNullException("distinctInstances");
@@ -181,9 +179,15 @@ namespace MbUnit.Framework.ContractVerifiers
         /// several equivalent instances, use preferably the default constructor followed by a list initializer.
         /// </para>
         /// </remarks>
-        public EquivalenceClassCollection(IEnumerable<object> distinctInstances)
-            : base(distinctInstances)
+        public EquivalenceClassCollection(IEnumerable distinctInstances)
+            : base(Cast(distinctInstances))
         { 
         }
-  }
+
+        private static IEnumerable<object> Cast(IEnumerable enumeration)
+        {
+            foreach (object value in enumeration)
+                yield return value;
+        }
+    }
 }
