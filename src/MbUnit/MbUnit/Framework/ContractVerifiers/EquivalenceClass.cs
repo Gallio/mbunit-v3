@@ -37,10 +37,9 @@ namespace MbUnit.Framework.ContractVerifiers
     /// the correct implementation of object equality or comparison.
     /// </para>
     /// </remarks>
-    /// <typeparam name="T">The type of equivalent object instances.</typeparam>
-    public class EquivalenceClass<T> : IEnumerable<T>
+    public class EquivalenceClass : IEnumerable
     {
-        private readonly List<T> equivalentInstances;
+        private readonly IList<object> equivalentInstances;
 
         /// <summary>
         /// Constructs a class of equivalent instances.
@@ -54,63 +53,29 @@ namespace MbUnit.Framework.ContractVerifiers
         /// </para>
         /// </remarks>
         /// <param name="equivalentInstances">The type of equivalent object instances.</param>
-        public EquivalenceClass(params T[] equivalentInstances)
+        public EquivalenceClass(params object[] equivalentInstances)
         {
             if (equivalentInstances == null)
-                throw new ArgumentNullException("equivalentInstances", String.Format("An equivalence class of type '{0}' cannot be initialized with a null reference.", typeof(T)));
+                throw new ArgumentNullException("equivalentInstances", "An equivalence class cannot be initialized with a null reference.");
             if (equivalentInstances.Length == 0)
-                throw new ArgumentException(String.Format("An equivalence class of type '{0}' must be initialized with at least one instance.", typeof(T)), "equivalentInstances");
+                throw new ArgumentException("An equivalence class must be initialized with at least one instance.", "equivalentInstances");
 
-            foreach (T item in equivalentInstances)
+            foreach (object item in equivalentInstances)
             {
                 if (ReferenceEquals(item, null))
-                    throw new ArgumentException(String.Format("An equivalence class of type '{0}' cannot be initialized with a collection of instances containing a null reference.", typeof(T), "equivalentInstances"));
+                    throw new ArgumentException("An equivalence class cannot be initialized with a collection of instances containing a null reference.", "equivalentInstances");
             }
 
-            this.equivalentInstances = new List<T>(equivalentInstances);
+            this.equivalentInstances = new List<object>(equivalentInstances);
         }
 
         /// <summary>
-        /// Gets the collection of equivalent instances.
+        /// Returns an enumerator that iterates through a collection.
         /// </summary>
-        public IList<T> EquivalentInstances
-        {
-            get { return new ReadOnlyCollection<T>(equivalentInstances); }
-        }
-
-        /// <summary>
-        /// Returns a strongly-typed enumerator that iterates through the collection.
-        /// </summary>
-        /// <returns>A strongly-typed enumerator.</returns>
-        public IEnumerator<T> GetEnumerator()
+        /// <returns>An enumerator object that can be used to iterate through the collection.</returns>
+        public IEnumerator GetEnumerator()
         {
             return equivalentInstances.GetEnumerator();
         }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
     }
-
-    //// <inheritdoc />
-    //public class EquivalenceClass : EquivalenceClass<object>
-    //{
-    //    /// <summary>
-    //    /// Constructs a class of equivalent instances.
-    //    /// </summary>
-    //    /// <remarks>
-    //    /// <para>
-    //    /// All the elements of the collection should be equal together, in
-    //    /// the sense of the local implementation of an equality contract
-    //    /// (<see cref="IEquatable{T}"/>) or a comparison contract 
-    //    /// (<see cref="IComparable{T}"/>).
-    //    /// </para>
-    //    /// </remarks>
-    //    /// <param name="equivalentInstances">The type of equivalent object instances.</param>
-    //    public EquivalenceClass(params object[] equivalentInstances)
-    //        : base(equivalentInstances)
-    //    {
-    //    }
-    //}
 }

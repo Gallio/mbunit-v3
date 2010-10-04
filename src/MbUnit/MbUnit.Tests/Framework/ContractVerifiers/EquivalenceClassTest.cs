@@ -22,52 +22,35 @@ using Gallio.Common.Collections;
 namespace MbUnit.Tests.Framework.ContractVerifiers
 {
     [TestFixture]
+    [TestsOn(typeof(EquivalenceClass))]
     public class EquivalenceClassTest
     {
         [Test, ExpectedArgumentNullException]
         public void ConstructsWithNullInitializerForValueType()
         {
-            new EquivalenceClass<int>(null);
-        }
-
-        [Test, ExpectedArgumentNullException]
-        public void ConstructsWithNullInitializerForNullableType()
-        {
-            new EquivalenceClass<int?>(null);
-        }
-
-        [Test, ExpectedArgumentNullException]
-        public void ConstructsWithNullInitializerForReferenceType()
-        {
-            new EquivalenceClass<object>(null);
+            new EquivalenceClass(null);
         }
 
         [Test, ExpectedArgumentException]
         public void ConstructsWithInitializerContainingNoObjects()
         {
-            new EquivalenceClass<object>(EmptyArray<object>.Instance);
+            new EquivalenceClass(EmptyArray<object>.Instance);
         }
 
         [Test, ExpectedArgumentException]
         public void ConstructsWithInitializerContainingNullReference()
         {
-            new EquivalenceClass<object>(new Object(), new Object(), null);
+            new EquivalenceClass(new Object(), new Object(), null);
         }
 
         [Test]
         public void ConstructsOk()
         {
-            object object1 = new object();
-            object object2 = new object();
-            object object3 = new object();
-
-            EquivalenceClass<object> target = new EquivalenceClass<object>(object1, object2, object3);
-            Assert.AreElementsEqual(new[] { object1, object2, object3 }, target.EquivalentInstances);
-
-            Assert.Count(3, target);
-            Assert.IsTrue(target.Contains(object1));
-            Assert.IsTrue(target.Contains(object2));
-            Assert.IsTrue(target.Contains(object3));
+            var object1 = new object();
+            var object2 = new object();
+            var object3 = new object();
+            var target = new EquivalenceClass(object1, object2, object3);
+            Assert.AreElementsSame(new[] { object1, object2, object3 }, target.Cast<object>());
         }
     }
 }

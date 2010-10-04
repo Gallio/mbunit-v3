@@ -34,7 +34,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// Use the default constructor followed by a list initializer to create a 
     /// collection of equivalence classes which contains a variable number of object instances.
     /// <code><![CDATA[
-    /// var collection = new EquivalenceClassCollection<Foo>
+    /// var collection = new EquivalenceClassCollection
     /// {
     ///     { new Foo(1), new Foo("One") },
     ///     { new Foo(2), new Foo("Two") },
@@ -46,21 +46,13 @@ namespace MbUnit.Framework.ContractVerifiers
     /// Use the single-parameter constructor to create a collection of equivalence classes 
     /// which contains one single object instance each.
     /// <code><![CDATA[
-    /// var collection = new EquivalenceClassCollection<Foo>(new Foo(1), new Foo(2), new Foo(3));
+    /// var collection = new EquivalenceClassCollection(new Foo(1), new Foo(2), new Foo(3));
     /// ]]></code>
     /// </para>
     /// </remarks>
-    /// <typeparam name="T">The type of equivalent object instances.</typeparam>
-    public class EquivalenceClassCollection<T> : IEnumerable<EquivalenceClass<T>>
+    public class EquivalenceClassCollection : IEnumerable<EquivalenceClass>
     {
-        private readonly List<EquivalenceClass<T>> equivalenceClasses = new List<EquivalenceClass<T>>();
-
-        /// <summary>
-        /// Constructs an empty collection of equivalence classes.
-        /// </summary>
-        public EquivalenceClassCollection()
-        {
-        }
+        private readonly IList<EquivalenceClass> equivalenceClasses = new List<EquivalenceClass>();
         
         /// <summary>
         /// Gets the number of equivalence classes in the collection.
@@ -78,7 +70,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// </summary>
         /// <param name="index">The searched index.</param>
         /// <returns>The equivalence class at the specified index.</returns>
-        internal EquivalenceClass<T> this[int index]
+        internal EquivalenceClass this[int index]
         {
             get
             {
@@ -86,6 +78,14 @@ namespace MbUnit.Framework.ContractVerifiers
             }
         }
         
+
+        /// <summary>
+        /// Constructs an empty collection of equivalence classes.
+        /// </summary>
+        public EquivalenceClassCollection()
+        {
+        }
+
         /// <summary>
         /// Constructs a collection of equivalence classes from the specified distinct object instances.
         /// </summary>
@@ -107,12 +107,12 @@ namespace MbUnit.Framework.ContractVerifiers
         /// ]]></code>
         /// </example>
         /// <param name="distinctInstances">An enumeration of distinct instances.</param>
-        public EquivalenceClassCollection(IEnumerable<T> distinctInstances)
+        public EquivalenceClassCollection(IEnumerable distinctInstances)
         {
             if (distinctInstances == null)
                 throw new ArgumentNullException("distinctInstances");
 
-            foreach (T instance in distinctInstances)
+            foreach (object instance in distinctInstances)
             {
                 Add(instance);
             }
@@ -122,7 +122,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Adds to the collection a new equivalence class which contains the specified objects.
         /// </summary>
         /// <param name="equivalentInstances">An array of equivalent instances.</param>
-        public void Add(params T[] equivalentInstances)
+        public void Add(params object[] equivalentInstances)
         {
             if (equivalentInstances == null)
                 throw new ArgumentNullException("equivalentInstances", "A collection of equivalence classes cannot contain a null reference class.");
@@ -130,25 +130,17 @@ namespace MbUnit.Framework.ContractVerifiers
             foreach (var instance in equivalentInstances)
             {
                 if (ReferenceEquals(instance, null))
-                    throw new ArgumentException(String.Format("An equivalence class of type '{0}' cannot contain a null reference instance.", typeof(T)), "equivalentInstances");
+                    throw new ArgumentException("An equivalence class cannot contain a null reference instance.", "equivalentInstances");
             }
 
-            equivalenceClasses.Add(new EquivalenceClass<T>(equivalentInstances));
-        }
-
-        /// <summary>
-        /// Gets the equivalence classes.
-        /// </summary>
-        public IList<EquivalenceClass<T>> EquivalenceClasses
-        {
-            get { return new ReadOnlyCollection<EquivalenceClass<T>>(equivalenceClasses); }
+            equivalenceClasses.Add(new EquivalenceClass(equivalentInstances));
         }
 
         /// <summary>
         /// Returns a strongly-typed enumerator that iterates through the collection.
         /// </summary>
         /// <returns>A strongly-typed enumerator.</returns>
-        public IEnumerator<EquivalenceClass<T>> GetEnumerator()
+        public IEnumerator<EquivalenceClass> GetEnumerator()
         {
             return equivalenceClasses.GetEnumerator();
         }
@@ -156,38 +148,6 @@ namespace MbUnit.Framework.ContractVerifiers
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
-        }
-    }
-
-    /// <inheritdoc />
-    public class EquivalenceClassCollection : EquivalenceClassCollection<object>
-    {
-        /// <summary>
-        /// Constructs an empty collection of equivalence classes.
-        /// </summary>
-        public EquivalenceClassCollection()
-	    {
-	    }
-
-        /// <summary>
-        /// Constructs a collection of equivalence classes from the specified distinct object instances.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// The resulting collection contains as many equivalence class as provided instances. Each equivalence
-        /// class contains one single object. To construct a collection with equivalence classes containing
-        /// several equivalent instances, use preferably the default constructor followed by a list initializer.
-        /// </para>
-        /// </remarks>
-        public EquivalenceClassCollection(IEnumerable distinctInstances)
-            : base(Cast(distinctInstances))
-        { 
-        }
-
-        private static IEnumerable<object> Cast(IEnumerable enumeration)
-        {
-            foreach (object value in enumeration)
-                yield return value;
         }
     }
 }

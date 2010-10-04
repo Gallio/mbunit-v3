@@ -26,8 +26,13 @@ using MbUnit.Framework.ContractVerifiers;
 
 namespace MbUnit.Tests.Framework.ContractVerifiers
 {
+    [TestFixture]
+    [TestsOn(typeof(ComparisonContract<>))]
     [RunSample(typeof(FullContractOnComparableSample))]
     [RunSample(typeof(PartialContractOnComparableSample))]
+    [RunSample(typeof(PartialContractOnInterfaceComparableSample))]
+    [RunSample(typeof(PartialContractInheritedComparableSample))]
+    [RunSample(typeof(PartialContractUnrelatedComparableSample))]
     public class ComparisonContractTest : AbstractContractTest
     {
         [Test]
@@ -41,13 +46,33 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [Row(typeof(PartialContractOnComparableSample), "OperatorGreaterThanOrEqual", TestStatus.Inconclusive)]
         [Row(typeof(PartialContractOnComparableSample), "OperatorLessThan", TestStatus.Inconclusive)]
         [Row(typeof(PartialContractOnComparableSample), "OperatorLessThanOrEqual", TestStatus.Inconclusive)]
+        [Row(typeof(PartialContractOnInterfaceComparableSample), "ComparableCompareTo_ISampleComparable", TestStatus.Passed)]
+        [Row(typeof(PartialContractOnInterfaceComparableSample), "ComparableCompareTo_SampleParentComparable", TestStatus.Passed)]
+        [Row(typeof(PartialContractOnInterfaceComparableSample), "OperatorGreaterThan", TestStatus.Inconclusive)]
+        [Row(typeof(PartialContractOnInterfaceComparableSample), "OperatorGreaterThanOrEqual", TestStatus.Inconclusive)]
+        [Row(typeof(PartialContractOnInterfaceComparableSample), "OperatorLessThan", TestStatus.Inconclusive)]
+        [Row(typeof(PartialContractOnInterfaceComparableSample), "OperatorLessThanOrEqual", TestStatus.Inconclusive)]
+        [Row(typeof(PartialContractInheritedComparableSample), "ComparableCompareTo_ISampleComparable", TestStatus.Passed)]
+        [Row(typeof(PartialContractInheritedComparableSample), "ComparableCompareTo_SampleParentComparable", TestStatus.Passed)]
+        [Row(typeof(PartialContractInheritedComparableSample), "ComparableCompareTo_SampleChildComparable", TestStatus.Passed)]
+        [Row(typeof(PartialContractInheritedComparableSample), "OperatorGreaterThan", TestStatus.Inconclusive)]
+        [Row(typeof(PartialContractInheritedComparableSample), "OperatorGreaterThanOrEqual", TestStatus.Inconclusive)]
+        [Row(typeof(PartialContractInheritedComparableSample), "OperatorLessThan", TestStatus.Inconclusive)]
+        [Row(typeof(PartialContractInheritedComparableSample), "OperatorLessThanOrEqual", TestStatus.Inconclusive)]
+        [Row(typeof(PartialContractUnrelatedComparableSample), "ComparableCompareTo_SampleUnrelatedComparable", TestStatus.Passed)]
+        [Row(typeof(PartialContractUnrelatedComparableSample), "ComparableCompareTo_Int32", TestStatus.Passed)]
+        [Row(typeof(PartialContractUnrelatedComparableSample), "ComparableCompareTo_String", TestStatus.Passed)]
+        [Row(typeof(PartialContractUnrelatedComparableSample), "OperatorGreaterThan", TestStatus.Inconclusive)]
+        [Row(typeof(PartialContractUnrelatedComparableSample), "OperatorGreaterThanOrEqual", TestStatus.Inconclusive)]
+        [Row(typeof(PartialContractUnrelatedComparableSample), "OperatorLessThan", TestStatus.Inconclusive)]
+        [Row(typeof(PartialContractUnrelatedComparableSample), "OperatorLessThanOrEqual", TestStatus.Inconclusive)]
         public void VerifySampleEqualityContract(Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
         {
             VerifySampleContract("ComparisonTests", fixtureType, testMethodName, expectedTestStatus);
         }
 
-        [Explicit]
-        internal class FullContractOnComparableSample
+        [TestFixture, Explicit("Sample")]
+        private class FullContractOnComparableSample
         {
             [VerifyContract]
             public readonly IContract ComparisonTests = new ComparisonContract<SampleComparable>
@@ -62,7 +87,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             };
         }
 
-        [Explicit]
+        [TestFixture, Explicit("Sample")]
         private class PartialContractOnComparableSample
         {
             [VerifyContract]
@@ -78,12 +103,64 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             };
         }
 
-        /// <summary>
-        /// Sample comparable type.
-        /// </summary>
-        internal class SampleComparable : IComparable<SampleComparable>
+        [TestFixture, Explicit("Sample")]
+        private class PartialContractOnInterfaceComparableSample
+        {
+            [VerifyContract]
+            public readonly IContract ComparisonTests = new ComparisonContract<ISampleComparable>
+            {
+                ImplementsOperatorOverloads = false,
+                EquivalenceClasses =
+                {
+                    { new SampleParentComparable(123) },
+                    { new SampleParentComparable(456) },
+                    { new SampleParentComparable(789) },
+                }
+            };
+        }
+
+        [TestFixture, Explicit("Sample")]
+        private class PartialContractInheritedComparableSample
+        {
+            [VerifyContract]
+            public readonly IContract ComparisonTests = new ComparisonContract<SampleParentComparable>
+            {
+                ImplementsOperatorOverloads = false,
+                EquivalenceClasses =
+                {
+                    { new SampleParentComparable(123), new SampleChildComparable(123) },
+                    { new SampleChildComparable(456) },
+                    { new SampleParentComparable(789) },
+                }
+            };
+        }
+
+        [TestFixture, Explicit("Sample")]
+        private class PartialContractUnrelatedComparableSample
+        {
+            [VerifyContract]
+            public readonly IContract ComparisonTests = new ComparisonContract<SampleUnrelatedComparable>
+            {
+                ImplementsOperatorOverloads = false,
+                EquivalenceClasses =
+                {
+                    { new SampleUnrelatedComparable(123), 123, "123", " 123 " },
+                    { new SampleUnrelatedComparable(456), 456, "456", " 456 " },
+                    { new SampleUnrelatedComparable(789), 789, "789", " 789 " },
+                }
+            };
+        }
+
+        #region Samples
+        
+        private class SampleComparable : IComparable<SampleComparable>
         {
             private int value;
+
+            public int Value
+            {
+                get { return value; }
+            }
 
             public SampleComparable(int value)
             {
@@ -115,5 +192,79 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
                 return ((left != null) || (right != null)) && ((left == null) || (left.CompareTo(right) < 0));
             }
         }
+
+        private interface ISampleComparable : IComparable<ISampleComparable>
+        { 
+        }
+
+        private class SampleParentComparable : ISampleComparable, IComparable<SampleParentComparable>
+        {
+            private int value;
+
+            public int Value
+            {
+                get { return value; }
+            }
+
+            public SampleParentComparable(int value)
+            {
+                this.value = value;
+            }
+
+            public int CompareTo(SampleParentComparable other)
+            {
+                return (other == null) ? Int32.MaxValue : value.CompareTo(other.Value);
+            }
+
+            int IComparable<ISampleComparable>.CompareTo(ISampleComparable other)
+            {
+                return CompareTo(other as SampleParentComparable);
+            }
+        }
+
+        private class SampleChildComparable : SampleParentComparable, IComparable<SampleChildComparable>
+        {
+            public SampleChildComparable(int value)
+                : base(value)
+            {
+            }
+
+            public int CompareTo(SampleChildComparable other)
+            {
+                return base.CompareTo(other);
+            }
+        }
+
+        private class SampleUnrelatedComparable : IComparable<SampleUnrelatedComparable>, IComparable<int>, IComparable<string>
+        {
+            private int value;
+
+            public int Value
+            {
+                get { return value; }
+            }
+
+            public SampleUnrelatedComparable(int value)
+            {
+                this.value = value;
+            }
+
+            public int CompareTo(SampleUnrelatedComparable other)
+            {
+                return (other == null) ? Int32.MaxValue : CompareTo(other.value);
+            }
+
+            public int CompareTo(int other)
+            {
+                return value.CompareTo(other);
+            }
+
+            public int CompareTo(string other)
+            {
+                return (other == null) ? Int32.MaxValue : CompareTo(Int32.Parse(other.Trim()));
+            }
+        }
+
+        #endregion
     }
 }
