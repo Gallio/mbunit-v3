@@ -549,7 +549,10 @@ namespace Gallio.Runtime.Hosting
 
         private static XmlElement GetOrCreateChildElement(XmlElement parent, string name, string namespaceUri)
         {
-            XmlNodeList nodeList = parent.GetElementsByTagName(name, namespaceUri ?? parent.NamespaceURI);
+            var namespaceManager = new XmlNamespaceManager(parent.OwnerDocument.NameTable);
+            namespaceManager.AddNamespace(parent.GetPrefixOfNamespace(namespaceUri ?? parent.NamespaceURI), namespaceUri ?? parent.NamespaceURI);
+            XmlNodeList nodeList = parent.SelectNodes(name, namespaceManager);
+
             if (nodeList.Count != 0)
                 return (XmlElement) nodeList[0];
 
