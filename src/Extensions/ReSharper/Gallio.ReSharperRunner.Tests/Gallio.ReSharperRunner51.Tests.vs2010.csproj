@@ -209,6 +209,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.Psi.Services.CSharp.dll</HintPath>
     </Reference>
+	<Reference Include="JetBrains.ReSharper.Psi.Xml, Version=5.1.1751.8, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL" />
     <Reference Include="JetBrains.ReSharper.Refactorings.CSharp, Version=4.5.1153.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.Refactorings.CSharp.dll</HintPath>

@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{A268C6C4-5B94-49df-9AC0-FE9F65112A25}</ProjectGuid>
+    <ProjectGuid>{A268C6C4-5B94-49DF-9AC0-FE9F65112A25}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.ReSharperRunner.Tests</RootNamespace>
@@ -49,7 +49,7 @@
     </Reference>
     <Reference Include="JetBrains.Platform.CommonServices, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.Platform.CommonServices.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.Platform.CommonServices.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Platform.ReSharper.AbstractTreeBuilder, Version=4.5.1153.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -62,59 +62,59 @@
     </Reference>
     <Reference Include="JetBrains.Platform.ReSharper.ActionManagement, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.Platform.ReSharper.ActionManagement.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.Platform.ReSharper.ActionManagement.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Platform.ReSharper.ActivityTracking, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.Platform.ActivityTracking.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.Platform.ActivityTracking.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Platform.ReSharper.DocumentManager, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.DocumentManager.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.DocumentManager.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Platform.ReSharper.DocumentModel, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.DocumentModel.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.DocumentModel.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Platform.ReSharper.IDE, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.IDE.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.IDE.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Platform.ReSharper.Interop.WinApi, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.Interop.WinApi.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.Interop.WinApi.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Platform.ReSharper.Metadata, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.Metadata.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.Metadata.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Platform.ReSharper.ProjectModel, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.ProjectModel.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.ProjectModel.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Platform.ReSharper.Shell, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.Shell.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.Shell.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Platform.ReSharper.TextControl, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.TextControl.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.TextControl.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Platform.ReSharper.UI, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.UI.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.UI.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Platform.ReSharper.UI.Avalon, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.UI.Avalon.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.UI.Avalon.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Platform.ReSharper.Util, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.Util.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.Util.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Platform.ReSharper.VSIntegration, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.VSIntegration.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.VSIntegration.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.ReSharper.Daemon, Version=4.5.1153.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -195,11 +195,11 @@
     </Reference>
     <Reference Include="JetBrains.ReSharper.Psi, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.Psi.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.Psi.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.ReSharper.Psi.CSharp, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.Psi.CSharp.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.Psi.CSharp.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.ReSharper.Psi.Services, Version=4.5.1153.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -209,13 +209,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.Psi.Services.CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="JetBrains.ReSharper.Psi.Xml, Version=5.1.1751.8, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL" />
     <Reference Include="JetBrains.ReSharper.Refactorings.CSharp, Version=4.5.1153.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.Refactorings.CSharp.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.ReSharper.Resources, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.Resources.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.Resources.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.ReSharper.SolutionAnalysis, Version=4.5.1153.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -223,7 +224,7 @@
     </Reference>
     <Reference Include="JetBrains.ReSharper.SolutionBuilder, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.SolutionBuilder.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.SolutionBuilder.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.ReSharper.TaskRunner, Version=4.5.1153.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -232,7 +233,7 @@
     </Reference>
     <Reference Include="JetBrains.ReSharper.TaskRunnerFramework, Version=3.1.584.3, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.TaskRunnerFramework.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.TaskRunnerFramework.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.ReSharper.TestFramework, Version=4.5.1153.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -244,15 +245,15 @@
     </Reference>
     <Reference Include="JetBrains.ReSharper.UnitTestExplorer, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.UnitTestExplorer.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.UnitTestExplorer.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.ReSharper.VS, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.VS.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.VS.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.ReSharper.VSI, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-	  <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.VSI.dll</HintPath>
+      <HintPath>..\libs\ReSharper\v5.1\JetBrains.ReSharper.VSI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

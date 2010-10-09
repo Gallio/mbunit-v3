@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.Services</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Psi.Services.IDeclaredElementInstanceToDataMap`2">
+            <summary>
+            IDeclaredElementInstance to TValue map.
+            Rehash should be called after any PSI change
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Services.DeclaredElementInstancePointerMap`2">
+            <summary>
+            IDeclaredElementInstance to TValue map.
+            Rehash should be called after any PSI change
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Services.IDeclaredElementToDataMap`1">
+            <summary>
+            IDeclaredElement to TValue map.
+            Rehash should be called after any PSI change
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Services.ElementPointerMap`1">
+            <summary>
+            IDeclaredElement to TValue map.
+            Rehash should be called after any PSI change
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Services.ElementEnvoyMap`1">
+            <summary>
+            IDeclaredElement to TValue map.
+            Rehash should be called after any PSI change
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.ILanguageReferenceSelector.GetBaseConstructor(JetBrains.ReSharper.Psi.IConstructor)">
+            <summary>
+            Get the base constructor call from given constructor
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.ILanguageReferenceSelector.GetCandidates(JetBrains.ReSharper.Psi.Resolve.IReference,JetBrains.ReSharper.Psi.Services.ReferencePreferenceKind)">
+            <summary>
+            Return the candidates to go to declaration action
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.Util.IPrefferedReference">
+            <summary>
+            Such reference will be always selected in <see cref="M:JetBrains.ReSharper.Psi.Services.TextControlToPsi.GetReferencesAtOffset(JetBrains.ProjectModel.ISolution,JetBrains.DocumentModel.IDocument,System.Int32)"/> and <see cref="!:JetBrains.ReSharper.Feature.Services.Util.CandidatesUtil.SelectGoodReferences"/>
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.TextControlToPsi.SelectReference(JetBrains.DocumentModel.DocumentRange,System.Collections.Generic.IEnumerable{JetBrains.ReSharper.Psi.Resolve.IReference})">
+            <summary>
+            Selects a reference from DIFFERENT psi files that user is most likely to bear in mind
+            </summary>
+            <remarks>Generally, we prefer references to the right of the position</remarks>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.TextControlToPsi.SelectReference(JetBrains.ReSharper.Psi.Tree.IFile,JetBrains.DocumentModel.DocumentRange,JetBrains.ReSharper.Psi.Resolve.IReference[])">
+            <summary>
+            Selects a reference from the same psi file that user is most likely to bear in mind
+            </summary>
+            <remarks>Generally, we prefer references to the right of the position</remarks>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Services.ValueTracking.Engine.ValueTrackingNodesRepository">
+            <summary>
+            Map of IElements to value tracking nodes
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.ValueTracking.Nodes.IPreExpandedNode.InitNode(JetBrains.Application.Progress.SubProgressIndicator)">
+            <summary>
+            Init data of pre-expanded node (usually calculates set of elements to search)
+            May be called several times (when user cancells action)
+            </summary>
+        </member>
+    </members>
+</doc>

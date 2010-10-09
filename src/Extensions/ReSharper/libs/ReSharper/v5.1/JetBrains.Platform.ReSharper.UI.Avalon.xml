@@ -4,6 +4,35 @@
         <name>JetBrains.Platform.ReSharper.UI.Avalon</name>
     </assembly>
     <members>
+        <member name="M:JetBrains.UI.Avalon.Interop.AvalonBitmapInterop.ToBitmapSource(System.Drawing.Bitmap,System.Drawing.Rectangle)">
+            <summary>
+            Converts a portion of <see cref="T:System.Drawing.Bitmap"/> into a WPF <see cref="T:System.Windows.Media.Imaging.BitmapSource"/>.
+            </summary>
+            <remarks>Uses GDI to do the conversion. Hence the call to the marshalled DeleteObject.
+            </remarks>
+            <param name="source">The source bitmap.</param>
+            <param name="sourceRect">Rectangle in source bitmap to convert</param>
+            <returns>A BitmapSource</returns>
+        </member>
+        <member name="M:JetBrains.UI.Avalon.Interop.AvalonBitmapInterop.ToBitmapSource(System.Drawing.Bitmap)">
+            <summary>
+            Converts a <see cref="T:System.Drawing.Bitmap"/> into a WPF <see cref="T:System.Windows.Media.Imaging.BitmapSource"/>.
+            </summary>
+            <remarks>Uses GDI to do the conversion. Hence the call to the marshalled DeleteObject.
+            </remarks>
+            <param name="source">The source bitmap.</param>
+            <returns>A BitmapSource</returns>
+        </member>
+        <member name="M:JetBrains.UI.Avalon.Interop.AvalonBitmapInterop.RenderGdipIntoAvalonImageSet(System.Drawing.Size,System.Int32,System.Action{System.Drawing.Graphics})">
+            <summary>
+            Creates a <see cref="T:System.Drawing.Graphics">GDI+ Graphics</see> to render into, and returns the rendering result in a form of set of sliced <see cref="T:System.Windows.Media.Imaging.BitmapSource">Avalon images</see>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.Avalon.Interop.AvalonBitmapInterop.RenderGdipIntoAvalonImage(System.Drawing.Size,System.Action{System.Drawing.Graphics})">
+            <summary>
+            Creates a <see cref="T:System.Drawing.Graphics">GDI+ Graphics</see> to render into, and returns the rendering result in a form of set of sliced <see cref="T:System.Windows.Media.Imaging.BitmapSource">Avalon images</see>.
+            </summary>
+        </member>
         <member name="M:JetBrains.UI.Avalon.Interop.AvalonBitmapInterop.RenderGdipIntoAvalonImage(System.Windows.Size,JetBrains.UI.Avalon.Interop.AvalonBitmapInterop.AlphaChannel,System.Action{System.Drawing.Graphics})">
             <summary>
             Creates a <see cref="T:System.Drawing.Graphics">GDI+ Graphics</see> to render into, and returns the rendering result in a form of an <see cref="T:System.Windows.Media.ImageSource">Avalon image</see>.
@@ -26,6 +55,64 @@
             Creates a <see cref="T:System.Drawing.Graphics">GDI+ Graphics</see> to render into, and returns the rendering result in a form of an <see cref="T:System.Windows.Media.ImageSource">Avalon image</see>.
             </summary>
             <remarks>Creates a GDI bitmap, HDC on it, Graphics on that, and uses the GDI bitmap bytes to create an Avalon image off those. Not quite compatible with <see cref="T:System.Windows.Media.Imaging.WriteableBitmap"/> because the bits are created by <see cref="M:JetBrains.Interop.WinApi.Gdi32Dll.CreateDIBSection(System.Void*,JetBrains.Interop.WinApi.Declarations.Structures.BITMAPINFO*,System.UInt32,System.Void**,System.Void*,System.Int32)"/> anew each time.</remarks>
+        </member>
+        <member name="T:JetBrains.UI.CrossFramework.GdipWritableAvalonBitmap">
+            <summary>
+            Allows to render with GDIP into an Avalon device context.
+            Bitmap source object reused on renders, recreated when size changes (with optional optimizations).
+            Created (and gets size) on first <see cref="M:JetBrains.UI.CrossFramework.GdipWritableAvalonBitmap.PaintGdip(System.Windows.Size,System.Action{System.Drawing.Graphics})"/>, any <see cref="M:JetBrains.UI.CrossFramework.GdipWritableAvalonBitmap.Render(System.Windows.Media.DrawingContext,System.Windows.Rect)"/> calls before that are silently ignored.
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.CrossFramework.GdipWritableAvalonBitmap.myBitmap">
+            <summary>
+            Avalon bitmap source: reused on renders, recreated when size changes.
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.CrossFramework.GdipWritableAvalonBitmap.myLogicalSize">
+            <summary>
+            The size, as set by the user, as painted, as visible on screen on render.
+            The bitmap might be larger to optimize for resizes (see <see cref="F:JetBrains.UI.CrossFramework.GdipWritableAvalonBitmap.myResizePolicy"/>).
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.CrossFramework.GdipWritableAvalonBitmap.PaintGdip(System.Windows.Size,System.Action{System.Drawing.Graphics})">
+            <summary>
+            Does GDI+ rendering into this bitmap.
+            </summary>
+            <param name="sizeNew">The new size of the bitmap (or the old one, in which case the bitmap will remain intact).</param>
+            <param name="FRender">Painter.</param>
+        </member>
+        <member name="M:JetBrains.UI.CrossFramework.GdipWritableAvalonBitmap.Render(System.Windows.Media.DrawingContext,System.Windows.Rect)">
+            <summary>
+            Renders the bitmap onto the given DC.
+            Only the logical-size-part is painted, any lazy-sized regions outside the logical size are clipped out.
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.CrossFramework.GdipWritableAvalonBitmap.ChooseBitmapSizeByPolicy_LazyDim(System.Double,System.Double)">
+            <summary>
+            Chooses each dim of the lazy preferred size.
+            When less than screen, round up to the nearest power of 2. When larger, round up to the nearest screen.
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.CrossFramework.GdipWritableAvalonBitmap.ChooseBitmapSizeByPolicy(System.Windows.Size)">
+            <summary>
+            In lazy mode, we do not want to respawn the bitmap each time we're growing it gradually (eg resizing the window).
+            Snap sizes to some common values in lazy mode.
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.CrossFramework.GdipWritableAvalonBitmap.RecreateBitmap(System.Windows.Size)">
+            <summary>
+            Create new writable bitmap of the given size.
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.CrossFramework.GdipWritableAvalonBitmap.ResizePolicy.Exact">
+            <summary>
+            Bitmap is always of the required size, exactly. Reallocated on each resize.
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.CrossFramework.GdipWritableAvalonBitmap.ResizePolicy.Lazy">
+            <summary>
+            Old bitmap is reused if the new size is smaller.
+            </summary>
         </member>
         <member name="T:JetBrains.UI.Avalon.AvalonEx">
             <summary>
@@ -276,6 +363,25 @@
             <summary>
             By default, a document has some large serif font applied.
             Makes the document follow the system font family and sizes.
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.Avalon.AvalonEx.IsCollapsed(System.Windows.Size)">
+            <summary>
+            Gets whether the given size is collapsed, that is, has a zero or negative dimension.
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.Avalon.AvalonEx.IsConstrained(System.Windows.Size,System.Windows.Size)">
+            <summary>
+            Checks whether the <paramref name="source"/> size satisfies the <paramref name="limit"/>, in terms of the <see cref="M:JetBrains.UI.Avalon.AvalonEx.Constrain(System.Windows.Size,System.Windows.Size)"/> function.
+            </summary>
+            <param name="source">The source size to be limited. May be non-normalized.</param>
+            <param name="limit">The limiting size. Must be normalized.</param>
+            <returns>Whether executing <see cref="M:JetBrains.UI.Avalon.AvalonEx.Constrain(System.Windows.Size,System.Windows.Size)"/> over <paramref name="source"/> and <paramref name="limit"/> won't change the <paramref name="source"/>.</returns>
+        </member>
+        <member name="M:JetBrains.UI.Avalon.AvalonEx.IsNormalized(System.Windows.Size)">
+            <summary>
+            Checks whether the size corresponds to a normalized rectangle.
+            A normalized rectangle is such whose left coordinate is not greater than right, and top coordinate is not greater than bottom.
             </summary>
         </member>
         <member name="T:JetBrains.UI.Avalon.AvalonTemplates">

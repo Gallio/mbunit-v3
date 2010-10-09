@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.Services.CSharp</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Psi.Services.CSharp.CSharpReparseContext">
+            <summary>
+            Extract part of the physical file as context, which could be reparsed multiple times 
+            to check if some contruct could be parsed in given context, or not
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Services.CSharp.ValueTracking.Nodes.LocalDeclarationNode">
+            <summary>
+            Local variable to usages or initializer...
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Services.CSharp.ValueTracking.Nodes.PropertyInitialNode">
+            <summary>
+            This node is created when value tracking runs on property declaration.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Services.CSharp.ValueTracking.Nodes.PropertySelfValueNode">
+            <summary>
+            This node is descendant of <see cref="T:JetBrains.ReSharper.Psi.Services.CSharp.ValueTracking.Nodes.PropertyInitialNode"/>.
+            It is expanded into return value of getter or 'value' parameter of setter.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Services.CSharp.ValueTracking.PreNodes.PreExpandedNodeParameterOut">
+            <summary>
+            parameter to argument value
+            </summary>
+        </member>
+    </members>
+</doc>

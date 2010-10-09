@@ -349,7 +349,7 @@
         </member>
         <member name="F:JetBrains.Interop.WinApi.Declarations.Structures.BITMAPINFO.bmiColors">
             <summary>
-            <see cref="F:System.IntPtr.Zero"/>, unless you're using a palette.
+            <c>Null</c>, unless you're using a palette.
             </summary>
         </member>
         <member name="T:JetBrains.Interop.WinApi.Declarations.Structures.BLENDFUNCTION">
@@ -1986,6 +1986,21 @@
         <member name="F:JetBrains.Interop.WinApi.EditBoxControlMargins.EC_USEFONTINFO">
             <summary>
             Rich edit controls: Sets the left and right margins to a narrow width calculated using the text metrics of the control's current font. If no font has been set for the control, the margins are set to zero. The lParam parameter is ignored. Edit controls: The EC_USEFONTINFO value cannot be used in the wParam parameter. It can only be used in the lParam parameter. 
+            </summary>
+        </member>
+        <member name="T:JetBrains.Interop.WinApi.Declarations.Constants.HookCode">
+            <summary>
+            Hook codes for callback functions of <see cref="M:JetBrains.UI.Interop.Win32Declarations.SetWindowsHookEx(JetBrains.UI.Interop.HookType,JetBrains.UI.Interop.Win32Declarations.HookProc,System.IntPtr,System.Int32)"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Interop.WinApi.Declarations.Constants.HookCode.HC_ACTION">
+            <summary>
+            Mouse hook: The wParam and lParam parameters contain information about a mouse message.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Interop.WinApi.Declarations.Constants.HookCode.HC_NOREMOVE">
+            <summary>
+            Mouse hook: The wParam and lParam parameters contain information about a mouse message, and the mouse message has not been removed from the message queue. (An application called the PeekMessage function, specifying the PM_NOREMOVE flag.)
             </summary>
         </member>
         <member name="T:JetBrains.Interop.WinApi.MEMORYSTATUSEX">

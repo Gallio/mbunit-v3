@@ -190,6 +190,11 @@
             AboutBox for the product shows this image. Recommended minimum width: <c>200h</c>.
             </summary>
         </member>
+        <member name="P:JetBrains.Application.IApplicationDescriptor.ProductDialogHeaderImage">
+            <summary>
+            All license-related dialogs shows this image to ease disambiguation between products. Recommended size: <c>521x54</c>.
+            </summary>
+        </member>
         <member name="P:JetBrains.Application.IApplicationDescriptor.ProductBirthDate">
             <summary>
             The birth date of the product. Used for the lower copyright year and so on.
@@ -315,6 +320,11 @@
         <member name="P:JetBrains.Application.ApplicationDescriptor.ProductAboutBoxImage">
             <summary>
             AboutBox for the product shows this image. Recommended minimum width: <c>200h</c>.
+            </summary>
+        </member>
+        <member name="P:JetBrains.Application.ApplicationDescriptor.ProductDialogHeaderImage">
+            <summary>
+            All license-related dialogs shows this image to ease disambiguation between products. Recommended minimum width: <c>200h</c>.
             </summary>
         </member>
         <member name="P:JetBrains.Application.ApplicationDescriptor.ProductBirthDate">

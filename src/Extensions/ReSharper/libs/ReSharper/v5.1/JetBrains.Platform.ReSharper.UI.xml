@@ -7938,6 +7938,57 @@
             Change it to implement a filter in the inheritor.
             </summary>
         </member>
+        <member name="F:JetBrains.UI.Application.License.EvaluationExpirationControl.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.Application.License.EvaluationExpirationControl.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.UI.Application.License.EvaluationExpirationControl.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.src.Shell.License.ObtainPermanentLicenseControl.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.src.Shell.License.ObtainPermanentLicenseControl.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.UI.src.Shell.License.ObtainPermanentLicenseControl.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.Application.License.ProductBaseForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.Application.License.ProductBaseForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.UI.Application.License.ProductBaseForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
         <member name="F:JetBrains.UI.Application.License.LicenseAgreementForm.components">
             <summary>
             Required designer variable.
@@ -7968,23 +8019,6 @@
         <member name="P:JetBrains.UI.Application.License.ILicenseInformation.UseCustomLicenseServerUrl">
             <summary>
             License server information
-            </summary>
-        </member>
-        <member name="F:JetBrains.UI.src.Shell.License.ObtainPermanentLicenseForm.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:JetBrains.UI.src.Shell.License.ObtainPermanentLicenseForm.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:JetBrains.UI.src.Shell.License.ObtainPermanentLicenseForm.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
             </summary>
         </member>
         <member name="T:JetBrains.UI.Application.MouseWheelRedirector">
@@ -8784,79 +8818,46 @@
             When <see cref="M:System.GC.Collect"/> occurs, the finalizer is called on this class, and the owner is notified of the event.
             </summary>
         </member>
-        <member name="M:JetBrains.UI.Application.License.LicenseInformationForm.InitializeComponent">
+        <member name="M:JetBrains.UI.Application.License.LicenseInformationControl.InitializeComponent">
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
             </summary>
         </member>
-        <member name="M:JetBrains.UI.Application.License.FormWithWebBrowser.GetMeasuringDivStyle(System.Drawing.Size)">
+        <member name="F:JetBrains.UI.Application.License.EvaluationFeedbackControl.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.Application.License.EvaluationFeedbackControl.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.UI.Application.License.EvaluationFeedbackControl.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.Application.License.JetWebBrowser.GetMeasuringDivStyle(System.Drawing.Size)">
             <summary>
             Generates a style for the div we use for measuring the text, assigning it the specified width and height, which must be given in pixels.
             </summary>
         </member>
-        <member name="F:JetBrains.UI.Application.License.FormWithWebBrowser.components">
+        <member name="F:JetBrains.UI.Application.License.JetWebBrowser.components">
             <summary>
             Required designer variable.
             </summary>
         </member>
-        <member name="M:JetBrains.UI.Application.License.FormWithWebBrowser.Dispose(System.Boolean)">
+        <member name="M:JetBrains.UI.Application.License.JetWebBrowser.Dispose(System.Boolean)">
             <summary>
             Clean up any resources being used.
             </summary>
             <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         </member>
-        <member name="M:JetBrains.UI.Application.License.FormWithWebBrowser.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="F:JetBrains.UI.Application.License.EvaluationExpirationForm.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:JetBrains.UI.Application.License.EvaluationExpirationForm.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:JetBrains.UI.Application.License.EvaluationExpirationForm.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="F:JetBrains.UI.Application.License.EvaluationFeedbackForm.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:JetBrains.UI.Application.License.EvaluationFeedbackForm.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:JetBrains.UI.Application.License.EvaluationFeedbackForm.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="F:JetBrains.UI.Application.License.ExpirationWarningForm.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:JetBrains.UI.Application.License.ExpirationWarningForm.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-        </member>
-        <member name="M:JetBrains.UI.Application.License.ExpirationWarningForm.InitializeComponent">
+        <member name="M:JetBrains.UI.Application.License.JetWebBrowser.InitializeComponent">
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.

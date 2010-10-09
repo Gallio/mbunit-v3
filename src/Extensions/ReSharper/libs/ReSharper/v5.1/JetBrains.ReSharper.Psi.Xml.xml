@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.Xml</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Psi.Xml.Impl.XmlFormattingHelper">
+            <summary>
+            Temporary class!!! Will be merged.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xml.Tree.IXmlTagContainer.GetNestedTags``1(System.String)">
+            <summary>
+            Returns all nested tags, that correspond to xpath expression
+            </summary>
+            <param name="xpath">simple xpath with '/' and '*'</param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xml.Tree.IXmlTagContainer.AddTagBefore(JetBrains.ReSharper.Psi.Xml.Tree.IXmlTag,JetBrains.ReSharper.Psi.Xml.Tree.IXmlTag)">
+            <summary>
+            Adds tag before then anchor. If anchor == null, the tag is inserted after the last tag
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xml.Tree.IXmlTagContainer.AddTagAfter(JetBrains.ReSharper.Psi.Xml.Tree.IXmlTag,JetBrains.ReSharper.Psi.Xml.Tree.IXmlTag)">
+            <summary>
+            Adds tag after ther anchor. If anchor == null, the tag is inserted before the first tag
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Xml.Tree.XmlTagExtensions">
+            <summary>
+            Extension methods for <see cref="T:JetBrains.ReSharper.Psi.Xml.Tree.IXmlTag"/>
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xml.Impl.XmlBuildSupportManager.Check(JetBrains.ProjectModel.IProjectFile)">
+            <summary>
+            If any of the registered checked answer <c>true</c> for the given project file, then PSI will be built
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Xml.Tree.IXmlIdentifierNode">
+            <summary>
+            Identifier is in the form [XmlNamespace:]XmlName
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Xml.Tree.IXmlIdentifierNode.XmlNamespaceRange">
+            <summary>
+            Range within node
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Xml.Tree.IXmlIdentifierNode.XmlNameRange">
+            <summary>
+            Range within node
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Xml.Tree.IXmlTagNode.IsEmptyTag">
+            <summary>
+            True if has no nested elements and no footer
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Xml.Tree.IXmlTagNode.InnerXml">
+            <summary>
+            Inner nodes between header and footer, excluding error nodes
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xml.Tree.IXmlTag.AddAttributeBefore(JetBrains.ReSharper.Psi.Xml.Tree.IXmlAttribute,JetBrains.ReSharper.Psi.Xml.Tree.IXmlAttribute)">
+            <summary>
+            Adds attribute before the anchor. If anchor == null, the attribute is inserted after the last attribute
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xml.Tree.IXmlTag.AddAttributeAfter(JetBrains.ReSharper.Psi.Xml.Tree.IXmlAttribute,JetBrains.ReSharper.Psi.Xml.Tree.IXmlAttribute)">
+            <summary>
+            Adds attribute after the anchor. If anchor == null, the attribute is inserted before the first attribute
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Xml.Tree.IXmlTagHeaderNode.IsClosed">
+            <summary>
+            True, if header ends with />
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xml.Parsing.XmlElementFactory.CreateFile(JetBrains.ReSharper.Psi.PsiManager,JetBrains.ReSharper.Psi.IPsiModule,System.String,JetBrains.ReSharper.Psi.Xml.Parsing.XmlTreeBuilder)">
+            <summary>
+            Creates xml file for specified <paramref name="xmlText"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xml.Parsing.XmlElementFactory.CreateTag(JetBrains.ReSharper.Psi.PsiManager,JetBrains.ReSharper.Psi.IPsiModule,System.String,JetBrains.ReSharper.Psi.Xml.Parsing.XmlTreeBuilder)">
+            <summary>
+            Creates simple XML tag
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xml.Parsing.XmlElementFactory.CreateTag(JetBrains.ReSharper.Psi.Tree.IElement,System.String,JetBrains.ReSharper.Psi.Xml.Parsing.XmlTreeBuilder)">
+            <summary>
+            Creates simple XML tag
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xml.Parsing.XmlElementFactory.CreateAttribute(JetBrains.ReSharper.Psi.PsiManager,JetBrains.ReSharper.Psi.IPsiModule,System.String,JetBrains.ReSharper.Psi.Xml.Parsing.XmlTreeBuilder)">
+            <summary>
+            Creates simple XML attribute
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xml.Parsing.XmlTreeBuilder.BuildAndFormatXml(JetBrains.Text.IBuffer,JetBrains.ProjectModel.ISolution)">
+            <summary>
+            Çàïëàòà!!!
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Xml.Tree.References.IXmlTypeNameCompleteableReference">
+            <summary>
+            Just common interface for references, that support typename-like completion
+            </summary>
+        </member>
+    </members>
+</doc>

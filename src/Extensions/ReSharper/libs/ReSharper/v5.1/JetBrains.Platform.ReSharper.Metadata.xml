@@ -2109,47 +2109,6 @@
             Read long value
             </summary>
         </member>
-        <member name="T:JetBrains.Metadata.Utils.Pdb.PdbFile">
-            <summary>
-            MS PDB debug info file reader
-            </summary>
-            <remarks>
-            *
-            * Regarding PDB files:
-            * -------------------
-            * They are implemented as a set of internal files (as a small file
-            * system). The file is split into blocks, an internal file is made
-            * of a set of blocks. Internal files are accessed through
-            * numbers. For example, 
-            * 1/ is the ROOT (basic information on the file)
-            * 2/ is the Symbol information (global symbols, local variables...)
-            * 3/ is the Type internal file (each the symbols can have type
-            * information associated with it).
-            *
-            * Over the years, three formats existed for the PDB:
-            * - ?? was rather linked to 16 bit code (our support shall be rather
-            *   bad)
-            * - JG: it's the signature embedded in the file header. This format
-            *   has been used in MSVC 2.0 => 5.0.
-            * - DS: it's the signature embedded in the file header. It's the
-            *   current format supported my MS. 
-            Structure of the PDB file is the following:
-            1. PDBFileHeader
-            [List of blocks each PDBFileHeader.BlockSize length]
-            [TOC block]
-            Structure of the TOC block:
-            [
-            DWORD dwStreams -- number of the File streams in FS
-            DWORD -- size of the 0 stream
-            DWORD -- size of the 1 stream
-            ....
-            DWORD -- size of the dwStreams - 1 stream
-            ]
-            Immediately After TOC block BLOCKS indexes located
-            each record is the DWORD size length and contain index of the block in the FS for the Stream
-            
-            </remarks>
-        </member>
         <member name="T:JetBrains.Metadata.Utils.Pdb.PdbHeader">
             <summary>
             PDB 7.0 file header info

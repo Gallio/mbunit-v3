@@ -4,6 +4,19 @@
         <name>JetBrains.Platform.ReSharper.Util</name>
     </assembly>
     <members>
+        <member name="T:JetBrains.Util.Collections.CountableList`1">
+            <summary>
+            Default implementation of the <see cref="T:JetBrains.Util.Collections.ICountable`1"/>
+            </summary>
+            <typeparam name="T">Collection element type</typeparam>
+        </member>
+        <member name="T:JetBrains.Util.Collections.ICountable`1">
+            <summary>
+            Exposes the enumerator, which supports a simple iteration over a collection of a specified type 
+            and count of objects in the collection.
+            </summary>
+            <typeparam name="T">The type of objects to enumerate.</typeparam>
+        </member>
         <member name="T:JetBrains.DataFlow.NullProperty`1">
             <summary>
             The single instance of a <see cref="T:JetBrains.DataFlow.IProperty`1">Property</see> whose value is always <c>Null</c>.
@@ -211,13 +224,6 @@
             <summary>
             Index of previous entry in the chain of keys with the same hashcodes (modulo size), -1 means first
             </summary>
-        </member>
-        <member name="T:JetBrains.Util.Collections.ICountable`1">
-            <summary>
-            Exposes the enumerator, which supports a simple iteration over a collection of a specified type 
-            and count of objects in the collection.
-            </summary>
-            <typeparam name="T">The type of objects to enumerate.</typeparam>
         </member>
         <member name="T:JetBrains.Util.DataStructures.ReadOnlyException">
             <summary>Represents the exception that is thrown when you try to change the value of a read-only entity.</summary>
@@ -11338,6 +11344,13 @@
             </summary>
             <param name="text">Message body text.</param>
             <param name="caption">Not recommended. Text to append to the default caption, which is the product name. In most cases, keep empty to have just the product name.</param>
+        </member>
+        <member name="M:JetBrains.Util.MessageBox.ShowYesNoCancel(System.IntPtr,System.String)">
+            <summary>
+            Shows a Yes/No/Cancel question message box. Returns whether the answer was Yes or No, <c>Null</c> for Cancel.
+            </summary>
+            <param name="window">Not recommended. Owner window for the message box. Use only in dialogs when the default (app main window) couldis inappropriate.</param>
+            <param name="text">Message body text.</param>
         </member>
         <member name="M:JetBrains.Util.MessageBox.ShowYesNoCancel(System.String,System.Action,System.Action)">
             <summary>
