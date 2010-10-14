@@ -35,7 +35,7 @@ namespace MbUnit.Framework
     /// the test tree.
     /// </para>
     /// <para>
-    /// Contrast with <see cref="DynamicTestFactoryAttribute" />.
+    /// Contrast with <see cref="StaticTestFactoryAttribute" />.
     /// </para>
     /// <para>
     /// The method to which this attribute is applied must be declared by the
@@ -82,7 +82,7 @@ namespace MbUnit.Framework
     /// ]]></code>
     /// </para>
     /// </example>
-    /// <seealso cref="DynamicTestFactoryAttribute"/>
+    /// <seealso cref="StaticTestFactoryAttribute"/>
     /// <seealso cref="TestCase"/>
     [AttributeUsage(PatternAttributeTargets.TestMethod, AllowMultiple = false, Inherited = true)]
     public class DynamicTestFactoryAttribute : TestMethodPatternAttribute
