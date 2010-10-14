@@ -197,7 +197,7 @@ namespace Gallio.Loader
         {
             return "This usually means that this program or Gallio has not been installed correctly.\n"
                 + "As a workaround, you can set the GALLIO_RUNTIME_PATH environment variable to force "
-                + "the program to look for Gallio in a particular directory such as 'C:\\Gallio\bin'.  "
+                + "the program to look for Gallio in a particular directory such as 'C:\\Gallio\\bin'.  "
                 + "Alternately, you can set the GALLIO_RUNTIME_VERSION environment variable to force the "
                 + "program to search for a particular version of Gallio in the registry, such as '3.2'.";
         }
