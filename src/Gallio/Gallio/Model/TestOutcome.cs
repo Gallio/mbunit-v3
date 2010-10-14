@@ -166,6 +166,52 @@ namespace Gallio.Model
         }
 
         #region Built-in Outcomes
+
+        /// <summary>
+        /// Returns the <see cref="TestOutcome"/> instance that corresponds to the specified string.
+        /// </summary>
+        /// <param name="outcomeName">The name of the <see cref="TestOutcome"/>. It can be optionally prefixed with "TestOutcome.". Case-sensitive.</param>
+        /// <returns>Returns the <see cref="TestOutcome"/> instance that corresponds to the specified string.</returns>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="outcomeName"/> is invalid.</exception>
+        public static TestOutcome GetStandardOutcome(string outcomeName)
+        {
+            switch (outcomeName)
+            {
+                case "Passed":
+                case "TestOutcome.Passed":
+                    return TestOutcome.Passed;
+                case "Failed":
+                case "TestOutcome.Failed":
+                    return TestOutcome.Failed;
+                case "Error":
+                case "TestOutcome.Error":
+                    return TestOutcome.Error;
+                case "Timeout":
+                case "TestOutcome.Timeout":
+                    return TestOutcome.Timeout;
+                case "Inconclusive":
+                case "TestOutcome.Inconclusive":
+                    return TestOutcome.Inconclusive;
+                case "Canceled":
+                case "TestOutcome.Canceled":
+                    return TestOutcome.Canceled;
+                case "Skipped":
+                case "TestOutcome.Skipped":
+                    return TestOutcome.Skipped;
+                case "Ignored":
+                case "TestOutcome.Ignored":
+                    return TestOutcome.Ignored;
+                case "Pending":
+                case "TestOutcome.Pending":
+                    return TestOutcome.Pending;
+                case "Explicit":
+                case "TestOutcome.Explicit":
+                    return TestOutcome.Explicit;
+                default:
+                    throw new ArgumentException(string.Format("Invalid TestOutcome: {0}.", outcomeName), "outcomeName");
+            }
+        }
+
         /// <summary>
         /// Gets a standard outcome for a test that passed.
         /// </summary>
