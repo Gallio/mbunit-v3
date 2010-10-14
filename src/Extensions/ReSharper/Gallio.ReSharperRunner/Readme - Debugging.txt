@@ -1,6 +1,10 @@
 ﻿How to Debug
 ============
 
+0. The Gallio Loader relies on a registry key to tell it where the Gallio install
+	dir is. If this doesn't exist (HKLM\Software\Gallio.org\Gallio\0.0), 
+	run the src\Install.bat script with a /x argument and choose option 1.
+
 1. Configure the Gallio.ReSharperRunner project debugging options as follows:
    * Start External Program: devenv.exe
    * Command Line Arguments: /ReSharper.Internal /ReSharper.Plugin "Gallio.ReSharperRunnerXX.dll"
@@ -17,10 +21,8 @@
 
 4. Load a suitable solution for testing such as the MbUnit.Samples.sln.
 
-5. Normally ReSharper runs tests using an external test runner process.  Unfortunately
-   that hinders debugging.  To run tests within the same process, select the tests to
-   run in the Unit Test Session tool window then click the "Run Thread" button.
-   This is a special button that is enabled by the "/ReSharper.Internal" option mentioned
-   above.
+5. ReSharper runs tests using an external test runner process. Unfortunately
+   that hinders debugging, the only solution I've found is to add a Debugger.Break()
+   statement.
 
 6. Continue as usual.

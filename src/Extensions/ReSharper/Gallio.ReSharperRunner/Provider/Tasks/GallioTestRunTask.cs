@@ -46,7 +46,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
         /// </summary>
         public static readonly GallioTestRunTask Instance = new GallioTestRunTask();
 
-        public GallioTestRunTask()
+        public GallioTestRunTask() : base("Gallio", "Gallio")
         {
         }
 
@@ -70,7 +70,8 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             return unchecked((int) 0x88888888);
         }
 
-        public override FacadeTaskResult Execute(IFacadeTaskServer facadeTaskServer, IFacadeLogger facadeLogger, FacadeTaskExecutorConfiguration facadeTaskExecutorConfiguration)
+        public override FacadeTaskResult Execute(IFacadeTaskServer facadeTaskServer, IFacadeLogger facadeLogger, 
+            FacadeTaskExecutorConfiguration facadeTaskExecutorConfiguration)
         {
             return new GallioTestRunner(facadeTaskServer, facadeLogger, facadeTaskExecutorConfiguration).Run(this);
         }

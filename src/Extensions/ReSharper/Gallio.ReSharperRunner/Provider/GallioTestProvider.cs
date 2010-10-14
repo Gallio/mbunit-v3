@@ -195,6 +195,7 @@ namespace Gallio.ReSharperRunner.Provider
             private readonly GallioTestPresenter presenter;
             private readonly ITestFrameworkManager testFrameworkManager;
             private readonly ILogger logger;
+            private readonly FacadeTaskFactory facadeTaskFactory;
 
             /// <summary>
             /// Initializes the provider.
@@ -205,6 +206,7 @@ namespace Gallio.ReSharperRunner.Provider
 
                 testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
                 presenter = new GallioTestPresenter();
+                facadeTaskFactory = new FacadeTaskFactory();
                 logger = new FacadeLoggerWrapper(new AdapterFacadeLogger());
 
                 RuntimeAccessor.Instance.AddLogListener(logger);
@@ -537,7 +539,7 @@ namespace Gallio.ReSharperRunner.Provider
                 List<UnitTestTask> tasks = new List<UnitTestTask>();
 
                 // Add the run task.  Must always be first.
-                tasks.Add(new UnitTestTask(null, FacadeUtils.ToRemoteTask(GallioTestRunTask.Instance)));
+                tasks.Add(new UnitTestTask(null, facadeTaskFactory.CreateRootTask()));
 
                 // Add the test case branch.
                 AddTestTasksFromRootToLeaf(tasks, topElement);
@@ -546,32 +548,31 @@ namespace Gallio.ReSharperRunner.Provider
                 // arbitrary elements.  We don't care about the structure of the task tree beyond this depth.
 
                 // Add the assembly location.
-                tasks.Add(new UnitTestTask(null, FacadeUtils.ToRemoteTask(new GallioTestAssemblyTask(topElement.GetAssemblyLocation()))));
+                tasks.Add(new UnitTestTask(null, facadeTaskFactory.CreateAssemblyTaskFrom(topElement)));
 
                 if (explicitElements.Count != 0)
                 {
                     // Add explicit element markers.
                     foreach (GallioTestElement explicitElement in explicitElements)
-                        tasks.Add(new UnitTestTask(null,
-                            FacadeUtils.ToRemoteTask(new GallioTestExplicitTask(explicitElement.TestId))));
+                        tasks.Add(new UnitTestTask(null, facadeTaskFactory.CreateExplicitTestTaskFrom(explicitElement)));
                 }
                 else
                 {
                     // No explicit elements but we must have at least one to filter by, so we consider
                     // the top test explicitly selected.
-                    tasks.Add(new UnitTestTask(null, FacadeUtils.ToRemoteTask(new GallioTestExplicitTask(topElement.TestId))));
+                    tasks.Add(new UnitTestTask(null, facadeTaskFactory.CreateExplicitTestTaskFrom(topElement)));
                 }
 
                 return tasks;
             }
 
-            private static void AddTestTasksFromRootToLeaf(List<UnitTestTask> tasks, GallioTestElement element)
+            private void AddTestTasksFromRootToLeaf(List<UnitTestTask> tasks, GallioTestElement element)
             {
                 GallioTestElement parentElement = element.Parent as GallioTestElement;
                 if (parentElement != null)
                     AddTestTasksFromRootToLeaf(tasks, parentElement);
 
-                tasks.Add(new UnitTestTask(element, FacadeUtils.ToRemoteTask(new GallioTestItemTask(element.TestId))));
+                tasks.Add(new UnitTestTask(element, facadeTaskFactory.CreateTestTaskFrom(element)));
             }
 
             /// <summary>
