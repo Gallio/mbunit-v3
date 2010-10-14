@@ -178,6 +178,8 @@
     <Compile Include="Framework\AbstractComparerAttribute.cs" />
     <Compile Include="Framework\ConverterAttribute.cs" />
     <Compile Include="Framework\BinaryDataAttribute.cs" />
+    <Compile Include="Framework\CatchExceptionAttribute.cs" />
+    <Compile Include="Framework\AssertExceptionAttribute.cs" />
     <Compile Include="Framework\TextDataAttribute.cs" />
     <Compile Include="Framework\FormatterAttribute.cs" />
     <Compile Include="Framework\EqualityComparerAttribute.cs" />

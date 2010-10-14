@@ -99,6 +99,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\CatchExceptionAttributeTest.cs" />
+    <Compile Include="Framework\AssertExceptionAttributeTest.cs" />
     <Compile Include="Framework\ExtensionPoints.cs" />
     <Compile Include="Framework\ApartmentStateTest.cs">
       <SubType>Code</SubType>
