@@ -45,7 +45,7 @@ namespace Gallio.Model.Isolation
             }
             catch (Exception ex)
             {
-                throw new ModelException(ex.ToString());
+                throw new ModelException(ex.ToString(), ex);
             }
         }
 
