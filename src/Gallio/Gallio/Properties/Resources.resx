@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BaseTest_ParameterListAlreadyContainsParameterWithSameName" xml:space="preserve">
     <value>The parameter list already contains a parameter named '{0}'.</value>
@@ -251,5 +251,59 @@
   </data>
   <data name="ThreadAbortScope_ReentranceException" xml:space="preserve">
     <value>At most one action may be active within the scope at a time.</value>
+  </data>
+  <data name="Argument_Factory" xml:space="preserve">
+    <value>factory</value>
+  </data>
+  <data name="FilterParser_FilterExpressionExpected" xml:space="preserve">
+    <value>Simple filter expression expected such as '*' or 'Key: value'.</value>
+  </data>
+  <data name="FilterParser_RulesNotSeperated" xml:space="preserve">
+    <value>Separate inclusion and exclusion rules must be separated by 'include' or 'exclude'.</value>
+  </data>
+  <data name="SimpleDiskCache_CacheDirectoryPath" xml:space="preserve">
+    <value>cacheDirectoryPath</value>
+  </data>
+  <data name="SimpleDiskCache_PurgeException" xml:space="preserve">
+    <value>Could purge the cache from location '{0}'.</value>
+  </data>
+  <data name="Argument_Cache" xml:space="preserve">
+    <value>cache</value>
+  </data>
+  <data name="Argument_Key" xml:space="preserve">
+    <value>key</value>
+  </data>
+  <data name="Argument_Location" xml:space="preserve">
+    <value>location</value>
+  </data>
+  <data name="SimpleDiskCache_DiskCacheGroupIndeterminateExistance" xml:space="preserve">
+    <value>Could not determine whether the disk cache group from '{0}' exists.</value>
+  </data>
+  <data name="SimpleDiskCache_DiskCacheGroupDeleteException" xml:space="preserve">
+    <value>Could not delete the disk cache group from '{0}'.</value>
+  </data>
+  <data name="Argument_RelativeFilePath" xml:space="preserve">
+    <value>relativeFilePath</value>
+  </data>
+  <data name="Argument_RelativeDirectoryPath" xml:space="preserve">
+    <value>relativeDirectoryPath</value>
+  </data>
+  <data name="SimpleDiskCache_DiskCacheFileOpenException" xml:space="preserve">
+    <value>Could not open disk cache file '{0}'.</value>
+  </data>
+  <data name="SimpleDiskCache_DiskCacheDirectoryOpenException" xml:space="preserve">
+    <value>Could not open disk cache directory '{0}'.</value>
+  </data>
+  <data name="Argument_Length" xml:space="preserve">
+    <value>length</value>
+  </data>
+  <data name="ExceptionDescription_ZeroOrGreater" xml:space="preserve">
+    <value>Must be greater than or equal to zero.</value>
+  </data>
+  <data name="Argument_InputList" xml:space="preserve">
+    <value>inputList</value>
+  </data>
+  <data name="ExceptionDescription_DictionaryReadOnly" xml:space="preserve">
+    <value>Dictionary is read-only.</value>
   </data>
 </root>

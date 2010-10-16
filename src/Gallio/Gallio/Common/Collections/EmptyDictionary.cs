@@ -132,7 +132,7 @@ namespace Gallio.Common.Collections
 
         private static void ThrowCollectionIsReadOnly()
         {
-            throw new NotSupportedException("Dictionary is read-only.");
+            throw new NotSupportedException(Gallio.Properties.Resources.ExceptionDescription_DictionaryReadOnly);
         }
     }
 }

@@ -45,7 +45,7 @@ namespace Gallio.Model.Filters
         public FilterParser(IFilterFactory<T> factory)
         {
             if (factory == null)
-                throw new ArgumentNullException("factory");
+                throw new ArgumentNullException(Resources.Argument_Factory);
 
             this.factory = factory;
         }
@@ -101,7 +101,7 @@ namespace Gallio.Model.Filters
                     filterRuleType = FilterRuleType.Inclusion;
                 }
                 else
-                    throw new FilterParseException("Separate inclusion and exclusion rules must be separated by 'include' or 'exclude'.");
+                    throw new FilterParseException(Resources.FilterParser_RulesNotSeperated);
 
                 Filter<T> filter = MatchOrFilter(lexer);
                 filterRules.Add(new FilterRule<T>(filterRuleType, filter));
@@ -212,7 +212,7 @@ namespace Gallio.Model.Filters
                 }
             }
 
-            throw new FilterParseException("Simple filter expression expected such as '*' or 'Key: value'.");
+            throw new FilterParseException(Resources.FilterParser_FilterExpressionExpected);
         }
 
         private static string MatchKey(FilterLexer lexer)

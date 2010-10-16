@@ -17,6 +17,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Properties;
 
 namespace Gallio.Common.Collections
 {
@@ -86,7 +87,7 @@ namespace Gallio.Common.Collections
         public static T[] ConstantArray<T>(T value, int length)
         {
             if (length < 0)
-                throw new ArgumentOutOfRangeException("length", "Must be greater than or equal to zero.");
+                throw new ArgumentOutOfRangeException(Resources.Argument_Length, Resources.ExceptionDescription_ZeroOrGreater);
 
             var array = new T[length];
 

@@ -16,6 +16,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Gallio.Properties;
 
 namespace Gallio.Common.Collections
 {
@@ -39,7 +40,7 @@ namespace Gallio.Common.Collections
         public CovariantList(IList<TInput> inputList)
         {
             if (inputList == null)
-                throw new ArgumentNullException(@"inputList");
+                throw new ArgumentNullException(Resources.Argument_InputList);
 
             this.inputList = inputList;
         }

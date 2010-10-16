@@ -17,6 +17,7 @@ using System;
 using System.IO;
 using Gallio.Common;
 using Gallio.Common.IO;
+using Gallio.Properties;
 
 namespace Gallio.Common.Caching
 {
@@ -38,7 +39,7 @@ namespace Gallio.Common.Caching
         public SimpleDiskCache(string cacheDirectoryPath)
         {
             if (cacheDirectoryPath == null)
-                throw new ArgumentNullException("cacheDirectoryPath");
+                throw new ArgumentNullException(Resources.SimpleDiskCache_CacheDirectoryPath);
             this.cacheDirectoryPath = Path.GetFullPath(cacheDirectoryPath);
         }
 
@@ -65,7 +66,7 @@ namespace Gallio.Common.Caching
             }
             catch (Exception ex)
             {
-                throw new DiskCacheException(String.Format("Could purge the cache from location '{0}'.", cacheDirectoryPath), ex);
+                throw new DiskCacheException(String.Format(Resources.SimpleDiskCache_PurgeException, cacheDirectoryPath), ex);
             }
         }
 
@@ -87,7 +88,7 @@ namespace Gallio.Common.Caching
             get
             {
                 if (key == null)
-                    throw new ArgumentNullException("key");
+                    throw new ArgumentNullException(Resources.Argument_Key);
                 return GetGroup(key);
             }
         }
@@ -112,11 +113,11 @@ namespace Gallio.Common.Caching
             public Group(IDiskCache cache, string key, DirectoryInfo location)
             {
                 if (cache == null)
-                    throw new ArgumentNullException("cache");
+                    throw new ArgumentNullException(Resources.Argument_Cache);
                 if (key == null)
-                    throw new ArgumentNullException("key");
+                    throw new ArgumentNullException(Resources.Argument_Key);
                 if (location == null)
-                    throw new ArgumentNullException("location");
+                    throw new ArgumentNullException(Resources.Argument_Location);
 
                 this.cache = cache;
                 this.key = key;
@@ -152,7 +153,7 @@ namespace Gallio.Common.Caching
                     }
                     catch (Exception ex)
                     {
-                        throw new DiskCacheException(String.Format("Could not determine whether the disk cache group from '{0}' exists.", location.FullName), ex);
+                        throw new DiskCacheException(String.Format(Resources.SimpleDiskCache_DiskCacheGroupIndeterminateExistance, location.FullName), ex);
                     }
                 }
             }
@@ -176,7 +177,7 @@ namespace Gallio.Common.Caching
                 }
                 catch (Exception ex)
                 {
-                    throw new DiskCacheException(String.Format("Could not delete the disk cache group from '{0}'.", location.FullName), ex);
+                    throw new DiskCacheException(String.Format(Resources.SimpleDiskCache_DiskCacheGroupDeleteException, location.FullName), ex);
                 }
             }
 
@@ -184,7 +185,7 @@ namespace Gallio.Common.Caching
             public FileInfo GetFileInfo(string relativeFilePath)
             {
                 if (relativeFilePath == null)
-                    throw new ArgumentNullException("relativeFilePath");
+                    throw new ArgumentNullException(Resources.Argument_RelativeFilePath);
                 return new FileInfo(Path.Combine(location.FullName, relativeFilePath));
             }
 
@@ -192,7 +193,7 @@ namespace Gallio.Common.Caching
             public DirectoryInfo GetSubdirectoryInfo(string relativeDirectoryPath)
             {
                 if (relativeDirectoryPath == null)
-                    throw new ArgumentNullException("relativeDirectoryPath");
+                    throw new ArgumentNullException(Resources.Argument_RelativeDirectoryPath);
                 return new DirectoryInfo(Path.Combine(location.FullName, relativeDirectoryPath));
             }
 
@@ -209,7 +210,7 @@ namespace Gallio.Common.Caching
                 }
                 catch (Exception ex)
                 {
-                    throw new DiskCacheException(String.Format("Could not open disk cache file '{0}'.", fileInfo.FullName), ex);
+                    throw new DiskCacheException(String.Format(Resources.SimpleDiskCache_DiskCacheFileOpenException, fileInfo.FullName), ex);
                 }
             }
 
@@ -230,7 +231,7 @@ namespace Gallio.Common.Caching
                 }
                 catch (Exception ex)
                 {
-                    throw new DiskCacheException(String.Format("Could not open disk cache directory '{0}'.", directoryInfo.FullName), ex);
+                    throw new DiskCacheException(String.Format(Resources.SimpleDiskCache_DiskCacheDirectoryOpenException, directoryInfo.FullName), ex);
                 }
             }
         }

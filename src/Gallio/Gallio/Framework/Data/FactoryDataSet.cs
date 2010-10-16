@@ -18,6 +18,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Gallio;
 using Gallio.Common;
+using Gallio.Properties;
 
 namespace Gallio.Framework.Data
 {
@@ -50,7 +51,7 @@ namespace Gallio.Framework.Data
         public FactoryDataSet(Func<IEnumerable> factory, FactoryKind factoryKind, int columnCount)
         {
             if (factory == null)
-                throw new ArgumentNullException("factory");
+                throw new ArgumentNullException(Resources.Argument_Factory);
             if (! Enum.IsDefined(typeof(FactoryKind), factoryKind))
                 throw new ArgumentOutOfRangeException("factoryKind", factoryKind, "Invalid factory kind.");
             if (columnCount < 0)
