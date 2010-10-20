@@ -26,6 +26,9 @@
   <services>
     <service serviceId="Gallio.Icarus.OptionsController" 
              serviceType="Gallio.Icarus.Controllers.Interfaces.IOptionsController, Gallio.Icarus" />
+
+    <service serviceId="Gallio.Icarus.Package" 
+             serviceType="Gallio.Icarus.IPackage, Gallio.Icarus" />
   </services>
 
   <components>
