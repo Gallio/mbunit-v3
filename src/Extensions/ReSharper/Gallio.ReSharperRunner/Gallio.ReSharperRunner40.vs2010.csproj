@@ -148,6 +148,7 @@
     <Compile Include="Provider\Daemons\WarningAnnotationHighlighting.cs" />
     <Compile Include="Provider\Facade\AdapterFacadeLogger.cs" />
     <Compile Include="Provider\Facade\AdapterFacadeTaskServer.cs" />
+	<Compile Include="Provider\Facade\FacadeTaskFactory.cs" />
     <Compile Include="Provider\Facade\FacadeLoggerWrapper.cs" />
     <Compile Include="Provider\Facade\FacadeTask.cs" />
     <Compile Include="Provider\Facade\FacadeTaskException.cs" />

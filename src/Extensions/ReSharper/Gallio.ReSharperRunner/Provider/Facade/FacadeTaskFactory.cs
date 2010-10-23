@@ -12,8 +12,14 @@ namespace Gallio.ReSharperRunner.Provider.Facade
 
         public RemoteTask CreateAssemblyTaskFrom(GallioTestElement element)
         {
+#if RESHARPER_50_OR_NEWER
             var assemblyTask = new GallioTestAssemblyTask(element.GetAssemblyLocation(), 
                 element.GetTypeClrName(), element.ShortName);
+#else
+            var assemblyTask = new GallioTestAssemblyTask(element.GetAssemblyLocation(),
+                element.GetTypeClrName(), "");
+#endif
+
 #if RESHARPER_51_OR_NEWER
             return new TestContainerFacadeTaskWrapper(assemblyTask);
 #else
@@ -23,15 +29,23 @@ namespace Gallio.ReSharperRunner.Provider.Facade
 
         public RemoteTask CreateExplicitTestTaskFrom(GallioTestElement element)
         {
+#if RESHARPER_50_OR_NEWER
             var explicitTask = new GallioTestExplicitTask(element.TestId, element.GetTypeClrName(), 
                 element.ShortName);
+#else
+            var explicitTask = new GallioTestExplicitTask(element.TestId, element.GetTypeClrName(), "");
+#endif
             return CreateTestTask(element, explicitTask);
         }
 
         public RemoteTask CreateTestTaskFrom(GallioTestElement element)
         {
+#if RESHARPER_50_OR_NEWER
             var testItemTask = new GallioTestItemTask(element.TestId, element.GetTypeClrName(),
                 element.ShortName);
+#else
+            var testItemTask = new GallioTestItemTask(element.TestId, element.GetTypeClrName(), "");
+#endif
             return CreateTestTask(element, testItemTask);
         }
 

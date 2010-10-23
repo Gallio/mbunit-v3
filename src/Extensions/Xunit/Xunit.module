@@ -11,7 +11,7 @@
       <ImagePath>bin\Xunit</ImagePath>
     </AssemblyFile>
     <PdbFile Include="Gallio.XunitAdapter\bin\Gallio.XunitAdapter.pdb">
-      <ExcludeFromImage>true</ExcludeFromImage>
+		<ImagePath>bin\Xunit</ImagePath>
     </PdbFile>
     <PluginFile Include="Gallio.XunitAdapter\Gallio.XunitAdapter.plugin">
       <ImagePath>bin\Xunit</ImagePath>
