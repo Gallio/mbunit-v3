@@ -8,6 +8,7 @@
                 <Component Id="Gallio.XunitAdapter" Guid="2fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="$(var.Win64Binary)">
                     <File Name="Gallio.XunitAdapter.dll" KeyPath="yes" />
                     <File Name="Gallio.XunitAdapter.plugin" />
+                    <File Name="Gallio.XunitAdapter.pdb" />
                     <File Id="xunit.EULA.txt" Name="EULA.txt" />
                     <File Id="xunit.Readme.txt" Name="Readme.txt" />
                     <File Name="xunit.dll" />
