@@ -28,7 +28,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
     /// </para>
     /// </remarks>
     [Serializable]
-    public sealed class FacadeTaskWrapper : RemoteTask, IEquatable<FacadeTaskWrapper>
+    public class FacadeTaskWrapper : RemoteTask, IEquatable<FacadeTaskWrapper>
     {
         private readonly FacadeTask facadeTask;
 

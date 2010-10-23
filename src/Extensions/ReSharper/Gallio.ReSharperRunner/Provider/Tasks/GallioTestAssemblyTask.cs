@@ -32,7 +32,8 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
     {
         private readonly string assemblyLocation;
 
-        public GallioTestAssemblyTask(string assemblyLocation)
+        public GallioTestAssemblyTask(string assemblyLocation, string typeName, string shortName) 
+            : base(typeName, shortName)
         {
             this.assemblyLocation = assemblyLocation;
         }

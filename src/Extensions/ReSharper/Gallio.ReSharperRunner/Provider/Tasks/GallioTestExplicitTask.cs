@@ -32,7 +32,8 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
     {
         private readonly string testId;
 
-        public GallioTestExplicitTask(string testId)
+        public GallioTestExplicitTask(string testId, string typeName, string shortName) 
+            : base(typeName, shortName)
         {
             this.testId = testId;
         }

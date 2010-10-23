@@ -19,6 +19,7 @@ using System.Reflection;
 using Gallio.Common;
 using Gallio.Common.Reflection;
 using Gallio.Common.Reflection.Impl;
+using JetBrains.Metadata.Utils;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
@@ -421,7 +422,11 @@ namespace Gallio.ReSharperRunner.Reflection
                 else
                 {
 #if RESHARPER_50_OR_NEWER
-                    name = new AssemblyName(assemblyFile.AssemblyName.FullName);
+
+                    AssemblyNameInfo assemblyNameInfo = assemblyFile.AssemblyName;
+                    if ( assemblyNameInfo == null )
+                        assemblyNameInfo = assemblyFile.Assembly.AssemblyName;
+                    name = new AssemblyName(assemblyNameInfo.FullName);
 #else
                     name = assemblyFile.AssemblyName;
 #endif

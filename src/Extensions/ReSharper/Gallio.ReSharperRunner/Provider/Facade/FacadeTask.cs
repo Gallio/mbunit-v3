@@ -32,6 +32,8 @@ namespace Gallio.ReSharperRunner.Provider.Facade
     [Serializable]
     public abstract class FacadeTask
     {
+        private readonly string typeName;
+        private readonly string shortName;
         private IList<FacadeTask> children;
 
         /// <summary>
@@ -42,8 +44,10 @@ namespace Gallio.ReSharperRunner.Provider.Facade
         /// <summary>
         /// Creates a facade task.
         /// </summary>
-        protected FacadeTask()
+        protected FacadeTask(string typeName, string shortName)
         {
+            this.typeName = typeName;
+            this.shortName = shortName;
         }
 
         /// <summary>
@@ -52,6 +56,8 @@ namespace Gallio.ReSharperRunner.Provider.Facade
         /// <param name="element">The xml element.</param>
         protected FacadeTask(XmlElement element)
         {
+            typeName = element.GetAttribute("typeName");
+            shortName = element.GetAttribute("shortName");
         }
 
         /// <summary>
@@ -61,6 +67,10 @@ namespace Gallio.ReSharperRunner.Provider.Facade
         {
             get { return new ReadOnlyCollection<FacadeTask>(children ?? EmptyArray<FacadeTask>.Instance); }
         }
+
+        public string TypeName { get { return typeName; } }
+
+        public string ShortName { get { return shortName; } }
 
         /// <summary>
         /// Executes the task and its children recursively.
@@ -80,6 +90,8 @@ namespace Gallio.ReSharperRunner.Provider.Facade
         /// <param name="element">The xml element.</param>
         public virtual void SaveXml(XmlElement element)
         {
+            element.SetAttribute("typeName", typeName);
+            element.SetAttribute("shortName", shortName);
         }
 
         /// <summary>

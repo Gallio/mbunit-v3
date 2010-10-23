@@ -23,7 +23,6 @@ using Gallio.Common.Diagnostics;
 using Gallio.Model.Filters;
 using Gallio.Common.Markup;
 using Gallio.Common.Markup.Tags;
-using Gallio.Model.Schema;
 using Gallio.ReSharperRunner.Provider.Facade;
 using Gallio.Runner;
 using Gallio.Runner.Events;
@@ -56,7 +55,8 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
         private readonly Dictionary<string, TestMonitor> testMonitors;
         private readonly HashSetOfString explicitTestIds;
 
-        public GallioTestRunner(IFacadeTaskServer facadeTaskServer, IFacadeLogger facadeLogger, FacadeTaskExecutorConfiguration facadeTaskExecutorConfiguration)
+        public GallioTestRunner(IFacadeTaskServer facadeTaskServer, IFacadeLogger facadeLogger, 
+            FacadeTaskExecutorConfiguration facadeTaskExecutorConfiguration)
         {
             this.facadeTaskServer = facadeTaskServer;
             this.facadeLogger = facadeLogger;
@@ -85,21 +85,21 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 
         private void ProcessTask(FacadeTask task)
         {
-            GallioTestItemTask itemTask = task as GallioTestItemTask;
+            var itemTask = task as GallioTestItemTask;
             if (itemTask != null)
             {
                 testTasks[itemTask.TestId] = itemTask;
                 return;
             }
 
-            GallioTestAssemblyTask assemblyTask = task as GallioTestAssemblyTask;
+            var assemblyTask = task as GallioTestAssemblyTask;
             if (assemblyTask != null)
             {
                 assemblyLocations.Add(assemblyTask.AssemblyLocation);
                 return;
             }
 
-            GallioTestExplicitTask explicitTask = task as GallioTestExplicitTask;
+            var explicitTask = task as GallioTestExplicitTask;
             if (explicitTask != null)
             {
                 explicitTestIds.Add(explicitTask.TestId);
@@ -109,12 +109,12 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 
         private FacadeTaskResult RunTests()
         {
-            ILogger logger = new FacadeLoggerWrapper(facadeLogger);
-            ITestRunner runner = TestRunnerUtils.CreateTestRunnerByName(StandardTestRunnerFactoryNames.IsolatedAppDomain);
+            var logger = new FacadeLoggerWrapper(facadeLogger);
+            var runner = TestRunnerUtils.CreateTestRunnerByName(StandardTestRunnerFactoryNames.IsolatedAppDomain);
 
             // Set parameters.
-            TestPackage testPackage = new TestPackage();
-            foreach (string assemblyLocation in assemblyLocations)
+            var testPackage = new TestPackage();
+            foreach (var assemblyLocation in assemblyLocations)
                 testPackage.AddFile(new FileInfo(assemblyLocation));
 
             testPackage.ShadowCopy = facadeTaskExecutorConfiguration.ShadowCopy;
@@ -125,16 +125,14 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 testPackage.WorkingDirectory = new DirectoryInfo(facadeTaskExecutorConfiguration.AssemblyFolder);
             }
 
-            TestRunnerOptions testRunnerOptions = new TestRunnerOptions();
+            var testRunnerOptions = new TestRunnerOptions();
 
-            TestExplorationOptions testExplorationOptions = new TestExplorationOptions();
+            var testExplorationOptions = new TestExplorationOptions();
 
-            TestExecutionOptions testExecutionOptions = new TestExecutionOptions();
-            testExecutionOptions.FilterSet = new FilterSet<ITestDescriptor>(new IdFilter<ITestDescriptor>(new OrFilter<string>(GenericCollectionUtils.ConvertAllToArray<string, Filter<string>>(
-                explicitTestIds, delegate(string testId)
-                {
-                    return new EqualityFilter<string>(testId);
-                }))));
+            var filters = GenericCollectionUtils.ConvertAllToArray<string, Filter<string>>(explicitTestIds, 
+                testId => new EqualityFilter<string>(testId));
+            var filterSet = new FilterSet<ITestDescriptor>(new IdFilter<ITestDescriptor>(new OrFilter<string>(filters)));
+            var testExecutionOptions = new TestExecutionOptions { FilterSet = filterSet };
 
             // Install the listeners.
             runner.Events.TestStepStarted += TestStepStarted;
@@ -186,7 +184,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
         {
             TestMonitor testMonitor = GetTestMonitor(e.Test.Id);
             if (testMonitor != null)
-                testMonitor.TestStepStarted(e);
+                testMonitor.TestStepStarted();
         }
 
         private void TestStepLifecyclePhaseChanged(object sender, TestStepLifecyclePhaseChangedEventArgs e)
@@ -265,7 +263,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 });
             }
 
-            public void TestStepStarted(TestStepStartedEventArgs e)
+            public void TestStepStarted()
             {
                 lock (this)
                 {
@@ -287,7 +285,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 }
             }
 
-            public void TestStepFinished(TestStepFinishedEventArgs e)
+            public void TestStepFinished(TestStepEventArgs e)
             {
                 lock (this)
                 {
@@ -352,11 +350,6 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 // Unfortunately it can't really capture the richness of Gallio outcomes right now.
                 switch (stream.Name)
                 {
-                    case MarkupStreamNames.ConsoleOutput:
-                    default:
-                        Output(FacadeTaskOutputType.StandardOutput, contents);
-                        break;
-
                     case MarkupStreamNames.ConsoleError:
                         Output(FacadeTaskOutputType.StandardError, contents);
                         break;
@@ -371,6 +364,10 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 
                     case MarkupStreamNames.Failures:
                         pendingFailures = contents;
+                        break;
+
+                    default:
+                        Output(FacadeTaskOutputType.StandardOutput, contents);
                         break;
                 }
             }

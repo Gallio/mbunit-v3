@@ -71,10 +71,5 @@ namespace Gallio.ReSharperRunner.Provider.Facade
                     throw new ArgumentOutOfRangeException("outputType");
             }
         }
-
-        public static RemoteTask ToRemoteTask(FacadeTask facadeTask)
-        {
-            return new FacadeTaskWrapper(facadeTask);
-        }
     }
 }
