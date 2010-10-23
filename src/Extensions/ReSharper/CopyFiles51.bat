@@ -1,6 +1,10 @@
 @echo off
 
-set pluginFolder="C:\Program Files\JetBrains\ReSharper\v5.1\Bin\Plugins\Gallio"
+@if defined PROGRAMFILES(x86) (
+set pluginFolder="%PROGRAMFILES(x86)%\JetBrains\ReSharper\v5.1\Bin\Plugins\Gallio"
+) else (
+set pluginFolder="%PROGRAMFILES%\JetBrains\ReSharper\v5.1\Bin\Plugins\Gallio"
+)
 
 md %pluginFolder%
 

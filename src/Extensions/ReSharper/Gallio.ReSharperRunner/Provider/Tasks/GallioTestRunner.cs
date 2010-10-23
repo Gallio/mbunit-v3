@@ -241,6 +241,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             private string pendingFailures;
             private string pendingBanner;
             private bool finished;
+            private bool started;
 
             public TestMonitor(IFacadeTaskServer server, GallioTestItemTask testTask)
             {
@@ -267,6 +268,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 lock (this)
                 {
                     nestingCount += 1;
+                    started = true;
                     server.TaskStarting(testTask);
                 }
             }
@@ -320,9 +322,19 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             {
                 if (!finished)
                 {
-                    Output(FacadeTaskOutputType.StandardError, "The test did not run or did not complete normally due to an error.\n" +
-                        "Refer to the Gallio Test Report and ReSharper Log for more details.");
-                    combinedOutcome = TestOutcome.Error;
+                    if (started)
+                    {
+                        Output(FacadeTaskOutputType.StandardError,
+                               "The test did not run or did not complete normally due to an error.\n" +
+                               "Refer to the Gallio Test Report and ReSharper Log for more details.");
+                        combinedOutcome = TestOutcome.Error;
+                    }
+                    else
+                    {
+                        // Report the unfinished tests that have not even started as skipped;
+                        // They are most probably explicit or disabled tests.
+                        combinedOutcome = TestOutcome.Skipped;
+                    }
 
                     OutputPendingContents();
                     SubmitCombinedResult();
