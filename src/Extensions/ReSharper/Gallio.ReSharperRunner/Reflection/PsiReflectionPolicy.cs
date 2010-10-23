@@ -19,7 +19,6 @@ using System.Reflection;
 using Gallio.Common;
 using Gallio.Common.Reflection;
 using Gallio.Common.Reflection.Impl;
-using JetBrains.Metadata.Utils;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
@@ -37,6 +36,7 @@ using JetBrains.DocumentModel;
 using ReSharperDocumentRange = JetBrains.DocumentModel.DocumentRange;
 #endif
 #if ! RESHARPER_50_OR_NEWER
+using JetBrains.Metadata.Utils;
 using JetBrains.ProjectModel.Build;
 #endif
 
