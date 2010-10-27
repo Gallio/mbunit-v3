@@ -60,6 +60,7 @@
     <Compile Include="Framework\AssertTest_HasAttribute.cs" />
     <Compile Include="Framework\DataGeneratorsTest_Join.cs" />
     <Compile Include="Framework\DisableAttributeTest.cs" />
+    <Compile Include="Framework\ImpersonateAttributeTest.cs" />
     <Compile Include="Framework\MirrorTest.cs" />
     <Compile Include="Framework\MirrorExceptionTest.cs" />
     <Compile Include="Framework\RetryTest.cs" />
