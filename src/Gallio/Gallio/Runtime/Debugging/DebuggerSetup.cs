@@ -22,7 +22,7 @@ namespace Gallio.Runtime.Debugging
     /// Provides options that configure the debugger.
     /// </summary>
     [Serializable]
-    public sealed class DebuggerSetup
+    public sealed class DebuggerSetup : IPropertySetContainer
     {
         private readonly PropertySet properties;
 

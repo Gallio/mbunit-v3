@@ -109,6 +109,7 @@
     <Compile Include="Common\Accessor.cs" />
     <Compile Include="Common\Action.cs" />
     <Compile Include="Common\Collections\EnumerableCounter.cs" />
+    <Compile Include="Common\Collections\IPropertySetContainer.cs" />
     <Compile Include="Common\Comparison.cs" />
     <Compile Include="Common\Concurrency\DegreeOfParallelismProvider.cs" />
     <Compile Include="Common\Concurrency\IProcess.cs" />

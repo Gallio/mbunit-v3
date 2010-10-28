@@ -24,7 +24,7 @@ namespace Gallio.Model
     /// Provides options that control how test execution occurs.
     /// </summary>
     [Serializable]
-    public sealed class TestExecutionOptions
+    public sealed class TestExecutionOptions : IPropertySetContainer
     {
         private readonly PropertySet properties;
         private FilterSet<ITestDescriptor> filterSet;

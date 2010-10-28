@@ -28,7 +28,7 @@ namespace Gallio.Model
     /// that govern test execution.
     /// </summary>
     [Serializable]
-    public class TestPackage
+    public class TestPackage : IPropertySetContainer
     {
         private readonly List<FileInfo> files;
         private readonly List<DirectoryInfo> hintDirectories;

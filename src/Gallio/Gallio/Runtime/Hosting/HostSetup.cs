@@ -31,7 +31,7 @@ namespace Gallio.Runtime.Hosting
     /// Specifies a collection of parameters for setting up a <see cref="IHost" />.
     /// </summary>
     [Serializable]
-    public sealed class HostSetup
+    public sealed class HostSetup : IPropertySetContainer
     {
         private string applicationBaseDirectory;
         private string workingDirectory;
