@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<plugin pluginId="Gallio.Icarus.ExtensionSample"
+        recommendedInstallationPath=""
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>Gallio.Icarus.ExtensionSample</name>
+    <version>1.0.0.0</version>
+    <description>An example of how to extend Icarus.</description>
+  </traits>
+
+  <dependencies>
+    <dependency pluginId="Gallio.Icarus" />
+  </dependencies>
+
+  <files>
+    <file path="Gallio.Icarus.ExtensionSample.plugin" />
+    <file path="Gallio.Icarus.ExtensionSample.dll" />
+  </files>
+
+  <assemblies>
+    <assembly fullName="Gallio.Icarus.ExtensionSample"
+              codeBase="Gallio.Icarus.ExtensionSample.dll"
+              qualifyPartialName="true" />
+  </assemblies>
+
+  <components>
+    <component componentId="MyPackage"
+               serviceId="Gallio.Icarus.Package"
+               componentType="Gallio.Icarus.ExtensionSample.MyPackage, Gallio.Icarus.ExtensionSample" />
+  </components>
+</plugin>
