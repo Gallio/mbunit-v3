@@ -22,7 +22,7 @@ namespace Gallio.Model.Isolation
     /// Provides options that control test isolation.
     /// </summary>
     [Serializable]
-    public sealed class TestIsolationOptions
+    public sealed class TestIsolationOptions : IPropertySetContainer
     {
         private readonly PropertySet properties;
 

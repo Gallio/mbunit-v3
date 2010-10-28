@@ -22,7 +22,7 @@ namespace Gallio.Model
     /// Provides options that configure a test framework.
     /// </summary>
     [Serializable]
-    public sealed class TestFrameworkOptions
+    public sealed class TestFrameworkOptions : IPropertySetContainer
     {
         private readonly PropertySet properties;
 

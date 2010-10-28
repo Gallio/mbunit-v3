@@ -22,7 +22,7 @@ namespace Gallio.Model
     /// Provides options that control how test exploration occurs.
     /// </summary>
     [Serializable]
-    public sealed class TestExplorationOptions
+    public sealed class TestExplorationOptions : IPropertySetContainer
     {
         private readonly PropertySet properties;
 

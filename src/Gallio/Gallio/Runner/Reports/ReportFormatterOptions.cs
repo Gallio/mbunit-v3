@@ -25,7 +25,7 @@ namespace Gallio.Runner.Reports
     /// Provides options to report formatters.
     /// </summary>
     [Serializable]
-    public sealed class ReportFormatterOptions
+    public sealed class ReportFormatterOptions : IPropertySetContainer
     {
         private readonly PropertySet properties;
 
