@@ -119,8 +119,12 @@ namespace Gallio.Common.Reflection
             if (assemblyName == null)
                 throw new ArgumentNullException("assemblyName");
 
-            string culture = assemblyName.CultureInfo.Name;
-            return culture.Length != 0 ? culture : "neutral";
+            if (assemblyName.CultureInfo != null && string.IsNullOrEmpty(assemblyName.CultureInfo.Name) == false)
+            {
+                return assemblyName.CultureInfo.Name;
+            }
+
+            return "neutral";
         }
 
         /// <summary>
