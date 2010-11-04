@@ -1,12 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MbUnitCppAdapter", "Gallio.MbUnitCppAdapter\Gallio.MbUnitCppAdapter.csproj", "{E85A5000-F770-4EA9-84B4-83DD1DBCC271}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MbUnitCppAdapter.vs2010", "Gallio.MbUnitCppAdapter\Gallio.MbUnitCppAdapter.vs2010.csproj", "{E85A5000-F770-4EA9-84B4-83DD1DBCC271}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DA8EB607-F92F-43E7-99F8-212433221118} = {DA8EB607-F92F-43E7-99F8-212433221118}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MbUnitCppAdapter.Tests", "Gallio.MbUnitCppAdapter.Tests\Gallio.MbUnitCppAdapter.Tests.csproj", "{B0C70FA6-3D80-47EE-8954-C4E36602B2A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MbUnitCppAdapter.Tests.vs2010", "Gallio.MbUnitCppAdapter.Tests\Gallio.MbUnitCppAdapter.Tests.vs2010.csproj", "{B0C70FA6-3D80-47EE-8954-C4E36602B2A1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DA8EB607-F92F-43E7-99F8-212433221118} = {DA8EB607-F92F-43E7-99F8-212433221118}
 	EndProjectSection
@@ -31,9 +31,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio35.vs2010", "..\..\Ga
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit35.vs2010", "..\..\MbUnit\MbUnit35\MbUnit35.vs2010.csproj", "{D147F5CC-0166-4B9C-B095-F905220090FA}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Gallio.MbUnitCppAdapter.TestResources.x86", "Gallio.MbUnitCppAdapter.TestResources\Gallio.MbUnitCppAdapter.TestResources.x86.vcxproj", "{DA8EB607-F92F-43E7-99F8-212433221119}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Gallio.MbUnitCppAdapter.TestResources.x86.vs2010", "Gallio.MbUnitCppAdapter.TestResources\Gallio.MbUnitCppAdapter.TestResources.x86.vs2010.vcxproj", "{DA8EB607-F92F-43E7-99F8-212433221119}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Gallio.MbUnitCppAdapter.TestResources.x64", "Gallio.MbUnitCppAdapter.TestResources\Gallio.MbUnitCppAdapter.TestResources.x64.vcxproj", "{DA8EB607-F92F-43E7-99F8-212433221118}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Gallio.MbUnitCppAdapter.TestResources.x64.vs2010", "Gallio.MbUnitCppAdapter.TestResources\Gallio.MbUnitCppAdapter.TestResources.x64.vs2010.vcxproj", "{DA8EB607-F92F-43E7-99F8-212433221118}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

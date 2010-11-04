@@ -52,7 +52,7 @@
       <Name>MbUnit.vs2010</Name>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.MbUnitCppAdapter\Gallio.MbUnitCppAdapter.csproj">
+    <ProjectReference Include="..\Gallio.MbUnitCppAdapter\Gallio.MbUnitCppAdapter.vs2010.csproj">
       <Project>{E85A5000-F770-4EA9-84B4-83DD1DBCC271}</Project>
       <Name>Gallio.MbUnitCppAdapter</Name>
     </ProjectReference>
