@@ -154,6 +154,9 @@
     <Compile Include="..\Extensions\Xunit\Xunit.wxs">
       <Link>Xunit.wxs</Link>
     </Compile>
+    <Compile Include="..\Extensions\MbUnitCpp\MbUnitCpp.wxs">
+      <Link>MbUnitCpp.wxs</Link>
+    </Compile>
     <Compile Include="..\Extensions\MSTest\MSTest.wxs">
       <Link>MSTest.wxs</Link>
     </Compile>

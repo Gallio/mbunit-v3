@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\..\Installer\Common.wxi ?>
+    
+    <Fragment>
+        <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
+            <Directory Id="MbUnitCpp" Name="MbUnit">
+                <Component Id="Gallio.MbUnitCpp" Guid="{6CE70B92-B21F-45FA-A6B1-3ACA6010BD56}" Win64="$(var.Win64Binary)">
+                    <File Name="Gallio.MbUnitCpp.dll" KeyPath="yes" />
+                    <File Name="Gallio.MbUnitCpp.plugin" />
+                    <File Name="Gallio.MbUnitCpp.pdb" />
+                </Component>
+		
+                <Directory Id="MbUnitCppAdapter.Resources" Name="Resources">
+                    <Component Id="Gallio.MbUnitCppAdapter.Resources" Guid="{3A7A49BD-734A-499F-A9AF-1516EBFEE42B}" Win64="$(var.Win64Binary)">
+                        <File Name="MbUnitCpp.ico" KeyPath="yes" />
+                    </Component>
+                </Directory>
+		
+                <Directory Id="MbUnitCppAdapter.Include" Name="Include">
+                    <Component Id="Gallio.MbUnitCppAdapter.Include" Guid="{F1B9D838-6556-4FBD-A97E-6DFDE408F630}" Win64="$(var.Win64Binary)">
+                        <File Name="MbUnitCpp.cpp" KeyPath="yes" />
+                        <File Name="MbUnitCpp.h" />
+                    </Component>
+                </Directory>
+            </Directory>
+        </DirectoryRef>
+
+        <Feature Id='feat_MbUnitCppAdapter' Title='MbUnitCpp Adapter' Level='1' AllowAdvertise="no"
+            Description='Installs the MbUnitCpp plugin.  Enables Gallio to run MbUnitCpp tests.'>
+            <ComponentRef Id="Gallio.MbUnitCppAdapter"/>
+            <ComponentRef Id="Gallio.MbUnitCppAdapter.Resources"/>
+            <ComponentRef Id="Gallio.MbUnitCppAdapter.Include"/>
+        </Feature>
+    </Fragment>
+</Wix>

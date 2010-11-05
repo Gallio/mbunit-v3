@@ -192,6 +192,7 @@
             <FeatureRef Id='feat_RSpecAdapter'/>
 <?endif?>
             <FeatureRef Id='feat_XunitAdapter'/>
+            <FeatureRef Id='feat_MbUnitCppAdapter'/>
         </Feature>
 
         <Feature Id='feat_Runners' Title='Test Runners' Level="1" Display="10" AllowAdvertise="no">
