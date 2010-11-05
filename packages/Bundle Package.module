@@ -60,6 +60,9 @@
     <Module Include="$(SourceDir)\Extensions\MbUnit2\MbUnit2.module">
       <Inherit>true</Inherit>
     </Module>
+    <Module Include="$(SourceDir)\Extensions\MbUnitCpp\MbUnitCpp.module">
+      <Inherit>true</Inherit>
+    </Module>
     <Module Include="$(SourceDir)\Extensions\MSBuild\MSBuild.module">
       <Inherit>true</Inherit>
     </Module>

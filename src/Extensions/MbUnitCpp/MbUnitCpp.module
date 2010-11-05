@@ -1,0 +1,32 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(RootDir)\bin\Module.targets" />
+  
+  <ItemGroup>
+    <VisualCProject Include="Gallio.MbUnitCppAdapter.TestResources\Gallio.MbUnitCppAdapter.TestResources.x86$(ProjectVariant).csproj" />
+    <VisualCProject Include="Gallio.MbUnitCppAdapter.TestResources\Gallio.MbUnitCppAdapter.TestResources.x64$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.MbUnitCppAdapter\Gallio.MbUnitCppAdapter$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.MbUnitCppAdapter.Tests\Gallio.MbUnitCppAdapter.Tests$(ProjectVariant).csproj" />
+    
+    <AssemblyFile Include="Gallio.MbUnitCppAdapter\bin\Gallio.MbUnitCppAdapter.dll">
+      <ImagePath>bin\MbUnitCpp</ImagePath>
+    </AssemblyFile>
+    <PdbFile Include="Gallio.MbUnitCppAdapter\bin\Gallio.MbUnitCppAdapter.pdb">
+		<ImagePath>bin\MbUnitCpp</ImagePath>
+    </PdbFile>
+    <PluginFile Include="Gallio.MbUnitCppAdapter\Gallio.MbUnitCppAdapter.plugin">
+      <ImagePath>bin\MbUnitCpp</ImagePath>
+    </PluginFile>
+    <File Include="Gallio.MbUnitCppAdapter\Resources\MbUnitCpp.ico">
+      <ImagePath>bin\MbUnitCpp\Resources</ImagePath>
+    </File>
+    
+    <File Include="Include\MbUnitCpp.cpp">
+      <ImagePath>bin\MbUnitCpp\Include</ImagePath>
+    </File>
+    <File Include="Include\MbUnitCpp.h">
+      <ImagePath>bin\MbUnitCpp\Include</ImagePath>
+    </File>
+    
+    <TestAssembly Include="Gallio.MbUnitCppAdapter.Tests\bin\Gallio.MbUnitCppAdapter.Tests.dll" />
+  </ItemGroup>
+</Project>
