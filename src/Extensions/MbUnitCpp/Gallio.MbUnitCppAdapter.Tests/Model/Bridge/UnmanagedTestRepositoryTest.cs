@@ -23,7 +23,7 @@ using MbUnit.Framework;
 
 namespace Gallio.MbUnitCppAdapter.Tests.Model.Bridge
 {
-    [TestFixture]
+    [TestFixture, Pending]
     [TestsOn(typeof(UnmanagedTestRepository))]
     public class UnmanagedTestRepositoryTest
     {

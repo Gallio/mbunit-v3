@@ -25,7 +25,7 @@ using System.Reflection;
 
 namespace Gallio.MbUnitCppAdapter.Tests.Model.Bridge
 {
-    [TestFixture]
+    [TestFixture, Pending]
     [TestsOn(typeof(UnmanagedDllHelper))]
     public class UnmanagedDllHelperTest
     {
