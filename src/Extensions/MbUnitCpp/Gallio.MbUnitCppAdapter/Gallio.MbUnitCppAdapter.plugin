@@ -20,7 +20,7 @@
   </files>
 
   <assemblies>
-    <assembly fullName="Gallio.MbUnitCppAdapter, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+    <assembly fullName="Gallio.MbUnitCppAdapter, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
               codeBase="Gallio.MbUnitCppAdapter.dll"
               qualifyPartialName="true" />
   </assemblies>
