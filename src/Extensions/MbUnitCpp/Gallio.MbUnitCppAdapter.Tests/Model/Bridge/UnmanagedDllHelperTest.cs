@@ -25,17 +25,24 @@ using System.Reflection;
 
 namespace Gallio.MbUnitCppAdapter.Tests.Model.Bridge
 {
-    [TestFixture, Pending]
+    [TestFixture]
     [TestsOn(typeof(UnmanagedDllHelper))]
     public class UnmanagedDllHelperTest
     {
-        [Row(@"..\..\Gallio.MbUnitCppAdapter.TestResources\bin\Gallio.MbUnitCppAdapter.TestResources.x64.dll", new[] { ProcessorArchitecture.IA64, ProcessorArchitecture.Amd64 })]
-        [Row(@"..\..\Gallio.MbUnitCppAdapter.TestResources\bin\Gallio.MbUnitCppAdapter.TestResources.x86.dll", new[] {ProcessorArchitecture.X86 })]
         [Test]
-        public void GetArchitecture(string file, ProcessorArchitecture[] expectedArchitectures)
+        public void GetArchitecture32()
         {
+            string file = Helper.GetTestResources("x86");
             ProcessorArchitecture actualArchitecture = UnmanagedDllHelper.GetArchitecture(file);
-            Assert.Contains(expectedArchitectures, actualArchitecture);
+            Assert.AreEqual(ProcessorArchitecture.X86, actualArchitecture);
+        }
+
+        [Test]
+        public void GetArchitecture64()
+        {
+            string file = Helper.GetTestResources("x64");
+            ProcessorArchitecture actualArchitecture = UnmanagedDllHelper.GetArchitecture(file);
+            Assert.Contains(new[] { ProcessorArchitecture.IA64, ProcessorArchitecture.Amd64 }, actualArchitecture);
         }
     }
 }

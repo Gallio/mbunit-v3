@@ -23,19 +23,11 @@ using MbUnit.Framework;
 
 namespace Gallio.MbUnitCppAdapter.Tests.Model.Bridge
 {
-    [TestFixture, Pending]
+    [TestFixture]
     [TestsOn(typeof(UnmanagedTestRepository))]
     public class UnmanagedTestRepositoryTest
     {
-        private string SampleTestResource
-        {
-            get
-            {
-                return (8 == IntPtr.Size)
-                    ? @"..\..\Gallio.MbUnitCppAdapter.TestResources\bin\Gallio.MbUnitCppAdapter.TestResources.x64.dll"
-                    : @"..\..\Gallio.MbUnitCppAdapter.TestResources\bin\Gallio.MbUnitCppAdapter.TestResources.x86.dll";
-            }
-        }
+        private readonly string resources = Helper.GetTestResources();
 
         [Test]
         [ExpectedArgumentNullException]
@@ -47,10 +39,10 @@ namespace Gallio.MbUnitCppAdapter.Tests.Model.Bridge
         [Test]
         public void GetVersion()
         {
-            using (var repository = new UnmanagedTestRepository(SampleTestResource))
+            using (var repository = new UnmanagedTestRepository(resources))
             {
                 Assert.IsTrue(repository.IsValid);
-                Assert.AreEqual(SampleTestResource, repository.FileName);
+                Assert.AreEqual(resources, repository.FileName);
                 int version = repository.GetVersion();
                 Assert.GreaterThan(version, 0);
             }
@@ -59,7 +51,7 @@ namespace Gallio.MbUnitCppAdapter.Tests.Model.Bridge
         [Test]
         public void GetTests()
         {
-            using (var repository = new UnmanagedTestRepository(SampleTestResource))
+            using (var repository = new UnmanagedTestRepository(resources))
             {
                 Assert.IsTrue(repository.IsValid);
                 var testInfoItems = repository.GetTests();
@@ -71,7 +63,7 @@ namespace Gallio.MbUnitCppAdapter.Tests.Model.Bridge
         [Test]
         public void RunTest()
         {
-            using (var repository = new UnmanagedTestRepository(SampleTestResource))
+            using (var repository = new UnmanagedTestRepository(resources))
             {
                 Assert.IsTrue(repository.IsValid);
                 IEnumerable<TestStepResult> testResultInfoItems = repository.GetTests()
