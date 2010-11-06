@@ -4,11 +4,11 @@
     
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Directory Id="MbUnitCpp" Name="MbUnit">
-                <Component Id="Gallio.MbUnitCpp" Guid="{6CE70B92-B21F-45FA-A6B1-3ACA6010BD56}" Win64="$(var.Win64Binary)">
-                    <File Name="Gallio.MbUnitCpp.dll" KeyPath="yes" />
-                    <File Name="Gallio.MbUnitCpp.plugin" />
-                    <File Name="Gallio.MbUnitCpp.pdb" />
+            <Directory Id="MbUnitCppAdapter" Name="MbUnitCpp">
+                <Component Id="Gallio.MbUnitCppAdapter" Guid="{6CE70B92-B21F-45FA-A6B1-3ACA6010BD56}" Win64="$(var.Win64Binary)">
+                    <File Name="Gallio.MbUnitCppAdapter.dll" KeyPath="yes" />
+                    <File Name="Gallio.MbUnitCppAdapter.plugin" />
+                    <File Name="Gallio.MbUnitCppAdapter.pdb" />
                 </Component>
 		
                 <Directory Id="MbUnitCppAdapter.Resources" Name="Resources">
