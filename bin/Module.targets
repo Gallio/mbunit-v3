@@ -35,6 +35,11 @@
       <ImageOutputPath />
     </JSharpProject>
     
+    <VisualCProject>
+      <ImageContentPath />
+      <ImageOutputPath />
+    </VisualCProject>
+	
     <File>
       <ImagePath>.</ImagePath>
     </File>
@@ -493,7 +498,7 @@
   
   <Target Name="PopulateCommonProjects">
     <ItemGroup>
-      <CommonProject Include="@(CSharpProject);@(VBProject);@(JSharpProject)" />
+      <CommonProject Include="@(CSharpProject);@(VBProject);@(JSharpProject);@(VisualCProject)" />
     </ItemGroup>
   </Target>
   
