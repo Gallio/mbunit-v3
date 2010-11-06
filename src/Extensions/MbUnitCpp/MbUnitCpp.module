@@ -2,8 +2,8 @@
   <Import Project="$(RootDir)\bin\Module.targets" />
   
   <ItemGroup>
-    <VisualCProject Include="Gallio.MbUnitCppAdapter.TestResources\Gallio.MbUnitCppAdapter.TestResources.x86$(ProjectVariant).csproj" />
-    <VisualCProject Include="Gallio.MbUnitCppAdapter.TestResources\Gallio.MbUnitCppAdapter.TestResources.x64$(ProjectVariant).csproj" />
+    <VisualCProject Include="Gallio.MbUnitCppAdapter.TestResources\Gallio.MbUnitCppAdapter.TestResources.x86$(ProjectVariant).vcxproj" />
+    <VisualCProject Include="Gallio.MbUnitCppAdapter.TestResources\Gallio.MbUnitCppAdapter.TestResources.x64$(ProjectVariant).vcxproj" />
     <CSharpProject Include="Gallio.MbUnitCppAdapter\Gallio.MbUnitCppAdapter$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.MbUnitCppAdapter.Tests\Gallio.MbUnitCppAdapter.Tests$(ProjectVariant).csproj" />
     
