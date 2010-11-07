@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="..\Include\MbUnitCpp.cpp">
+      <Filter>Libs</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\Foo.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\Simple.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="..\Include\MbUnitCpp.h">
+      <Filter>Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Foo.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Model">
+      <UniqueIdentifier>{e548409f-6046-4739-b43d-213bb7d74ddb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libs">
+      <UniqueIdentifier>{d63b3862-c4fd-4714-9066-c88811db4cbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{5b4447d2-33f9-40fe-9117-79ea5f5fb89a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

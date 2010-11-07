@@ -15,17 +15,22 @@
 
 #include "stdafx.h"
 #include "Foo.h"
-#include "..\Include\MbUnitCpp.h"
+#include "MbUnitCpp.h"
 
-TESTFIXTURE(Sample)
+TESTFIXTURE(Simple)
 {
-    TEST(Passing)
+    TEST(EmptyPasses)
     {
     }
 
-    TEST(Failing)
+    TEST(ExplicitlyFails)
     {
         Assert::Fail();
+    }
+
+    TEST(ExplicitlyFailsWithMessage)
+    {
+        Assert::Fail("Boom!");
     }
 }
 

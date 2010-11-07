@@ -24,10 +24,12 @@ using Gallio.Tests;
 using MbUnit.Framework;
 using System.Reflection;
 using System.IO;
+using Gallio.Runner.Reports.Schema;
+using Gallio.Framework;
 
 namespace Gallio.MbUnitCppAdapter.Tests.Integration
 {
-    [TestFixture, Pending("Not implemented")]
+    [TestFixture]
     public class RunTest : BaseTestWithSampleRunner
     {
         [Column("x86"/*, "x64"*/)]
@@ -38,12 +40,15 @@ namespace Gallio.MbUnitCppAdapter.Tests.Integration
             Runner.AddFile(new FileInfo(Helper.GetTestResources(architecture)));
         }
 
+        private TestStepRun GetTestStepRun(string fullName)
+        {
+            return Runner.GetTestStepRuns(run => run.Step.FullName == fullName).First();
+        }
+
         [Test]
         public void Empty_passes()
         {
-            var runs = Report.TestPackageRun.AllTestStepRuns;
-
-
+            //TestStepRun step = GetTestStepRun("Sample/")
         }
 
 
