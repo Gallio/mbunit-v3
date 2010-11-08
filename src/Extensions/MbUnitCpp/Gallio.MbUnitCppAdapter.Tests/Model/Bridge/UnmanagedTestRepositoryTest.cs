@@ -19,11 +19,12 @@ using System.Linq;
 using System.Text;
 using Gallio.MbUnitCppAdapter.Model.Bridge;
 using Gallio.Model;
+using Gallio.Framework;
 using MbUnit.Framework;
 
 namespace Gallio.MbUnitCppAdapter.Tests.Model.Bridge
 {
-    [TestFixture, Pending("Fail on build server!")]
+    [TestFixture/*, Pending("Fail on build server!")*/]
     [TestsOn(typeof(UnmanagedTestRepository))]
     public class UnmanagedTestRepositoryTest
     {
@@ -35,10 +36,12 @@ namespace Gallio.MbUnitCppAdapter.Tests.Model.Bridge
         {
             new UnmanagedTestRepository(null);
         }
-        
+
         [Test]
         public void GetVersion()
         {
+            TestLog.WriteLine(resources);
+
             using (var repository = new UnmanagedTestRepository(resources))
             {
                 Assert.IsTrue(repository.IsValid);
@@ -51,6 +54,8 @@ namespace Gallio.MbUnitCppAdapter.Tests.Model.Bridge
         [Test]
         public void GetTests()
         {
+            TestLog.WriteLine(resources);
+
             using (var repository = new UnmanagedTestRepository(resources))
             {
                 Assert.IsTrue(repository.IsValid);

@@ -32,7 +32,7 @@ namespace MbUnitCpp
     // Describes the result of test.
     struct TestResultData
     {
-        Outcome Outcome;
+        Outcome NativeOutcome;
         char const* Message;
     };
 

@@ -40,11 +40,11 @@ namespace MbUnitCpp
         try
         {
             RunImpl();
-            pTestResultData->Outcome = PASSED;
+            pTestResultData->NativeOutcome = PASSED;
         }
         catch (AssertionFailure failure)
         {
-            pTestResultData->Outcome = FAILED;
+            pTestResultData->NativeOutcome = FAILED;
             pTestResultData->Message = failure.GetMessage();
         }
     }
@@ -56,14 +56,14 @@ namespace MbUnitCpp
 
     // Constructs an empty list of tests.
     TestList::TestList()
-        : m_head(NULL), m_tail(NULL), m_nextIndex(0)
+        : m_head(0), m_tail(0), m_nextIndex(0)
     {
     }
 
     // Adds a new test at the end of the list.
     void TestList::Add(Test* test)
     {
-        if (m_tail == NULL)
+        if (m_tail == 0)
             m_head = test;
         else
             m_tail->SetNext(test);
@@ -108,14 +108,14 @@ namespace MbUnitCpp
 
     // Constructs an empty list of test fixtures.
     TestFixtureList::TestFixtureList()
-        : m_head(NULL), m_tail(NULL), m_nextIndex(0)
+        : m_head(0), m_tail(0), m_nextIndex(0)
     {
     }
 
     // Adds a new test fixture at the end of the list.
     void TestFixtureList::Add(TestFixture* pTestFixture)
     {
-        if (m_tail == NULL)
+        if (m_tail == 0)
             m_head = pTestFixture;
         else
             m_tail->SetNext(pTestFixture);
@@ -157,10 +157,10 @@ namespace MbUnitCpp
     // A portable structure to describe the current test or test fixture.
     struct TestInfoData
     {
-        char const* Name;
+        const char* Name;
         int Index;
         bool IsTestFixture;
-        char const* FileName;
+        const char* FileName;
         int LineNumber;
         Position Position;
     };
@@ -182,7 +182,7 @@ namespace MbUnitCpp
             TestFixtureList& list = TestFixture::GetTestFixtureList();
             TestFixture* pFirstTestFixture = list.GetHead();
             pPosition->pTestFixture = pFirstTestFixture;
-            pPosition->pTest = NULL;
+            pPosition->pTest = 0;
         }
 
         int __cdecl MbUnitCpp_GetNextTest(Position* pPosition, TestInfoData* pTestInfoData)
@@ -190,18 +190,18 @@ namespace MbUnitCpp
             TestFixture* pTestFixture = pPosition->pTestFixture;
             Test* pTest = pPosition->pTest;
 
-            if (pTestFixture == NULL)
+            if (pTestFixture == 0)
                 return 0;
             
-            if (pTest == NULL)
+            if (pTest == 0)
             {
                 pTestInfoData->IsTestFixture = true;
-                pTestInfoData->FileName = NULL;
+                pTestInfoData->FileName = 0;
                 pTestInfoData->LineNumber = 0;
                 pTestInfoData->Name = pTestFixture->GetName();
                 pTestInfoData->Index = pTestFixture->GetIndex();
                 pTestInfoData->Position.pTestFixture = pTestFixture;
-                pTestInfoData->Position.pTest = NULL;
+                pTestInfoData->Position.pTest = 0;
                 pPosition->pTest = pTestFixture->GetTestList().GetHead();
                 return 1;            
             }
@@ -215,7 +215,7 @@ namespace MbUnitCpp
             pTestInfoData->Position.pTest = pTest;
             pPosition->pTest = pTest->GetNext();
 
-            if (pPosition->pTest == NULL)
+            if (pPosition->pTest == 0)
                 pPosition->pTestFixture = pTestFixture->GetNext();
             
             return 1;

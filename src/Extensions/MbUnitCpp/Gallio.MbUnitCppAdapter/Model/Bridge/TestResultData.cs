@@ -23,7 +23,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
     /// <summary>
     /// The standard test outcome of MbUnitCpp tests.
     /// </summary>
-    public enum NativeOutcome : uint
+    public enum NativeOutcome
     {
         INCONCLUSIVE = 0,
         PASSED = 1,
@@ -33,11 +33,11 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
     /// <summary>
     /// A native structure that holds the results of the test step.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    [StructLayout(LayoutKind.Sequential)]
     public struct TestStepResult
     {
         public NativeOutcome NativeOutcome;
-        public string Message;
+        public IntPtr MessagePtr;
 
         private static readonly IDictionary<NativeOutcome, TestOutcome> map = new Dictionary<NativeOutcome, TestOutcome>
         {
@@ -53,5 +53,14 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
                 return map[NativeOutcome];
             }
         }
+
+        public string Message
+        {
+            get
+            {
+                return Marshal.PtrToStringAnsi(MessagePtr);
+            }
+        }
+
     }
 }

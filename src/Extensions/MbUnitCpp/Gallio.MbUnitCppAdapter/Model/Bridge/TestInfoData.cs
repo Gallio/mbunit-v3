@@ -19,19 +19,35 @@ using System.Text;
 
 namespace Gallio.MbUnitCppAdapter.Model.Bridge
 {
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    [StructLayout(LayoutKind.Sequential)]
     public struct TestInfoData
     {
-        public string Name;
+        public IntPtr NamePtr;
         public int Index;
         public bool IsTestFixture;
-        public string FileName;
+        public IntPtr FileNamePtr;
         public int LineNumber;
         public Position Position;
 
         public string GetId()
         {
             return "MbUnitCpp_" + ((Position.pTest != IntPtr.Zero) ? Position.pTest : Position.pTestFixture);
+        }
+
+        public string Name
+        {
+            get
+            {
+                return Marshal.PtrToStringAnsi(NamePtr);
+            }
+        }
+
+        public string FileName
+        {
+            get
+            {
+                return Marshal.PtrToStringAnsi(FileNamePtr);
+            }
         }
     }
 }
