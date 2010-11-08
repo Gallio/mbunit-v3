@@ -2,6 +2,7 @@
   <Import Project="$(RootDir)\bin\Module.targets" />
   
   <ItemGroup>
+    <SolutionToBuild Include="Gallio.MbUnitCppAdapter.TestResources$(ProjectVariant).sln" />
     <CSharpProject Include="Gallio.MbUnitCppAdapter\Gallio.MbUnitCppAdapter$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.MbUnitCppAdapter.Tests\Gallio.MbUnitCppAdapter.Tests$(ProjectVariant).csproj" />
     
