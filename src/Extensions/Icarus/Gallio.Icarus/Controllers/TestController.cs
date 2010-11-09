@@ -20,6 +20,7 @@ using Gallio.Common.Concurrency;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
+using Gallio.Icarus.Projects;
 using Gallio.Icarus.Services;
 using Gallio.Icarus.TreeBuilders;
 using Gallio.Model;
@@ -44,7 +45,7 @@ namespace Gallio.Icarus.Controllers
         private LockBox<Report> reportLockBox;
         private ITestRunnerFactory testRunnerFactory;
         private TestPackage testPackage;
-        private string treeViewCategory;
+        private string treeViewCategory = UserOptions.DefaultTreeViewCategory;
 
         private bool testsFailed;
 
