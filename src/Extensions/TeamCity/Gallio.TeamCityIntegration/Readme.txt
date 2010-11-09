@@ -8,7 +8,7 @@ Beginning with Gallio v3.0.7, Gallio will automatically
 
 Prior to Gallio v3.0.7, it was necessary to specify the TeamCity integration extension
 manually as an argument to the test runner.  Now Gallio will automatically detect
-that it is running within the context of a TeamCity build by checking for the exitents
+that it is running within the context of a TeamCity build by checking for the existence
 of the "TEAMCITY_VERSION" environment variable which is predefined by TeamCity.
 
 
