@@ -29,6 +29,9 @@ using Gallio.Model.Tree;
 using Gallio.Runtime.Extensibility.Schema;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Common.Markup;
+using Gallio.Framework.Assertions;
+using Gallio.Common.Diagnostics;
 
 namespace Gallio.MbUnitCppAdapter.Model.Tasks
 {
@@ -95,22 +98,37 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
             return parentTestResult;
         }
 
-        private static TestResult RunTestStep(UnmanagedTestRepository repository, ITestCommand testCommand, TestInfoData testStepInfo, 
-            TestStep parentTestStep, IProgressMonitor progressMonitor)
+        private static TestResult RunTestStep(UnmanagedTestRepository repository, ITestCommand testCommand, TestInfoData testStepInfo, TestStep parentTestStep, IProgressMonitor progressMonitor)
         {
             ITestContext testContext = testCommand.StartPrimaryChildStep(parentTestStep);
             var stopwatch = Stopwatch.StartNew();
             TestStepResult testStepResult = repository.RunTest(testStepInfo);
             stopwatch.Stop();
-
-            if (testStepResult.NativeOutcome == NativeOutcome.FAILED)
-            {
-                testContext.LogWriter.Failures.WriteLine(testStepResult.Message);
-            }
-
+            ReportFailure(testContext, testStepInfo, testStepResult);
             TestResult testResult = testContext.FinishStep(testStepResult.TestOutcome, stopwatch.Elapsed);
             testResult.AssertCount = testStepResult.AssertCount;
             return testResult;
+        }
+
+        private static void ReportFailure(ITestContext testContext, TestInfoData testInfoData, TestStepResult testStepResult)
+        {
+            if (testStepResult.NativeOutcome == NativeOutcome.FAILED)
+            {
+                NativeAssertionFailure failure = testStepResult.Failure;
+                var builder = new AssertionFailureBuilder(failure.Description);
+
+                if (failure.HasExpectedValue)
+                    builder.AddRawExpectedValue(failure.ExpectedValue);
+
+                if (failure.HasActualValue)
+                    builder.AddRawExpectedValue(failure.ActualValue);
+
+                if (failure.HasMessage)
+                    builder.SetMessage(failure.Message);
+
+                builder.SetStackTrace(testInfoData.GetStackTraceData());
+                builder.ToAssertionFailure().WriteTo(testContext.LogWriter.Failures);
+            }
         }
     }
 }

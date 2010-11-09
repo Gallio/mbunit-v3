@@ -36,6 +36,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Bridge\NativeAssertionFailure.cs" />
     <Compile Include="Model\Bridge\NativeMethods.cs" />
     <Compile Include="Model\Bridge\Position.cs" />
     <Compile Include="Model\Bridge\TestInfoData.cs" />

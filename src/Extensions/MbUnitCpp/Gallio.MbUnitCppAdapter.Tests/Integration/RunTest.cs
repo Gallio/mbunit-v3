@@ -51,8 +51,14 @@ namespace Gallio.MbUnitCppAdapter.Tests.Integration
 
         [Test]
         [Row("Simple/Empty", TestStatus.Passed, 0, null)]
-        [Row("AssertFail/FailWithDefaultMessage", TestStatus.Failed, 1, null)]
-        [Row("AssertFail/FailWithCustomMessage", TestStatus.Failed, 1, "Boom!")]
+        [Row("Outcome/Assert_Fail_with_default_message", TestStatus.Failed, 1, null)]
+        [Row("Outcome/Assert_Fail_with_custom_message", TestStatus.Failed, 1, "Boom!")]
+        [Row("Logic/Assert_IsTrue_should_pass", TestStatus.Passed, 1, null)]
+        [Row("Logic/Assert_IsTrue_should_fail", TestStatus.Failed, 1, null)]
+        [Row("Logic/Assert_IsTrue_should_fail_with_custom_message", TestStatus.Failed, 1, "This is a custom message.")]
+        [Row("Logic/Assert_IsFalse_should_pass", TestStatus.Passed, 1, null)]
+        [Row("Logic/Assert_IsFalse_should_fail", TestStatus.Failed, 1, null)]
+        [Row("Logic/Assert_IsFalse_should_fail_with_custom_message", TestStatus.Failed, 1, "This is a custom message.")]
         public void Test(string fullName, TestStatus expectedStatus, int expectedAssertCount, string expectedFailureLog)
         {
             IEnumerable<TestStepRun> runs = Runner.GetTestStepRuns(r => r.Step.FullName == fullName);

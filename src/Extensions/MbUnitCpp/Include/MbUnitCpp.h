@@ -30,13 +30,23 @@ namespace MbUnitCpp
         FAILED = 2,
     };
 
+    // Represents a single assertion failure.
+    struct AssertionFailure
+    {
+        char const* Description;
+        char const* Message;
+        char const* ActualValue;
+        char const* ExpectedValue;
+		AssertionFailure(char const* description);
+    };
+
     // Describes the result of test.
     struct TestResultData
     {
         Outcome NativeOutcome;
-        char const* Message;
         int AssertCount;
-    };
+		AssertionFailure Failure;
+	};
 
     // Assertion framework.
     class AssertionFramework
@@ -47,7 +57,9 @@ namespace MbUnitCpp
 
         public:
         AssertionFramework(Test* pTest);
-        void Fail(const char* reason = "Test failed");
+        void Fail(const char* message = 0);
+		void IsTrue(bool actualValue, const char* message = 0);
+		void IsFalse(bool actualValue, const char* message = 0);
     };
 
     // An executable test.
@@ -144,17 +156,6 @@ namespace MbUnitCpp
         public:
         TestFixtureRecorder(TestFixtureList& list, TestFixture* pTestFixture);
     };
-
-    // Represents a failing assertion.
-    class AssertionFailure
-    {
-        private:
-        char const* m_message;
-
-        public:
-        AssertionFailure(char const* message);
-        char const* GetMessage() const { return m_message; }
-    };
 }
 
 #define TESTFIXTURE(Name) \
@@ -175,12 +176,10 @@ namespace MbUnitCpp
     class Test##Name : public MbUnitCpp::Test \
     { \
         public: \
-        Test##Name() : Test(testFixtureInstance.GetTestList().GetNextIndex(), #Name, __FILE__, __LINE__) {} \
+		Test##Name() : Test(testFixtureInstance.GetTestList().GetNextIndex(), #Name, __FILE__, __LINE__) {} \
         private: \
         virtual void RunImpl(); \
     } test##Name##Instance; \
     \
     MbUnitCpp::TestRecorder recorder##Name (testFixtureInstance.GetTestList(), &test##Name##Instance); \
     void Test##Name::RunImpl()
-
-

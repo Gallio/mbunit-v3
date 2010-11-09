@@ -43,12 +43,19 @@ namespace MbUnitCpp
             RunImpl();
             pTestResultData->AssertCount = m_assertCount;
             pTestResultData->NativeOutcome = PASSED;
-        }
+            pTestResultData->Failure.Description = 0;
+            pTestResultData->Failure.Message = 0;
+            pTestResultData->Failure.ActualValue = 0;
+            pTestResultData->Failure.ExpectedValue = 0;
+		}
         catch (AssertionFailure failure)
         {
             pTestResultData->AssertCount = m_assertCount;
             pTestResultData->NativeOutcome = FAILED;
-            pTestResultData->Message = failure.GetMessage();
+            pTestResultData->Failure.Description = failure.Description;
+            pTestResultData->Failure.Message = failure.Message;
+            pTestResultData->Failure.ActualValue = failure.ActualValue;
+            pTestResultData->Failure.ExpectedValue = failure.ExpectedValue;
         }
     }
 
@@ -154,12 +161,6 @@ namespace MbUnitCpp
         list.Add(pTestFixture);
     }
 
-    // Constructs an assertion failure with the specified message.
-    AssertionFailure::AssertionFailure(char const* message)
-        : m_message(message)
-    {
-    }
-
     // A structure describing the currently enumerated test or test fixture.
     struct Position
     {
@@ -190,12 +191,45 @@ namespace MbUnitCpp
         m_pTest->IncrementAssertCount();
     }
 
+	AssertionFailure::AssertionFailure(char const* description)
+		: Description(description), Message(0), ActualValue(0), ExpectedValue(0)
+	{
+	}
+
     // Assertion that makes inconditionally the test fail.
-    void AssertionFramework::Fail(const char* reason)
+    void AssertionFramework::Fail(const char* message)
     {
         IncrementAssertCount();
-        throw MbUnitCpp::AssertionFailure(reason);
+        AssertionFailure failure("An assertion failed.");
+		failure.Message = message;
+		throw failure;
     }
+
+	void AssertionFramework::IsTrue(bool actualValue, const char* message)
+	{
+        IncrementAssertCount();
+
+		if (!actualValue)
+		{
+			AssertionFailure failure("Expected value to be true.");
+			failure.ActualValue = "false";
+			failure.Message = message;
+			throw failure;
+		}
+	}
+
+	void AssertionFramework::IsFalse(bool actualValue, const char* message)
+	{
+        IncrementAssertCount();
+
+		if (actualValue)
+		{
+			AssertionFailure failure("Expected value to be false.");
+			failure.ActualValue = "true";
+			failure.Message = message;
+			throw failure;
+		}
+	}
 
     extern "C" 
     {

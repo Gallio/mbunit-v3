@@ -14,13 +14,11 @@
 // limitations under the License.
 
 #include "stdafx.h"
-#include "Foo.h"
+#include "MbUnitCpp.h"
 
-Foo::Foo(int value)
+TESTFIXTURE(Simple)
 {
-    m_value = value;
-}
-
-Foo::~Foo()
-{
+    TEST(Empty)
+    {
+    }
 }

@@ -37,8 +37,8 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
     public struct TestStepResult
     {
         public NativeOutcome NativeOutcome;
-        public IntPtr MessagePtr;
         public int AssertCount;
+        public NativeAssertionFailure Failure;
 
         private static readonly IDictionary<NativeOutcome, TestOutcome> map = new Dictionary<NativeOutcome, TestOutcome>
         {
@@ -54,14 +54,5 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
                 return map[NativeOutcome];
             }
         }
-
-        public string Message
-        {
-            get
-            {
-                return Marshal.PtrToStringAnsi(MessagePtr);
-            }
-        }
-
     }
 }

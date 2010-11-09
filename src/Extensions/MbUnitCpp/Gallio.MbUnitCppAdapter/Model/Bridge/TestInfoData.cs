@@ -16,6 +16,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using Gallio.Common.Diagnostics;
 
 namespace Gallio.MbUnitCppAdapter.Model.Bridge
 {
@@ -48,6 +49,11 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
             {
                 return Marshal.PtrToStringAnsi(FileNamePtr);
             }
+        }
+
+        public StackTraceData GetStackTraceData()
+        {
+            return new StackTraceData(String.Format("   at {0} in {1}:line {2}\r\n", Name, FileName, LineNumber));
         }
     }
 }
