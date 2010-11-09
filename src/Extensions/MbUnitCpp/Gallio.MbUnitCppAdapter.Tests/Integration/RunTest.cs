@@ -33,17 +33,9 @@ namespace Gallio.MbUnitCppAdapter.Tests.Integration
     [TestFixture]
     public class RunTest : BaseTestWithSampleRunner
     {
-        [Column("x86"/*, "x64"*/)]
-        private readonly string architecture;
-
         protected override void ConfigureRunner()
         {
-            Runner.AddFile(new FileInfo(Helper.GetTestResources(architecture)));
-        }
-
-        protected TestStepRun GetTestStepRun(string fullName)
-        {
-            return Runner.GetTestStepRuns(run => run.Step.FullName == fullName).First();
+            Runner.AddFile(new FileInfo(Helper.GetTestResources()));
         }
 
         [Test]
@@ -61,9 +53,11 @@ namespace Gallio.MbUnitCppAdapter.Tests.Integration
         [Row("Simple/Empty", TestStatus.Passed, 0, null)]
         [Row("AssertFail/FailWithDefaultMessage", TestStatus.Failed, 1, null)]
         [Row("AssertFail/FailWithCustomMessage", TestStatus.Failed, 1, "Boom!")]
-        public void Test(string name, TestStatus expectedStatus, int expectedAssertCount, string expectedFailureLog)
+        public void Test(string fullName, TestStatus expectedStatus, int expectedAssertCount, string expectedFailureLog)
         {
-            TestStepRun run = GetTestStepRun(name);
+            IEnumerable<TestStepRun> runs = Runner.GetTestStepRuns(r => r.Step.FullName == fullName);
+            Assert.IsNotEmpty(runs);
+            TestStepRun run = runs.First();
             Assert.IsNotNull(run);
             Assert.AreEqual(expectedStatus, run.Result.Outcome.Status);
             Assert.AreEqual(expectedAssertCount, run.Result.AssertCount);

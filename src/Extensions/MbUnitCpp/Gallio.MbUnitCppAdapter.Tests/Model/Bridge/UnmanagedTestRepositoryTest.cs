@@ -24,7 +24,7 @@ using MbUnit.Framework;
 
 namespace Gallio.MbUnitCppAdapter.Tests.Model.Bridge
 {
-    [TestFixture/*, Pending("Fail on build server!")*/]
+    [TestFixture]
     [TestsOn(typeof(UnmanagedTestRepository))]
     public class UnmanagedTestRepositoryTest
     {
@@ -40,13 +40,12 @@ namespace Gallio.MbUnitCppAdapter.Tests.Model.Bridge
         [Test]
         public void GetVersion()
         {
-            TestLog.WriteLine(resources);
-
             using (var repository = new UnmanagedTestRepository(resources))
             {
                 Assert.IsTrue(repository.IsValid);
                 Assert.AreEqual(resources, repository.FileName);
                 int version = repository.GetVersion();
+                TestLog.WriteLine("Current Version = {0}.", version);
                 Assert.GreaterThan(version, 0);
             }
         }
@@ -54,12 +53,11 @@ namespace Gallio.MbUnitCppAdapter.Tests.Model.Bridge
         [Test]
         public void GetTests()
         {
-            TestLog.WriteLine(resources);
-
             using (var repository = new UnmanagedTestRepository(resources))
             {
                 Assert.IsTrue(repository.IsValid);
                 var testInfoItems = repository.GetTests().ToArray();
+                TestLog.WriteLine("Found {0} test item(s).", testInfoItems.Length);
                 Assert.IsNotEmpty(testInfoItems);
             }
         }
