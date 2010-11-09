@@ -38,6 +38,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
     {
         public NativeOutcome NativeOutcome;
         public IntPtr MessagePtr;
+        public int AssertCount;
 
         private static readonly IDictionary<NativeOutcome, TestOutcome> map = new Dictionary<NativeOutcome, TestOutcome>
         {

@@ -59,7 +59,7 @@ namespace Gallio.MbUnitCppAdapter.Tests.Model.Bridge
             using (var repository = new UnmanagedTestRepository(resources))
             {
                 Assert.IsTrue(repository.IsValid);
-                var testInfoItems = repository.GetTests();
+                var testInfoItems = repository.GetTests().ToArray();
                 Assert.IsNotEmpty(testInfoItems);
             }
         }

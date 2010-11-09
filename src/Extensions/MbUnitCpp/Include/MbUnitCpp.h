@@ -18,6 +18,7 @@
 
 namespace MbUnitCpp
 {
+    class Test;
     class TestList;
     class TestFixtureList;
 
@@ -34,6 +35,19 @@ namespace MbUnitCpp
     {
         Outcome NativeOutcome;
         char const* Message;
+        int AssertCount;
+    };
+
+    // Assertion framework.
+    class AssertionFramework
+    {
+        private:
+        Test *m_pTest;
+        void IncrementAssertCount();
+
+        public:
+        AssertionFramework(Test* pTest);
+        void Fail(const char* reason = "Test failed");
     };
 
     // An executable test.
@@ -45,6 +59,7 @@ namespace MbUnitCpp
         char const* m_fileName;
         int m_lineNumber;
         Test* m_next;
+        int m_assertCount;
 
         public:
         Test(int index, char const* name, char const* fileName, int lineNumber);
@@ -56,16 +71,14 @@ namespace MbUnitCpp
         Test* GetNext() const { return m_next; }
         void SetNext(Test* test);
         void Run(TestResultData* pTestResultData);
-        virtual void RunImpl() const;
+        virtual void RunImpl();
+        void IncrementAssertCount();
+
+        private:
+        void Clear();
 
         protected:
-
-        // Assertion framework.
-        class Assert
-        {
-            public:
-            static void Fail(const char* reason = "Test failed");
-        };
+        AssertionFramework Assert;
     };
 
     // A chained list of tests.
@@ -145,9 +158,10 @@ namespace MbUnitCpp
 }
 
 #define TESTFIXTURE(Name) \
+    using namespace MbUnitCpp; \
     namespace NamespaceTestFixture##Name \
     { \
-        class TestFixture##Name : public MbUnitCpp::TestFixture \
+        class TestFixture##Name : public TestFixture \
         { \
             public: \
             TestFixture##Name() : TestFixture(MbUnitCpp::TestFixture::GetTestFixtureList().GetNextIndex(), #Name) {} \
@@ -163,10 +177,10 @@ namespace MbUnitCpp
         public: \
         Test##Name() : Test(testFixtureInstance.GetTestList().GetNextIndex(), #Name, __FILE__, __LINE__) {} \
         private: \
-        virtual void RunImpl() const; \
+        virtual void RunImpl(); \
     } test##Name##Instance; \
     \
     MbUnitCpp::TestRecorder recorder##Name (testFixtureInstance.GetTestList(), &test##Name##Instance); \
-    void Test##Name::RunImpl() const
+    void Test##Name::RunImpl()
 
 

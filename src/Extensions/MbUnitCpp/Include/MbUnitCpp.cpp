@@ -20,7 +20,7 @@ namespace MbUnitCpp
 {
     // Construct an executable test case.
     Test::Test(int index, char const* name, char const* fileName, int lineNumber)
-        : m_index(index), m_name(name), m_fileName(fileName), m_lineNumber(lineNumber)
+        : m_index(index), m_name(name), m_fileName(fileName), m_lineNumber(lineNumber), Assert(this)
     {
     }
 
@@ -39,18 +39,31 @@ namespace MbUnitCpp
     {
         try
         {
+            Clear();
             RunImpl();
+            pTestResultData->AssertCount = m_assertCount;
             pTestResultData->NativeOutcome = PASSED;
         }
         catch (AssertionFailure failure)
         {
+            pTestResultData->AssertCount = m_assertCount;
             pTestResultData->NativeOutcome = FAILED;
             pTestResultData->Message = failure.GetMessage();
         }
     }
 
+    void Test::Clear()
+    {
+        m_assertCount = 0;
+    }
+
+    void Test::IncrementAssertCount()
+    {
+        m_assertCount++;
+    }
+
     // Default empty implementation of the test execution.
-    void Test::RunImpl() const
+    void Test::RunImpl()
     {
     }
 
@@ -165,8 +178,22 @@ namespace MbUnitCpp
         Position Position;
     };
 
-    void Test::Assert::Fail(const char* reason)
+    // Constructs an assertion framework instance for the specified test.
+    AssertionFramework::AssertionFramework(Test* pTest)
+        : m_pTest(pTest)
     {
+    }
+
+    // Internal assert count increment.
+    void AssertionFramework::IncrementAssertCount()
+    {
+        m_pTest->IncrementAssertCount();
+    }
+
+    // Assertion that makes inconditionally the test fail.
+    void AssertionFramework::Fail(const char* reason)
+    {
+        IncrementAssertCount();
         throw MbUnitCpp::AssertionFailure(reason);
     }
 

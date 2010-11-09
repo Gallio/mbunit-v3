@@ -12,6 +12,9 @@
     <ClCompile Include="Tests\Simple.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="Tests\AssertFail.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />

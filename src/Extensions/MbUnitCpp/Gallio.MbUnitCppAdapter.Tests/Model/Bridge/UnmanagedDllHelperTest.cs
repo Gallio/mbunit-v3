@@ -25,7 +25,7 @@ using System.Reflection;
 
 namespace Gallio.MbUnitCppAdapter.Tests.Model.Bridge
 {
-    [TestFixture, Pending("Fail on build server!")]
+    [TestFixture]
     [TestsOn(typeof(UnmanagedDllHelper))]
     public class UnmanagedDllHelperTest
     {

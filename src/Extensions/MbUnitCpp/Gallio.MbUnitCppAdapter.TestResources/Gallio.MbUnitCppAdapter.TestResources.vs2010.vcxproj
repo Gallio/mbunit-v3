@@ -65,25 +65,25 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)..\Gallio.MbUnitCppAdapter.Tests\bin\</OutDir>
+    <OutDir>Output\</OutDir>
     <IntDir>bin\$(Configuration).$(PlatformShortName)\</IntDir>
     <TargetName>Gallio.MbUnitCppAdapter.TestResources.x86</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IntDir>bin\$(Configuration).$(PlatformShortName)\</IntDir>
-    <OutDir>$(SolutionDir)Gallio.MbUnitCppAdapter.Tests\bin\</OutDir>
+    <OutDir>Output\</OutDir>
     <TargetName>Gallio.MbUnitCppAdapter.TestResources.x86</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)..\Gallio.MbUnitCppAdapter.Tests\bin\</OutDir>
+    <OutDir>Output\</OutDir>
     <IntDir>bin\$(Configuration).$(PlatformShortName)\</IntDir>
     <TargetName>Gallio.MbUnitCppAdapter.TestResources.x64</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)Gallio.MbUnitCppAdapter.Tests\bin\</OutDir>
+    <OutDir>Output\</OutDir>
     <IntDir>bin\$(Configuration).$(PlatformShortName)\</IntDir>
     <TargetName>Gallio.MbUnitCppAdapter.TestResources.x64</TargetName>
   </PropertyGroup>
@@ -173,6 +173,7 @@
     </ClCompile>
     <ClCompile Include="Model\Foo.cpp" />
     <ClCompile Include="Tests\Simple.cpp" />
+    <ClCompile Include="Tests\AssertFail.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

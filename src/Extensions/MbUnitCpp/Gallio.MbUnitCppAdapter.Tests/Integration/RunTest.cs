@@ -26,6 +26,7 @@ using System.Reflection;
 using System.IO;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Framework;
+using Gallio.Common.Markup;
 
 namespace Gallio.MbUnitCppAdapter.Tests.Integration
 {
@@ -40,18 +41,35 @@ namespace Gallio.MbUnitCppAdapter.Tests.Integration
             Runner.AddFile(new FileInfo(Helper.GetTestResources(architecture)));
         }
 
-        private TestStepRun GetTestStepRun(string fullName)
+        protected TestStepRun GetTestStepRun(string fullName)
         {
             return Runner.GetTestStepRuns(run => run.Step.FullName == fullName).First();
         }
 
         [Test]
-        public void Empty_passes()
+        public void ListAllTests()
         {
-            //TestStepRun step = GetTestStepRun("Sample/")
+            IEnumerable<TestStepRun> runs = Runner.Report.TestPackageRun.AllTestStepRuns;
+            string[] names = runs.Select(x => x.Step.FullName).Where(x => x.Length > 0).ToArray();
+            Assert.IsNotEmpty(names);
+
+            foreach (string name in names)
+                TestLog.WriteLine("> " + name);
         }
 
+        [Test]
+        [Row("Simple/Empty", TestStatus.Passed, 0, null)]
+        [Row("AssertFail/FailWithDefaultMessage", TestStatus.Failed, 1, null)]
+        [Row("AssertFail/FailWithCustomMessage", TestStatus.Failed, 1, "Boom!")]
+        public void Test(string name, TestStatus expectedStatus, int expectedAssertCount, string expectedFailureLog)
+        {
+            TestStepRun run = GetTestStepRun(name);
+            Assert.IsNotNull(run);
+            Assert.AreEqual(expectedStatus, run.Result.Outcome.Status);
+            Assert.AreEqual(expectedAssertCount, run.Result.AssertCount);
 
-    
+            if (expectedFailureLog != null)
+                AssertLogContains(run, expectedFailureLog, MarkupStreamNames.Failures);
+        }
     }
 }

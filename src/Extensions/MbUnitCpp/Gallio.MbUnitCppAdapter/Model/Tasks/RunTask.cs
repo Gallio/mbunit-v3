@@ -80,15 +80,19 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
             ITestContext testContext = testCommand.StartPrimaryChildStep(parentTestStep);
             TestOutcome combinedOutCome = TestOutcome.Passed;
             var duration = TimeSpan.Zero;
+            int assertCount = 0;
 
             foreach (ITestCommand child in testCommand.Children)
             {
                 TestResult testResult = RunTest(repository, child, testContext.TestStep, progressMonitor);
                 combinedOutCome.CombineWith(testResult.Outcome);
                 duration += testResult.Duration;
+                assertCount += testResult.AssertCount;
             }
 
-            return testContext.FinishStep(combinedOutCome, duration);
+            TestResult parentTestResult = testContext.FinishStep(combinedOutCome, duration);
+            parentTestResult.AssertCount = assertCount;
+            return parentTestResult;
         }
 
         private static TestResult RunTestStep(UnmanagedTestRepository repository, ITestCommand testCommand, TestInfoData testStepInfo, 
@@ -104,8 +108,9 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
                 testContext.LogWriter.Failures.WriteLine(testStepResult.Message);
             }
 
-            testContext.FinishStep(testStepResult.TestOutcome, stopwatch.Elapsed);
-            return testContext.Result;
+            TestResult testResult = testContext.FinishStep(testStepResult.TestOutcome, stopwatch.Elapsed);
+            testResult.AssertCount = testStepResult.AssertCount;
+            return testResult;
         }
     }
 }

@@ -19,18 +19,7 @@
 
 TESTFIXTURE(Simple)
 {
-    TEST(EmptyPasses)
+    TEST(Empty)
     {
-    }
-
-    TEST(ExplicitlyFails)
-    {
-        Assert::Fail();
-    }
-
-    TEST(ExplicitlyFailsWithMessage)
-    {
-        Assert::Fail("Boom!");
     }
 }
-
