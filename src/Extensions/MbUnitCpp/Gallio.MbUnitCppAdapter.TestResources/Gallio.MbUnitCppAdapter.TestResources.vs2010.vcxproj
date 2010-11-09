@@ -65,25 +65,25 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>Output\</OutDir>
+    <OutDir>out\</OutDir>
     <IntDir>bin\$(Configuration).$(PlatformShortName)\</IntDir>
     <TargetName>Gallio.MbUnitCppAdapter.TestResources.x86</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IntDir>bin\$(Configuration).$(PlatformShortName)\</IntDir>
-    <OutDir>Output\</OutDir>
+    <OutDir>out\</OutDir>
     <TargetName>Gallio.MbUnitCppAdapter.TestResources.x86</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>Output\</OutDir>
+    <OutDir>out\</OutDir>
     <IntDir>bin\$(Configuration).$(PlatformShortName)\</IntDir>
     <TargetName>Gallio.MbUnitCppAdapter.TestResources.x64</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>Output\</OutDir>
+    <OutDir>out\</OutDir>
     <IntDir>bin\$(Configuration).$(PlatformShortName)\</IntDir>
     <TargetName>Gallio.MbUnitCppAdapter.TestResources.x64</TargetName>
   </PropertyGroup>
