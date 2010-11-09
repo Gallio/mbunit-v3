@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
+using Gallio.Icarus.Projects;
 using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using SortOrder = Gallio.Icarus.Models.SortOrder;
@@ -110,7 +111,8 @@ namespace Gallio.Icarus.TestExplorer
 
             model.CurrentTreeViewCategory.PropertyChanged += (s, e) => 
                 treeViewComboBox.ComboBox.SelectedItem = model.CurrentTreeViewCategory.Value;
-            treeViewComboBox.ComboBox.SelectedItem = model.CurrentTreeViewCategory.Value;
+            treeViewComboBox.ComboBox.SelectedItem = model.CurrentTreeViewCategory.Value 
+                ?? UserOptions.DefaultTreeViewCategory;
 
             model.TreeViewCategories.PropertyChanged += (s, e) =>
             {

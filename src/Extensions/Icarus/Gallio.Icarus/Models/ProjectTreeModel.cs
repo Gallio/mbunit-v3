@@ -30,7 +30,7 @@ namespace Gallio.Icarus.Models
         private readonly Node projectRoot = new Node();
         private readonly ReportsNode reportsNode;
         private TestProject testProject = new TestProject();
-        private string fileName;
+        private string fileName = Paths.DefaultProject;
         private ReportMonitor reportMonitor;
 
         public string FileName
