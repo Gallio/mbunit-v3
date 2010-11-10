@@ -40,7 +40,7 @@ namespace Gallio.MbUnitCppAdapter.Model
             this.testInfoData = testInfoData;
             Id = testInfoData.GetId();
             Kind = testInfoData.IsTestFixture ? TestKinds.Fixture : TestKinds.Test;
-            IsTestCase = testInfoData.IsTestFixture;
+            IsTestCase = !testInfoData.IsTestFixture;
         }
     }
 }

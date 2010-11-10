@@ -43,19 +43,12 @@ namespace MbUnitCpp
             RunImpl();
             pTestResultData->AssertCount = m_assertCount;
             pTestResultData->NativeOutcome = PASSED;
-            pTestResultData->Failure.Description = 0;
-            pTestResultData->Failure.Message = 0;
-            pTestResultData->Failure.ActualValue = 0;
-            pTestResultData->Failure.ExpectedValue = 0;
 		}
         catch (AssertionFailure failure)
         {
             pTestResultData->AssertCount = m_assertCount;
             pTestResultData->NativeOutcome = FAILED;
-            pTestResultData->Failure.Description = failure.Description;
-            pTestResultData->Failure.Message = failure.Message;
-            pTestResultData->Failure.ActualValue = failure.ActualValue;
-            pTestResultData->Failure.ExpectedValue = failure.ExpectedValue;
+            pTestResultData->Failure = failure;
         }
     }
 

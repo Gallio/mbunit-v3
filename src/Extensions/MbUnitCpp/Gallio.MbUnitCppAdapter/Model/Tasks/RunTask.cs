@@ -73,19 +73,10 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
         {
             Test test = testCommand.Test;
             progressMonitor.SetStatus(test.Name);
-            TestResult result;
             var mbUnitCppTest = test as MbUnitCppTest;
-
-            if ((mbUnitCppTest == null) || mbUnitCppTest.TestInfoData.IsTestFixture)
-            {
-                result = RunChildTests(repository, testCommand, parentTestStep, progressMonitor);
-            }
-            else
-            {
-                result = RunTestStep(repository, testCommand, mbUnitCppTest.TestInfoData, parentTestStep, progressMonitor);
-            }
-
-            return result;
+            return ((mbUnitCppTest == null) || mbUnitCppTest.TestInfoData.IsTestFixture)
+                ? RunChildTests(repository, testCommand, parentTestStep, progressMonitor)
+                : RunTestStep(repository, testCommand, mbUnitCppTest.TestInfoData, parentTestStep, progressMonitor);
         }
 
         private static TestResult RunChildTests(UnmanagedTestRepository repository, ITestCommand testCommand, TestStep parentTestStep, IProgressMonitor progressMonitor)
@@ -93,19 +84,16 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
             ITestContext testContext = testCommand.StartPrimaryChildStep(parentTestStep);
             TestOutcome combinedOutCome = TestOutcome.Passed;
             var duration = TimeSpan.Zero;
-            int assertCount = 0;
 
             foreach (ITestCommand child in testCommand.Children)
             {
                 TestResult testResult = RunTest(repository, child, testContext.TestStep, progressMonitor);
-                combinedOutCome.CombineWith(testResult.Outcome);
+                combinedOutCome = combinedOutCome.CombineWith(testResult.Outcome);
                 duration += testResult.Duration;
-                assertCount += testResult.AssertCount;
+                testContext.AddAssertCount(testResult.AssertCount);
             }
 
-            TestResult parentTestResult = testContext.FinishStep(combinedOutCome, duration);
-            parentTestResult.AssertCount = assertCount;
-            return parentTestResult;
+            return testContext.FinishStep(combinedOutCome, duration);
         }
 
         private static TestResult RunTestStep(UnmanagedTestRepository repository, ITestCommand testCommand, TestInfoData testStepInfo, TestStep parentTestStep, IProgressMonitor progressMonitor)
@@ -115,10 +103,9 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
             TestStepResult testStepResult = repository.RunTest(testStepInfo);
             stopwatch.Stop();
             ReportFailure(testContext, testStepInfo, testStepResult);
-            TestResult testResult = testContext.FinishStep(testStepResult.TestOutcome, stopwatch.Elapsed);
-            testResult.AssertCount = testStepResult.AssertCount;
+            testContext.AddAssertCount(testStepResult.AssertCount);
             progressMonitor.Worked(1);
-            return testResult;
+            return testContext.FinishStep(testStepResult.TestOutcome, stopwatch.Elapsed);
         }
 
         private static void ReportFailure(ITestContext testContext, TestInfoData testInfoData, TestStepResult testStepResult)
