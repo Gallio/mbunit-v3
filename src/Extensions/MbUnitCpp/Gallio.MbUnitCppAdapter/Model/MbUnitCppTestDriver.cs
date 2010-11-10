@@ -41,22 +41,17 @@ namespace Gallio.MbUnitCppAdapter.Model
             this.logger = logger;
         }
 
-        protected sealed override void ExploreImpl(ITestIsolationContext testIsolationContext, TestPackage testPackage, 
-            TestExplorationOptions testExplorationOptions, IMessageSink messageSink, IProgressMonitor progressMonitor)
+        protected sealed override void ExploreImpl(ITestIsolationContext testIsolationContext, TestPackage testPackage, TestExplorationOptions testExplorationOptions, IMessageSink messageSink, IProgressMonitor progressMonitor)
         {
-            ExploreOrRun<ExploreTask>(testIsolationContext, testPackage, testExplorationOptions, null, messageSink, progressMonitor, "Exploring tests.");
+            ExploreOrRun<ExploreTask>(testIsolationContext, testPackage, testExplorationOptions, null, messageSink, progressMonitor, "Exploring MbUnitCpp tests.");
         }
 
-        protected sealed override void RunImpl(ITestIsolationContext testIsolationContext, TestPackage testPackage, 
-            TestExplorationOptions testExplorationOptions, TestExecutionOptions testExecutionOptions, 
-            IMessageSink messageSink, IProgressMonitor progressMonitor)
+        protected sealed override void RunImpl(ITestIsolationContext testIsolationContext, TestPackage testPackage, TestExplorationOptions testExplorationOptions, TestExecutionOptions testExecutionOptions, IMessageSink messageSink, IProgressMonitor progressMonitor)
         {
-            ExploreOrRun<RunTask>(testIsolationContext, testPackage, testExplorationOptions, testExecutionOptions, messageSink, progressMonitor, "Running tests.");
+            ExploreOrRun<RunTask>(testIsolationContext, testPackage, testExplorationOptions, testExecutionOptions, messageSink, progressMonitor, "Running MbUnitCpp tests.");
         }
 
-        private void ExploreOrRun<TTask>(ITestIsolationContext testIsolationContext, TestPackage testPackage, 
-            TestExplorationOptions testExplorationOptions, TestExecutionOptions testExecutionOptions, 
-            IMessageSink messageSink, IProgressMonitor progressMonitor, string taskName)
+        private void ExploreOrRun<TTask>(ITestIsolationContext testIsolationContext, TestPackage testPackage, TestExplorationOptions testExplorationOptions, TestExecutionOptions testExecutionOptions, IMessageSink messageSink, IProgressMonitor progressMonitor, string taskName)
             where TTask : AbstractTask, new()
         {
             double totalWorkUnits = Math.Max(testPackage.Files.Count, 1);
@@ -69,9 +64,9 @@ namespace Gallio.MbUnitCppAdapter.Model
                 if (progressMonitor.IsCanceled)
                     return;
 
-                foreach (FileInfo file in testPackage.Files)
+                using (var remoteProgressMonitor = new RemoteProgressMonitor(progressMonitor))
                 {
-                    using (var remoteProgressMonitor = new RemoteProgressMonitor(progressMonitor))
+                    foreach (FileInfo file in testPackage.Files)
                     {
                         HostSetup hostSetup = CreateHostSetup(testPackage, file);
                         testIsolationContext.RunIsolatedTask<TTask>(hostSetup, progressMonitor.SetStatus, new object[] 
@@ -85,6 +80,8 @@ namespace Gallio.MbUnitCppAdapter.Model
                             file,
                         });
                     }
+
+                    remoteProgressMonitor.Worked(1);
                 }
             }
         }
@@ -95,6 +92,5 @@ namespace Gallio.MbUnitCppAdapter.Model
             hostSetup.ProcessorArchitecture = UnmanagedDllHelper.GetArchitecture(file.FullName);
             return hostSetup;
         }
-
     }
 }

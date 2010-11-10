@@ -39,10 +39,15 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
     {
         protected override void Execute(UnmanagedTestRepository repository, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask("Running " + repository.FileName, 1))
+            using (progressMonitor.BeginTask("Running " + repository.FileName, 4))
             {
+                progressMonitor.SetStatus("Building the test model.");
                 BuildTestModel(repository, progressMonitor);
+                progressMonitor.Worked(1);
+
+                progressMonitor.SetStatus("Running the tests.");
                 RunTests(repository, progressMonitor);
+                progressMonitor.Worked(3);
             }
         }
 
@@ -50,12 +55,17 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
         {
             ITestContextManager testContextManager = new ObservableTestContextManager(TestContextTrackerAccessor.Instance, MessageSink);
             ITestCommandFactory testCommandFactory = new DefaultTestCommandFactory();
-            ITestCommand rootTestCommand = testCommandFactory.BuildCommands(TestModel, TestExecutionOptions.FilterSet, 
-                TestExecutionOptions.ExactFilter, testContextManager);
+            ITestCommand rootTestCommand = testCommandFactory.BuildCommands(TestModel, TestExecutionOptions.FilterSet, TestExecutionOptions.ExactFilter, testContextManager);
 
             if (rootTestCommand != null)
             {
-                RunTest(repository, rootTestCommand, null, progressMonitor);
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                {
+                    using (subProgressMonitor.BeginTask("Running the tests.", rootTestCommand.TestCount))
+                    {
+                        RunTest(repository, rootTestCommand, null, subProgressMonitor);
+                    }
+                }
             }
         }
 
@@ -107,6 +117,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
             ReportFailure(testContext, testStepInfo, testStepResult);
             TestResult testResult = testContext.FinishStep(testStepResult.TestOutcome, stopwatch.Elapsed);
             testResult.AssertCount = testStepResult.AssertCount;
+            progressMonitor.Worked(1);
             return testResult;
         }
 
