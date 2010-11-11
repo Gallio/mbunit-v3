@@ -90,7 +90,6 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
                 TestResult testResult = RunTest(repository, child, testContext.TestStep, progressMonitor);
                 combinedOutCome = combinedOutCome.CombineWith(testResult.Outcome);
                 duration += testResult.Duration;
-                testContext.AddAssertCount(testResult.AssertCount);
             }
 
             return testContext.FinishStep(combinedOutCome, duration);
@@ -102,26 +101,26 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
             var stopwatch = Stopwatch.StartNew();
             TestStepResult testStepResult = repository.RunTest(testStepInfo);
             stopwatch.Stop();
-            ReportFailure(testContext, testStepInfo, testStepResult);
+            ReportFailure(repository, testContext, testStepInfo, testStepResult);
             testContext.AddAssertCount(testStepResult.AssertCount);
             progressMonitor.Worked(1);
             return testContext.FinishStep(testStepResult.TestOutcome, stopwatch.Elapsed);
         }
 
-        private static void ReportFailure(ITestContext testContext, TestInfoData testInfoData, TestStepResult testStepResult)
+        private static void ReportFailure(UnmanagedTestRepository repository, ITestContext testContext, TestInfoData testInfoData, TestStepResult testStepResult)
         {
             if (testStepResult.NativeOutcome == NativeOutcome.FAILED)
             {
-                NativeAssertionFailure failure = testStepResult.Failure;
+                var failure = new MbUnitCppAssertionFailure(testStepResult.Failure, repository);
                 var builder = new AssertionFailureBuilder(failure.Description);
 
-                if (failure.HasExpectedValue)
+                if (failure.ExpectedValue.Length > 0)
                     builder.AddRawExpectedValue(failure.ExpectedValue);
 
-                if (failure.HasActualValue)
-                    builder.AddRawExpectedValue(failure.ActualValue);
+                if (failure.ActualValue.Length > 0)
+                    builder.AddRawActualValue(failure.ActualValue);
 
-                if (failure.HasMessage)
+                if (failure.Message.Length > 0)
                     builder.SetMessage(failure.Message);
 
                 builder.SetStackTrace(testInfoData.GetStackTraceData());

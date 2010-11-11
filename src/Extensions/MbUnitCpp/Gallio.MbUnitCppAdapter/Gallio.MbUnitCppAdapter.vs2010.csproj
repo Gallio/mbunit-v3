@@ -43,6 +43,7 @@
     <Compile Include="Model\Bridge\TestResultData.cs" />
     <Compile Include="Model\Bridge\UnmanagedDllHelper.cs" />
     <Compile Include="Model\Bridge\UnmanagedTestRepository.cs" />
+    <Compile Include="Model\MbUnitCppAssertionFailure.cs" />
     <Compile Include="Model\MbUnitCppTest.cs" />
     <Compile Include="Model\MbUnitCppTestDriver.cs" />
     <Compile Include="Model\MbUnitCppTestFileTypeRecognizer.cs" />

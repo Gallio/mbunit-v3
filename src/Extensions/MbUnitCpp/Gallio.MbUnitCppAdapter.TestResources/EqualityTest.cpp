@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,19 +13,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Runtime.InteropServices;
-using System.Text;
-using Gallio.Common.Diagnostics;
+#include "stdafx.h"
+#include "MbUnitCpp.h"
 
-namespace Gallio.MbUnitCppAdapter.Model.Bridge
+TESTFIXTURE(Equality)
 {
-    [StructLayout(LayoutKind.Sequential)]
-    public struct NativeAssertionFailure
+    TEST(Assert_AreEqual_int_should_pass)
     {
-        public int DescriptionId;
-        public int MessageId;
-        public int ActualValueId;
-        public int ExpectedValueId;
+        Assert.AreEqual(123, 123);
+    }
+
+    TEST(Assert_AreEqual_int_should_fail)
+    {
+        Assert.AreEqual(123, 456);
     }
 }
+

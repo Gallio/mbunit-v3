@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using Gallio.Model;
 
 namespace Gallio.MbUnitCppAdapter.Model.Bridge
 {
@@ -29,10 +30,16 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         private delegate void GetHeadTestDelegate(out Position position);
         private delegate int GetNextTestDelegate(ref Position position, ref TestInfoData testStepInfo);
         private delegate void RunTestDelegate(ref Position position, out TestStepResult testResultInfo);
+        private delegate IntPtr GetStringDelegate(int stringId);
+        private delegate void ReleaseStringDelegate(int stringId);
+        private delegate void ReleaseAllStringsDelegate();
         private IntPtr procGetVersion;
         private IntPtr procGetHeadTest;
         private IntPtr procGetNextTest;
         private IntPtr procRunTest;
+        private IntPtr procGetString;
+        private IntPtr procReleaseString;
+        private IntPtr procReleaseAllStrings;
         private bool disposed;
         private bool isValid;
         private readonly IntPtr hModule;
@@ -99,6 +106,9 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
             procGetHeadTest = GetProcAddress("MbUnitCpp_GetHeadTest");
             procGetNextTest = GetProcAddress("MbUnitCpp_GetNextTest");
             procRunTest = GetProcAddress("MbUnitCpp_RunTest");
+            procGetString = GetProcAddress("MbUnitCpp_GetString");
+            procReleaseString = GetProcAddress("MbUnitCpp_ReleaseString");
+            procReleaseAllStrings = GetProcAddress("MbUnitCpp_ReleaseAllStrings");
         }
 
         private IntPtr GetProcAddress(string procName)
@@ -108,8 +118,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
             if (hFunction == IntPtr.Zero)
             {
                 isValid = false;
-                throw new InvalidOperationException(String.Format("The target MbUnitCpp test library is not valid. " +
-                    "The procedure '{0}' could not be found.", procName));
+                throw new InvalidOperationException(String.Format("The target MbUnitCpp test library is not valid. The procedure '{0}' could not be found.", procName));
             }
 
             return hFunction;
@@ -159,6 +168,40 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
             return testStepResult;
         }
 
+        public string GetString(int stringId)
+        {
+            if (!IsValid)
+                throw new InvalidOperationException("The target MbUnitCpp test library is not valid.");
+            if (stringId == 0)
+                return String.Empty;
+
+            var getString = (GetStringDelegate)Marshal.GetDelegateForFunctionPointer(procGetString, typeof(GetStringDelegate));
+            var releaseString = (ReleaseStringDelegate)Marshal.GetDelegateForFunctionPointer(procReleaseString, typeof(ReleaseStringDelegate));
+            IntPtr ptr;
+
+            try
+            {
+                ptr = getString(stringId);
+            }
+            catch (SEHException exception)
+            {
+                throw new ModelException("Cannot load string Id " + stringId, exception);
+            }
+
+            string result = Marshal.PtrToStringAnsi(ptr);
+            releaseString(stringId);
+            return result;
+        }
+
+        private void ReleaseAllStrings()
+        {
+            if (IsValid)
+            {
+                var releaseAllStrings = (ReleaseAllStringsDelegate)Marshal.GetDelegateForFunctionPointer(procReleaseAllStrings, typeof(ReleaseAllStringsDelegate));
+                releaseAllStrings();
+            }
+        }
+
         /// <summary>
         /// Disposes the test library and releases the handle.
         /// </summary>
@@ -166,8 +209,11 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         protected virtual void Dispose(bool disposing)
         {
             if (!disposed && (hModule != IntPtr.Zero))
+            {
+                ReleaseAllStrings();
                 NativeMethods.FreeLibrary(hModule);
-            
+            }
+
             disposed = true;
         }
 

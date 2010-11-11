@@ -18,6 +18,42 @@
 
 namespace MbUnitCpp
 {
+	class String
+	{
+		char* m_data;
+		void Initialize(const char* format, va_list argList);
+
+		public:
+		String(const char* format, ...);
+		String(const char* format, va_list args);
+		~String();
+		char* GetData() const { return m_data; };
+	};
+
+	struct StringMapNode
+	{
+		int Key;
+		String* Data;
+		StringMapNode* Next;
+	};
+
+	#define StringId int
+
+	class StringMap
+	{
+		StringMapNode* m_head;
+		StringId m_nextId;
+
+		public:
+		StringMap();
+		~StringMap();
+		void RemoveAll();
+		String* Get(StringId key);
+		StringId Add(String* data);
+		StringId Add(const char* format, ...);
+		void Remove(StringId key);
+	};
+
     class Test;
     class TestList;
     class TestFixtureList;
@@ -33,11 +69,11 @@ namespace MbUnitCpp
     // Represents a single assertion failure.
     struct AssertionFailure
     {
-        char const* Description;
-        char const* Message;
-        char const* ActualValue;
-        char const* ExpectedValue;
-		AssertionFailure(char const* description);
+        StringId DescriptionId;
+        StringId MessageId;
+        StringId ActualValueId;
+        StringId ExpectedValueId;
+		AssertionFailure();
     };
 
     // Describes the result of test.
@@ -51,21 +87,21 @@ namespace MbUnitCpp
     // Assertion framework.
     class AssertionFramework
     {
-        private:
         Test *m_pTest;
         void IncrementAssertCount();
+		StringMap& Map() const;
 
         public:
         AssertionFramework(Test* pTest);
         void Fail(const char* message = 0);
 		void IsTrue(bool actualValue, const char* message = 0);
 		void IsFalse(bool actualValue, const char* message = 0);
+		void AreEqual(int expectedValue, int actualValue, const char* message = 0); 
     };
 
     // An executable test.
     class Test
     {
-        private:
         int m_index;
         char const* m_name;
         char const* m_fileName;
@@ -111,7 +147,6 @@ namespace MbUnitCpp
     // A test fixture that defines a sequence of related child tests.
     class TestFixture
     {
-        private:
         int m_index;
         char const* m_name;
         TestList m_children;
@@ -126,6 +161,7 @@ namespace MbUnitCpp
         char const* GetName() const { return m_name; }
         TestList& GetTestList();
         static TestFixtureList& GetTestFixtureList();
+		static StringMap& GetStringMap();
     };
 
     // A chained list of test fixtures

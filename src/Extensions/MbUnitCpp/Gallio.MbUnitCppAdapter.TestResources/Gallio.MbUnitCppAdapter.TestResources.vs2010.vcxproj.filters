@@ -18,6 +18,9 @@
     <ClCompile Include="LogicTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="EqualityTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />

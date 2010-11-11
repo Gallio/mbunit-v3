@@ -14,10 +14,129 @@
 // limitations under the License.
 
 #include "stdafx.h"
+#include <stdio.h>
+#include <stdarg.h>
 #include "MbUnitCpp.h"
+
+#pragma warning (disable: 4996) // Hide deprecation warnings.
 
 namespace MbUnitCpp
 {
+	// =================
+	// === Internals ===
+	// =================
+
+	String::String(const char* format, ...)
+	{
+		va_list argList;
+		va_start(argList, format);
+		Initialize(format, argList);
+		va_end(argList);
+	}
+
+	String::String(const char* format, va_list argList)
+	{
+		Initialize(format, argList);
+	}
+
+	void String::Initialize(const char* format, va_list argList)
+	{
+		int n = _scprintf(format, argList);
+		m_data = new char[n + 1];
+		vsprintf(m_data, format, argList);
+	}
+
+	String::~String()
+	{
+		delete[] m_data;
+	}
+
+	StringMap::StringMap()
+		: m_head(0), m_nextId(1)
+	{
+	}
+
+	StringMap::~StringMap()
+	{
+		RemoveAll();
+	}
+
+	void StringMap::RemoveAll()
+	{
+		StringMapNode* current = m_head;
+
+		while (current != 0)
+		{
+			StringMapNode* next = current->Next;
+			delete current->Data;
+			delete current;
+			current = next;
+		}
+
+		m_head = 0;
+	}
+
+	String* StringMap::Get(StringId key)
+	{
+		StringMapNode* current = m_head;
+
+		while (current != 0)
+		{
+			if (current->Key == key)
+				return current->Data;
+            
+			current = current->Next;
+		}
+
+		throw "Key not found.";
+	}
+
+	StringId StringMap::Add(const char* format, ...)
+	{
+		if (format == 0)
+			return 0;
+
+		va_list argList;
+		va_start(argList, format);
+		String* data = new String(format, argList);
+		va_end(argList);
+		return Add(data);
+	}
+
+	StringId StringMap::Add(String* data)
+	{
+		StringMapNode* node = new StringMapNode;
+		node->Key = m_nextId;
+		node->Data = data;
+		node->Next = m_head;
+		m_head = node;
+		return m_nextId++;
+	}
+
+	void StringMap::Remove(StringId key)
+	{
+		StringMapNode* previous = 0;
+		StringMapNode* current = m_head;
+
+		while (current != 0)
+		{
+			if (current->Key == key)
+			{
+				if (previous != 0)
+					previous->Next = current->Next;
+				else
+					m_head = current->Next;
+
+				delete current->Data;
+				delete current;
+				return;
+			}
+            
+			previous = current;
+			current = current->Next;
+		}
+	}
+
     // Construct an executable test case.
     Test::Test(int index, char const* name, char const* fileName, int lineNumber)
         : m_index(index), m_name(name), m_fileName(fileName), m_lineNumber(lineNumber), Assert(this)
@@ -119,6 +238,13 @@ namespace MbUnitCpp
         return list;
     }
 
+	// Gets the singleton map of strings.
+	StringMap& TestFixture::GetStringMap()
+	{
+	    static StringMap map;
+        return map;
+	}
+
     // Constructs an empty list of test fixtures.
     TestFixtureList::TestFixtureList()
         : m_head(0), m_tail(0), m_nextIndex(0)
@@ -184,45 +310,80 @@ namespace MbUnitCpp
         m_pTest->IncrementAssertCount();
     }
 
-	AssertionFailure::AssertionFailure(char const* description)
-		: Description(description), Message(0), ActualValue(0), ExpectedValue(0)
+	// Constructs an empty assertion failure.
+	AssertionFailure::AssertionFailure()
+		: DescriptionId(0),  MessageId(0), ActualValueId(0), ExpectedValueId(0)
 	{
+	}
+
+	// ===========================
+	// === Assertion Framework ===
+	// ===========================
+
+	StringMap& AssertionFramework::Map() const
+	{ 
+		return TestFixture::GetStringMap(); 
 	}
 
     // Assertion that makes inconditionally the test fail.
     void AssertionFramework::Fail(const char* message)
     {
         IncrementAssertCount();
-        AssertionFailure failure("An assertion failed.");
-		failure.Message = message;
+		AssertionFailure failure;
+		failure.DescriptionId = Map().Add("An assertion failed.");
+		failure.MessageId = Map().Add(message);
 		throw failure;
     }
 
+	// Asserts that the specified boolean value is true.
 	void AssertionFramework::IsTrue(bool actualValue, const char* message)
 	{
         IncrementAssertCount();
 
 		if (!actualValue)
 		{
-			AssertionFailure failure("Expected value to be true.");
-			failure.ActualValue = "false";
-			failure.Message = message;
+			AssertionFailure failure;
+			failure.DescriptionId = Map().Add("Expected value to be true.");
+			failure.ActualValueId = Map().Add("false");
+			failure.MessageId = Map().Add(message);
 			throw failure;
 		}
 	}
 
+	// Asserts that the specified boolean value is false.
 	void AssertionFramework::IsFalse(bool actualValue, const char* message)
 	{
         IncrementAssertCount();
 
 		if (actualValue)
 		{
-			AssertionFailure failure("Expected value to be false.");
-			failure.ActualValue = "true";
-			failure.Message = message;
+			AssertionFailure failure;
+			failure.DescriptionId = Map().Add("Expected value to be false.");
+			failure.ActualValueId = Map().Add("true");
+			failure.MessageId = Map().Add(message);
 			throw failure;
 		}
 	}
+
+	// Asserts that the actual value is equal to the expected value.
+	void AssertionFramework::AreEqual(int expectedValue, int actualValue, const char* message)
+	{
+        IncrementAssertCount();
+
+		if (expectedValue != actualValue)
+		{
+			AssertionFailure failure;
+			failure.DescriptionId = Map().Add("Expected values to be equal.");
+			failure.ExpectedValueId = Map().Add("%d", expectedValue);
+			failure.ActualValueId = Map().Add("%d", actualValue);
+			failure.MessageId = Map().Add(message);
+			throw failure;
+		}
+	}
+
+	// ==============================================
+	// === Interface functions for Gallio adapter ===
+	// ==============================================
 
     extern "C" 
     {
@@ -280,6 +441,25 @@ namespace MbUnitCpp
             Test* pTest = pPosition->pTest;
             pTest->Run(pTestResultData);
         }
+
+		char* __cdecl MbUnitCpp_GetString(StringId stringId)
+		{
+			StringMap& map = TestFixture::GetStringMap();
+			String* string = map.Get(stringId);
+			return string->GetData();
+		}
+
+		void __cdecl MbUnitCpp_ReleaseString(StringId stringId)
+		{
+			StringMap& map = TestFixture::GetStringMap();
+			map.Remove(stringId);
+		}
+
+		void __cdecl MbUnitCpp_ReleaseAllStrings()
+		{
+			StringMap& map = TestFixture::GetStringMap();
+			map.RemoveAll();
+		}
     }
 }
 
@@ -288,11 +468,17 @@ namespace MbUnitCpp
 #pragma comment(linker, "/EXPORT:MbUnitCpp_GetHeadTest") 
 #pragma comment(linker, "/EXPORT:MbUnitCpp_GetNextTest") 
 #pragma comment(linker, "/EXPORT:MbUnitCpp_RunTest") 
+#pragma comment(linker, "/EXPORT:MbUnitCpp_GetString") 
+#pragma comment(linker, "/EXPORT:MbUnitCpp_ReleaseString") 
+#pragma comment(linker, "/EXPORT:MbUnitCpp_ReleaseAllStrings") 
 #else 
 #pragma comment(linker, "/EXPORT:MbUnitCpp_GetVersion=_MbUnitCpp_GetVersion") 
 #pragma comment(linker, "/EXPORT:MbUnitCpp_GetHeadTest=_MbUnitCpp_GetHeadTest") 
 #pragma comment(linker, "/EXPORT:MbUnitCpp_GetNextTest=_MbUnitCpp_GetNextTest") 
 #pragma comment(linker, "/EXPORT:MbUnitCpp_RunTest=_MbUnitCpp_RunTest") 
+#pragma comment(linker, "/EXPORT:MbUnitCpp_GetString=_MbUnitCpp_GetString") 
+#pragma comment(linker, "/EXPORT:MbUnitCpp_ReleaseString=_MbUnitCpp_ReleaseString") 
+#pragma comment(linker, "/EXPORT:MbUnitCpp_ReleaseAllStrings=_MbUnitCpp_ReleaseAllStrings") 
 #endif 
 
 

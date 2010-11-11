@@ -125,7 +125,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WIN64;_AMD64;WIN32;_DEBUG;_WINDOWS;_USRDLL;GALLIOMBUNITCPPADAPTERTESTRESOURCES_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;.</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -157,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Include\MbUnitCpp.cpp" />
+    <ClCompile Include="EqualityTest.cpp" />
     <ClCompile Include="LogicTest.cpp" />
     <ClCompile Include="OutcomeTest.cpp" />
     <ClCompile Include="dllmain.cpp">
