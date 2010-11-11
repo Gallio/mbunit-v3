@@ -20,6 +20,7 @@
                 <File Name="MbUnit.pdb" />
                 <File Name="MbUnit.xml" />
                 <File Name="MbUnit.dll.tdnet" />
+				<File Name="NHamcrest.dll" />
             </Component>
             <Component Id="MbUnit35.v3" Guid="{7fa829c3-df5c-4e41-865b-54084c65c0b0}" Win64="$(var.Win64Binary)">
                 <File Name="MbUnit35.dll" KeyPath="yes" />
