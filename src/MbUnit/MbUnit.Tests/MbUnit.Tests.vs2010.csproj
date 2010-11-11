@@ -39,6 +39,10 @@
     <DocumentationFile>bin\MbUnit.Tests.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NHamcrest, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\NHamcrest\NHamcrest.dll</HintPath>
+    </Reference>
     <Reference Include="Rhino.Mocks, Version=3.1.0.584, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\tools\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
@@ -102,6 +106,7 @@
   <ItemGroup>
     <Compile Include="Framework\CatchExceptionAttributeTest.cs" />
     <Compile Include="Framework\AssertExceptionAttributeTest.cs" />
+    <Compile Include="Framework\AssertTest_That.cs" />
     <Compile Include="Framework\ExtensionPoints.cs" />
     <Compile Include="Framework\ApartmentStateTest.cs">
       <SubType>Code</SubType>
