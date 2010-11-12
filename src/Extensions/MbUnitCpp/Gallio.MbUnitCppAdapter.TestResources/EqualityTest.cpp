@@ -18,14 +18,172 @@
 
 TESTFIXTURE(Equality)
 {
-    TEST(Assert_AreEqual_int_should_pass)
+    TEST(Assert_AreEqual_bool_should_pass)
     {
-        Assert.AreEqual(123, 123);
+		bool expected = true;
+		bool actual = true;
+        Assert.AreEqual(expected, actual);
+    }
+
+    TEST(Assert_AreEqual_bool_should_fail)
+    {
+		bool expected = true;
+		bool actual = false;
+        Assert.AreEqual(expected, actual);
+    }
+
+    TEST(Assert_AreEqual_char_should_pass)
+    {
+		char expected = 'A';
+		char actual = 'A';
+        Assert.AreEqual(expected, actual);
+    }
+
+    TEST(Assert_AreEqual_char_should_fail)
+    {
+		char expected = 'A';
+		char actual = 'B';
+        Assert.AreEqual(expected, actual);
+    }
+
+    TEST(Assert_AreEqual_wchar_should_pass)
+    {
+		__wchar_t expected = L'A';
+		__wchar_t actual = L'A';
+        Assert.AreEqual(expected, actual);
+    }
+
+    TEST(Assert_AreEqual_wchar_should_fail)
+    {
+		__wchar_t expected = L'A';
+		__wchar_t actual = L'B';
+        Assert.AreEqual(expected, actual);
+    }
+
+	TEST(Assert_AreEqual_uchar_should_pass)
+    {
+		unsigned char expected = 55;
+		unsigned char actual = 55;
+        Assert.AreEqual(expected, actual);
+    }
+
+    TEST(Assert_AreEqual_uchar_should_fail)
+    {
+		unsigned char expected = 55;
+		unsigned char actual = 66;
+        Assert.AreEqual(expected, actual);
+    }
+
+	TEST(Assert_AreEqual_short_should_pass)
+    {
+		short expected = 123;
+		short actual = 123;
+        Assert.AreEqual(expected, actual);
+    }
+
+    TEST(Assert_AreEqual_short_should_fail)
+    {
+		short expected = 123;
+		short actual = 456;
+        Assert.AreEqual(expected, actual);
+    }
+
+	TEST(Assert_AreEqual_ushort_should_pass)
+    {
+		short expected = 123;
+		short actual = 123;
+        Assert.AreEqual(expected, actual);
+    }
+
+    TEST(Assert_AreEqual_ushort_should_fail)
+    {
+		short expected = 123;
+		short actual = 456;
+        Assert.AreEqual(expected, actual);
+    }
+
+	TEST(Assert_AreEqual_int_should_pass)
+    {
+		int expected = 123;
+		int actual = 123;
+        Assert.AreEqual(expected, actual);
     }
 
     TEST(Assert_AreEqual_int_should_fail)
     {
-        Assert.AreEqual(123, 456);
+		int expected = 123;
+		int actual = 456;
+        Assert.AreEqual(expected, actual);
+    }
+
+	TEST(Assert_AreEqual_uint_should_pass)
+    {
+		int expected = 123;
+		int actual = 123;
+        Assert.AreEqual(expected, actual);
+    }
+
+    TEST(Assert_AreEqual_uint_should_fail)
+    {
+		int expected = 123;
+		int actual = 456;
+        Assert.AreEqual(expected, actual);
+    }
+
+	TEST(Assert_AreEqual_longlong_should_pass)
+    {
+		int expected = 123;
+		int actual = 123;
+        Assert.AreEqual(expected, actual);
+    }
+
+    TEST(Assert_AreEqual_longlong_should_fail)
+    {
+		int expected = 123;
+		int actual = 456;
+        Assert.AreEqual(expected, actual);
+    }
+
+	TEST(Assert_AreEqual_float_should_pass)
+    {
+		float expected = 123.456;
+		float actual = 123.456;
+        Assert.AreEqual(expected, actual);
+    }
+
+    TEST(Assert_AreEqual_float_should_fail)
+    {
+		float expected = 123.456;
+		float actual = 456.789;
+        Assert.AreEqual(expected, actual);
+    }
+
+	TEST(Assert_AreEqual_double_should_pass)
+    {
+		double expected = 123.456;
+		double actual = 123.456;
+        Assert.AreEqual(expected, actual);
+    }
+
+    TEST(Assert_AreEqual_double_should_fail)
+    {
+		double expected = 123.456;
+		double actual = 456.789;
+        Assert.AreEqual(expected, actual);
+    }
+
+	TEST(Assert_AreEqual_charp_should_pass)
+    {
+		char* expected = "Hello World";
+		char* actual = "Hello World";
+        Assert.AreEqual(expected, actual);
+    }
+
+    TEST(Assert_AreEqual_charp_should_fail)
+    {
+		char* expected = "Hello World";
+		char* actual = "Crazy World";
+        Assert.AreEqual(expected, actual);
     }
 }
 

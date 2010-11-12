@@ -61,10 +61,27 @@ namespace MbUnitCpp
     // Standard outcome of a test.
     enum Outcome
     {
-        INCONCLUSIVE = 0,
-        PASSED = 1,
-        FAILED = 2,
+        Inconclusive,
+        Passed,
+        Failed,
     };
+
+	// The inner type of an actual/expected value.
+	enum ValueType
+	{
+		TypeRaw,
+		TypeString,
+		TypeBoolean,
+		TypeChar,
+		TypeByte,
+		TypeInt16,
+		TypeUInt16,
+		TypeInt32,
+		TypeUInt32,
+		TypeInt64,
+		TypeSingle,
+		TypeDouble,
+	};
 
     // Represents a single assertion failure.
     struct AssertionFailure
@@ -72,7 +89,9 @@ namespace MbUnitCpp
         StringId DescriptionId;
         StringId MessageId;
         StringId ActualValueId;
+		ValueType ActualValueType;
         StringId ExpectedValueId;
+		ValueType ExpectedValueType;
 		AssertionFailure();
     };
 
@@ -96,7 +115,18 @@ namespace MbUnitCpp
         void Fail(const char* message = 0);
 		void IsTrue(bool actualValue, const char* message = 0);
 		void IsFalse(bool actualValue, const char* message = 0);
-		void AreEqual(int expectedValue, int actualValue, const char* message = 0); 
+		void AreEqual(bool expectedValue, bool actualValue, const char* message = 0);
+		void AreEqual(char expectedValue, char actualValue, const char* message = 0);
+		void AreEqual(__wchar_t expectedValue, __wchar_t actualValue, const char* message = 0);
+		void AreEqual(unsigned char expectedValue, unsigned char actualValue, const char* message = 0);
+		void AreEqual(short expectedValue, short actualValue, const char* message = 0);
+		void AreEqual(unsigned short expectedValue, unsigned short actualValue, const char* message = 0);
+		void AreEqual(int expectedValue, int actualValue, const char* message = 0);
+		void AreEqual(unsigned int expectedValue, unsigned int actualValue, const char* message = 0);
+		void AreEqual(long long expectedValue, long long actualValue, const char* message = 0);
+		void AreEqual(float expectedValue, float actualValue, const char* message = 0);
+		void AreEqual(double expectedValue, double actualValue, const char* message = 0);
+		void AreEqual(char* expectedValue, char* actualValue, const char* message = 0);
     };
 
     // An executable test.

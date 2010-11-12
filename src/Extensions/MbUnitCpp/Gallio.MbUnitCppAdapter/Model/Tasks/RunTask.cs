@@ -109,16 +109,23 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
 
         private static void ReportFailure(UnmanagedTestRepository repository, ITestContext testContext, TestInfoData testInfoData, TestStepResult testStepResult)
         {
-            if (testStepResult.NativeOutcome == NativeOutcome.FAILED)
+            if (testStepResult.NativeOutcome == NativeOutcome.Failed)
             {
                 var failure = new MbUnitCppAssertionFailure(testStepResult.Failure, repository);
                 var builder = new AssertionFailureBuilder(failure.Description);
 
-                if (failure.ExpectedValue.Length > 0)
-                    builder.AddRawExpectedValue(failure.ExpectedValue);
+                if (failure.HasExpectedValue && failure.HasActualValue && failure.Diffing)
+                {
+                    builder.AddRawExpectedAndActualValuesWithDiffs(failure.ExpectedValue, failure.ActualValue);
+                }
+                else
+                {
+                    if (failure.HasExpectedValue)
+                        builder.AddRawActualValue(failure.ExpectedValue);
 
-                if (failure.ActualValue.Length > 0)
-                    builder.AddRawActualValue(failure.ActualValue);
+                    if (failure.HasActualValue)
+                        builder.AddRawActualValue(failure.ActualValue);
+                }
 
                 if (failure.Message.Length > 0)
                     builder.SetMessage(failure.Message);

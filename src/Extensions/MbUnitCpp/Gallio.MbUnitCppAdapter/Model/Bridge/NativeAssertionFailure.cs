@@ -20,12 +20,30 @@ using Gallio.Common.Diagnostics;
 
 namespace Gallio.MbUnitCppAdapter.Model.Bridge
 {
+    public enum NativeValueType
+    {
+        Raw,
+        String,
+        Boolean,
+        Char,
+        Byte,
+        Int16,
+        UInt16,
+        Int32,
+        UInt32,
+        Int64,
+        Single,
+        Double,
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct NativeAssertionFailure
     {
         public int DescriptionId;
         public int MessageId;
         public int ActualValueId;
+        public NativeValueType ActualValueType;
         public int ExpectedValueId;
+        public NativeValueType ExpectedValueType;
     }
 }

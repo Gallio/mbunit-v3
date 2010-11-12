@@ -25,9 +25,9 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
     /// </summary>
     public enum NativeOutcome
     {
-        INCONCLUSIVE = 0,
-        PASSED = 1,
-        FAILED = 2,
+        Inconclusive,
+        Passed,
+        Failed,
     }
 
     /// <summary>
@@ -42,9 +42,9 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
 
         private static readonly IDictionary<NativeOutcome, TestOutcome> map = new Dictionary<NativeOutcome, TestOutcome>
         {
-            {NativeOutcome.INCONCLUSIVE, TestOutcome.Inconclusive},
-            {NativeOutcome.PASSED, TestOutcome.Passed},
-            {NativeOutcome.FAILED, TestOutcome.Failed},
+            {NativeOutcome.Inconclusive, TestOutcome.Inconclusive},
+            {NativeOutcome.Passed, TestOutcome.Passed},
+            {NativeOutcome.Failed, TestOutcome.Failed},
         };
 
         public TestOutcome TestOutcome

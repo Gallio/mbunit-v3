@@ -41,8 +41,8 @@ namespace MbUnitCpp
 
 	void String::Initialize(const char* format, va_list argList)
 	{
-		int n = _scprintf(format, argList);
-		m_data = new char[n + 1];
+		int n = _vscprintf(format, argList) + 1;
+		m_data = new char[n];
 		vsprintf(m_data, format, argList);
 	}
 
@@ -161,12 +161,12 @@ namespace MbUnitCpp
             Clear();
             RunImpl();
             pTestResultData->AssertCount = m_assertCount;
-            pTestResultData->NativeOutcome = PASSED;
+            pTestResultData->NativeOutcome = Passed;
 		}
         catch (AssertionFailure failure)
         {
             pTestResultData->AssertCount = m_assertCount;
-            pTestResultData->NativeOutcome = FAILED;
+            pTestResultData->NativeOutcome = Failed;
             pTestResultData->Failure = failure;
         }
     }
@@ -312,7 +312,7 @@ namespace MbUnitCpp
 
 	// Constructs an empty assertion failure.
 	AssertionFailure::AssertionFailure()
-		: DescriptionId(0),  MessageId(0), ActualValueId(0), ExpectedValueId(0)
+		: DescriptionId(0),  MessageId(0), ActualValueId(0), ActualValueType(TypeRaw), ExpectedValueId(0), ExpectedValueType(TypeRaw)
 	{
 	}
 
@@ -345,6 +345,7 @@ namespace MbUnitCpp
 			AssertionFailure failure;
 			failure.DescriptionId = Map().Add("Expected value to be true.");
 			failure.ActualValueId = Map().Add("false");
+			failure.ActualValueType = TypeBoolean;
 			failure.MessageId = Map().Add(message);
 			throw failure;
 		}
@@ -360,26 +361,101 @@ namespace MbUnitCpp
 			AssertionFailure failure;
 			failure.DescriptionId = Map().Add("Expected value to be false.");
 			failure.ActualValueId = Map().Add("true");
+			failure.ActualValueType = TypeBoolean;
 			failure.MessageId = Map().Add(message);
 			throw failure;
 		}
 	}
 
-	// Asserts that the actual value is equal to the expected value.
-	void AssertionFramework::AreEqual(int expectedValue, int actualValue, const char* message)
-	{
-        IncrementAssertCount();
-
-		if (expectedValue != actualValue)
-		{
-			AssertionFailure failure;
-			failure.DescriptionId = Map().Add("Expected values to be equal.");
-			failure.ExpectedValueId = Map().Add("%d", expectedValue);
-			failure.ActualValueId = Map().Add("%d", actualValue);
-			failure.MessageId = Map().Add(message);
-			throw failure;
-		}
+	#define _AssertionFramework_AreEqual(TYPE, INEQUALITY, FORMATEXPECTED, FORMATACTUAL, MANAGEDTYPE) \
+	void AssertionFramework::AreEqual(TYPE expectedValue, TYPE actualValue, const char* message) \
+	{ \
+        IncrementAssertCount(); \
+		\
+		if (INEQUALITY) \
+		{ \
+			AssertionFailure failure; \
+			failure.DescriptionId = Map().Add("Expected values to be equal."); \
+			failure.ExpectedValueId = FORMATEXPECTED; \
+			failure.ExpectedValueType = MANAGEDTYPE; \
+			failure.ActualValueId = FORMATACTUAL; \
+			failure.ActualValueType = MANAGEDTYPE; \
+			failure.MessageId = Map().Add(message); \
+			throw failure; \
+		} \
 	}
+
+	_AssertionFramework_AreEqual(bool, 
+		expectedValue != actualValue, 
+		Map().Add(expectedValue ? "true" : "false"), 
+		Map().Add(actualValue ? "true" : "false"), 
+		TypeBoolean)
+
+	_AssertionFramework_AreEqual(char, 
+		expectedValue != actualValue, 
+		Map().Add("%c", expectedValue), 
+		Map().Add("%c", actualValue), 
+		TypeChar)
+
+	_AssertionFramework_AreEqual(__wchar_t, 
+		expectedValue != actualValue, 
+		Map().Add("%c", expectedValue), 
+		Map().Add("%c", actualValue), 
+		TypeChar)
+
+	_AssertionFramework_AreEqual(unsigned char, 
+		expectedValue != actualValue, 
+		Map().Add("%u", expectedValue), 
+		Map().Add("%u", actualValue), 
+		TypeByte)
+
+	_AssertionFramework_AreEqual(short, 
+		expectedValue != actualValue, 
+		Map().Add("%d", expectedValue), 
+		Map().Add("%d", actualValue), 
+		TypeInt16)
+
+	_AssertionFramework_AreEqual(unsigned short, 
+		expectedValue != actualValue, 
+		Map().Add("%u", expectedValue), 
+		Map().Add("%u", actualValue), 
+		TypeUInt16)
+
+	_AssertionFramework_AreEqual(int, 
+		expectedValue != actualValue, 
+		Map().Add("%d", expectedValue), 
+		Map().Add("%d", actualValue), 
+		TypeInt32)
+
+	_AssertionFramework_AreEqual(unsigned int, 
+		expectedValue != actualValue, 
+		Map().Add("%u", expectedValue), 
+		Map().Add("%u", actualValue), 
+		TypeUInt32)
+
+	_AssertionFramework_AreEqual(long long, 
+		expectedValue != actualValue, 
+		Map().Add("%u", expectedValue), 
+		Map().Add("%u", actualValue), 
+		TypeInt64)
+
+	_AssertionFramework_AreEqual(float, 
+		expectedValue != actualValue, 
+		Map().Add("%f", expectedValue), 
+		Map().Add("%f", actualValue), 
+		TypeSingle)
+
+	_AssertionFramework_AreEqual(double, 
+		expectedValue != actualValue, 
+		Map().Add("%Lf", expectedValue), 
+		Map().Add("%Lf", actualValue), 
+		TypeDouble)
+
+	_AssertionFramework_AreEqual(char*, 
+		strcmp(expectedValue, actualValue) != 0, 
+		Map().Add(expectedValue), 
+		Map().Add(actualValue), 
+		TypeString)
 
 	// ==============================================
 	// === Interface functions for Gallio adapter ===
@@ -445,8 +521,7 @@ namespace MbUnitCpp
 		char* __cdecl MbUnitCpp_GetString(StringId stringId)
 		{
 			StringMap& map = TestFixture::GetStringMap();
-			String* string = map.Get(stringId);
-			return string->GetData();
+			return map.Get(stringId)->GetData();
 		}
 
 		void __cdecl MbUnitCpp_ReleaseString(StringId stringId)
