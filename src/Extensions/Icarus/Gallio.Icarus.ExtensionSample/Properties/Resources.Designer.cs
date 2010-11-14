@@ -59,5 +59,12 @@ namespace Gallio.Icarus.ExtensionSample.Properties {
                 resourceCulture = value;
             }
         }
+        
+        internal static System.Drawing.Icon Sample {
+            get {
+                object obj = ResourceManager.GetObject("Sample", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
     }
 }

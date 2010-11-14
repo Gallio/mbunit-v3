@@ -41,6 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VisualStudio", "VisualStudi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Interop", "..\VisualStudio\Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.csproj", "{B6912CC5-1E73-46E0-8F09-7F135924E3E2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Icarus.ExtensionSample", "Gallio.Icarus.ExtensionSample\Gallio.Icarus.ExtensionSample.csproj", "{8D5B5962-5DA4-4FAA-90B2-B2791409A863}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{B6912CC5-1E73-46E0-8F09-7F135924E3E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6912CC5-1E73-46E0-8F09-7F135924E3E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6912CC5-1E73-46E0-8F09-7F135924E3E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D5B5962-5DA4-4FAA-90B2-B2791409A863}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D5B5962-5DA4-4FAA-90B2-B2791409A863}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D5B5962-5DA4-4FAA-90B2-B2791409A863}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D5B5962-5DA4-4FAA-90B2-B2791409A863}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -131,6 +137,7 @@ Global
 		{45224C3F-B0F1-4D70-8516-B50100DEF79B} = {D802860C-403B-43DF-BFC4-92F824825505}
 		{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3} = {2965BA22-CBE1-45C4-8B7D-886BD2B22A3A}
 		{A90A40C4-4D48-4D0B-BE9B-432510EB1057} = {2965BA22-CBE1-45C4-8B7D-886BD2B22A3A}
+		{8D5B5962-5DA4-4FAA-90B2-B2791409A863} = {2965BA22-CBE1-45C4-8B7D-886BD2B22A3A}
 		{B6912CC5-1E73-46E0-8F09-7F135924E3E2} = {2216A3B7-298A-4B10-B6AE-5DF9711128E2}
 	EndGlobalSection
 EndGlobal
