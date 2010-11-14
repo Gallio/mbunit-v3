@@ -26,18 +26,16 @@ namespace Gallio.Icarus.Runtime
     /// Auto-registration of services and components (in the Icarus assembly).
     /// The class name is an homage to Jeremy Miller and StructureMap.
     /// </summary>
-    public class DefaultConventionScanner
+    public class DefaultConventionScanner : IPluginScanner
     {
         private readonly IRegistry registry;
-        private readonly string pluginId;
 
-        public DefaultConventionScanner(IRegistry registry, string pluginId)
+        public DefaultConventionScanner(IRegistry registry)
         {
             this.registry = registry;
-            this.pluginId = pluginId;
         }
 
-        public void Scan(Assembly assembly)
+        public void Scan(string pluginId, Assembly assembly)
         {
             var plugin = registry.Plugins[pluginId];
 

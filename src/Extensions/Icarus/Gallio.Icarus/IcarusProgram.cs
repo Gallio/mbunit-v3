@@ -78,8 +78,8 @@ namespace Gallio.Icarus
             using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogger))
             {
                 // wire up services & components
-                var scanner = new DefaultConventionScanner(RuntimeAccessor.Registry, "Gallio.Icarus");
-                scanner.Scan(Assembly.GetExecutingAssembly());
+                var scanner = new DefaultConventionScanner(RuntimeAccessor.Registry);
+                scanner.Scan("Gallio.Icarus", Assembly.GetExecutingAssembly());
 
                 var optionsController = RuntimeAccessor.ServiceLocator.Resolve<IOptionsController>();
                 

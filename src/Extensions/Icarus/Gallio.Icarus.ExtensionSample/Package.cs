@@ -9,11 +9,13 @@ namespace Gallio.Icarus.ExtensionSample
     public class MyPackage : IPackage
     {
         private readonly IWindowManager windowManager;
+        private readonly IPluginScanner pluginScanner;
         private const string WindowId = "Gallio.Icarus.ExtensionSample.View";
 
-        public MyPackage(IWindowManager windowManager)
+        public MyPackage(IWindowManager windowManager, IPluginScanner pluginScanner)
         {
             this.windowManager = windowManager;
+            this.pluginScanner = pluginScanner;
         }
 
         public void Load()
@@ -23,10 +25,9 @@ namespace Gallio.Icarus.ExtensionSample
             AddMenuItem();
         }
 
-        private static void RegisterComponents()
+        private void RegisterComponents()
         {
-            var scanner = new DefaultConventionScanner(RuntimeAccessor.Registry, "Gallio.Icarus.ExtensionSample");
-            scanner.Scan(typeof(MyPackage).Assembly);
+            pluginScanner.Scan("Gallio.Icarus.ExtensionSample", typeof(MyPackage).Assembly);
         }
 
         private void RegisterWindow()
