@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.PartCoverIntegration", "Gallio.PartCoverIntegration\Gallio.PartCoverIntegration.csproj", "{9CAC8F4C-163C-4EB7-AC8A-480D2C62EEB0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PartCover", "PartCover", "{BBAB3746-83E0-4997-B7D9-F867E3DFD7D3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gallio", "Gallio", "{2409C7B5-7216-4217-A8CC-22045CABBB9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio", "..\..\Gallio\Gallio\Gallio.csproj", "{6CAB7735-05DA-480D-9A04-50615B00F886}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9CAC8F4C-163C-4EB7-AC8A-480D2C62EEB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CAC8F4C-163C-4EB7-AC8A-480D2C62EEB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CAC8F4C-163C-4EB7-AC8A-480D2C62EEB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CAC8F4C-163C-4EB7-AC8A-480D2C62EEB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CAB7735-05DA-480D-9A04-50615B00F886}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CAB7735-05DA-480D-9A04-50615B00F886}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CAB7735-05DA-480D-9A04-50615B00F886}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CAB7735-05DA-480D-9A04-50615B00F886}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9CAC8F4C-163C-4EB7-AC8A-480D2C62EEB0} = {BBAB3746-83E0-4997-B7D9-F867E3DFD7D3}
+		{6CAB7735-05DA-480D-9A04-50615B00F886} = {2409C7B5-7216-4217-A8CC-22045CABBB9D}
+	EndGlobalSection
+EndGlobal

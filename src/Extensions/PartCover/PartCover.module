@@ -1,0 +1,19 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(RootDir)\bin\Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.PartCoverIntegration\Gallio.PartCoverIntegration$(ProjectVariant).csproj" />    
+    <AssemblyFile Include="Gallio.PartCoverIntegration\bin\Gallio.PartCoverIntegration.dll">
+      <ImagePath>bin\PartCover</ImagePath>
+    </AssemblyFile>
+    <PdbFile Include="Gallio.PartCoverIntegration\bin\Gallio.PartCoverIntegration.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
+    <PluginFile Include="Gallio.PartCoverIntegration\Gallio.PartCoverIntegration.plugin">
+      <ImagePath>bin\PartCover</ImagePath>
+    </PluginFile>
+    <File Include="Gallio.PartCoverIntegration\Resources\PartCover.ico">
+      <ImagePath>bin\PartCover\Resources</ImagePath>
+    </File>
+  </ItemGroup>
+</Project>
