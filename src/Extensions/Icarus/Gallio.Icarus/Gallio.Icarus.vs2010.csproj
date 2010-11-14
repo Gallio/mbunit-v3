@@ -132,6 +132,7 @@
     <Compile Include="Projects\UserOptionsController.cs" />
     <Compile Include="Projects\UserOptionsLoaded.cs" />
     <Compile Include="Projects\UserOptionsSaved.cs" />
+    <Compile Include="Runtime\IPluginScanner.cs" />
     <Compile Include="Search\IModel.cs" />
     <Compile Include="Specifications\MetadataSpecification.cs" />
     <Compile Include="Specifications\NameSpecification.cs" />
