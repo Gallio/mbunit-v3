@@ -172,17 +172,31 @@ TESTFIXTURE(Equality)
         Assert.AreEqual(expected, actual);
     }
 
-	TEST(Assert_AreEqual_charp_should_pass)
+	TEST(Assert_AreEqual_char_pointer_should_pass)
     {
 		char* expected = "Hello World";
 		char* actual = "Hello World";
         Assert.AreEqual(expected, actual);
     }
 
-    TEST(Assert_AreEqual_charp_should_fail)
+    TEST(Assert_AreEqual_char_pointer_should_fail)
     {
 		char* expected = "Hello World";
 		char* actual = "Crazy World";
+        Assert.AreEqual(expected, actual);
+    }
+
+	TEST(Assert_AreEqual_constant_char_pointer_should_pass)
+    {
+		const char* expected = "Hello World";
+		const char* actual = "Hello World";
+        Assert.AreEqual(expected, actual);
+    }
+
+    TEST(Assert_AreEqual_constant_char_pointer_should_fail)
+    {
+		const char* expected = "Hello World";
+		const char* actual = "Crazy World";
         Assert.AreEqual(expected, actual);
     }
 }

@@ -81,7 +81,6 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
 
             try
             {
-                //hLibrary = NativeMethods.LoadLibraryEx(fileName, IntPtr.Zero, LoadLibraryExFlags.DONT_RESOLVE_DLL_REFERENCES);
                 hLibrary = NativeMethods.LoadLibrary(fileName);
                 int error = Marshal.GetLastWin32Error();
 
@@ -114,13 +113,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         private IntPtr GetProcAddress(string procName)
         {
             IntPtr hFunction = NativeMethods.GetProcAddress(hModule, procName);
-
-            if (hFunction == IntPtr.Zero)
-            {
-                isValid = false;
-                throw new InvalidOperationException(String.Format("The target MbUnitCpp test library is not valid. The procedure '{0}' could not be found.", procName));
-            }
-
+            isValid &= (hFunction != IntPtr.Zero);
             return hFunction;
         }
 
@@ -177,18 +170,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
 
             var getString = (GetStringDelegate)Marshal.GetDelegateForFunctionPointer(procGetString, typeof(GetStringDelegate));
             var releaseString = (ReleaseStringDelegate)Marshal.GetDelegateForFunctionPointer(procReleaseString, typeof(ReleaseStringDelegate));
-            IntPtr ptr;
-
-            try
-            {
-                ptr = getString(stringId);
-            }
-            catch (SEHException exception)
-            {
-                throw new ModelException("Cannot load string Id " + stringId, exception);
-            }
-
-            string result = Marshal.PtrToStringAnsi(ptr);
+            string result = Marshal.PtrToStringAnsi(getString(stringId));
             releaseString(stringId);
             return result;
         }
@@ -210,7 +192,6 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         {
             if (!disposed && (hModule != IntPtr.Zero))
             {
-                ReleaseAllStrings();
                 NativeMethods.FreeLibrary(hModule);
             }
 

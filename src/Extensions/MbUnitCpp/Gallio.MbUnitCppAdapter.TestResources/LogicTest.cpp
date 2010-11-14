@@ -30,6 +30,18 @@ TESTFIXTURE(Logic)
         Assert.IsTrue(value);
     }
 
+    TEST(Assert_IsTrue_as_int_should_pass)
+    {
+		int value = 1;
+        Assert.IsTrue(value);
+    }
+
+    TEST(Assert_IsTrue_as_int_should_fail)
+    {
+		int value = 0;
+        Assert.IsTrue(value);
+    }
+
     TEST(Assert_IsTrue_should_fail_with_custom_message)
     {
 		bool value = false;
@@ -45,6 +57,18 @@ TESTFIXTURE(Logic)
     TEST(Assert_IsFalse_should_fail)
     {
 		bool value = true;
+        Assert.IsFalse(value);
+    }
+
+    TEST(Assert_IsFalse_as_int_should_pass)
+    {
+		int value = 0;
+        Assert.IsFalse(value);
+    }
+
+    TEST(Assert_IsFalse_as_int_should_fail)
+    {
+		int value = 1;
         Assert.IsFalse(value);
     }
 

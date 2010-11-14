@@ -22,9 +22,9 @@
 
 namespace MbUnitCpp
 {
-	// =================
-	// === Internals ===
-	// =================
+	// =========
+	// Internals
+	// =========
 
 	String::String(const char* format, ...)
 	{
@@ -316,9 +316,9 @@ namespace MbUnitCpp
 	{
 	}
 
-	// ===========================
-	// === Assertion Framework ===
-	// ===========================
+	// ===================
+	// Assertion Framework
+	// ===================
 
 	StringMap& AssertionFramework::Map() const
 	{ 
@@ -351,6 +351,11 @@ namespace MbUnitCpp
 		}
 	}
 
+	void AssertionFramework::IsTrue(int actualValue, const char* message)
+	{
+		IsTrue(actualValue != 0, message);
+	}
+
 	// Asserts that the specified boolean value is false.
 	void AssertionFramework::IsFalse(bool actualValue, const char* message)
 	{
@@ -365,6 +370,11 @@ namespace MbUnitCpp
 			failure.MessageId = Map().Add(message);
 			throw failure;
 		}
+	}
+
+	void AssertionFramework::IsFalse(int actualValue, const char* message)
+	{
+		IsFalse(actualValue != 0, message);
 	}
 
 	#define _AssertionFramework_AreEqual(TYPE, INEQUALITY, FORMATEXPECTED, FORMATACTUAL, MANAGEDTYPE) \
@@ -457,9 +467,15 @@ namespace MbUnitCpp
 		Map().Add(actualValue), 
 		TypeString)
 
-	// ==============================================
-	// === Interface functions for Gallio adapter ===
-	// ==============================================
+	_AssertionFramework_AreEqual(const char*, 
+		strcmp(expectedValue, actualValue) != 0, 
+		Map().Add(expectedValue), 
+		Map().Add(actualValue), 
+		TypeString)
+
+	// ======================================
+	// Interface functions for Gallio adapter
+	// ======================================
 
     extern "C" 
     {

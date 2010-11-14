@@ -18,7 +18,7 @@
 
 TESTFIXTURE(Simple)
 {
-    TEST(Empty)
+    TEST(Empty_should_pass)
     {
     }
 }

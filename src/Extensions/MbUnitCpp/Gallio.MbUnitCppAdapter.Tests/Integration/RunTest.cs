@@ -51,21 +51,25 @@ namespace Gallio.MbUnitCppAdapter.Tests.Integration
 
         [Test]
         [Row("Simple", TestStatus.Passed, 0, null)]
-        [Row("Simple/Empty", TestStatus.Passed, 0, null)]
+        [Row("Simple/Empty_should_pass", TestStatus.Passed, 0, null)]
        
         [Row("Outcome", TestStatus.Failed, 2, null)]
         [Row("Outcome/Assert_Fail_with_default_message", TestStatus.Failed, 1, null)]
         [Row("Outcome/Assert_Fail_with_custom_message", TestStatus.Failed, 1, "Boom!")]
        
-        [Row("Logic", TestStatus.Failed, 6, null)]
+        [Row("Logic", TestStatus.Failed, 10, null)]
         [Row("Logic/Assert_IsTrue_should_pass", TestStatus.Passed, 1, null)]
         [Row("Logic/Assert_IsTrue_should_fail", TestStatus.Failed, 1, null)]
+        [Row("Logic/Assert_IsTrue_as_int_should_pass", TestStatus.Passed, 1, null)]
+        [Row("Logic/Assert_IsTrue_as_int_should_fail", TestStatus.Failed, 1, null)]
         [Row("Logic/Assert_IsTrue_should_fail_with_custom_message", TestStatus.Failed, 1, "This is a custom message.")]
         [Row("Logic/Assert_IsFalse_should_pass", TestStatus.Passed, 1, null)]
         [Row("Logic/Assert_IsFalse_should_fail", TestStatus.Failed, 1, null)]
+        [Row("Logic/Assert_IsFalse_as_int_should_pass", TestStatus.Passed, 1, null)]
+        [Row("Logic/Assert_IsFalse_as_int_should_fail", TestStatus.Failed, 1, null)]
         [Row("Logic/Assert_IsFalse_should_fail_with_custom_message", TestStatus.Failed, 1, "This is a custom message.")]
 
-        [Row("Equality", TestStatus.Failed, 24, null)]
+        [Row("Equality", TestStatus.Failed, 26, null)]
         [Row("Equality/Assert_AreEqual_bool_should_pass", TestStatus.Passed, 1, null)]
         [Row("Equality/Assert_AreEqual_bool_should_fail", TestStatus.Failed, 1, null)]
         [Row("Equality/Assert_AreEqual_char_should_pass", TestStatus.Passed, 1, null)]
@@ -88,8 +92,10 @@ namespace Gallio.MbUnitCppAdapter.Tests.Integration
         [Row("Equality/Assert_AreEqual_float_should_fail", TestStatus.Failed, 1, null)]
         [Row("Equality/Assert_AreEqual_double_should_pass", TestStatus.Passed, 1, null)]
         [Row("Equality/Assert_AreEqual_double_should_fail", TestStatus.Failed, 1, null)]
-        [Row("Equality/Assert_AreEqual_charp_should_pass", TestStatus.Passed, 1, null)]
-        [Row("Equality/Assert_AreEqual_charp_should_fail", TestStatus.Failed, 1, null)]
+        [Row("Equality/Assert_AreEqual_char_pointer_should_pass", TestStatus.Passed, 1, null)]
+        [Row("Equality/Assert_AreEqual_char_pointer_should_fail", TestStatus.Failed, 1, null)]
+        [Row("Equality/Assert_AreEqual_constant_char_pointer_should_pass", TestStatus.Passed, 1, null)]
+        [Row("Equality/Assert_AreEqual_constant_char_pointer_should_fail", TestStatus.Failed, 1, null)]
 
         public void Test(string fullName, TestStatus expectedStatus, int expectedAssertCount, string expectedFailureLog)
         {

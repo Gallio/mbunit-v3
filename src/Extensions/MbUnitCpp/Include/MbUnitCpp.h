@@ -115,6 +115,8 @@ namespace MbUnitCpp
         void Fail(const char* message = 0);
 		void IsTrue(bool actualValue, const char* message = 0);
 		void IsFalse(bool actualValue, const char* message = 0);
+		void IsTrue(int actualValue, const char* message = 0);
+		void IsFalse(int actualValue, const char* message = 0);
 		void AreEqual(bool expectedValue, bool actualValue, const char* message = 0);
 		void AreEqual(char expectedValue, char actualValue, const char* message = 0);
 		void AreEqual(__wchar_t expectedValue, __wchar_t actualValue, const char* message = 0);
@@ -127,6 +129,7 @@ namespace MbUnitCpp
 		void AreEqual(float expectedValue, float actualValue, const char* message = 0);
 		void AreEqual(double expectedValue, double actualValue, const char* message = 0);
 		void AreEqual(char* expectedValue, char* actualValue, const char* message = 0);
+		void AreEqual(const char* expectedValue, const char* actualValue, const char* message = 0);
     };
 
     // An executable test.
