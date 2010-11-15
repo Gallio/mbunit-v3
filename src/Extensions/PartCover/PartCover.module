@@ -15,5 +15,79 @@
     <File Include="Gallio.PartCoverIntegration\Resources\PartCover.ico">
       <ImagePath>bin\PartCover\Resources</ImagePath>
     </File>
+	
+	<File Include="libs\PartCover\app.ico">
+      <ImagePath>bin\PartCover\libs\PartCover</ImagePath>
+    </File>
+	
+	<File Include="libs\PartCover\Credits.txt">
+      <ImagePath>bin\PartCover\libs\PartCover</ImagePath>
+    </File>
+	<File Include="libs\PartCover\Interop.PartCover.dll">
+      <ImagePath>bin\PartCover\libs\PartCover</ImagePath>
+    </File>
+	<File Include="libs\PartCover\licence.txt">
+      <ImagePath>bin\PartCover\libs\PartCover</ImagePath>
+    </File>
+	<File Include="libs\PartCover\log4net.dll">
+      <ImagePath>bin\PartCover\libs\PartCover</ImagePath>
+    </File>
+	<File Include="libs\PartCover\PartCover.Browser.Api.dll">
+      <ImagePath>bin\PartCover\libs\PartCover</ImagePath>
+    </File>
+	<File Include="libs\PartCover\PartCover.Browser.exe">
+      <ImagePath>bin\PartCover\libs\PartCover</ImagePath>
+    </File>
+	<File Include="libs\PartCover\PartCover.Browser.exe.config">
+      <ImagePath>bin\PartCover\libs\PartCover</ImagePath>
+    </File>
+	<File Include="libs\PartCover\PartCover.dll">
+      <ImagePath>bin\PartCover\libs\PartCover</ImagePath>
+    </File>
+	<File Include="libs\PartCover\PartCover.exe">
+      <ImagePath>bin\PartCover\libs\PartCover</ImagePath>
+    </File>
+	<File Include="libs\PartCover\PartCover.exe.config">
+      <ImagePath>bin\PartCover\libs\PartCover</ImagePath>
+    </File>
+	<File Include="libs\PartCover\PartCover.Framework.dll">
+      <ImagePath>bin\PartCover\libs\PartCover</ImagePath>
+    </File>
+	<File Include="libs\PartCover\PartCover.Registration.exe">
+      <ImagePath>bin\PartCover\libs\PartCover</ImagePath>
+    </File>
+	<File Include="libs\PartCover\PartCover.Registration.exe.config">
+      <ImagePath>bin\PartCover\libs\PartCover</ImagePath>
+    </File>
+	<File Include="libs\PartCover\PartViewer.dll">
+      <ImagePath>bin\PartCover\libs\PartCover</ImagePath>
+    </File>
+	<File Include="libs\PartCover\xslt\Report By Assembly.xslt">
+      <ImagePath>bin\PartCover\libs\PartCover\xslt</ImagePath>
+    </File>
+	<File Include="libs\PartCover\xslt\Report By Class.xslt">
+      <ImagePath>bin\PartCover\libs\PartCover\xslt</ImagePath>
+    </File>
+
+	<File Include="libs\ReportGenerator\ICSharpCode.NRefactory.dll">
+      <ImagePath>bin\PartCover\libs\ReportGenerator</ImagePath>
+    </File>
+	<File Include="libs\ReportGenerator\LICENSE.txt">
+      <ImagePath>bin\PartCover\libs\ReportGenerator</ImagePath>
+    </File>
+	<File Include="libs\ReportGenerator\log4net.dll">
+      <ImagePath>bin\PartCover\libs\ReportGenerator</ImagePath>
+    </File>
+	<File Include="libs\ReportGenerator\Readme.txt">
+      <ImagePath>bin\PartCover\libs\ReportGenerator</ImagePath>
+    </File>
+	<File Include="libs\ReportGenerator\ReportGenerator.exe">
+      <ImagePath>bin\PartCover\libs\ReportGenerator</ImagePath>
+    </File>
+	<File Include="libs\ReportGenerator\ReportGenerator.exe.config">
+      <ImagePath>bin\PartCover\libs\ReportGenerator</ImagePath>
+    </File>
+		
+	
   </ItemGroup>
 </Project>

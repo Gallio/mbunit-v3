@@ -50,7 +50,4 @@ using System.Runtime.InteropServices;
 // Can't strong-name the task because NAnt isn't strong-named.
 [assembly: SuppressMessage("Microsoft.Design", "CA2210:AssembliesShouldHaveValidStrongNames")]
 
-[assembly: InternalsVisibleTo("Gallio.PartCoverIntegration.Tests")]
 
-[assembly: InternalsVisibleTo("Gallio.PartCoverIntegration.vs2010.Tests")]
-[assembly: InternalsVisibleTo("Gallio.PartCoverIntegration.Explorables")]
