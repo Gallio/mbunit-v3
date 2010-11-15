@@ -45,7 +45,7 @@ TESTFIXTURE(Logic)
     TEST(Assert_IsTrue_should_fail_with_custom_message)
     {
 		bool value = false;
-        Assert.IsTrue(value, "This is a custom message.");
+        Assert.IsTrue(value, L"This is a custom message.");
     }
 
     TEST(Assert_IsFalse_should_pass)
@@ -75,7 +75,7 @@ TESTFIXTURE(Logic)
     TEST(Assert_IsFalse_should_fail_with_custom_message)
     {
 		bool value = true;
-        Assert.IsFalse(value, "This is a custom message.");
+        Assert.IsFalse(value, L"This is a custom message.");
     }
 }
 

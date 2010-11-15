@@ -154,7 +154,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
 
             var getString = (GetStringDelegate)Marshal.GetDelegateForFunctionPointer(procGetString, typeof(GetStringDelegate));
             var releaseString = (ReleaseStringDelegate)Marshal.GetDelegateForFunctionPointer(procReleaseString, typeof(ReleaseStringDelegate));
-            string result = Marshal.PtrToStringAnsi(getString(stringId));
+            string result = Marshal.PtrToStringUni(getString(stringId));
             releaseString(stringId);
             return result;
         }

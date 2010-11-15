@@ -199,5 +199,33 @@ TESTFIXTURE(Equality)
 		const char* actual = "Crazy World";
         Assert.AreEqual(expected, actual);
     }
+
+	TEST(Assert_AreEqual_wide_char_pointer_should_pass)
+    {
+		wchar_t* expected = L"Hello World";
+		wchar_t* actual = L"Hello World";
+        Assert.AreEqual(expected, actual);
+    }
+
+    TEST(Assert_AreEqual_wide_char_pointer_should_fail)
+    {
+		wchar_t* expected = L"Hello World";
+		wchar_t* actual = L"Crazy World";
+        Assert.AreEqual(expected, actual);
+    }
+
+	TEST(Assert_AreEqual_constant_wide_char_pointer_should_pass)
+    {
+		const wchar_t* expected = L"Hello World";
+		const wchar_t* actual = L"Hello World";
+        Assert.AreEqual(expected, actual);
+    }
+
+    TEST(Assert_AreEqual_constant_wide_char_pointer_should_fail)
+    {
+		const wchar_t* expected = L"Hello World";
+		const wchar_t* actual = L"Crazy World";
+        Assert.AreEqual(expected, actual);
+    }
 }
 

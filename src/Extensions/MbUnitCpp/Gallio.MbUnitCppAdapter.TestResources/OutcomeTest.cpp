@@ -25,7 +25,7 @@ TESTFIXTURE(Outcome)
 
     TEST(Assert_Fail_with_custom_message)
     {
-        Assert.Fail("Boom!");
+        Assert.Fail(L"Boom!");
     }
 }
 

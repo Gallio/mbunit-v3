@@ -20,14 +20,14 @@ namespace MbUnitCpp
 	// A simple general purpose string container with formatting capabilities.
 	class String
 	{
-		char* m_data;
-		void Initialize(const char* format, va_list argList);
+		wchar_t* m_data;
+		void Initialize(const wchar_t* format, va_list argList);
 
 		public:
-		String(const char* format, ...);
-		String(const char* format, va_list args);
+		String(const wchar_t* format, ...);
+		String(const wchar_t* format, va_list args);
 		~String();
-		char* GetData() const { return m_data; };
+		wchar_t* GetData() const { return m_data; };
 	};
 
 	// A node that reference a mapped string value.
@@ -54,7 +54,8 @@ namespace MbUnitCpp
 		void RemoveAll();
 		String* Get(StringId key);
 		StringId Add(String* data);
-		StringId Add(const char* format, ...);
+		StringId Add(const wchar_t* format, ...);
+		StringId Add(const char* data);
 		void Remove(StringId key);
 	};
 
@@ -131,46 +132,48 @@ namespace MbUnitCpp
         AssertionFramework(Test* pTest);
 
 		// Outcome assertions.
-        void Fail(const char* message = 0);
+        void Fail(const wchar_t* message = 0);
 
 		// Logic assertions.
-		void IsTrue(bool actualValue, const char* message = 0);
-		void IsFalse(bool actualValue, const char* message = 0);
-		void IsTrue(int actualValue, const char* message = 0); // Sometimes, boolean values are just int's (e.g. BOOL)
-		void IsFalse(int actualValue, const char* message = 0);
+		void IsTrue(bool actualValue, const wchar_t* message = 0);
+		void IsFalse(bool actualValue, const wchar_t* message = 0);
+		void IsTrue(int actualValue, const wchar_t* message = 0); // Sometimes, boolean values are just int's (e.g. BOOL)
+		void IsFalse(int actualValue, const wchar_t* message = 0);
 
 		// Equality assertions.
-		void AreEqual(bool expectedValue, bool actualValue, const char* message = 0);
-		void AreEqual(char expectedValue, char actualValue, const char* message = 0);
-		void AreEqual(__wchar_t expectedValue, __wchar_t actualValue, const char* message = 0);
-		void AreEqual(unsigned char expectedValue, unsigned char actualValue, const char* message = 0);
-		void AreEqual(short expectedValue, short actualValue, const char* message = 0);
-		void AreEqual(unsigned short expectedValue, unsigned short actualValue, const char* message = 0);
-		void AreEqual(int expectedValue, int actualValue, const char* message = 0);
-		void AreEqual(unsigned int expectedValue, unsigned int actualValue, const char* message = 0);
-		void AreEqual(long long expectedValue, long long actualValue, const char* message = 0);
-		void AreEqual(float expectedValue, float actualValue, const char* message = 0);
-		void AreEqual(double expectedValue, double actualValue, const char* message = 0);
-		void AreEqual(char* expectedValue, char* actualValue, const char* message = 0);
-		void AreEqual(const char* expectedValue, const char* actualValue, const char* message = 0);
+		void AreEqual(bool expectedValue, bool actualValue, const wchar_t* message = 0);
+		void AreEqual(char expectedValue, char actualValue, const wchar_t* message = 0);
+		void AreEqual(wchar_t expectedValue, wchar_t actualValue, const wchar_t* message = 0);
+		void AreEqual(unsigned char expectedValue, unsigned char actualValue, const wchar_t* message = 0);
+		void AreEqual(short expectedValue, short actualValue, const wchar_t* message = 0);
+		void AreEqual(unsigned short expectedValue, unsigned short actualValue, const wchar_t* message = 0);
+		void AreEqual(int expectedValue, int actualValue, const wchar_t* message = 0);
+		void AreEqual(unsigned int expectedValue, unsigned int actualValue, const wchar_t* message = 0);
+		void AreEqual(long long expectedValue, long long actualValue, const wchar_t* message = 0);
+		void AreEqual(float expectedValue, float actualValue, const wchar_t* message = 0);
+		void AreEqual(double expectedValue, double actualValue, const wchar_t* message = 0);
+		void AreEqual(char* expectedValue, char* actualValue, const wchar_t* message = 0);
+		void AreEqual(const char* expectedValue, const char* actualValue, const wchar_t* message = 0);
+		void AreEqual(wchar_t* expectedValue, wchar_t* actualValue, const wchar_t* message = 0);
+		void AreEqual(const wchar_t* expectedValue, const wchar_t* actualValue, const wchar_t* message = 0);
     };
 
     // Base class for executable tests.
     class Test
     {
         int m_index;
-        char const* m_name;
-        char const* m_fileName;
+        const wchar_t* m_name;
+        const wchar_t* m_fileName;
         int m_lineNumber;
         Test* m_next;
         int m_assertCount;
 
         public:
-        Test(int index, char const* name, char const* fileName, int lineNumber);
+        Test(int index, const wchar_t* name, const wchar_t* fileName, int lineNumber);
         ~Test();
         int GetIndex() const { return m_index; }
-        char const* GetName() const { return m_name; }
-        char const* GetFileName() const { return m_fileName; }
+        const wchar_t* GetName() const { return m_name; }
+        const wchar_t* GetFileName() const { return m_fileName; }
         int GetLineNumber() const { return m_lineNumber; }
         Test* GetNext() const { return m_next; }
         void SetNext(Test* test);
@@ -204,17 +207,17 @@ namespace MbUnitCpp
     class TestFixture
     {
         int m_index;
-        char const* m_name;
+        const wchar_t* m_name;
         TestList m_children;
         TestFixture* m_next;
 
         public:
-        TestFixture(int index, char const* name);
+        TestFixture(int index, const wchar_t* name);
         ~TestFixture();
         int GetIndex() const { return m_index; }
         TestFixture* GetNext() const { return m_next; }
         void SetNext(TestFixture* pTestFixture);
-        char const* GetName() const { return m_name; }
+        const wchar_t* GetName() const { return m_name; }
         TestList& GetTestList();
         static TestFixtureList& GetTestFixtureList();
 		static StringMap& GetStringMap();
@@ -250,6 +253,11 @@ namespace MbUnitCpp
     };
 }
 
+
+#define WSTR2(s) L##s
+#define WSTR(s) WSTR2(s)
+#define __WFILE__ WSTR(__FILE__)
+
 // Macro to create a new test fixture.
 #define TESTFIXTURE(Name) \
     using namespace MbUnitCpp; \
@@ -258,7 +266,7 @@ namespace MbUnitCpp
         class TestFixture##Name : public TestFixture \
         { \
             public: \
-            TestFixture##Name() : TestFixture(MbUnitCpp::TestFixture::GetTestFixtureList().GetNextIndex(), #Name) {} \
+            TestFixture##Name() : TestFixture(MbUnitCpp::TestFixture::GetTestFixtureList().GetNextIndex(), L#Name) {} \
         } testFixtureInstance; \
         \
         MbUnitCpp::TestFixtureRecorder fixtureRecorder(MbUnitCpp::TestFixture::GetTestFixtureList(), &testFixtureInstance); \
@@ -270,7 +278,7 @@ namespace MbUnitCpp
     class Test##Name : public MbUnitCpp::Test \
     { \
         public: \
-		Test##Name() : Test(testFixtureInstance.GetTestList().GetNextIndex(), #Name, __FILE__, __LINE__) {} \
+		Test##Name() : Test(testFixtureInstance.GetTestList().GetNextIndex(), L#Name, __WFILE__, __LINE__) {} \
         private: \
         virtual void RunImpl(); \
     } test##Name##Instance; \

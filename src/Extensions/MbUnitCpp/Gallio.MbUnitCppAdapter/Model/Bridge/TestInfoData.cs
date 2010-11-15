@@ -39,7 +39,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         {
             get
             {
-                return Marshal.PtrToStringAnsi(NamePtr);
+                return Marshal.PtrToStringUni(NamePtr);
             }
         }
 
@@ -47,7 +47,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         {
             get
             {
-                return Marshal.PtrToStringAnsi(FileNamePtr);
+                return Marshal.PtrToStringUni(FileNamePtr);
             }
         }
 
