@@ -14,10 +14,10 @@
 // limitations under the License.
 
 #pragma once
-#define MBUNITCPP_VERSION 1
 
 namespace MbUnitCpp
 {
+	// A simple general purpose string container with formatting capabilities.
 	class String
 	{
 		char* m_data;
@@ -30,6 +30,7 @@ namespace MbUnitCpp
 		char* GetData() const { return m_data; };
 	};
 
+	// A node that reference a mapped string value.
 	struct StringMapNode
 	{
 		int Key;
@@ -37,8 +38,11 @@ namespace MbUnitCpp
 		StringMapNode* Next;
 	};
 
+	// Key type for the string map.
 	#define StringId int
 
+	// A simple list of strings (chained list)
+	// TODO: Use a hash table for more efficiency.
 	class StringMap
 	{
 		StringMapNode* m_head;
@@ -67,12 +71,25 @@ namespace MbUnitCpp
     };
 
 	// The inner type of an actual/expected value.
+	// Will be used by the Gallio test adapter to parse and represent the values properly.
 	enum ValueType
 	{
+		// A raw string that represents a custom/user type.
+		// Not parsed and displayed as it is.
 		TypeRaw,
+
+		// A string type copied later in a System.String.
+		// Displayed with diffing if both the actual and expected values are available.
 		TypeString,
+
+		// A boolean type (should be "true" or "false")
+		// Parsed by the test adapater with System.Boolean.Parse.
 		TypeBoolean,
+
+		// A simple character. Parsed with System.Char.Parse.
 		TypeChar,
+
+		// Primitive values parsed with the corresponding parsing method (System.Byte.Parse, System.Int16.Parse, etc.)
 		TypeByte,
 		TypeInt16,
 		TypeUInt16,
@@ -95,7 +112,7 @@ namespace MbUnitCpp
 		AssertionFailure();
     };
 
-    // Describes the result of test.
+    // Describes the result of a test.
     struct TestResultData
     {
         Outcome NativeOutcome;
@@ -103,7 +120,7 @@ namespace MbUnitCpp
 		AssertionFailure Failure;
 	};
 
-    // Assertion framework.
+    // The MbUnitCpp Assertion Framework.
     class AssertionFramework
     {
         Test *m_pTest;
@@ -112,11 +129,17 @@ namespace MbUnitCpp
 
         public:
         AssertionFramework(Test* pTest);
+
+		// Outcome assertions.
         void Fail(const char* message = 0);
+
+		// Logic assertions.
 		void IsTrue(bool actualValue, const char* message = 0);
 		void IsFalse(bool actualValue, const char* message = 0);
-		void IsTrue(int actualValue, const char* message = 0);
+		void IsTrue(int actualValue, const char* message = 0); // Sometimes, boolean values are just int's (e.g. BOOL)
 		void IsFalse(int actualValue, const char* message = 0);
+
+		// Equality assertions.
 		void AreEqual(bool expectedValue, bool actualValue, const char* message = 0);
 		void AreEqual(char expectedValue, char actualValue, const char* message = 0);
 		void AreEqual(__wchar_t expectedValue, __wchar_t actualValue, const char* message = 0);
@@ -132,7 +155,7 @@ namespace MbUnitCpp
 		void AreEqual(const char* expectedValue, const char* actualValue, const char* message = 0);
     };
 
-    // An executable test.
+    // Base class for executable tests.
     class Test
     {
         int m_index;
@@ -227,6 +250,7 @@ namespace MbUnitCpp
     };
 }
 
+// Macro to create a new test fixture.
 #define TESTFIXTURE(Name) \
     using namespace MbUnitCpp; \
     namespace NamespaceTestFixture##Name \
@@ -241,6 +265,7 @@ namespace MbUnitCpp
     } \
     namespace NamespaceTestFixture##Name
 
+// Macro to create a new test.
 #define TEST(Name) \
     class Test##Name : public MbUnitCpp::Test \
     { \

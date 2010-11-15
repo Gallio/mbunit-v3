@@ -26,14 +26,12 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
     /// </summary>
     public class UnmanagedTestRepository : IDisposable
     {
-        private delegate int GetVersionDelegate();
         private delegate void GetHeadTestDelegate(out Position position);
         private delegate int GetNextTestDelegate(ref Position position, ref TestInfoData testStepInfo);
         private delegate void RunTestDelegate(ref Position position, out TestStepResult testResultInfo);
         private delegate IntPtr GetStringDelegate(int stringId);
         private delegate void ReleaseStringDelegate(int stringId);
         private delegate void ReleaseAllStringsDelegate();
-        private IntPtr procGetVersion;
         private IntPtr procGetHeadTest;
         private IntPtr procGetNextTest;
         private IntPtr procRunTest;
@@ -101,7 +99,6 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
 
         private void CollectProcAddresses()
         {
-            procGetVersion = GetProcAddress("MbUnitCpp_GetVersion");
             procGetHeadTest = GetProcAddress("MbUnitCpp_GetHeadTest");
             procGetNextTest = GetProcAddress("MbUnitCpp_GetNextTest");
             procRunTest = GetProcAddress("MbUnitCpp_RunTest");
@@ -115,19 +112,6 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
             IntPtr hFunction = NativeMethods.GetProcAddress(hModule, procName);
             isValid &= (hFunction != IntPtr.Zero);
             return hFunction;
-        }
-
-        /// <summary>
-        /// Returns the version of the MbUnitCpp test framework version that was used to compile the test library.
-        /// </summary>
-        /// <returns></returns>
-        public int GetVersion()
-        {
-            if (!IsValid)
-                throw new InvalidOperationException("The target MbUnitCpp test library is not valid.");
-
-            var function = (GetVersionDelegate)Marshal.GetDelegateForFunctionPointer(procGetVersion, typeof(GetVersionDelegate));
-            return function();
         }
 
         public IEnumerable<TestInfoData> GetTests()

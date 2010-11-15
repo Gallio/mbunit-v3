@@ -38,19 +38,6 @@ namespace Gallio.MbUnitCppAdapter.Tests.Model.Bridge
         }
 
         [Test]
-        public void GetVersion()
-        {
-            using (var repository = new UnmanagedTestRepository(resources))
-            {
-                Assert.IsTrue(repository.IsValid);
-                Assert.AreEqual(resources, repository.FileName);
-                int version = repository.GetVersion();
-                TestLog.WriteLine("Current Version = {0}.", version);
-                Assert.GreaterThan(version, 0);
-            }
-        }
-
-        [Test]
         public void GetTests()
         {
             using (var repository = new UnmanagedTestRepository(resources))

@@ -479,11 +479,6 @@ namespace MbUnitCpp
 
     extern "C" 
     {
-        int __cdecl MbUnitCpp_GetVersion()
-        {
-            return MBUNITCPP_VERSION;
-        }
-
         void __cdecl MbUnitCpp_GetHeadTest(Position* pPosition)
         {
             TestFixtureList& list = TestFixture::GetTestFixtureList();
@@ -555,7 +550,6 @@ namespace MbUnitCpp
 }
 
 #if defined(_WIN64) 
-#pragma comment(linker, "/EXPORT:MbUnitCpp_GetVersion") 
 #pragma comment(linker, "/EXPORT:MbUnitCpp_GetHeadTest") 
 #pragma comment(linker, "/EXPORT:MbUnitCpp_GetNextTest") 
 #pragma comment(linker, "/EXPORT:MbUnitCpp_RunTest") 
@@ -563,7 +557,6 @@ namespace MbUnitCpp
 #pragma comment(linker, "/EXPORT:MbUnitCpp_ReleaseString") 
 #pragma comment(linker, "/EXPORT:MbUnitCpp_ReleaseAllStrings") 
 #else 
-#pragma comment(linker, "/EXPORT:MbUnitCpp_GetVersion=_MbUnitCpp_GetVersion") 
 #pragma comment(linker, "/EXPORT:MbUnitCpp_GetHeadTest=_MbUnitCpp_GetHeadTest") 
 #pragma comment(linker, "/EXPORT:MbUnitCpp_GetNextTest=_MbUnitCpp_GetNextTest") 
 #pragma comment(linker, "/EXPORT:MbUnitCpp_RunTest=_MbUnitCpp_RunTest") 
