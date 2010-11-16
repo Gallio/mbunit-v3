@@ -24,10 +24,12 @@ namespace MbUnitCpp
 		void Initialize(const wchar_t* format, va_list argList);
 
 		public:
+		String(const String& prototype);
 		String(const wchar_t* format, ...);
 		String(const wchar_t* format, va_list args);
 		~String();
 		wchar_t* GetData() const { return m_data; };
+		void Append(String& string);
 	};
 
 	// A node that reference a mapped string value.
@@ -119,17 +121,18 @@ namespace MbUnitCpp
         Outcome NativeOutcome;
         int AssertCount;
 		AssertionFailure Failure;
+		int TestLogId;
 	};
 
     // The MbUnitCpp Assertion Framework.
     class AssertionFramework
     {
-        Test *m_pTest;
+        Test *m_test;
         void IncrementAssertCount();
 		StringMap& Map() const;
 
         public:
-        AssertionFramework(Test* pTest);
+        AssertionFramework(Test* test);
 
 		// Outcome assertions.
         void Fail(const wchar_t* message = 0);
@@ -158,6 +161,17 @@ namespace MbUnitCpp
 		void AreEqual(const wchar_t* expectedValue, const wchar_t* actualValue, const wchar_t* message = 0);
     };
 
+	// Provides an access to the Gallio test log.
+	class TestLogRecorder
+	{
+        Test *m_test;
+
+		public:
+		TestLogRecorder(Test* test);
+		void Write(const wchar_t* format, ...);
+		void WriteLine(const wchar_t* format, ...);
+	};
+
     // Base class for executable tests.
     class Test
     {
@@ -167,6 +181,7 @@ namespace MbUnitCpp
         int m_lineNumber;
         Test* m_next;
         int m_assertCount;
+		int m_testLogId;
 
         public:
         Test(int index, const wchar_t* name, const wchar_t* fileName, int lineNumber);
@@ -180,12 +195,14 @@ namespace MbUnitCpp
         void Run(TestResultData* pTestResultData);
         virtual void RunImpl();
         void IncrementAssertCount();
+		void AppendToTestLog(String& string);
 
         private:
         void Clear();
 
         protected:
         AssertionFramework Assert;
+		TestLogRecorder TestLog;
     };
 
     // A chained list of tests.

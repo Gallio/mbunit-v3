@@ -160,6 +160,7 @@
     <ClCompile Include="EqualityTest.cpp" />
     <ClCompile Include="LogicTest.cpp" />
     <ClCompile Include="OutcomeTest.cpp" />
+    <ClCompile Include="TestLogTest.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

@@ -146,15 +146,15 @@ TESTFIXTURE(Equality)
 
 	TEST(Assert_AreEqual_float_should_pass)
     {
-		float expected = 123.456;
-		float actual = 123.456;
+		float expected = 123.456f;
+		float actual = 123.456f;
         Assert.AreEqual(expected, actual);
     }
 
     TEST(Assert_AreEqual_float_should_fail)
     {
-		float expected = 123.456;
-		float actual = 456.789;
+		float expected = 123.456f;
+		float actual = 456.789f;
         Assert.AreEqual(expected, actual);
     }
 

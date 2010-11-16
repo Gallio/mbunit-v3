@@ -20,7 +20,7 @@
 #include <wchar.h>
 #include "MbUnitCpp.h"
 
-#pragma warning (disable: 4996) // Hide deprecation warnings.
+#pragma warning (disable: 4996 4355) // Hide some warnings.
 
 namespace MbUnitCpp
 {
@@ -41,11 +41,30 @@ namespace MbUnitCpp
 		Initialize(format, argList);
 	}
 
+	String::String(const String& prototype)
+	{
+		size_t n = wcslen(prototype.m_data);
+		m_data = new wchar_t[n + 1];
+		wcscpy(m_data, prototype.m_data);
+	}
+
 	void String::Initialize(const wchar_t* format, va_list argList)
 	{
 		int n = _vscwprintf(format, argList) + 1;
 		m_data = new wchar_t[n];
 		vswprintf(m_data, format, argList);
+	}
+
+	void String::Append(String& string)
+	{
+		size_t e = wcslen(m_data);
+		size_t n = wcslen(string.m_data);
+		wchar_t* p = new wchar_t[e + n + 1];
+		wcsncpy(p, m_data, e);
+		wcscpy(p + e, string.m_data);
+		p[e + n] = L'\0';
+		delete[] m_data;
+		m_data = p;
 	}
 
 	String::~String()
@@ -110,7 +129,7 @@ namespace MbUnitCpp
 		if (data == 0)
 			return 0;
 
-		int n = mbstowcs(0, data, -1);
+		size_t n = mbstowcs(0, data, -1);
 		wchar_t* buffer = new wchar_t[n + 1];
 		mbstowcs(buffer, data, n);
 		buffer[n] = L'\0';
@@ -155,7 +174,7 @@ namespace MbUnitCpp
 
     // Construct an executable test case.
     Test::Test(int index, const wchar_t* name, const wchar_t* fileName, int lineNumber)
-        : m_index(index), m_name(name), m_fileName(fileName), m_lineNumber(lineNumber), Assert(this)
+        : m_index(index), m_name(name), m_fileName(fileName), m_lineNumber(lineNumber), Assert(this), TestLog(this), m_testLogId(0)
     {
     }
 
@@ -176,15 +195,16 @@ namespace MbUnitCpp
         {
             Clear();
             RunImpl();
-            pTestResultData->AssertCount = m_assertCount;
             pTestResultData->NativeOutcome = Passed;
 		}
         catch (AssertionFailure failure)
         {
-            pTestResultData->AssertCount = m_assertCount;
             pTestResultData->NativeOutcome = Failed;
             pTestResultData->Failure = failure;
         }
+
+		pTestResultData->TestLogId = m_testLogId;
+        pTestResultData->AssertCount = m_assertCount;
     }
 
     void Test::Clear()
@@ -196,6 +216,21 @@ namespace MbUnitCpp
     {
         m_assertCount++;
     }
+
+	void Test::AppendToTestLog(String& string)
+	{
+		StringMap& map = TestFixture::GetStringMap();
+
+		if (m_testLogId == 0)
+		{
+			m_testLogId = map.Add(new String(string));
+		}
+		else
+		{
+			String* existing = map.Get(m_testLogId);
+			existing->Append(string);
+		}
+	}
 
     // Default empty implementation of the test execution.
     void Test::RunImpl()
@@ -316,20 +351,48 @@ namespace MbUnitCpp
 
     // Constructs an assertion framework instance for the specified test.
     AssertionFramework::AssertionFramework(Test* pTest)
-        : m_pTest(pTest)
+        : m_test(pTest)
     {
     }
 
     // Internal assert count increment.
     void AssertionFramework::IncrementAssertCount()
     {
-        m_pTest->IncrementAssertCount();
+        m_test->IncrementAssertCount();
     }
 
 	// Constructs an empty assertion failure.
 	AssertionFailure::AssertionFailure()
 		: DescriptionId(0),  MessageId(0), ActualValueId(0), ActualValueType(TypeRaw), ExpectedValueId(0), ExpectedValueType(TypeRaw)
 	{
+	}
+
+	// =============
+	// Log Recording
+	// =============
+
+	TestLogRecorder::TestLogRecorder(Test* test)
+		: m_test(test)
+	{
+	}
+	
+	void TestLogRecorder::Write(const wchar_t* format, ...)
+	{
+		va_list argList;
+		va_start(argList, format);
+		String string(format, argList);
+		m_test->AppendToTestLog(string);
+		va_end(argList);
+	}
+
+	void TestLogRecorder::WriteLine(const wchar_t* format, ...)
+	{
+		va_list argList;
+		va_start(argList, format);
+		String raw(L"%s\r\n", format);
+		String string(raw.GetData(), argList);
+		m_test->AppendToTestLog(string);
+		va_end(argList);
 	}
 
 	// ===================

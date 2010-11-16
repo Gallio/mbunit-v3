@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Specifications>
+  
+  <Test name="Simple" expectedStatus="Passed" expectedAssertCount="0" />
+  <Test name="Simple/Empty_should_pass" expectedStatus="Passed" expectedAssertCount="0" />
+  
+  <Test name="Outcome" expectedStatus="Failed" expectedAssertCount="2" />
+  <Test name="Outcome/Assert_Fail_with_default_message" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="Outcome/Assert_Fail_with_custom_message" expectedStatus="Failed" expectedAssertCount="1" expectedFailureLog="Boom!" />
+  
+  <Test name="Logic" expectedStatus="Failed" expectedAssertCount="10" />
+  <Test name="Logic/Assert_IsTrue_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="Logic/Assert_IsTrue_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="Logic/Assert_IsTrue_as_int_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="Logic/Assert_IsTrue_as_int_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="Logic/Assert_IsTrue_should_fail_with_custom_message" expectedStatus="Failed" expectedAssertCount="1" expectedFailureLog="This is a custom message." />
+  <Test name="Logic/Assert_IsFalse_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="Logic/Assert_IsFalse_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="Logic/Assert_IsFalse_as_int_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="Logic/Assert_IsFalse_as_int_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="Logic/Assert_IsFalse_should_fail_with_custom_message" expectedStatus="Failed" expectedAssertCount="1" expectedFailureLog="This is a custom message." />
+  
+  <Test name="Equality" expectedStatus="Failed" expectedAssertCount="30" />
+  <Test name="Equality/Assert_AreEqual_bool_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_bool_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_char_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_char_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_wchar_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_wchar_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_uchar_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_uchar_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_short_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_short_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_ushort_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_ushort_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_int_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_int_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_uint_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_uint_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_longlong_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_longlong_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_float_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_float_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_double_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_double_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_char_pointer_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_char_pointer_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_constant_char_pointer_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_constant_char_pointer_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_wide_char_pointer_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_wide_char_pointer_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_constant_wide_char_pointer_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="Equality/Assert_AreEqual_constant_wide_char_pointer_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+
+  <Test name="TestLog" expectedStatus="Passed" expectedAssertCount="0" />
+  <Test name="TestLog/Write_once" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies quickly spot the jinxed grave." />
+  <Test name="TestLog/Write_multiple_times" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies quickly spot the jinxed grave." />
+  <Test name="TestLog/WriteLine_once" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies quickly spot the jinxed grave.\n" />
+  <Test name="TestLog/WriteLine_multiple_times" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies \nquickly spot \nthe jinxed grave.\n" />
+
+</Specifications>

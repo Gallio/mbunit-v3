@@ -106,9 +106,16 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
             TestStepResult testStepResult = repository.RunTest(testStepInfo);
             stopwatch.Stop();
             ReportFailure(repository, testContext, testStepInfo, testStepResult);
+            WriteToTestLog(testContext, testStepResult);
             testContext.AddAssertCount(testStepResult.AssertCount);
             progressMonitor.Worked(1);
             return testContext.FinishStep(testStepResult.TestOutcome, stopwatch.Elapsed);
+        }
+
+        private static void WriteToTestLog(ITestContext testContext, TestStepResult testStepResult)
+        {
+            if (testStepResult.TestLogContents.Length > 0)
+                testContext.LogWriter.Default.Write(testStepResult.TestLogContents);
         }
 
         private static void ReportFailure(UnmanagedTestRepository repository, ITestContext testContext, TestInfoData testInfoData, TestStepResult testStepResult)

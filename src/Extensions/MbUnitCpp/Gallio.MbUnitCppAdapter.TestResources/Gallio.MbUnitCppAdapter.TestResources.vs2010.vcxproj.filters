@@ -21,6 +21,9 @@
     <ClCompile Include="EqualityTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="TestLogTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />

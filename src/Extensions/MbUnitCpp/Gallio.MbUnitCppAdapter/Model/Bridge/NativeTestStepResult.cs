@@ -45,5 +45,15 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         /// </para>
         /// </remarks>
         public NativeAssertionFailure Failure;
+
+        /// <summary>
+        /// The ID key of the unmanaged string that holds some contents to be appened to the test log.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Zero if no contents were defined.
+        /// </para>
+        /// </remarks>
+        public int TestLogId;
     }
 }

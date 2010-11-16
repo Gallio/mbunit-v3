@@ -28,6 +28,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         private NativeTestStepResult native;
         private MbUnitCppAssertionFailure failure;
         private IStringResolver stringResolver;
+        private string testLogContents;
 
         /// <summary>
         /// Constructor.
@@ -79,6 +80,20 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
             get
             {
                 return native.AssertCount;
+            }
+        }
+
+        /// <summary>
+        /// Gets the text to be appended to the test log.
+        /// </summary>
+        public string TestLogContents
+        {
+            get
+            {
+                if (testLogContents == null)
+                    testLogContents = stringResolver.GetString(native.TestLogId);
+
+                return testLogContents;
             }
         }
     }
