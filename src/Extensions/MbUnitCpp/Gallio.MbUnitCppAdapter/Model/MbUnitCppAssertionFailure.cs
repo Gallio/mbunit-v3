@@ -5,7 +5,10 @@ using Gallio.MbUnitCppAdapter.Model.Bridge;
 
 namespace Gallio.MbUnitCppAdapter.Model
 {
-    internal class MbUnitCppAssertionFailure
+    /// <summary>
+    /// An assertion failure that occurred while running an MbUnitCpp test case.
+    /// </summary>
+    public class MbUnitCppAssertionFailure
     {
         private readonly string description;
         private readonly string message;
@@ -15,100 +18,98 @@ namespace Gallio.MbUnitCppAdapter.Model
         private readonly bool hasExpectedValue;
         private readonly bool diffing;
 
+        /// <summary>
+        /// Gets the description of the failure.
+        /// </summary>
         public string Description
         {
             get { return description; }
         }
 
+        /// <summary>
+        /// Gets the optional custom user message.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// An empty string if no message was specified by the user.
+        /// </para>
+        /// </remarks>
         public string Message
         {
             get { return message; }
         }
 
+        /// <summary>
+        /// Gets the raw actual value.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Null if no actual value is applicable to that assertion failure.
+        /// </para>
+        /// </remarks>
         public object ActualValue
         {
             get { return actualValue; }
         }
 
+        /// <summary>
+        /// Indicates whether the assertion failure provides an actual value.
+        /// </summary>
         public bool HasActualValue
         {
             get { return hasActualValue; }
         }
 
+        /// <summary>
+        /// Gets the raw expected value.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Null if no expected value is applicable to that assertion failure.
+        /// </para>
+        /// </remarks>
         public object ExpectedValue
         {
             get { return expectedValue; }
         }
 
+        /// <summary>
+        /// Indicates whether the assertion failure provides an expected value.
+        /// </summary>
         public bool HasExpectedValue
         {
             get { return hasExpectedValue; }
         }
 
+        /// <summary>
+        /// Should diffing be applied when displaying the expected and the actual value?
+        /// </summary>
         public bool Diffing
         {
             get { return diffing; }
         }
 
-        public MbUnitCppAssertionFailure(NativeAssertionFailure native, UnmanagedTestRepository repository)
+        /// <summary>
+        /// Constructs an assertion failure.
+        /// </summary>
+        /// <param name="native">The native unmanged object describing the failure.</param>
+        /// <param name="stringResolver">A service to resolve unmanaged unicode strings.</param>
+        public MbUnitCppAssertionFailure(NativeAssertionFailure native, IStringResolver stringResolver)
         {
-            description = repository.GetString(native.DescriptionId);
-            message = repository.GetString(native.MessageId);
+            description = stringResolver.GetString(native.DescriptionId);
+            message = stringResolver.GetString(native.MessageId);
             hasActualValue = native.ActualValueId != 0;
             hasExpectedValue = native.ExpectedValueId != 0;
 
             if (hasActualValue)
-                actualValue = TransformValue(repository.GetString(native.ActualValueId), native.ActualValueType);
+                actualValue = NativeValueParser.Parse(stringResolver.GetString(native.ActualValueId), native.ActualValueType);
 
             if (hasExpectedValue)
-                expectedValue = TransformValue(repository.GetString(native.ExpectedValueId), native.ExpectedValueType);
+                expectedValue = NativeValueParser.Parse(stringResolver.GetString(native.ExpectedValueId), native.ExpectedValueType);
 
             diffing = hasActualValue && hasExpectedValue && 
                 (native.ActualValueType == NativeValueType.String) && 
                 (native.ExpectedValueType == NativeValueType.String);
-        }
-
-        private static object TransformValue(string field, NativeValueType valueType)
-        {
-            switch (valueType)
-            {
-                case NativeValueType.Raw:
-                case NativeValueType.String:
-                    return field;
-
-                case NativeValueType.Boolean:
-                    return Boolean.Parse(field);
-
-                case NativeValueType.Char:
-                    return Char.Parse(field);
-
-                case NativeValueType.Byte:
-                    return Byte.Parse(field);
-
-                case NativeValueType.Int16:
-                    return Int16.Parse(field);
-
-                case NativeValueType.UInt16:
-                    return UInt16.Parse(field);
-
-                case NativeValueType.Int32:
-                    return Int32.Parse(field);
-
-                case NativeValueType.UInt32:
-                    return UInt32.Parse(field);
-
-                case NativeValueType.Int64:
-                    return Int64.Parse(field);
-
-                case NativeValueType.Single:
-                    return Single.Parse(field);
-
-                case NativeValueType.Double:
-                    return Double.Parse(field);
-
-                default:
-                    throw new ArgumentOutOfRangeException("valueType");
-            }
         }
     }
 }

@@ -22,13 +22,13 @@ using Gallio.Model;
 namespace Gallio.MbUnitCppAdapter.Model.Bridge
 {
     /// <summary>
-    /// Wraps a MbUnit C++ unmanaged test executable library.
+    /// Wraps a MbUnitCpp unmanaged test executable library (.DLL)
     /// </summary>
-    public class UnmanagedTestRepository : IDisposable
+    public class UnmanagedTestRepository : IDisposable, IStringResolver
     {
         private delegate void GetHeadTestDelegate(out Position position);
-        private delegate int GetNextTestDelegate(ref Position position, ref TestInfoData testStepInfo);
-        private delegate void RunTestDelegate(ref Position position, out TestStepResult testResultInfo);
+        private delegate int GetNextTestDelegate(ref Position position, ref NativeTestInfoData testStepInfo);
+        private delegate void RunTestDelegate(ref Position position, out NativeTestStepResult testResultInfo);
         private delegate IntPtr GetStringDelegate(int stringId);
         private delegate void ReleaseStringDelegate(int stringId);
         private delegate void ReleaseAllStringsDelegate();
@@ -96,7 +96,6 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
             }
         }
 
-
         private void CollectProcAddresses()
         {
             procGetHeadTest = GetProcAddress("MbUnitCpp_GetHeadTest");
@@ -114,6 +113,11 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
             return hFunction;
         }
 
+        /// <summary>
+        /// Enumerates the MbUnitCpp tests and fixtures found in the repository.
+        /// </summary>
+        /// <returns>An enumerator of information strutures about the tests/fixtures found in the repository.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the repository is not valid.</exception>
         public IEnumerable<TestInfoData> GetTests()
         {
             if (!IsValid)
@@ -123,15 +127,20 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
             var getNextTest = (GetNextTestDelegate)Marshal.GetDelegateForFunctionPointer(procGetNextTest, typeof(GetNextTestDelegate));
             Position position;
             getHeadTest(out position);
-            var data = new TestInfoData();
-            var list = new List<TestInfoData>();
+            var data = new NativeTestInfoData();
 
             while (getNextTest(ref position, ref data) > 0)
             {
-                yield return data;
+                yield return new TestInfoData(data);
             }
         }
 
+        /// <summary>
+        /// Runs the targeted MbUnitCpp test.
+        /// </summary>
+        /// <param name="testInfoData">The information structure about the test to run.</param>
+        /// <returns>The test step results.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the repository is not valid, or if the specified structure points to a fixture.</exception>
         public TestStepResult RunTest(TestInfoData testInfoData)
         {
             if (!IsValid)
@@ -139,12 +148,23 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
             if (testInfoData.IsTestFixture)
                 throw new InvalidOperationException("Not a valid test case.");
 
-            TestStepResult testStepResult;
             var function = (RunTestDelegate)Marshal.GetDelegateForFunctionPointer(procRunTest, typeof(RunTestDelegate));
-            function(ref testInfoData.Position, out testStepResult);
-            return testStepResult;
+            Position position = testInfoData.Native.Position;
+            NativeTestStepResult native;
+            function(ref position, out native);
+            return new TestStepResult(native, this);
         }
 
+        /// <summary>
+        /// Retrieves the content of the dynamically allocated unicode string identified by the specified ID key.
+        /// </summary>
+        /// <param name="stringId">The ID of the searched string.</param>
+        /// <returns>The contents of the string.</returns>
+        /// <remarks>
+        /// <para>
+        /// The string is freed immediately after.
+        /// </para>
+        /// </remarks>
         public string GetString(int stringId)
         {
             if (!IsValid)

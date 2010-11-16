@@ -35,8 +35,12 @@ using Gallio.Common.Diagnostics;
 
 namespace Gallio.MbUnitCppAdapter.Model.Tasks
 {
+    /// <summary>
+    /// Isolated task which run the tests in a MbUnitCpp unmanaged test repository.
+    /// </summary>
     internal class RunTask : ExploreTask
     {
+        /// <inheritdoc />
         protected override void Execute(UnmanagedTestRepository repository, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Running " + repository.FileName, 4))
@@ -109,9 +113,9 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
 
         private static void ReportFailure(UnmanagedTestRepository repository, ITestContext testContext, TestInfoData testInfoData, TestStepResult testStepResult)
         {
-            if (testStepResult.NativeOutcome == NativeOutcome.Failed)
+            if (testStepResult.TestOutcome == TestOutcome.Failed)
             {
-                var failure = new MbUnitCppAssertionFailure(testStepResult.Failure, repository);
+                MbUnitCppAssertionFailure failure = testStepResult.Failure;
                 var builder = new AssertionFailureBuilder(failure.Description);
 
                 if (failure.HasExpectedValue && failure.HasActualValue && failure.Diffing)

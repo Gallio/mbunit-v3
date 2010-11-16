@@ -16,29 +16,24 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Gallio.Common.Messaging;
-using Gallio.MbUnitCppAdapter.Model.Bridge;
-using Gallio.Model;
-using Gallio.Model.Messages;
-using Gallio.Model.Tree;
-using Gallio.Runtime.Extensibility.Schema;
-using Gallio.Runtime.Logging;
-using Gallio.Runtime.ProgressMonitoring;
 
-namespace Gallio.MbUnitCppAdapter.Model.Tasks
+namespace Gallio.MbUnitCppAdapter.Model.Bridge
 {
     /// <summary>
-    /// Isolated task which explores a MbUnitCpp unmanaged test repository to find all the available tests and fixtures.
+    /// Resolves dynamically allocated unicode unmanaged strings.
     /// </summary>
-    internal class ExploreTask : AbstractTask
+    public interface IStringResolver
     {
-        /// <inheritdoc />
-        protected override void Execute(UnmanagedTestRepository repository, IProgressMonitor progressMonitor)
-        {
-            using (progressMonitor.BeginTask("Exploring " + repository.FileName, 1))
-            {
-                BuildTestModel(repository, progressMonitor);
-            }
-        }
+        /// <summary>
+        /// Retrieves the content of the dynamically allocated unicode string identified by the specified ID key.
+        /// </summary>
+        /// <param name="stringId">The ID of the searched string.</param>
+        /// <returns>The contents of the string.</returns>
+        /// <remarks>
+        /// <para>
+        /// The string is freed immediately after.
+        /// </para>
+        /// </remarks>
+        string GetString(int stringId);
     }
 }

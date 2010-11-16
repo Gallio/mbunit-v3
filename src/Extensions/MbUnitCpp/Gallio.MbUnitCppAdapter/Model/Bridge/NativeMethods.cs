@@ -20,28 +20,49 @@ using System.Text;
 
 namespace Gallio.MbUnitCppAdapter.Model.Bridge
 {
+    /// <summary>
+    /// Native Win32 methods used to load the executable unmanaged test repository.
+    /// </summary>
     internal class NativeMethods
     {
+        /// <summary>
+        /// Loads the specified module into the address space of the calling process.
+        /// </summary>
+        /// <param name="lpLibFileName">The name of the module.</param>
+        /// <returns>If the function succeeds, an handle to the module; otherwise, IntPtr.Zero.</returns>
+        /// <remarks>
+        /// <para>
+        /// To get extended error information, call <see cref="Marhsal.GetLastWin32Error"/>.
+        /// </para>
+        /// </remarks>
         [DllImport("kernel32", SetLastError = true)]
         public static extern IntPtr LoadLibrary(string lpLibFileName);
 
-        [DllImport("kernel32", SetLastError = true)]
-        public static extern IntPtr LoadLibraryEx(string lpLibFileName, IntPtr hFile, LoadLibraryExFlags dwFlags);
-
+        /// <summary>
+        /// rees the loaded dynamic-link library (DLL) module and, if necessary, decrements its reference count.
+        /// </summary>
+        /// <param name="hModule">A handle to the loaded library module.</param>
+        /// <returns>True if the function succees; otherwise, false.</returns>
+        /// <remarks>
+        /// <para>
+        /// To get extended error information, call <see cref="Marhsal.GetLastWin32Error"/>.
+        /// </para>
+        /// </remarks>
         [DllImport("kernel32", SetLastError = true)]
         public static extern bool FreeLibrary(IntPtr hModule);
 
+        /// <summary>
+        /// Retrieves the address of an exported function or variable from the specified dynamic-link library (DLL).
+        /// </summary>
+        /// <param name="hModule">A handle to the DLL module that contains the function or variable.</param>
+        /// <param name="procName">The function or variable name, or the function's ordinal value.</param>
+        /// <returns>If the function succeeds, the address of the exported function or variable; otherwise, IntPtr.Zero.</returns>
+        /// <remarks>
+        /// <para>
+        /// To get extended error information, call <see cref="Marhsal.GetLastWin32Error"/>.
+        /// </para>
+        /// </remarks>
         [DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
         public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
-    }
-
-    [Flags]
-    internal enum LoadLibraryExFlags : uint
-    {
-        DONT_RESOLVE_DLL_REFERENCES = 0x00000001,
-        LOAD_LIBRARY_AS_DATAFILE = 0x00000002,
-        LOAD_WITH_ALTERED_SEARCH_PATH = 0x00000008,
-        LOAD_IGNORE_CODE_AUTHZ_LEVEL = 0x00000010,
-        LOAD_LIBRARY_AS_DATAFILE_EXCLUSIVE = 0x00000040,
     }
 }

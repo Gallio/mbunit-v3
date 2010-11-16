@@ -36,11 +36,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Bridge\IStringResolver.cs" />
+    <Compile Include="Model\Bridge\NativeTestStepResult.cs" />
+    <Compile Include="Model\Bridge\NativeOutcome.cs" />
+    <Compile Include="Model\Bridge\NativeTestInfoData.cs" />
     <Compile Include="Model\Bridge\NativeAssertionFailure.cs" />
     <Compile Include="Model\Bridge\NativeMethods.cs" />
+    <Compile Include="Model\Bridge\NativeValueParser.cs" />
     <Compile Include="Model\Bridge\Position.cs" />
     <Compile Include="Model\Bridge\TestInfoData.cs" />
-    <Compile Include="Model\Bridge\TestResultData.cs" />
+    <Compile Include="Model\Bridge\TestStepResult.cs" />
     <Compile Include="Model\Bridge\UnmanagedDllHelper.cs" />
     <Compile Include="Model\Bridge\UnmanagedTestRepository.cs" />
     <Compile Include="Model\MbUnitCppAssertionFailure.cs" />

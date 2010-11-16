@@ -24,8 +24,16 @@ using Gallio.Model;
 
 namespace Gallio.MbUnitCppAdapter.Model.Bridge
 {
+    /// <summary>
+    /// Helper methods to work with unmanaged executable libraries (.DLL)
+    /// </summary>
     public static class UnmanagedDllHelper
     {
+        /// <summary>
+        /// Scans the PE section of the file and returns the processor architecture.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public static ProcessorArchitecture GetArchitecture(string file)
         {
             using (var fileStream = new FileStream(file, FileMode.Open))

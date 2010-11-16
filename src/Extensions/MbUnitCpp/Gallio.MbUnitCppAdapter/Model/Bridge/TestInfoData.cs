@@ -20,40 +20,86 @@ using Gallio.Common.Diagnostics;
 
 namespace Gallio.MbUnitCppAdapter.Model.Bridge
 {
-    [StructLayout(LayoutKind.Sequential)]
-    public struct TestInfoData
+    /// <summary>
+    /// The structure that warps native information about a MbUnitCpp test or a MbUnitCpp fixture.
+    /// </summary>
+    public class TestInfoData
     {
-        public IntPtr NamePtr;
-        public int Index;
-        public bool IsTestFixture;
-        public IntPtr FileNamePtr;
-        public int LineNumber;
-        public Position Position;
+        private readonly NativeTestInfoData native;
+        private string name;
+        private string fileName;
 
-        public string GetId()
+        public TestInfoData(NativeTestInfoData native)
         {
-            return "MbUnitCpp_" + ((Position.pTest != IntPtr.Zero) ? Position.pTest : Position.pTestFixture);
+            this.native = native;
         }
 
+        /// <summary>
+        /// Returns a unique key identifying the MbUnitCpp test/fixture that may be used to build the model tree.
+        /// </summary>
+        /// <returns>A unique key name.</returns>
+        public string GetId()
+        {
+            return "MbUnitCpp_" + ((native.Position.pTest != IntPtr.Zero) ? native.Position.pTest : native.Position.pTestFixture);
+        }
+
+        /// <summary>
+        /// Marshals the test/fixture name.
+        /// </summary>
         public string Name
         {
             get
             {
-                return Marshal.PtrToStringUni(NamePtr);
+                if (name == null)
+                    name = Marshal.PtrToStringUni(native.NamePtr);
+
+                return name;
             }
         }
 
+        /// <summary>
+        /// Marshals the source file name where the test/fixture is defined.
+        /// </summary>
         public string FileName
         {
             get
             {
-                return Marshal.PtrToStringUni(FileNamePtr);
+                if (fileName == null)
+                    fileName = Marshal.PtrToStringUni(native.FileNamePtr);
+
+                return fileName;
             }
         }
 
+        /// <summary>
+        /// Determines whether the current info describes a test fixture or a test case.
+        /// </summary>
+        public bool IsTestFixture
+        {
+            get
+            {
+                return native.IsTestFixture;
+            }
+        }
+
+        /// <summary>
+        /// Gets the native unmanaged structure.
+        /// </summary>
+        public NativeTestInfoData Native
+        {
+            get
+            {
+                return native;
+            }
+        }
+
+        /// <summary>
+        /// Builds and returns an artifical stack trace that points to the current test/fixture.
+        /// </summary>
+        /// <returns></returns>
         public StackTraceData GetStackTraceData()
         {
-            return new StackTraceData(String.Format("   at {0} in {1}:line {2}\r\n", Name, FileName, LineNumber));
+            return new StackTraceData(String.Format("   at {0} in {1}:line {2}\r\n", Name, FileName, native.LineNumber));
         }
     }
 }

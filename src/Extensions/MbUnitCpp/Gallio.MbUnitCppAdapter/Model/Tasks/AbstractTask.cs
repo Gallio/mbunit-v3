@@ -28,44 +28,66 @@ using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.MbUnitCppAdapter.Model.Tasks
 {
+    /// <summary>
+    /// Abstract isolated base task for the MbUnitCpp test adapter.
+    /// </summary>
     internal abstract class AbstractTask : IsolatedTask
     {
+        /// <summary>
+        /// Gets the test package.
+        /// </summary>
         protected TestPackage TestPackage
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Gets the test exploration options.
+        /// </summary>
         protected TestExplorationOptions TestExplorationOptions
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Gets the test execution options.
+        /// </summary>
         protected TestExecutionOptions TestExecutionOptions
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Gets the message sink.
+        /// </summary>
         protected IMessageSink MessageSink
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Gets the logging service.
+        /// </summary>
         protected ILogger Logger
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Gets the test model.
+        /// </summary>
         protected TestModel TestModel
         {
             get;
             private set;
         }
 
+        /// <inheritdoc />
         protected sealed override object RunImpl(object[] args)
         {
             TestPackage = (TestPackage)args[0];
@@ -94,8 +116,18 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
             return null;
         }
 
+        /// <summary>
+        /// Executes the tasks.
+        /// </summary>
+        /// <param name="repository">The MbUnitCpp unmanaged test repository.</param>
+        /// <param name="progressMonitor">The active progress monitor for the task.</param>
         protected abstract void Execute(UnmanagedTestRepository repository, IProgressMonitor progressMonitor);
 
+        /// <summary>
+        /// Builds the test model.
+        /// </summary>
+        /// <param name="repository">The MbUnitCpp unmanaged test repository.</param>
+        /// <param name="progressMonitor">The active progress monitor for the task.</param>
         protected void BuildTestModel(UnmanagedTestRepository repository, IProgressMonitor progressMonitor)
         {
             Test testFixture = TestModel.RootTest;

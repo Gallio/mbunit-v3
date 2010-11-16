@@ -22,10 +22,16 @@ using Gallio.Model.Tree;
 
 namespace Gallio.MbUnitCppAdapter.Model
 {
+    /// <summary>
+    /// Represents an MbUnitCpp test.
+    /// </summary>
     public class MbUnitCppTest : Test
     {
         private readonly TestInfoData testInfoData;
 
+        /// <summary>
+        /// Gets MbUnitCpp specific information about the current test.
+        /// </summary>
         public TestInfoData TestInfoData
         {
             get
@@ -34,6 +40,10 @@ namespace Gallio.MbUnitCppAdapter.Model
             }
         }
 
+        /// <summary>
+        /// Constructs an MbUnitCpp tests.
+        /// </summary>
+        /// <param name="testInfoData">Information about the test.</param>
         public MbUnitCppTest(TestInfoData testInfoData)
             : base(testInfoData.Name, null)
         {

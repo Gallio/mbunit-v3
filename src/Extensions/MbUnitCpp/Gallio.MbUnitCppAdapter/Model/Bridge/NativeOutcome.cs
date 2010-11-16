@@ -29,30 +29,4 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         Passed,
         Failed,
     }
-
-    /// <summary>
-    /// A native structure that holds the results of the test step.
-    /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public struct TestStepResult
-    {
-        public NativeOutcome NativeOutcome;
-        public int AssertCount;
-        public NativeAssertionFailure Failure;
-
-        private static readonly IDictionary<NativeOutcome, TestOutcome> map = new Dictionary<NativeOutcome, TestOutcome>
-        {
-            {NativeOutcome.Inconclusive, TestOutcome.Inconclusive},
-            {NativeOutcome.Passed, TestOutcome.Passed},
-            {NativeOutcome.Failed, TestOutcome.Failed},
-        };
-
-        public TestOutcome TestOutcome
-        {
-            get
-            {
-                return map[NativeOutcome];
-            }
-        }
-    }
 }

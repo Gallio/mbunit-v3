@@ -31,8 +31,7 @@ namespace Gallio.MbUnitCppAdapter.Model
             return CreateTestDriver;
         }
 
-        private ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> testFrameworkHandles, 
-            TestFrameworkOptions testFrameworkOptions, ILogger logger)
+        private ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> testFrameworkHandles, TestFrameworkOptions testFrameworkOptions, ILogger logger)
         {
             return new MbUnitCppTestDriver(logger);
         }

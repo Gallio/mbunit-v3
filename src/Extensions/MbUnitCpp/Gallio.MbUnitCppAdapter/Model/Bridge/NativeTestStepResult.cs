@@ -14,25 +14,36 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Gallio.Model;
 
 namespace Gallio.MbUnitCppAdapter.Model.Bridge
 {
     /// <summary>
-    /// A structure that holds the position of the active fixture/test
-    /// during the exploration or the execution phase.
+    /// A native structure that holds the results of the test step.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public struct Position
+    public struct NativeTestStepResult
     {
         /// <summary>
-        /// A handle to the current test fixture.
+        /// The native test outcome.
         /// </summary>
-        public IntPtr pTestFixture;
+        public NativeOutcome NativeOutcome;
 
         /// <summary>
-        /// A handle to the current test.
+        /// The number of assertions processed during the execution of the test step.
         /// </summary>
-        public IntPtr pTest;
+        public int AssertCount;
+
+        /// <summary>
+        /// A descriptor of the assertion failure.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// To be ignored if the outcome is not "Failed".
+        /// </para>
+        /// </remarks>
+        public NativeAssertionFailure Failure;
     }
 }

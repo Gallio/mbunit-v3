@@ -32,20 +32,29 @@ using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.MbUnitCppAdapter.Model
 {
+    /// <summary>
+    /// Test drive for unmanaged MbUnitCpp tests.
+    /// </summary>
     public class MbUnitCppTestDriver : BaseTestDriver
     {
         private readonly ILogger logger;
 
+        /// <summary>
+        /// Constructs the test driver.
+        /// </summary>
+        /// <param name="logger">The logging service.</param>
         public MbUnitCppTestDriver(ILogger logger)
         {
             this.logger = logger;
         }
 
+        /// <inheritdoc />
         protected sealed override void ExploreImpl(ITestIsolationContext testIsolationContext, TestPackage testPackage, TestExplorationOptions testExplorationOptions, IMessageSink messageSink, IProgressMonitor progressMonitor)
         {
             ExploreOrRun<ExploreTask>(testIsolationContext, testPackage, testExplorationOptions, null, messageSink, progressMonitor, "Exploring MbUnitCpp tests.");
         }
 
+        /// <inheritdoc />
         protected sealed override void RunImpl(ITestIsolationContext testIsolationContext, TestPackage testPackage, TestExplorationOptions testExplorationOptions, TestExecutionOptions testExecutionOptions, IMessageSink messageSink, IProgressMonitor progressMonitor)
         {
             ExploreOrRun<RunTask>(testIsolationContext, testPackage, testExplorationOptions, testExecutionOptions, messageSink, progressMonitor, "Running MbUnitCpp tests.");
