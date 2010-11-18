@@ -257,5 +257,14 @@ namespace MbUnit.Tests.Framework
             Assert.IsNull(failures[0].Message);
             Assert.AreEqual("The block threw an exception of the expected type, but having an unexpected inner expection.", failures[0].Description);
         }
+
+        [Test] // Issue 769 (http://code.google.com/p/mb-unit/issues/detail?id=769)
+        public void DoesNotThrow_should_not_fail_because_of_an_inner_assertion_failure()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.DoesNotThrow(() => Assert.Fail()));
+            Assert.Count(1, failures); // Only Assert.Fail should cause a failure.
+            Assert.IsNull(failures[0].Message);
+            Assert.AreEqual("An assertion failed.", failures[0].Description);
+        }
     }
 }

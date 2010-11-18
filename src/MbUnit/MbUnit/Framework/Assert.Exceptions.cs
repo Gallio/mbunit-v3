@@ -348,11 +348,28 @@ namespace MbUnit.Framework
             if (action == null)
                 throw new ArgumentNullException("action");
 
-            AssertionHelper.Verify(delegate
+            AssertionHelper.Verify(() =>
             {
                 try
                 {
-                    action();
+                    AssertionContext context = AssertionContext.CurrentContext;
+
+                    if (context != null)
+                    {
+                        // We will intercept any assertion failure which could occur while the action is run, then report it
+                        // as is. The goal is to prevent zealous "Assert.DoesNotThrow" to report the failure a second time.
+                        // Basically, a failing assertion inside a DoesNotThrow action does not make Assert.DoesNotThrow
+                        // to fail redundantly. See issue 769 (http://code.google.com/p/mb-unit/issues/detail?id=769)
+                        AssertionFailure[] failures = context.CaptureFailures(action, AssertionFailureBehavior.Throw, false);
+
+                        if (failures.Length > 0)
+                            return failures[0];
+                    }
+                    else
+                    {
+                        action();
+                    }
+
                     return null;
                 }
                 catch (Exception actualException)
