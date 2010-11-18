@@ -63,15 +63,38 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
 
             if (rootTestCommand != null)
             {
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                if (TestExecutionOptions.SkipTestExecution)
                 {
-                    using (subProgressMonitor.BeginTask("Running the tests.", rootTestCommand.TestCount))
-                    {
-                        RunTest(repository, rootTestCommand, null, subProgressMonitor);
-                    }
+                    SkipAll(rootTestCommand, null);
+                }
+                else
+                {
+                    RunAll(repository, progressMonitor, rootTestCommand);
                 }
             }
         }
+
+        private void RunAll(UnmanagedTestRepository repository, IProgressMonitor progressMonitor, ITestCommand rootTestCommand)
+        {
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+            {
+                using (subProgressMonitor.BeginTask("Running the tests.", rootTestCommand.TestCount))
+                {
+                    RunTest(repository, rootTestCommand, null, subProgressMonitor);
+                }
+            }
+        }
+
+        private static TestResult SkipAll(ITestCommand testCommand, TestStep parentTestStep)
+        {
+            ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
+
+            foreach (ITestCommand child in testCommand.Children)
+                SkipAll(child, context.TestStep);
+
+            return context.FinishStep(TestOutcome.Skipped, null);
+        }
+
 
         private static TestResult RunTest(UnmanagedTestRepository repository, ITestCommand testCommand, TestStep parentTestStep, IProgressMonitor progressMonitor)
         {

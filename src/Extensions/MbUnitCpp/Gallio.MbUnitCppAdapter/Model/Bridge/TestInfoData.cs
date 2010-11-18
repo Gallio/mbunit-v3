@@ -17,6 +17,8 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using Gallio.Common.Diagnostics;
+using Gallio.Common.Reflection;
+using System.Collections.Generic;
 
 namespace Gallio.MbUnitCppAdapter.Model.Bridge
 {
@@ -100,6 +102,21 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         public StackTraceData GetStackTraceData()
         {
             return new StackTraceData(String.Format("   at {0} in {1}:line {2}\r\n", Name, FileName, native.LineNumber));
+        }
+
+        /// <summary>
+        /// Gets a fake code element to fool the Gallio filtering engine.
+        /// </summary>
+        /// <seealso cref="Gallio.Model.Filters.TypeFilter{T}"/>
+        /// <seealso cref="Gallio.Model.Filters.MemberFilter{T}"/>
+        public ICodeElementInfo FakeCodeElement
+        {
+            get
+            {
+                return native.IsTestFixture
+                    ? (ICodeElementInfo)new FakeTypeInfo(Name) 
+                    : new FakeMemberInfo(Name);
+            }
         }
     }
 }

@@ -36,6 +36,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Bridge\FakeMemberInfo.cs" />
+    <Compile Include="Model\Bridge\FakeTypeInfo.cs" />
     <Compile Include="Model\Bridge\IStringResolver.cs" />
     <Compile Include="Model\Bridge\NativeTestStepResult.cs" />
     <Compile Include="Model\Bridge\NativeOutcome.cs" />

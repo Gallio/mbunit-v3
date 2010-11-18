@@ -45,7 +45,7 @@ namespace Gallio.MbUnitCppAdapter.Model
         /// </summary>
         /// <param name="testInfoData">Information about the test.</param>
         public MbUnitCppTest(TestInfoData testInfoData)
-            : base(testInfoData.Name, null)
+            : base(testInfoData.Name, testInfoData.FakeCodeElement)
         {
             this.testInfoData = testInfoData;
             Id = testInfoData.GetId();
