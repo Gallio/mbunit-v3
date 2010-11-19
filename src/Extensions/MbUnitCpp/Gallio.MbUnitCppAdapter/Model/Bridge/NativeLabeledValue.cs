@@ -21,49 +21,51 @@ using Gallio.Common.Diagnostics;
 namespace Gallio.MbUnitCppAdapter.Model.Bridge
 {
     /// <summary>
-    /// The native structure that represents an assertion failure in MbUnitCpp.
+    /// The native structure that contains a labeled value for an assertion failure.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public struct NativeAssertionFailure
+    public struct NativeLabeledValue
     {
         /// <summary>
-        /// The ID of the string that holds the description of the failure.
+        /// The ID of the string that holds the label.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// Should be always available.
+        /// Zero if no label was specified (e.g. we do not specify any label for
+        /// predifined values such as the actual and the expected ones.)
         /// </para>
         /// </remarks>
-        public int DescriptionId;
+        public int LabelId;
 
         /// <summary>
-        /// The ID of the string that holds the optional user message of the failure.
+        /// The ID of the string that holds the text version of the value.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// Zero if not message was specified by the user.
+        /// Zero if no value was specified.
         /// </para>
         /// </remarks>
-        public int MessageId;
+        public int ValueId;
 
         /// <summary>
-        /// An optional labeled value for the expected value.
+        /// The native type of the value.
         /// </summary>
-        public NativeLabeledValue ExpectedValue;
+        /// <remarks>
+        /// <para>
+        /// Ignored if <see cref="ValueId"/> is zero.
+        /// </para>
+        /// </remarks>
+        public NativeValueType ValueType;
 
         /// <summary>
-        /// An optional labeled value for the actual value.
+        /// Indicates whether the labeled value has some contents.
         /// </summary>
-        public NativeLabeledValue ActualValue;
-
-        /// <summary>
-        /// An optional extra labeled value.
-        /// </summary>
-        public NativeLabeledValue Extra_0;
-
-        /// <summary>
-        /// An optional extra labeled value.
-        /// </summary>
-        public NativeLabeledValue Extra_1;
+        public bool IsValid
+        { 
+            get 
+            { 
+                return ValueId > 0; 
+            } 
+        }
     }
 }

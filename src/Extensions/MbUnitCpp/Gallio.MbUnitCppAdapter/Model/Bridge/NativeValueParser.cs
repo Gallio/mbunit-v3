@@ -67,6 +67,9 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
                     case NativeValueType.Int64:
                         return Int64.Parse(field);
 
+                    case NativeValueType.UInt64:
+                        return UInt64.Parse(field);
+
                     case NativeValueType.Single:
                         return Single.Parse(field);
 

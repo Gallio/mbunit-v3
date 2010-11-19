@@ -99,19 +99,29 @@ namespace MbUnitCpp
 		TypeInt32,
 		TypeUInt32,
 		TypeInt64,
+		TypeUInt64,
 		TypeSingle,
 		TypeDouble,
 	};
 
     // Represents a single assertion failure.
+	struct LabeledValue
+	{
+		StringId LabelId;
+		StringId ValueId;
+		ValueType ValueType;
+		LabeledValue();
+		void Set(StringId valueId, MbUnitCpp::ValueType valueType, StringId labelId = 0);
+	};
+
     struct AssertionFailure
     {
         StringId DescriptionId;
         StringId MessageId;
-        StringId ActualValueId;
-		ValueType ActualValueType;
-        StringId ExpectedValueId;
-		ValueType ExpectedValueType;
+		LabeledValue Expected;
+        LabeledValue Actual;
+        LabeledValue Extra_0;
+        LabeledValue Extra_1;
 		AssertionFailure();
     };
 
@@ -152,13 +162,31 @@ namespace MbUnitCpp
 		void AreEqual(unsigned short expectedValue, unsigned short actualValue, const wchar_t* message = 0);
 		void AreEqual(int expectedValue, int actualValue, const wchar_t* message = 0);
 		void AreEqual(unsigned int expectedValue, unsigned int actualValue, const wchar_t* message = 0);
+		void AreEqual(long expectedValue, long actualValue, const wchar_t* message = 0);
+		void AreEqual(unsigned long expectedValue, unsigned long actualValue, const wchar_t* message = 0);
 		void AreEqual(long long expectedValue, long long actualValue, const wchar_t* message = 0);
+		void AreEqual(unsigned long long expectedValue, unsigned long long actualValue, const wchar_t* message = 0);
 		void AreEqual(float expectedValue, float actualValue, const wchar_t* message = 0);
 		void AreEqual(double expectedValue, double actualValue, const wchar_t* message = 0);
 		void AreEqual(char* expectedValue, char* actualValue, const wchar_t* message = 0);
 		void AreEqual(const char* expectedValue, const char* actualValue, const wchar_t* message = 0);
 		void AreEqual(wchar_t* expectedValue, wchar_t* actualValue, const wchar_t* message = 0);
 		void AreEqual(const wchar_t* expectedValue, const wchar_t* actualValue, const wchar_t* message = 0);
+
+		// Approximative equality assertions.
+		void AreApproximatelyEqual(char expectedValue, char actualValue, char delta, const wchar_t* message = 0);
+		void AreApproximatelyEqual(wchar_t expectedValue, wchar_t actualValue, wchar_t delta, const wchar_t* message = 0);
+		void AreApproximatelyEqual(unsigned char expectedValue, unsigned char actualValue, unsigned char delta, const wchar_t* message = 0);
+		void AreApproximatelyEqual(short expectedValue, short actualValue, short delta, const wchar_t* message = 0);
+		void AreApproximatelyEqual(unsigned short expectedValue, unsigned short actualValue, unsigned short delta, const wchar_t* message = 0);
+		void AreApproximatelyEqual(int expectedValue, int actualValue, int delta, const wchar_t* message = 0);
+		void AreApproximatelyEqual(unsigned int expectedValue, unsigned int actualValue, unsigned int delta, const wchar_t* message = 0);
+		void AreApproximatelyEqual(long expectedValue, long actualValue, long delta, const wchar_t* message = 0);
+		void AreApproximatelyEqual(unsigned long expectedValue, unsigned long actualValue, unsigned long delta, const wchar_t* message = 0);
+		void AreApproximatelyEqual(long long expectedValue, long long actualValue, long long delta, const wchar_t* message = 0);
+		void AreApproximatelyEqual(unsigned long long expectedValue, unsigned long long actualValue, unsigned long long delta, const wchar_t* message = 0);
+		void AreApproximatelyEqual(float expectedValue, float actualValue, float delta, const wchar_t* message = 0);
+		void AreApproximatelyEqual(double expectedValue, double actualValue, double delta, const wchar_t* message = 0);
     };
 
 	// Provides an access to the Gallio test log.

@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <wchar.h>
+#include <math.h>
 #include "MbUnitCpp.h"
 
 #pragma warning (disable: 4996 4355) // Hide some warnings.
@@ -363,8 +364,22 @@ namespace MbUnitCpp
 
 	// Constructs an empty assertion failure.
 	AssertionFailure::AssertionFailure()
-		: DescriptionId(0),  MessageId(0), ActualValueId(0), ActualValueType(TypeRaw), ExpectedValueId(0), ExpectedValueType(TypeRaw)
+		: DescriptionId(0),  MessageId(0)
 	{
+	}
+
+	// Constructs an empty labeled value.
+	LabeledValue::LabeledValue()
+		: LabelId(0), ValueId(0), ValueType(TypeRaw)
+	{
+	}
+
+	// Initialize a labeled value.
+	void LabeledValue::Set(StringId valueId, MbUnitCpp::ValueType valueType, StringId labelId)
+	{
+		ValueId = valueId;
+		ValueType = valueType;
+		LabelId = labelId;
 	}
 
 	// =============
@@ -423,8 +438,7 @@ namespace MbUnitCpp
 		{
 			AssertionFailure failure;
 			failure.DescriptionId = Map().Add(L"Expected value to be true.");
-			failure.ActualValueId = Map().Add(L"false");
-			failure.ActualValueType = TypeBoolean;
+			failure.Actual.Set(Map().Add(L"false"), TypeBoolean);
 			failure.MessageId = Map().Add(message);
 			throw failure;
 		}
@@ -444,8 +458,7 @@ namespace MbUnitCpp
 		{
 			AssertionFailure failure;
 			failure.DescriptionId = Map().Add(L"Expected value to be false.");
-			failure.ActualValueId = Map().Add(L"true");
-			failure.ActualValueType = TypeBoolean;
+			failure.Actual.Set(Map().Add(L"true"), TypeBoolean);
 			failure.MessageId = Map().Add(message);
 			throw failure;
 		}
@@ -465,10 +478,8 @@ namespace MbUnitCpp
 		{ \
 			AssertionFailure failure; \
 			failure.DescriptionId = Map().Add(L"Expected values to be equal."); \
-			failure.ExpectedValueId = FORMATEXPECTED; \
-			failure.ExpectedValueType = MANAGEDTYPE; \
-			failure.ActualValueId = FORMATACTUAL; \
-			failure.ActualValueType = MANAGEDTYPE; \
+			failure.Expected.Set(FORMATEXPECTED, MANAGEDTYPE); \
+			failure.Actual.Set(FORMATACTUAL, MANAGEDTYPE); \
 			failure.MessageId = Map().Add(message); \
 			throw failure; \
 		} \
@@ -488,8 +499,8 @@ namespace MbUnitCpp
 
 	_AssertionFramework_AreEqual(wchar_t, 
 		expectedValue != actualValue, 
-		Map().Add(L"%c", expectedValue), 
-		Map().Add(L"%c", actualValue), 
+		Map().Add(L"%lc", expectedValue), 
+		Map().Add(L"%lc", actualValue), 
 		TypeChar)
 
 	_AssertionFramework_AreEqual(unsigned char, 
@@ -522,11 +533,29 @@ namespace MbUnitCpp
 		Map().Add(L"%u", actualValue), 
 		TypeUInt32)
 
+	_AssertionFramework_AreEqual(long, 
+		expectedValue != actualValue, 
+		Map().Add(L"%ld", expectedValue),
+		Map().Add(L"%ld", actualValue), 
+		TypeUInt64)
+
+	_AssertionFramework_AreEqual(unsigned long, 
+		expectedValue != actualValue, 
+		Map().Add(L"%uld", expectedValue),
+		Map().Add(L"%uld", actualValue), 
+		TypeUInt64)
+
 	_AssertionFramework_AreEqual(long long, 
 		expectedValue != actualValue, 
-		Map().Add(L"%u", expectedValue), 
-		Map().Add(L"%u", actualValue), 
-		TypeInt64)
+		Map().Add(L"%ld", expectedValue),
+		Map().Add(L"%ld", actualValue), 
+		TypeUInt64)
+
+	_AssertionFramework_AreEqual(unsigned long long, 
+		expectedValue != actualValue, 
+		Map().Add(L"%uld", expectedValue),
+		Map().Add(L"%uld", actualValue), 
+		TypeUInt64)
 
 	_AssertionFramework_AreEqual(float, 
 		expectedValue != actualValue, 
@@ -563,6 +592,115 @@ namespace MbUnitCpp
 		Map().Add(expectedValue), 
 		Map().Add(actualValue), 
 		TypeString)
+
+
+	#define _AssertionFramework_AreApproximatelyEqual(TYPE, INEQUALITY, FORMATEXPECTED, FORMATACTUAL, FORMATDELTA, MANAGEDTYPE) \
+	void AssertionFramework::AreApproximatelyEqual(TYPE expectedValue, TYPE actualValue, TYPE delta, const wchar_t* message) \
+	{ \
+        IncrementAssertCount(); \
+		\
+		if (INEQUALITY) \
+		{ \
+			AssertionFailure failure; \
+			failure.DescriptionId = Map().Add(L"Expected values to be approximately equal to within a delta."); \
+			failure.Expected.Set(FORMATEXPECTED, MANAGEDTYPE); \
+			failure.Actual.Set(FORMATACTUAL, MANAGEDTYPE); \
+			failure.Extra_0.Set(FORMATDELTA, MANAGEDTYPE, Map().Add(L"Delta")); \
+			failure.MessageId = Map().Add(message); \
+			throw failure; \
+		} \
+	}
+
+	_AssertionFramework_AreApproximatelyEqual(char, 
+		abs(expectedValue - actualValue) > delta, 
+		Map().Add(L"%c", expectedValue), 
+		Map().Add(L"%c", actualValue), 
+		Map().Add(L"%c", delta), 
+		TypeChar)
+
+	_AssertionFramework_AreApproximatelyEqual(wchar_t, 
+		abs(expectedValue - actualValue) > delta, 
+		Map().Add(L"%lc", expectedValue), 
+		Map().Add(L"%lc", actualValue), 
+		Map().Add(L"%lc", delta), 
+		TypeChar)
+
+	_AssertionFramework_AreApproximatelyEqual(unsigned char, 
+		abs((short)expectedValue - (short)actualValue) > (short)delta, 
+		Map().Add(L"%u", expectedValue), 
+		Map().Add(L"%u", actualValue), 
+		Map().Add(L"%u", delta), 
+		TypeByte)
+
+	_AssertionFramework_AreApproximatelyEqual(short, 
+		abs(expectedValue - actualValue) > delta, 
+		Map().Add(L"%d", expectedValue), 
+		Map().Add(L"%d", actualValue), 
+		Map().Add(L"%d", delta), 
+		TypeInt16)
+
+	_AssertionFramework_AreApproximatelyEqual(unsigned short, 
+		abs((int)expectedValue - (int)actualValue) > (int)delta, 
+		Map().Add(L"%u", expectedValue), 
+		Map().Add(L"%u", actualValue), 
+		Map().Add(L"%u", delta), 
+		TypeUInt16)
+
+	_AssertionFramework_AreApproximatelyEqual(int, 
+		abs(expectedValue - actualValue) > delta, 
+		Map().Add(L"%d", expectedValue), 
+		Map().Add(L"%d", actualValue), 
+		Map().Add(L"%d", delta), 
+		TypeInt32)
+
+	_AssertionFramework_AreApproximatelyEqual(unsigned int, 
+		_abs64((long long)expectedValue - (long long)actualValue) > (long long)delta, 
+		Map().Add(L"%u", expectedValue), 
+		Map().Add(L"%u", actualValue), 
+		Map().Add(L"%u", delta), 
+		TypeUInt32)
+
+	_AssertionFramework_AreApproximatelyEqual(long, 
+		abs(expectedValue - actualValue) > delta, 
+		Map().Add(L"%d", expectedValue), 
+		Map().Add(L"%d", actualValue), 
+		Map().Add(L"%d", delta), 
+		TypeInt32)
+
+	_AssertionFramework_AreApproximatelyEqual(unsigned long, 
+		_abs64((long long)expectedValue - (long long)actualValue) > (long long)delta, 
+		Map().Add(L"%u", expectedValue), 
+		Map().Add(L"%u", actualValue), 
+		Map().Add(L"%u", delta), 
+		TypeUInt32)
+
+	_AssertionFramework_AreApproximatelyEqual(long long, 
+		_abs64(expectedValue - actualValue) > delta, 
+		Map().Add(L"%ld", expectedValue), 
+		Map().Add(L"%ld", actualValue), 
+		Map().Add(L"%ld", delta), 
+		TypeInt64)
+
+	_AssertionFramework_AreApproximatelyEqual(unsigned long long, 
+		fabs((double)expectedValue - (double)actualValue) > (double)delta, 
+		Map().Add(L"%ld", expectedValue), 
+		Map().Add(L"%ld", actualValue), 
+		Map().Add(L"%ld", delta), 
+		TypeInt64)
+
+	_AssertionFramework_AreApproximatelyEqual(float, 
+		fabs(expectedValue - actualValue) > delta, 
+		Map().Add(L"%f", expectedValue), 
+		Map().Add(L"%f", actualValue), 
+		Map().Add(L"%f", delta), 
+		TypeSingle)
+
+	_AssertionFramework_AreApproximatelyEqual(double, 
+		fabs(expectedValue - actualValue) > delta, 
+		Map().Add(L"%Lf", expectedValue), 
+		Map().Add(L"%Lf", actualValue), 
+		Map().Add(L"%Lf", delta), 
+		TypeDouble)
 
 	// ======================================
 	// Interface functions for Gallio adapter

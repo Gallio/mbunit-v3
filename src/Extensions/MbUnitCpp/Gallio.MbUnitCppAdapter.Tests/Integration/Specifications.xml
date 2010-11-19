@@ -52,6 +52,48 @@
   <Test name="Equality/Assert_AreEqual_constant_wide_char_pointer_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
   <Test name="Equality/Assert_AreEqual_constant_wide_char_pointer_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
 
+  <Test name="AproximateEquality" expectedStatus="Failed" expectedAssertCount="52" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_char_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_char_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_wchar_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_wchar_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_uchar_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_uchar_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_short_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_short_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_ushort_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_ushort_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_int_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_int_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_uint_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_uint_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_longlong_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_longlong_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_float_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_float_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_double_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_higher_double_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_char_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_char_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_wchar_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_wchar_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_uchar_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_uchar_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_short_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_short_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_ushort_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_ushort_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_int_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_int_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_uint_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_uint_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_longlong_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_longlong_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_float_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_float_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_double_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="AproximateEquality/Assert_AreApproximatelyEqual_lower_double_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+
   <Test name="TestLog" expectedStatus="Passed" expectedAssertCount="0" />
   <Test name="TestLog/Write_once" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies quickly spot the jinxed grave." />
   <Test name="TestLog/Write_multiple_times" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies quickly spot the jinxed grave." />

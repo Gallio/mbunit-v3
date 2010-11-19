@@ -157,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Include\MbUnitCpp.cpp" />
+    <ClCompile Include="AproximateEqualityTest.cpp" />
     <ClCompile Include="EqualityTest.cpp" />
     <ClCompile Include="LogicTest.cpp" />
     <ClCompile Include="OutcomeTest.cpp" />

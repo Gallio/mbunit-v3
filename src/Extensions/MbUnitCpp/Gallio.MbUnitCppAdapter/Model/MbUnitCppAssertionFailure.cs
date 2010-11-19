@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using Gallio.MbUnitCppAdapter.Model.Bridge;
+using Gallio.Common;
+using Gallio.Common.Collections;
 
 namespace Gallio.MbUnitCppAdapter.Model
 {
@@ -17,6 +19,7 @@ namespace Gallio.MbUnitCppAdapter.Model
         private readonly object expectedValue;
         private readonly bool hasExpectedValue;
         private readonly bool diffing;
+        private readonly Pair<string, object>[] extraLabeledValues;
 
         /// <summary>
         /// Gets the description of the failure.
@@ -90,6 +93,19 @@ namespace Gallio.MbUnitCppAdapter.Model
         }
 
         /// <summary>
+        /// Gets an array of extra labeled values.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Might be empty.
+        /// </para>
+        /// </remarks>
+        public Pair<string, object>[] ExtraLabeledValues
+        {
+            get { return extraLabeledValues; }
+        }
+
+        /// <summary>
         /// Constructs an assertion failure.
         /// </summary>
         /// <param name="native">The native unmanged object describing the failure.</param>
@@ -98,18 +114,33 @@ namespace Gallio.MbUnitCppAdapter.Model
         {
             description = stringResolver.GetString(native.DescriptionId);
             message = stringResolver.GetString(native.MessageId);
-            hasActualValue = native.ActualValueId != 0;
-            hasExpectedValue = native.ExpectedValueId != 0;
+            hasActualValue = native.ActualValue.IsValid;
+            hasExpectedValue = native.ExpectedValue.IsValid;
 
             if (hasActualValue)
-                actualValue = NativeValueParser.Parse(stringResolver.GetString(native.ActualValueId), native.ActualValueType);
+                actualValue = NativeValueParser.Parse(stringResolver.GetString(native.ActualValue.ValueId), native.ActualValue.ValueType);
 
             if (hasExpectedValue)
-                expectedValue = NativeValueParser.Parse(stringResolver.GetString(native.ExpectedValueId), native.ExpectedValueType);
+                expectedValue = NativeValueParser.Parse(stringResolver.GetString(native.ExpectedValue.ValueId), native.ExpectedValue.ValueType);
 
-            diffing = hasActualValue && hasExpectedValue && 
-                (native.ActualValueType == NativeValueType.String) && 
-                (native.ExpectedValueType == NativeValueType.String);
+            diffing = hasActualValue && hasExpectedValue &&
+                (native.ActualValue.ValueType == NativeValueType.String) &&
+                (native.ExpectedValue.ValueType == NativeValueType.String);
+
+            extraLabeledValues = GenericCollectionUtils.ToArray(GetExtraLabeledValues(native, stringResolver));
+        }
+
+        private static IEnumerable<Pair<string, object>> GetExtraLabeledValues(NativeAssertionFailure native, IStringResolver stringResolver)
+        {
+            foreach (NativeLabeledValue item in new[] { native.Extra_0, native.Extra_1 })
+            {
+                if (item.IsValid)
+                {
+                    yield return new Pair<string, object>(
+                        stringResolver.GetString(item.LabelId),
+                         NativeValueParser.Parse(stringResolver.GetString(item.ValueId), item.ValueType));
+                }
+            }
         }
     }
 }

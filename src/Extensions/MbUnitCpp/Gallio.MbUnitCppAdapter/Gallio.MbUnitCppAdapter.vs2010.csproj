@@ -36,6 +36,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Bridge\NativeLabeledValue.cs" />
     <Compile Include="Model\Bridge\FakeMemberInfo.cs" />
     <Compile Include="Model\Bridge\FakeTypeInfo.cs" />
     <Compile Include="Model\Bridge\IStringResolver.cs" />
@@ -45,6 +46,7 @@
     <Compile Include="Model\Bridge\NativeAssertionFailure.cs" />
     <Compile Include="Model\Bridge\NativeMethods.cs" />
     <Compile Include="Model\Bridge\NativeValueParser.cs" />
+    <Compile Include="Model\Bridge\NativeValueType.cs" />
     <Compile Include="Model\Bridge\Position.cs" />
     <Compile Include="Model\Bridge\TestInfoData.cs" />
     <Compile Include="Model\Bridge\TestStepResult.cs" />
@@ -56,6 +58,7 @@
     <Compile Include="Model\MbUnitCppTestFileTypeRecognizer.cs" />
     <Compile Include="Model\MbUnitCppTestFramework.cs" />
     <Compile Include="Model\Tasks\AbstractTask.cs" />
+    <Compile Include="Model\Tasks\AssertionFailureReporter.cs" />
     <Compile Include="Model\Tasks\ExploreTask.cs" />
     <Compile Include="Model\Tasks\RunTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
