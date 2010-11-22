@@ -24,13 +24,14 @@ using Gallio.Common.Reflection.Impl;
 using System.IO;
 using Mono.Cecil;
 using Mono.Cecil.Metadata;
-using EventAttributes=System.Reflection.EventAttributes;
-using FieldAttributes=System.Reflection.FieldAttributes;
-using GenericParameterAttributes=System.Reflection.GenericParameterAttributes;
-using MethodAttributes=System.Reflection.MethodAttributes;
-using ParameterAttributes=System.Reflection.ParameterAttributes;
-using PropertyAttributes=System.Reflection.PropertyAttributes;
-using TypeAttributes=System.Reflection.TypeAttributes;
+using Mono.Collections.Generic;
+using EventAttributes = System.Reflection.EventAttributes;
+using FieldAttributes = System.Reflection.FieldAttributes;
+using GenericParameterAttributes = System.Reflection.GenericParameterAttributes;
+using MethodAttributes = System.Reflection.MethodAttributes;
+using ParameterAttributes = System.Reflection.ParameterAttributes;
+using PropertyAttributes = System.Reflection.PropertyAttributes;
+using TypeAttributes = System.Reflection.TypeAttributes;
 
 namespace Gallio.Common.Reflection.Impl
 {
@@ -41,8 +42,6 @@ namespace Gallio.Common.Reflection.Impl
     //       Also see: https://bugzilla.novell.com/show_bug.cgi?id=325481
     internal sealed class CecilReflectionPolicy : StaticReflectionPolicy
     {
-        private static readonly Key<string> PathAnnotationKey = new Key<string>("Path");
-
         private KeyedMemoizer<AssemblyDefinition, StaticAssemblyWrapper> assemblyMemoizer = new KeyedMemoizer<AssemblyDefinition, StaticAssemblyWrapper>();
         private KeyedMemoizer<TypeReference, StaticTypeWrapper> typeMemoizer = new KeyedMemoizer<TypeReference, StaticTypeWrapper>();
         private KeyedMemoizer<TypeDefinition, StaticDeclaredTypeWrapper> typeWithoutSubstitutionMemoizer = new KeyedMemoizer<TypeDefinition, StaticDeclaredTypeWrapper>();
@@ -70,39 +69,38 @@ namespace Gallio.Common.Reflection.Impl
 
         private StaticConstructorWrapper WrapConstructor(MethodReference methodRefHandle)
         {
-            StaticDeclaredTypeWrapper declaringType = MakeDeclaredType(methodRefHandle.DeclaringType);
-            TypeDefinition declaringTypeDefnHandle = (TypeDefinition)declaringType.Handle;
-            MethodDefinition methodDefnHandle = FindMatchingMethod(methodRefHandle.GetOriginalMethod(), declaringTypeDefnHandle.Constructors);
+            var declaringType = MakeDeclaredType(methodRefHandle.DeclaringType);
+            var declaringTypeDefnHandle = (TypeDefinition)declaringType.Handle;
+            var methodDefnHandle = FindMatchingMethod(methodRefHandle.GetElementMethod(), GetConstructors(declaringTypeDefnHandle.Methods));
             return new StaticConstructorWrapper(this, methodDefnHandle, declaringType);
         }
 
         private StaticMethodWrapper WrapMethod(MethodReference methodRefHandle)
         {
-            StaticDeclaredTypeWrapper declaringType = MakeDeclaredType(methodRefHandle.DeclaringType);
-            TypeDefinition declaringTypeDefnHandle = (TypeDefinition)declaringType.Handle;
-            MethodDefinition methodDefnHandle = FindMatchingMethod(methodRefHandle.GetOriginalMethod(), declaringTypeDefnHandle.Methods);
-            StaticMethodWrapper method = new StaticMethodWrapper(this, methodDefnHandle, declaringType, declaringType, declaringType.Substitution);
+            var declaringType = MakeDeclaredType(methodRefHandle.DeclaringType);
+            var declaringTypeDefnHandle = (TypeDefinition)declaringType.Handle;
+            var methodDefnHandle = FindMatchingMethod(methodRefHandle.GetElementMethod(), declaringTypeDefnHandle.Methods);
+            var method = new StaticMethodWrapper(this, methodDefnHandle, declaringType, declaringType, declaringType.Substitution);
 
-            GenericInstanceMethod genericInstance = methodRefHandle as GenericInstanceMethod;
+            var genericInstance = methodRefHandle as GenericInstanceMethod;
             if (genericInstance != null)
             {
-                method = method.MakeGenericMethod(CollectionUtils.ConvertAllToArray<TypeReference, ITypeInfo>(genericInstance.GenericArguments,
-                    delegate(TypeReference genericArgumentHandle) { return MakeType(genericArgumentHandle); }));
+                var genericArguments = CollectionUtils.ConvertAllToArray<TypeReference, ITypeInfo>(genericInstance.GenericArguments, MakeType);
+                method = method.MakeGenericMethod(genericArguments);
             }
 
             return method;
         }
 
-        private MethodDefinition FindMatchingMethod(MethodReference methodRefHandle, IList methodDefnHandles)
+        private MethodDefinition FindMatchingMethod(MethodReference methodRefHandle, IEnumerable<MethodDefinition> methodDefnHandles)
         {
-            MethodDefinition def = CollectionUtils.Find<MethodDefinition>(methodDefnHandles, delegate(MethodDefinition methodDefnHandle)
-            {
-                return IsMatchingMethod(methodDefnHandle, methodRefHandle);
-            });
+            var definition = CollectionUtils.Find<MethodDefinition>(methodDefnHandles, methodDefnHandle =>
+                IsMatchingMethod(methodDefnHandle, methodRefHandle));
 
-            if (def == null)
+            if (definition == null)
                 throw new MissingMethodException("Could not find method definition.");
-            return def;
+
+            return definition;
         }
 
         private bool IsMatchingMethod(MethodReference a, MethodReference b)
@@ -110,22 +108,22 @@ namespace Gallio.Common.Reflection.Impl
             if (a.Name != b.Name)
                 return false;
 
-            GenericParameterCollection aGenericParams = a.GenericParameters;
-            GenericParameterCollection bGenericParams = b.GenericParameters;
+            var aGenericParams = a.GenericParameters;
+            var bGenericParams = b.GenericParameters;
             if (aGenericParams.Count != bGenericParams.Count)
                 return false;
 
-            ParameterDefinitionCollection aParams = a.Parameters;
-            ParameterDefinitionCollection bParams = b.Parameters;
+            var aParams = a.Parameters;
+            var bParams = b.Parameters;
             if (aParams.Count != bParams.Count)
                 return false;
 
-            for (int i = 0; i < aGenericParams.Count; i++)
+            for (var i = 0; i < aGenericParams.Count; i++)
                 if (!IsMatchingGenericParameter(a.GenericParameters[i], b.GenericParameters[i]))
                     return false;
 
-            for (int i = 0; i < aParams.Count; i++)
-                if (! IsMatchingParameter(a.Parameters[i], b.Parameters[i]))
+            for (var i = 0; i < aParams.Count; i++)
+                if (!IsMatchingParameter(a.Parameters[i], b.Parameters[i]))
                     return false;
 
             return true;
@@ -163,7 +161,7 @@ namespace Gallio.Common.Reflection.Impl
 
         protected internal override IEnumerable<StaticAttributeWrapper> GetAssemblyCustomAttributes(StaticAssemblyWrapper assembly)
         {
-            AssemblyDefinition assemblyHandle = (AssemblyDefinition)assembly.Handle;
+            var assemblyHandle = (AssemblyDefinition)assembly.Handle;
             return EnumerateAttributes(assemblyHandle.CustomAttributes);
         }
 
@@ -212,12 +210,12 @@ namespace Gallio.Common.Reflection.Impl
 
         protected internal override StaticDeclaredTypeWrapper GetAssemblyType(StaticAssemblyWrapper assembly, string typeName)
         {
-            string translatedTypeName = typeName.Replace('+', '/');
+            var translatedTypeName = typeName.Replace('+', '/');
 
-            AssemblyDefinition assemblyHandle = (AssemblyDefinition)assembly.Handle;
-            foreach (ModuleDefinition moduleHandle in assemblyHandle.Modules)
+            var assemblyHandle = (AssemblyDefinition)assembly.Handle;
+            foreach (var moduleHandle in assemblyHandle.Modules)
             {
-                TypeDefinition typeHandle = moduleHandle.Types[translatedTypeName];
+                var typeHandle = moduleHandle.GetType(translatedTypeName);
                 if (typeHandle != null)
                     return MakeDeclaredTypeWithoutSubstitution(typeHandle);
             }
@@ -231,7 +229,7 @@ namespace Gallio.Common.Reflection.Impl
             {
                 foreach (TypeDefinition typeHandle in moduleHandle.Types)
                 {
-                    if (! typeHandle.Name.StartsWith("<")) // exclude types like <Module> and <PrivateImplementationDetails>
+                    if (!typeHandle.Name.StartsWith("<")) // exclude types like <Module> and <PrivateImplementationDetails>
                         yield return typeHandle;
                 }
             }
@@ -241,50 +239,50 @@ namespace Gallio.Common.Reflection.Impl
         #region Attributes
         protected internal override StaticConstructorWrapper GetAttributeConstructor(StaticAttributeWrapper attribute)
         {
-            CustomAttribute attributeHandle = (CustomAttribute)attribute.Handle;
+            var attributeHandle = (CustomAttribute)attribute.Handle;
             return WrapConstructor(attributeHandle.Constructor);
         }
 
         protected internal override ConstantValue[] GetAttributeConstructorArguments(StaticAttributeWrapper attribute)
         {
-            CustomAttribute attributeHandle = (CustomAttribute)attribute.Handle;
-            return CollectionUtils.ConvertAllToArray<Mono.Cecil.ConstantValue, ConstantValue>(attributeHandle.ConstructorParameters, ConvertConstantValue);
+            var attributeHandle = (CustomAttribute)attribute.Handle;
+            return CollectionUtils.ConvertAllToArray<CustomAttributeArgument, ConstantValue>(attributeHandle.ConstructorArguments, 
+                ConvertConstantValue);
         }
 
         protected internal override IEnumerable<KeyValuePair<StaticFieldWrapper, ConstantValue>> GetAttributeFieldArguments(StaticAttributeWrapper attribute)
         {
-            CustomAttribute attributeHandle = (CustomAttribute)attribute.Handle;
-            StaticDeclaredTypeWrapper declaringType = GetAttributeType(attributeHandle);
+            var attributeHandle = (CustomAttribute)attribute.Handle;
+            var declaringType = GetAttributeType(attributeHandle);
 
-            foreach (DictionaryEntry entry in attributeHandle.Fields)
+            foreach (var entry in attributeHandle.Fields)
             {
-                string fieldName = (string) entry.Key;
-                ConstantValue value = ConvertConstantValue((Mono.Cecil.ConstantValue)entry.Value);
-                StaticFieldWrapper field = (StaticFieldWrapper) declaringType.GetField(fieldName, BindingFlags.Public | BindingFlags.Instance);
-                yield return new KeyValuePair<StaticFieldWrapper, ConstantValue>(field, value);
+                var fieldName = entry.Name;
+                var value = entry.Argument;
+                var field = (StaticFieldWrapper)declaringType.GetField(fieldName, BindingFlags.Public | BindingFlags.Instance);
+                yield return new KeyValuePair<StaticFieldWrapper, ConstantValue>(field, ConvertConstantValue(value));
             }
         }
 
         protected internal override IEnumerable<KeyValuePair<StaticPropertyWrapper, ConstantValue>> GetAttributePropertyArguments(StaticAttributeWrapper attribute)
         {
-            CustomAttribute attributeHandle = (CustomAttribute)attribute.Handle;
-            StaticDeclaredTypeWrapper declaringType = GetAttributeType(attributeHandle);
+            var attributeHandle = (CustomAttribute)attribute.Handle;
+            var declaringType = GetAttributeType(attributeHandle);
 
-            foreach (DictionaryEntry entry in attributeHandle.Properties)
+            foreach (var entry in attributeHandle.Properties)
             {
-                string propertyName = (string)entry.Key;
-                ConstantValue value = ConvertConstantValue((Mono.Cecil.ConstantValue)entry.Value);
-                StaticPropertyWrapper field = (StaticPropertyWrapper)declaringType.GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
+                var propertyName = entry.Name;
+                var value = ConvertConstantValue(entry.Argument);
+                var field = (StaticPropertyWrapper)declaringType.GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
                 yield return new KeyValuePair<StaticPropertyWrapper, ConstantValue>(field, value);
             }
         }
 
-        private IEnumerable<StaticAttributeWrapper> EnumerateAttributes(CustomAttributeCollection attributeHandles)
+        private IEnumerable<StaticAttributeWrapper> EnumerateAttributes(IEnumerable<CustomAttribute> attributeHandles)
         {
-            foreach (CustomAttribute attributeHandle in attributeHandles)
+            foreach (var attributeHandle in attributeHandles)
             {
-                if (attributeHandle.Resolve())
-                    yield return new StaticAttributeWrapper(this, attributeHandle);
+                yield return new StaticAttributeWrapper(this, attributeHandle);
             }
         }
 
@@ -293,24 +291,24 @@ namespace Gallio.Common.Reflection.Impl
             return MakeDeclaredType(attributeHandle.Constructor.DeclaringType);
         }
 
-        private ConstantValue ConvertConstantValue(Mono.Cecil.ConstantValue constant)
+        private ConstantValue ConvertConstantValue(CustomAttributeArgument constant)
         {
-            ITypeInfo type = MakeType(constant.Type);
+            var type = MakeType(constant.Type);
 
             if (constant.Value != null)
             {
-                TypeReference typeRef = constant.Value as TypeReference;
+                var typeRef = constant.Value as TypeReference;
                 if (typeRef != null)
                     return new ConstantValue(type, MakeType(typeRef));
 
-                ArrayType arrayType = constant.Type as ArrayType;
+                var arrayType = constant.Type as ArrayType;
                 if (arrayType != null)
                 {
-                    Mono.Cecil.ConstantValue[] arrayConstants = (Mono.Cecil.ConstantValue[])constant.Value;
-                    int length = arrayConstants.Length;
+                    var arrayConstants = (CustomAttributeArgument[])constant.Value;
+                    var length = arrayConstants.Length;
 
-                    ConstantValue[] array = new ConstantValue[length];
-                    for (int i = 0; i < length; i++)
+                    var array = new ConstantValue[length];
+                    for (var i = 0; i < length; i++)
                         array[i] = ConvertConstantValue(arrayConstants[i]);
                     return new ConstantValue(type, array);
                 }
@@ -331,19 +329,17 @@ namespace Gallio.Common.Reflection.Impl
 
         protected internal override string GetMemberName(StaticMemberWrapper member)
         {
-            IMemberReference memberHandle = (IMemberReference)member.Handle;
+            var memberHandle = (MemberReference)member.Handle;
 
             // Strip off generic parameter count from name.
-            string name = memberHandle.Name;
-            int tickPos = name.IndexOf('`');
-            if (tickPos < 0)
-                return name;
-            return name.Substring(0, tickPos);
+            var name = memberHandle.Name;
+            var tickPos = name.IndexOf('`');
+            return tickPos < 0 ? name : name.Substring(0, tickPos);
         }
 
         protected internal override CodeLocation GetMemberSourceLocation(StaticMemberWrapper member)
         {
-            IMemberReference memberHandle = (IMemberReference) member.Handle;
+            var memberHandle = (MemberReference)member.Handle;
 
             switch (memberHandle.MetadataToken.TokenType)
             {
@@ -351,14 +347,17 @@ namespace Gallio.Common.Reflection.Impl
                     return GuessTypeSourceLocation((TypeDefinition)memberHandle);
 
                 case TokenType.Method:
-                    return GetMethodSourceLocation((MethodDefinition) memberHandle);
+                    return GetMethodSourceLocation((MethodDefinition)memberHandle);
 
                 case TokenType.GenericParam:
-                    IGenericParameterProvider owner = ((GenericParameter)memberHandle).Owner;
+                    var owner = ((GenericParameter)memberHandle).Owner;
+
                     if (owner is TypeDefinition)
                         return GuessTypeSourceLocation((TypeDefinition)owner);
-                    else if (owner is MethodDefinition)
-                        return GetMethodSourceLocation((MethodDefinition) owner);
+
+                    if (owner is MethodDefinition)
+                        return GetMethodSourceLocation((MethodDefinition)owner);
+
                     return CodeLocation.Unknown;
 
                 default:
@@ -386,8 +385,8 @@ namespace Gallio.Common.Reflection.Impl
             if (symbolResolver == null)
                 symbolResolver = DebugSymbolUtils.CreateResolver();
 
-            string assemblyPath = assemblyResolver.GetAssemblyPath(methodDefinition.DeclaringType.Module.Assembly);
-            int metadataToken = (int) methodDefinition.MetadataToken.ToUInt();
+            var assemblyPath = assemblyResolver.GetAssemblyPath(methodDefinition.DeclaringType.Module.Assembly);
+            var metadataToken = (int)methodDefinition.MetadataToken.ToUInt32();
             return symbolResolver.GetSourceLocationForMethod(assemblyPath, metadataToken);
         }
 
@@ -478,7 +477,7 @@ namespace Gallio.Common.Reflection.Impl
             CallingConventions flags = 0;
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, CallingConventions.HasThis, methodHandle.HasThis);
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, CallingConventions.ExplicitThis, methodHandle.ExplicitThis);
-            
+
             switch (methodHandle.CallingConvention)
             {
                 case MethodCallingConvention.VarArg:
@@ -507,8 +506,8 @@ namespace Gallio.Common.Reflection.Impl
         #region Methods
         protected internal override StaticParameterWrapper GetMethodReturnParameter(StaticMethodWrapper method)
         {
-            MethodDefinition methodHandle = (MethodDefinition)method.Handle;
-            return new StaticParameterWrapper(this, methodHandle.ReturnType, method);
+            var methodHandle = (MethodDefinition)method.Handle;
+            return new StaticParameterWrapper(this, methodHandle.MethodReturnType, method);
         }
 
         protected internal override IList<StaticGenericParameterWrapper> GetMethodGenericParameters(StaticMethodWrapper method)
@@ -524,11 +523,12 @@ namespace Gallio.Common.Reflection.Impl
         #region Parameters
         protected internal override ParameterAttributes GetParameterAttributes(StaticParameterWrapper parameter)
         {
-            ParameterDefinition parameterHandle = parameter.Handle as ParameterDefinition;
+            var parameterHandle = parameter.Handle as ParameterDefinition;
+            
             if (parameterHandle != null)
                 return (ParameterAttributes)parameterHandle.Attributes;
 
-            MethodReturnType returnTypeHandle = (MethodReturnType) parameter.Handle;
+            var returnTypeHandle = (MethodReturnType)parameter.Handle;
             return returnTypeHandle.HasConstant ? ParameterAttributes.HasDefault : ParameterAttributes.None;
         }
 
@@ -562,12 +562,19 @@ namespace Gallio.Common.Reflection.Impl
 
         protected internal override StaticTypeWrapper GetParameterType(StaticParameterWrapper parameter)
         {
-            ParameterDefinition parameterHandle = parameter.Handle as ParameterDefinition;
+            var parameterHandle = parameter.Handle as ParameterDefinition;
             if (parameterHandle != null)
                 return MakeType(parameterHandle.ParameterType);
 
-            MethodReturnType returnTypeHandle = (MethodReturnType)parameter.Handle;
-            return MakeType(returnTypeHandle.ReturnType);
+            var returnTypeHandle = parameter.Handle as MethodReturnType;
+            if (returnTypeHandle != null) 
+                return MakeType(returnTypeHandle.ReturnType);
+
+            var typeReferenceHandle = parameter.Handle as TypeReference;
+            if (typeReferenceHandle != null)
+                return MakeType(typeReferenceHandle);
+
+            throw new ArgumentException("Could not extract parameter type.");
         }
         #endregion
 
@@ -617,19 +624,27 @@ namespace Gallio.Common.Reflection.Impl
 
         protected internal override IEnumerable<StaticConstructorWrapper> GetTypeConstructors(StaticDeclaredTypeWrapper type)
         {
-            TypeDefinition typeHandle = (TypeDefinition)type.Handle;
+            var typeHandle = (TypeDefinition)type.Handle;
 
-            foreach (MethodDefinition methodHandle in typeHandle.Constructors)
+            foreach (var methodHandle in GetConstructors(typeHandle.Methods))
                 yield return new StaticConstructorWrapper(this, methodHandle, type);
+        }
+
+        private static IEnumerable<MethodDefinition> GetConstructors(IEnumerable<MethodDefinition> methods)
+        {
+            foreach (var method in methods)
+                if (method.IsConstructor)
+                    yield return method;
         }
 
         protected internal override IEnumerable<StaticMethodWrapper> GetTypeMethods(StaticDeclaredTypeWrapper type,
             StaticDeclaredTypeWrapper reflectedType)
         {
-            TypeDefinition typeHandle = (TypeDefinition)type.Handle;
+            var typeHandle = (TypeDefinition)type.Handle;
 
-            foreach (MethodDefinition methodHandle in typeHandle.Methods)
-                yield return new StaticMethodWrapper(this, methodHandle, type, reflectedType, type.Substitution);
+            foreach (var methodHandle in typeHandle.Methods)
+                if (methodHandle.IsConstructor == false)
+                    yield return new StaticMethodWrapper(this, methodHandle, type, reflectedType, type.Substitution);
         }
 
         protected internal override IEnumerable<StaticPropertyWrapper> GetTypeProperties(StaticDeclaredTypeWrapper type,
@@ -671,37 +686,37 @@ namespace Gallio.Common.Reflection.Impl
         {
             return typeMemoizer.Memoize(typeHandle, () =>
             {
-                TypeDefinition declaredTypeHandle = typeHandle as TypeDefinition;
+                var declaredTypeHandle = typeHandle as TypeDefinition;
                 if (declaredTypeHandle != null)
                     return MakeDeclaredTypeWithoutSubstitution(declaredTypeHandle);
 
-                GenericParameter genericParameterHandle = typeHandle as GenericParameter;
+                var genericParameterHandle = typeHandle as GenericParameter;
                 if (genericParameterHandle != null)
                     return MakeGenericParameter(genericParameterHandle);
 
-                ArrayType arrayTypeHandle = typeHandle as ArrayType;
+                var arrayTypeHandle = typeHandle as ArrayType;
                 if (arrayTypeHandle != null)
                     return MakeArrayType(arrayTypeHandle);
 
-                PointerType pointerTypeHandle = typeHandle as PointerType;
+                var pointerTypeHandle = typeHandle as PointerType;
                 if (pointerTypeHandle != null)
                     return MakePointerType(pointerTypeHandle);
 
-                ReferenceType referenceTypeHandle = typeHandle as ReferenceType;
+                var referenceTypeHandle = typeHandle as ByReferenceType;
                 if (referenceTypeHandle != null)
                     return MakeByRefType(referenceTypeHandle);
 
-                GenericInstanceType genericInstanceTypeHandle = typeHandle as GenericInstanceType;
+                var genericInstanceTypeHandle = typeHandle as GenericInstanceType;
                 if (genericInstanceTypeHandle != null)
                     return MakeGenericInstanceType(genericInstanceTypeHandle);
 
-                AssemblyNameReference assemblyRef = typeHandle.Scope as AssemblyNameReference;
+                var assemblyRef = typeHandle.Scope as AssemblyNameReference;
                 if (assemblyRef != null)
                 {
-                    AssemblyDefinition assemblyDefn = assemblyResolver.Resolve(assemblyRef);
-                    foreach (ModuleDefinition moduleDefn in assemblyDefn.Modules)
+                    var assemblyDefn = assemblyResolver.Resolve(assemblyRef);
+                    foreach (var moduleDefn in assemblyDefn.Modules)
                     {
-                        TypeDefinition typeDefn = moduleDefn.Types[typeHandle.FullName];
+                        var typeDefn = moduleDefn.GetType(typeHandle.FullName);
                         if (typeDefn != null)
                             return MakeDeclaredType(typeDefn);
                     }
@@ -737,7 +752,7 @@ namespace Gallio.Common.Reflection.Impl
             return MakeType(pointerTypeHandle.ElementType).MakePointerType();
         }
 
-        private StaticByRefTypeWrapper MakeByRefType(ReferenceType referenceTypeHandle)
+        private StaticByRefTypeWrapper MakeByRefType(ByReferenceType referenceTypeHandle)
         {
             return MakeType(referenceTypeHandle.ElementType).MakeByRefType();
         }
@@ -786,31 +801,13 @@ namespace Gallio.Common.Reflection.Impl
         }
         #endregion
 
-        #region Misc
-        private static bool TryGetAnnotation<T>(IAnnotationProvider annotationProvider, Key<T> key, out T value)
-        {
-            if (annotationProvider.Annotations.Contains(key.Name))
-            {
-                value = (T) annotationProvider.Annotations[key.Name];
-                return true;
-            }
-
-            value = default(T);
-            return false;
-        }
-
-        private static void SetAnnotation<T>(IAnnotationProvider annotationProvider, Key<T> key, T value)
-        {
-            annotationProvider.Annotations[key.Name] = value;
-        }
-        #endregion
-
         internal sealed class CustomAssemblyResolver : IAssemblyResolver
         {
-            private static readonly string[] extensions = new string[] { ".dll", ".exe" };
+            private static readonly string[] extensions = new[] { ".dll", ".exe" };
 
             private readonly List<string> hintDirectories = new List<string>();
             private readonly Dictionary<string, AssemblyDefinition> cache = new Dictionary<string, AssemblyDefinition>();
+            private readonly Dictionary<AssemblyDefinition, string> assemblyPathCache = new Dictionary<AssemblyDefinition, string>();
 
             public void AddHintDirectory(string path)
             {
@@ -820,8 +817,10 @@ namespace Gallio.Common.Reflection.Impl
             public string GetAssemblyPath(AssemblyDefinition assemblyDefn)
             {
                 string path;
-                if (!TryGetAnnotation(assemblyDefn, PathAnnotationKey, out path))
+
+                if (!assemblyPathCache.TryGetValue(assemblyDefn, out path))
                     throw new InvalidOperationException("The assembly path is not available.");
+
                 return path;
             }
 
@@ -832,9 +831,8 @@ namespace Gallio.Common.Reflection.Impl
                 AssemblyDefinition assemblyDefn;
                 if (!cache.TryGetValue(assemblyFile, out assemblyDefn))
                 {
-                    assemblyDefn = AssemblyFactory.GetAssembly(assemblyFile);
-                    assemblyDefn.Resolver = this;
-                    SetAnnotation(assemblyDefn, PathAnnotationKey, assemblyFile);
+                    assemblyDefn = AssemblyDefinition.ReadAssembly(assemblyFile);
+                    assemblyPathCache.Add(assemblyDefn, assemblyFile);
 
                     cache[assemblyFile] = assemblyDefn;
                     cache[assemblyDefn.Name.FullName] = assemblyDefn;
@@ -885,14 +883,6 @@ namespace Gallio.Common.Reflection.Impl
 
                 return null;
             }
-        }
-
-        /// <summary>
-        /// Hack to provide access to the internal structure of Cecil attributes.
-        /// The standard interface makes it impossible to extract arrays and types.
-        /// </summary>
-        private sealed class CustomAttrib
-        {
         }
     }
 }

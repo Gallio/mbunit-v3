@@ -14,9 +14,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using Gallio.Common.Reflection;
 
 namespace Gallio.Common.Reflection.Impl
 {
@@ -53,14 +51,15 @@ namespace Gallio.Common.Reflection.Impl
         {
             try
             {
-                ConstructorInfo constructor = attribute.Constructor.Resolve(true);
-                object instance = constructor.Invoke(Array.ConvertAll<ConstantValue, object>(attribute.InitializedArgumentValues,
-                        delegate(ConstantValue constantValue) { return constantValue.Resolve(throwOnError); }));
+                var constructor = attribute.Constructor.Resolve(true);
+                
+                var instance = constructor.Invoke(Array.ConvertAll(attribute.InitializedArgumentValues, 
+                    constantValue => constantValue.Resolve(throwOnError)));
 
-                foreach (KeyValuePair<IFieldInfo, ConstantValue> initializer in attribute.InitializedFieldValues)
+                foreach (var initializer in attribute.InitializedFieldValues)
                     initializer.Key.Resolve(true).SetValue(instance, initializer.Value.Resolve(throwOnError));
 
-                foreach (KeyValuePair<IPropertyInfo, ConstantValue> initializer in attribute.InitializedPropertyValues)
+                foreach (var initializer in attribute.InitializedPropertyValues)
                     initializer.Key.Resolve(true).SetValue(instance, initializer.Value.Resolve(throwOnError), null);
 
                 return instance;

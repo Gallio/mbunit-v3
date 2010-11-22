@@ -107,7 +107,6 @@ namespace Gallio.Tests.Common.Reflection
         private bool supportsStaticConstructors = true;
         private bool supportsFullAssemblyName = true;
         private bool supportsNestedGenericTypes = true;
-        private bool workaroundStrongTypeEquivalenceProblems = false;
 
         public WrapperAssert()
         {
@@ -196,14 +195,6 @@ namespace Gallio.Tests.Common.Reflection
         public bool SupportsNestedGenericTypes
         {
             set { supportsNestedGenericTypes = value; }
-        }
-
-        /// <summary>
-        /// Workaround strong type equivalence issues.
-        /// </summary>
-        public bool WorkaroundStrongTypeEquivalenceProblems
-        {
-            set { workaroundStrongTypeEquivalenceProblems = value; }
         }
 
         public void AreEquivalent(string namespaceName, INamespaceInfo info)
@@ -327,7 +318,7 @@ namespace Gallio.Tests.Common.Reflection
         public void AreEquivalent(Attribute target, IAttributeInfo info, bool recursive)
         {
             AreEqualWhenResolved(target.GetType(), info.Type);
-            AreEqual(target.GetType(), info.Resolve(false).GetType());
+            Assert.AreEqual(target.GetType(), info.Resolve(false).GetType());
 
             foreach (FieldInfo field in target.GetType().GetFields())
                 Assert.AreEqual(field.GetValue(target), info.GetFieldValue(field.Name).Resolve(false));
@@ -458,7 +449,7 @@ namespace Gallio.Tests.Common.Reflection
             Assert.AreEqual(CodeElementKind.Type, info.Kind);
 
             AreTypesEquivalent(target, info, recursive);
-            AreEqual(target, info.Resolve(true));
+            Assert.AreEqual(target, info.Resolve(true));
 
             if (recursive)
             {
@@ -477,7 +468,7 @@ namespace Gallio.Tests.Common.Reflection
             Assert.AreEqual(CodeElementKind.GenericParameter, info.Kind);
 
             AreTypesEquivalent(target, info, recursive);
-            AreEqual(target, info.Resolve(true));
+            Assert.AreEqual(target, info.Resolve(true));
 
             AreEqualWhenResolved(typeof(Type), info.ValueType);
             Assert.IsTrue(info.ContainsGenericParameters);
@@ -562,7 +553,7 @@ namespace Gallio.Tests.Common.Reflection
 
             MemoizeEquivalence(target, info, delegate
             {
-                AreEqual(target, info.Resolve(true));
+                Assert.AreEqual(target, info.Resolve(true));
 
                 Assert.AreEqual(target.Attributes & TypeAttributesMask, info.TypeAttributes & TypeAttributesMask, target.ToString());
                 Assert.AreEqual(target.Assembly, info.Assembly.Resolve(true), target.ToString());
@@ -874,32 +865,24 @@ namespace Gallio.Tests.Common.Reflection
             throw new AssertionException(String.Format("Did not find matching member: {0}", member));
         }
 
-        private void AreEqual(Type expected, Type actual)
-        {
-            if (workaroundStrongTypeEquivalenceProblems)
-                Assert.AreEqual(
-                    expected != null ? expected.ToString() : null,
-                    actual != null ? actual.ToString() : null);
-            else
-                Assert.AreEqual(expected, actual);
-        }
-
         private void AreEqual(MemberInfo expected, MemberInfo actual)
         {
-            AreEqual(expected.DeclaringType, actual.DeclaringType);
+            Assert.AreEqual(expected.DeclaringType, actual.DeclaringType);
             Assert.AreEqual(expected.MetadataToken, actual.MetadataToken);
         }
 
         private void AreEqual(ParameterInfo expected, ParameterInfo actual)
         {
-            AreEqual(expected.Member.DeclaringType, actual.Member.DeclaringType);
+            Assert.AreEqual(expected.Member.DeclaringType, actual.Member.DeclaringType);
             Assert.AreEqual(expected.MetadataToken, actual.MetadataToken);
         }
 
         private void AreEqualWhenResolved(Type expected, ITypeInfo wrapper)
         {
             if (expected != null)
-                AreEqual(expected, wrapper != null ? wrapper.Resolve(true) : null);
+            {
+                Assert.AreEqual(expected, wrapper != null ? wrapper.Resolve(true) : null);
+            }
             else
                 Assert.IsNull(wrapper);
         }

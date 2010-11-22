@@ -16,7 +16,6 @@
 using System;
 using System.Reflection;
 using Gallio.Common.Reflection.Impl;
-using Mono.Cecil;
 
 namespace Gallio.Common.Reflection
 {
