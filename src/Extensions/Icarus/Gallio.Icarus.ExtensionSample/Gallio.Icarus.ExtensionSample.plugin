@@ -18,7 +18,7 @@
   </files>
 
   <assemblies>
-    <assembly fullName="Gallio.Icarus.ExtensionSample"
+    <assembly fullName="Gallio.Icarus.ExtensionSample, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
               codeBase="Gallio.Icarus.ExtensionSample.dll"
               qualifyPartialName="true" />
   </assemblies>
