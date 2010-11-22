@@ -29,13 +29,29 @@
 
     <service serviceId="Gallio.Icarus.Package" 
              serviceType="Gallio.Icarus.IPackage, Gallio.Icarus" />
+			 
+    <service serviceId="Gallio.Icarus.WindowManager" 
+             serviceType="Gallio.Icarus.WindowManager.IWindowManager, Gallio.Icarus" />
+
+    <service serviceId="Gallio.Icarus.PluginScanner" 
+             serviceType="Gallio.Icarus.Runtime.IPluginScanner, Gallio.Icarus" />
+  
   </services>
 
   <components>
+  
     <component componentId="Gallio.Icarus.Controllers.OptionsController" 
                serviceId="Gallio.Icarus.OptionsController"
                componentType="Gallio.Icarus.Controllers.OptionsController, Gallio.Icarus" />
   
+    <component componentId="Gallio.Icarus.WindowManager.WindowManager" 
+               serviceId="Gallio.Icarus.WindowManager"
+               componentType="Gallio.Icarus.WindowManager.WindowManager, Gallio.Icarus" />
+			   
+    <component componentId="Gallio.Icarus.DefaultConventionScanner" 
+               serviceId="Gallio.Icarus.PluginScanner"
+               componentType="Gallio.Icarus.Runtime.DefaultConventionScanner, Gallio.Icarus" />
+			   
     <!-- Control panel -->
 
     <component componentId="Gallio.Icarus.ControlPanel.RootPaneProvider"
