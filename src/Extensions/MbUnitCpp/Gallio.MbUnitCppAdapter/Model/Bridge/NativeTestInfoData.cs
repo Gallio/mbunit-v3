@@ -55,5 +55,10 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         /// Represents the position of the current fixture/test.
         /// </summary>
         public Position Position;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int MetadataId;
     }
 }

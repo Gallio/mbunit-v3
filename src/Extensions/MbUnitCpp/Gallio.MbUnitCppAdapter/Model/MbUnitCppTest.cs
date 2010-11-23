@@ -44,13 +44,15 @@ namespace Gallio.MbUnitCppAdapter.Model
         /// Constructs an MbUnitCpp tests.
         /// </summary>
         /// <param name="testInfoData">Information about the test.</param>
-        public MbUnitCppTest(TestInfoData testInfoData)
+        /// <param name="resolver"></param>
+        public MbUnitCppTest(TestInfoData testInfoData, IStringResolver resolver)
             : base(testInfoData.Name, testInfoData.FakeCodeElement)
         {
             this.testInfoData = testInfoData;
             Id = testInfoData.GetId();
             Kind = testInfoData.IsTestFixture ? TestKinds.Fixture : TestKinds.Test;
             IsTestCase = !testInfoData.IsTestFixture;
+            Metadata.AddAll(testInfoData.GetMetadata(resolver));
         }
     }
 }

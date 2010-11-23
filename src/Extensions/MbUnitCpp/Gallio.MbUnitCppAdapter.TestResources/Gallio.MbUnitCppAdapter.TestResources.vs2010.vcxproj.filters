@@ -27,6 +27,12 @@
     <ClCompile Include="AproximateEqualityTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="DataDrivenTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="MetadataTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />

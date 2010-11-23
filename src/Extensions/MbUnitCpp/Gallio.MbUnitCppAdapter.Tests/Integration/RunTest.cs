@@ -55,20 +55,31 @@ namespace Gallio.MbUnitCppAdapter.Tests.Integration
             [Bind("@expectedStatus")] TestStatus expectedStatus,
             [Bind("@expectedAssertCount")] int expectedAssertCount,
             [Bind("@expectedFailureLog")] string expectedFailureLog,
-            [Bind("@expectedDefaultLog")] string expectedDefaultLog)
+            [Bind("@expectedDefaultLog")] string expectedDefaultLog,
+            [Bind("@expectedMetadata")] string expectedMetadata)
         {
             IEnumerable<TestStepRun> runs = Runner.GetTestStepRuns(r => r.Step.FullName == fullName);
             Assert.IsNotEmpty(runs, "Test step not found.");
             TestStepRun run = runs.First();
             Assert.IsNotNull(run);
-            Assert.AreEqual(expectedStatus, run.Result.Outcome.Status);
-            Assert.AreEqual(expectedAssertCount, run.Result.AssertCount);
 
-            if (expectedFailureLog != null)
-                AssertLogContains(run, expectedFailureLog, MarkupStreamNames.Failures);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(expectedStatus, run.Result.Outcome.Status);
+                Assert.AreEqual(expectedAssertCount, run.Result.AssertCount);
 
-            if (expectedDefaultLog != null)
-                AssertLogContains(run, expectedDefaultLog.Replace("\\n", "\n"), MarkupStreamNames.Default);
+                if (expectedFailureLog != null)
+                    AssertLogContains(run, expectedFailureLog, MarkupStreamNames.Failures);
+
+                if (expectedDefaultLog != null)
+                    AssertLogContains(run, expectedDefaultLog.Replace("\\n", "\n"), MarkupStreamNames.Default);
+
+                if (expectedMetadata != null)
+                {
+                    foreach (string[] pair in expectedMetadata.Split(',').Select(token => token.Split('=')))
+                        Assert.IsTrue(run.Step.Metadata.Contains(pair[0], pair[1]), "Expected to find metadata '{0}' = '{1}'", pair[0], pair[1]);
+                }
+            });
         }
     }
 }

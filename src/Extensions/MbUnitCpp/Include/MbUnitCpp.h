@@ -15,6 +15,8 @@
 
 #pragma once
 
+#pragma warning (disable: 4003)
+
 namespace MbUnitCpp
 {
 	// A simple general purpose string container with formatting capabilities.
@@ -29,7 +31,7 @@ namespace MbUnitCpp
 		String(const wchar_t* format, va_list args);
 		~String();
 		wchar_t* GetData() const { return m_data; };
-		void Append(String& string);
+		void Append(const String& string);
 	};
 
 	// A node that reference a mapped string value.
@@ -210,6 +212,7 @@ namespace MbUnitCpp
         Test* m_next;
         int m_assertCount;
 		int m_testLogId;
+        int m_metadataId;
 
         public:
         Test(int index, const wchar_t* name, const wchar_t* fileName, int lineNumber);
@@ -218,15 +221,20 @@ namespace MbUnitCpp
         const wchar_t* GetName() const { return m_name; }
         const wchar_t* GetFileName() const { return m_fileName; }
         int GetLineNumber() const { return m_lineNumber; }
+		int GetMetadataId() const { return m_metadataId; }
         Test* GetNext() const { return m_next; }
         void SetNext(Test* test);
         void Run(TestResultData* pTestResultData);
         virtual void RunImpl();
         void IncrementAssertCount();
-		void AppendToTestLog(String& string);
+		void AppendToTestLog(const String& s);
 
         private:
         void Clear();
+		void AppendTo(int& id, const String& s);
+
+		protected:
+		void* SetMetadata(const wchar_t* key, const wchar_t* value);
 
         protected:
         AssertionFramework Assert;
@@ -298,10 +306,29 @@ namespace MbUnitCpp
     };
 }
 
-
-#define WSTR2(s) L##s
-#define WSTR(s) WSTR2(s)
-#define __WFILE__ WSTR(__FILE__)
+// Helper macros.
+#define MUC_WSTR2(s) L##s
+#define MUC_WSTR(s) MUC_WSTR2(s)
+#define MUC_WFILE MUC_WSTR(__FILE__)
+#define MUC_CONCAT(arg1, arg2) MUC_CONCAT1(arg1, arg2)
+#define MUC_CONCAT1(arg1, arg2) MUC_CONCAT2(arg1, arg2)
+#define MUC_CONCAT2(arg1, arg2) arg1##arg2
+#define MUC_LAST_ARG(_0, _1, _2, _3, _4, _5, _6, _7, N, ...) N 
+#define MUC_REVERSED_RANGE 8, 7, 6, 5, 4, 3, 2, 1, 0
+#define MUC_LP (
+#define MUC_RP )
+#define MUC_COUNT_ARGS(...) MUC_LAST_ARG MUC_LP __VA_ARGS__##MUC_REVERSED_RANGE, MUC_REVERSED_RANGE MUC_RP
+#define MUC_FOR_EACH_1(Action, _0, ...) Action MUC_LP _0 MUC_RP
+#define MUC_FOR_EACH_2(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_1 MUC_LP Action, __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_3(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_2 MUC_LP Action, __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_4(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_3 MUC_LP Action, __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_5(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_4 MUC_LP Action, __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_6(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_5 MUC_LP Action, __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_7(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_6 MUC_LP Action, __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_8(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_7 MUC_LP Action, __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_N(N, Action, _0, ...) MUC_CONCAT MUC_LP MUC_FOR_EACH_, N MUC_RP MUC_LP Action, _0, __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH(Action, _0, ...) MUC_FOR_EACH_N MUC_LP MUC_COUNT_ARGS MUC_LP _0, __VA_ARGS__ MUC_RP , Action, _0, __VA_ARGS__ MUC_RP
+#define MUC_PRINT_ARG(x) x;
 
 // Macro to create a new test fixture.
 #define TESTFIXTURE(Name) \
@@ -319,14 +346,57 @@ namespace MbUnitCpp
     namespace NamespaceTestFixture##Name
 
 // Macro to create a new test.
-#define TEST(Name) \
+#define TEST(Name, ...) \
     class Test##Name : public MbUnitCpp::Test \
     { \
         public: \
-		Test##Name() : Test(testFixtureInstance.GetTestList().GetNextIndex(), L#Name, __WFILE__, __LINE__) {} \
+		Test##Name() : Test(testFixtureInstance.GetTestList().GetNextIndex(), L#Name, MUC_WFILE, __LINE__) \
+		{ \
+			void* _array[] = { 0, __VA_ARGS__ }; \
+		} \
         private: \
         virtual void RunImpl(); \
     } test##Name##Instance; \
     \
     MbUnitCpp::TestRecorder recorder##Name (testFixtureInstance.GetTestList(), &test##Name##Instance); \
     void Test##Name::RunImpl()
+
+// Attributes for tests.
+#define CATEGORY(category) SetMetadata(L"Category", L#category)
+#define AUTHOR(authorName) SetMetadata(L"Author", L#authorName)
+#define DESCRIPTION(description) SetMetadata(L"Description", L#description)
+
+// Data source for data-driven tests.
+#define DATA(Name, _0, ...) \
+    class DataSource##Name \
+    { \
+        public: \
+        struct Item \
+        { \
+            MUC_FOR_EACH MUC_LP MUC_PRINT_ARG, _0, __VA_ARGS__ MUC_RP \
+            struct Item* next; \
+        }; \
+        private: \
+        struct Item* head; \
+        struct Item* tail; \
+        void Populate(); \
+        void Add(const struct Item& item) \
+        { \
+            struct Item* p = new struct Item(item); \
+            if (tail == 0) { head = p; } else { tail->next = p; } \
+            tail = p; \
+        } \
+        public: \
+        DataSource##Name() : head(0), tail(0) { Populate(); } \
+        ~DataSource##Name() \
+        { \
+            struct Item* current = head; \
+            while (current != 0) { struct Item* next = current->next; delete current; current = next; } \
+        } \
+        struct Item* GetHead() const { return head; } \
+    }; \
+    void DataSource##Name::Populate()
+
+// Data row for data sources.
+#define ROW(...) \
+	do { struct Item t = { __VA_ARGS__, 0 }; Add(t); } while(0);

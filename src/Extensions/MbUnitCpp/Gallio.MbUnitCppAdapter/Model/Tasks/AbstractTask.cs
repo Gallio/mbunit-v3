@@ -137,7 +137,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
                 if (progressMonitor.IsCanceled)
                     return;
 
-                var test = new MbUnitCppTest(testInfoData);
+                var test = new MbUnitCppTest(testInfoData, repository);
 
                 if (testInfoData.IsTestFixture)
                 {

@@ -18,7 +18,10 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Gallio.Common.Diagnostics;
 using Gallio.Common.Reflection;
+using Gallio.Common.Collections;
 using System.Collections.Generic;
+using Gallio.Model;
+using System.Text.RegularExpressions;
 
 namespace Gallio.MbUnitCppAdapter.Model.Bridge
 {
@@ -30,6 +33,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         private readonly NativeTestInfoData native;
         private string name;
         private string fileName;
+        private KeyValuePair<string, string>[] metadata;
 
         public TestInfoData(NativeTestInfoData native)
         {
@@ -116,6 +120,25 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
                 return native.IsTestFixture
                     ? (ICodeElementInfo)new FakeTypeInfo(Name) 
                     : new FakeMemberInfo(Name);
+            }
+        }
+
+        public KeyValuePair<string, string>[] GetMetadata(IStringResolver resolver)
+        {
+            if (metadata == null)
+                metadata = GenericCollectionUtils.ToArray(EnumerateMetadata(resolver));
+
+            return metadata;
+        }
+
+        private IEnumerable<KeyValuePair<string, string>> EnumerateMetadata(IStringResolver resolver)
+        {
+            string data = resolver.GetString(native.MetadataId);
+            var matches = Regex.Matches(data, @"(?<key>\w+)=\{(?<value>[\w\s]+)\}");
+            
+            foreach (Match match in matches)
+            {
+                yield return new KeyValuePair<string, string>(match.Groups["key"].Value, match.Groups["value"].Value);
             }
         }
     }

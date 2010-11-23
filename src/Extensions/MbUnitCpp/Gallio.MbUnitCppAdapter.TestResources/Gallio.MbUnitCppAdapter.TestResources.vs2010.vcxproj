@@ -158,8 +158,10 @@
   <ItemGroup>
     <ClCompile Include="..\Include\MbUnitCpp.cpp" />
     <ClCompile Include="AproximateEqualityTest.cpp" />
+    <ClCompile Include="DataDrivenTest.cpp" />
     <ClCompile Include="EqualityTest.cpp" />
     <ClCompile Include="LogicTest.cpp" />
+    <ClCompile Include="MetadataTest.cpp" />
     <ClCompile Include="OutcomeTest.cpp" />
     <ClCompile Include="TestLogTest.cpp" />
     <ClCompile Include="dllmain.cpp">

@@ -56,7 +56,7 @@ namespace MbUnitCpp
 		vswprintf(m_data, format, argList);
 	}
 
-	void String::Append(String& string)
+	void String::Append(const String& string)
 	{
 		size_t e = wcslen(m_data);
 		size_t n = wcslen(string.m_data);
@@ -175,7 +175,7 @@ namespace MbUnitCpp
 
     // Construct an executable test case.
     Test::Test(int index, const wchar_t* name, const wchar_t* fileName, int lineNumber)
-        : m_index(index), m_name(name), m_fileName(fileName), m_lineNumber(lineNumber), Assert(this), TestLog(this), m_testLogId(0)
+        : m_index(index), m_name(name), m_fileName(fileName), m_lineNumber(lineNumber), Assert(this), TestLog(this), m_testLogId(0), m_metadataId(0)
     {
     }
 
@@ -218,25 +218,36 @@ namespace MbUnitCpp
         m_assertCount++;
     }
 
-	void Test::AppendToTestLog(String& string)
+	void Test::AppendTo(int& id, const String& s)
 	{
 		StringMap& map = TestFixture::GetStringMap();
 
-		if (m_testLogId == 0)
+		if (id == 0)
 		{
-			m_testLogId = map.Add(new String(string));
+			id = map.Add(new String(s));
 		}
 		else
 		{
-			String* existing = map.Get(m_testLogId);
-			existing->Append(string);
+			map.Get(id)->Append(s);
 		}
+	}
+
+	void Test::AppendToTestLog(const String& s)
+	{
+		AppendTo(m_testLogId, s);
 	}
 
     // Default empty implementation of the test execution.
     void Test::RunImpl()
     {
     }
+
+	void* Test::SetMetadata(const wchar_t* key, const wchar_t* value)
+	{
+		String s(L"%s={%s},", key, value);
+		AppendTo(m_metadataId, s);
+		return 0;
+	}
 
     // Constructs an empty list of tests.
     TestList::TestList()
@@ -348,6 +359,7 @@ namespace MbUnitCpp
         const wchar_t* FileName;
         int LineNumber;
         Position Position;
+		int MetadataId;
     };
 
     // Constructs an assertion framework instance for the specified test.
@@ -733,6 +745,7 @@ namespace MbUnitCpp
                 pTestInfoData->Index = pTestFixture->GetIndex();
                 pTestInfoData->Position.pTestFixture = pTestFixture;
                 pTestInfoData->Position.pTest = 0;
+                pTestInfoData->MetadataId = 0;
                 pPosition->pTest = pTestFixture->GetTestList().GetHead();
                 return 1;            
             }
@@ -744,7 +757,8 @@ namespace MbUnitCpp
             pTestInfoData->Index = pTest->GetIndex();
             pTestInfoData->Position.pTestFixture = pTestFixture;
             pTestInfoData->Position.pTest = pTest;
-            pPosition->pTest = pTest->GetNext();
+            pTestInfoData->MetadataId = pTest->GetMetadataId();
+			pPosition->pTest = pTest->GetNext();
 
             if (pPosition->pTest == 0)
                 pPosition->pTestFixture = pTestFixture->GetNext();
