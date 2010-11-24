@@ -56,10 +56,10 @@
   </ItemGroup>
   
   <ItemGroup>
-    <AmbienceMergeDependency Include="Gallio.Ambience\bin\Db4objects.Db4o.dll" />
-    <AmbienceMergeDependency Include="Gallio.Ambience\bin\Db4objects.Db4o.Linq.dll" />
-    <AmbienceMergeDependency Include="Gallio.Ambience\bin\Cecil.FlowAnalysis.dll" />
-    <AmbienceMergeDependency Include="Gallio.Ambience\bin\Mono.Cecil.dll" />
+    <AmbienceMergeDependency Include="libs\net-3.5\Db4objects.Db4o.dll" />
+    <AmbienceMergeDependency Include="libs\net-3.5\Db4objects.Db4o.Linq.dll" />
+    <AmbienceMergeDependency Include="libs\net-3.5\Cecil.FlowAnalysis.dll" />
+    <AmbienceMergeDependency Include="libs\net-3.5\Mono.Cecil.dll" />
   </ItemGroup>
 
   <Target Name="BeforeImage"
@@ -69,7 +69,7 @@
              Importance="High" />
 
     <MakeDir Directories="$(ModuleImageDir)\bin" />
-    <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio.Ambience\bin\Gallio.Ambience.dll&quot; @(AmbienceMergeDependency->'&quot;%(Identity)&quot;', ' ') /internalize &quot;/out:$(ModuleTempDir)\Gallio.Ambience.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
+    <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio.Ambience\bin\Gallio.Ambience.dll&quot; @(AmbienceMergeDependency->'&quot;%(Identity)&quot;', ' ') /closed /internalize &quot;/out:$(ModuleTempDir)\Gallio.Ambience.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
 
     <!-- Replace the copy of Ambience used for the tests because otherwise
          we get assembly conflicts when Db4o tries to communicate remotely
