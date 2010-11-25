@@ -173,12 +173,55 @@ namespace MbUnitCpp
 		}
 	}
 
-    // Construct an executable test case.
-    Test::Test(int index, const wchar_t* name, const wchar_t* fileName, int lineNumber)
-        : m_index(index), m_name(name), m_fileName(fileName), m_lineNumber(lineNumber), Assert(this), TestLog(this), m_testLogId(0), m_metadataId(0)
-    {
-    }
+    // Construct a base test or test fixture instance.
+	DecoratorTarget::DecoratorTarget(int metadataPrototypeId)
+		: m_metadataId(0)
+	{
+		if (metadataPrototypeId > 0)
+		{
+			StringMap& map = TestFixture::GetStringMap();
+			String* s = map.Get(metadataPrototypeId);
+			m_metadataId = map.Add(new String(*s));
+		}
+	}
+		
+	// Attaches a key/value metadata to the current test or test fixture.
+	void* DecoratorTarget::SetMetadata(const wchar_t* key, const wchar_t* value)
+	{
+		String s(L"%s={%s},", key, value);
+		AppendTo(m_metadataId, s);
+		return 0;
+	}
 
+	// Create a new string ID or append the specified text if it already exists.
+	void DecoratorTarget::AppendTo(int& id, const String& s)
+	{
+		StringMap& map = TestFixture::GetStringMap();
+
+		if (id == 0)
+		{
+			id = map.Add(new String(s));
+		}
+		else
+		{
+			map.Get(id)->Append(s);
+		}
+	}
+
+    // Construct an executable test case.
+    Test::Test(TestFixture* testFixture, const wchar_t* name, const wchar_t* fileName, int lineNumber)
+        : m_index(testFixture->GetTestList().GetNextIndex())
+		, DecoratorTarget(testFixture->GetMetadataId())
+		, m_name(name)
+		, m_fileName(fileName)
+		, m_lineNumber(lineNumber)
+		, Assert(this)
+		, TestLog(this)
+		, m_testLogId(0)
+    {
+	}
+
+	// Desctructor.
     Test::~Test()
     {
     }
@@ -208,30 +251,19 @@ namespace MbUnitCpp
         pTestResultData->AssertCount = m_assertCount;
     }
 
+	// Clears internal variables for new run.
     void Test::Clear()
     {
         m_assertCount = 0;
     }
 
+	// Increment the assertion count by 1.
     void Test::IncrementAssertCount()
     {
         m_assertCount++;
     }
 
-	void Test::AppendTo(int& id, const String& s)
-	{
-		StringMap& map = TestFixture::GetStringMap();
-
-		if (id == 0)
-		{
-			id = map.Add(new String(s));
-		}
-		else
-		{
-			map.Get(id)->Append(s);
-		}
-	}
-
+	// Appends the specified text to the test log.
 	void Test::AppendToTestLog(const String& s)
 	{
 		AppendTo(m_testLogId, s);
@@ -241,13 +273,6 @@ namespace MbUnitCpp
     void Test::RunImpl()
     {
     }
-
-	void* Test::SetMetadata(const wchar_t* key, const wchar_t* value)
-	{
-		String s(L"%s={%s},", key, value);
-		AppendTo(m_metadataId, s);
-		return 0;
-	}
 
     // Constructs an empty list of tests.
     TestList::TestList()
@@ -806,7 +831,4 @@ namespace MbUnitCpp
 #pragma comment(linker, "/EXPORT:MbUnitCpp_GetString=_MbUnitCpp_GetString") 
 #pragma comment(linker, "/EXPORT:MbUnitCpp_ReleaseString=_MbUnitCpp_ReleaseString") 
 #pragma comment(linker, "/EXPORT:MbUnitCpp_ReleaseAllStrings=_MbUnitCpp_ReleaseAllStrings") 
-#endif 
-
-
-
+#endif

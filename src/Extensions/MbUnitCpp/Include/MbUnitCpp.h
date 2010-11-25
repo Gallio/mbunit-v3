@@ -14,7 +14,6 @@
 // limitations under the License.
 
 #pragma once
-
 #pragma warning (disable: 4003)
 
 namespace MbUnitCpp
@@ -65,6 +64,7 @@ namespace MbUnitCpp
 
     class Test;
     class TestList;
+	class TestFixture;
     class TestFixtureList;
 
     // Standard outcome of a test.
@@ -202,8 +202,23 @@ namespace MbUnitCpp
 		void WriteLine(const wchar_t* format, ...);
 	};
 
+	// Base class for tests and test fixtures.
+	class DecoratorTarget
+	{
+		private:
+        int m_metadataId;
+
+		protected:
+		DecoratorTarget(int metadataPrototypeId = 0);
+		void AppendTo(int& id, const String& s);
+		virtual void* SetMetadata(const wchar_t* key, const wchar_t* value);
+
+		public:
+		int GetMetadataId() const { return m_metadataId; }
+	};
+
     // Base class for executable tests.
-    class Test
+    class Test : public DecoratorTarget
     {
         int m_index;
         const wchar_t* m_name;
@@ -212,16 +227,14 @@ namespace MbUnitCpp
         Test* m_next;
         int m_assertCount;
 		int m_testLogId;
-        int m_metadataId;
 
         public:
-        Test(int index, const wchar_t* name, const wchar_t* fileName, int lineNumber);
+        Test(TestFixture* testFixture, const wchar_t* name, const wchar_t* fileName, int lineNumber);
         ~Test();
         int GetIndex() const { return m_index; }
         const wchar_t* GetName() const { return m_name; }
         const wchar_t* GetFileName() const { return m_fileName; }
         int GetLineNumber() const { return m_lineNumber; }
-		int GetMetadataId() const { return m_metadataId; }
         Test* GetNext() const { return m_next; }
         void SetNext(Test* test);
         void Run(TestResultData* pTestResultData);
@@ -231,10 +244,6 @@ namespace MbUnitCpp
 
         private:
         void Clear();
-		void AppendTo(int& id, const String& s);
-
-		protected:
-		void* SetMetadata(const wchar_t* key, const wchar_t* value);
 
         protected:
         AssertionFramework Assert;
@@ -257,7 +266,7 @@ namespace MbUnitCpp
     };
 
     // A test fixture that defines a sequence of related child tests.
-    class TestFixture
+    class TestFixture : public DecoratorTarget
     {
         int m_index;
         const wchar_t* m_name;
@@ -313,8 +322,8 @@ namespace MbUnitCpp
 #define MUC_CONCAT(arg1, arg2) MUC_CONCAT1(arg1, arg2)
 #define MUC_CONCAT1(arg1, arg2) MUC_CONCAT2(arg1, arg2)
 #define MUC_CONCAT2(arg1, arg2) arg1##arg2
-#define MUC_LAST_ARG(_0, _1, _2, _3, _4, _5, _6, _7, N, ...) N 
-#define MUC_REVERSED_RANGE 8, 7, 6, 5, 4, 3, 2, 1, 0
+#define MUC_LAST_ARG(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, N, ...) N 
+#define MUC_REVERSED_RANGE 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
 #define MUC_LP (
 #define MUC_RP )
 #define MUC_COUNT_ARGS(...) MUC_LAST_ARG MUC_LP __VA_ARGS__##MUC_REVERSED_RANGE, MUC_REVERSED_RANGE MUC_RP
@@ -326,19 +335,30 @@ namespace MbUnitCpp
 #define MUC_FOR_EACH_6(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_5 MUC_LP Action, __VA_ARGS__ MUC_RP
 #define MUC_FOR_EACH_7(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_6 MUC_LP Action, __VA_ARGS__ MUC_RP
 #define MUC_FOR_EACH_8(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_7 MUC_LP Action, __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_9(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_8 MUC_LP Action, __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_10(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_9 MUC_LP Action, __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_11(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_10 MUC_LP Action, __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_12(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_11 MUC_LP Action, __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_13(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_12 MUC_LP Action, __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_14(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_13 MUC_LP Action, __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_15(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_14 MUC_LP Action, __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_16(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_15 MUC_LP Action, __VA_ARGS__ MUC_RP
 #define MUC_FOR_EACH_N(N, Action, _0, ...) MUC_CONCAT MUC_LP MUC_FOR_EACH_, N MUC_RP MUC_LP Action, _0, __VA_ARGS__ MUC_RP
 #define MUC_FOR_EACH(Action, _0, ...) MUC_FOR_EACH_N MUC_LP MUC_COUNT_ARGS MUC_LP _0, __VA_ARGS__ MUC_RP , Action, _0, __VA_ARGS__ MUC_RP
 #define MUC_PRINT_ARG(x) x;
 
 // Macro to create a new test fixture.
-#define TESTFIXTURE(Name) \
+#define TESTFIXTURE(Name, ...) \
     using namespace MbUnitCpp; \
     namespace NamespaceTestFixture##Name \
     { \
         class TestFixture##Name : public TestFixture \
         { \
             public: \
-            TestFixture##Name() : TestFixture(MbUnitCpp::TestFixture::GetTestFixtureList().GetNextIndex(), L#Name) {} \
+            TestFixture##Name() : TestFixture(MbUnitCpp::TestFixture::GetTestFixtureList().GetNextIndex(), L#Name) \
+			{ \
+				void* _array[] = { 0, __VA_ARGS__ }; \
+			} \
         } testFixtureInstance; \
         \
         MbUnitCpp::TestFixtureRecorder fixtureRecorder(MbUnitCpp::TestFixture::GetTestFixtureList(), &testFixtureInstance); \
@@ -350,7 +370,7 @@ namespace MbUnitCpp
     class Test##Name : public MbUnitCpp::Test \
     { \
         public: \
-		Test##Name() : Test(testFixtureInstance.GetTestList().GetNextIndex(), L#Name, MUC_WFILE, __LINE__) \
+		Test##Name() : Test(&testFixtureInstance, L#Name, MUC_WFILE, __LINE__) \
 		{ \
 			void* _array[] = { 0, __VA_ARGS__ }; \
 		} \
@@ -361,7 +381,7 @@ namespace MbUnitCpp
     MbUnitCpp::TestRecorder recorder##Name (testFixtureInstance.GetTestList(), &test##Name##Instance); \
     void Test##Name::RunImpl()
 
-// Attributes for tests.
+// Decorators.
 #define CATEGORY(category) SetMetadata(L"Category", L#category)
 #define AUTHOR(authorName) SetMetadata(L"Author", L#authorName)
 #define DESCRIPTION(description) SetMetadata(L"Description", L#description)

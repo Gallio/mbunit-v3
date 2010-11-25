@@ -16,7 +16,7 @@
 #include "stdafx.h"
 #include "MbUnitCpp.h"
 
-TESTFIXTURE(Metadata)
+TESTFIXTURE(MetadataInTest)
 {
     TEST(WithCategory, 
 		CATEGORY(Sample))
@@ -37,6 +37,16 @@ TESTFIXTURE(Metadata)
 		CATEGORY(Sample), 
 		AUTHOR(Charlie Chaplin), 
 		DESCRIPTION(This is a simple test))
+    {
+    }
+}
+
+TESTFIXTURE(MetadataInTestFixture,
+		CATEGORY(Sample), 
+		AUTHOR(Charlie Chaplin), 
+		DESCRIPTION(This is a simple test))
+{
+    TEST(Sample)
     {
     }
 }

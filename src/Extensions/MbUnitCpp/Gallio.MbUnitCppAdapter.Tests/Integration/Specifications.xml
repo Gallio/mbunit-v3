@@ -100,10 +100,13 @@
   <Test name="TestLog/WriteLine_once" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies quickly spot the jinxed grave.\n" />
   <Test name="TestLog/WriteLine_multiple_times" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies \nquickly spot \nthe jinxed grave.\n" />
 
-  <Test name="Metadata" expectedStatus="Passed" expectedAssertCount="0" />
-  <Test name="Metadata/WithCategory" expectedStatus="Passed" expectedAssertCount="0" expectedMetadata="Category=Sample" />
-  <Test name="Metadata/WithAuthor" expectedStatus="Passed" expectedAssertCount="0" expectedMetadata="Author=Charlie Chaplin" />
-  <Test name="Metadata/WithDescription" expectedStatus="Passed" expectedAssertCount="0" expectedMetadata="Description=This is a simple test" />
-  <Test name="Metadata/WithSeveralAttributes" expectedStatus="Passed" expectedAssertCount="0" expectedMetadata="Category=Sample,Author=Charlie Chaplin,Description=This is a simple test" />
+  <Test name="MetadataInTest" expectedStatus="Passed" expectedAssertCount="0" />
+  <Test name="MetadataInTest/WithCategory" expectedStatus="Passed" expectedAssertCount="0" expectedMetadata="Category=Sample" />
+  <Test name="MetadataInTest/WithAuthor" expectedStatus="Passed" expectedAssertCount="0" expectedMetadata="Author=Charlie Chaplin" />
+  <Test name="MetadataInTest/WithDescription" expectedStatus="Passed" expectedAssertCount="0" expectedMetadata="Description=This is a simple test" />
+  <Test name="MetadataInTest/WithSeveralAttributes" expectedStatus="Passed" expectedAssertCount="0" expectedMetadata="Category=Sample,Author=Charlie Chaplin,Description=This is a simple test" />
+
+  <Test name="MetadataInTestFixture" expectedStatus="Passed" expectedAssertCount="0" />
+  <Test name="MetadataInTestFixture/Sample" expectedStatus="Passed" expectedAssertCount="0" expectedMetadata="Category=Sample,Author=Charlie Chaplin,Description=This is a simple test" />
 
 </Specifications>
