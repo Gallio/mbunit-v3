@@ -30,7 +30,7 @@ namespace MbUnit.Framework
     public class ExpectedArgumentNullExceptionAttribute : ExpectedExceptionAttribute
     {
         /// <summary>
-        /// Declares that the associated test is expected to throw an <see cref="ArgumentOutOfRangeException" />.
+        /// Declares that the associated test is expected to throw an <see cref="ArgumentNullException" />.
         /// </summary>
         public ExpectedArgumentNullExceptionAttribute()
             : base(typeof(ArgumentNullException))
@@ -38,7 +38,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Declares that the associated test is expected to throw an <see cref="ArgumentOutOfRangeException" />.
+        /// Declares that the associated test is expected to throw an <see cref="ArgumentNullException" />.
         /// </summary>
         /// <remarks>
         /// <para>
