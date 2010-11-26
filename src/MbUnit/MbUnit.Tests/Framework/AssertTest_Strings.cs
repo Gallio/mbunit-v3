@@ -23,6 +23,81 @@ namespace MbUnit.Tests.Framework
     [TestsOn(typeof(Assert))]
     public class AssertTest_Strings : BaseAssertTest
     {
+        #region Contains
+        [Test]
+        public void Contains_simple_test()
+        {
+            Assert.Contains("Abcdef", "cde");
+        }
+
+        [Test]
+        public void Contains_fails_when_simple_substring_is_not_found()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.Contains("ABCDEF","xyz"));
+            Assert.Count(1, failures);
+            Assert.AreEqual("Expected string to contain a particular substring.", failures[0].Description);
+            Assert.AreEqual("Expected Substring", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("\"xyz\"", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("\"ABCDEF\"", failures[0].LabeledValues[1].FormattedValue.ToString());
+        }
+
+        [Test, ExpectedArgumentNullException("Value cannot be null.")]
+        public void Contains_fails_when_expected_substring_is_null()
+        {
+            Assert.Contains("Abcdef", null);
+        }
+
+        [Test]
+        public void Contains_fail_test_with_custom_message()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.Contains("ABCDEF", "xyz","{0} message","custom"));
+            Assert.Count(1, failures);
+            Assert.AreEqual("Expected string to contain a particular substring.", failures[0].Description);
+            Assert.AreEqual("Expected Substring", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("\"xyz\"", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("\"ABCDEF\"", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("custom message", failures[0].Message);
+        }
+        #endregion
+        
+        #region DoesNotContain 
+        
+        [Test]
+        public void DoesNotContain_simple_test()
+        {
+            Assert.DoesNotContain("Abcdef", "xyz");
+        }
+        
+        [Test]
+        public void DoesNotContain_fails_when_simple_substring_is_found()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.DoesNotContain("ABCDEF", "ABCDE"));
+            Assert.Count(1, failures);
+            Assert.AreEqual("Expected string to not contain a particular substring.", failures[0].Description);
+            Assert.AreEqual("Unexpected Substring", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("\"ABCDE\"", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("\"ABCDEF\"", failures[0].LabeledValues[1].FormattedValue.ToString());
+        }
+
+        [Test, ExpectedArgumentNullException("Value cannot be null.")]
+        public void DoesNotContain_fails_when_expected_substring_is_null()
+        {
+            Assert.DoesNotContain("Abcdef", null);
+        }
+        
+        [Test]
+        public void DoesNotContain_fail_test_with_custom_message()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.DoesNotContain("ABCDEF", "BCD", "{0} message", "custom"));
+            Assert.Count(1, failures);
+            Assert.AreEqual("Expected string to not contain a particular substring.", failures[0].Description);
+            Assert.AreEqual("Unexpected Substring", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("\"BCD\"", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("\"ABCDEF\"", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("custom message", failures[0].Message);
+        } 
+        #endregion
+
         #region AreEqual
         [Test]
         public void AreEqualIgnoreCase_Test_with_non_null_values()
