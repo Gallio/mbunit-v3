@@ -19,8 +19,9 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using Mono.Cecil.Binary;
+using Mono.Cecil;
 using Mono.Cecil.Metadata;
+using Mono.Cecil.PE;
 
 namespace Gallio.Common.Reflection
 {
@@ -196,7 +197,7 @@ namespace Gallio.Common.Reflection
             ushort characteristics = reader.ReadUInt16();
 
             // Read PE magic number from Standard Fields to determine format.
-            PEFormat peFormat = (PEFormat) reader.ReadUInt16();
+            PEFormat peFormat = (PEFormat)reader.ReadUInt16();
             if (peFormat != PEFormat.PE32 && peFormat != PEFormat.PE32Plus)
                 return null;
 
@@ -280,7 +281,7 @@ namespace Gallio.Common.Reflection
                 assemblyName, assemblyReferences, runtimeVersion);
         }
 
-        private static uint ResolveRva(Section[] sections, uint rva)
+        private static uint ResolveRva(IEnumerable<Section> sections, uint rva)
         {
             foreach (Section section in sections)
             {
@@ -293,29 +294,24 @@ namespace Gallio.Common.Reflection
 
         private sealed class ImageReader
         {
-            private readonly Image image;
+            private readonly AssemblyDefinition assemblyDefinition;
 
             public ImageReader(Stream stream)
             {
-                image = Image.GetImage(stream);
+                assemblyDefinition = AssemblyDefinition.ReadAssembly(stream);
             }
 
             public AssemblyName GetAssemblyName()
             {
-                var assemblyTable = GetTable<AssemblyTable>(AssemblyTable.RId);
-                var assemblyRow = (AssemblyRow) assemblyTable.Rows[0];
-
-                AssemblyName assemblyName = new AssemblyName()
+                var assemblyName = new AssemblyName
                 {
-                    Name = ReadString(assemblyRow.Name),
-                    Version =
-                        new Version(assemblyRow.MajorVersion, assemblyRow.MinorVersion, assemblyRow.BuildNumber,
-                            assemblyRow.RevisionNumber),
-                    CultureInfo = new CultureInfo(ReadString(assemblyRow.Culture))
+                    Name = assemblyDefinition.Name.Name,
+                    Version = assemblyDefinition.Name.Version,
+                    CultureInfo = new CultureInfo(assemblyDefinition.Name.Culture)
                 };
 
-                if (assemblyRow.PublicKey != 0)
-                    assemblyName.SetPublicKey(ReadBlob(assemblyRow.PublicKey));
+                if (assemblyDefinition.Name.PublicKey.Length > 0)
+                    assemblyName.SetPublicKey(assemblyDefinition.Name.PublicKey);
 
                 return assemblyName;
             }
@@ -323,50 +319,26 @@ namespace Gallio.Common.Reflection
             public IList<AssemblyName> GetAssemblyReferences()
             {
                 var assemblyReferences = new List<AssemblyName>();
-                var assemblyRefTable = GetTable<AssemblyRefTable>(AssemblyRefTable.RId);
 
-                if (assemblyRefTable != null)
+                foreach (var reference in assemblyDefinition.MainModule.AssemblyReferences)
                 {
-                    foreach (AssemblyRefRow assemblyRefRow in assemblyRefTable.Rows)
+                    var assemblyName = new AssemblyName
                     {
-                        AssemblyName assemblyName = new AssemblyName()
-                        {
-                            Name = ReadString(assemblyRefRow.Name),
-                            Version =
-                                new Version(assemblyRefRow.MajorVersion, assemblyRefRow.MinorVersion,
-                                    assemblyRefRow.BuildNumber, assemblyRefRow.RevisionNumber),
-                            CultureInfo = new CultureInfo(ReadString(assemblyRefRow.Culture))
-                        };
+                        Name = reference.Name,
+                        Version = reference.Version,
+                        CultureInfo = new CultureInfo(reference.Culture)
+                    };
 
-                        if (assemblyRefRow.PublicKeyOrToken != 0)
-                        {
-                            if ((assemblyRefRow.Flags & Mono.Cecil.AssemblyFlags.PublicKey) != 0)
-                                assemblyName.SetPublicKey(ReadBlob(assemblyRefRow.PublicKeyOrToken));
-                            else
-                                assemblyName.SetPublicKeyToken(ReadBlob(assemblyRefRow.PublicKeyOrToken));
-                        }
+                    if (reference.HasPublicKey)
+                        assemblyName.SetPublicKey(reference.PublicKey);
 
-                        assemblyReferences.Add(assemblyName);
-                    }
+                    if (reference.PublicKeyToken != null)
+                        assemblyName.SetPublicKeyToken(reference.PublicKeyToken);
+
+                    assemblyReferences.Add(assemblyName);
                 }
 
                 return assemblyReferences;
-            }
-
-            private T GetTable<T>(int rid)
-                where T : IMetadataTable
-            {
-                return (T) image.MetadataRoot.Streams.TablesHeap.Tables[rid];
-            }
-
-            private string ReadString(uint stringsIdx)
-            {
-                return image.MetadataRoot.Streams.StringsHeap[stringsIdx];
-            }
-
-            private byte[] ReadBlob(uint blobIdx)
-            {
-                return image.MetadataRoot.Streams.BlobHeap.Read(blobIdx);
             }
         }
 
