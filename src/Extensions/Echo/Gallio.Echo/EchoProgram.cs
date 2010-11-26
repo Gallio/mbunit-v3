@@ -59,7 +59,6 @@ namespace Gallio.Echo
         /// <inheritdoc />
         protected override int RunImpl(string[] args)
         {
-            ShowBanner();
             InstallCancelHandler();
 
             if (!ParseArguments(args))
@@ -67,6 +66,7 @@ namespace Gallio.Echo
                 ShowHelp();
                 return ResultCode.InvalidArguments;
             }
+            ShowBanner();
 
             if (Arguments.Help)
             {
@@ -203,6 +203,9 @@ namespace Gallio.Echo
 
         private void ShowBanner()
         {
+            if (Arguments.NoLogo)
+                return;
+
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine(ApplicationTitle);

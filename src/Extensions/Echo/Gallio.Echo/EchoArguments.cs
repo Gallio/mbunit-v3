@@ -235,6 +235,14 @@ namespace Gallio.Echo
              )]
         public bool NoEchoResults;
 
+        [CommandLineArgument(            
+             CommandLineArgumentFlags.AtMostOnce,
+             ShortName = "nl",
+             LongName = "no-logo",
+             Description = "Do not show the logo for echo."
+             )]
+        public bool NoLogo;
+
         [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,
              ShortName = "np",

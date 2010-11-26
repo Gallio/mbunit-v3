@@ -33,7 +33,7 @@ namespace Gallio.Echo.Tests
         {
             ProcessTask task = RunEcho("/ignore-annotations /filter:Type:PassingTests");
             Assert.Contains(task.ConsoleOutput, "2 run, 2 passed, 0 failed, 0 inconclusive, 0 skipped");
-            Assert.AreEqual(task.ExitCode, 0, "Exit code for passing tests should be zero.");
+            Assert.AreEqual(0, task.ExitCode , "Exit code for passing tests should be zero.");
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace Gallio.Echo.Tests
         {
             ProcessTask task = RunEcho("/ignore-annotations /filter:Type:SimpleTest");
             Assert.Contains(task.ConsoleOutput, "2 run, 1 passed, 1 failed, 0 inconclusive, 0 skipped");
-            Assert.AreEqual(task.ExitCode, 1, "Exit code for failing tests should be one.");
+            Assert.AreEqual(1, task.ExitCode,  "Exit code for failing tests should be one.");
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace Gallio.Echo.Tests
             ProcessTask task = RunEcho("/ignore-annotations /filter:Type:UnhandledExceptionTest");
             Assert.Contains(task.ConsoleOutput, "2 run, 2 passed, 0 failed, 0 inconclusive, 0 skipped");
             Assert.Contains(task.ConsoleOutput, "Unhandled!");
-            Assert.AreEqual(task.ExitCode, 0, "Exit code should be zero because the unhandled exception test still passes.");
+            Assert.AreEqual(0, task.ExitCode,  "Exit code should be zero because the unhandled exception test still passes.");
         }
 
         [Test]
@@ -60,9 +60,18 @@ namespace Gallio.Echo.Tests
             Assert.Contains(task.ConsoleOutput, "2 run, 2 passed, 0 failed, 0 inconclusive, 0 skipped");
             Assert.Contains(task.ConsoleOutput, "Runner Extensions: DebugExtension,Gallio");
             Assert.Contains(task.ConsoleOutput, "TestStepStarted");
-            Assert.AreEqual(task.ExitCode, 0, "Exit code should be zero because the unhandled exception test still passes.");
+            Assert.AreEqual(0, task.ExitCode, "Exit code should be zero because the unhandled exception test still passes.");
         }
 
+        [Test]
+        public void EchoDoesNotShowLogoAndReturnsAnExitCodeOfZero()
+        {
+            ProcessTask task = RunEcho("/no-logo");
+            Assert.DoesNotContain(task.ConsoleOutput,"Gallio Echo - Version ");
+            Assert.DoesNotContain(task.ConsoleOutput, "Get the latest version at http://www.gallio.org");
+            Assert.AreEqual(1, task.ExitCode, "Exit code with no tests should be one.");
+        }
+        
         private ProcessTask RunEcho(string options)
         {
             string testAssemblyPath = AssemblyUtils.GetAssemblyLocalPath(typeof(SimpleTest).Assembly);
