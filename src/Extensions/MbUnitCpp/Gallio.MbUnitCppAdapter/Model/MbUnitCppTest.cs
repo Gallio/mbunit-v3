@@ -50,9 +50,30 @@ namespace Gallio.MbUnitCppAdapter.Model
         {
             this.testInfoData = testInfoData;
             Id = testInfoData.GetId();
-            Kind = testInfoData.IsTestFixture ? TestKinds.Fixture : TestKinds.Test;
-            IsTestCase = !testInfoData.IsTestFixture;
+            Kind = GetKind(testInfoData.Kind);
+            IsTestCase = !testInfoData.HasChildren;
             Metadata.AddAll(testInfoData.GetMetadata(resolver));
+        }
+
+        private static string GetKind(NativeTestKind nativeKind)
+        {
+            switch (nativeKind)
+            {
+                case NativeTestKind.Fixture:
+                    return TestKinds.Fixture;
+
+                case NativeTestKind.Test:
+                    return TestKinds.Test;
+
+                case NativeTestKind.Group:
+                    return TestKinds.Group;
+
+                case NativeTestKind.RowTest:
+                    return TestKinds.Test;
+                
+                default:
+                    throw new ArgumentException("nativeKind");
+            }
         }
     }
 }

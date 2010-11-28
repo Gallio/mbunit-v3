@@ -145,7 +145,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         {
             if (!IsValid)
                 throw new InvalidOperationException("The target MbUnitCpp test library is not valid.");
-            if (testInfoData.IsTestFixture)
+            if (testInfoData.HasChildren)
                 throw new InvalidOperationException("Not a valid test case.");
 
             var function = (RunTestDelegate)Marshal.GetDelegateForFunctionPointer(procRunTest, typeof(RunTestDelegate));

@@ -40,6 +40,7 @@
     <Compile Include="Model\Bridge\FakeMemberInfo.cs" />
     <Compile Include="Model\Bridge\FakeTypeInfo.cs" />
     <Compile Include="Model\Bridge\IStringResolver.cs" />
+    <Compile Include="Model\Bridge\NativeTestKind.cs" />
     <Compile Include="Model\Bridge\NativeTestStepResult.cs" />
     <Compile Include="Model\Bridge\NativeOutcome.cs" />
     <Compile Include="Model\Bridge\NativeTestInfoData.cs" />

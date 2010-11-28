@@ -106,7 +106,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
             Test test = testCommand.Test;
             progressMonitor.SetStatus(test.Name);
             var mbUnitCppTest = test as MbUnitCppTest;
-            return ((mbUnitCppTest == null) || mbUnitCppTest.TestInfoData.IsTestFixture)
+            return ((mbUnitCppTest == null) || mbUnitCppTest.TestInfoData.HasChildren)
                 ? RunChildTests(testCommand, parentTestStep, progressMonitor)
                 : RunTestStep(testCommand, mbUnitCppTest.TestInfoData, parentTestStep, progressMonitor);
         }

@@ -130,7 +130,8 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
         /// <param name="progressMonitor">The active progress monitor for the task.</param>
         protected void BuildTestModel(UnmanagedTestRepository repository, IProgressMonitor progressMonitor)
         {
-            Test testFixture = TestModel.RootTest;
+            Test fixture = null;
+            Test group = null;
 
             foreach (var testInfoData in repository.GetTests())
             {
@@ -139,14 +140,28 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
 
                 var test = new MbUnitCppTest(testInfoData, repository);
 
-                if (testInfoData.IsTestFixture)
+                switch (testInfoData.Kind)
                 {
-                    TestModel.RootTest.AddChild(test);
-                    testFixture = test;
-                }
-                else
-                {
-                    testFixture.AddChild(test);
+                    case NativeTestKind.Fixture:
+                        fixture = test;
+                        TestModel.RootTest.AddChild(fixture);
+                        break;
+                
+                    case NativeTestKind.Test:
+                        fixture.AddChild(test);
+                        break;
+
+                    case NativeTestKind.Group:
+                        group = test;
+                        fixture.AddChild(group);
+                        break;
+
+                    case NativeTestKind.RowTest:
+                        group.AddChild(test);
+                        break;
+             
+                    default:
+                        throw new ModelException(String.Format("Unexpected or invalid MbUnitCpp test kind '{0}'.", testInfoData.Kind));
                 }
             }
 

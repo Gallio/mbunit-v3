@@ -21,6 +21,7 @@ using Gallio.MbUnitCppAdapter.Model.Bridge;
 using Gallio.Model;
 using Gallio.Framework;
 using MbUnit.Framework;
+using System.Runtime.InteropServices;
 
 namespace Gallio.MbUnitCppAdapter.Tests.Model.Bridge
 {
@@ -37,15 +38,24 @@ namespace Gallio.MbUnitCppAdapter.Tests.Model.Bridge
             new UnmanagedTestRepository(null);
         }
 
-        [Test]
+        [Test, Explicit]
         public void GetTests()
         {
             using (var repository = new UnmanagedTestRepository(resources))
             {
                 Assert.IsTrue(repository.IsValid);
-                var testInfoItems = repository.GetTests().ToArray();
-                TestLog.WriteLine("Found {0} test item(s).", testInfoItems.Length);
-                Assert.IsNotEmpty(testInfoItems);
+                TestInfoData[] items = repository.GetTests().ToArray();
+                Assert.IsNotEmpty(items);
+
+                using (TestLog.BeginSection(String.Format("Found {0} test item(s):", items.Length)))
+                {
+                    foreach (TestInfoData item in items)
+                    {
+                        DiagnosticLog.WriteLine("{0}: Fixture={1}, Test={2}, Row={3}, Kind={4}", 
+                            item.Name, item.Native.Position.pTestFixture, item.Native.Position.pTest, 
+                            item.Native.Position.pRow, item.Kind);
+                    }
+                }
             }
         }
     }

@@ -46,7 +46,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         /// <returns>A unique key name.</returns>
         public string GetId()
         {
-            return "MbUnitCpp_" + ((native.Position.pTest != IntPtr.Zero) ? native.Position.pTest : native.Position.pTestFixture);
+            return String.Format("MbUnitCpp_{0}_{1}_{2}", native.Position.pTestFixture, native.Position.pTest, native.Position.pRow);
         }
 
         /// <summary>
@@ -78,13 +78,13 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         }
 
         /// <summary>
-        /// Determines whether the current info describes a test fixture or a test case.
+        /// Gets the test kind.
         /// </summary>
-        public bool IsTestFixture
+        public NativeTestKind Kind
         {
             get
             {
-                return native.IsTestFixture;
+                return native.Kind;
             }
         }
 
@@ -96,6 +96,17 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
             get
             {
                 return native;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether this test is expected to have child tests.
+        /// </summary>
+        public bool HasChildren
+        {
+            get
+            {
+                return (Kind == NativeTestKind.Fixture) || (Kind == NativeTestKind.Group);
             }
         }
 
@@ -117,7 +128,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         {
             get
             {
-                return native.IsTestFixture
+                return (native.Kind == NativeTestKind.Fixture)
                     ? (ICodeElementInfo)new FakeTypeInfo(Name) 
                     : new FakeMemberInfo(Name);
             }

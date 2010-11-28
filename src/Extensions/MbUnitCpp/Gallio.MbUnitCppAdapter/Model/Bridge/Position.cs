@@ -34,5 +34,10 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         /// A handle to the current test.
         /// </summary>
         public IntPtr pTest;
+
+        /// <summary>
+        ///  A handle to the current row.
+        /// </summary>
+        public IntPtr pRow;
     }
 }

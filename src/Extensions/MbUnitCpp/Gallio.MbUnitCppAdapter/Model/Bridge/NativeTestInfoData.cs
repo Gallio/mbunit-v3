@@ -37,9 +37,9 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         public int Index;
 
         /// <summary>
-        /// Determines whether the current info describes a test fixture or a test case.
+        /// The MbUnitCpp native test kind.
         /// </summary>
-        public bool IsTestFixture;
+        public NativeTestKind Kind;
 
         /// <summary>
         /// A pointer to the unmanaged unicode string that holds the source file name where the fixture/test is defined.

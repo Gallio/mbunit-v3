@@ -50,7 +50,7 @@ namespace Gallio.MbUnitCppAdapter.Tests.Integration
         }
 
         [Test, XmlData("//Test", ResourcePath = "Specifications.xml")]
-        public void Test(
+        public void RunRegularTests(
             [Bind("@name")] string fullName,
             [Bind("@expectedStatus")] TestStatus expectedStatus,
             [Bind("@expectedAssertCount")] int expectedAssertCount,
@@ -80,6 +80,23 @@ namespace Gallio.MbUnitCppAdapter.Tests.Integration
                         Assert.IsTrue(run.Step.Metadata.Contains(pair[0], pair[1]), "Expected to find metadata '{0}' = '{1}'", pair[0], pair[1]);
                 }
             });
+        }
+
+        [Test]
+        [Row("DataDriven/BoundToFirst", new[] { 
+            "x = 123", 
+            "x = 456", 
+            "x = 789" })]
+        [Row("DataDriven/BoundToSecond", new[] { 
+            "i = 0, text = Red, d = 3.14159", 
+            "i = 1, text = Green, d = 1.41421", 
+            "i = 2, text = Blue, d = 2.71828" })]
+        public void RunDataDrivenTests(string fullName, string[] expectedTestLogOutput)
+        {
+            TestStepRun run = Runner.GetPrimaryTestStepRun(r => r.Step.FullName == fullName);
+            Assert.AreElementsEqualIgnoringOrder(expectedTestLogOutput,
+                run.Children.Select(x => x.TestLog.GetStream(MarkupStreamNames.Default).ToString()),
+                (x, y) => y.Contains(x));
         }
     }
 }

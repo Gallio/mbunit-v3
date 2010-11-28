@@ -25,15 +25,20 @@ TESTFIXTURE(DataDriven)
 		ROW(789)
 	}
 
-	DATA(Second, int i, const char* text, double d)
+    TEST(BoundToFirst, BIND(First, Row))
+    {
+		TestLog.WriteLine(L"x = %d", Row.x);
+    }
+
+	DATA(Second, int i, const wchar_t* text, double d)
 	{
-		ROW(0, "Red", 3.14159)
-		ROW(1, "Green", 1.41421)
-		ROW(2, "Blue", 2.71828)
+		ROW(0, L"Red", 3.14159)
+		ROW(1, L"Green", 1.41421)
+		ROW(2, L"Blue", 2.71828)
 	}
 
-    TEST(Sample)
+    TEST(BoundToSecond, BIND(Second, Row))
     {
-		// Binding not implemented yet.
+		TestLog.WriteLine(L"i = %d, text = %s, d = %lf", Row.i, Row.text, Row.d);
     }
 }

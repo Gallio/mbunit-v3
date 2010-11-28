@@ -21,7 +21,7 @@ namespace MbUnitCpp
 	// A simple general purpose string container with formatting capabilities.
 	class String
 	{
-		wchar_t* m_data;
+		wchar_t* data;
 		void Initialize(const wchar_t* format, va_list argList);
 
 		public:
@@ -29,7 +29,7 @@ namespace MbUnitCpp
 		String(const wchar_t* format, ...);
 		String(const wchar_t* format, va_list args);
 		~String();
-		wchar_t* GetData() const { return m_data; };
+		wchar_t* GetData() const { return data; };
 		void Append(const String& string);
 	};
 
@@ -48,8 +48,8 @@ namespace MbUnitCpp
 	// TODO: Use a hash table for more efficiency.
 	class StringMap
 	{
-		StringMapNode* m_head;
-		StringId m_nextId;
+		StringMapNode* head;
+		StringId nextId;
 
 		public:
 		StringMap();
@@ -139,7 +139,7 @@ namespace MbUnitCpp
     // The MbUnitCpp Assertion Framework.
     class AssertionFramework
     {
-        Test *m_test;
+        Test *test;
         void IncrementAssertCount();
 		StringMap& Map() const;
 
@@ -194,7 +194,7 @@ namespace MbUnitCpp
 	// Provides an access to the Gallio test log.
 	class TestLogRecorder
 	{
-        Test *m_test;
+        Test *test;
 
 		public:
 		TestLogRecorder(Test* test);
@@ -206,41 +206,58 @@ namespace MbUnitCpp
 	class DecoratorTarget
 	{
 		private:
-        int m_metadataId;
+        int metadataId;
 
 		protected:
 		DecoratorTarget(int metadataPrototypeId = 0);
 		void AppendTo(int& id, const String& s);
-		virtual void* SetMetadata(const wchar_t* key, const wchar_t* value);
+		virtual void SetMetadata(const wchar_t* key, const wchar_t* value);
+		void NoOp() const { }
 
 		public:
-		int GetMetadataId() const { return m_metadataId; }
+		int GetMetadataId() const { return metadataId; }
+	};
+	
+	class AbstractDataSource
+	{
+		private:
+        void* head;
+	    
+		protected:
+		AbstractDataSource();
+		void SetHead(void* dataRow);
+
+		public:
+        void* GetHead() const { return head; }
+		virtual void* GetNextRow(void* dataRow) = 0;
 	};
 
     // Base class for executable tests.
     class Test : public DecoratorTarget
     {
-        int m_index;
-        const wchar_t* m_name;
-        const wchar_t* m_fileName;
-        int m_lineNumber;
-        Test* m_next;
-        int m_assertCount;
-		int m_testLogId;
+        int index;
+        const wchar_t* name;
+        const wchar_t* fileName;
+        int lineNumber;
+        Test* next;
+        int assertCount;
+		int testLogId;
+		AbstractDataSource* dataSource;
 
         public:
         Test(TestFixture* testFixture, const wchar_t* name, const wchar_t* fileName, int lineNumber);
         ~Test();
-        int GetIndex() const { return m_index; }
-        const wchar_t* GetName() const { return m_name; }
-        const wchar_t* GetFileName() const { return m_fileName; }
-        int GetLineNumber() const { return m_lineNumber; }
-        Test* GetNext() const { return m_next; }
+        int GetIndex() const { return index; }
+        const wchar_t* GetName() const { return name; }
+        const wchar_t* GetFileName() const { return fileName; }
+        int GetLineNumber() const { return lineNumber; }
+        Test* GetNext() const { return next; }
         void SetNext(Test* test);
-        void Run(TestResultData* pTestResultData);
+        void Run(TestResultData* pTestResultData, void* dataRow);
         virtual void RunImpl();
         void IncrementAssertCount();
 		void AppendToTestLog(const String& s);
+		AbstractDataSource* GetDataSource() const { return dataSource; }
 
         private:
         void Clear();
@@ -248,38 +265,40 @@ namespace MbUnitCpp
         protected:
         AssertionFramework Assert;
 		TestLogRecorder TestLog;
+		void Bind(AbstractDataSource* dataSource);
+		virtual void BindDataRow(void* dataRow);
     };
 
     // A chained list of tests.
     class TestList
     {
         private:
-        Test* m_head;
-        Test* m_tail;
-        int m_nextIndex;
+        Test* head;
+        Test* tail;
+        int nextIndex;
     
         public:
         TestList();
         void Add(Test* test);
-        Test* GetHead() const { return m_head; }
+        Test* GetHead() const { return head; }
         int GetNextIndex();
     };
 
     // A test fixture that defines a sequence of related child tests.
     class TestFixture : public DecoratorTarget
     {
-        int m_index;
-        const wchar_t* m_name;
-        TestList m_children;
-        TestFixture* m_next;
+        int index;
+        const wchar_t* name;
+        TestList children;
+        TestFixture* next;
 
         public:
         TestFixture(int index, const wchar_t* name);
         ~TestFixture();
-        int GetIndex() const { return m_index; }
-        TestFixture* GetNext() const { return m_next; }
+        int GetIndex() const { return index; }
+        TestFixture* GetNext() const { return next; }
         void SetNext(TestFixture* pTestFixture);
-        const wchar_t* GetName() const { return m_name; }
+        const wchar_t* GetName() const { return name; }
         TestList& GetTestList();
         static TestFixtureList& GetTestFixtureList();
 		static StringMap& GetStringMap();
@@ -289,14 +308,14 @@ namespace MbUnitCpp
     class TestFixtureList
     {
         private:
-        TestFixture* m_head;
-        TestFixture* m_tail;
-        int m_nextIndex;
+        TestFixture* head;
+        TestFixture* tail;
+        int nextIndex;
     
         public:
         TestFixtureList();
         void Add(TestFixture* pTestFixture);
-        TestFixture* GetHead() const { return m_head; }
+        TestFixture* GetHead() const { return head; }
         int GetNextIndex();
     };
 
@@ -326,6 +345,7 @@ namespace MbUnitCpp
 #define MUC_REVERSED_RANGE 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
 #define MUC_LP (
 #define MUC_RP )
+#define MUC_SC ;
 #define MUC_COUNT_ARGS(...) MUC_LAST_ARG MUC_LP __VA_ARGS__##MUC_REVERSED_RANGE, MUC_REVERSED_RANGE MUC_RP
 #define MUC_FOR_EACH_1(Action, _0, ...) Action MUC_LP _0 MUC_RP
 #define MUC_FOR_EACH_2(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_1 MUC_LP Action, __VA_ARGS__ MUC_RP
@@ -347,18 +367,23 @@ namespace MbUnitCpp
 #define MUC_FOR_EACH(Action, _0, ...) MUC_FOR_EACH_N MUC_LP MUC_COUNT_ARGS MUC_LP _0, __VA_ARGS__ MUC_RP , Action, _0, __VA_ARGS__ MUC_RP
 #define MUC_PRINT_ARG(x) x;
 
+//#define TOWSTR(pstr, buffer) \
+//	size_t _len##buffer = mbstowcs(0, pstr, -1); \
+//	wchar_t buffer[_len##buffer + 1]; \
+//	mbstowcs(buffer, pstr, _len##buffer);
+
 // Macro to create a new test fixture.
-#define TESTFIXTURE(Name, ...) \
+#define TESTFIXTURE(Name, ...) MUC_TESTFIXTURE MUC_LP Name, NoOp() MUC_SC, __VA_ARGS__ MUC_RP
+#define MUC_TESTFIXTURE(Name, _0, ...) \
     using namespace MbUnitCpp; \
     namespace NamespaceTestFixture##Name \
     { \
         class TestFixture##Name : public TestFixture \
         { \
             public: \
-            TestFixture##Name() : TestFixture(MbUnitCpp::TestFixture::GetTestFixtureList().GetNextIndex(), L#Name) \
-			{ \
-				void* _array[] = { 0, __VA_ARGS__ }; \
-			} \
+            TestFixture##Name() : TestFixture(MbUnitCpp::TestFixture::GetTestFixtureList().GetNextIndex(), L#Name) { Decorate(); } \
+			private: \
+			void Decorate() { MUC_FOR_EACH MUC_LP MUC_PRINT_ARG, _0, __VA_ARGS__ MUC_RP } \
         } testFixtureInstance; \
         \
         MbUnitCpp::TestFixtureRecorder fixtureRecorder(MbUnitCpp::TestFixture::GetTestFixtureList(), &testFixtureInstance); \
@@ -366,57 +391,60 @@ namespace MbUnitCpp
     namespace NamespaceTestFixture##Name
 
 // Macro to create a new test.
-#define TEST(Name, ...) \
+#define TEST(Name, ...) MUC_TEST MUC_LP Name, NoOp() MUC_SC, __VA_ARGS__ MUC_RP
+#define MUC_TEST(Name, _0, ...) \
     class Test##Name : public MbUnitCpp::Test \
     { \
         public: \
-		Test##Name() : Test(&testFixtureInstance, L#Name, MUC_WFILE, __LINE__) \
-		{ \
-			void* _array[] = { 0, __VA_ARGS__ }; \
-		} \
+		Test##Name() : Test(&testFixtureInstance, L#Name, MUC_WFILE, __LINE__) { Decorate(); } \
         private: \
+		void Decorate() { MUC_FOR_EACH MUC_LP MUC_PRINT_ARG, _0, __VA_ARGS__ MUC_RP } \
         virtual void RunImpl(); \
     } test##Name##Instance; \
-    \
     MbUnitCpp::TestRecorder recorder##Name (testFixtureInstance.GetTestList(), &test##Name##Instance); \
     void Test##Name::RunImpl()
 
-// Decorators.
+// Metadata decorators.
 #define CATEGORY(category) SetMetadata(L"Category", L#category)
 #define AUTHOR(authorName) SetMetadata(L"Author", L#authorName)
 #define DESCRIPTION(description) SetMetadata(L"Description", L#description)
 
 // Data source for data-driven tests.
-#define DATA(Name, _0, ...) \
-    class DataSource##Name \
+#define DATA(name, _0, ...) \
+    class DataSource##name : public AbstractDataSource \
     { \
         public: \
-        struct Item \
+        struct DataRow \
         { \
+			struct DataRow* next; \
             MUC_FOR_EACH MUC_LP MUC_PRINT_ARG, _0, __VA_ARGS__ MUC_RP \
-            struct Item* next; \
         }; \
         private: \
-        struct Item* head; \
-        struct Item* tail; \
+        struct DataRow* tail; \
         void Populate(); \
-        void Add(const struct Item& item) \
+        void Add(const struct DataRow& dataRow) \
         { \
-            struct Item* p = new struct Item(item); \
-            if (tail == 0) { head = p; } else { tail->next = p; } \
+            struct DataRow* p = new struct DataRow(dataRow); \
+            if (tail == 0) { SetHead(p); } else { tail->next = p; } \
             tail = p; \
         } \
         public: \
-        DataSource##Name() : head(0), tail(0) { Populate(); } \
-        ~DataSource##Name() \
+		virtual void* GetNextRow(void* dataRow) { return ((struct DataRow*)dataRow)->next; } \
+        DataSource##name() : tail(0) { Populate(); } \
+        ~DataSource##name() \
         { \
-            struct Item* current = head; \
-            while (current != 0) { struct Item* next = current->next; delete current; current = next; } \
+            struct DataRow* current = (struct DataRow*)GetHead(); \
+            while (current != 0) { struct DataRow* next = current->next; delete current; current = next; } \
         } \
-        struct Item* GetHead() const { return head; } \
     }; \
-    void DataSource##Name::Populate()
+    void DataSource##name::Populate()
 
-// Data row for data sources.
-#define ROW(...) \
-	do { struct Item t = { __VA_ARGS__, 0 }; Add(t); } while(0);
+// Data-driven test decorators.
+#define ROW(...) do { struct DataRow t = { 0, __VA_ARGS__ }; Add(t); } while(0);
+#define BIND(name, row) \
+	Bind(new DataSource##name()); \
+	Decorate2(); } \
+	struct DataSource##name::DataRow row; \
+	virtual void BindDataRow(void* dataRow) { row = *(DataSource##name::DataRow*)dataRow; } \
+	void Decorate2() {
+	

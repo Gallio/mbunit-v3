@@ -44,37 +44,37 @@ namespace MbUnitCpp
 
 	String::String(const String& prototype)
 	{
-		size_t n = wcslen(prototype.m_data);
-		m_data = new wchar_t[n + 1];
-		wcscpy(m_data, prototype.m_data);
+		size_t n = wcslen(prototype.data);
+		data = new wchar_t[n + 1];
+		wcscpy(data, prototype.data);
 	}
 
 	void String::Initialize(const wchar_t* format, va_list argList)
 	{
 		int n = _vscwprintf(format, argList) + 1;
-		m_data = new wchar_t[n];
-		vswprintf(m_data, format, argList);
+		data = new wchar_t[n];
+		vswprintf(data, format, argList);
 	}
 
 	void String::Append(const String& string)
 	{
-		size_t e = wcslen(m_data);
-		size_t n = wcslen(string.m_data);
+		size_t e = wcslen(data);
+		size_t n = wcslen(string.data);
 		wchar_t* p = new wchar_t[e + n + 1];
-		wcsncpy(p, m_data, e);
-		wcscpy(p + e, string.m_data);
+		wcsncpy(p, data, e);
+		wcscpy(p + e, string.data);
 		p[e + n] = L'\0';
-		delete[] m_data;
-		m_data = p;
+		delete[] data;
+		data = p;
 	}
 
 	String::~String()
 	{
-		delete[] m_data;
+		delete[] data;
 	}
 
 	StringMap::StringMap()
-		: m_head(0), m_nextId(1)
+		: head(0), nextId(1)
 	{
 	}
 
@@ -85,7 +85,7 @@ namespace MbUnitCpp
 
 	void StringMap::RemoveAll()
 	{
-		StringMapNode* current = m_head;
+		StringMapNode* current = head;
 
 		while (current != 0)
 		{
@@ -95,12 +95,12 @@ namespace MbUnitCpp
 			current = next;
 		}
 
-		m_head = 0;
+		head = 0;
 	}
 
 	String* StringMap::Get(StringId key)
 	{
-		StringMapNode* current = m_head;
+		StringMapNode* current = head;
 
 		while (current != 0)
 		{
@@ -142,17 +142,17 @@ namespace MbUnitCpp
 	StringId StringMap::Add(String* data)
 	{
 		StringMapNode* node = new StringMapNode;
-		node->Key = m_nextId;
+		node->Key = nextId;
 		node->Data = data;
-		node->Next = m_head;
-		m_head = node;
-		return m_nextId++;
+		node->Next = head;
+		head = node;
+		return nextId++;
 	}
 
 	void StringMap::Remove(StringId key)
 	{
 		StringMapNode* previous = 0;
-		StringMapNode* current = m_head;
+		StringMapNode* current = head;
 
 		while (current != 0)
 		{
@@ -161,7 +161,7 @@ namespace MbUnitCpp
 				if (previous != 0)
 					previous->Next = current->Next;
 				else
-					m_head = current->Next;
+					head = current->Next;
 
 				delete current->Data;
 				delete current;
@@ -175,22 +175,21 @@ namespace MbUnitCpp
 
     // Construct a base test or test fixture instance.
 	DecoratorTarget::DecoratorTarget(int metadataPrototypeId)
-		: m_metadataId(0)
+		: metadataId(0)
 	{
 		if (metadataPrototypeId > 0)
 		{
 			StringMap& map = TestFixture::GetStringMap();
 			String* s = map.Get(metadataPrototypeId);
-			m_metadataId = map.Add(new String(*s));
+			metadataId = map.Add(new String(*s));
 		}
 	}
 		
 	// Attaches a key/value metadata to the current test or test fixture.
-	void* DecoratorTarget::SetMetadata(const wchar_t* key, const wchar_t* value)
+	void DecoratorTarget::SetMetadata(const wchar_t* key, const wchar_t* value)
 	{
 		String s(L"%s={%s},", key, value);
-		AppendTo(m_metadataId, s);
-		return 0;
+		AppendTo(metadataId, s);
 	}
 
 	// Create a new string ID or append the specified text if it already exists.
@@ -210,63 +209,68 @@ namespace MbUnitCpp
 
     // Construct an executable test case.
     Test::Test(TestFixture* testFixture, const wchar_t* name, const wchar_t* fileName, int lineNumber)
-        : m_index(testFixture->GetTestList().GetNextIndex())
+        : index(testFixture->GetTestList().GetNextIndex())
 		, DecoratorTarget(testFixture->GetMetadataId())
-		, m_name(name)
-		, m_fileName(fileName)
-		, m_lineNumber(lineNumber)
+		, name(name)
+		, fileName(fileName)
+		, lineNumber(lineNumber)
 		, Assert(this)
 		, TestLog(this)
-		, m_testLogId(0)
+		, testLogId(0)
+		, dataSource(0)
     {
 	}
 
 	// Desctructor.
     Test::~Test()
     {
+		if (dataSource != 0)
+			delete dataSource;
     }
 
     // Specifies the next test of the chained list.
     void Test::SetNext(Test* test)
     {
-        m_next = test;
+        next = test;
     }
 
     // Runs the current test and captures the failure(s).
-    void Test::Run(TestResultData* pTestResultData)
+    void Test::Run(TestResultData* testResultData, void* dataRow)
     {
         try
         {
             Clear();
+			BindDataRow(dataRow);
             RunImpl();
-            pTestResultData->NativeOutcome = Passed;
+            testResultData->NativeOutcome = Passed;
 		}
         catch (AssertionFailure failure)
         {
-            pTestResultData->NativeOutcome = Failed;
-            pTestResultData->Failure = failure;
+            testResultData->NativeOutcome = Failed;
+            testResultData->Failure = failure;
         }
 
-		pTestResultData->TestLogId = m_testLogId;
-        pTestResultData->AssertCount = m_assertCount;
+		testResultData->TestLogId = testLogId;
+        testResultData->AssertCount = assertCount;
     }
 
 	// Clears internal variables for new run.
     void Test::Clear()
     {
-        m_assertCount = 0;
+        assertCount = 0;
+		testLogId = 0;
     }
 
 	// Increment the assertion count by 1.
     void Test::IncrementAssertCount()
     {
-        m_assertCount++;
+        assertCount++;
     }
 
 	// Appends the specified text to the test log.
 	void Test::AppendToTestLog(const String& s)
 	{
-		AppendTo(m_testLogId, s);
+		AppendTo(testLogId, s);
 	}
 
     // Default empty implementation of the test execution.
@@ -274,32 +278,43 @@ namespace MbUnitCpp
     {
     }
 
+	// Binds the specified data source to the test instance.
+	void Test::Bind(AbstractDataSource* dataSource)
+	{
+		this->dataSource = dataSource;
+	}
+
+	// Binds the specified data row to the test step.
+	void Test::BindDataRow(void* dataRow) 
+	{
+	}
+
     // Constructs an empty list of tests.
     TestList::TestList()
-        : m_head(0), m_tail(0), m_nextIndex(0)
+        : head(0), tail(0), nextIndex(0)
     {
     }
 
     // Adds a new test at the end of the list.
     void TestList::Add(Test* test)
     {
-        if (m_tail == 0)
-            m_head = test;
+        if (tail == 0)
+            head = test;
         else
-            m_tail->SetNext(test);
+            tail->SetNext(test);
         
-        m_tail = test;
+        tail = test;
     }
 
     // Returns the next unused test ID.
     int TestList::GetNextIndex()
     {
-        return m_nextIndex ++;
+        return nextIndex ++;
     }
 
     // Constructs a test fixture.
     TestFixture::TestFixture(int index, const wchar_t* name)
-        : m_index(index), m_name(name)
+        : index(index), name(name)
     {
     }
 
@@ -308,15 +323,15 @@ namespace MbUnitCpp
     }
 
     // Specifies the next test fixture of the chained list.
-    void TestFixture::SetNext(TestFixture* pTestFixture)
+    void TestFixture::SetNext(TestFixture* testFixture)
     {
-        m_next = pTestFixture;
+        next = testFixture;
     }
 
     // Returns the list of tests defined in the current test fixture.
     TestList& TestFixture::GetTestList()
     {
-        return m_children;
+        return children;
     }
 
     // Gets the singleton list of test fixtures.
@@ -335,52 +350,62 @@ namespace MbUnitCpp
 
     // Constructs an empty list of test fixtures.
     TestFixtureList::TestFixtureList()
-        : m_head(0), m_tail(0), m_nextIndex(0)
+        : head(0), tail(0), nextIndex(0)
     {
     }
 
     // Adds a new test fixture at the end of the list.
-    void TestFixtureList::Add(TestFixture* pTestFixture)
+    void TestFixtureList::Add(TestFixture* testFixture)
     {
-        if (m_tail == 0)
-            m_head = pTestFixture;
+        if (tail == 0)
+            head = testFixture;
         else
-            m_tail->SetNext(pTestFixture);
+            tail->SetNext(testFixture);
         
-        m_tail = pTestFixture;
+        tail = testFixture;
     }
 
     // Gets the next unused test fixture ID.
     int TestFixtureList::GetNextIndex()
     {
-        return m_nextIndex ++;
+        return nextIndex ++;
     }
 
     // Registers the specified test in the list.
-    TestRecorder::TestRecorder(TestList& list, Test* pTest)
+    TestRecorder::TestRecorder(TestList& list, Test* test)
     {
-        list.Add(pTest);
+        list.Add(test);
     }
 
     // Registers the specified test fixture in the list.
-    TestFixtureRecorder::TestFixtureRecorder(TestFixtureList& list, TestFixture* pTestFixture)
+    TestFixtureRecorder::TestFixtureRecorder(TestFixtureList& list, TestFixture* testFixture)
     {
-        list.Add(pTestFixture);
+        list.Add(testFixture);
     }
 
     // A structure describing the currently enumerated test or test fixture.
     struct Position
     {
-        TestFixture* pTestFixture;
-        Test* pTest;
+        TestFixture* TestFixture;
+        Test* Test;
+		void* DataRow;
     };
+
+	// Type of the curent test.
+	enum TestKind
+	{
+		KindFixture,
+        KindTest,
+        KindGroup,
+		KindRowTest,
+	};
 
     // A portable structure to describe the current test or test fixture.
     struct TestInfoData
     {
         const wchar_t* Name;
         int Index;
-        bool IsTestFixture;
+        TestKind Kind;
         const wchar_t* FileName;
         int LineNumber;
         Position Position;
@@ -388,15 +413,15 @@ namespace MbUnitCpp
     };
 
     // Constructs an assertion framework instance for the specified test.
-    AssertionFramework::AssertionFramework(Test* pTest)
-        : m_test(pTest)
+    AssertionFramework::AssertionFramework(Test* test)
+        : test(test)
     {
     }
 
     // Internal assert count increment.
     void AssertionFramework::IncrementAssertCount()
     {
-        m_test->IncrementAssertCount();
+        test->IncrementAssertCount();
     }
 
 	// Constructs an empty assertion failure.
@@ -419,12 +444,22 @@ namespace MbUnitCpp
 		LabelId = labelId;
 	}
 
+	AbstractDataSource::AbstractDataSource()
+		: head(0)
+	{
+	}
+
+	void AbstractDataSource::SetHead(void* dataRow)
+	{
+		head = dataRow;
+	}
+
 	// =============
 	// Log Recording
 	// =============
 
 	TestLogRecorder::TestLogRecorder(Test* test)
-		: m_test(test)
+		: test(test)
 	{
 	}
 	
@@ -433,7 +468,7 @@ namespace MbUnitCpp
 		va_list argList;
 		va_start(argList, format);
 		String string(format, argList);
-		m_test->AppendToTestLog(string);
+		test->AppendToTestLog(string);
 		va_end(argList);
 	}
 
@@ -443,7 +478,7 @@ namespace MbUnitCpp
 		va_start(argList, format);
 		String raw(L"%s\r\n", format);
 		String string(raw.GetData(), argList);
-		m_test->AppendToTestLog(string);
+		test->AppendToTestLog(string);
 		va_end(argList);
 	}
 
@@ -630,7 +665,6 @@ namespace MbUnitCpp
 		Map().Add(actualValue), 
 		TypeString)
 
-
 	#define _AssertionFramework_AreApproximatelyEqual(TYPE, INEQUALITY, FORMATEXPECTED, FORMATACTUAL, FORMATDELTA, MANAGEDTYPE) \
 	void AssertionFramework::AreApproximatelyEqual(TYPE expectedValue, TYPE actualValue, TYPE delta, const wchar_t* message) \
 	{ \
@@ -745,56 +779,81 @@ namespace MbUnitCpp
 
     extern "C" 
     {
-        void __cdecl MbUnitCpp_GetHeadTest(Position* pPosition)
+        void __cdecl MbUnitCpp_GetHeadTest(Position* position)
         {
             TestFixtureList& list = TestFixture::GetTestFixtureList();
             TestFixture* pFirstTestFixture = list.GetHead();
-            pPosition->pTestFixture = pFirstTestFixture;
-            pPosition->pTest = 0;
+            position->TestFixture = pFirstTestFixture;
+            position->Test = 0;
+            position->DataRow = 0;
         }
 
-        int __cdecl MbUnitCpp_GetNextTest(Position* pPosition, TestInfoData* pTestInfoData)
+        int __cdecl MbUnitCpp_GetNextTest(Position* position, TestInfoData* testInfoData)
         {
-            TestFixture* pTestFixture = pPosition->pTestFixture;
-            Test* pTest = pPosition->pTest;
+            TestFixture* testFixture = position->TestFixture;
+            Test* test = position->Test;
+			void* dataRow = position->DataRow;
 
-            if (pTestFixture == 0)
+            if (testFixture == 0)
                 return 0;
             
-            if (pTest == 0)
+            if (test == 0)
             {
-                pTestInfoData->IsTestFixture = true;
-                pTestInfoData->FileName = 0;
-                pTestInfoData->LineNumber = 0;
-                pTestInfoData->Name = pTestFixture->GetName();
-                pTestInfoData->Index = pTestFixture->GetIndex();
-                pTestInfoData->Position.pTestFixture = pTestFixture;
-                pTestInfoData->Position.pTest = 0;
-                pTestInfoData->MetadataId = 0;
-                pPosition->pTest = pTestFixture->GetTestList().GetHead();
+                testInfoData->Kind = KindFixture;
+                testInfoData->FileName = 0;
+                testInfoData->LineNumber = 0;
+                testInfoData->Name = testFixture->GetName();
+                testInfoData->Index = testFixture->GetIndex();
+                testInfoData->Position.TestFixture = testFixture;
+                testInfoData->Position.Test = 0;
+                testInfoData->Position.DataRow = 0;
+                testInfoData->MetadataId = 0;
+                position->Test = testFixture->GetTestList().GetHead();
                 return 1;            
             }
 
-            pTestInfoData->IsTestFixture = false;
-            pTestInfoData->FileName = pTest->GetFileName();
-            pTestInfoData->LineNumber = pTest->GetLineNumber();
-            pTestInfoData->Name = pTest->GetName();
-            pTestInfoData->Index = pTest->GetIndex();
-            pTestInfoData->Position.pTestFixture = pTestFixture;
-            pTestInfoData->Position.pTest = pTest;
-            pTestInfoData->MetadataId = pTest->GetMetadataId();
-			pPosition->pTest = pTest->GetNext();
+		    testInfoData->FileName = test->GetFileName();
+			testInfoData->LineNumber = test->GetLineNumber();
+			testInfoData->Name = test->GetName();
+			testInfoData->Index = test->GetIndex();
+			testInfoData->Position.TestFixture = testFixture;
+			testInfoData->Position.Test = test;
+			testInfoData->MetadataId = test->GetMetadataId();
 
-            if (pPosition->pTest == 0)
-                pPosition->pTestFixture = pTestFixture->GetNext();
-            
+			if (dataRow == 0)
+			{
+				testInfoData->Position.DataRow = 0;
+				
+				if (test->GetDataSource() != 0)
+				{
+					testInfoData->Kind = KindGroup;
+					position->DataRow = test->GetDataSource()->GetHead();
+				}
+				else
+				{
+					testInfoData->Kind = KindTest;
+					position->Test = test->GetNext();
+					if (position->Test == 0)
+						position->TestFixture = testFixture->GetNext();
+				}
+
+				return 1;
+			}
+		
+			testInfoData->Kind = KindRowTest;
+			testInfoData->Position.DataRow = dataRow;
+			position->DataRow = test->GetDataSource()->GetNextRow(dataRow);
+			if (position->DataRow == 0)
+				position->Test = test->GetNext();
+            if (position->Test == 0)
+                position->TestFixture = testFixture->GetNext();
             return 1;
         }
 
-        void __cdecl MbUnitCpp_RunTest(Position* pPosition, TestResultData* pTestResultData)
+        void __cdecl MbUnitCpp_RunTest(Position* position, TestResultData* testResultData)
         {
-            Test* pTest = pPosition->pTest;
-            pTest->Run(pTestResultData);
+            Test* test = position->Test;
+            test->Run(testResultData, position->DataRow);
         }
 
 		wchar_t* __cdecl MbUnitCpp_GetString(StringId stringId)
