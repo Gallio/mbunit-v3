@@ -19,15 +19,15 @@
 		
                 <Directory Id="MbUnitCppAdapter.Include" Name="Include">
                     <Component Id="Gallio.MbUnitCppAdapter.Include" Guid="{F1B9D838-6556-4FBD-A97E-6DFDE408F630}" Win64="$(var.Win64Binary)">
-                        <File Name="MbUnitCpp.cpp" KeyPath="yes" />
-                        <File Name="MbUnitCpp.h" />
+                        <File Name="mbunit.nitcpp" KeyPath="yes" />
+                        <File Name="mb.h" />
                     </Component>
                 </Directory>
             </Directory>
         </DirectoryRef>
 
         <Feature Id='feat_MbUnitCppAdapter' Title='MbUnitCpp Adapter' Level='1' AllowAdvertise="no"
-            Description='Installs the MbUnitCpp plugin.  Enables Gallio to run MbUnitCpp tests.'>
+            Description='Installs the MbUnitCpp plugin.  Enables Gallio to create and run MbUnit tests for native unmanaged C++.'>
             <ComponentRef Id="Gallio.MbUnitCppAdapter"/>
             <ComponentRef Id="Gallio.MbUnitCppAdapter.Resources"/>
             <ComponentRef Id="Gallio.MbUnitCppAdapter.Include"/>

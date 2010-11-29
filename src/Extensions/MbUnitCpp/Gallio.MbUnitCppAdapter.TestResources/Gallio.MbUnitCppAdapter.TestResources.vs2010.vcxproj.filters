@@ -3,7 +3,7 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="..\Include\MbUnitCpp.cpp">
+    <ClCompile Include="..\Include\mbunit.cpp">
       <Filter>Libs</Filter>
     </ClCompile>
     <ClCompile Include="SimpleTest.cpp">
@@ -37,7 +37,7 @@
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="..\Include\MbUnitCpp.h">
+    <ClInclude Include="..\Include\mbunit.h">
       <Filter>Libs</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">

@@ -5,7 +5,7 @@
   <traits>
     <name>MbUnitCpp.Test Adapter Plugin</name>
     <version>0.0.0.0</version>
-    <description>Provides support for running MbUnit C++ tests.</description>
+    <description>Provides support for running MbUnit tests for native unmanaged C++.</description>
     <icon>plugin://Gallio.MbUnitCppAdapter/Resources/MbUnitCpp.ico</icon>
   </traits>
 

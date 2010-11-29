@@ -16,7 +16,7 @@
 #pragma once
 #pragma warning (disable: 4003)
 
-namespace MbUnitCpp
+namespace mbunit
 {
 	// A simple general purpose string container with formatting capabilities.
 	class String
@@ -113,7 +113,7 @@ namespace MbUnitCpp
 		StringId ValueId;
 		ValueType ValueType;
 		LabeledValue();
-		void Set(StringId valueId, MbUnitCpp::ValueType valueType, StringId labelId = 0);
+		void Set(StringId valueId, mbunit::ValueType valueType, StringId labelId = 0);
 	};
 
     struct AssertionFailure
@@ -375,33 +375,32 @@ namespace MbUnitCpp
 // Macro to create a new test fixture.
 #define TESTFIXTURE(Name, ...) MUC_TESTFIXTURE MUC_LP Name, NoOp() MUC_SC, __VA_ARGS__ MUC_RP
 #define MUC_TESTFIXTURE(Name, _0, ...) \
-    using namespace MbUnitCpp; \
     namespace NamespaceTestFixture##Name \
     { \
-        class TestFixture##Name : public TestFixture \
+        class TestFixture##Name : public mbunit::TestFixture \
         { \
             public: \
-            TestFixture##Name() : TestFixture(MbUnitCpp::TestFixture::GetTestFixtureList().GetNextIndex(), L#Name) { Decorate(); } \
+            TestFixture##Name() : TestFixture(mbunit::TestFixture::GetTestFixtureList().GetNextIndex(), L#Name) { Decorate(); } \
 			private: \
 			void Decorate() { MUC_FOR_EACH MUC_LP MUC_PRINT_ARG, _0, __VA_ARGS__ MUC_RP } \
         } testFixtureInstance; \
         \
-        MbUnitCpp::TestFixtureRecorder fixtureRecorder(MbUnitCpp::TestFixture::GetTestFixtureList(), &testFixtureInstance); \
+        mbunit::TestFixtureRecorder fixtureRecorder(mbunit::TestFixture::GetTestFixtureList(), &testFixtureInstance); \
     } \
     namespace NamespaceTestFixture##Name
 
 // Macro to create a new test.
 #define TEST(Name, ...) MUC_TEST MUC_LP Name, NoOp() MUC_SC, __VA_ARGS__ MUC_RP
 #define MUC_TEST(Name, _0, ...) \
-    class Test##Name : public MbUnitCpp::Test \
+    class Test##Name : public mbunit::Test \
     { \
         public: \
-		Test##Name() : Test(&testFixtureInstance, L#Name, MUC_WFILE, __LINE__) { Decorate(); } \
+		Test##Name() : mbunit::Test(&testFixtureInstance, L#Name, MUC_WFILE, __LINE__) { Decorate(); } \
         private: \
 		void Decorate() { MUC_FOR_EACH MUC_LP MUC_PRINT_ARG, _0, __VA_ARGS__ MUC_RP } \
         virtual void RunImpl(); \
     } test##Name##Instance; \
-    MbUnitCpp::TestRecorder recorder##Name (testFixtureInstance.GetTestList(), &test##Name##Instance); \
+    mbunit::TestRecorder recorder##Name (testFixtureInstance.GetTestList(), &test##Name##Instance); \
     void Test##Name::RunImpl()
 
 // Metadata decorators.
@@ -411,7 +410,7 @@ namespace MbUnitCpp
 
 // Data source for data-driven tests.
 #define DATA(name, _0, ...) \
-    class DataSource##name : public AbstractDataSource \
+    class DataSource##name : public mbunit::AbstractDataSource \
     { \
         public: \
         struct DataRow \

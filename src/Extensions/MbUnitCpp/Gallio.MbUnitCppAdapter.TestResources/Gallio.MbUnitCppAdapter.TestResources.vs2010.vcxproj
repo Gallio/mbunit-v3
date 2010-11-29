@@ -150,13 +150,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Include\MbUnitCpp.h" />
+    <ClInclude Include="..\Include\mbunit.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Include\MbUnitCpp.cpp" />
+    <ClCompile Include="..\Include\mbunit.cpp" />
     <ClCompile Include="AproximateEqualityTest.cpp" />
     <ClCompile Include="DataDrivenTest.cpp" />
     <ClCompile Include="EqualityTest.cpp" />

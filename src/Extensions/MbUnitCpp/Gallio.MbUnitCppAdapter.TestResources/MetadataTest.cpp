@@ -14,7 +14,7 @@
 // limitations under the License.
 
 #include "stdafx.h"
-#include "MbUnitCpp.h"
+#include "mbunit.h"
 
 TESTFIXTURE(MetadataInTest)
 {

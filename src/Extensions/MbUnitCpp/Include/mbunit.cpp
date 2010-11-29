@@ -19,11 +19,11 @@
 #include <stdarg.h>
 #include <wchar.h>
 #include <math.h>
-#include "MbUnitCpp.h"
+#include "mbunit.h"
 
 #pragma warning (disable: 4996 4355) // Hide some warnings.
 
-namespace MbUnitCpp
+namespace mbunit
 {
 	// =========
 	// Internals
@@ -437,7 +437,7 @@ namespace MbUnitCpp
 	}
 
 	// Initialize a labeled value.
-	void LabeledValue::Set(StringId valueId, MbUnitCpp::ValueType valueType, StringId labelId)
+	void LabeledValue::Set(StringId valueId, mbunit::ValueType valueType, StringId labelId)
 	{
 		ValueId = valueId;
 		ValueType = valueType;
