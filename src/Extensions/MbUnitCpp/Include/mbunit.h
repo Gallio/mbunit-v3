@@ -21,23 +21,44 @@ namespace mbunit
 	// A simple general purpose string container with formatting capabilities.
 	class String
 	{
-		wchar_t* data;
-		void Initialize(const wchar_t* format, va_list argList);
+		wchar_t* buffer;
+		int length;
+		void AppendImpl(const wchar_t* wstr, int n);
+		void AppendImpl(const char* str);
 
 		public:
-		String(const String& prototype);
-		String(const wchar_t* format, ...);
-		String(const wchar_t* format, va_list args);
+		String();
 		~String();
-		wchar_t* GetData() const { return data; };
-		void Append(const String& string);
+		String(const String& prototype);
+		String(const char* str);
+		String(const wchar_t* wstr);
+		void Clear();
+		void Append(const String& prototype);
+		void Append(const char* str);
+		void Append(const wchar_t* wstr);
+		void AppendFormat(const char* format, ...);
+		void AppendFormat(const wchar_t* format, ...);
+		void AppendFormat(const wchar_t* format, va_list args);
+		void AppendFormat(const char* format, va_list args);
+		void Format(const char* format, ...);
+		void Format(const wchar_t* format, ...);
+		void Format(const char* format, va_list args);
+		void Format(const wchar_t* format, va_list args);
+		wchar_t* GetBuffer() { return buffer; }
+		size_t GetLength() { return length; }
+
+		public:
+		static String* New(const char* str);
+		static String* New(const wchar_t* wstr);
+		static String* NewFormatted(const char* format, ...);
+		static String* NewFormatted(const wchar_t* format, ...);
 	};
 
 	// A node that reference a mapped string value.
 	struct StringMapNode
 	{
 		int Key;
-		String* Data;
+		String* Str;
 		StringMapNode* Next;
 	};
 
@@ -54,12 +75,10 @@ namespace mbunit
 		public:
 		StringMap();
 		~StringMap();
-		void RemoveAll();
 		String* Get(StringId key);
-		StringId Add(String* data);
-		StringId Add(const wchar_t* format, ...);
-		StringId Add(const char* data);
+		StringId Add(String* str);
 		void Remove(StringId key);
+		void RemoveAll();
 	};
 
     class Test;
@@ -366,11 +385,6 @@ namespace mbunit
 #define MUC_FOR_EACH_N(N, Action, _0, ...) MUC_CONCAT MUC_LP MUC_FOR_EACH_, N MUC_RP MUC_LP Action, _0, __VA_ARGS__ MUC_RP
 #define MUC_FOR_EACH(Action, _0, ...) MUC_FOR_EACH_N MUC_LP MUC_COUNT_ARGS MUC_LP _0, __VA_ARGS__ MUC_RP , Action, _0, __VA_ARGS__ MUC_RP
 #define MUC_PRINT_ARG(x) x;
-
-//#define TOWSTR(pstr, buffer) \
-//	size_t _len##buffer = mbstowcs(0, pstr, -1); \
-//	wchar_t buffer[_len##buffer + 1]; \
-//	mbstowcs(buffer, pstr, _len##buffer);
 
 // Macro to create a new test fixture.
 #define TESTFIXTURE(Name, ...) MUC_TESTFIXTURE MUC_LP Name, NoOp() MUC_SC, __VA_ARGS__ MUC_RP

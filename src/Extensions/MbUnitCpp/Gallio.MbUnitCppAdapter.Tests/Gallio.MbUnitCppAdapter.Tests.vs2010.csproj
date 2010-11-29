@@ -66,11 +66,11 @@
   <ItemGroup>
     <Content Include="..\Gallio.MbUnitCppAdapter.TestResources\out\Gallio.MbUnitCppAdapter.TestResources.x64.dll">
       <Link>Gallio.MbUnitCppAdapter.TestResources.x64.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="..\Gallio.MbUnitCppAdapter.TestResources\out\Gallio.MbUnitCppAdapter.TestResources.x86.dll">
       <Link>Gallio.MbUnitCppAdapter.TestResources.x86.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Integration\Specifications.xml">
       <SubType>Designer</SubType>
