@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Specifications>
   
-  <Test name="General" expectedStatus="Passed" expectedAssertCount="0" />
+  <Test name="General" expectedStatus="Failed" expectedAssertCount="0" />
   <Test name="General/Empty_should_pass" expectedStatus="Passed" expectedAssertCount="0" />
   <Test name="General/Framework_should_catch_and_report_unhandled_text_exception" expectedStatus="Failed" expectedAssertCount="0" />
   <Test name="General/Framework_should_catch_and_report_unhandled_custom_exception" expectedStatus="Failed" expectedAssertCount="0" />
