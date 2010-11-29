@@ -19,32 +19,32 @@
 TESTFIXTURE(MetadataInTest)
 {
     TEST(WithCategory, 
-		CATEGORY(Sample))
+		CATEGORY("Sample"))
     {
     }
 
     TEST(WithAuthor, 
-		AUTHOR(Charlie Chaplin))
+		AUTHOR("Charlie Chaplin"))
     {
     }
 
     TEST(WithDescription, 
-		DESCRIPTION(This is a simple test))
+		DESCRIPTION("This is a simple test"))
     {
     }
 
     TEST(WithSeveralAttributes, 
-		CATEGORY(Sample), 
-		AUTHOR(Charlie Chaplin), 
-		DESCRIPTION(This is a simple test))
+		CATEGORY("Sample"), 
+		AUTHOR("Charlie Chaplin"), 
+		DESCRIPTION("This is a simple test"))
     {
     }
 }
 
 TESTFIXTURE(MetadataInTestFixture,
-		CATEGORY(Sample), 
-		AUTHOR(Charlie Chaplin), 
-		DESCRIPTION(This is a simple test))
+		CATEGORY("Sample"), 
+		AUTHOR("Charlie Chaplin"), 
+		DESCRIPTION("This is a simple test"))
 {
     TEST(Sample)
     {

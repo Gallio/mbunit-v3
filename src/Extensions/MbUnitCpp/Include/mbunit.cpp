@@ -306,6 +306,12 @@ namespace mbunit
 		AppendTo(metadataId, str);
 	}
 
+	void DecoratorTarget::SetMetadata(const wchar_t* key, const char* value)
+	{
+		String strValue(value);
+		SetMetadata(key, strValue.GetBuffer());
+	}
+
 	// Create a new string ID or append the specified text if it already exists.
 	void DecoratorTarget::AppendTo(int& id, const String& s)
 	{
@@ -363,6 +369,16 @@ namespace mbunit
             testResultData->NativeOutcome = Failed;
             testResultData->Failure = failure;
         }
+		catch (char* exceptionMessage)
+		{
+            testResultData->NativeOutcome = Failed;
+            testResultData->Failure = AssertionFailure::FromExceptionMessage(exceptionMessage);
+		}
+		catch (...)
+		{
+            testResultData->NativeOutcome = Failed;
+            testResultData->Failure = AssertionFailure::FromExceptionMessage(0);
+		}
 
 		testResultData->TestLogId = testLogId;
         testResultData->AssertCount = assertCount;
@@ -548,6 +564,15 @@ namespace mbunit
 	LabeledValue::LabeledValue()
 		: LabelId(0), ValueId(0), ValueType(TypeRaw)
 	{
+	}
+
+	AssertionFailure AssertionFailure::FromExceptionMessage(char* exceptionMessage)
+	{
+		StringMap& map = TestFixture::GetStringMap();
+		AssertionFailure failure;
+		failure.DescriptionId = map.Add(String::New(L"An unhandled exception was thrown"));
+		failure.MessageId = map.Add(String::New(exceptionMessage));
+		return failure;
 	}
 
 	// Initialize a labeled value.

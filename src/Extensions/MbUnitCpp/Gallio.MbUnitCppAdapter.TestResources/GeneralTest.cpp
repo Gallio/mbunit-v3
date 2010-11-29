@@ -16,9 +16,23 @@
 #include "stdafx.h"
 #include "mbunit.h"
 
-TESTFIXTURE(Simple)
+TESTFIXTURE(General)
 {
     TEST(Empty_should_pass)
     {
     }
+
+	TEST(Framework_should_catch_and_report_unhandled_text_exception)
+	{
+		throw "It happens sometimes!";
+	}
+
+	class FooException
+	{
+	};
+
+	TEST(Framework_should_catch_and_report_unhandled_custom_exception)
+	{
+		throw FooException();
+	}
 }

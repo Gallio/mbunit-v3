@@ -143,7 +143,9 @@ namespace mbunit
         LabeledValue Actual;
         LabeledValue Extra_0;
         LabeledValue Extra_1;
+
 		AssertionFailure();
+		static AssertionFailure FromExceptionMessage(char* exceptionMessage);
     };
 
     // Describes the result of a test.
@@ -231,6 +233,7 @@ namespace mbunit
 		DecoratorTarget(int metadataPrototypeId = 0);
 		void AppendTo(int& id, const String& s);
 		virtual void SetMetadata(const wchar_t* key, const wchar_t* value);
+		virtual void SetMetadata(const wchar_t* key, const char* value);
 		void NoOp() const { }
 
 		public:
@@ -418,9 +421,9 @@ namespace mbunit
     void Test##Name::RunImpl()
 
 // Metadata decorators.
-#define CATEGORY(category) SetMetadata(L"Category", L#category)
-#define AUTHOR(authorName) SetMetadata(L"Author", L#authorName)
-#define DESCRIPTION(description) SetMetadata(L"Description", L#description)
+#define CATEGORY(category) SetMetadata(L"Category", category)
+#define AUTHOR(authorName) SetMetadata(L"Author", authorName)
+#define DESCRIPTION(description) SetMetadata(L"Description", description)
 
 // Data source for data-driven tests.
 #define DATA(name, _0, ...) \

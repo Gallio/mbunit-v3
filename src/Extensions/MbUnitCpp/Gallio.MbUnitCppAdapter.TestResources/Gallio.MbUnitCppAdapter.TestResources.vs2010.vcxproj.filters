@@ -6,9 +6,6 @@
     <ClCompile Include="..\Include\mbunit.cpp">
       <Filter>Libs</Filter>
     </ClCompile>
-    <ClCompile Include="SimpleTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>Model</Filter>
     </ClCompile>
@@ -31,6 +28,9 @@
       <Filter>Tests</Filter>
     </ClCompile>
     <ClCompile Include="MetadataTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
   </ItemGroup>
