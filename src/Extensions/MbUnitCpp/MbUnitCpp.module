@@ -18,10 +18,10 @@
       <ImagePath>bin\MbUnitCpp\Resources</ImagePath>
     </File>
     
-    <File Include="Include\MbUnitCpp.cpp">
+    <File Include="Include\mbunit.cpp">
       <ImagePath>bin\MbUnitCpp\Include</ImagePath>
     </File>
-    <File Include="Include\MbUnitCpp.h">
+    <File Include="Include\mbunit.h">
       <ImagePath>bin\MbUnitCpp\Include</ImagePath>
     </File>
     
