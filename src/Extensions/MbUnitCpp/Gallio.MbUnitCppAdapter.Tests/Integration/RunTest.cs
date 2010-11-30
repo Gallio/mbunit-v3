@@ -58,7 +58,7 @@ namespace Gallio.MbUnitCppAdapter.Tests.Integration
             [Bind("@expectedDefaultLog")] string expectedDefaultLog,
             [Bind("@expectedMetadata")] string expectedMetadata)
         {
-            IEnumerable<TestStepRun> runs = Runner.GetTestStepRuns(r => r.Step.FullName == fullName);
+            IEnumerable<TestStepRun> runs = Runner.GetTestStepRuns(r => r.Step.FullName.EndsWith(fullName));
             Assert.IsNotEmpty(runs, "Test step not found.");
             TestStepRun run = runs.First();
             Assert.IsNotNull(run);
@@ -83,17 +83,17 @@ namespace Gallio.MbUnitCppAdapter.Tests.Integration
         }
 
         [Test]
-        [Row("DataDriven/BoundToFirst", new[] { 
+        [Row("/DataDriven/BoundToFirst", new[] { 
             "x = 123", 
             "x = 456", 
             "x = 789" })]
-        [Row("DataDriven/BoundToSecond", new[] { 
+        [Row("/DataDriven/BoundToSecond", new[] { 
             "i = 0, text = Red, d = 3.14159", 
             "i = 1, text = Green, d = 1.41421", 
             "i = 2, text = Blue, d = 2.71828" })]
         public void RunDataDrivenTests(string fullName, string[] expectedTestLogOutput)
         {
-            TestStepRun run = Runner.GetPrimaryTestStepRun(r => r.Step.FullName == fullName);
+            TestStepRun run = Runner.GetPrimaryTestStepRun(r => r.Step.FullName.EndsWith(fullName));
             Assert.AreElementsEqualIgnoringOrder(expectedTestLogOutput,
                 run.Children.Select(x => x.TestLog.GetStream(MarkupStreamNames.Default).ToString()),
                 (x, y) => y.Contains(x));

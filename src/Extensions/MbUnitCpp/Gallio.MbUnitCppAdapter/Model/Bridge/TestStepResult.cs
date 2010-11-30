@@ -52,10 +52,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         /// </summary>
         public TestOutcome TestOutcome
         {
-            get
-            {
-                return map[native.NativeOutcome];
-            }
+            get { return map[native.NativeOutcome]; }
         }
 
         /// <summary>
@@ -77,10 +74,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         /// </summary>
         public int AssertCount
         {
-            get
-            {
-                return native.AssertCount;
-            }
+            get { return native.AssertCount; }
         }
 
         /// <summary>
@@ -95,6 +89,14 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
 
                 return testLogContents;
             }
+        }
+
+        /// <summary>
+        /// Gets the duration of the test step.
+        /// </summary>
+        public TimeSpan Duration
+        {
+            get { return TimeSpan.FromMilliseconds(native.DurationMilliseconds); }
         }
     }
 }

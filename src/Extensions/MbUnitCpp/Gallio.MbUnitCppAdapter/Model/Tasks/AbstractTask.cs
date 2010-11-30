@@ -132,6 +132,8 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
         {
             Test fixture = null;
             Test group = null;
+            var root = repository.CreateRootTest();
+            TestModel.RootTest.AddChild(root);
 
             foreach (var testInfoData in repository.GetTests())
             {
@@ -144,7 +146,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
                 {
                     case NativeTestKind.Fixture:
                         fixture = test;
-                        TestModel.RootTest.AddChild(fixture);
+                        root.AddChild(fixture);
                         break;
                 
                     case NativeTestKind.Test:

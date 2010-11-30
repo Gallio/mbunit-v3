@@ -19,6 +19,7 @@
 #include <stdarg.h>
 #include <wchar.h>
 #include <math.h>
+#include <time.h>
 #include "mbunit.h"
 
 #pragma warning (disable: 4996 4355) // Hide some warnings.
@@ -357,6 +358,8 @@ namespace mbunit
     // Runs the current test and captures the failure(s).
     void Test::Run(TestResultData* testResultData, void* dataRow)
     {
+		clock_t started = clock();
+
         try
         {
             Clear();
@@ -372,14 +375,15 @@ namespace mbunit
 		catch (char* exceptionMessage)
 		{
             testResultData->NativeOutcome = Failed;
-            testResultData->Failure = AssertionFailure::FromExceptionMessage(exceptionMessage);
+            testResultData->Failure = AssertionFailure::FromException(exceptionMessage);
 		}
 		catch (...)
 		{
             testResultData->NativeOutcome = Failed;
-            testResultData->Failure = AssertionFailure::FromExceptionMessage(0);
+            testResultData->Failure = AssertionFailure::FromException();
 		}
 
+		testResultData->DurationMilliseconds = 1000 * (clock() - started) / CLOCKS_PER_SEC;
 		testResultData->TestLogId = testLogId;
         testResultData->AssertCount = assertCount;
     }
@@ -524,10 +528,10 @@ namespace mbunit
 	// Type of the curent test.
 	enum TestKind
 	{
-		KindFixture,
-        KindTest,
-        KindGroup,
-		KindRowTest,
+		KindFixture = 0,
+        KindTest = 1,
+        KindGroup = 2,
+		KindRowTest = 3,
 	};
 
     // A portable structure to describe the current test or test fixture.
@@ -566,7 +570,8 @@ namespace mbunit
 	{
 	}
 
-	AssertionFailure AssertionFailure::FromExceptionMessage(char* exceptionMessage)
+	// Creates an assertion failure for an unhandled exception.
+	AssertionFailure AssertionFailure::FromException(char* exceptionMessage)
 	{
 		StringMap& map = TestFixture::GetStringMap();
 		AssertionFailure failure;
@@ -583,11 +588,13 @@ namespace mbunit
 		LabelId = labelId;
 	}
 
+	// Default constructor for abstract data sources.
 	AbstractDataSource::AbstractDataSource()
 		: head(0)
 	{
 	}
 
+	// Stores the head data row.
 	void AbstractDataSource::SetHead(void* dataRow)
 	{
 		head = dataRow;

@@ -89,9 +89,9 @@ namespace mbunit
     // Standard outcome of a test.
     enum Outcome
     {
-        Inconclusive,
-        Passed,
-        Failed,
+        Inconclusive = 0,
+        Passed = 1,
+        Failed = 2,
     };
 
 	// The inner type of an actual/expected value.
@@ -100,29 +100,29 @@ namespace mbunit
 	{
 		// A raw string that represents a custom/user type.
 		// Not parsed and displayed as it is.
-		TypeRaw,
+		TypeRaw = 0,
 
 		// A string type copied later in a System.String.
 		// Displayed with diffing if both the actual and expected values are available.
-		TypeString,
+		TypeString = 1,
 
 		// A boolean type (should be "true" or "false")
 		// Parsed by the test adapater with System.Boolean.Parse.
-		TypeBoolean,
+		TypeBoolean = 2,
 
 		// A simple character. Parsed with System.Char.Parse.
-		TypeChar,
+		TypeChar = 3,
 
 		// Primitive values parsed with the corresponding parsing method (System.Byte.Parse, System.Int16.Parse, etc.)
-		TypeByte,
-		TypeInt16,
-		TypeUInt16,
-		TypeInt32,
-		TypeUInt32,
-		TypeInt64,
-		TypeUInt64,
-		TypeSingle,
-		TypeDouble,
+		TypeByte = 4,
+		TypeInt16 = 5,
+		TypeUInt16 = 6,
+		TypeInt32 = 7,
+		TypeUInt32 = 8,
+		TypeInt64 = 9,
+		TypeUInt64 = 10,
+		TypeSingle = 11,
+		TypeDouble = 12,
 	};
 
     // Represents a single assertion failure.
@@ -145,7 +145,7 @@ namespace mbunit
         LabeledValue Extra_1;
 
 		AssertionFailure();
-		static AssertionFailure FromExceptionMessage(char* exceptionMessage);
+		static AssertionFailure FromException(char* exceptionMessage = 0);
     };
 
     // Describes the result of a test.
@@ -155,6 +155,7 @@ namespace mbunit
         int AssertCount;
 		AssertionFailure Failure;
 		int TestLogId;
+		int DurationMilliseconds;
 	};
 
     // The MbUnitCpp Assertion Framework.

@@ -66,7 +66,7 @@ namespace Gallio.MbUnitCppAdapter.Model
                     return TestKinds.Test;
 
                 case NativeTestKind.Group:
-                    return TestKinds.Group;
+                    return TestKinds.Test;
 
                 case NativeTestKind.RowTest:
                     return TestKinds.Test;

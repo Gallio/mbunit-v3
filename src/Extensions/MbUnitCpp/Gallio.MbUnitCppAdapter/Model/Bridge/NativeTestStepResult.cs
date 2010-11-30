@@ -55,5 +55,10 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         /// </para>
         /// </remarks>
         public int TestLogId;
+
+        /// <summary>
+        /// The time taken by the test step to run expressed in milliseconds.
+        /// </summary>
+        public int DurationMilliseconds;
     }
 }

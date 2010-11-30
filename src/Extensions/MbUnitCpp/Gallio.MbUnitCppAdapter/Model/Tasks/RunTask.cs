@@ -130,14 +130,12 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
         private TestResult RunTestStep(ITestCommand testCommand, TestInfoData testStepInfo, TestStep parentTestStep, IProgressMonitor progressMonitor)
         {
             ITestContext testContext = testCommand.StartPrimaryChildStep(parentTestStep);
-            var stopwatch = Stopwatch.StartNew();
             TestStepResult testStepResult = repository.RunTest(testStepInfo);
-            stopwatch.Stop();
             reporter.Run(testContext, testStepInfo, testStepResult);
             WriteToTestLog(testContext, testStepResult);
             testContext.AddAssertCount(testStepResult.AssertCount);
             progressMonitor.Worked(1);
-            return testContext.FinishStep(testStepResult.TestOutcome, stopwatch.Elapsed);
+            return testContext.FinishStep(testStepResult.TestOutcome, testStepResult.Duration);
         }
 
         private static void WriteToTestLog(ITestContext testContext, TestStepResult testStepResult)

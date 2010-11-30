@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using Gallio.Model;
+using Gallio.Model.Tree;
 
 namespace Gallio.MbUnitCppAdapter.Model.Bridge
 {
@@ -186,6 +187,16 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
                 var releaseAllStrings = (ReleaseAllStringsDelegate)Marshal.GetDelegateForFunctionPointer(procReleaseAllStrings, typeof(ReleaseAllStringsDelegate));
                 releaseAllStrings();
             }
+        }
+
+        /// <summary>
+        /// Creates a root test that represents the unmanaged test repository.
+        /// </summary>
+        /// <returns>A new root test.</returns>
+        public Test CreateRootTest()
+        {
+            var info = new UnmanagedAssemblyInfo(fileName);
+            return new Test(info.Name, info);
         }
 
         /// <summary>
