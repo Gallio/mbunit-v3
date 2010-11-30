@@ -45,8 +45,8 @@ namespace Gallio.MbUnitCppAdapter.Tests.Integration
             string[] names = runs.Select(x => x.Step.FullName).Where(x => x.Length > 0).ToArray();
             Assert.IsNotEmpty(names);
 
-            foreach (string name in names)
-                TestLog.WriteLine("> " + name);
+            //foreach (string name in names)
+            //    TestLog.WriteLine("> " + name);
         }
 
         [Test, XmlData("//Test", ResourcePath = "Specifications.xml")]

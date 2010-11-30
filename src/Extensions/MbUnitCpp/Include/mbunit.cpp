@@ -53,7 +53,7 @@ namespace mbunit
 
 	String::String(const wchar_t* wstr) : buffer(0), length(-1)
 	{
-		AppendImpl(wstr, wcslen(wstr));
+		AppendImpl(wstr, (int)wcslen(wstr));
 	}
 
 	void String::Clear()
@@ -96,7 +96,7 @@ namespace mbunit
 
 	void String::AppendImpl(const char* str)
 	{
-		int n = mbstowcs(0, str, -1);
+		int n = (int)mbstowcs(0, str, -1);
 		wchar_t* tmp = new wchar_t[n + 1];
 		mbstowcs(tmp, str, n);
 		AppendImpl(tmp, n);
@@ -115,7 +115,7 @@ namespace mbunit
 
 	void String::Append(const wchar_t* wstr)
 	{
-		AppendImpl(wstr, wcslen(wstr));
+		AppendImpl(wstr, (int)wcslen(wstr));
 	}
 
 	void String::AppendFormat(const char* format, ...)
@@ -652,60 +652,56 @@ namespace mbunit
     }
 
 	// Asserts that the specified boolean value is true.
-	void AssertionFramework::IsTrue(bool actualValue, const wchar_t* message)
-	{
-        IncrementAssertCount();
-
-		if (!actualValue)
-		{
-			AssertionFailure failure;
-			failure.DescriptionId = Map().Add(String::New(L"Expected value to be true."));
-			failure.Actual.Set(Map().Add(String::New(L"false")), TypeBoolean);
-			failure.MessageId = Map().Add(String::New(message));
-			throw failure;
+	#define _AssertionFramework_IsTrue(TYPE, CONDITION) \
+		template<> void AssertionFramework::IsTrue<TYPE>(TYPE actualValue, const wchar_t* message) \
+		{ \
+			IncrementAssertCount(); \
+			if (CONDITION) \
+			{ \
+				AssertionFailure failure; \
+				failure.DescriptionId = Map().Add(String::New(L"Expected value to be true.")); \
+				failure.Actual.Set(Map().Add(String::New(L"false")), TypeBoolean); \
+				failure.MessageId = Map().Add(String::New(message)); \
+				throw failure; \
+			} \
 		}
-	}
 
-	void AssertionFramework::IsTrue(int actualValue, const wchar_t* message)
-	{
-		IsTrue(actualValue != 0, message);
-	}
+	_AssertionFramework_IsTrue(bool, !actualValue)
+	_AssertionFramework_IsTrue(int, actualValue == 0)
 
 	// Asserts that the specified boolean value is false.
-	void AssertionFramework::IsFalse(bool actualValue, const wchar_t* message)
-	{
-        IncrementAssertCount();
-
-		if (actualValue)
-		{
-			AssertionFailure failure;
-			failure.DescriptionId = Map().Add(String::New(L"Expected value to be false."));
-			failure.Actual.Set(Map().Add(String::New(L"true")), TypeBoolean);
-			failure.MessageId = Map().Add(String::New(message));
-			throw failure;
-		}
-	}
-
-	void AssertionFramework::IsFalse(int actualValue, const wchar_t* message)
-	{
-		IsFalse(actualValue != 0, message);
-	}
-
-	#define _AssertionFramework_AreEqual(TYPE, INEQUALITY, FORMATEXPECTED, FORMATACTUAL, MANAGEDTYPE) \
-	void AssertionFramework::AreEqual(TYPE expectedValue, TYPE actualValue, const wchar_t* message) \
-	{ \
-        IncrementAssertCount(); \
-		\
-		if (INEQUALITY) \
+	#define _AssertionFramework_IsFalse(TYPE, CONDITION) \
+		template<> void AssertionFramework::IsFalse<TYPE>(TYPE actualValue, const wchar_t* message) \
 		{ \
-			AssertionFailure failure; \
-			failure.DescriptionId = Map().Add(String::New(L"Expected values to be equal.")); \
-			failure.Expected.Set(FORMATEXPECTED, MANAGEDTYPE); \
-			failure.Actual.Set(FORMATACTUAL, MANAGEDTYPE); \
-			failure.MessageId = Map().Add(String::New(message)); \
-			throw failure; \
-		} \
-	}
+			IncrementAssertCount(); \
+			if (CONDITION) \
+			{ \
+				AssertionFailure failure; \
+				failure.DescriptionId = Map().Add(String::New(L"Expected value to be false.")); \
+				failure.Actual.Set(Map().Add(String::New(L"true")), TypeBoolean); \
+				failure.MessageId = Map().Add(String::New(message)); \
+				throw failure; \
+			} \
+		}
+
+	_AssertionFramework_IsFalse(bool, actualValue)
+	_AssertionFramework_IsFalse(int, actualValue != 0)
+
+	// Asserts that the expected value and the actual value are equivalent.
+	#define _AssertionFramework_AreEqual(TYPE, CONDITION, FORMATEXPECTED, FORMATACTUAL, MANAGEDTYPE) \
+		template<> void AssertionFramework::AreEqual<TYPE>(TYPE expectedValue, TYPE actualValue, const wchar_t* message) \
+		{ \
+			IncrementAssertCount(); \
+			if (CONDITION) \
+			{ \
+				AssertionFailure failure; \
+				failure.DescriptionId = Map().Add(String::New(L"Expected values to be equal.")); \
+				failure.Expected.Set(FORMATEXPECTED, MANAGEDTYPE); \
+				failure.Actual.Set(FORMATACTUAL, MANAGEDTYPE); \
+				failure.MessageId = Map().Add(String::New(message)); \
+				throw failure; \
+			} \
+		}
 
 	_AssertionFramework_AreEqual(bool, 
 		expectedValue != actualValue, 
@@ -815,22 +811,22 @@ namespace mbunit
 		Map().Add(String::New(actualValue)), 
 		TypeString)
 
-	#define _AssertionFramework_AreApproximatelyEqual(TYPE, INEQUALITY, FORMATEXPECTED, FORMATACTUAL, FORMATDELTA, MANAGEDTYPE) \
-	void AssertionFramework::AreApproximatelyEqual(TYPE expectedValue, TYPE actualValue, TYPE delta, const wchar_t* message) \
-	{ \
-        IncrementAssertCount(); \
-		\
-		if (INEQUALITY) \
+
+	#define _AssertionFramework_AreApproximatelyEqual(TYPE, CONDITION, FORMATEXPECTED, FORMATACTUAL, FORMATDELTA, MANAGEDTYPE) \
+		template<> void AssertionFramework::AreApproximatelyEqual<TYPE>(TYPE expectedValue, TYPE actualValue, TYPE delta, const wchar_t* message) \
 		{ \
-			AssertionFailure failure; \
-			failure.DescriptionId = Map().Add(String::New(L"Expected values to be approximately equal to within a delta.")); \
-			failure.Expected.Set(FORMATEXPECTED, MANAGEDTYPE); \
-			failure.Actual.Set(FORMATACTUAL, MANAGEDTYPE); \
-			failure.Extra_0.Set(FORMATDELTA, MANAGEDTYPE, Map().Add(String::New(L"Delta"))); \
-			failure.MessageId = Map().Add(String::New(message)); \
-			throw failure; \
-		} \
-	}
+			IncrementAssertCount(); \
+			if (CONDITION) \
+			{ \
+				AssertionFailure failure; \
+				failure.DescriptionId = Map().Add(String::New(L"Expected values to be approximately equal to within a delta.")); \
+				failure.Expected.Set(FORMATEXPECTED, MANAGEDTYPE); \
+				failure.Actual.Set(FORMATACTUAL, MANAGEDTYPE); \
+				failure.Extra_0.Set(FORMATDELTA, MANAGEDTYPE, Map().Add(String::New(L"Delta"))); \
+				failure.MessageId = Map().Add(String::New(message)); \
+				throw failure; \
+			} \
+		}
 
 	_AssertionFramework_AreApproximatelyEqual(char, 
 		abs(expectedValue - actualValue) > delta, 
