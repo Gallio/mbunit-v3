@@ -30,9 +30,6 @@ namespace Gallio.Runner.Reports.Schema
     public sealed class TestPackageRun
     {
         private Statistics statistics;
-        private TestStepRun rootTestStepRun;
-        private DateTime startTime;
-        private DateTime endTime;
 
         /// <summary>
         /// Creates an empty package run.
@@ -47,8 +44,8 @@ namespace Gallio.Runner.Reports.Schema
         [XmlAttribute("startTime")]
         public DateTime StartTime
         {
-            get { return startTime; }
-            set { startTime = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -57,8 +54,8 @@ namespace Gallio.Runner.Reports.Schema
         [XmlAttribute("endTime")]
         public DateTime EndTime
         {
-            get { return endTime; }
-            set { endTime = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -67,8 +64,8 @@ namespace Gallio.Runner.Reports.Schema
         [XmlElement("testStepRun", IsNullable = false)]
         public TestStepRun RootTestStepRun
         {
-            get { return rootTestStepRun; }
-            set { rootTestStepRun = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -100,16 +97,46 @@ namespace Gallio.Runner.Reports.Schema
         {
             get
             {
-                if (rootTestStepRun == null)
+                if (RootTestStepRun == null)
                     return EmptyArray<TestStepRun>.Instance;
 
-                return TreeUtils.GetPreOrderTraversal(rootTestStepRun, GetChildren);
+                return TreeUtils.GetPreOrderTraversal(RootTestStepRun, GetChildren);
             }
         }
 
         private static IEnumerable<TestStepRun> GetChildren(TestStepRun node)
         {
             return node.Children;
+        }
+
+        /// <summary>
+        /// Merges the specified package run into the current one.
+        /// </summary>
+        /// <param name="other">The other package run to merge.</param>
+        public void MergeWith(TestPackageRun other)
+        {
+            if (other == null)
+                throw new ArgumentNullException("other");
+
+            if ((StartTime == DateTime.MinValue) || (StartTime == DateTime.MaxValue) || (other.StartTime < StartTime))
+                StartTime = other.StartTime;
+
+            if ((EndTime == DateTime.MinValue) || (EndTime == DateTime.MaxValue) || (other.EndTime > EndTime))
+                EndTime = other.EndTime;
+
+            if (RootTestStepRun == null)
+            {
+                RootTestStepRun = other.RootTestStepRun;
+            }
+            else
+            {
+                foreach (var child in other.RootTestStepRun.Children)
+                {
+                    RootTestStepRun.Children.Add(child);
+                }
+            }
+
+            Statistics.MergeWith(other.Statistics);
         }
     }
 }

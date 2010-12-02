@@ -37,11 +37,6 @@ namespace Gallio.Model.Schema
         private readonly List<string> hintDirectories;
         private readonly List<string> files;
         private readonly List<string> excludedFrameworkIds;
-        private bool shadowCopy;
-        private bool debug;
-        private string applicationBaseDirectory;
-        private string workingDirectory;
-        private string runtimeVersion;
         private PropertySet properties;
 
         /// <summary>
@@ -68,11 +63,11 @@ namespace Gallio.Model.Schema
             GenericCollectionUtils.ConvertAndAddAll(source.HintDirectories, hintDirectories, directory => directory.FullName);
             GenericCollectionUtils.ConvertAndAddAll(source.Files, files, file => file.FullName);
             excludedFrameworkIds.AddRange(source.ExcludedTestFrameworkIds);
-            shadowCopy = source.ShadowCopy;
-            debug = source.DebuggerSetup != null;
-            applicationBaseDirectory = source.ApplicationBaseDirectory != null ? source.ApplicationBaseDirectory.FullName : null;
-            workingDirectory = source.WorkingDirectory != null ? source.WorkingDirectory.FullName : null;
-            runtimeVersion = source.RuntimeVersion;
+            ShadowCopy = source.ShadowCopy;
+            Debug = source.DebuggerSetup != null;
+            ApplicationBaseDirectory = source.ApplicationBaseDirectory != null ? source.ApplicationBaseDirectory.FullName : null;
+            WorkingDirectory = source.WorkingDirectory != null ? source.WorkingDirectory.FullName : null;
+            RuntimeVersion = source.RuntimeVersion;
             properties = source.Properties.Copy();
         }
 
@@ -117,8 +112,8 @@ namespace Gallio.Model.Schema
         [XmlAttribute("shadowCopy")]
         public bool ShadowCopy
         {
-            get { return shadowCopy; }
-            set { shadowCopy = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -128,8 +123,8 @@ namespace Gallio.Model.Schema
         [XmlAttribute("debug")]
         public bool Debug
         {
-            get { return debug; }
-            set { debug = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -140,8 +135,8 @@ namespace Gallio.Model.Schema
         [XmlAttribute("applicationBaseDirectory")]
         public string ApplicationBaseDirectory
         {
-            get { return applicationBaseDirectory; }
-            set { applicationBaseDirectory = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -152,8 +147,8 @@ namespace Gallio.Model.Schema
         [XmlAttribute("workingDirectory")]
         public string WorkingDirectory
         {
-            get { return workingDirectory; }
-            set { workingDirectory = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -163,8 +158,8 @@ namespace Gallio.Model.Schema
         [XmlAttribute("runtimeVersion")]
         public string RuntimeVersion
         {
-            get { return runtimeVersion; }
-            set { runtimeVersion = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -202,11 +197,11 @@ namespace Gallio.Model.Schema
             GenericCollectionUtils.ForEach(files, x => testPackage.AddFile(new FileInfo(x)));
             GenericCollectionUtils.ForEach(hintDirectories, x => testPackage.AddHintDirectory(new DirectoryInfo(x)));
             GenericCollectionUtils.ForEach(excludedFrameworkIds, x => testPackage.AddExcludedTestFrameworkId(x));
-            testPackage.ShadowCopy = shadowCopy;
-            testPackage.DebuggerSetup = debug ? new DebuggerSetup() : null;
-            testPackage.ApplicationBaseDirectory = applicationBaseDirectory != null ? new DirectoryInfo(applicationBaseDirectory) : null;
-            testPackage.WorkingDirectory = workingDirectory != null ? new DirectoryInfo(workingDirectory) : null;
-            testPackage.RuntimeVersion = runtimeVersion;
+            testPackage.ShadowCopy = ShadowCopy;
+            testPackage.DebuggerSetup = Debug ? new DebuggerSetup() : null;
+            testPackage.ApplicationBaseDirectory = ApplicationBaseDirectory != null ? new DirectoryInfo(ApplicationBaseDirectory) : null;
+            testPackage.WorkingDirectory = WorkingDirectory != null ? new DirectoryInfo(WorkingDirectory) : null;
+            testPackage.RuntimeVersion = RuntimeVersion;
             GenericCollectionUtils.ForEach(Properties, x => testPackage.AddProperty(x.Key, x.Value));
         }
 
@@ -246,12 +241,12 @@ namespace Gallio.Model.Schema
             if (basePath == null)
                 throw new ArgumentNullException("basePath");
 
-            if (workingDirectory != null)
-                workingDirectory = converter(workingDirectory, basePath);
-            if (applicationBaseDirectory != null)
-                applicationBaseDirectory = converter(applicationBaseDirectory, basePath);
-            if (applicationBaseDirectory != null)
-                applicationBaseDirectory = converter(applicationBaseDirectory, basePath);
+            if (WorkingDirectory != null)
+                WorkingDirectory = converter(WorkingDirectory, basePath);
+            if (ApplicationBaseDirectory != null)
+                ApplicationBaseDirectory = converter(ApplicationBaseDirectory, basePath);
+            if (ApplicationBaseDirectory != null)
+                ApplicationBaseDirectory = converter(ApplicationBaseDirectory, basePath);
             GenericCollectionUtils.ConvertInPlace(files, x => converter(x, basePath));
             GenericCollectionUtils.ConvertInPlace(hintDirectories, x => converter(x, basePath));
         }

@@ -91,7 +91,7 @@
     <Compile Include="Common\Accessor.cs" />
     <Compile Include="Common\Action.cs" />
     <Compile Include="Common\Collections\EnumerableCounter.cs" />
-	<Compile Include="Common\Collections\IPropertySetContainer.cs" />
+    <Compile Include="Common\Collections\IPropertySetContainer.cs" />
     <Compile Include="Common\Comparison.cs" />
     <Compile Include="Common\Concurrency\DegreeOfParallelismProvider.cs" />
     <Compile Include="Common\Concurrency\IProcess.cs" />
@@ -429,6 +429,8 @@
     <Compile Include="Runner\Events\NamespaceDoc.cs" />
     <Compile Include="Runner\Reports\AbstractReportContainer.cs" />
     <Compile Include="Runner\Reports\ArchiveReportContainer.cs" />
+    <Compile Include="Runner\Reports\DefaultReportMerger.cs" />
+    <Compile Include="Runner\Reports\IReportMerger.cs" />
     <Compile Include="Runner\Reports\ReportArchive.cs" />
     <Compile Include="Runner\Reports\ReportContainerFactory.cs" />
     <Compile Include="Runtime\Conversions\Conversion.cs" />
@@ -1002,6 +1004,8 @@
     <Compile Include="Common\Security\ImpersonationException.cs" />
     <Compile Include="Runtime\UtilityCommands\BaseUtilityCommand.cs" />
     <Compile Include="Runtime\UtilityCommands\ClearCurrentUserPluginCacheUtilityCommand.cs" />
+    <Compile Include="Runtime\UtilityCommands\BaseReportTransformationUtilityCommand.cs" />
+    <Compile Include="Runtime\UtilityCommands\MergeReportsUtilityCommand.cs" />
     <Compile Include="Runtime\UtilityCommands\FormatReportUtilityCommand.cs" />
     <Compile Include="Runtime\UtilityCommands\ResetInstallationIdElevatedCommand.cs" />
     <Compile Include="Runtime\UtilityCommands\ResetInstallationIdUtilityCommand.cs" />

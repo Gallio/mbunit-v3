@@ -180,5 +180,32 @@ namespace Gallio.Tests.Common.Collections
             [XmlElement("following")]
             public int FollowingElement;
         }
+
+        [Test]
+        public void Merge()
+        {
+            var set1 = new PropertySet();
+            set1.SetValue("key1", "value1");
+            set1.SetValue("key2", "value2");
+
+            var set2 = new PropertySet();
+            set2.SetValue("key1", "value1bis");
+            set2.SetValue("key3", "value3");
+
+            set1.MergeWith(set2);
+            
+            Assert.AreElementsEqualIgnoringOrder(set1, new[] 
+            { 
+                new KeyValuePair<string, string>("key1", "value1"), 
+                new KeyValuePair<string, string>("key2", "value2"), 
+                new KeyValuePair<string, string>("key3", "value3"),
+            });
+
+            Assert.AreElementsEqualIgnoringOrder(set2, new[] 
+            { 
+                new KeyValuePair<string, string>("key1", "value1bis"), 
+                new KeyValuePair<string, string>("key3", "value3"),
+            });
+        }
     }
 }

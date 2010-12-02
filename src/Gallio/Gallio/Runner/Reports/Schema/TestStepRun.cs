@@ -34,8 +34,6 @@ namespace Gallio.Runner.Reports.Schema
     {
         private readonly List<TestStepRun> children;
         private TestStepData step;
-        private DateTime startTime;
-        private DateTime endTime;
         private TestResult result;
         private StructuredDocument testLog;
 
@@ -93,8 +91,8 @@ namespace Gallio.Runner.Reports.Schema
         [XmlAttribute("startTime")]
         public DateTime StartTime
         {
-            get { return startTime; }
-            set { startTime = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -103,8 +101,8 @@ namespace Gallio.Runner.Reports.Schema
         [XmlAttribute("endTime")]
         public DateTime EndTime
         {
-            get { return endTime; }
-            set { endTime = value; }
+            get;
+            set;
         }
 
         /// <summary>

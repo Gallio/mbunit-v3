@@ -68,5 +68,13 @@ namespace Gallio.Runner.Reports
         /// <returns>The report writer.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/> or <paramref name="reportContainer"/> is null.</exception>
         IReportWriter CreateReportWriter(Report report, IReportContainer reportContainer);
+
+        /// <summary>
+        /// Returns a report merger for the specified reports.
+        /// </summary>
+        /// <param name="reports">The test reports to be merged.</param>
+        /// <returns>The report merge.r</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reports"/> is null.</exception>
+        IReportMerger CreateReportMerger(IEnumerable<Report> reports);
     }
 }

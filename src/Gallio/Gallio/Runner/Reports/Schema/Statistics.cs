@@ -282,6 +282,35 @@ namespace Gallio.Runner.Reports.Schema
         }
 
         /// <summary>
+        /// Merges the specified statistics.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="other"/> is null.</exception>
+        public void MergeWith(Statistics other)
+        {
+            if (other == null)
+                throw new ArgumentNullException("other");
+   
+            assertCount += other.AssertCount;
+            duration += other.Duration;
+            runCount += other.RunCount;
+            testCount += other.TestCount;
+            stepCount += other.StepCount;
+            passedCount += other.PassedCount;
+            failedCount += other.FailedCount;
+            inconclusiveCount += other.InconclusiveCount;
+            skippedCount += other.SkippedCount;
+
+            foreach (var item in other.outcomeCounts)
+            {
+                if (!outcomeCounts.ContainsKey(item.Key))
+                    outcomeCounts.Add(item.Key, 0);
+
+                outcomeCounts[item.Key] += item.Value;
+            }
+        }
+
+        /// <summary>
         /// Updates the test outcome statistics counters with an the outcome of a test.
         /// </summary>
         /// <remarks>

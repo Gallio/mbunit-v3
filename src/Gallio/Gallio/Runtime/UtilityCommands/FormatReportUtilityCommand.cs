@@ -30,92 +30,40 @@ namespace Gallio.Runtime.UtilityCommands
     /// <summary>
     /// A utility command to load an XML test report and save
     /// </summary>
-    public class FormatReportUtilityCommand : BaseUtilityCommand<FormatReportUtilityCommand.Arguments>
+    public class FormatReportUtilityCommand : BaseReportTransformationUtilityCommand<FormatReportUtilityCommand.Arguments>
     {
-        private UtilityCommandContext context;
-        private Arguments arguments;
         private string inputPath;
         private string outputPath;
         private string inputName;
-        private IReportManager reportManager;
         private Report report;
         private ReportArchive reportArchive;
 
         /// <inheritdoc />
-        public override int Execute(UtilityCommandContext context, Arguments arguments)
+        protected override bool ExecuteImpl()
         {
-            this.context = context;
-            this.arguments = arguments;
-            context.Logger.Log(LogSeverity.Important, "Formatting a test report.");
-            return Prepare() && LoadReport() && SaveReport() ? 0 : -1;
+            Context.Logger.Log(LogSeverity.Important, "Formatting a test report.");
+            return Prepare()
+                && LoadReport(inputPath, inputName, out report)
+                && SaveReport(report, reportArchive, Args.ReportType, outputPath, () => 
+                    (Args.ReportNameFormat != null) ? report.FormatReportName(Args.ReportNameFormat) : inputName);
         }
 
         private bool Prepare()
         {
-            outputPath = arguments.ReportOutput ?? Environment.CurrentDirectory;
-            reportManager = RuntimeAccessor.ServiceLocator.Resolve<IReportManager>();
+            outputPath = Args.ReportOutput ?? Environment.CurrentDirectory;
 
             try
             {
-                inputPath = Path.GetDirectoryName(arguments.ReportPath);
-                inputName = Path.GetFileNameWithoutExtension(arguments.ReportPath);
+                inputPath = Path.GetDirectoryName(Args.ReportPath);
+                inputName = Path.GetFileNameWithoutExtension(Args.ReportPath);
             }
             catch (ArgumentException exception)
             {
-                context.Logger.Log(LogSeverity.Error, "The specified report is not a valid file path.", exception);
+                Context.Logger.Log(LogSeverity.Error, "The specified report is not a valid file path.", exception);
                 return false;
             }
 
-            return ReportArchive.TryParse(arguments.ReportArchive, out reportArchive);
-        }
-
-        private bool LoadReport()
-        {
-            return CaptureFileException("The specified report is not a valid file path.", () =>
-            {
-                var factory = new ReportContainerFactory(new FileSystem(), inputPath, inputName);
-
-                using (IReportContainer inputContainer = factory.MakeForReading())
-                {
-                    IReportReader reportReader = reportManager.CreateReportReader(inputContainer);
-                    report = context.ProgressMonitorProvider.Run(pm => reportReader.LoadReport(true, pm));
-                }
-            });
-        }
-
-        private bool SaveReport()
-        {
-            return CaptureFileException("The specified output directory is not a valid file path.", () =>
-            {
-                var outputName = (arguments.ReportNameFormat != null) ? report.FormatReportName(arguments.ReportNameFormat) : inputName;
-                var factory = new ReportContainerFactory(new FileSystem(), outputPath, outputName);
-
-                using (IReportContainer outputContainer = factory.MakeForSaving(reportArchive))
-                {
-                    IReportWriter reportWriter = reportManager.CreateReportWriter(report, outputContainer);
-                    var options = new ReportFormatterOptions();
-                    context.ProgressMonitorProvider.Run(pm => reportManager.Format(reportWriter, arguments.ReportType, options, pm));
-                }
-            });
-        }
-
-        private bool CaptureFileException(string errorMessage, Action func)
-        {
-            try
-            {
-                func();
-                return true;
-            }
-            catch (FileNotFoundException exception)
-            {
-                context.Logger.Log(LogSeverity.Error, errorMessage, exception);
-                return false;
-            }
-            catch (DirectoryNotFoundException exception)
-            {
-                context.Logger.Log(LogSeverity.Error, errorMessage, exception);
-                return false;
-            }
+            return ReportArchive.TryParse(Args.ReportArchive, out reportArchive);
         }
 
         /// <summary>

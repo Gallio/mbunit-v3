@@ -293,6 +293,86 @@ namespace Gallio.Model
         }
 
         /// <summary>
+        /// Merges the specified package to the current one.
+        /// </summary>
+        /// <param name="other">The other package to be merged.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="other"/> is null.</exception>
+        public void MergeWith(TestPackage other)
+        {
+            if (other == null)
+                throw new ArgumentNullException("other");
+
+            if (other.isTestFrameworkOptionsSpecified)
+            {
+                isTestFrameworkOptionsSpecified = true;
+                testFrameworkOptions.Properties.MergeWith(other.TestFrameworkOptions.Properties);
+            }
+
+            if (other.isTestFrameworkFallbackModeSpecified && !isTestFrameworkFallbackModeSpecified)
+            {
+                isTestFrameworkFallbackModeSpecified = true;
+                testFrameworkFallbackMode = other.testFrameworkFallbackMode;
+            }
+
+            if (other.isShadowCopySpecified && !isShadowCopySpecified)
+            {
+                isShadowCopySpecified = true;
+                shadowCopy |= other.shadowCopy;
+            }
+
+            if (other.isDebuggerSetupSpecified)
+            {
+                isDebuggerSetupSpecified = true;
+
+                if (other.debuggerSetup != null)
+                {
+                    if (debuggerSetup == null)
+                        debuggerSetup = new DebuggerSetup();
+
+                    debuggerSetup.Properties.MergeWith(other.debuggerSetup.Properties);
+                }
+            }
+
+            if (other.isApplicationBaseDirectorySpecified && !isApplicationBaseDirectorySpecified)
+            {
+                isApplicationBaseDirectorySpecified = true;
+                applicationBaseDirectory = other.applicationBaseDirectory;
+            }
+
+            if (other.isWorkingDirectorySpecified && !isWorkingDirectorySpecified)
+            {
+                isWorkingDirectorySpecified = true;
+                workingDirectory = other.workingDirectory;
+            }
+
+            if (other.isRuntimeVersionSpecified && !isRuntimeVersionSpecified)
+            {
+                isRuntimeVersionSpecified = true;
+                runtimeVersion = other.runtimeVersion;
+            }
+
+            foreach (string item in other.excludedTestFrameworkIds)
+            {
+                if (!excludedTestFrameworkIds.Contains(item))
+                    excludedTestFrameworkIds.Add(item);
+            }
+
+            foreach (FileInfo item in other.files)
+            {
+                if (files.FindIndex(i => i.FullName == item.FullName) < 0)
+                    files.Add(item);
+            }
+
+            foreach (DirectoryInfo item in other.hintDirectories)
+            {
+                if (hintDirectories.FindIndex(i => i.FullName == item.FullName) < 0)
+                    hintDirectories.Add(item);
+            }
+
+            properties.MergeWith(other.properties);
+        }
+
+        /// <summary>
         /// Resets <see cref="ApplicationBaseDirectory"/> to its default value and sets <see cref="IsApplicationBaseDirectorySpecified" /> to false.
         /// </summary>
         public void ResetApplicationBaseDirectory()

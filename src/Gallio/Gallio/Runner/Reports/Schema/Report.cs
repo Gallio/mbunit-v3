@@ -32,9 +32,6 @@ namespace Gallio.Runner.Reports.Schema
     [XmlType(Namespace=SchemaConstants.XmlNamespace)]
     public sealed class Report
     {
-        private TestPackageData testPackage;
-        private TestModelData testModel;
-        private TestPackageRun testPackageRun;
         private readonly List<LogEntry> logEntries;
 
         /// <summary>
@@ -51,8 +48,8 @@ namespace Gallio.Runner.Reports.Schema
         [XmlElement("testPackage", IsNullable = false, Namespace = SchemaConstants.XmlNamespace)]
         public TestPackageData TestPackage
         {
-            get { return testPackage; }
-            set { testPackage = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -61,8 +58,8 @@ namespace Gallio.Runner.Reports.Schema
         [XmlElement("testModel", IsNullable = false, Namespace = SchemaConstants.XmlNamespace)]
         public TestModelData TestModel
         {
-            get { return testModel; }
-            set { testModel = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -71,8 +68,8 @@ namespace Gallio.Runner.Reports.Schema
         [XmlElement("testPackageRun", IsNullable = false, Namespace = SchemaConstants.XmlNamespace)]
         public TestPackageRun TestPackageRun
         {
-            get { return testPackageRun; }
-            set { testPackageRun = value; }
+            get;
+            set;
         }
 
         /// <summary>

@@ -56,7 +56,7 @@ namespace Gallio.Runner.Reports
             if (progressMonitor == null)
                 throw new ArgumentNullException(@"progressMonitor");
 
-            using (progressMonitor.BeginTask("Loading report.", 10))
+            using (progressMonitor.BeginTask(String.Format("Loading report '{0}'.", reportContainer.ReportName), 10))
             {
                 string reportPath = reportContainer.ReportName + @".xml";
 

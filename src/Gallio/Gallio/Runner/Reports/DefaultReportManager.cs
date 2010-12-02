@@ -93,5 +93,11 @@ namespace Gallio.Runner.Reports
         {
             return new DefaultReportWriter(report, reportContainer);
         }
+
+        /// <inheritdoc />
+        public IReportMerger CreateReportMerger(IEnumerable<Report> reports)
+        {
+            return new DefaultReportMerger(reports);
+        }
     }
 }

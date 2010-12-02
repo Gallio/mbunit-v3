@@ -222,5 +222,17 @@ namespace Gallio.Model.Schema
                 }
             }
         }
+
+        /// <summary>
+        /// Merges the current model with the specified one.
+        /// </summary>
+        /// <param name="other">The other model to be merged.</param>
+        public void MergeWith(TestModelData other)
+        {
+            foreach (var test in other.RootTest.Children)
+                MergeSubtree(RootTest.Id, test);
+
+            annotations.AddRange(other.Annotations);
+        }
     }
 }

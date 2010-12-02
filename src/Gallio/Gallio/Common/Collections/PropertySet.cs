@@ -113,6 +113,21 @@ namespace Gallio.Common.Collections
                 Add(key, value);
         }
 
+        /// <summary>
+        /// Merges the specified property set into the current set, by exluding the existing keys.
+        /// </summary>
+        /// <param name="other">The other proerty set to be merged.</param>
+        public void MergeWith(PropertySet other)
+        {
+            foreach (var property in other)
+            {
+                if (!ContainsKey(property.Key))
+                {
+                    Add(property.Key, property.Value);
+                }
+            }
+        }
+
         #region IDictionary delegating members
         /// <inheritdoc />
         public void Add(KeyValuePair<string, string> item)
