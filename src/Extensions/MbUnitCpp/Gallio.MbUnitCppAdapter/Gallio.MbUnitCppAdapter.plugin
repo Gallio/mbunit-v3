@@ -16,7 +16,10 @@
   <files>
     <file path="Gallio.MbUnitCppAdapter.plugin" />
     <file path="Gallio.MbUnitCppAdapter.dll" />
+    <file path="Gallio.MbUnitCppAdapter.pdb" />
     <file path="Resources\MbUnitCpp.ico" />
+    <file path="Include\mbunit.cpp" />
+    <file path="Include\mbunit.h" />
   </files>
 
   <assemblies>
