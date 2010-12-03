@@ -332,29 +332,30 @@ namespace mbunit
 #define MUC_LP (
 #define MUC_RP )
 #define MUC_SC ;
-#define MUC_COUNT_ARGS(...) MUC_LAST_ARG MUC_LP __VA_ARGS__##MUC_REVERSED_RANGE, MUC_REVERSED_RANGE MUC_RP
-#define MUC_FOR_EACH_1(Action, _0, ...) Action MUC_LP _0 MUC_RP
-#define MUC_FOR_EACH_2(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_1 MUC_LP Action, __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_3(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_2 MUC_LP Action, __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_4(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_3 MUC_LP Action, __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_5(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_4 MUC_LP Action, __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_6(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_5 MUC_LP Action, __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_7(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_6 MUC_LP Action, __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_8(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_7 MUC_LP Action, __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_9(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_8 MUC_LP Action, __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_10(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_9 MUC_LP Action, __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_11(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_10 MUC_LP Action, __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_12(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_11 MUC_LP Action, __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_13(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_12 MUC_LP Action, __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_14(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_13 MUC_LP Action, __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_15(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_14 MUC_LP Action, __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_16(Action, _0, ...) Action MUC_LP _0 MUC_RP MUC_FOR_EACH_15 MUC_LP Action, __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_N(N, Action, _0, ...) MUC_CONCAT MUC_LP MUC_FOR_EACH_, N MUC_RP MUC_LP Action, _0, __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH(Action, _0, ...) MUC_FOR_EACH_N MUC_LP MUC_COUNT_ARGS MUC_LP _0, __VA_ARGS__ MUC_RP , Action, _0, __VA_ARGS__ MUC_RP
-#define MUC_PRINT_ARG(x) x;
+#define MUC_C ,
+#define MUC_COUNT_ARGS(...) MUC_LAST_ARG MUC_LP __VA_ARGS__##MUC_REVERSED_RANGE MUC_C MUC_REVERSED_RANGE MUC_RP
+#define MUC_FOR_EACH_1(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP
+#define MUC_FOR_EACH_2(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_1 MUC_LP __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_3(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_2 MUC_LP __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_4(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_3 MUC_LP __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_5(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_4 MUC_LP __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_6(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_5 MUC_LP __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_7(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_6 MUC_LP __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_8(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_7 MUC_LP __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_9(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_8 MUC_LP __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_10(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_9 MUC_LP __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_11(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_10 MUC_LP __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_12(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_11 MUC_LP __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_13(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_12 MUC_LP __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_14(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_13 MUC_LP __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_15(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_14 MUC_LP __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_16(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_15 MUC_LP __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH_N(N, _0, ...) MUC_CONCAT MUC_LP MUC_FOR_EACH_, N MUC_RP MUC_LP _0, __VA_ARGS__ MUC_RP
+#define MUC_FOR_EACH(_0, ...) MUC_FOR_EACH_N MUC_LP MUC_COUNT_ARGS MUC_LP _0 MUC_C __VA_ARGS__ MUC_RP MUC_C _0 MUC_C __VA_ARGS__ MUC_RP
+#define MUC_PRINT_ARG(x) x MUC_SC
 
 // Macro to create a new test fixture.
-#define TESTFIXTURE(Name, ...) MUC_TESTFIXTURE MUC_LP Name, NoOp() MUC_SC, __VA_ARGS__ MUC_RP
+#define TESTFIXTURE(Name, ...) MUC_TESTFIXTURE MUC_LP Name, NoOp MUC_LP MUC_RP MUC_SC MUC_C __VA_ARGS__ MUC_RP
 #define MUC_TESTFIXTURE(Name, _0, ...) \
     namespace NamespaceTestFixture##Name \
     { \
@@ -363,7 +364,7 @@ namespace mbunit
             public: \
             TestFixture##Name() : TestFixture(mbunit::TestFixture::GetTestFixtureList().GetNextIndex(), L#Name) { Decorate(); } \
 			private: \
-			void Decorate() { MUC_FOR_EACH MUC_LP MUC_PRINT_ARG, _0, __VA_ARGS__ MUC_RP } \
+			void Decorate() { MUC_FOR_EACH MUC_LP _0 MUC_C __VA_ARGS__ MUC_RP } \
         } testFixtureInstance; \
         \
         mbunit::TestFixtureRecorder fixtureRecorder(mbunit::TestFixture::GetTestFixtureList(), &testFixtureInstance); \
@@ -371,14 +372,14 @@ namespace mbunit
     namespace NamespaceTestFixture##Name
 
 // Macro to create a new test.
-#define TEST(Name, ...) MUC_TEST MUC_LP Name, NoOp() MUC_SC, __VA_ARGS__ MUC_RP
+#define TEST(Name, ...) MUC_TEST MUC_LP Name, NoOp MUC_LP MUC_RP MUC_SC MUC_C __VA_ARGS__ MUC_RP
 #define MUC_TEST(Name, _0, ...) \
     class Test##Name : public mbunit::Test \
     { \
         public: \
 		Test##Name() : mbunit::Test(&testFixtureInstance, L#Name, MUC_WFILE, __LINE__) { Decorate(); } \
         private: \
-		void Decorate() { MUC_FOR_EACH MUC_LP MUC_PRINT_ARG, _0, __VA_ARGS__ MUC_RP } \
+		void Decorate() { MUC_FOR_EACH MUC_LP _0 MUC_C __VA_ARGS__ MUC_RP } \
         virtual void RunImpl(); \
     } test##Name##Instance; \
     mbunit::TestRecorder recorder##Name (testFixtureInstance.GetTestList(), &test##Name##Instance); \
@@ -397,7 +398,7 @@ namespace mbunit
         struct DataRow \
         { \
 			struct DataRow* next; \
-            MUC_FOR_EACH MUC_LP MUC_PRINT_ARG, _0, __VA_ARGS__ MUC_RP \
+            MUC_FOR_EACH MUC_LP _0 MUC_C __VA_ARGS__ MUC_RP \
         }; \
         private: \
         struct DataRow* tail; \
