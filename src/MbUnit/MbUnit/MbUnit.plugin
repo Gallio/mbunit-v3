@@ -21,6 +21,7 @@
     <file path="MbUnit.xml" />
 
     <file path="NHamcrest.dll" />
+	<file path="NHamcrest.pdb" />
     
     <file path="Resources\MbUnit.ico" />
   </files>
