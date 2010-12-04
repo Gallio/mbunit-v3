@@ -21,6 +21,7 @@ using Gallio.Common.IO;
 using Gallio.Icarus.Models.ProjectTreeNodes;
 using Gallio.Icarus.Reports;
 using Gallio.Runner.Projects;
+using Gallio.UI.Common.Synchronization;
 
 namespace Gallio.Icarus.Models
 {
@@ -93,7 +94,10 @@ namespace Gallio.Icarus.Models
 
         public void NotifyTestProjectChanged()
         {
-            OnStructureChanged(new TreePathEventArgs(new TreePath(projectRoot)));
+            SynchronizationContext.Post(delegate
+            {
+                OnStructureChanged(new TreePathEventArgs(new TreePath(projectRoot)));
+            }, this);
         }
 
         public ProjectTreeModel(IFileSystem fileSystem)
