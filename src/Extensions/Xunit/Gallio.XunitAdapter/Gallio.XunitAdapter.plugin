@@ -16,6 +16,7 @@
   <files>
     <file path="Gallio.XunitAdapter.plugin" />
     <file path="Gallio.XunitAdapter.dll" />
+	<file path="Gallio.XunitAdapter.pdb" />
     <file path="Readme.txt" />
     <file path="EULA.txt" />
     <file path="xunit.dll" />
