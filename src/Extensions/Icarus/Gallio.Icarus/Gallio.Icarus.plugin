@@ -24,6 +24,7 @@
   </files>
 
   <services>
+    
     <service serviceId="Gallio.Icarus.OptionsController" 
              serviceType="Gallio.Icarus.Controllers.Interfaces.IOptionsController, Gallio.Icarus" />
 
@@ -33,9 +34,12 @@
     <service serviceId="Gallio.Icarus.WindowManager" 
              serviceType="Gallio.Icarus.WindowManager.IWindowManager, Gallio.Icarus" />
 
+    <service serviceId="Gallio.Icarus.MenuManager"
+             serviceType="Gallio.Icarus.WindowManager.IMenuManager, Gallio.Icarus" />
+
     <service serviceId="Gallio.Icarus.PluginScanner" 
              serviceType="Gallio.Icarus.Runtime.IPluginScanner, Gallio.Icarus" />
-  
+
   </services>
 
   <components>
@@ -47,7 +51,11 @@
     <component componentId="Gallio.Icarus.WindowManager.WindowManager" 
                serviceId="Gallio.Icarus.WindowManager"
                componentType="Gallio.Icarus.WindowManager.WindowManager, Gallio.Icarus" />
-			   
+
+    <component componentId="Gallio.Icarus.WindowManager.MenuManager"
+               serviceId="Gallio.Icarus.MenuManager"
+               componentType="Gallio.Icarus.WindowManager.MenuManager, Gallio.Icarus" />
+    
     <component componentId="Gallio.Icarus.DefaultConventionScanner" 
                serviceId="Gallio.Icarus.PluginScanner"
                componentType="Gallio.Icarus.Runtime.DefaultConventionScanner, Gallio.Icarus" />
