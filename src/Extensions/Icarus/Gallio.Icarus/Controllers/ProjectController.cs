@@ -263,7 +263,7 @@ namespace Gallio.Icarus.Controllers
 
             PublishUpdates();
 
-            eventAggregator.Send(new ProjectLoaded(projectLocation));
+            eventAggregator.Send(this, new ProjectLoaded(projectLocation));
         }
 
         public void NewProject(IProgressMonitor progressMonitor)
@@ -294,7 +294,7 @@ namespace Gallio.Icarus.Controllers
                 testProjectManager.SaveProject(projectTreeModel.TestProject, new FileInfo(projectLocation));
                 progressMonitor.Worked(50);
 
-                eventAggregator.Send(new ProjectSaved(projectLocation));
+                eventAggregator.Send(this, new ProjectSaved(projectLocation));
             }
         }
 

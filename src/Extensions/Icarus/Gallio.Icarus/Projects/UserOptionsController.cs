@@ -67,11 +67,11 @@ namespace Gallio.Icarus.Projects
             }
 
             TreeViewCategory = userOptions.TreeViewCategory;
-            eventAggregator.Send(new TreeViewCategoryChanged(TreeViewCategory));
+            eventAggregator.Send(this, new TreeViewCategoryChanged(TreeViewCategory));
 
             CollapsedNodes = userOptions.CollapsedNodes;
 
-            eventAggregator.Send(new UserOptionsLoaded());
+            eventAggregator.Send(this, new UserOptionsLoaded());
         }
 
         private void SaveUserOptions(string projectName)
@@ -88,7 +88,7 @@ namespace Gallio.Icarus.Projects
 
             xmlSerializer.SaveToXml(userOptions, projectUserOptionsFile);
 
-            eventAggregator.Send(new UserOptionsSaved());
+            eventAggregator.Send(this, new UserOptionsSaved());
         }
 
         public void SetCollapsedNodes(IEnumerable<string> collapsedNodes)

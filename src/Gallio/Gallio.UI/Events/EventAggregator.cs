@@ -32,11 +32,12 @@ namespace Gallio.UI.Events
         }
 
         /// <inheritdoc />
-        public void Send<T>(T message) where T : Event
+        public void Send<T>(object sender, T message) where T : Event
         {
             foreach (var handler in serviceLocator.ResolveAll<Handles<T>>())
             {
-                handler.Handle(message);
+                if (handler != sender)
+                    handler.Handle(message);
             }
         }
     }

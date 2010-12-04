@@ -61,7 +61,7 @@ namespace Gallio.Icarus.TestExplorer
 
         public void SortTree(SortOrder sortOrder)
         {
-            eventAggregator.Send(new SortTreeEvent(sortOrder));
+            eventAggregator.Send(this, new SortTreeEvent(sortOrder));
         }
 
         public void FilterStatus(TestStatus testStatus)
@@ -80,7 +80,7 @@ namespace Gallio.Icarus.TestExplorer
                     model.FilterInconclusive.Value = !model.FilterInconclusive;
                     break;
             }
-            eventAggregator.Send(new FilterTestStatusEvent(testStatus));
+            eventAggregator.Send(this, new FilterTestStatusEvent(testStatus));
         }
 
         public void AddFiles(string[] fileNames)
@@ -104,7 +104,7 @@ namespace Gallio.Icarus.TestExplorer
         public void ChangeTreeCategory(string newCategory, Action<IProgressMonitor> continuation)
         {
             model.CurrentTreeViewCategory.Value = newCategory;
-            eventAggregator.Send(new TreeViewCategoryChanged(newCategory));
+            eventAggregator.Send(this, new TreeViewCategoryChanged(newCategory));
             var command = commandFactory.CreateRefreshTestTreeCommand();
             taskManager.QueueTask(command);
             taskManager.QueueTask(new DelegateCommand(continuation));
@@ -129,7 +129,7 @@ namespace Gallio.Icarus.TestExplorer
 
         public void SetTreeSelection(IEnumerable<TestTreeNode> nodes)
         {
-            eventAggregator.Send(new TestSelectionChanged(nodes));
+            eventAggregator.Send(this, new TestSelectionChanged(nodes));
         }
 
         public void Handle(ApplicationShutdown @event)

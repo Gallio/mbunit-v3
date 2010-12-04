@@ -57,10 +57,10 @@ namespace Gallio.Icarus.Tests.TestExplorer
         public void SortTree_should_send_a_SortTreeEvent()
         {
             const SortOrder sortOrder = SortOrder.Ascending;
+
             controller.SortTree(sortOrder);
 
-            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<SortTreeEvent>.Matches(ste => 
-                ste.SortOrder == sortOrder)));
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg.Is(controller), Arg<SortTreeEvent>.Matches(ste => ste.SortOrder == sortOrder)));
         }
 
         [Test]
@@ -129,8 +129,8 @@ namespace Gallio.Icarus.Tests.TestExplorer
             const TestStatus testStatus = TestStatus.Inconclusive;
             controller.FilterStatus(testStatus);
 
-            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<FilterTestStatusEvent>.Matches(ftse => 
-                ftse.TestStatus == testStatus)));
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg.Is(controller), Arg<FilterTestStatusEvent>.Matches(ftse => 
+                                                                                                   ftse.TestStatus == testStatus)));
         }
 
         [Test]
@@ -264,7 +264,7 @@ namespace Gallio.Icarus.Tests.TestExplorer
 
             controller.SetTreeSelection(nodes);
 
-            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<TestSelectionChanged>.Matches(tsc => 
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg.Is(controller), Arg<TestSelectionChanged>.Matches(tsc => 
                 CheckElements(nodes, tsc.Nodes))));
         }
 

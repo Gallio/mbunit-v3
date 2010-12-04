@@ -69,7 +69,7 @@ namespace Gallio.Icarus.Tests.Commands
 
             reloadCommand.Execute(MockProgressMonitor.Instance);
 
-            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<Reloading>.Is.Anything));
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg.Is(reloadCommand), Arg<Reloading>.Is.Anything));
         }
     }
 }

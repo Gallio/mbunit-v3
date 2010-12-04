@@ -56,7 +56,7 @@ namespace Gallio.Icarus.Projects
                 AutoReset = false
             };
             fileSystemWatcher.Changed += (s, e) => timer.Enabled = true;
-            timer.Elapsed += (se, ev) => eventAggregator.Send(projectChanged);
+            timer.Elapsed += (se, ev) => eventAggregator.Send(this, projectChanged);
         }
 
         public void Handle(ApplicationShutdown @event)

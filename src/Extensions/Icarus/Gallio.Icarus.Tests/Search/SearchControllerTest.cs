@@ -64,7 +64,7 @@ namespace Gallio.Icarus.Tests.Search
 
             searchController.Search("metadataType", "searchText");
 
-            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<FilterTreeEvent>.Matches(fte =>
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg.Is(searchController), Arg<FilterTreeEvent>.Matches(fte => 
                 fte.Specification == specification)));
         }
     }

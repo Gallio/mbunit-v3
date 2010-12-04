@@ -257,7 +257,7 @@ namespace Gallio.Icarus.Controllers
 
                 xmlSerializer.SaveToXml(settings, Paths.SettingsFile);
 
-                eventAggregator.Send(new OptionsChanged());
+                eventAggregator.Send(this, new OptionsChanged());
             }
             catch (Exception ex)
             {

@@ -47,7 +47,7 @@ namespace Gallio.Icarus.Commands
             using (progressMonitor.BeginTask(Resources.OpeningProject, 100))
             {
                 using (progressMonitor.CreateSubProgressMonitor(5))
-                    eventAggregator.Send(new TestsReset());
+                    eventAggregator.Send(this, new TestsReset());
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                     projectController.OpenProject(subProgressMonitor, ProjectLocation);

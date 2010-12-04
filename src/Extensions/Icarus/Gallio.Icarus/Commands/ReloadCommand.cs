@@ -42,7 +42,7 @@ namespace Gallio.Icarus.Commands
         {
             using (progressMonitor.BeginTask("Reloading", 100))
             {
-                eventAggregator.Send(new Reloading());
+                eventAggregator.Send(this, new Reloading());
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(95))
                 {

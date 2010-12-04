@@ -44,7 +44,7 @@ namespace Gallio.Icarus.Search
         {
             var specification = specificationFactory.Create(metadataType, searchText);
             var filterTreeEvent = new FilterTreeEvent(specification);
-            eventAggregator.Send(filterTreeEvent);
+            eventAggregator.Send(this, filterTreeEvent);
         }
 
         public void Handle(OptionsChanged @event)

@@ -64,7 +64,7 @@ namespace Gallio.UI.ProgressMonitoring
             var workerTask = new ThreadTask(queueId, () =>
             {
                 var progressMonitor = new ObservableProgressMonitor();
-                eventAggregator.Send(new TaskStarted(queueId, progressMonitor));
+                eventAggregator.Send(this, new TaskStarted(queueId, progressMonitor));
                 command.Execute(progressMonitor);
             });
 
@@ -90,7 +90,7 @@ namespace Gallio.UI.ProgressMonitoring
                 currentWorkerTasks.Remove(queueId);
             }
 
-            eventAggregator.Send(new TaskCompleted(queueId));
+            eventAggregator.Send(this, new TaskCompleted(queueId));
 
             RunTask(queueId);
         }
@@ -99,7 +99,7 @@ namespace Gallio.UI.ProgressMonitoring
         {
             if (exception is OperationCanceledException)
             {
-                eventAggregator.Send(new TaskCancelled(queueId));
+                eventAggregator.Send(this, new TaskCancelled(queueId));
             }
             else
             {

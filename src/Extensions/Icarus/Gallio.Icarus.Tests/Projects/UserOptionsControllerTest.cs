@@ -154,7 +154,7 @@ namespace Gallio.Icarus.Tests.Projects
 
             controller.Handle(new ProjectLoaded("test.gallio"));
 
-            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<TreeViewCategoryChanged>.Matches(tvcc => 
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg.Is(controller), Arg<TreeViewCategoryChanged>.Matches(tvcc => 
                 tvcc.TreeViewCategory == treeViewCategory)));
         }
 
@@ -171,7 +171,7 @@ namespace Gallio.Icarus.Tests.Projects
 
             controller.Handle(new ProjectLoaded(projectLocation));
 
-            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<TreeViewCategoryChanged>.Matches(tvcc => 
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg.Is(controller), Arg<TreeViewCategoryChanged>.Matches(tvcc => 
                 tvcc.TreeViewCategory == treeViewCategory)));
         }
 
@@ -199,7 +199,7 @@ namespace Gallio.Icarus.Tests.Projects
 
             controller.Handle(new ProjectLoaded("test.gallio"));
 
-            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<UserOptionsLoaded>.Is.Anything));
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<object>.Is.Anything, Arg<UserOptionsLoaded>.Is.Anything));
         }
 
         [Test]
@@ -222,7 +222,7 @@ namespace Gallio.Icarus.Tests.Projects
         {
             controller.Handle(new ProjectSaved(""));
 
-            eventAggregator.AssertWasNotCalled(ea => ea.Send(Arg<UserOptionsSaved>.Is.Anything));
+            eventAggregator.AssertWasNotCalled(ea => ea.Send(Arg<object>.Is.Anything, Arg<UserOptionsSaved>.Is.Anything));
         }
 
         [Test]
@@ -232,7 +232,7 @@ namespace Gallio.Icarus.Tests.Projects
 
             controller.Handle(new ProjectSaved(""));
 
-            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<UserOptionsSaved>.Is.Anything));
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<object>.Is.Anything, Arg<UserOptionsSaved>.Is.Anything));
         }
 
         [Test]

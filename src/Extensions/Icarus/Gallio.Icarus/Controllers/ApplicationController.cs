@@ -120,7 +120,7 @@ namespace Gallio.Icarus.Controllers
             }
             if (optionsController.RestorePreviousSettings && optionsController.RecentProjects.Count > 0)
             {
-                string projectName = optionsController.RecentProjects.Items[0];
+                var projectName = optionsController.RecentProjects.Items[0];
                 if (fileSystem.FileExists(projectName))
                 {
                     OpenProject(projectName);
@@ -192,7 +192,7 @@ namespace Gallio.Icarus.Controllers
 
         public void Shutdown()
         {
-            eventAggregator.Send(new ApplicationShutdown());
+            eventAggregator.Send(this, new ApplicationShutdown());
             optionsController.Save();
             SaveProject(false);
         }

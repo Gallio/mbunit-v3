@@ -37,5 +37,40 @@ namespace Gallio.UI.Events
         {
             target.Handle(@event);
         }
+
+        /// <inheritdoc />
+        public bool Equals(EventHandlerProxy<T> other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(other.target, target);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != typeof (EventHandlerProxy<T>)) return false;
+            return Equals((EventHandlerProxy<T>) obj);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return (target != null ? target.GetHashCode() : 0);
+        }
+
+        /// <inheritdoc />
+        public static bool operator ==(EventHandlerProxy<T> left, EventHandlerProxy<T> right)
+        {
+            return Equals(left, right);
+        }
+
+        /// <inheritdoc />
+        public static bool operator !=(EventHandlerProxy<T> left, EventHandlerProxy<T> right)
+        {
+            return !Equals(left, right);
+        }
     }
 }
