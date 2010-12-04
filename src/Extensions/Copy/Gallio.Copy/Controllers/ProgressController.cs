@@ -23,7 +23,7 @@ using Gallio.UI.DataBinding;
 using Gallio.UI.Events;
 using Gallio.UI.ProgressMonitoring;
 
-namespace Gallio.Copy
+namespace Gallio.Copy.Controllers
 {
     internal class ProgressController : IProgressController, Handles<TaskStarted>,
         Handles<TaskCancelled>, Handles<TaskCompleted>

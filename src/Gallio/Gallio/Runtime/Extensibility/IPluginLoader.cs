@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Runtime.Extensibility
 {
@@ -64,8 +65,9 @@ namespace Gallio.Runtime.Extensibility
         /// registered plugin data sources.
         /// </summary>
         /// <param name="catalog">The plugin catalog to populate.</param>
+        /// <param name="progressMonitor"></param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="catalog"/>
         /// is null.</exception>
-        void PopulateCatalog(IPluginCatalog catalog);
+        void PopulateCatalog(IPluginCatalog catalog, IProgressMonitor progressMonitor);
     }
 }

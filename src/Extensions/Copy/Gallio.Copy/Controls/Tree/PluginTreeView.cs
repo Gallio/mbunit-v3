@@ -35,5 +35,14 @@ namespace Gallio.Copy.Controls.Tree
 
             NodeControls.Add(new NodeTextBox());
         }
+
+        public void ExpandPluginList()
+        {
+            foreach (var node in AllNodes)
+            {
+                node.Expand();
+                return;
+            }
+        }
     }
 }

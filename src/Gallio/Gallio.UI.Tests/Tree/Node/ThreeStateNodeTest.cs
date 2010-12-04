@@ -29,9 +29,9 @@ namespace Gallio.UI.Tests.Tree.Node
         [SetUp]
         public void SetUp()
         {
-            parent = new ThreeStateNode();
-            child1 = new ThreeStateNode();
-            child2 = new ThreeStateNode();
+            parent = new ThreeStateNode("parent");
+            child1 = new ThreeStateNode("child1");
+            child2 = new ThreeStateNode("child2");
             parent.Nodes.Add(child1);
             parent.Nodes.Add(child2);
         }

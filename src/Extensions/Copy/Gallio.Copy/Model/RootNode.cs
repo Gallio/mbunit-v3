@@ -13,23 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.UI.DataBinding;
+using System.Windows.Forms;
+using Gallio.UI.Tree.Nodes;
 
-namespace Gallio.Copy
+namespace Gallio.Copy.Model
 {
-    public interface ICopyController
+    public class RootNode : ThreeStateNode
     {
-        PluginTreeModel SourcePlugins { get; }
-        PluginTreeModel TargetPlugins { get; }
-        
-        Observable<string> SourcePluginFolder { get; }
-        Observable<string> TargetPluginFolder { get; }
-
-        void CopyPlugins();
-        void UpdateSourcePluginFolder(string sourcePluginFolder);
-        void UpdateTargetPluginFolder(string targetPluginFolder);
-        
-        void Load();
-        void Shutdown();
+        public RootNode() : base("Plugins")
+        {
+            CheckState = CheckState.Checked;
+        }
     }
 }

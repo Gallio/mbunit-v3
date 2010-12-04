@@ -14,22 +14,22 @@
 // limitations under the License.
 
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows.Forms;
 using Gallio.Runtime.Extensibility;
 using Gallio.UI.Tree.Nodes;
 
-namespace Gallio.Copy
+namespace Gallio.Copy.Model
 {
     public class PluginNode : ThreeStateNode
-    {
+    {        
         private readonly List<string> dependencies = new List<string>();
 
-        public PluginNode(IPluginDescriptor plugin)
-            : base(plugin.PluginId)
-        {
-            //var traits = plugin.ResolveTraits();
+        public IPluginDescriptor Plugin { get; private set; }
 
+        public PluginNode(IPluginDescriptor plugin) : base(plugin.PluginId)
+        {
+            CheckState = CheckState.Checked;
+            Plugin = plugin;
             foreach (var dependency in plugin.PluginDependencies)
             {
                 dependencies.Add(dependency.PluginId);
@@ -52,7 +52,8 @@ namespace Gallio.Copy
 
         private void UpdateDependencies()
         {
-            Debug.Assert(Parent != null, "Parent has not been set.");
+            if (Parent == null)
+                return;
 
             foreach (PluginNode pluginNode in Parent.Nodes)
             {

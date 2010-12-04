@@ -84,7 +84,7 @@ namespace Gallio.UI.Tests.Tree.NodeControls
         [Test, Explicit]
         public void Perf_test()
         {
-            var treeNodeAdv = new TreeNodeAdv(new ThreeStateNode());
+            var treeNodeAdv = new TreeNodeAdv(new ThreeStateNode("node"));
             var newCheckBox = new NodeCheckBox();
             var oldCheckBox = new Aga.Controls.Tree.NodeControls.NodeCheckBox
                                   {

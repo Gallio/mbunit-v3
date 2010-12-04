@@ -16,6 +16,7 @@
 using System.Drawing;
 using Aga.Controls.Tree;
 using Aga.Controls.Tree.NodeControls;
+using Gallio.Copy.Model;
 
 namespace Gallio.Copy.Controls.Tree.NodeControls
 {

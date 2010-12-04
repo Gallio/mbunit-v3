@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Copy.Model;
 using Gallio.Copy.Properties;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;
@@ -32,9 +33,13 @@ namespace Gallio.Copy.Commands
 
         public void Execute(IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask(Resources.ComparePluginsCommand_Comparing_source_and_target_plugins, 100))
+            using (progressMonitor.BeginTask(Resources.ComparePluginsCommand_Comparing_source_and_target_plugins, 
+                sourcePlugins.PluginDescriptors.Count))
             {
-                
+                foreach (var plugin in sourcePlugins.PluginDescriptors)
+                {
+                    
+                }
             }
         }
     }

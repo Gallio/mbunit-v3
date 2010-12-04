@@ -54,15 +54,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\SDK\Loader\Gallio.Loader.cs">
-      <Link>Gallio.Loader.cs</Link>
-    </Compile>
     <Compile Include="Commands\CopyCommand.cs" />
     <Compile Include="Commands\UpdatePluginFolderCommand.cs" />
     <Compile Include="Commands\ComparePluginsCommand.cs" />
-    <Compile Include="Commands\CopyPluginsCommand.cs" />
-    <Compile Include="Events\PluginFolderUpdated.cs" />
-    <Compile Include="Controllers\PluginFolderUpdatedEvent.cs" />
     <Compile Include="Controls\Tree\NodeControls\NodeTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -72,12 +66,12 @@
     <Compile Include="Controls\Tree\PluginTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controllers\IProgressController.cs" />
-    <Compile Include="Controllers\ProgressController.cs" />
+    <Compile Include="IProgressController.cs" />
+    <Compile Include="ProgressController.cs" />
     <Compile Include="ProgressEvent.cs" />
-    <Compile Include="Model\RootNode.cs" />
+    <Compile Include="RootNode.cs" />
     <Compile Include="CopyArguments.cs" />
-    <Compile Include="Controllers\CopyController.cs" />
+    <Compile Include="CopyController.cs" />
     <Compile Include="CopyForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -85,10 +79,10 @@
       <DependentUpon>CopyForm.cs</DependentUpon>
     </Compile>
     <Compile Include="CopyProgram.cs" />
-    <Compile Include="Model\FileNode.cs" />
-    <Compile Include="Controllers\ICopyController.cs" />
-    <Compile Include="Model\PluginNode.cs" />
-    <Compile Include="Model\PluginTreeModel.cs" />
+    <Compile Include="FileNode.cs" />
+    <Compile Include="ICopyController.cs" />
+    <Compile Include="PluginNode.cs" />
+    <Compile Include="PluginTreeModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="CopyForm.resx">
       <DependentUpon>CopyForm.cs</DependentUpon>
@@ -126,6 +120,9 @@
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio.vs2010</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Model\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -16,7 +16,7 @@
 using System;
 using Gallio.UI.DataBinding;
 
-namespace Gallio.Copy
+namespace Gallio.Copy.Controllers
 {
     internal interface IProgressController
     {

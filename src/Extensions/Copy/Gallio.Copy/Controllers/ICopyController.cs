@@ -13,21 +13,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.UI.Tree.Nodes;
+using System;
+using Gallio.Copy.Model;
+using Gallio.UI.DataBinding;
 
-namespace Gallio.Copy
+namespace Gallio.Copy.Controllers
 {
-    public class FileNode : ThreeStateNode
+    public interface ICopyController
     {
-        public FileNode(string file, bool exists)
-            : base(file)
-        {
-            File = file;
-            Exists = exists;
-        }
+        PluginTreeModel SourcePlugins { get; }
+        PluginTreeModel TargetPlugins { get; }
+        
+        Observable<string> SourcePluginFolder { get; }
+        Observable<string> TargetPluginFolder { get; }
+        event EventHandler<PluginFolderUpdatedEvent> PluginFolderUpdated;
 
-        public string File { get; private set; }
-
-        public bool Exists { get; private set; }
+        void CopyPlugins();
+        void UpdateSourcePluginFolder(string sourcePluginFolder);
+        void UpdateTargetPluginFolder(string targetPluginFolder);
+        
+        void Load();
+        void Shutdown();
     }
 }

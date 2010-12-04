@@ -13,29 +13,41 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.IO;
-using System.Reflection;
+using System;
 using Gallio.Common.IO;
-using Gallio.Common.Reflection;
 using Gallio.Copy.Commands;
+using Gallio.Copy.Events;
+using Gallio.Copy.Model;
+using Gallio.Loader;
+using Gallio.UI.Common.Policies;
 using Gallio.UI.DataBinding;
+using Gallio.UI.Events;
 using Gallio.UI.ProgressMonitoring;
 
-namespace Gallio.Copy
+namespace Gallio.Copy.Controllers
 {
-    public class CopyController : ICopyController
+    public class CopyController : ICopyController, Handles<PluginFolderUpdated>
     {
         private readonly ITaskManager taskManager;
+        private readonly IUnhandledExceptionPolicy exceptionPolicy;
+        private readonly IEventAggregator eventAggregator;
+        private readonly IFileSystem fileSystem;
 
         public Observable<string> SourcePluginFolder { get; private set; }
         public Observable<string> TargetPluginFolder { get; private set; }
 
+        public event EventHandler<PluginFolderUpdatedEvent> PluginFolderUpdated = (s, e) => { };
+
         public PluginTreeModel SourcePlugins { get; private set; }
         public PluginTreeModel TargetPlugins { get; private set; }
 
-        public CopyController(ITaskManager taskManager, IFileSystem fileSystem)
+        public CopyController(ITaskManager taskManager, IFileSystem fileSystem, IUnhandledExceptionPolicy exceptionPolicy, 
+            IEventAggregator eventAggregator)
         {
             this.taskManager = taskManager;
+            this.fileSystem = fileSystem;
+            this.exceptionPolicy = exceptionPolicy;
+            this.eventAggregator = eventAggregator;
 
             SourcePluginFolder = new Observable<string>();
             TargetPluginFolder = new Observable<string>();
@@ -46,6 +58,13 @@ namespace Gallio.Copy
 
         public void CopyPlugins()
         {
+            var selectedPlugins = SourcePlugins.GetSelectedPlugins();
+            
+            var command = new CopyPluginsCommand(selectedPlugins, SourcePluginFolder, 
+                TargetPluginFolder, exceptionPolicy, fileSystem);
+            taskManager.QueueTask(command);
+            
+            UpdatePluginFolder(TargetPlugins, TargetPluginFolder, "target");
         }
 
         public void Load()
@@ -61,36 +80,30 @@ namespace Gallio.Copy
         public void UpdateSourcePluginFolder(string sourcePluginFolder)
         {
             SourcePluginFolder.Value = sourcePluginFolder;
-            UpdatePluginFolder(SourcePlugins, sourcePluginFolder);
+            UpdatePluginFolder(SourcePlugins, sourcePluginFolder, "source");
         }
 
         public void UpdateTargetPluginFolder(string targetPluginFolder)
         {
             TargetPluginFolder.Value = targetPluginFolder;
-            UpdatePluginFolder(TargetPlugins, targetPluginFolder);
+            UpdatePluginFolder(TargetPlugins, targetPluginFolder, "target");
         }
 
-        private void UpdatePluginFolder(PluginTreeModel pluginTreeModel, 
-            string targetPluginFolder)
+        private void UpdatePluginFolder(PluginTreeModel pluginTreeModel, string targetPluginFolder, string folder)
         {
-            taskManager.QueueTask(new UpdatePluginFolderCommand(pluginTreeModel, 
-                targetPluginFolder));
-            taskManager.QueueTask(new ComparePluginsCommand(SourcePlugins,
-                TargetPlugins));
+            var command = new UpdatePluginFolderCommand(pluginTreeModel, 
+                targetPluginFolder, folder, eventAggregator);
+            taskManager.QueueTask(command);
         }
 
-        // modified version of debug method in DefaultRuntime.
-        // TODO: replace with install location
         private static string GetSourcePluginFolder()
         {
-            // Find the root "src" dir.
-            string initPath = AssemblyUtils.GetAssemblyLocalPath(Assembly.GetExecutingAssembly());
+            return new DefaultRuntimeLocator().GetRuntimePath();
+        }
 
-            string srcDir = initPath;
-            while (srcDir != null && Path.GetFileName(srcDir) != @"src")
-                srcDir = Path.GetDirectoryName(srcDir);
-
-            return srcDir;
+        public void Handle(PluginFolderUpdated @event)
+        {
+            PluginFolderUpdated(this, new PluginFolderUpdatedEvent(@event.Folder));
         }
     }
 }

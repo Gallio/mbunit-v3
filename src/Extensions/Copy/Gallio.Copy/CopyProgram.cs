@@ -17,6 +17,7 @@ using System;
 using System.Windows.Forms;
 using Gallio.Common.Collections;
 using Gallio.Common.Policies;
+using Gallio.Copy.Controllers;
 using Gallio.Copy.Properties;
 using Gallio.Copy.Runtime;
 using Gallio.Runner;

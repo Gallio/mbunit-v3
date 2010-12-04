@@ -26,6 +26,7 @@ using Gallio.Common.Validation;
 using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Extensibility.Schema;
+using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -39,7 +40,7 @@ namespace Gallio.Tests.Runtime.Extensibility
         {
             var loader = new PluginLoader();
 
-            Assert.Throws<ArgumentNullException>(() => loader.PopulateCatalog(null));
+            Assert.Throws<ArgumentNullException>(() => loader.PopulateCatalog(null, NullProgressMonitor.CreateInstance()));
         }
 
         [Test]
@@ -81,7 +82,7 @@ namespace Gallio.Tests.Runtime.Extensibility
             var catalog = MockRepository.GenerateMock<IPluginCatalog>();
             loader.AddPluginPath(@"C:\This\Directory\Does\Not\Exist");
 
-            loader.PopulateCatalog(catalog);
+            loader.PopulateCatalog(catalog, NullProgressMonitor.CreateInstance());
 
             catalog.VerifyAllExpectations(); // nothing added to catalog
         }
@@ -106,7 +107,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     baseDirectory = baseDirectoryArg;
                 });
 
-                loader.PopulateCatalog(catalog);
+                loader.PopulateCatalog(catalog, NullProgressMonitor.CreateInstance());
 
                 catalog.VerifyAllExpectations(); // added one plugin
 
@@ -144,7 +145,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                         baseDirectory = baseDirectoryArg;
                     });
 
-                loader.PopulateCatalog(catalog);
+                loader.PopulateCatalog(catalog, NullProgressMonitor.CreateInstance());
 
                 catalog.VerifyAllExpectations(); // added one plugin
 
@@ -180,7 +181,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     baseDirectory = baseDirectoryArg;
                 });
 
-            loader.PopulateCatalog(catalog);
+            loader.PopulateCatalog(catalog, NullProgressMonitor.CreateInstance());
 
             catalog.VerifyAllExpectations(); // added one plugin
 
@@ -206,7 +207,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var catalog = MockRepository.GenerateMock<IPluginCatalog>();
                 loader.AddPluginPath(pluginFile);
 
-                var ex = Assert.Throws<RuntimeException>(() => loader.PopulateCatalog(catalog));
+                var ex = Assert.Throws<RuntimeException>(() => loader.PopulateCatalog(catalog, NullProgressMonitor.CreateInstance()));
                 Assert.AreEqual(string.Format("Failed to read and parse plugin metadata file '{0}'.", pluginFile), ex.Message);
                 Assert.IsInstanceOfType<InvalidOperationException>(ex.InnerException);
 
@@ -221,7 +222,7 @@ namespace Gallio.Tests.Runtime.Extensibility
             var catalog = MockRepository.GenerateMock<IPluginCatalog>();
             loader.AddPluginXml("<badxml />", new DirectoryInfo(@"C:\"));
 
-            var ex = Assert.Throws<RuntimeException>(() => loader.PopulateCatalog(catalog));
+            var ex = Assert.Throws<RuntimeException>(() => loader.PopulateCatalog(catalog, NullProgressMonitor.CreateInstance()));
             Assert.AreEqual("Failed to read and parse plugin metadata from Xml configuration.", ex.Message);
             Assert.IsInstanceOfType<InvalidOperationException>(ex.InnerException);
 
@@ -239,7 +240,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var catalog = MockRepository.GenerateMock<IPluginCatalog>();
                 loader.AddPluginPath(pluginFile);
 
-                var ex = Assert.Throws<RuntimeException>(() => loader.PopulateCatalog(catalog));
+                var ex = Assert.Throws<RuntimeException>(() => loader.PopulateCatalog(catalog, NullProgressMonitor.CreateInstance()));
                 Assert.AreEqual(string.Format("Failed to read and parse plugin metadata file '{0}'.", pluginFile), ex.Message);
                 Assert.IsInstanceOfType<ValidationException>(ex.InnerException);
 
@@ -256,7 +257,7 @@ namespace Gallio.Tests.Runtime.Extensibility
             var catalog = MockRepository.GenerateMock<IPluginCatalog>();
             loader.AddPluginXml(pluginContents, new DirectoryInfo(@"C:\"));
 
-            var ex = Assert.Throws<RuntimeException>(() => loader.PopulateCatalog(catalog));
+            var ex = Assert.Throws<RuntimeException>(() => loader.PopulateCatalog(catalog, NullProgressMonitor.CreateInstance()));
             Assert.AreEqual("Failed to read and parse plugin metadata from Xml configuration.", ex.Message);
             Assert.IsInstanceOfType<ValidationException>(ex.InnerException);
 
@@ -282,7 +283,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                         plugin = pluginArg;
                     });
 
-                loader.PopulateCatalog(catalog);
+                loader.PopulateCatalog(catalog, NullProgressMonitor.CreateInstance());
 
                 catalog.VerifyAllExpectations(); // added one plugin
 
@@ -307,7 +308,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     plugin = pluginArg;
                 });
 
-            loader.PopulateCatalog(catalog);
+            loader.PopulateCatalog(catalog, NullProgressMonitor.CreateInstance());
 
             catalog.VerifyAllExpectations(); // added one plugin
 

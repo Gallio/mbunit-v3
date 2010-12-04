@@ -21,9 +21,9 @@ using System.Xml;
 using System.Xml.Serialization;
 using Gallio.Common.Collections;
 using Gallio.Common;
-using Gallio.Common.Policies;
 using Gallio.Common.Xml;
 using Gallio.Runtime.Extensibility.Schema;
+using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Runtime.Extensibility
 {
@@ -93,20 +93,34 @@ namespace Gallio.Runtime.Extensibility
         }
 
         /// <inheritdoc />
-        public void PopulateCatalog(IPluginCatalog catalog)
+        public void PopulateCatalog(IPluginCatalog catalog, IProgressMonitor progressMonitor)
         {
             if (catalog == null)
                 throw new ArgumentNullException("catalog");
 
-            LoadPlugins((plugin, baseDirectory, pluginFilePath) =>
+            using (progressMonitor.BeginTask("Populating catalog", 100))
             {
-                catalog.AddPlugin(plugin, baseDirectory);
-            });
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
+                    LoadPlugins((p, bd, pfp) => catalog.AddPlugin(p, bd), subProgressMonitor);
+                
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
+                    if (pluginXmls.Count > 0)
+                        ReadPluginsFromXml(catalog, subProgressMonitor);
+            }
+        }
 
-            foreach (Pair<string, DirectoryInfo> pair in pluginXmls)
+        private void ReadPluginsFromXml(IPluginCatalog catalog, IProgressMonitor progressMonitor)
+        {
+            using (progressMonitor.BeginTask("Reading plugins from xml", pluginXmls.Count))
             {
-                Plugin plugin = ReadPluginMetadataFromXml(pair.First);
-                catalog.AddPlugin(plugin, pair.Second);
+                foreach (var pair in pluginXmls)
+                {
+                    using (progressMonitor.CreateSubProgressMonitor(1))
+                    {
+                        var plugin = ReadPluginMetadataFromXml(pair.First);
+                        catalog.AddPlugin(plugin, pair.Second);
+                    }
+                }
             }
         }
 
@@ -130,52 +144,69 @@ namespace Gallio.Runtime.Extensibility
         /// Loads plugins by recursively searching the plugin paths for *.plugin files.
         /// </summary>
         /// <param name="pluginCallback">A function that receives plugin metadata as it
-        /// becomes available, not null.</param>
-        protected virtual void LoadPlugins(PluginCallback pluginCallback)
+        ///   becomes available, not null.</param>
+        /// <param name="progressMonitor"></param>
+        protected virtual void LoadPlugins(PluginCallback pluginCallback, IProgressMonitor progressMonitor)
         {
-            HashSet<string> uniquePluginFilePaths = new HashSet<string>();
+            var uniquePluginFilePaths = new HashSet<string>();
 
-            foreach (string pluginPath in pluginPaths)
+            using (progressMonitor.BeginTask("Loading plugins", pluginPaths.Count))
             {
-                DirectoryInfo pluginDirectory = new DirectoryInfo(pluginPath);
-                if (pluginDirectory.Exists)
+                foreach (var pluginPath in pluginPaths)
                 {
-                    LoadPluginsFromDirectory(pluginDirectory, uniquePluginFilePaths, pluginCallback);
-                }
-                else
-                {
-                    FileInfo pluginFile = new FileInfo(pluginPath);
-                    if (pluginFile.Exists)
+                    using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
                     {
-                        LoadPluginsFromFile(pluginFile, uniquePluginFilePaths, pluginCallback);
+                        var pluginDirectory = new DirectoryInfo(pluginPath);
+                        if (pluginDirectory.Exists)
+                        {
+                            LoadPluginsFromDirectory(pluginDirectory, uniquePluginFilePaths, pluginCallback, subProgressMonitor);
+                        }
+                        else
+                        {
+                            var pluginFile = new FileInfo(pluginPath);
+                            if (pluginFile.Exists)
+                            {
+                                LoadPluginsFromFile(pluginFile, uniquePluginFilePaths, pluginCallback, subProgressMonitor);
+                            }
+                        }
                     }
                 }
             }
-
         }
 
-        private void LoadPluginsFromDirectory(DirectoryInfo pluginDirectory, HashSet<string> uniquePluginFilePaths,
-            PluginCallback pluginCallback)
+        private void LoadPluginsFromDirectory(DirectoryInfo pluginDirectory, ICollection<string> uniquePluginFilePaths, 
+            PluginCallback pluginCallback, IProgressMonitor progressMonitor)
         {
-            FileInfo[] pluginFiles = pluginDirectory.GetFiles("*.plugin", SearchOption.AllDirectories);
+            var pluginFiles = pluginDirectory.GetFiles("*.plugin", SearchOption.AllDirectories);
+            
+            if (pluginFiles.Length == 0)
+                return;
 
-            foreach (FileInfo pluginFile in pluginFiles)
+            using (progressMonitor.BeginTask(string.Format("Loading plugins from: {0}", pluginDirectory.Name), pluginFiles.Length))
             {
-                LoadPluginsFromFile(pluginFile, uniquePluginFilePaths, pluginCallback);
+                foreach (var pluginFile in pluginFiles)
+                {
+                    using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                        LoadPluginsFromFile(pluginFile, uniquePluginFilePaths, pluginCallback, subProgressMonitor);
+                }
             }
         }
 
-        private void LoadPluginsFromFile(FileInfo pluginFile, HashSet<string> uniquePluginFilePaths,
-            PluginCallback pluginCallback)
+        private void LoadPluginsFromFile(FileInfo pluginFile, ICollection<string> uniquePluginFilePaths, PluginCallback pluginCallback, 
+            IProgressMonitor progressMonitor)
         {
-            string pluginFilePath = pluginFile.FullName;
-            if (uniquePluginFilePaths.Contains(pluginFilePath))
-                return;
+            using (progressMonitor.BeginTask(string.Format("Loading plugins from: {0}", pluginFile.Name), 1))
+            {
+                var pluginFilePath = pluginFile.FullName;
 
-            uniquePluginFilePaths.Add(pluginFilePath);
+                if (uniquePluginFilePaths.Contains(pluginFilePath))
+                    return;
 
-            Plugin plugin = ReadPluginMetadataFromFile(pluginFile);
-            pluginCallback(plugin, pluginFile.Directory, pluginFilePath);
+                uniquePluginFilePaths.Add(pluginFilePath);
+
+                var plugin = ReadPluginMetadataFromFile(pluginFile);
+                pluginCallback(plugin, pluginFile.Directory, pluginFilePath);
+            }
         }
 
         private Plugin ReadPluginMetadataFromFile(FileInfo pluginFile)

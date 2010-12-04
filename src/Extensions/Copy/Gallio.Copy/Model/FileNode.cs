@@ -13,14 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Windows.Forms;
 using Gallio.UI.Tree.Nodes;
 
-namespace Gallio.Copy
+namespace Gallio.Copy.Model
 {
-    public class RootNode : ThreeStateNode
+    public class FileNode : ThreeStateNode
     {
-        public RootNode()
-            : base("Plugins")
-        { }
+        public FileNode(string file, bool exists)
+            : base(file)
+        {
+            CheckState = CheckState.Checked;
+            File = file;
+            Exists = exists;
+        }
+
+        public string File { get; private set; }
+
+        public bool Exists { get; private set; }
     }
 }

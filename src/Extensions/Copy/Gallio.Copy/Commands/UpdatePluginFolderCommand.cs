@@ -13,21 +13,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Copy.Events;
+using Gallio.Copy.Model;
 using Gallio.Copy.Properties;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.Events;
 using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Copy.Commands
 {
     public class UpdatePluginFolderCommand : ICommand
     {
+        private readonly string folder;
+        private readonly IEventAggregator eventAggregator;
         public PluginTreeModel PluginTreeModel { get; private set; }
         public string PluginFolder { get; private set; }
 
-        public UpdatePluginFolderCommand(PluginTreeModel pluginTreeModel, 
-            string pluginFolder)
+        public UpdatePluginFolderCommand(PluginTreeModel pluginTreeModel, string pluginFolder, string folder, 
+            IEventAggregator eventAggregator)
         {
+            this.folder = folder;
+            this.eventAggregator = eventAggregator;
             PluginTreeModel = pluginTreeModel;
             PluginFolder = pluginFolder;
         }
@@ -41,6 +48,7 @@ namespace Gallio.Copy.Commands
                 var pluginCatalog = PopulateCatalog(progressMonitor, pluginLoader);
                 ApplyCatalogToRegistry(progressMonitor, pluginCatalog, registry);
                 PluginTreeModel.UpdatePluginList(registry);
+                eventAggregator.Send(this, new PluginFolderUpdated(folder));
             }
         }
 
@@ -73,10 +81,7 @@ namespace Gallio.Copy.Commands
             var pluginCatalog = new PluginCatalog();
             
             using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(45))
-            {
-                subProgressMonitor.BeginTask(Resources.UpdatePluginFolderCommand_Populating_catalog, 100);
-                pluginLoader.PopulateCatalog(pluginCatalog);
-            }
+                pluginLoader.PopulateCatalog(pluginCatalog, subProgressMonitor);
             
             return pluginCatalog;
         }

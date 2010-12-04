@@ -20,26 +20,27 @@ using Aga.Controls.Tree;
 using Gallio.Common.IO;
 using Gallio.Runtime.Extensibility;
 
-namespace Gallio.Copy
+namespace Gallio.Copy.Model
 {
     public class PluginTreeModel : TreeModelBase
     {
         private readonly IFileSystem fileSystem;
         private readonly Node root = new RootNode();
-        
-        private List<IPluginDescriptor> pluginDescriptors = new List<IPluginDescriptor>();
+
+        public List<IPluginDescriptor> PluginDescriptors { get; private set; }
 
         public PluginTreeModel(IFileSystem fileSystem)
         {
             this.fileSystem = fileSystem;
+            PluginDescriptors = new List<IPluginDescriptor>();
         }
 
         public void UpdatePluginList(IRegistry registry)
         {
-            pluginDescriptors = new List<IPluginDescriptor>(registry.Plugins);
-            pluginDescriptors.Sort((l, r) => l.PluginId.CompareTo(r.PluginId));
+            PluginDescriptors = new List<IPluginDescriptor>(registry.Plugins);
+            PluginDescriptors.Sort((l, r) => l.PluginId.CompareTo(r.PluginId));
 
-            OnStructureChanged(new TreePathEventArgs(new TreePath()));
+            OnStructureChanged(new TreePathEventArgs(new TreePath(root)));
         }
 
         public override IEnumerable GetChildren(TreePath treePath)
@@ -50,7 +51,7 @@ namespace Gallio.Copy
             }
             else if (treePath.LastNode == root)
             {                
-                foreach (var pluginDescriptor in pluginDescriptors)
+                foreach (var pluginDescriptor in PluginDescriptors)
                 {
                     var pluginNode = new PluginNode(pluginDescriptor);
                     root.Nodes.Add(pluginNode);
@@ -80,6 +81,19 @@ namespace Gallio.Copy
 
             return treePath.LastNode is PluginNode && 
                 ((PluginNode)treePath.LastNode).Nodes.Count == 0;
+        }
+
+        public IList<IPluginDescriptor> GetSelectedPlugins()
+        {
+            var pluginDescriptors = new List<IPluginDescriptor>();
+
+            foreach (PluginNode pluginNode in root.Nodes)
+            {
+                if (pluginNode.IsChecked)
+                    pluginDescriptors.Add(pluginNode.Plugin);
+            }
+
+            return pluginDescriptors;
         }
     }
 }

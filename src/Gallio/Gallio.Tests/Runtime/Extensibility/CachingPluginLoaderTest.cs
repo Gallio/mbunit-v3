@@ -23,6 +23,7 @@ using Gallio.Common;
 using Gallio.Common.Policies;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Extensibility.Schema;
+using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
 using Rhino.Mocks;
 using File = System.IO.File;
@@ -78,7 +79,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                             plugin = pluginArg;
                         });
 
-                    loader.PopulateCatalog(catalog);
+                    loader.PopulateCatalog(catalog, NullProgressMonitor.CreateInstance());
 
                     catalog.VerifyAllExpectations(); // added one plugin
 
@@ -109,7 +110,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                             plugin = pluginArg;
                         });
 
-                    loader.PopulateCatalog(catalog);
+                    loader.PopulateCatalog(catalog, NullProgressMonitor.CreateInstance());
 
                     catalog.VerifyAllExpectations(); // added one plugin
 

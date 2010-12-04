@@ -16,6 +16,8 @@
 using System;
 using System.Windows.Forms;
 using Gallio.Common.Concurrency;
+using Gallio.Copy.Controllers;
+using Gallio.Copy.Controls.Tree;
 using Gallio.Copy.Properties;
 using Gallio.UI.Common.Synchronization;
 using Gallio.UI.ProgressMonitoring;
@@ -56,6 +58,25 @@ namespace Gallio.Copy
             };
             progressController.DisplayProgressDialog += (s, e) => Sync.Invoke(this, () =>
                 new ProgressMonitorDialog(e.ProgressMonitor).Show(this));
+
+            copyController.PluginFolderUpdated += (s, e) => Sync.Invoke(this, () => ExpandPluginList(e.Folder));
+        }
+
+        private void ExpandPluginList(string folder)
+        {
+            PluginTreeView treeView;
+            switch(folder)
+            {
+                case "source":
+                    treeView = sourcePluginTreeView;
+                    break;
+                case "target":
+                    treeView = targetPluginTreeView;
+                    break;
+                default:
+                    throw new Exception("Unknown plugin folder");
+            }
+            treeView.ExpandPluginList();
         }
 
         private void CloseButtonClick(object sender, EventArgs e)

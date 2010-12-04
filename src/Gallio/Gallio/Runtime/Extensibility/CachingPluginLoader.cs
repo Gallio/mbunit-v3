@@ -23,6 +23,8 @@ using System.Xml.Serialization;
 using Gallio.Common;
 using Gallio.Common.Policies;
 using Gallio.Runtime.Extensibility.Schema;
+using Gallio.Runtime.ProgressMonitoring;
+using File = System.IO.File;
 
 namespace Gallio.Runtime.Extensibility
 {
@@ -63,7 +65,7 @@ namespace Gallio.Runtime.Extensibility
         }
 
         /// <inheritdoc />
-        protected override void LoadPlugins(PluginCallback pluginCallback)
+        protected override void LoadPlugins(PluginCallback pluginCallback, IProgressMonitor progressMonitor)
         {
             // Attempt to read the old cache.
             string cacheFilePath;
@@ -82,7 +84,7 @@ namespace Gallio.Runtime.Extensibility
 
                 if (Directory.Exists(cacheDirPath))
                 {
-                    if (System.IO.File.Exists(cacheFilePath))
+                    if (File.Exists(cacheFilePath))
                     {
                         Cache oldCache = ReadCacheFile(cacheFilePath);
                         if (oldCache != null)
@@ -103,25 +105,28 @@ namespace Gallio.Runtime.Extensibility
                 // Fallback on any failure.
                 // There can be all sorts of weird security exceptions that will prevent
                 // us from manipulating the local application data directory.
-                base.LoadPlugins(pluginCallback);
+                base.LoadPlugins(pluginCallback, progressMonitor);
                 return;
             }
 
             // Load plugin metadata.
-            var newCache = new Cache() { InstallationId = InstallationId.ToString() };
+            var newCache = new Cache
+            {
+                InstallationId = InstallationId.ToString()
+            };
 
             base.LoadPlugins((plugin, baseDirectory, pluginFile) =>
             {
-                newCache.PluginInfos.Add(new CachePluginInfo()
+                newCache.PluginInfos.Add(new CachePluginInfo
                 {
                     Plugin = plugin,
                     BaseDirectory = baseDirectory.FullName,
                     PluginFile = pluginFile,
-                    PluginFileModificationTime = System.IO.File.GetLastWriteTimeUtc(pluginFile)
+                    PluginFileModificationTime = File.GetLastWriteTimeUtc(pluginFile)
                 });
 
                 pluginCallback(plugin, baseDirectory, pluginFile);
-            });
+            }, progressMonitor);
 
             // Attempt to store it in the cache.
             try

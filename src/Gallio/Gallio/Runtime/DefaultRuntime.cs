@@ -28,6 +28,7 @@ using Gallio.Common.Reflection;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Loader;
 using Gallio.Runtime.Logging;
+using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Runtime
 {
@@ -264,7 +265,7 @@ namespace Gallio.Runtime
                 pluginLoader.AddPluginPath(path);
 
             var pluginCatalog = new PluginCatalog();
-            pluginLoader.PopulateCatalog(pluginCatalog);
+            pluginLoader.PopulateCatalog(pluginCatalog, NullProgressMonitor.CreateInstance());
 
             pluginCatalog.ApplyTo(registry);
         }

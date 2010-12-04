@@ -15,6 +15,9 @@
 
 using Gallio.Common.IO;
 using Gallio.Copy.Commands;
+using Gallio.Copy.Controllers;
+using Gallio.UI.Common.Policies;
+using Gallio.UI.Events;
 using Gallio.UI.ProgressMonitoring;
 using MbUnit.Framework;
 using Rhino.Mocks;
@@ -32,7 +35,9 @@ namespace Gallio.Copy.Tests
         {
             taskManager = MockRepository.GenerateStub<ITaskManager>();
             fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            controller = new CopyController(taskManager, fileSystem);
+            var exceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
+            var eventAggregator = MockRepository.GenerateStub<IEventAggregator>();
+            controller = new CopyController(taskManager, fileSystem, exceptionPolicy, eventAggregator);
         }
 
         [Test]
