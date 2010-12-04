@@ -13,10 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Common;
+using Gallio.UI.Menus;
+
 namespace Gallio.Icarus.WindowManager
 {
     public interface IMenuManager
     {
-        IMenuList GetMenu(string menuId);
+        void Add(string menuId, Func<MenuCommand> commandFactory);
     }
 }

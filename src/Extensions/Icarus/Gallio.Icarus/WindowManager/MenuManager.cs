@@ -13,41 +13,84 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using ToolStripMenuItem = System.Windows.Forms.ToolStripMenuItem;
+using Gallio.Common;
+using Gallio.UI.Menus;
 
 namespace Gallio.Icarus.WindowManager
 {
     public class MenuManager : IMenuManager
     {
-        private readonly ToolStripItemCollection items;
         private readonly Dictionary<string, IMenuList> menus = new Dictionary<string, IMenuList>();
+        private readonly IDictionary<string, IList<Func<MenuCommand>>> commandFactories = new Dictionary<string, IList<Func<MenuCommand>>>();
+        private IList items;
 
-        public MenuManager(ToolStripItemCollection items)
+        internal void SetToolstrip(IList toolStrip)
         {
-            this.items = items;
+            items = toolStrip;
 
-            foreach (ToolStripMenuItem item in items)
+            foreach (ToolStripMenuItem item in toolStrip)
             {
                 var name = item.Text.Replace("&", "");
                 menus.Add(name, new MenuList(item));
             }
+            
+            ExecuteCommandFactories();
         }
 
-        public IMenuList GetMenu(string menuId)
+        private void ExecuteCommandFactories()
         {
-            if (menus.ContainsKey(menuId))
+            foreach (var menuId in commandFactories.Keys)
             {
-                return menus[menuId];
+                foreach (var commandFactory in commandFactories[menuId])
+                {
+                    AddMenuItem(menuId, commandFactory);
+                }
+            }
+        }
+
+        private IMenuList GetMenu(string menuId)
+        {
+            if (menus.ContainsKey(menuId) == false)
+            {
+                var item = new ToolStripMenuItem { Text = menuId };
+                items.Add(item);
+
+                var menuList = new MenuList(item);
+                menus.Add(menuId, menuList);
             }
 
-            var item = new ToolStripMenuItem { Text = menuId };
-            items.Add(item);
+            return menus[menuId];
+        }
 
-            var menuList = new MenuList(item);
-            menus.Add(menuId, menuList);
-            return menuList;
+        public void Add(string menuId, Func<MenuCommand> commandFactory)
+        {
+            if (items == null)
+            {
+                QueueMenuItem(menuId, commandFactory);
+            }
+            else
+            {
+                AddMenuItem(menuId, commandFactory);
+            }
+        }
+
+        private void QueueMenuItem(string menuId, Func<MenuCommand> commandFactory)
+        {
+            if (commandFactories.ContainsKey(menuId) == false)
+            {
+                commandFactories.Add(menuId, new List<Func<MenuCommand>>());
+            }
+            commandFactories[menuId].Add(commandFactory);
+        }
+
+        private void AddMenuItem(string menuId, Func<MenuCommand> commandFactory)
+        {
+            var menuList = GetMenu(menuId);
+            var menuCommand = commandFactory();
+            menuList.Add(menuCommand);
         }
     }
 }

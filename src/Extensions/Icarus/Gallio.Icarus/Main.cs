@@ -224,7 +224,8 @@ namespace Gallio.Icarus
             windowManager = RuntimeAccessor.ServiceLocator.Resolve<IWindowManager>();
             var manager = (WindowManager.WindowManager) windowManager;
             manager.SetDockPanel(dockPanel);
-            manager.SetMenuManager(new MenuManager(menuStrip.Items));
+            var menuManager = (MenuManager)manager.MenuManager;
+            menuManager.SetToolstrip(menuStrip.Items);
 
             // deal with arguments
             applicationController.Load();

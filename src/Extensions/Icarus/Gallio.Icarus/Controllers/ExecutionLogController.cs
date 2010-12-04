@@ -36,7 +36,7 @@ namespace Gallio.Icarus.Controllers
         private readonly ITestTreeModel testTreeModel;
         private readonly ITaskManager taskManager;
         private readonly HashSet<string> selectedTestIds;
-        private string queueId = "Gallio.Icarus.ExecutionLog";
+        private const string QueueId = "Gallio.Icarus.ExecutionLog";
 
         public ExecutionLogController(ITestController testController, ITestTreeModel testTreeModel, 
             ITaskManager taskManager)
@@ -57,8 +57,8 @@ namespace Gallio.Icarus.Controllers
         {
             // Do this work in the background to avoid a possible deadlock acquiring the report lock
             // on the UI thread.
-            taskManager.ClearQueue(queueId);
-            taskManager.QueueTask(queueId, new DelegateCommand((pm => testController.ReadReport(report =>
+            taskManager.ClearQueue(QueueId);
+            taskManager.QueueTask(QueueId, new DelegateCommand((pm => testController.ReadReport(report =>
             {
                 TestModelData = report.TestModel;
 

@@ -41,6 +41,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Gallio\libs\Aga.Controls.dll</HintPath>
     </Reference>
+    <Reference Include="NHamcrest, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31c3ea0b6fcf8c4a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\MbUnit\lib\NHamcrest\NHamcrest.dll</HintPath>
+    </Reference>
     <Reference Include="Rhino.Mocks, Version=3.1.0.584, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\tools\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
@@ -138,6 +142,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\TestTaskManager.cs" />
+    <Compile Include="WindowManager\MenuManagerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.csproj">

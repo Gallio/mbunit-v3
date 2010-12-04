@@ -24,8 +24,8 @@
   </assemblies>
 
   <components>
-    <component componentId="MyPackage"
+    <component componentId="Package"
                serviceId="Gallio.Icarus.Package"
-               componentType="Gallio.Icarus.ExtensionSample.MyPackage, Gallio.Icarus.ExtensionSample" />
+               componentType="Gallio.Icarus.ExtensionSample.Package, Gallio.Icarus.ExtensionSample" />
   </components>
 </plugin>

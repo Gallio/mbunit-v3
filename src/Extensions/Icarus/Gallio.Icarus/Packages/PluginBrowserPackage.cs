@@ -40,15 +40,11 @@ namespace Gallio.Icarus.Packages
 
         private void AddMenuItem()
         {
-            var menu = windowManager.MenuManager.GetMenu("Tools");
-
-            var menuCommand = new MenuCommand
+            windowManager.MenuManager.Add("Tools", () => new MenuCommand
             {
                 Command = new DelegateCommand(pm => windowManager.Show(WindowId)),
                 Text = Resources.PluginBrowserPackage_AddMenuItem_Plugin_Browser
-            };
-
-            menu.Add(menuCommand);
+            });
         }
 
         private void RegisterWindow()

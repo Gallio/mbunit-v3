@@ -43,16 +43,12 @@ namespace Gallio.Icarus.ProjectProperties
 
         private void AddMenuItem()
         {
-            var menu = windowManager.MenuManager.GetMenu("Project");
-
-            var menuCommand = new MenuCommand
+            windowManager.MenuManager.Add("Project", () => new MenuCommand
             {
                 Command = new DelegateCommand(pm => windowManager.Show(WindowId)),
                 Text = Resources.ProjectsPackage_AddMenuItem_Properties,
                 Image = Resources.PropertiesImage
-            };
-
-            menu.Add(menuCommand);
+            });
         }
 
         private void RegisterWindow()

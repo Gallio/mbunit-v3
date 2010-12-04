@@ -8,7 +8,7 @@ using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.ExtensionSample
 {
-    public class MyPackage : IPackage
+    public class Package : IPackage
     {
         private readonly IWindowManager windowManager;
         private readonly IPluginScanner pluginScanner;
@@ -16,7 +16,7 @@ namespace Gallio.Icarus.ExtensionSample
         private IController controller;
         private const string WindowId = "Gallio.Icarus.ExtensionSample.View";
 
-        public MyPackage(IWindowManager windowManager, IPluginScanner pluginScanner, ITaskManager taskManager)
+        public Package(IWindowManager windowManager, IPluginScanner pluginScanner, ITaskManager taskManager)
         {
             this.windowManager = windowManager;
             this.pluginScanner = pluginScanner;
@@ -32,7 +32,7 @@ namespace Gallio.Icarus.ExtensionSample
 
         private void RegisterComponents()
         {
-            pluginScanner.Scan("Gallio.Icarus.ExtensionSample", typeof(MyPackage).Assembly);
+            pluginScanner.Scan("Gallio.Icarus.ExtensionSample", typeof(Package).Assembly);
             controller = RuntimeAccessor.ServiceLocator.Resolve<IController>();
         }
 
@@ -49,9 +49,10 @@ namespace Gallio.Icarus.ExtensionSample
 
         private void AddMenuItems()
         {
-            var menu = windowManager.MenuManager.GetMenu("Extension Sample");
+            var menuManager = windowManager.MenuManager;
+            const string menuId = "Extension Sample";
 
-            menu.Add(new MenuCommand
+            menuManager.Add(menuId, () => new MenuCommand
             {
                 Command = new DelegateCommand(pm => windowManager.Show(WindowId)),
                 Text = "Show View",
@@ -59,16 +60,18 @@ namespace Gallio.Icarus.ExtensionSample
             });
 
             const string queueId = "ExtensionSample";
-
             var doWorkCommand = new DelegateCommand(pm2 => controller.DoSomeWork());
 
-            menu.Add(new MenuCommand
+            menuManager.Add(menuId, () => new MenuCommand
             {
                 Command = new DelegateCommand(pm => taskManager.QueueTask(queueId, doWorkCommand)),
                 Text = "Do Some Work",
+                Shortcut = "Ctrl + D"
             });
         }
 
-        public void Dispose() { }
+        public void Dispose()
+        {
+        }
     }
 }

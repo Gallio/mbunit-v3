@@ -25,7 +25,6 @@ using Gallio.Icarus.Events;
 using Gallio.UI.Controls;
 using Gallio.Icarus.Helpers;
 using Gallio.Runner.Projects;
-using Gallio.Runtime;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Common.Policies;
 using Gallio.UI.DataBinding;
@@ -109,8 +108,6 @@ namespace Gallio.Icarus.Controllers
 
         public void Load()
         {
-            LoadPackages();
-
             HandleArguments();
         }
 
@@ -156,38 +153,6 @@ namespace Gallio.Icarus.Controllers
             taskManager.QueueTask(command);
         }
 
-        private void LoadPackages()
-        {
-            var serviceLocator = RuntimeAccessor.ServiceLocator;
-            foreach (var package in serviceLocator.ResolveAll<IPackage>())
-            {
-                try
-                {
-                    package.Load();
-                }
-                catch (Exception ex)
-                {
-                    unhandledExceptionPolicy.Report("Error loading package", ex);
-                }
-            }
-        }
-
-        private void UnloadPackages()
-        {
-            var serviceLocator = RuntimeAccessor.ServiceLocator;
-            foreach (var package in serviceLocator.ResolveAll<IPackage>())
-            {
-                try
-                {
-                    package.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    unhandledExceptionPolicy.Report("Error unloading package", ex);
-                }
-            }
-        }
-
         public void OpenProject(string projectName)
         {
             Title = projectName;
@@ -229,7 +194,6 @@ namespace Gallio.Icarus.Controllers
         {
             eventAggregator.Send(new ApplicationShutdown());
             optionsController.Save();
-            UnloadPackages();
             SaveProject(false);
         }
 
