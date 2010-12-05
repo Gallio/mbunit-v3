@@ -148,6 +148,9 @@ namespace Gallio.Runtime.Extensibility
         /// <param name="progressMonitor"></param>
         protected virtual void LoadPlugins(PluginCallback pluginCallback, IProgressMonitor progressMonitor)
         {
+            if (pluginPaths.Count == 0)
+                return;
+
             var uniquePluginFilePaths = new HashSet<string>();
 
             using (progressMonitor.BeginTask("Loading plugins", pluginPaths.Count))
