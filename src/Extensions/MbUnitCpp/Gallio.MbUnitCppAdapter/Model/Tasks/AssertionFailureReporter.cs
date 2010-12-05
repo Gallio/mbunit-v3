@@ -59,7 +59,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
                 else
                 {
                     if (failure.HasExpectedValue)
-                        builder.AddRawActualValue(failure.ExpectedValue);
+                        builder.AddRawExpectedValue(failure.ExpectedValue);
 
                     if (failure.HasActualValue)
                         builder.AddRawActualValue(failure.ActualValue);
