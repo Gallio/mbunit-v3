@@ -16,7 +16,6 @@
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Properties;
-using Gallio.Icarus.Services;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Events;
 using Gallio.UI.ProgressMonitoring;
@@ -27,36 +26,60 @@ namespace Gallio.Icarus.Commands
     {
         private readonly IProjectController projectController;
         private readonly IEventAggregator eventAggregator;
-        private readonly LoadPackageCommand loadPackageCommand;
-        private readonly RestoreFilterCommand restoreFilterCommand;
+        private readonly ICommandFactory commandFactory;
 
         public string ProjectLocation { get; set; }
 
-        public OpenProjectCommand(ITestController testController, IProjectController projectController, 
-            IEventAggregator eventAggregator, IFilterService filterService)
+        public OpenProjectCommand(IProjectController projectController, IEventAggregator eventAggregator, 
+            ICommandFactory commandFactory)
         {
             this.projectController = projectController;
             this.eventAggregator = eventAggregator;
-
-            loadPackageCommand = new LoadPackageCommand(testController, projectController);
-            restoreFilterCommand = new RestoreFilterCommand(filterService, projectController);
+            this.commandFactory = commandFactory;
         }
 
         public void Execute(IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask(Resources.OpeningProject, 100))
             {
-                using (progressMonitor.CreateSubProgressMonitor(5))
-                    eventAggregator.Send(this, new TestsReset());
+                ResetTestStatus(progressMonitor);
+                OpenProject(progressMonitor);
+                LoadPackage(progressMonitor);
+                RestoreTestFilter(progressMonitor);
+            }
+        }
 
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
-                    projectController.OpenProject(subProgressMonitor, ProjectLocation);
+        private void ResetTestStatus(IProgressMonitor progressMonitor)
+        {
+            using (progressMonitor.CreateSubProgressMonitor(5))
+            {
+                eventAggregator.Send(this, new TestsReset());
+            }
+        }
 
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(85))
-                    loadPackageCommand.Execute(subProgressMonitor);
+        private void RestoreTestFilter(IProgressMonitor progressMonitor)
+        {
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
+            {
+                var restoreFilterCommand = commandFactory.CreateRestoreFilterCommand();
+                restoreFilterCommand.Execute(subProgressMonitor);
+            }
+        }
 
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
-                    restoreFilterCommand.Execute(subProgressMonitor);
+        private void LoadPackage(IProgressMonitor progressMonitor)
+        {
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(85))
+            {
+                var loadPackageCommand = commandFactory.CreateLoadPackageCommand();
+                loadPackageCommand.Execute(subProgressMonitor);
+            }
+        }
+
+        private void OpenProject(IProgressMonitor progressMonitor)
+        {
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
+            {
+                projectController.OpenProject(subProgressMonitor, ProjectLocation);
             }
         }
     }

@@ -13,22 +13,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands
 {
     public interface ICommandFactory
     {
-        ICommand CreateReloadCommand();
-        ICommand CreateShowReportCommand(string reportFormat);
-        ICommand CreateRunTestsCommand(bool attachDebugger);
-        ICommand CreateAddFilesCommand(string[] files);
-        ICommand CreateRemoveAllFilesCommand();
-        ICommand CreateResetTestsCommand();
+        ICommand CreateAddFilesCommand(IList<string> files);
+        ICommand CreateConvertSavedReportCommand(string fileName, string format);
+        ICommand CreateDeleteReportCommand(string fileName);
+        ICommand CreateLoadPackageCommand();
         ICommand CreateOpenProjectCommand(string projectLocation);
-        ICommand CreateRemoveFileCommand(string fileName);
         ICommand CreateRefreshTestTreeCommand();
-        ICommand CreateViewSourceCodeCommand(string testId);
+        ICommand CreateReloadCommand();
+        ICommand CreateRemoveAllFilesCommand();
+        ICommand CreateRemoveFileCommand(string fileName);
+        ICommand CreateResetTestsCommand();
+        ICommand CreateRestoreFilterCommand();
+        ICommand CreateRunTestsCommand(bool attachDebugger);
         ICommand CreateSaveFilterCommand(string filterName);
+        ICommand CreateShowReportCommand(string reportFormat);
+        ICommand CreateViewSourceCodeCommand(string testId);
     }
 }

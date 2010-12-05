@@ -18,14 +18,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
-using Gallio.Common.IO;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models.ProjectTreeNodes;
 using Gallio.Icarus.ProjectProperties;
 using Gallio.Icarus.Utilities;
 using Gallio.Icarus.WindowManager;
-using Gallio.Runtime;
 using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus
@@ -36,13 +34,18 @@ namespace Gallio.Icarus
         private readonly ITestController testController;
         private readonly IReportController reportController;
         private readonly ITaskManager taskManager;
+        private readonly ICommandFactory commandFactory;
+        private readonly IWindowManager windowManager;
 
         public ProjectExplorer(IProjectController projectController, ITestController testController, 
-            IReportController reportController, ITaskManager taskManager)
+            IReportController reportController, ITaskManager taskManager, ICommandFactory commandFactory, 
+            IWindowManager windowManager)
         {
             this.projectController = projectController;
+            this.windowManager = windowManager;
             this.testController = testController;
             this.taskManager = taskManager;
+            this.commandFactory = commandFactory;
             this.reportController = reportController;
 
             InitializeComponent();
@@ -60,18 +63,26 @@ namespace Gallio.Icarus
             reportTypes.AddRange(reportController.ReportTypes);
             reportTypes.Sort();
 
-            foreach (string reportType in reportTypes)
+            foreach (var reportType in reportTypes)
             {
-                var menuItem = new ToolStripMenuItem { Text = reportType };
-                menuItem.Click += delegate
-                {
-                    var reportNode = (ReportNode)projectTree.SelectedNode.Tag;
-                    var command = new ConvertSavedReportCommand(reportController, 
-                        reportNode.FileName, menuItem.Text, new FileSystem());
-                    taskManager.QueueTask(command);
-                };
+                var menuItem = CreateMenuItem(reportType);
                 viewReportAsMenuItem.DropDownItems.Add(menuItem);
             }
+        }
+
+        private ToolStripMenuItem CreateMenuItem(string reportType)
+        {
+            var menuItem = new ToolStripMenuItem
+            {
+                Text = reportType
+            };
+            menuItem.Click += (s, e) => 
+            {
+                var reportNode = (ReportNode)projectTree.SelectedNode.Tag;
+                var command = commandFactory.CreateConvertSavedReportCommand(reportNode.FileName, menuItem.Text);
+                taskManager.QueueTask(command);
+            };
+            return menuItem;
         }
 
         private void projectTree_SelectionChanged(object sender, EventArgs e)
@@ -111,19 +122,16 @@ namespace Gallio.Icarus
             if (projectTree.SelectedNode == null || !(projectTree.SelectedNode.Tag is FileNode))
                 return;
 
-            FileNode node = (FileNode)projectTree.SelectedNode.Tag;
+            var node = (FileNode)projectTree.SelectedNode.Tag;
 
-            var cmd = new RemoveFileCommand(projectController, testController)
-            {
-                FileName = node.FileName
-            };
-            taskManager.QueueTask(cmd);
+            var command = commandFactory.CreateRemoveFileCommand(node.FileName);
+            taskManager.QueueTask(command);
         }
 
         private void removeAllFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var cmd = new RemoveAllFilesCommand(testController, projectController);
-            taskManager.QueueTask(cmd);
+            var command = commandFactory.CreateRemoveAllFilesCommand();
+            taskManager.QueueTask(command);
         }
 
         private void addFilesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -133,10 +141,7 @@ namespace Gallio.Icarus
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
 
-                var command = new AddFilesCommand(projectController, testController)
-                {
-                    Files = openFileDialog.FileNames
-                };
+                var command = commandFactory.CreateAddFilesCommand(openFileDialog.FileNames);
                 taskManager.QueueTask(command);
             }
         }
@@ -174,11 +179,8 @@ namespace Gallio.Icarus
         }
 
         private void DeleteReport(ReportNode reportNode)
-        {
-            var deleteReportCommand = new DeleteReportCommand(new FileSystem())
-            {
-                FileName = reportNode.FileName
-            };
+        {            
+            var deleteReportCommand = commandFactory.CreateDeleteReportCommand(reportNode.FileName);
             taskManager.QueueTask(deleteReportCommand);
         }
 
@@ -187,9 +189,8 @@ namespace Gallio.Icarus
             ShowPropertiesWindow();
         }
 
-        private static void ShowPropertiesWindow()
+        private void ShowPropertiesWindow()
         {
-            var windowManager = RuntimeAccessor.ServiceLocator.Resolve<IWindowManager>();
             windowManager.Show(Package.WindowId);
         }
 

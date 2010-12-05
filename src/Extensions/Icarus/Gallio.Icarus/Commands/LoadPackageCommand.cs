@@ -35,14 +35,25 @@ namespace Gallio.Icarus.Commands
         {
             using (progressMonitor.BeginTask("Loading test package", 100))
             {
+                SetTestPackage(progressMonitor);
+                ExploreTests(progressMonitor);
+            }
+        }
+
+        private void ExploreTests(IProgressMonitor progressMonitor)
+        {
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
+            {
+                testController.Explore(subProgressMonitor, 
+                    projectController.TestRunnerExtensionSpecifications);
+            }
+        }
+
+        private void SetTestPackage(IProgressMonitor progressMonitor)
+        {
+            using (progressMonitor.CreateSubProgressMonitor(10))
+            {
                 testController.SetTestPackage(projectController.TestPackage);
-
-                progressMonitor.Worked(5);
-
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(95))
-                {
-                    testController.Explore(subProgressMonitor, projectController.TestRunnerExtensionSpecifications);
-                }
             }
         }
     }

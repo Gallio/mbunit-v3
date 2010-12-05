@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using Gallio.Runtime.Extensibility;
 using Gallio.UI.ProgressMonitoring;
 
@@ -44,6 +45,11 @@ namespace Gallio.Icarus.Commands
             return command;
         }
 
+        public ICommand CreateRestoreFilterCommand()
+        {
+            return GetCommand<RestoreFilterCommand>();
+        }
+
         public ICommand CreateRunTestsCommand(bool attachDebugger)
         {
             var command = GetCommand<RunTestsCommand>();
@@ -51,11 +57,31 @@ namespace Gallio.Icarus.Commands
             return command;
         }
 
-        public ICommand CreateAddFilesCommand(string[] files)
+        public ICommand CreateAddFilesCommand(IList<string> files)
         {
             var command = GetCommand<AddFilesCommand>();
             command.Files = files;
             return command;
+        }
+
+        public ICommand CreateConvertSavedReportCommand(string fileName, string format)
+        {
+            var command = GetCommand<ConvertSavedReportCommand>();
+            command.FileName = fileName;
+            command.Format = format;
+            return command;
+        }
+
+        public ICommand CreateDeleteReportCommand(string fileName)
+        {
+            var command = GetCommand<DeleteReportCommand>();
+            command.FileName = fileName;
+            return command;
+        }
+
+        public ICommand CreateLoadPackageCommand()
+        {
+            return GetCommand<LoadPackageCommand>();
         }
 
         public ICommand CreateRemoveAllFilesCommand()

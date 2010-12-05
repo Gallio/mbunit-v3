@@ -145,11 +145,8 @@ namespace Gallio.Icarus.Controllers
                 }
                 files.Add(file);
             }
-                
-            var command = new AddFilesCommand(projectController, testController)
-              {
-                  Files = files
-              };
+
+            var command = commandFactory.CreateAddFilesCommand(files);
             taskManager.QueueTask(command);
         }
 

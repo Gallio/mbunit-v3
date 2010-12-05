@@ -48,8 +48,7 @@ namespace Gallio.Icarus
         private readonly ITaskManager taskManager;
         private readonly IProjectController projectController;
         private readonly IOptionsController optionsController;
-
-        private IWindowManager windowManager;
+        private readonly IWindowManager windowManager;
 
         // dock panel windows
         private readonly TestExplorer.View testExplorer;
@@ -112,8 +111,13 @@ namespace Gallio.Icarus
             var testExplorerModel = RuntimeAccessor.ServiceLocator.Resolve<IModel>();
             var testExplorerController = RuntimeAccessor.ServiceLocator.Resolve<IController>();
             testExplorer = new TestExplorer.View(testExplorerController, testExplorerModel);
-            
-            projectExplorer = new ProjectExplorer(projectController, testController, reportController, taskManager);
+
+            commandFactory = RuntimeAccessor.ServiceLocator.Resolve<ICommandFactory>();
+            testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
+            windowManager = RuntimeAccessor.ServiceLocator.Resolve<IWindowManager>();    
+
+            projectExplorer = new ProjectExplorer(projectController, testController, reportController, taskManager, 
+                commandFactory, windowManager);
             testResults = new TestResults.TestResults(testResultsController, optionsController, testTreeModel, testStatistics);
             runtimeLogWindow = new RuntimeLogWindow(runtimeLogController);
             filtersWindow = new FiltersWindow(filterController, projectController);
@@ -157,9 +161,6 @@ namespace Gallio.Icarus
             };
             progressController.DisplayProgressDialog += (s, e) => BeginInvoke((MethodInvoker) (() => 
                 new ProgressMonitorDialog(e.ProgressMonitor).Show(this)));
-
-            commandFactory = RuntimeAccessor.ServiceLocator.Resolve<ICommandFactory>();
-            testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
         }
 
         private static bool RunningOnWin7()
@@ -221,7 +222,6 @@ namespace Gallio.Icarus
             Text = applicationController.Title;
 
             // setup window manager
-            windowManager = RuntimeAccessor.ServiceLocator.Resolve<IWindowManager>();
             var manager = (WindowManager.WindowManager) windowManager;
             manager.SetDockPanel(dockPanel);
             var menuManager = (MenuManager)manager.MenuManager;
@@ -319,9 +319,6 @@ namespace Gallio.Icarus
         {
             var command = commandFactory.CreateReloadCommand();
             taskManager.QueueTask(command);
-
-            if (optionsController.RunTestsAfterReload)
-                StartTests(false);
         }
 
         private void openProject_Click(object sender, EventArgs e)

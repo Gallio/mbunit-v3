@@ -15,7 +15,6 @@
 
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
-using Gallio.Icarus.Services;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Events;
 using Gallio.UI.ProgressMonitoring;
@@ -27,15 +26,17 @@ namespace Gallio.Icarus.Commands
         private readonly ITestController testController;
         private readonly IProjectController projectController;
         private readonly IEventAggregator eventAggregator;
-        private readonly IFilterService filterService;
+        private readonly IOptionsController optionsController;
+        private readonly ICommandFactory commandFactory;
 
-        public ReloadCommand(ITestController testController, IProjectController projectController, 
-            IEventAggregator eventAggregator, IFilterService filterService)
+        public ReloadCommand(ITestController testController, IProjectController projectController, IEventAggregator eventAggregator, 
+            IOptionsController optionsController, ICommandFactory commandFactory)
         {
             this.testController = testController;
             this.projectController = projectController;
             this.eventAggregator = eventAggregator;
-            this.filterService = filterService;
+            this.optionsController = optionsController;
+            this.commandFactory = commandFactory;
         }
 
         public void Execute(IProgressMonitor progressMonitor)
@@ -44,16 +45,41 @@ namespace Gallio.Icarus.Commands
             {
                 eventAggregator.Send(this, new Reloading());
 
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(95))
-                {
-                    testController.Explore(subProgressMonitor, projectController.TestRunnerExtensionSpecifications);
-                }
+                ExploreTests(progressMonitor);
 
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
-                {
-                    var restoreFilterCommand = new RestoreFilterCommand(filterService, projectController);
-                    restoreFilterCommand.Execute(subProgressMonitor);
-                }
+                RestoreTestFilter(progressMonitor);
+
+                if (optionsController.RunTestsAfterReload == false)
+                    return;
+
+                RunTests(progressMonitor);
+            }
+        }
+
+        private void ExploreTests(IProgressMonitor progressMonitor)
+        {
+            var workUnits = optionsController.RunTestsAfterReload ? 45 : 95;
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(workUnits))
+            {
+                testController.Explore(subProgressMonitor, projectController.TestRunnerExtensionSpecifications);
+            }
+        }
+
+        private void RestoreTestFilter(IProgressMonitor progressMonitor)
+        {
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
+            {
+                var restoreFilterCommand = commandFactory.CreateRestoreFilterCommand();
+                restoreFilterCommand.Execute(subProgressMonitor);
+            }
+        }
+
+        private void RunTests(IProgressMonitor progressMonitor)
+        {
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
+            {
+                var runTestsCommand = commandFactory.CreateRunTestsCommand(false);
+                runTestsCommand.Execute(subProgressMonitor);
             }
         }
     }

@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Commands\AddFilesCommandTest.cs" />
     <Compile Include="Commands\ApplyFilterCommandTest.cs" />
+    <Compile Include="Commands\CommandFactoryTests.cs" />
     <Compile Include="Commands\ConvertSavedReportCommandTest.cs" />
     <Compile Include="Commands\RestoreFilterCommandTest.cs" />
     <Compile Include="Commands\ResetTestsCommandTest.cs" />
