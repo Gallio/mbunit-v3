@@ -46,7 +46,7 @@ namespace Gallio.Runtime.UtilityCommands
             return Prepare()
                 && Load()
                 && Merge()
-                && SaveReport(outputReport, reportArchive, Args.ReportType, outputPath, () =>
+                && SaveReport(outputReport, reportArchive, Args.ReportType ?? "Xml", outputPath, () =>
                     outputReport.FormatReportName(Args.ReportNameFormat ?? "MergedReport-{0}-{1}"));
         }
 
