@@ -49,13 +49,41 @@ namespace Gallio.UI.ProgressMonitoring
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
             ProgressUpdate();
         }
 
         private void ProgressUpdate()
         {
-            // update task details
+            if (Visible == false)
+                return;
+
+            UpdateProgressBar();
+
+            UpdateProgressText();
+
+            // if we're finished, then close the window
+            if (progressMonitor.IsDone)
+                Close();
+        }
+
+        private void UpdateProgressText()
+        {
+            Text = progressMonitor.TaskName;
+
+            subTaskNameLabel.Text = progressMonitor.LeafSubTaskName;
+
+            if (subTaskNameLabel.Text.Length == 0)
+                subTaskNameLabel.Text = progressMonitor.TaskName;
+
+            statusLabel.Text = progressMonitor.LeafStatus;
+
+            percentLabel.Text = progressMonitor.TotalWorkUnits > 0
+                ? string.Format("({0:P0})", progressMonitor.CompletedWorkUnits / progressMonitor.TotalWorkUnits) 
+                : string.Empty;
+        }
+
+        private void UpdateProgressBar()
+        {
             if (double.IsNaN(progressMonitor.TotalWorkUnits))
             {
                 progressBar.Style = ProgressBarStyle.Marquee;
@@ -66,22 +94,6 @@ namespace Gallio.UI.ProgressMonitoring
                 progressBar.Maximum = Convert.ToInt32(progressMonitor.TotalWorkUnits);
                 progressBar.Value = Convert.ToInt32(progressMonitor.CompletedWorkUnits);
             }
-
-            Text = progressMonitor.TaskName;
-
-            subTaskNameLabel.Text = progressMonitor.LeafSubTaskName;
-            if (subTaskNameLabel.Text.Length == 0)
-                subTaskNameLabel.Text = progressMonitor.TaskName;
-
-            statusLabel.Text = progressMonitor.LeafStatus;
-
-            percentLabel.Text = (progressMonitor.TotalWorkUnits > 0) ? 
-                String.Format("({0:P0})", progressMonitor.CompletedWorkUnits / 
-                progressMonitor.TotalWorkUnits) : String.Empty;
-
-            // if we're finished, then close the window
-            if (progressMonitor.IsDone)
-                Close();
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
@@ -98,8 +110,7 @@ namespace Gallio.UI.ProgressMonitoring
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
-
-            progressMonitor.Changed += OnProgressMonitorOnChanged;
+            progressMonitor.Changed -= OnProgressMonitorOnChanged;
         }
     }
 }
