@@ -14,11 +14,11 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Common.Reflection;
 using Gallio.Runtime.Extensibility;
 using Gallio.UI.Events;
-using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Runtime
 {
@@ -43,48 +43,74 @@ namespace Gallio.Icarus.Runtime
             {
                 if (type.IsInterface || type.IsAbstract)
                     continue;
-
-                var typeName = new TypeName(type).ConvertToPartialAssemblyName();
                 
-                RegisterComponentForServices(assembly, type, typeName, plugin);
+                RegisterComponentForServices(type, plugin);
             }
         }
 
-        private void RegisterComponentForServices(Assembly assembly, Type type, 
-            TypeName typeName, IPluginDescriptor plugin)
+        private void RegisterComponentForServices(Type type, IPluginDescriptor plugin)
         {
             var componentId = type.FullName;
 
-            foreach (var interfaceType in type.GetInterfaces())
+            var interfaceTypes = GetDirectInterfaces(type);
+            var typeName = new TypeName(type).ConvertToPartialAssemblyName();
+
+            RegisterFirstInterface(interfaceTypes, plugin, componentId, typeName);
+            RegisterEventHandlers(interfaceTypes, plugin, componentId, typeName);
+        }
+
+        private void RegisterFirstInterface(IEnumerable<Type> interfaceTypes, IPluginDescriptor plugin, 
+            string componentId, TypeName typeName)
+        {
+            foreach (var interfaceType in interfaceTypes)
             {
-                if (false == RelevantInterface(interfaceType, assembly))
+                if (IsOpenGenericType(interfaceType))
+                    return;
+
+                if (ComponentIsAlreadyRegisteredForService(interfaceType, typeName))
+                    return;
+
+                var serviceDescriptor = GetServiceDescriptor(interfaceType, plugin);
+                RegisterComponent(componentId, typeName, plugin, serviceDescriptor);
+                
+                return;
+            }
+        }
+
+        private static IEnumerable<Type> GetDirectInterfaces(Type type)
+        {
+            var interfaceTypes = type.GetInterfaces();
+
+            var baseInterfaceTypes = new List<Type>();
+            var baseType = type.BaseType;
+            
+            if (baseType != null) // i.e. type != Object
+                baseInterfaceTypes.AddRange(baseType.GetInterfaces());
+
+            foreach (var interfaceType in interfaceTypes)
+            {
+                if (baseInterfaceTypes.Contains(interfaceType) == false)
+                    yield return interfaceType;
+            }
+        }
+
+        private void RegisterEventHandlers(IEnumerable<Type> interfaceTypes, IPluginDescriptor plugin, 
+            string componentId, TypeName typeName)
+        {
+            foreach (var interfaceType in interfaceTypes)
+            {
+                if (IsAnEventHandler(interfaceType) == false)
                     continue;
 
                 if (IsOpenGenericType(interfaceType))
                     continue;
 
-                if (ComponentAlreadyRegisteredForService(interfaceType, typeName))
+                if (ComponentIsAlreadyRegisteredForService(interfaceType, typeName))
                     continue;
 
                 var serviceDescriptor = GetServiceDescriptor(interfaceType, plugin);
-
-                RegisterComponent(interfaceType, componentId, typeName, 
-                    plugin, serviceDescriptor);
+                RegisterEventHandlerProxy(interfaceType, plugin, serviceDescriptor, componentId);
             }
-        }
-
-        private static bool RelevantInterface(Type interfaceType, Assembly assembly)
-        {
-            if (interfaceType.Assembly == assembly)
-                return true;
-
-            if (interfaceType == typeof(ICommand))
-                return true;
-
-            if (IsAnEventHandler(interfaceType))
-                return true;
-
-            return false;
         }
 
         private static bool IsOpenGenericType(Type interfaceType)
@@ -92,24 +118,16 @@ namespace Gallio.Icarus.Runtime
             return interfaceType.IsGenericType && interfaceType.ContainsGenericParameters;
         }
 
-        private void RegisterComponent(Type interfaceType, string componentId, TypeName typeName, 
-            IPluginDescriptor plugin, IServiceDescriptor serviceDescriptor)
+        private void RegisterComponent(string componentId, TypeName typeName, IPluginDescriptor plugin, 
+            IServiceDescriptor serviceDescriptor)
         {
-            ComponentRegistration componentRegistration;
-            if (IsAnEventHandler(interfaceType))
-            {
-                componentRegistration = RegisterEventHandlerProxy(interfaceType, plugin, 
-                    serviceDescriptor, componentId);
-            }
-            else
-            {
-                componentRegistration = new ComponentRegistration(plugin, serviceDescriptor, 
-                    componentId, typeName);
-            }
+            var componentRegistration = new ComponentRegistration(plugin, serviceDescriptor, 
+                componentId, typeName);
+
             registry.RegisterComponent(componentRegistration);
         }
 
-        private static ComponentRegistration RegisterEventHandlerProxy(Type interfaceType, IPluginDescriptor plugin, 
+        private void RegisterEventHandlerProxy(Type interfaceType, IPluginDescriptor plugin, 
             IServiceDescriptor serviceDescriptor, string componentId)
         {
             var proxyType = typeof(EventHandlerProxy<>).MakeGenericType(interfaceType.GetGenericArguments());
@@ -119,8 +137,8 @@ namespace Gallio.Icarus.Runtime
                 Guid.NewGuid().ToString(), typeName);
             
             componentRegistration.ComponentProperties.Add("target", string.Format("${{{0}}}", componentId));
-            
-            return componentRegistration;
+
+            registry.RegisterComponent(componentRegistration);
         }
 
         private static bool IsAnEventHandler(Type interfaceType)
@@ -142,7 +160,7 @@ namespace Gallio.Icarus.Runtime
             return serviceDescriptor;
         }
 
-        private bool ComponentAlreadyRegisteredForService(Type interfaceType, TypeName typeName)
+        private bool ComponentIsAlreadyRegisteredForService(Type interfaceType, TypeName typeName)
         {
             var componentDescriptors = registry.Components.FindByServiceType(interfaceType);
             foreach (var componentDescriptor in componentDescriptors)

@@ -39,7 +39,7 @@
 
     <service serviceId="Gallio.Icarus.PluginScanner" 
              serviceType="Gallio.Icarus.Runtime.IPluginScanner, Gallio.Icarus" />
-
+    
   </services>
 
   <components>
@@ -56,10 +56,10 @@
                serviceId="Gallio.Icarus.MenuManager"
                componentType="Gallio.Icarus.WindowManager.MenuManager, Gallio.Icarus" />
     
-    <component componentId="Gallio.Icarus.DefaultConventionScanner" 
+    <component componentId="Gallio.Icarus.Runtime.DefaultConventionScanner" 
                serviceId="Gallio.Icarus.PluginScanner"
                componentType="Gallio.Icarus.Runtime.DefaultConventionScanner, Gallio.Icarus" />
-			   
+    
     <!-- Control panel -->
 
     <component componentId="Gallio.Icarus.ControlPanel.RootPaneProvider"

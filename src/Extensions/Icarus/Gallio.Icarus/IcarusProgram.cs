@@ -81,21 +81,21 @@ namespace Gallio.Icarus
                 var scanner = new DefaultConventionScanner(RuntimeAccessor.Registry);
                 scanner.Scan("Gallio.Icarus", Assembly.GetExecutingAssembly());
 
+                LoadPackages();
+
                 var optionsController = RuntimeAccessor.ServiceLocator.Resolve<IOptionsController>();
                 
                 // create & initialize a test runner whenever the test runner factory is changed
                 optionsController.TestRunnerFactory.PropertyChanged += (s, e) => 
                     ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
-                
+
                 ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
-                
+
                 var runtimeLogController = RuntimeAccessor.ServiceLocator.Resolve<IRuntimeLogController>();
                 runtimeLogController.SetLogger(runtimeLogger);
 
                 var applicationController = RuntimeAccessor.ServiceLocator.Resolve<IApplicationController>();
                 applicationController.Arguments = Arguments;
-
-                LoadPackages();
 
                 ErrorDialogUnhandledExceptionHandler.RunApplicationWithHandler(new Main(applicationController));
 
