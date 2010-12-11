@@ -160,6 +160,33 @@ namespace Gallio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Internationalized attribute strings must supply a resource.
+        /// </summary>
+        internal static string CommandLineArgumentAttribute_NoResourceException {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentAttribute_NoResourceException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Internationalized attribute string does not point to a string resource.
+        /// </summary>
+        internal static string CommandLineArgumentAttribute_ResourceNotAStringException {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentAttribute_ResourceNotAStringException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Internationalized attribute string not found in resource named.
+        /// </summary>
+        internal static string CommandLineArgumentAttribute_ResourceNotFoundException {
+            get {
+                return ResourceManager.GetString("CommandLineArgumentAttribute_ResourceNotFoundException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Collection arguments must have AllowMultiple flag..
         /// </summary>
         internal static string CommandLineArgumentParser_Argument_CollectionArgumentsMustAllowMultipleValues {

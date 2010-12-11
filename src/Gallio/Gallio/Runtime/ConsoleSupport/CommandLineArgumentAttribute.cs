@@ -13,7 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 using System;
+using System.Reflection;
 using Gallio.Common.Collections;
+using Gallio.Properties;
 
 namespace Gallio.Runtime.ConsoleSupport
 {
@@ -40,6 +42,7 @@ namespace Gallio.Runtime.ConsoleSupport
         private string description = @"";
         private string valueLabel;
         private string[] synonyms = EmptyArray<string>.Instance;
+        private Type resourceType;
 
         /// <summary>
         /// Allows control of command line parsing.
@@ -71,7 +74,7 @@ namespace Gallio.Runtime.ConsoleSupport
         /// </summary>
         public string ShortName
         {
-            get { return shortName; }
+            get { return GetResourceLookup(shortName); }
             set { shortName = value; }
         }
 
@@ -88,7 +91,7 @@ namespace Gallio.Runtime.ConsoleSupport
         /// </summary>
         public string LongName
         {
-            get { return longName; }
+            get { return GetResourceLookup(longName); }
             set { longName = value; }
         }
 
@@ -97,8 +100,8 @@ namespace Gallio.Runtime.ConsoleSupport
         /// </summary>
 		public string Description
 		{
-			get { return description; }
-			set { description = value; }
+			get { return GetResourceLookup(description); }
+            set { description = value; }
 		}
 
         ///<summary>
@@ -106,7 +109,7 @@ namespace Gallio.Runtime.ConsoleSupport
         ///</summary>
         public string ValueLabel
         {
-            get { return valueLabel; }
+            get { return GetResourceLookup(valueLabel); }
             set { valueLabel = value; }
         }
 
@@ -115,8 +118,65 @@ namespace Gallio.Runtime.ConsoleSupport
         /// </summary>
         public string[] Synonyms
         {
-            get { return synonyms; }
-            set { synonyms = value; }
+            get 
+            {
+                if (synonyms == null)
+                    return synonyms;
+
+                for (int x = synonyms.GetLowerBound(0); x <= synonyms.GetUpperBound(0); x++)
+                {
+                    synonyms[x] = GetResourceLookup(synonyms[x]);
+                }
+                return synonyms;
+            }
+            set { synonyms = value; } 
+        }
+
+        /// <summary>
+        /// Gets or sets a resource to use for internationalization of strings
+        /// </summary>
+        public Type ResourceType
+        {
+            get { return resourceType; }
+            set { resourceType = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a resource to use for internationalization of strings
+        /// </summary>
+        private string GetResourceLookup(string resourceName)
+        {
+            if (resourceType == null && resourceName != null && resourceName.StartsWith("#"))
+            {
+                throw new InvalidOperationException(Resources.CommandLineArgumentAttribute_NoResourceException);
+            }
+
+            if (resourceType == null)
+            {
+                return resourceName;
+            }
+
+            if (resourceName == null)
+            {
+                return resourceName;
+            }
+            if (resourceName.StartsWith("#"))
+            {
+                PropertyInfo property = resourceType.GetProperty(resourceName.Substring(1), BindingFlags.NonPublic | BindingFlags.Static);
+                if (property == null)
+                {
+                    throw new InvalidOperationException(Resources.CommandLineArgumentAttribute_ResourceNotFoundException);
+                }
+                if (property.PropertyType != typeof(string))
+                {
+                    throw new InvalidOperationException(Resources.CommandLineArgumentAttribute_ResourceNotAStringException);
+                }
+                return (string)property.GetValue(null, null);
+            }
+            else
+            {
+                return resourceName;
+            }
         }
     }
 }

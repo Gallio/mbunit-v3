@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BaseTest_ParameterListAlreadyContainsParameterWithSameName" xml:space="preserve">
     <value>The parameter list already contains a parameter named '{0}'.</value>
@@ -305,5 +305,14 @@
   </data>
   <data name="ExceptionDescription_DictionaryReadOnly" xml:space="preserve">
     <value>Dictionary is read-only.</value>
+  </data>
+  <data name="CommandLineArgumentAttribute_NoResourceException" xml:space="preserve">
+    <value>Internationalized attribute strings must supply a resource</value>
+  </data>
+  <data name="CommandLineArgumentAttribute_ResourceNotAStringException" xml:space="preserve">
+    <value>Internationalized attribute string does not point to a string resource</value>
+  </data>
+  <data name="CommandLineArgumentAttribute_ResourceNotFoundException" xml:space="preserve">
+    <value>Internationalized attribute string not found in resource named</value>
   </data>
 </root>
