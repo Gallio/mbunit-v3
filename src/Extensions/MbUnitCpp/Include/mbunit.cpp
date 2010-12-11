@@ -103,91 +103,70 @@ namespace mbunit
 		delete[] tmp;
 	}
 
-	void String::Append(const String& rhs)
-	{
-		AppendImpl(rhs.buffer, rhs.length);
-	}
+	#define _Impl_StringAppend(TYPE, IMPL) \
+		template<> String& String::Append<TYPE>(TYPE arg) \
+		{ \
+			IMPL ; \
+			return *this; \
+		}
 
-	void String::Append(const char* str)
-	{
-		AppendImpl(str);
-	}
+	_Impl_StringAppend(const String&, AppendImpl(arg.buffer, arg.length))
+	_Impl_StringAppend(String, AppendImpl(arg.buffer, arg.length))
+	_Impl_StringAppend(const char*, AppendImpl(arg))
+	_Impl_StringAppend(const wchar_t*, AppendImpl(arg, (int)wcslen(arg)))
+	_Impl_StringAppend(int, AppendFormat(L"%d", arg))
+	_Impl_StringAppend(bool, AppendImpl(arg ? "true" : "false"))
+	_Impl_StringAppend(char, AppendFormat("%c", arg))
+	_Impl_StringAppend(wchar_t, AppendFormat(L"%lc", arg))
+	_Impl_StringAppend(unsigned char, AppendFormat("%u", arg))
+	_Impl_StringAppend(short, AppendFormat("%d", arg))
+	_Impl_StringAppend(unsigned short, AppendFormat("%u", arg))
+	_Impl_StringAppend(unsigned int,AppendFormat("%u", arg))
+	_Impl_StringAppend(long, AppendFormat("%ld", arg))
+	_Impl_StringAppend(unsigned long, AppendFormat("%lu", arg))
+	_Impl_StringAppend(long long, AppendFormat("%ld", arg))
+	_Impl_StringAppend(unsigned long long, AppendFormat("%lu", arg))
+	_Impl_StringAppend(float, AppendFormat("%f", arg))
+	_Impl_StringAppend(double, AppendFormat("%Lf", arg))
+	_Impl_StringAppend(char*, AppendImpl(arg))
+	_Impl_StringAppend(wchar_t*, AppendImpl(arg, (int)wcslen(arg)))
 
-	void String::Append(const wchar_t* wstr)
-	{
-		AppendImpl(wstr, (int)wcslen(wstr));
-	}
-
-	void String::AppendFormat(const char* format, ...)
+	String& String::AppendFormat(const char* format, ...)
 	{
 		va_list args;
 		va_start(args, format);
 		AppendFormat(format, args);
 		va_end(args);
+		return *this;
 	}
 
-	void String::AppendFormat(const wchar_t* format, ...)
+	String& String::AppendFormat(const wchar_t* format, ...)
 	{
 		va_list args;
 		va_start(args, format);
 		AppendFormat(format, args);
 		va_end(args);
+		return *this;
 	}
 
-	void String::AppendFormat(const wchar_t* format, va_list args)
+	String& String::AppendFormat(const wchar_t* format, va_list args)
 	{
 		int n = _vscwprintf(format, args);
 		wchar_t* tmp = new wchar_t[n + 1];
 		vswprintf(tmp, format, args);
 		AppendImpl(tmp, n);
 		delete[] tmp;
+		return *this;
 	}
 
-	void String::AppendFormat(const char* format, va_list args)
+	String& String::AppendFormat(const char* format, va_list args)
 	{
 		int n = _vscprintf(format, args);
 		char* tmp = new char[n + 1];
 		vsprintf(tmp, format, args);
 		AppendImpl(tmp);
 		delete[] tmp;
-	}
-
-	void String::Format(const char* format, ...)
-	{
-		va_list args;
-		va_start(args, format);
-		Format(format, args);
-		va_end(args);
-	}
-
-	void String::Format(const wchar_t* format, ...)
-	{
-		va_list args;
-		va_start(args, format);
-		Format(format, args);
-		va_end(args);
-	}
-
-	void String::Format(const char* format, va_list args)
-	{
-		Clear();
-		AppendFormat(format, args);
-	}
-
-	void String::Format(const wchar_t* format, va_list args)
-	{
-		Clear();
-		AppendFormat(format, args);
-	}
-
-	String* String::New(const char* str)
-	{
-		return (str == 0) ? 0 :  new String(str);
-	}
-
-	String* String::New(const wchar_t* wstr)
-	{
-		return (wstr == 0) ? 0 : new String(wstr);
+		return *this;
 	}
 
 	String* String::NewFormatted(const char* format, ...)
@@ -195,7 +174,7 @@ namespace mbunit
 		va_list args;
 		va_start(args, format);
 		String* str = new String;
-		str->Format(format, args);
+		str->AppendFormat(format, args);
 		va_end(args);
 		return str;
 	}
@@ -205,7 +184,27 @@ namespace mbunit
 		va_list args;
 		va_start(args, format);
 		String* str = new String;
-		str->Format(format, args);
+		str->AppendFormat(format, args);
+		va_end(args);
+		return str;
+	}
+
+	String String::Format(const char* format, ...)
+	{
+		va_list args;
+		va_start(args, format);
+		String str;
+		str.AppendFormat(format, args);
+		va_end(args);
+		return str;
+	}
+
+	String String::Format(const wchar_t* format, ...)
+	{
+		va_list args;
+		va_start(args, format);
+		String str;
+		str.AppendFormat(format, args);
 		va_end(args);
 		return str;
 	}
@@ -302,9 +301,7 @@ namespace mbunit
 	// Attaches a key/value metadata to the current test or test fixture.
 	void DecoratorTarget::SetMetadata(const wchar_t* key, const wchar_t* value)
 	{
-		String str;
-		str.Format(L"%s={%s},", key, value);
-		AppendTo(metadataId, str);
+		AppendTo(metadataId, String::Format(L"%s={%s},", key, value));
 	}
 
 	void DecoratorTarget::SetMetadata(const wchar_t* key, const char* value)
@@ -575,8 +572,8 @@ namespace mbunit
 	{
 		StringMap& map = TestFixture::GetStringMap();
 		AssertionFailure failure;
-		failure.DescriptionId = map.Add(String::New(L"An unhandled exception was thrown"));
-		failure.MessageId = map.Add(String::New(exceptionMessage));
+		failure.DescriptionId = map.Add(new String(L"An unhandled exception was thrown"));
+		failure.MessageId = map.Add(exceptionMessage == 0 ? 0 : new String(exceptionMessage));
 		return failure;
 	}
 
@@ -609,32 +606,106 @@ namespace mbunit
 	{
 	}
 	
-	void TestLogRecorder::Write(const wchar_t* format, ...)
-	{
-		va_list args;
-		va_start(args, format);
-		String str;
-		str.Format(format, args);
-		test->AppendToTestLog(str);
-		va_end(args);
-	}
+    void TestLogRecorder::Write(const char* str) 
+    {
+		test->AppendToTestLog(String(str));
+    }
 
-	void TestLogRecorder::WriteLine(const wchar_t* format, ...)
-	{
+    void TestLogRecorder::Write(const wchar_t* wstr)
+    {
+		test->AppendToTestLog(String(wstr));
+    }
+
+    void TestLogRecorder::Write(const String& str)
+    {
+		test->AppendToTestLog(str);
+    }
+
+    void TestLogRecorder::WriteLine(const char* str)
+    {
+		test->AppendToTestLog(String(str));
+		test->AppendToTestLog(String(L"\r\n"));
+    }
+
+    void TestLogRecorder::WriteLine(const wchar_t* wstr)
+    {
+		test->AppendToTestLog(String(wstr));
+		test->AppendToTestLog(String(L"\r\n"));
+    }
+
+    void TestLogRecorder::WriteLine(const String& str)
+    {
+		test->AppendToTestLog(str);
+		test->AppendToTestLog(String(L"\r\n"));
+    }
+
+    void TestLogRecorder::WriteFormat(const char* format, ...)
+    {
 		va_list args;
 		va_start(args, format);
-		String raw;
-		raw.Append(format);
-		raw.Append(L"\r\n");
-		String str;
-		str.Format(raw.GetBuffer(), args);
-		test->AppendToTestLog(str);
+        String str;
+        str.AppendFormat(format, args);
 		va_end(args);
-	}
+		test->AppendToTestLog(str);
+    }
+
+    void TestLogRecorder::WriteFormat(const wchar_t* format,...)
+    {
+		va_list args;
+		va_start(args, format);
+        String str;
+        str.AppendFormat(format, args);
+		va_end(args);
+		test->AppendToTestLog(str);
+    }
+
+    void TestLogRecorder::WriteLineFormat(const char* format, ...)
+    {
+		va_list args;
+		va_start(args, format);
+        String str;
+        str.AppendFormat(format, args);
+		va_end(args);
+		test->AppendToTestLog(str);
+		test->AppendToTestLog(String(L"\r\n"));
+    }
+
+    void TestLogRecorder::WriteLineFormat(const wchar_t* format, ...)
+    {
+		va_list args;
+		va_start(args, format);
+        String str;
+        str.AppendFormat(format, args);
+		va_end(args);
+		test->AppendToTestLog(str);
+		test->AppendToTestLog(String(L"\r\n"));
+    }
 
 	// ===================
 	// Assertion Framework
 	// ===================
+
+	StringId AssertionFramework::AddNewString(const char* str)
+	{
+		return Map().Add((str == 0) ? 0 :  new String(str));
+	}
+
+	StringId AssertionFramework::AddNewString(const wchar_t* wstr)
+	{
+		return Map().Add((wstr == 0) ? 0 : new String(wstr));
+	}
+
+	StringId AssertionFramework::AddNewString(const String& str)
+    {
+		return Map().Add(new String(str));
+    }
+
+	template<typename T> StringId AssertionFramework::AddNewStringFrom(T arg)
+	{
+		String str;
+		str.Append(arg);
+		return Map().Add(new String(str));
+	}
 
 	StringMap& AssertionFramework::Map() const
 	{ 
@@ -642,282 +713,152 @@ namespace mbunit
 	}
 
     // Assertion that makes inconditionally the test fail.
-    void AssertionFramework::Fail(const wchar_t* message)
-    {
-        IncrementAssertCount();
-		AssertionFailure failure;
-		failure.DescriptionId = Map().Add(String::New(L"An assertion failed."));
-		failure.MessageId = Map().Add(String::New(message));
-		throw failure;
-    }
+    #define _AssertionFramework_Fail(MESSAGETYPE) \
+        _Impl_AssertionFramework_Fail(MESSAGETYPE)
+
+    #define _Impl_AssertionFramework_Fail(MESSAGETYPE) \
+        void AssertionFramework::Fail(MESSAGETYPE message) \
+        { \
+            IncrementAssertCount(); \
+		    AssertionFailure failure; \
+		    failure.DescriptionId = AddNewString(L"An assertion failed."); \
+		    failure.MessageId = AddNewString(message); \
+		    throw failure; \
+        }
+
+    _AssertionFramework_Fail(const wchar_t*)
+    _AssertionFramework_Fail(const char*)
+    _AssertionFramework_Fail(const String&)
 
 	// Asserts that the specified boolean value is true.
-	#define _AssertionFramework_IsTrue(TYPE, CONDITION) \
-		template<> void AssertionFramework::IsTrue<TYPE>(TYPE actualValue, const wchar_t* message) \
+	#define _AssertionFramework_IsTrue(MESSAGETYPE) \
+    	_Impl_AssertionFramework_IsTrue(bool, !actualValue, MESSAGETYPE) \
+	    _Impl_AssertionFramework_IsTrue(int, actualValue == 0, MESSAGETYPE)
+
+    #define _Impl_AssertionFramework_IsTrue(TYPE, CONDITION, MESSAGETYPE) \
+		template<> void AssertionFramework::IsTrue<TYPE>(TYPE actualValue, MESSAGETYPE message) \
 		{ \
 			IncrementAssertCount(); \
 			if (CONDITION) \
 			{ \
 				AssertionFailure failure; \
-				failure.DescriptionId = Map().Add(String::New(L"Expected value to be true.")); \
-				failure.Actual.Set(Map().Add(String::New(L"false")), TypeBoolean); \
-				failure.MessageId = Map().Add(String::New(message)); \
+				failure.DescriptionId = AddNewString(L"Expected value to be true."); \
+				failure.Actual.Set(AddNewString(L"false"), TypeBoolean); \
+				failure.MessageId = AddNewString(message); \
 				throw failure; \
 			} \
 		}
 
-	_AssertionFramework_IsTrue(bool, !actualValue)
-	_AssertionFramework_IsTrue(int, actualValue == 0)
+    _AssertionFramework_IsTrue(const wchar_t*)
+    _AssertionFramework_IsTrue(const char*)
+    _AssertionFramework_IsTrue(const String&)
 
 	// Asserts that the specified boolean value is false.
-	#define _AssertionFramework_IsFalse(TYPE, CONDITION) \
-		template<> void AssertionFramework::IsFalse<TYPE>(TYPE actualValue, const wchar_t* message) \
+	#define _AssertionFramework_IsFalse(MESSAGETYPE) \
+    	_Impl_AssertionFramework_IsFalse(bool, actualValue, MESSAGETYPE) \
+	    _Impl_AssertionFramework_IsFalse(int, actualValue != 0, MESSAGETYPE)
+
+	#define _Impl_AssertionFramework_IsFalse(TYPE, CONDITION, MESSAGETYPE) \
+		template<> void AssertionFramework::IsFalse<TYPE>(TYPE actualValue, MESSAGETYPE message) \
 		{ \
 			IncrementAssertCount(); \
 			if (CONDITION) \
 			{ \
 				AssertionFailure failure; \
-				failure.DescriptionId = Map().Add(String::New(L"Expected value to be false.")); \
-				failure.Actual.Set(Map().Add(String::New(L"true")), TypeBoolean); \
-				failure.MessageId = Map().Add(String::New(message)); \
+				failure.DescriptionId = AddNewString(L"Expected value to be false."); \
+				failure.Actual.Set(AddNewString(L"true"), TypeBoolean); \
+				failure.MessageId = AddNewString(message); \
 				throw failure; \
 			} \
 		}
 
-	_AssertionFramework_IsFalse(bool, actualValue)
-	_AssertionFramework_IsFalse(int, actualValue != 0)
+    _AssertionFramework_IsFalse(const wchar_t*)
+    _AssertionFramework_IsFalse(const char*)
+    _AssertionFramework_IsFalse(const String&)
 
 	// Asserts that the expected value and the actual value are equivalent.
-	#define _AssertionFramework_AreEqual(TYPE, CONDITION, FORMATEXPECTED, FORMATACTUAL, MANAGEDTYPE) \
-		template<> void AssertionFramework::AreEqual<TYPE>(TYPE expectedValue, TYPE actualValue, const wchar_t* message) \
+	#define _AssertionFramework_AreEqual(MESSAGETYPE) \
+        _Impl_AssertionFramework_AreEqual(bool, expectedValue != actualValue, TypeBoolean, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreEqual(char, expectedValue != actualValue, TypeChar, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreEqual(wchar_t, expectedValue != actualValue, TypeChar, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreEqual(unsigned char, expectedValue != actualValue, TypeByte, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreEqual(short, expectedValue != actualValue, TypeInt16, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreEqual(unsigned short, expectedValue != actualValue, TypeUInt16, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreEqual(int, expectedValue != actualValue, TypeInt32, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreEqual(unsigned int, expectedValue != actualValue, TypeUInt32, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreEqual(long, expectedValue != actualValue, TypeUInt64, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreEqual(unsigned long, expectedValue != actualValue, TypeUInt64, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreEqual(long long, expectedValue != actualValue, TypeUInt64, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreEqual(unsigned long long, expectedValue != actualValue, TypeUInt64, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreEqual(float, expectedValue != actualValue, TypeSingle, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreEqual(double, expectedValue != actualValue, TypeDouble, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreEqual(char*, strcmp(expectedValue, actualValue) != 0, TypeString, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreEqual(const char*, strcmp(expectedValue, actualValue) != 0, TypeString, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreEqual(wchar_t*, wcscmp(expectedValue, actualValue) != 0, TypeString, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreEqual(const wchar_t*, wcscmp(expectedValue, actualValue) != 0, TypeString, MESSAGETYPE)
+
+	#define _AssertionFramework_AreEqual_AFX(MESSAGETYPE) \
+    	_Impl_AssertionFramework_AreEqual(CString, (expectedValue).Compare(actualValue) != 0, TypeString, MESSAGETYPE) \
+	
+    #define _Impl_AssertionFramework_AreEqual(TYPE, CONDITION, MANAGEDTYPE, MESSAGETYPE) \
+		template<> void AssertionFramework::AreEqual<TYPE>(TYPE expectedValue, TYPE actualValue, MESSAGETYPE message) \
 		{ \
 			IncrementAssertCount(); \
 			if (CONDITION) \
 			{ \
 				AssertionFailure failure; \
-				failure.DescriptionId = Map().Add(String::New(L"Expected values to be equal.")); \
-				failure.Expected.Set(FORMATEXPECTED, MANAGEDTYPE); \
-				failure.Actual.Set(FORMATACTUAL, MANAGEDTYPE); \
-				failure.MessageId = Map().Add(String::New(message)); \
+				failure.DescriptionId = AddNewString(L"Expected values to be equal."); \
+				failure.Expected.Set(AddNewStringFrom(expectedValue), MANAGEDTYPE); \
+				failure.Actual.Set(AddNewStringFrom(actualValue), MANAGEDTYPE); \
+				failure.MessageId = AddNewString(message); \
 				throw failure; \
 			} \
 		}
 
-	_AssertionFramework_AreEqual(bool, 
-		expectedValue != actualValue, 
-		Map().Add(String::New(expectedValue ? L"true" : L"false")), 
-		Map().Add(String::New(actualValue ? L"true" : L"false")), 
-		TypeBoolean)
+    _AssertionFramework_AreEqual(const wchar_t*)
+    _AssertionFramework_AreEqual(const char*)
+    _AssertionFramework_AreEqual(const String&)
 
-	_AssertionFramework_AreEqual(char, 
-		expectedValue != actualValue, 
-		Map().Add(String::NewFormatted(L"%c", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%c", actualValue)), 
-		TypeChar)
+    #ifdef _AFX
+    _AssertionFramework_AreEqual_AFX(const wchar_t*)
+    _AssertionFramework_AreEqual_AFX(const char*)
+    #endif
 
-	_AssertionFramework_AreEqual(wchar_t, 
-		expectedValue != actualValue, 
-		Map().Add(String::NewFormatted(L"%lc", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%lc", actualValue)), 
-		TypeChar)
+    // Asserts that the expected value and the actual value are approximately equal.
+	#define _AssertionFramework_AreApproximatelyEqual(MESSAGETYPE) \
+        _Impl_AssertionFramework_AreApproximatelyEqual(char, abs(expectedValue - actualValue) > delta, TypeChar, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreApproximatelyEqual(wchar_t, abs(expectedValue - actualValue) > delta, TypeChar, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreApproximatelyEqual(unsigned char, abs((short)expectedValue - (short)actualValue) > (short)delta, TypeByte, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreApproximatelyEqual(short, abs(expectedValue - actualValue) > delta, TypeInt16, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreApproximatelyEqual(unsigned short, abs((int)expectedValue - (int)actualValue) > (int)delta, TypeUInt16, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreApproximatelyEqual(int, abs(expectedValue - actualValue) > delta, TypeInt32, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreApproximatelyEqual(unsigned int, _abs64((long long)expectedValue - (long long)actualValue) > (long long)delta, TypeUInt32, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreApproximatelyEqual(long, abs(expectedValue - actualValue) > delta, TypeInt32, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreApproximatelyEqual(unsigned long, _abs64((long long)expectedValue - (long long)actualValue) > (long long)delta, TypeUInt32, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreApproximatelyEqual(long long, _abs64(expectedValue - actualValue) > delta, TypeInt64, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreApproximatelyEqual(unsigned long long, fabs((double)expectedValue - (double)actualValue) > (double)delta, TypeInt64, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreApproximatelyEqual(float, fabs(expectedValue - actualValue) > delta, TypeSingle, MESSAGETYPE) \
+        _Impl_AssertionFramework_AreApproximatelyEqual(double, fabs(expectedValue - actualValue) > delta, TypeDouble, MESSAGETYPE)
 
-	_AssertionFramework_AreEqual(unsigned char, 
-		expectedValue != actualValue, 
-		Map().Add(String::NewFormatted(L"%u", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%u", actualValue)), 
-		TypeByte)
-
-	_AssertionFramework_AreEqual(short, 
-		expectedValue != actualValue, 
-		Map().Add(String::NewFormatted(L"%d", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%d", actualValue)), 
-		TypeInt16)
-
-	_AssertionFramework_AreEqual(unsigned short, 
-		expectedValue != actualValue, 
-		Map().Add(String::NewFormatted(L"%u", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%u", actualValue)), 
-		TypeUInt16)
-
-	_AssertionFramework_AreEqual(int, 
-		expectedValue != actualValue, 
-		Map().Add(String::NewFormatted(L"%d", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%d", actualValue)), 
-		TypeInt32)
-
-	_AssertionFramework_AreEqual(unsigned int, 
-		expectedValue != actualValue, 
-		Map().Add(String::NewFormatted(L"%u", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%u", actualValue)), 
-		TypeUInt32)
-
-	_AssertionFramework_AreEqual(long, 
-		expectedValue != actualValue, 
-		Map().Add(String::NewFormatted(L"%ld", expectedValue)),
-		Map().Add(String::NewFormatted(L"%ld", actualValue)), 
-		TypeUInt64)
-
-	_AssertionFramework_AreEqual(unsigned long, 
-		expectedValue != actualValue, 
-		Map().Add(String::NewFormatted(L"%uld", expectedValue)),
-		Map().Add(String::NewFormatted(L"%uld", actualValue)), 
-		TypeUInt64)
-
-	_AssertionFramework_AreEqual(long long, 
-		expectedValue != actualValue, 
-		Map().Add(String::NewFormatted(L"%ld", expectedValue)),
-		Map().Add(String::NewFormatted(L"%ld", actualValue)), 
-		TypeUInt64)
-
-	_AssertionFramework_AreEqual(unsigned long long, 
-		expectedValue != actualValue, 
-		Map().Add(String::NewFormatted(L"%uld", expectedValue)),
-		Map().Add(String::NewFormatted(L"%uld", actualValue)), 
-		TypeUInt64)
-
-	_AssertionFramework_AreEqual(float, 
-		expectedValue != actualValue, 
-		Map().Add(String::NewFormatted(L"%f", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%f", actualValue)), 
-		TypeSingle)
-
-	_AssertionFramework_AreEqual(double, 
-		expectedValue != actualValue, 
-		Map().Add(String::NewFormatted(L"%Lf", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%Lf", actualValue)), 
-		TypeDouble)
-
-	_AssertionFramework_AreEqual(char*, 
-		strcmp(expectedValue, actualValue) != 0, 
-		Map().Add(String::New(expectedValue)), 
-		Map().Add(String::New(actualValue)), 
-		TypeString)
-
-	_AssertionFramework_AreEqual(const char*, 
-		strcmp(expectedValue, actualValue) != 0, 
-		Map().Add(String::New(expectedValue)), 
-		Map().Add(String::New(actualValue)), 
-		TypeString)
-
-	_AssertionFramework_AreEqual(wchar_t*, 
-		wcscmp(expectedValue, actualValue) != 0, 
-		Map().Add(String::New(expectedValue)), 
-		Map().Add(String::New(actualValue)), 
-		TypeString)
-
-	_AssertionFramework_AreEqual(const wchar_t*, 
-		wcscmp(expectedValue, actualValue) != 0, 
-		Map().Add(String::New(expectedValue)), 
-		Map().Add(String::New(actualValue)), 
-		TypeString)
-
-
-	#define _AssertionFramework_AreApproximatelyEqual(TYPE, CONDITION, FORMATEXPECTED, FORMATACTUAL, FORMATDELTA, MANAGEDTYPE) \
-		template<> void AssertionFramework::AreApproximatelyEqual<TYPE>(TYPE expectedValue, TYPE actualValue, TYPE delta, const wchar_t* message) \
+    #define _Impl_AssertionFramework_AreApproximatelyEqual(TYPE, CONDITION, MANAGEDTYPE, MESSAGETYPE) \
+		template<> void AssertionFramework::AreApproximatelyEqual<TYPE>(TYPE expectedValue, TYPE actualValue, TYPE delta, MESSAGETYPE message) \
 		{ \
 			IncrementAssertCount(); \
 			if (CONDITION) \
 			{ \
 				AssertionFailure failure; \
-				failure.DescriptionId = Map().Add(String::New(L"Expected values to be approximately equal to within a delta.")); \
-				failure.Expected.Set(FORMATEXPECTED, MANAGEDTYPE); \
-				failure.Actual.Set(FORMATACTUAL, MANAGEDTYPE); \
-				failure.Extra_0.Set(FORMATDELTA, MANAGEDTYPE, Map().Add(String::New(L"Delta"))); \
-				failure.MessageId = Map().Add(String::New(message)); \
+				failure.DescriptionId = AddNewString(L"Expected values to be approximately equal to within a delta."); \
+				failure.Expected.Set(AddNewStringFrom(expectedValue), MANAGEDTYPE); \
+				failure.Actual.Set(AddNewStringFrom(actualValue), MANAGEDTYPE); \
+				failure.Extra_0.Set(AddNewStringFrom(delta), MANAGEDTYPE, AddNewString(L"Delta")); \
+				failure.MessageId = AddNewString(message); \
 				throw failure; \
 			} \
 		}
 
-	_AssertionFramework_AreApproximatelyEqual(char, 
-		abs(expectedValue - actualValue) > delta, 
-		Map().Add(String::NewFormatted(L"%c", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%c", actualValue)), 
-		Map().Add(String::NewFormatted(L"%c", delta)), 
-		TypeChar)
-
-	_AssertionFramework_AreApproximatelyEqual(wchar_t, 
-		abs(expectedValue - actualValue) > delta, 
-		Map().Add(String::NewFormatted(L"%lc", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%lc", actualValue)), 
-		Map().Add(String::NewFormatted(L"%lc", delta)), 
-		TypeChar)
-
-	_AssertionFramework_AreApproximatelyEqual(unsigned char, 
-		abs((short)expectedValue - (short)actualValue) > (short)delta, 
-		Map().Add(String::NewFormatted(L"%u", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%u", actualValue)), 
-		Map().Add(String::NewFormatted(L"%u", delta)), 
-		TypeByte)
-
-	_AssertionFramework_AreApproximatelyEqual(short, 
-		abs(expectedValue - actualValue) > delta, 
-		Map().Add(String::NewFormatted(L"%d", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%d", actualValue)), 
-		Map().Add(String::NewFormatted(L"%d", delta)), 
-		TypeInt16)
-
-	_AssertionFramework_AreApproximatelyEqual(unsigned short, 
-		abs((int)expectedValue - (int)actualValue) > (int)delta, 
-		Map().Add(String::NewFormatted(L"%u", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%u", actualValue)), 
-		Map().Add(String::NewFormatted(L"%u", delta)), 
-		TypeUInt16)
-
-	_AssertionFramework_AreApproximatelyEqual(int, 
-		abs(expectedValue - actualValue) > delta, 
-		Map().Add(String::NewFormatted(L"%d", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%d", actualValue)), 
-		Map().Add(String::NewFormatted(L"%d", delta)), 
-		TypeInt32)
-
-	_AssertionFramework_AreApproximatelyEqual(unsigned int, 
-		_abs64((long long)expectedValue - (long long)actualValue) > (long long)delta, 
-		Map().Add(String::NewFormatted(L"%u", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%u", actualValue)), 
-		Map().Add(String::NewFormatted(L"%u", delta)), 
-		TypeUInt32)
-
-	_AssertionFramework_AreApproximatelyEqual(long, 
-		abs(expectedValue - actualValue) > delta, 
-		Map().Add(String::NewFormatted(L"%d", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%d", actualValue)), 
-		Map().Add(String::NewFormatted(L"%d", delta)), 
-		TypeInt32)
-
-	_AssertionFramework_AreApproximatelyEqual(unsigned long, 
-		_abs64((long long)expectedValue - (long long)actualValue) > (long long)delta, 
-		Map().Add(String::NewFormatted(L"%u", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%u", actualValue)), 
-		Map().Add(String::NewFormatted(L"%u", delta)), 
-		TypeUInt32)
-
-	_AssertionFramework_AreApproximatelyEqual(long long, 
-		_abs64(expectedValue - actualValue) > delta, 
-		Map().Add(String::NewFormatted(L"%ld", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%ld", actualValue)), 
-		Map().Add(String::NewFormatted(L"%ld", delta)), 
-		TypeInt64)
-
-	_AssertionFramework_AreApproximatelyEqual(unsigned long long, 
-		fabs((double)expectedValue - (double)actualValue) > (double)delta, 
-		Map().Add(String::NewFormatted(L"%ld", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%ld", actualValue)), 
-		Map().Add(String::NewFormatted(L"%ld", delta)), 
-		TypeInt64)
-
-	_AssertionFramework_AreApproximatelyEqual(float, 
-		fabs(expectedValue - actualValue) > delta, 
-		Map().Add(String::NewFormatted(L"%f", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%f", actualValue)), 
-		Map().Add(String::NewFormatted(L"%f", delta)), 
-		TypeSingle)
-
-	_AssertionFramework_AreApproximatelyEqual(double, 
-		fabs(expectedValue - actualValue) > delta, 
-		Map().Add(String::NewFormatted(L"%Lf", expectedValue)), 
-		Map().Add(String::NewFormatted(L"%Lf", actualValue)), 
-		Map().Add(String::NewFormatted(L"%Lf", delta)), 
-		TypeDouble)
+    _AssertionFramework_AreApproximatelyEqual(const wchar_t*)
+    _AssertionFramework_AreApproximatelyEqual(const char*)
+    _AssertionFramework_AreApproximatelyEqual(const String&)
 
 	// ======================================
 	// Interface functions for Gallio adapter

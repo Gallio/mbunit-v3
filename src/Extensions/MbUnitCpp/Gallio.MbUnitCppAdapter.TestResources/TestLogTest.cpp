@@ -20,25 +20,93 @@ TESTFIXTURE(TestLog)
 {
     TEST(Write_once)
     {
-		TestLog.Write(L"Wolf zombies quickly spot the jinxed grave.");
+		TestLog.Write("Wolf zombies quickly spot the jinxed grave.");
     }
 
     TEST(Write_multiple_times)
+    {
+		TestLog.Write("Wolf zombies ");
+		TestLog.Write("quickly spot ");
+		TestLog.Write("the jinxed grave.");
+    }
+
+    TEST(WriteFormat)
+    {
+		TestLog.WriteFormat("Wolf zombies %s spot the %s grave.", "quickly", "jinxed");
+    }
+
+    TEST(WriteLine_once)
+    {
+		TestLog.WriteLine("Wolf zombies quickly spot the jinxed grave.");
+    }
+
+    TEST(WriteLine_multiple_times)
+    {
+		TestLog.WriteLine("Wolf zombies ");
+		TestLog.WriteLine("quickly spot ");
+		TestLog.WriteLine("the jinxed grave.");
+    }
+
+    TEST(WriteLineFormat)
+    {
+		TestLog.WriteLineFormat("Wolf zombies %s spot the %s grave.", "quickly", "jinxed");
+    }
+
+    TEST(Write_once_wide)
+    {
+		TestLog.Write(L"Wolf zombies quickly spot the jinxed grave.");
+    }
+
+    TEST(Write_multiple_times_wide)
     {
 		TestLog.Write(L"Wolf zombies ");
 		TestLog.Write(L"quickly spot ");
 		TestLog.Write(L"the jinxed grave.");
     }
 
-    TEST(WriteLine_once)
+    TEST(WriteFormat_wide)
+    {
+		TestLog.WriteFormat(L"Wolf zombies %s spot the %s grave.", L"quickly", L"jinxed");
+    }
+
+    TEST(WriteLine_once_wide)
     {
 		TestLog.WriteLine(L"Wolf zombies quickly spot the jinxed grave.");
     }
 
-    TEST(WriteLine_multiple_times)
+    TEST(WriteLine_multiple_times_wide)
     {
 		TestLog.WriteLine(L"Wolf zombies ");
 		TestLog.WriteLine(L"quickly spot ");
 		TestLog.WriteLine(L"the jinxed grave.");
+    }
+
+    TEST(WriteLineFormat_wide)
+    {
+		TestLog.WriteLineFormat(L"Wolf zombies %s spot the %s grave.", L"quickly", L"jinxed");
+    }
+
+    TEST(Write_once_String)
+    {
+		TestLog.Write(mbunit::String("Wolf zombies quickly spot the jinxed grave."));
+    }
+
+    TEST(Write_multiple_times_String)
+    {
+		TestLog.Write(mbunit::String("Wolf zombies "));
+		TestLog.Write(mbunit::String("quickly spot "));
+		TestLog.Write(mbunit::String("the jinxed grave."));
+    }
+
+    TEST(WriteLine_once_String)
+    {
+		TestLog.WriteLine(mbunit::String("Wolf zombies quickly spot the jinxed grave."));
+    }
+
+    TEST(WriteLine_multiple_times_String)
+    {
+		TestLog.WriteLine(mbunit::String("Wolf zombies "));
+		TestLog.WriteLine(mbunit::String("quickly spot "));
+		TestLog.WriteLine(mbunit::String("the jinxed grave."));
     }
 }

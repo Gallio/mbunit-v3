@@ -27,7 +27,7 @@ TESTFIXTURE(DataDriven)
 
     TEST(BoundToFirst, BIND(First, Row))
     {
-		TestLog.WriteLine(L"x = %d", Row.x);
+		TestLog.WriteLineFormat(L"x = %d", Row.x);
     }
 
 	DATA(Second, int i, const wchar_t* text, double d)
@@ -39,6 +39,6 @@ TESTFIXTURE(DataDriven)
 
     TEST(BoundToSecond, BIND(Second, Row))
     {
-		TestLog.WriteLine(L"i = %d, text = %s, d = %lf", Row.i, Row.text, Row.d);
+		TestLog.WriteLineFormat(L"i = %d, text = %s, d = %lf", Row.i, Row.text, Row.d);
     }
 }

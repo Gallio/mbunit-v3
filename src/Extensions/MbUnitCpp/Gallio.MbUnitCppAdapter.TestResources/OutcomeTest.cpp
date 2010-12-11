@@ -25,7 +25,17 @@ TESTFIXTURE(Outcome)
 
     TEST(Assert_Fail_with_custom_message)
     {
+        Assert.Fail("Boom!");
+    }
+
+    TEST(Assert_Fail_with_custom_wide_message)
+    {
         Assert.Fail(L"Boom!");
+    }
+
+    TEST(Assert_Fail_with_custom_String_message)
+    {
+        Assert.Fail(mbunit::String("Boom!"));
     }
 }
 

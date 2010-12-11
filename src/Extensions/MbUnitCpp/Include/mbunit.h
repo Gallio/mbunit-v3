@@ -33,25 +33,19 @@ namespace mbunit
 		String(const char* str);
 		String(const wchar_t* wstr);
 		void Clear();
-		void Append(const String& prototype);
-		void Append(const char* str);
-		void Append(const wchar_t* wstr);
-		void AppendFormat(const char* format, ...);
-		void AppendFormat(const wchar_t* format, ...);
-		void AppendFormat(const wchar_t* format, va_list args);
-		void AppendFormat(const char* format, va_list args);
-		void Format(const char* format, ...);
-		void Format(const wchar_t* format, ...);
-		void Format(const char* format, va_list args);
-		void Format(const wchar_t* format, va_list args);
+		template<typename T> String& Append(T arg);
+		String& AppendFormat(const char* format, ...);
+		String& AppendFormat(const wchar_t* format, ...);
+		String& AppendFormat(const wchar_t* format, va_list args);
+		String& AppendFormat(const char* format, va_list args);
 		wchar_t* GetBuffer() { return buffer; }
 		size_t GetLength() { return length; }
 
 		public:
-		static String* New(const char* str);
-		static String* New(const wchar_t* wstr);
 		static String* NewFormatted(const char* format, ...);
 		static String* NewFormatted(const wchar_t* format, ...);
+		static String Format(const char* format, ...);
+		static String Format(const wchar_t* format, ...);
 	};
 
 	// A node that reference a mapped string value.
@@ -143,7 +137,6 @@ namespace mbunit
         LabeledValue Actual;
         LabeledValue Extra_0;
         LabeledValue Extra_1;
-
 		AssertionFailure();
 		static AssertionFailure FromException(char* exceptionMessage = 0);
     };
@@ -158,22 +151,29 @@ namespace mbunit
 		int DurationMilliseconds;
 	};
 
+    #define _AssertionFramework_Declare(MESSAGE_ARG) \
+        void Fail(MESSAGE_ARG); \
+		template<typename T> void IsTrue(T actualValue, MESSAGE_ARG); \
+		template<typename T> void IsFalse(T actualValue, MESSAGE_ARG); \
+		template<typename T> void AreEqual(T expectedValue, T actualValue, MESSAGE_ARG); \
+		template<typename T> void AreApproximatelyEqual(T expectedValue, T actualValue, T delta, MESSAGE_ARG);
+
     // The MbUnitCpp Assertion Framework.
     class AssertionFramework
     {
         Test *test;
         void IncrementAssertCount();
 		StringMap& Map() const;
+		template<typename T> StringId AddNewStringFrom(T arg);
+		StringId AddNewString(const char* str);
+		StringId AddNewString(const wchar_t* wstr);
+		StringId AddNewString(const String& str);
 
         public:
         AssertionFramework(Test* test);
-
-		// Asserts.
-        void Fail(const wchar_t* message = 0);
-		template<typename T> void IsTrue(T actualValue, const wchar_t* message = 0);
-		template<typename T> void IsFalse(T actualValue, const wchar_t* message = 0);
-		template<typename T> void AreEqual(T expectedValue, T actualValue, const wchar_t* message = 0);
-		template<typename T> void AreApproximatelyEqual(T expectedValue, T actualValue, T delta, const wchar_t* message = 0);
+		_AssertionFramework_Declare(const char* message = 0)
+		_AssertionFramework_Declare(const wchar_t* message)
+		_AssertionFramework_Declare(const String& message)
     };
 
 	// Provides an access to the Gallio test log.
@@ -183,8 +183,16 @@ namespace mbunit
 
 		public:
 		TestLogRecorder(Test* test);
-		void Write(const wchar_t* format, ...);
-		void WriteLine(const wchar_t* format, ...);
+		void Write(const char* str);
+		void Write(const wchar_t* wstr);
+		void Write(const String& str);
+		void WriteLine(const char* str);
+		void WriteLine(const wchar_t* wstr);
+		void WriteLine(const String& str);
+		void WriteFormat(const char* format, ...);
+		void WriteFormat(const wchar_t* format, ...);
+		void WriteLineFormat(const char* format, ...);
+		void WriteLineFormat(const wchar_t* format, ...);
 	};
 
 	// Base class for tests and test fixtures.

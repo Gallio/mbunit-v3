@@ -6,10 +6,12 @@
   <Test name="/General/Framework_should_catch_and_report_unhandled_text_exception" expectedStatus="Failed" expectedAssertCount="0" />
   <Test name="/General/Framework_should_catch_and_report_unhandled_custom_exception" expectedStatus="Failed" expectedAssertCount="0" />
   
-  <Test name="/Outcome" expectedStatus="Failed" expectedAssertCount="2" />
+  <Test name="/Outcome" expectedStatus="Failed" expectedAssertCount="4" />
   <Test name="/Outcome/Assert_Fail_with_default_message" expectedStatus="Failed" expectedAssertCount="1" />
   <Test name="/Outcome/Assert_Fail_with_custom_message" expectedStatus="Failed" expectedAssertCount="1" expectedFailureLog="Boom!" />
-  
+  <Test name="/Outcome/Assert_Fail_with_custom_wide_message" expectedStatus="Failed" expectedAssertCount="1" expectedFailureLog="Boom!" />
+  <Test name="/Outcome/Assert_Fail_with_custom_String_message" expectedStatus="Failed" expectedAssertCount="1" expectedFailureLog="Boom!" />
+
   <Test name="/Logic" expectedStatus="Failed" expectedAssertCount="10" />
   <Test name="/Logic/Assert_IsTrue_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
   <Test name="/Logic/Assert_IsTrue_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
@@ -99,8 +101,20 @@
   <Test name="/TestLog" expectedStatus="Passed" expectedAssertCount="0" />
   <Test name="/TestLog/Write_once" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies quickly spot the jinxed grave." />
   <Test name="/TestLog/Write_multiple_times" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies quickly spot the jinxed grave." />
+  <Test name="/TestLog/WriteFormat" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies quickly spot the jinxed grave." />
   <Test name="/TestLog/WriteLine_once" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies quickly spot the jinxed grave.\n" />
   <Test name="/TestLog/WriteLine_multiple_times" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies \nquickly spot \nthe jinxed grave.\n" />
+  <Test name="/TestLog/WriteLineFormat" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies quickly spot the jinxed grave." />
+  <Test name="/TestLog/Write_once_wide" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies quickly spot the jinxed grave." />
+  <Test name="/TestLog/Write_multiple_times_wide" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies quickly spot the jinxed grave." />
+  <Test name="/TestLog/WriteFormat_wide" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies quickly spot the jinxed grave." />
+  <Test name="/TestLog/WriteLine_once_wide" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies quickly spot the jinxed grave.\n" />
+  <Test name="/TestLog/WriteLine_multiple_times_wide" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies \nquickly spot \nthe jinxed grave.\n" />
+  <Test name="/TestLog/WriteLineFormat_wide" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies quickly spot the jinxed grave." />
+  <Test name="/TestLog/Write_once_String" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies quickly spot the jinxed grave." />
+  <Test name="/TestLog/Write_multiple_times_String" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies quickly spot the jinxed grave." />
+  <Test name="/TestLog/WriteLine_once_String" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies quickly spot the jinxed grave.\n" />
+  <Test name="/TestLog/WriteLine_multiple_times_String" expectedStatus="Passed" expectedAssertCount="0" expectedDefaultLog="Wolf zombies \nquickly spot \nthe jinxed grave.\n" />
 
   <Test name="/MetadataInTest" expectedStatus="Passed" expectedAssertCount="0" />
   <Test name="/MetadataInTest/WithCategory" expectedStatus="Passed" expectedAssertCount="0" expectedMetadata="Category=Sample" />
