@@ -42,8 +42,6 @@ namespace mbunit
 		size_t GetLength() { return length; }
 
 		public:
-		static String* NewFormatted(const char* format, ...);
-		static String* NewFormatted(const wchar_t* format, ...);
 		static String Format(const char* format, ...);
 		static String Format(const wchar_t* format, ...);
 	};
@@ -329,42 +327,42 @@ namespace mbunit
 }
 
 // Helper macros.
-#define MUC_WSTR2(s) L##s
-#define MUC_WSTR(s) MUC_WSTR2(s)
-#define MUC_WFILE MUC_WSTR(__FILE__)
-#define MUC_CONCAT(arg1, arg2) MUC_CONCAT1(arg1, arg2)
-#define MUC_CONCAT1(arg1, arg2) MUC_CONCAT2(arg1, arg2)
-#define MUC_CONCAT2(arg1, arg2) arg1##arg2
-#define MUC_LAST_ARG(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, N, ...) N 
-#define MUC_REVERSED_RANGE 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
-#define MUC_LP (
-#define MUC_RP )
-#define MUC_SC ;
-#define MUC_C ,
-#define MUC_COUNT_ARGS(...) MUC_LAST_ARG MUC_LP __VA_ARGS__##MUC_REVERSED_RANGE MUC_C MUC_REVERSED_RANGE MUC_RP
-#define MUC_FOR_EACH_1(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP
-#define MUC_FOR_EACH_2(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_1 MUC_LP __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_3(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_2 MUC_LP __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_4(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_3 MUC_LP __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_5(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_4 MUC_LP __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_6(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_5 MUC_LP __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_7(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_6 MUC_LP __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_8(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_7 MUC_LP __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_9(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_8 MUC_LP __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_10(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_9 MUC_LP __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_11(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_10 MUC_LP __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_12(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_11 MUC_LP __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_13(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_12 MUC_LP __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_14(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_13 MUC_LP __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_15(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_14 MUC_LP __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_16(_0, ...) MUC_PRINT_ARG MUC_LP _0 MUC_RP MUC_FOR_EACH_15 MUC_LP __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH_N(N, _0, ...) MUC_CONCAT MUC_LP MUC_FOR_EACH_, N MUC_RP MUC_LP _0, __VA_ARGS__ MUC_RP
-#define MUC_FOR_EACH(_0, ...) MUC_FOR_EACH_N MUC_LP MUC_COUNT_ARGS MUC_LP _0 MUC_C __VA_ARGS__ MUC_RP MUC_C _0 MUC_C __VA_ARGS__ MUC_RP
-#define MUC_PRINT_ARG(x) x MUC_SC
+#define MBU_WSTR2(s) L##s
+#define MBU_WSTR(s) MBU_WSTR2(s)
+#define MBU_WFILE MBU_WSTR(__FILE__)
+#define MBU_CONCAT(arg1, arg2) MBU_CONCAT1(arg1, arg2)
+#define MBU_CONCAT1(arg1, arg2) MBU_CONCAT2(arg1, arg2)
+#define MBU_CONCAT2(arg1, arg2) arg1##arg2
+#define MBU_LAST_ARG(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, N, ...) N 
+#define MBU_REVERSED_RANGE 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
+#define MBU_LP (
+#define MBU_RP )
+#define MBU_SC ;
+#define MBU_C ,
+#define MBU_COUNT_ARGS(...) MBU_LAST_ARG MBU_LP __VA_ARGS__##MBU_REVERSED_RANGE MBU_C MBU_REVERSED_RANGE MBU_RP
+#define MBU_FOR_EACH_1(_0, ...) MBU_PRINT_ARG MBU_LP _0 MBU_RP
+#define MBU_FOR_EACH_2(_0, ...) MBU_PRINT_ARG MBU_LP _0 MBU_RP MBU_FOR_EACH_1 MBU_LP __VA_ARGS__ MBU_RP
+#define MBU_FOR_EACH_3(_0, ...) MBU_PRINT_ARG MBU_LP _0 MBU_RP MBU_FOR_EACH_2 MBU_LP __VA_ARGS__ MBU_RP
+#define MBU_FOR_EACH_4(_0, ...) MBU_PRINT_ARG MBU_LP _0 MBU_RP MBU_FOR_EACH_3 MBU_LP __VA_ARGS__ MBU_RP
+#define MBU_FOR_EACH_5(_0, ...) MBU_PRINT_ARG MBU_LP _0 MBU_RP MBU_FOR_EACH_4 MBU_LP __VA_ARGS__ MBU_RP
+#define MBU_FOR_EACH_6(_0, ...) MBU_PRINT_ARG MBU_LP _0 MBU_RP MBU_FOR_EACH_5 MBU_LP __VA_ARGS__ MBU_RP
+#define MBU_FOR_EACH_7(_0, ...) MBU_PRINT_ARG MBU_LP _0 MBU_RP MBU_FOR_EACH_6 MBU_LP __VA_ARGS__ MBU_RP
+#define MBU_FOR_EACH_8(_0, ...) MBU_PRINT_ARG MBU_LP _0 MBU_RP MBU_FOR_EACH_7 MBU_LP __VA_ARGS__ MBU_RP
+#define MBU_FOR_EACH_9(_0, ...) MBU_PRINT_ARG MBU_LP _0 MBU_RP MBU_FOR_EACH_8 MBU_LP __VA_ARGS__ MBU_RP
+#define MBU_FOR_EACH_10(_0, ...) MBU_PRINT_ARG MBU_LP _0 MBU_RP MBU_FOR_EACH_9 MBU_LP __VA_ARGS__ MBU_RP
+#define MBU_FOR_EACH_11(_0, ...) MBU_PRINT_ARG MBU_LP _0 MBU_RP MBU_FOR_EACH_10 MBU_LP __VA_ARGS__ MBU_RP
+#define MBU_FOR_EACH_12(_0, ...) MBU_PRINT_ARG MBU_LP _0 MBU_RP MBU_FOR_EACH_11 MBU_LP __VA_ARGS__ MBU_RP
+#define MBU_FOR_EACH_13(_0, ...) MBU_PRINT_ARG MBU_LP _0 MBU_RP MBU_FOR_EACH_12 MBU_LP __VA_ARGS__ MBU_RP
+#define MBU_FOR_EACH_14(_0, ...) MBU_PRINT_ARG MBU_LP _0 MBU_RP MBU_FOR_EACH_13 MBU_LP __VA_ARGS__ MBU_RP
+#define MBU_FOR_EACH_15(_0, ...) MBU_PRINT_ARG MBU_LP _0 MBU_RP MBU_FOR_EACH_14 MBU_LP __VA_ARGS__ MBU_RP
+#define MBU_FOR_EACH_16(_0, ...) MBU_PRINT_ARG MBU_LP _0 MBU_RP MBU_FOR_EACH_15 MBU_LP __VA_ARGS__ MBU_RP
+#define MBU_FOR_EACH_N(N, _0, ...) MBU_CONCAT MBU_LP MBU_FOR_EACH_, N MBU_RP MBU_LP _0, __VA_ARGS__ MBU_RP
+#define MBU_FOR_EACH(_0, ...) MBU_FOR_EACH_N MBU_LP MBU_COUNT_ARGS MBU_LP _0 MBU_C __VA_ARGS__ MBU_RP MBU_C _0 MBU_C __VA_ARGS__ MBU_RP
+#define MBU_PRINT_ARG(x) x MBU_SC
 
 // Macro to create a new test fixture.
-#define TESTFIXTURE(Name, ...) MUC_TESTFIXTURE MUC_LP Name, NoOp MUC_LP MUC_RP MUC_SC MUC_C __VA_ARGS__ MUC_RP
-#define MUC_TESTFIXTURE(Name, _0, ...) \
+#define TESTFIXTURE(Name, ...) MBU_TESTFIXTURE MBU_LP Name, NoOp MBU_LP MBU_RP MBU_SC MBU_C __VA_ARGS__ MBU_RP
+#define MBU_TESTFIXTURE(Name, _0, ...) \
     namespace NamespaceTestFixture##Name \
     { \
         class TestFixture##Name : public mbunit::TestFixture \
@@ -372,7 +370,7 @@ namespace mbunit
             public: \
             TestFixture##Name() : TestFixture(mbunit::TestFixture::GetTestFixtureList().GetNextIndex(), L#Name) { Decorate(); } \
 			private: \
-			void Decorate() { MUC_FOR_EACH MUC_LP _0 MUC_C __VA_ARGS__ MUC_RP } \
+			void Decorate() { MBU_FOR_EACH MBU_LP _0 MBU_C __VA_ARGS__ MBU_RP } \
         } testFixtureInstance; \
         \
         mbunit::TestFixtureRecorder fixtureRecorder(mbunit::TestFixture::GetTestFixtureList(), &testFixtureInstance); \
@@ -380,14 +378,14 @@ namespace mbunit
     namespace NamespaceTestFixture##Name
 
 // Macro to create a new test.
-#define TEST(Name, ...) MUC_TEST MUC_LP Name, NoOp MUC_LP MUC_RP MUC_SC MUC_C __VA_ARGS__ MUC_RP
-#define MUC_TEST(Name, _0, ...) \
+#define TEST(Name, ...) MBU_TEST MBU_LP Name, NoOp MBU_LP MBU_RP MBU_SC MBU_C __VA_ARGS__ MBU_RP
+#define MBU_TEST(Name, _0, ...) \
     class Test##Name : public mbunit::Test \
     { \
         public: \
-		Test##Name() : mbunit::Test(&testFixtureInstance, L#Name, MUC_WFILE, __LINE__) { Decorate(); } \
+		Test##Name() : mbunit::Test(&testFixtureInstance, L#Name, MBU_WFILE, __LINE__) { Decorate(); } \
         private: \
-		void Decorate() { MUC_FOR_EACH MUC_LP _0 MUC_C __VA_ARGS__ MUC_RP } \
+		void Decorate() { MBU_FOR_EACH MBU_LP _0 MBU_C __VA_ARGS__ MBU_RP } \
         virtual void RunImpl(); \
     } test##Name##Instance; \
     mbunit::TestRecorder recorder##Name (testFixtureInstance.GetTestList(), &test##Name##Instance); \
@@ -406,7 +404,7 @@ namespace mbunit
         struct DataRow \
         { \
 			struct DataRow* next; \
-            MUC_FOR_EACH MUC_LP _0 MUC_C __VA_ARGS__ MUC_RP \
+            MBU_FOR_EACH MBU_LP _0 MBU_C __VA_ARGS__ MBU_RP \
         }; \
         private: \
         struct DataRow* tail; \

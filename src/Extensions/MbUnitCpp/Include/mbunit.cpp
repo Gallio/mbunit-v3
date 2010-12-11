@@ -169,26 +169,6 @@ namespace mbunit
 		return *this;
 	}
 
-	String* String::NewFormatted(const char* format, ...)
-	{
-		va_list args;
-		va_start(args, format);
-		String* str = new String;
-		str->AppendFormat(format, args);
-		va_end(args);
-		return str;
-	}
-
-	String* String::NewFormatted(const wchar_t* format, ...)
-	{
-		va_list args;
-		va_start(args, format);
-		String* str = new String;
-		str->AppendFormat(format, args);
-		va_end(args);
-		return str;
-	}
-
 	String String::Format(const char* format, ...)
 	{
 		va_list args;
