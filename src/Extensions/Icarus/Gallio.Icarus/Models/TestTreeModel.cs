@@ -20,6 +20,7 @@ using Gallio.Icarus.Events;
 using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Icarus.TreeBuilders;
 using Gallio.Model.Schema;
+using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.DataBinding;
 using Gallio.UI.Events;
@@ -32,12 +33,22 @@ namespace Gallio.Icarus.Models
 
         public Observable<int> TestCount { get; private set; }
 
-        public TestTreeModel(ITreeBuilder[] treeBuilders)
+        public TestTreeModel(ComponentHandle<ITreeBuilder, TreeBuilderTraits>[] treeBuilders)
             : base(new TreeModel())
         {
-            this.treeBuilders = treeBuilders;
+            this.treeBuilders = new List<ITreeBuilder>(OrderBuilders(treeBuilders));
 
             TestCount = new Observable<int>();
+        }
+
+        private static IEnumerable<ITreeBuilder> OrderBuilders(IEnumerable<ComponentHandle<ITreeBuilder, TreeBuilderTraits>> componentHandles)
+        {
+            var handles = new List<ComponentHandle<ITreeBuilder, TreeBuilderTraits>>(componentHandles);
+            
+            handles.Sort((l, r) => l.GetTraits().Priority.CompareTo(r.GetTraits().Priority));
+            
+            foreach (var handle in handles)
+                yield return handle.GetComponent();
         }
 
         public void UpdateTestCount()

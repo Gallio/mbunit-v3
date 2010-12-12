@@ -270,6 +270,7 @@
     </Compile>
     <Compile Include="Services\FilterService.cs" />
     <Compile Include="Services\IFilterService.cs" />
+    <Compile Include="TreeBuilders\TreeBuilderTraits.cs" />
     <Compile Include="Utilities\TestRunnerExtensionFactory.cs" />
     <Compile Include="Utilities\ITestRunnerExtensionFactory.cs" />
     <Compile Include="WindowManager\MenuList.cs" />
