@@ -15,12 +15,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Gallio.Common.IO;
 using Gallio.Common.Xml;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Projects;
 using Gallio.Icarus.Properties;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Common.Policies;
 using Gallio.UI.Events;
 using MbUnit.Framework;
@@ -28,13 +28,13 @@ using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.Projects
 {
-    public class UserOptionsControllerTest
+    public class ProjectUserOptionsControllerTest
     {
         private IUnhandledExceptionPolicy unhandledExceptionPolicy;
         private IEventAggregator eventAggregator;
         private IFileSystem fileSystem;
         private IXmlSerializer xmlSerializer;
-        private UserOptionsController controller;
+        private ProjectUserOptionsController controller;
 
         [SetUp]
         public void SetUp()
@@ -44,7 +44,7 @@ namespace Gallio.Icarus.Tests.Projects
             xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
             unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
             
-            controller = new UserOptionsController(eventAggregator, fileSystem, 
+            controller = new ProjectUserOptionsController(eventAggregator, fileSystem, 
                 xmlSerializer, unhandledExceptionPolicy);
         }
 
@@ -220,7 +220,7 @@ namespace Gallio.Icarus.Tests.Projects
         [Test]
         public void User_options_are_not_saved_with_project_if_not_dirty()
         {
-            controller.Handle(new ProjectSaved(""));
+            controller.SaveUserOptions("", NullProgressMonitor.CreateInstance());
 
             eventAggregator.AssertWasNotCalled(ea => ea.Send(Arg<object>.Is.Anything, Arg<UserOptionsSaved>.Is.Anything));
         }
@@ -230,7 +230,7 @@ namespace Gallio.Icarus.Tests.Projects
         {
             controller.Handle(new TreeViewCategoryChanged("test"));
 
-            controller.Handle(new ProjectSaved(""));
+            controller.SaveUserOptions("", NullProgressMonitor.CreateInstance());
 
             eventAggregator.AssertWasCalled(ea => ea.Send(Arg<object>.Is.Anything, Arg<UserOptionsSaved>.Is.Anything));
         }
@@ -242,7 +242,7 @@ namespace Gallio.Icarus.Tests.Projects
             const string projectLocation = "test.gallio";
             var userOptionsFileName = projectLocation + UserOptions.Extension;
 
-            controller.Handle(new ProjectSaved(projectLocation));
+            controller.SaveUserOptions(projectLocation, NullProgressMonitor.CreateInstance());
 
             xmlSerializer.AssertWasCalled(xs => xs.SaveToXml(Arg<UserOptions>.Is.Anything, 
                 Arg.Is(userOptionsFileName)));
@@ -254,7 +254,7 @@ namespace Gallio.Icarus.Tests.Projects
             const string treeViewCategory = "test";
             controller.Handle(new TreeViewCategoryChanged(treeViewCategory));
 
-            controller.Handle(new ProjectSaved(""));
+            controller.SaveUserOptions("", NullProgressMonitor.CreateInstance());
 
             xmlSerializer.AssertWasCalled(xs => xs.SaveToXml(Arg<UserOptions>.Matches(uo => 
                 uo.TreeViewCategory == treeViewCategory), Arg<string>.Is.Anything));
@@ -266,7 +266,7 @@ namespace Gallio.Icarus.Tests.Projects
             var collapsedNodes = new [] { "test" };
             controller.SetCollapsedNodes(collapsedNodes);
 
-            controller.Handle(new ProjectSaved(""));
+            controller.SaveUserOptions("", NullProgressMonitor.CreateInstance());
 
             xmlSerializer.AssertWasCalled(xs => xs.SaveToXml(Arg<UserOptions>.Matches(uo =>
                 uo.CollapsedNodes.Contains(collapsedNodes[0])), Arg<string>.Is.Anything));

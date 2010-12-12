@@ -15,6 +15,7 @@
 
 using System.Collections.Generic;
 using Gallio.Icarus.Commands;
+using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
@@ -44,7 +45,7 @@ namespace Gallio.Icarus.Tests.TestExplorer
             eventAggregator = MockRepository.GenerateStub<IEventAggregator>();
             model = new Icarus.TestExplorer.Model(MockRepository.GenerateStub<ISortedTreeModel>());
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var userOptionsController = MockRepository.GenerateStub<IUserOptionsController>();
+            var userOptionsController = MockRepository.GenerateStub<IProjectUserOptionsController>();
             userOptionsController.Stub(uoc => uoc.CollapsedNodes).Return(new string[0]);
             taskManager = MockRepository.GenerateStub<ITaskManager>();
             commandFactory = MockRepository.GenerateStub<ICommandFactory>();
@@ -283,25 +284,25 @@ namespace Gallio.Icarus.Tests.TestExplorer
         }
 
         [Test]
-        public void ApplicationShutdown_should_trigger_SaveState_event()
+        public void Saving_project_should_trigger_SaveState_event()
         {
             var flag = false;
             controller.SaveState += (s, e) => flag = true;
             commandFactory.Stub(cf => cf.CreateSaveFilterCommand(Arg<string>.Is.Anything))
                 .Return(MockRepository.GenerateStub<ICommand>());
 
-            controller.Handle(new ApplicationShutdown());
+            controller.Handle(new SavingProject());
 
             Assert.IsTrue(flag);
         }
 
         [Test]
-        public void ApplicationShutdown_should_retrieve_a_command_from_the_factory()
+        public void Saving_project_should_create_a_save_filter_command()
         {
             commandFactory.Stub(cf => cf.CreateSaveFilterCommand("AutoSave"))
                 .Return(MockRepository.GenerateStub<ICommand>());
 
-            controller.Handle(new ApplicationShutdown());
+            controller.Handle(new SavingProject());
         }
 
         [Test]

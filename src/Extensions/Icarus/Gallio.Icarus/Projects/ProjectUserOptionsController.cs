@@ -19,12 +19,13 @@ using Gallio.Common.IO;
 using Gallio.Common.Xml;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Properties;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Common.Policies;
 using Gallio.UI.Events;
 
 namespace Gallio.Icarus.Projects
 {
-    public class UserOptionsController : IUserOptionsController, Handles<ProjectLoaded>, Handles<ProjectSaved>, 
+    public class ProjectUserOptionsController : IProjectUserOptionsController, Handles<ProjectLoaded>, 
         Handles<TreeViewCategoryChanged>
     {
         private readonly IEventAggregator eventAggregator;
@@ -37,7 +38,7 @@ namespace Gallio.Icarus.Projects
         public IEnumerable<string> CollapsedNodes { get; private set; }
         public string TreeViewCategory { get; private set; }
 
-        public UserOptionsController(IEventAggregator eventAggregator, IFileSystem fileSystem,
+        public ProjectUserOptionsController(IEventAggregator eventAggregator, IFileSystem fileSystem,
             IXmlSerializer xmlSerializer, IUnhandledExceptionPolicy unhandledExceptionPolicy)
         {
             this.eventAggregator = eventAggregator;
@@ -49,7 +50,7 @@ namespace Gallio.Icarus.Projects
             CollapsedNodes = new List<string>();
         }
 
-        private void LoadUserOptions(string projectLocation)
+        public void LoadUserOptions(string projectLocation)
         {
             var projectUserOptionsFile = projectLocation + UserOptions.Extension;
             var userOptions = new UserOptions();
@@ -74,7 +75,7 @@ namespace Gallio.Icarus.Projects
             eventAggregator.Send(this, new UserOptionsLoaded());
         }
 
-        private void SaveUserOptions(string projectName)
+        public void SaveUserOptions(string projectName, IProgressMonitor subProgressMonitor)
         {
             if (unsavedChanges == false)
                 return;
@@ -100,11 +101,6 @@ namespace Gallio.Icarus.Projects
         public void Handle(ProjectLoaded @event)
         {
             LoadUserOptions(@event.ProjectLocation);
-        }
-
-        public void Handle(ProjectSaved @event)
-        {
-            SaveUserOptions(@event.ProjectLocation);
         }
 
         public void Handle(TreeViewCategoryChanged @event)

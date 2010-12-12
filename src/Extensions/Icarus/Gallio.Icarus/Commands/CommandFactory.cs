@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using Gallio.Model.Filters;
+using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.Extensibility;
 using Gallio.UI.ProgressMonitoring;
 
@@ -38,6 +40,13 @@ namespace Gallio.Icarus.Commands
             return (T)serviceLocator.ResolveByComponentId(typeof (T).FullName);
         }
 
+        public ICommand CreateSaveProjectCommand(string fileName)
+        {
+            var command = GetCommand<SaveProjectCommand>();
+            command.ProjectLocation = fileName;
+            return command;
+        }
+
         public ICommand CreateShowReportCommand(string reportFormat)
         {
             var command = GetCommand<ShowReportCommand>();
@@ -45,9 +54,11 @@ namespace Gallio.Icarus.Commands
             return command;
         }
 
-        public ICommand CreateRestoreFilterCommand()
+        public ICommand CreateRestoreFilterCommand(string filterName)
         {
-            return GetCommand<RestoreFilterCommand>();
+            var command = GetCommand<RestoreFilterCommand>();
+            command.FilterName = filterName;
+            return command;
         }
 
         public ICommand CreateRunTestsCommand(bool attachDebugger)
@@ -64,11 +75,25 @@ namespace Gallio.Icarus.Commands
             return command;
         }
 
+        public ICommand CreateApplyFilterCommand(FilterSet<ITestDescriptor> filterSet)
+        {
+            var command = GetCommand<ApplyFilterCommand>();
+            command.FilterSet = filterSet;
+            return command;
+        }
+
         public ICommand CreateConvertSavedReportCommand(string fileName, string format)
         {
             var command = GetCommand<ConvertSavedReportCommand>();
             command.FileName = fileName;
             command.Format = format;
+            return command;
+        }
+
+        public ICommand CreateDeleteFilterCommand(FilterInfo filterInfo)
+        {
+            var command = GetCommand<DeleteFilterCommand>();
+            command.FilterInfo = filterInfo;
             return command;
         }
 
@@ -82,6 +107,11 @@ namespace Gallio.Icarus.Commands
         public ICommand CreateLoadPackageCommand()
         {
             return GetCommand<LoadPackageCommand>();
+        }
+
+        public ICommand CreateNewProjectCommand()
+        {
+            return GetCommand<NewProjectCommand>();
         }
 
         public ICommand CreateRemoveAllFilesCommand()

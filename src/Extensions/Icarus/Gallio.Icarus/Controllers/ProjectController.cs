@@ -277,10 +277,12 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public void SaveProject(IProgressMonitor progressMonitor, string projectLocation)
+        public void Save(string projectLocation, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Saving project", 100))
             {
+                eventAggregator.Send(this, new SavingProject());
+
                 if (string.IsNullOrEmpty(projectLocation))
                     projectLocation = projectTreeModel.FileName;
 

@@ -14,8 +14,6 @@
 // limitations under the License.
 
 using Gallio.Icarus.Commands;
-using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Services;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects.Schema;
 using Gallio.UI.ProgressMonitoring;
@@ -25,36 +23,30 @@ namespace Gallio.Icarus.Controllers
     public class FilterController : IFilterController
     {
         private readonly ITaskManager taskManager;
-        private readonly IFilterService filterService;
-        private readonly IProjectController projectController;
+        private readonly ICommandFactory commandFactory;
 
-        public FilterController(ITaskManager taskManager, IFilterService filterService, 
-            IProjectController projectController)
+        public FilterController(ICommandFactory commandFactory, ITaskManager taskManager)
         {
+            this.commandFactory = commandFactory;
             this.taskManager = taskManager;
-            this.filterService = filterService;
-            this.projectController = projectController;
         }
 
         public void ApplyFilter(string filter)
         {
             var filterSet = FilterUtils.ParseTestFilterSet(filter);
-            var command = new ApplyFilterCommand(filterService, filterSet);
+            var command = commandFactory.CreateApplyFilterCommand(filterSet);
             taskManager.QueueTask(command);
         }
 
         public void DeleteFilter(FilterInfo filterInfo)
         {
-            var command = new DeleteFilterCommand(projectController, filterInfo);
+            var command = commandFactory.CreateDeleteFilterCommand(filterInfo);
             taskManager.QueueTask(command);
         }
 
         public void SaveFilter(string filterName)
         {
-            var command = new SaveFilterCommand(filterService, projectController)
-            {
-                FilterName = filterName
-            };
+            var command = commandFactory.CreateSaveFilterCommand(filterName);
             taskManager.QueueTask(command);
         }
     }

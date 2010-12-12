@@ -30,7 +30,10 @@ namespace Gallio.Icarus.Tests.Commands
         {
             var filterService = MockRepository.GenerateStub<IFilterService>();
             var filterSet = new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>());
-            var cmd = new ApplyFilterCommand(filterService, filterSet);
+            var cmd = new ApplyFilterCommand(filterService)
+            {
+                FilterSet = filterSet
+            };
 
             cmd.Execute(MockProgressMonitor.Instance);
 

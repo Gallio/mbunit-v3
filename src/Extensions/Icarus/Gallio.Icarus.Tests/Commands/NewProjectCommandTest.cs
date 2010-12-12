@@ -20,7 +20,8 @@ using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model;
-using Gallio.Model.Schema;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.ProgressMonitoring;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -29,47 +30,35 @@ namespace Gallio.Icarus.Tests.Commands
     [MbUnit.Framework.Category("Commands"), TestsOn(typeof(NewProjectCommand))]
     internal class NewProjectCommandTest
     {
+        private IProjectController projectController;
+        private ICommandFactory commandFactory;
+        private NewProjectCommand command;
+        private ICommand loadPackageCommand;
+
+        [SetUp]
+        public void SetUp()
+        {
+            projectController = MockRepository.GenerateStub<IProjectController>();
+            commandFactory = MockRepository.GenerateStub<ICommandFactory>();
+            loadPackageCommand = MockRepository.GenerateStub<ICommand>();
+            commandFactory.Stub(cf => cf.CreateLoadPackageCommand()).Return(loadPackageCommand);
+            command = new NewProjectCommand(projectController, commandFactory);
+        }
+
         [Test]
         public void Execute_should_create_new_project()
         {
-            var projectController = MockRepository.GenerateStub<IProjectController>();
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var newProjectCommand = new NewProjectCommand(projectController, testController);
-            var progressMonitor = MockProgressMonitor.Instance;
+            command.Execute(MockProgressMonitor.Instance);
 
-            newProjectCommand.Execute(progressMonitor);
-
-            projectController.AssertWasCalled(pc => pc.NewProject(progressMonitor));
+            projectController.AssertWasCalled(pc => pc.NewProject(Arg<IProgressMonitor>.Is.Anything));
         }
 
         [Test]
         public void Execute_should_reload_test_package()
         {
-            var projectController = MockRepository.GenerateStub<IProjectController>();
-            var testPackage = new TestPackage();
-            projectController.Stub(pc => pc.TestPackage).Return(testPackage);
-            var testRunnerExtensions = new BindingList<string>(new List<string>());
-            projectController.Stub(pc => pc.TestRunnerExtensionSpecifications).Return(testRunnerExtensions);
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var newProjectCommand = new NewProjectCommand(projectController, testController);
-            var progressMonitor = MockProgressMonitor.Instance;
+            command.Execute(NullProgressMonitor.CreateInstance());
 
-            newProjectCommand.Execute(progressMonitor);
-
-            testController.AssertWasCalled(tc => tc.SetTestPackage(testPackage));
-            testController.AssertWasCalled(tc => tc.Explore(progressMonitor, testRunnerExtensions));
-        }
-
-        [Test]
-        public void Execute_should_throw_if_canceled()
-        {
-            var projectController = MockRepository.GenerateStub<IProjectController>();
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var newProjectCommand = new NewProjectCommand(projectController, testController);
-            var progressMonitor = MockProgressMonitor.Instance;
-            progressMonitor.Stub(pm => pm.IsCanceled).Return(true);
-
-            Assert.Throws<OperationCanceledException>(() => newProjectCommand.Execute(progressMonitor));
+            loadPackageCommand.AssertWasCalled(c => c.Execute(Arg<IProgressMonitor>.Is.Anything));
         }
     }
 }

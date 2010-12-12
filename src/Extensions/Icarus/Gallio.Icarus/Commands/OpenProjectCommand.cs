@@ -57,12 +57,11 @@ namespace Gallio.Icarus.Commands
             }
         }
 
-        private void RestoreTestFilter(IProgressMonitor progressMonitor)
+        private void OpenProject(IProgressMonitor progressMonitor)
         {
             using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
             {
-                var restoreFilterCommand = commandFactory.CreateRestoreFilterCommand();
-                restoreFilterCommand.Execute(subProgressMonitor);
+                projectController.OpenProject(subProgressMonitor, ProjectLocation);
             }
         }
 
@@ -75,11 +74,12 @@ namespace Gallio.Icarus.Commands
             }
         }
 
-        private void OpenProject(IProgressMonitor progressMonitor)
+        private void RestoreTestFilter(IProgressMonitor progressMonitor)
         {
             using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
             {
-                projectController.OpenProject(subProgressMonitor, ProjectLocation);
+                var restoreFilterCommand = commandFactory.CreateRestoreFilterCommand("AutoSave");
+                restoreFilterCommand.Execute(subProgressMonitor);
             }
         }
     }

@@ -19,6 +19,7 @@ using System.Reflection;
 using Gallio.Common.IO;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
+using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Properties;
 using Gallio.Icarus.Remoting;
@@ -26,6 +27,7 @@ using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects;
 using Gallio.Runner.Projects.Schema;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Common.Policies;
 using Gallio.UI.Events;
 using MbUnit.Framework;
@@ -170,16 +172,43 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
-        public void SaveProject_Test()
+        public void Save_should_announce_before_saving_the_project()
+        {
+            using (eventAggregator.GetMockRepository().Ordered())
+            {
+                eventAggregator.Expect(ea => ea.Send(Arg.Is(projectController), Arg<SavingProject>.Is.Anything));
+                testProjectManager.Expect(tpm => tpm.SaveProject(Arg<TestProject>.Is.Anything, 
+                    Arg<FileInfo>.Is.Anything));
+            }
+            eventAggregator.Replay();
+
+            projectController.Save("projectName", NullProgressMonitor.CreateInstance());
+
+            eventAggregator.VerifyAllExpectations();
+        }
+
+        [Test]
+        public void Save_should_save_the_project()
         {
             var testProject = new TestProject();
             projectTreeModel.TestProject = testProject;
             const string projectName = "projectName";
             
-            projectController.SaveProject(MockProgressMonitor.Instance, projectName);
+            projectController.Save(projectName, NullProgressMonitor.CreateInstance());
 
             testProjectManager.AssertWasCalled(tpm => tpm.SaveProject(Arg.Is(testProject), 
                 Arg<FileInfo>.Matches(fi => fi.Name == projectName)));
+        }
+
+        [Test]
+        public void An_event_should_be_sent_when_the_project_is_saved()
+        {
+            const string projectLocation = "projectLocation";
+
+            projectController.Save(projectLocation, NullProgressMonitor.CreateInstance());
+
+            eventAggregator.Expect(ea => ea.Send(Arg.Is(projectController), Arg<ProjectSaved>.Matches(e => 
+                e.ProjectLocation == projectLocation)));
         }
 
         [Test]
@@ -192,7 +221,7 @@ namespace Gallio.Icarus.Tests.Controllers
             fileSystem.Stub(fs => fs.DirectoryExists(Paths.IcarusAppDataFolder))
                 .Return(false);
 
-            projectController.SaveProject(progressMonitor, "");
+            projectController.Save("", progressMonitor);
 
             fileSystem.AssertWasCalled(fs => fs.CreateDirectory(Paths.IcarusAppDataFolder));
         }

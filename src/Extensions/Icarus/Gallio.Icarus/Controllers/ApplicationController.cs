@@ -42,8 +42,6 @@ namespace Gallio.Icarus.Controllers
         private readonly IFileSystem fileSystem;
         private readonly IOptionsController optionsController;
         private readonly ITaskManager taskManager;
-        private readonly ITestController testController;
-        private readonly IProjectController projectController;
         private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
         private readonly IEventAggregator eventAggregator;
         private readonly ICommandFactory commandFactory;
@@ -91,8 +89,6 @@ namespace Gallio.Icarus.Controllers
             this.optionsController = optionsController;
             this.fileSystem = fileSystem;
             this.taskManager = taskManager;
-            this.testController = testController;
-            this.projectController = projectController;
             this.unhandledExceptionPolicy = unhandledExceptionPolicy;
             this.eventAggregator = eventAggregator;
             this.commandFactory = commandFactory;
@@ -160,17 +156,17 @@ namespace Gallio.Icarus.Controllers
 
         public void SaveProject(bool queueTask)
         {
-            var cmd = new SaveProjectCommand(projectController) { FileName = projectFileName };
+            var command = commandFactory.CreateSaveProjectCommand(projectFileName);
             if (queueTask)
             {
-                taskManager.QueueTask(cmd);
+                taskManager.QueueTask(command);
             }
             else
             {
                 // we're shutting down, so eat any errors
                 try
                 {
-                    cmd.Execute(NullProgressMonitor.CreateInstance());
+                    command.Execute(NullProgressMonitor.CreateInstance());
                 }
                 catch (Exception ex)
                 {
@@ -183,8 +179,8 @@ namespace Gallio.Icarus.Controllers
         {
             // TODO: DRY, this shouldn't be necessary here
             Title = Paths.DefaultProject;
-            var cmd = new NewProjectCommand(projectController, testController);
-            taskManager.QueueTask(cmd);
+            var command = commandFactory.CreateNewProjectCommand();
+            taskManager.QueueTask(command);
         }
 
         public void Shutdown()
@@ -196,20 +192,17 @@ namespace Gallio.Icarus.Controllers
 
         public void Handle(RunStarted @event)
         {
-            EventHandlerPolicy.SafeInvoke(RunStarted, this, 
-                System.EventArgs.Empty);
+            EventHandlerPolicy.SafeInvoke(RunStarted, this, System.EventArgs.Empty);
         }
 
         public void Handle(RunFinished @event)
         {
-            EventHandlerPolicy.SafeInvoke(RunFinished, this, 
-                System.EventArgs.Empty);
+            EventHandlerPolicy.SafeInvoke(RunFinished, this, System.EventArgs.Empty);
         }
 
         public void Handle(ExploreFinished @event)
         {
-            EventHandlerPolicy.SafeInvoke(ExploreFinished, this,
-                System.EventArgs.Empty);
+            EventHandlerPolicy.SafeInvoke(ExploreFinished, this, System.EventArgs.Empty);
         }
 
         public void Handle(TestsFailed @event)

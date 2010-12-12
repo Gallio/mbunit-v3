@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;
@@ -23,30 +22,27 @@ namespace Gallio.Icarus.Commands
     internal class NewProjectCommand : ICommand
     {
         private readonly IProjectController projectController;
-        private readonly ITestController testController;
+        private readonly ICommandFactory commandFactory;
 
-        public NewProjectCommand(IProjectController projectController, ITestController testController)
+        public NewProjectCommand(IProjectController projectController, ICommandFactory commandFactory)
         {
             this.projectController = projectController;
-            this.testController = testController;
+            this.commandFactory = commandFactory;
         }
 
         public void Execute(IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask("Creating new project.", 100))
+            using (progressMonitor.BeginTask("Creating new project", 100))
             {
-                // create a new project
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
-                    projectController.NewProject(subProgressMonitor);
-
-                if (progressMonitor.IsCanceled)
-                    throw new OperationCanceledException();
-
-                // reload
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(20))
                 {
-                    testController.SetTestPackage(projectController.TestPackage);
-                    testController.Explore(subProgressMonitor, projectController.TestRunnerExtensionSpecifications);
+                    projectController.NewProject(subProgressMonitor);
+                }
+
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(80))
+                {
+                    var command = commandFactory.CreateLoadPackageCommand();
+                    command.Execute(subProgressMonitor);
                 }
             }
         }

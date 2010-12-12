@@ -49,7 +49,8 @@ namespace Gallio.Icarus.Tests.Commands
             loadPackageCommand = MockRepository.GenerateStub<ICommand>();
             commandFactory.Stub(cf => cf.CreateLoadPackageCommand()).Return(loadPackageCommand);
             restoreFilterCommand = MockRepository.GenerateStub<ICommand>();
-            commandFactory.Stub(cf => cf.CreateRestoreFilterCommand()).Return(restoreFilterCommand);
+            commandFactory.Stub(cf => cf.CreateRestoreFilterCommand(Arg<string>.Is.Anything))
+                .Return(restoreFilterCommand);
 
             openProjectCommand = new OpenProjectCommand(projectController, eventAggregator, commandFactory)
             {

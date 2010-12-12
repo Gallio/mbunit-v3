@@ -16,9 +16,9 @@
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Tests.Utilities;
-using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects.Schema;
+using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -31,13 +31,17 @@ namespace Gallio.Icarus.Tests.Commands
         public void Execute_should_call_DeleteFilter_on_ProjectController()
         {
             var projectController = MockRepository.GenerateStub<IProjectController>();
-            var filterInfo = new FilterInfo("None", new NoneFilter<ITestDescriptor>().ToFilterExpr());
-            var command = new DeleteFilterCommand(projectController, filterInfo);
-            var progressMonitor = MockProgressMonitor.Instance;
+            var filterExpr = new NoneFilter<ITestDescriptor>().ToFilterExpr();
+            var filterInfo = new FilterInfo("None", filterExpr);
+            var command = new DeleteFilterCommand(projectController)
+            {
+                FilterInfo = filterInfo
+            };
 
-            command.Execute(progressMonitor);
+            command.Execute(MockProgressMonitor.Instance);
 
-            projectController.AssertWasCalled(pc => pc.DeleteFilter(progressMonitor, filterInfo));
+            projectController.AssertWasCalled(pc => pc.DeleteFilter(Arg<IProgressMonitor>.Is.Anything, 
+                Arg.Is(filterInfo)));
         }
     }
 }

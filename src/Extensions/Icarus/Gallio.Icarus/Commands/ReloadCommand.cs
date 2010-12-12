@@ -15,6 +15,7 @@
 
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
+using Gallio.Icarus.Projects;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Events;
 using Gallio.UI.ProgressMonitoring;
@@ -23,17 +24,13 @@ namespace Gallio.Icarus.Commands
 {
     public class ReloadCommand : ICommand
     {
-        private readonly ITestController testController;
-        private readonly IProjectController projectController;
         private readonly IEventAggregator eventAggregator;
         private readonly IOptionsController optionsController;
         private readonly ICommandFactory commandFactory;
 
-        public ReloadCommand(ITestController testController, IProjectController projectController, IEventAggregator eventAggregator, 
-            IOptionsController optionsController, ICommandFactory commandFactory)
+        public ReloadCommand(ICommandFactory commandFactory, IEventAggregator eventAggregator, 
+            IOptionsController optionsController)
         {
-            this.testController = testController;
-            this.projectController = projectController;
             this.eventAggregator = eventAggregator;
             this.optionsController = optionsController;
             this.commandFactory = commandFactory;
@@ -43,25 +40,34 @@ namespace Gallio.Icarus.Commands
         {
             using (progressMonitor.BeginTask("Reloading", 100))
             {
-                eventAggregator.Send(this, new Reloading());
-
-                ExploreTests(progressMonitor);
-
+                SaveCurrentState(progressMonitor);
+                LoadPackage(progressMonitor);
                 RestoreTestFilter(progressMonitor);
 
-                if (optionsController.RunTestsAfterReload == false)
-                    return;
-
-                RunTests(progressMonitor);
+                if (optionsController.RunTestsAfterReload)
+                    RunTests(progressMonitor);
             }
         }
 
-        private void ExploreTests(IProgressMonitor progressMonitor)
+        private void SaveCurrentState(IProgressMonitor progressMonitor)
         {
-            var workUnits = optionsController.RunTestsAfterReload ? 45 : 95;
+            eventAggregator.Send(this, new Reloading());
+            eventAggregator.Send(this, new UserOptionsLoaded());
+            
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
+            {
+                var command = commandFactory.CreateSaveFilterCommand("AutoSave");
+                command.Execute(subProgressMonitor);
+            }
+        }
+
+        private void LoadPackage(IProgressMonitor progressMonitor)
+        {
+            var workUnits = optionsController.RunTestsAfterReload ? 35 : 85;
             using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(workUnits))
             {
-                testController.Explore(subProgressMonitor, projectController.TestRunnerExtensionSpecifications);
+                var command = commandFactory.CreateLoadPackageCommand();
+                command.Execute(subProgressMonitor);
             }
         }
 
@@ -69,7 +75,7 @@ namespace Gallio.Icarus.Commands
         {
             using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
             {
-                var restoreFilterCommand = commandFactory.CreateRestoreFilterCommand();
+                var restoreFilterCommand = commandFactory.CreateRestoreFilterCommand("AutoSave");
                 restoreFilterCommand.Execute(subProgressMonitor);
             }
         }

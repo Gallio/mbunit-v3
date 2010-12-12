@@ -14,13 +14,16 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Projects
 {
-    public interface IUserOptionsController
+    public interface IProjectUserOptionsController
     {
         IEnumerable<string> CollapsedNodes { get; }
         string TreeViewCategory { get; }
         void SetCollapsedNodes(IEnumerable<string> collapsedNodes);
+        void LoadUserOptions(string projectLocation);
+        void SaveUserOptions(string projectName, IProgressMonitor subProgressMonitor);
     }
 }

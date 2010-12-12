@@ -61,9 +61,12 @@ namespace Gallio.Icarus.Tests.Commands
         [Test]
         public void CreateRestoreFilterCommand()
         {
-            commandFactory.CreateRestoreFilterCommand();
+            StubCommand<RestoreFilterCommand>(new RestoreFilterCommand(null, null));
+            const string filterName = "filterName";
 
-            AssertCommandResolved<RestoreFilterCommand>();
+            var command = (RestoreFilterCommand)commandFactory.CreateRestoreFilterCommand(filterName);
+
+            Assert.That(command.FilterName, Is.EqualTo(filterName));
         }
 
         private void AssertCommandResolved<T>()
