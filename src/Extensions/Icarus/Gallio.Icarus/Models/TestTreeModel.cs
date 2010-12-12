@@ -45,7 +45,7 @@ namespace Gallio.Icarus.Models
         {
             var handles = new List<ComponentHandle<ITreeBuilder, TreeBuilderTraits>>(componentHandles);
             
-            handles.Sort((l, r) => l.GetTraits().Priority.CompareTo(r.GetTraits().Priority));
+            handles.Sort((left, right) => right.GetTraits().Priority.CompareTo(left.GetTraits().Priority));
             
             foreach (var handle in handles)
                 yield return handle.GetComponent();
