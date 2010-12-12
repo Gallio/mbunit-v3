@@ -49,5 +49,10 @@ namespace Gallio.Icarus
         {
             return Id;
         }
+
+        private void closeToolStripMenuItem_Click(object sender, System.EventArgs e)
+        {
+            Close();
+        }
     }
 }
