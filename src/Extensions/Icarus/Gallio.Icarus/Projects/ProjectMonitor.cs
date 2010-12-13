@@ -15,57 +15,90 @@
 
 using System.IO;
 using System.Timers;
+using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Events;
 using Gallio.UI.Events;
 
 namespace Gallio.Icarus.Projects
 {
-    public class ProjectMonitor : IProjectMonitor, Handles<ProjectLoaded>, Handles<ApplicationShutdown>
-    {
-        private readonly IEventAggregator eventAggregator;
-        private FileSystemWatcher fileSystemWatcher;
-        private Timer timer;
+	public class ProjectMonitor : IProjectMonitor, Handles<ProjectLoaded>, Handles<ApplicationShutdown>,
+		Handles<SavingProject>
+	{
+		private readonly IEventAggregator eventAggregator;
+		private FileSystemWatcher fileSystemWatcher;
+		private Timer timer;
+		private bool savingProject;
 
-        public ProjectMonitor(IEventAggregator eventAggregator)
-        {
-            this.eventAggregator = eventAggregator;
-        }
+		public ProjectMonitor(IEventAggregator eventAggregator)
+		{
+			this.eventAggregator = eventAggregator;
+		}
 
-        public void Handle(ProjectLoaded @event)
-        {
-            var directoryName = Path.GetDirectoryName(@event.ProjectLocation);
+		public void Handle(ProjectLoaded @event)
+		{
+			TidyUp();
 
-            if (fileSystemWatcher != null)
-            {
-                timer.Dispose();
-                fileSystemWatcher.Dispose();
-            }
+			CreateFileWatcher(@event.ProjectLocation);
+		
+			SetupTimer(@event);
+		}
 
-            fileSystemWatcher = new FileSystemWatcher(directoryName)
-            {
-                EnableRaisingEvents = true,
-                NotifyFilter = NotifyFilters.LastWrite,
-                Filter = Path.GetFileName(@event.ProjectLocation),
-                IncludeSubdirectories = false
-            };
+		private void SetupTimer(ProjectLoaded @event)
+		{
+			timer = new Timer(1000)
+			{
+				Enabled = false,
+				AutoReset = false
+			};
+			timer.Elapsed += (se, ev) =>
+			{
+				if (savingProject == false)
+				{
+					var projectChanged = new ProjectChanged(@event.ProjectLocation);
+					eventAggregator.Send(this, projectChanged);
+				}
+				else
+				{
+					savingProject = false;
+				}
+			};
+		}
 
-            var projectChanged = new ProjectChanged(@event.ProjectLocation);
-            timer = new Timer(1000)
-            {
-                Enabled = false,
-                AutoReset = false
-            };
-            fileSystemWatcher.Changed += (s, e) => timer.Enabled = true;
-            timer.Elapsed += (se, ev) => eventAggregator.Send(this, projectChanged);
-        }
+		private void CreateFileWatcher(string projectLocation)
+		{
+			var directoryName = Path.GetDirectoryName(projectLocation);
 
-        public void Handle(ApplicationShutdown @event)
-        {
-            if (fileSystemWatcher == null) 
-                return;
+			if (directoryName == null)
+				return;
 
-            fileSystemWatcher.EnableRaisingEvents = false;
-            fileSystemWatcher.Dispose();
-        }
-    }
+			fileSystemWatcher = new FileSystemWatcher(directoryName)
+			{
+				EnableRaisingEvents = true,
+				NotifyFilter = NotifyFilters.LastWrite,
+				Filter = Path.GetFileName(projectLocation),
+				IncludeSubdirectories = false
+			};
+
+			fileSystemWatcher.Changed += (s, e) => timer.Enabled = true;
+		}
+
+		private void TidyUp()
+		{
+			if (fileSystemWatcher != null)
+			{
+				timer.Dispose();
+				fileSystemWatcher.Dispose();
+			}
+		}
+
+		public void Handle(ApplicationShutdown @event)
+		{
+			TidyUp();
+		}
+
+		public void Handle(SavingProject @event)
+		{
+			savingProject = true;
+		}
+	}
 }
