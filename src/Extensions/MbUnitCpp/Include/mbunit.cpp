@@ -586,31 +586,9 @@ namespace mbunit
 	{
 	}
 	
-    void TestLogRecorder::Write(const char* str) 
-    {
-		test->AppendToTestLog(String(str));
-    }
-
-    void TestLogRecorder::Write(const wchar_t* wstr)
-    {
-		test->AppendToTestLog(String(wstr));
-    }
-
     void TestLogRecorder::Write(const String& str)
     {
 		test->AppendToTestLog(str);
-    }
-
-    void TestLogRecorder::WriteLine(const char* str)
-    {
-		test->AppendToTestLog(String(str));
-		test->AppendToTestLog(String(L"\r\n"));
-    }
-
-    void TestLogRecorder::WriteLine(const wchar_t* wstr)
-    {
-		test->AppendToTestLog(String(wstr));
-		test->AppendToTestLog(String(L"\r\n"));
     }
 
     void TestLogRecorder::WriteLine(const String& str)

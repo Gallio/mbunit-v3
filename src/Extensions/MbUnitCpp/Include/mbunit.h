@@ -181,11 +181,7 @@ namespace mbunit
 
 		public:
 		TestLogRecorder(Test* test);
-		void Write(const char* str);
-		void Write(const wchar_t* wstr);
 		void Write(const String& str);
-		void WriteLine(const char* str);
-		void WriteLine(const wchar_t* wstr);
 		void WriteLine(const String& str);
 		void WriteFormat(const char* format, ...);
 		void WriteFormat(const wchar_t* format, ...);
