@@ -149,13 +149,6 @@ namespace mbunit
 		int DurationMilliseconds;
 	};
 
-    #define _AssertionFramework_Declare(MESSAGE_ARG) \
-        void Fail(MESSAGE_ARG); \
-		template<typename T> void IsTrue(T actualValue, MESSAGE_ARG); \
-		template<typename T> void IsFalse(T actualValue, MESSAGE_ARG); \
-		template<typename T> void AreEqual(T expectedValue, T actualValue, MESSAGE_ARG); \
-		template<typename T> void AreApproximatelyEqual(T expectedValue, T actualValue, T delta, MESSAGE_ARG);
-
     // The MbUnitCpp Assertion Framework.
     class AssertionFramework
     {
@@ -169,9 +162,16 @@ namespace mbunit
 
         public:
         AssertionFramework(Test* test);
-		_AssertionFramework_Declare(const char* message = 0)
-		_AssertionFramework_Declare(const wchar_t* message)
-		_AssertionFramework_Declare(const String& message)
+        void Fail(const String& message);
+		void Fail() { Fail(""); }
+		void IsTrue(bool actualValue, const String& message);
+		void IsTrue(bool actualValue) { IsTrue(actualValue, ""); }
+		void IsFalse(bool actualValue, const String& message);
+		void IsFalse(bool actualValue) { IsFalse(actualValue, ""); }
+		template<typename T> void AreEqual(T expectedValue, T actualValue, const String& message);
+		template<typename T> void AreEqual(T expectedValue, T actualValue) { AreEqual<T>(expectedValue, actualValue, ""); }
+		template<typename T> void AreApproximatelyEqual(T expectedValue, T actualValue, T delta, const String& message);
+		template<typename T> void AreApproximatelyEqual(T expectedValue, T actualValue, T delta) { AreApproximatelyEqual<T>(expectedValue, actualValue, delta, ""); }
     };
 
 	// Provides an access to the Gallio test log.

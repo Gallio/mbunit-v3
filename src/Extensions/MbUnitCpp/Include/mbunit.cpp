@@ -706,17 +706,14 @@ namespace mbunit
 		    throw failure; \
         }
 
-    _AssertionFramework_Fail(const wchar_t*)
-    _AssertionFramework_Fail(const char*)
     _AssertionFramework_Fail(const String&)
 
 	// Asserts that the specified boolean value is true.
 	#define _AssertionFramework_IsTrue(MESSAGETYPE) \
-    	_Impl_AssertionFramework_IsTrue(bool, !actualValue, MESSAGETYPE) \
-	    _Impl_AssertionFramework_IsTrue(int, actualValue == 0, MESSAGETYPE)
+    	_Impl_AssertionFramework_IsTrue(bool, !actualValue, MESSAGETYPE)
 
     #define _Impl_AssertionFramework_IsTrue(TYPE, CONDITION, MESSAGETYPE) \
-		template<> void AssertionFramework::IsTrue<TYPE>(TYPE actualValue, MESSAGETYPE message) \
+		void AssertionFramework::IsTrue(TYPE actualValue, MESSAGETYPE message) \
 		{ \
 			IncrementAssertCount(); \
 			if (CONDITION) \
@@ -729,17 +726,14 @@ namespace mbunit
 			} \
 		}
 
-    _AssertionFramework_IsTrue(const wchar_t*)
-    _AssertionFramework_IsTrue(const char*)
     _AssertionFramework_IsTrue(const String&)
 
 	// Asserts that the specified boolean value is false.
 	#define _AssertionFramework_IsFalse(MESSAGETYPE) \
-    	_Impl_AssertionFramework_IsFalse(bool, actualValue, MESSAGETYPE) \
-	    _Impl_AssertionFramework_IsFalse(int, actualValue != 0, MESSAGETYPE)
+    	_Impl_AssertionFramework_IsFalse(bool, actualValue, MESSAGETYPE)
 
 	#define _Impl_AssertionFramework_IsFalse(TYPE, CONDITION, MESSAGETYPE) \
-		template<> void AssertionFramework::IsFalse<TYPE>(TYPE actualValue, MESSAGETYPE message) \
+		void AssertionFramework::IsFalse(TYPE actualValue, MESSAGETYPE message) \
 		{ \
 			IncrementAssertCount(); \
 			if (CONDITION) \
@@ -752,8 +746,6 @@ namespace mbunit
 			} \
 		}
 
-    _AssertionFramework_IsFalse(const wchar_t*)
-    _AssertionFramework_IsFalse(const char*)
     _AssertionFramework_IsFalse(const String&)
 
 	// Asserts that the expected value and the actual value are equivalent.
@@ -795,8 +787,6 @@ namespace mbunit
 			} \
 		}
 
-    _AssertionFramework_AreEqual(const wchar_t*)
-    _AssertionFramework_AreEqual(const char*)
     _AssertionFramework_AreEqual(const String&)
 
     #ifdef _AFX
@@ -836,8 +826,6 @@ namespace mbunit
 			} \
 		}
 
-    _AssertionFramework_AreApproximatelyEqual(const wchar_t*)
-    _AssertionFramework_AreApproximatelyEqual(const char*)
     _AssertionFramework_AreApproximatelyEqual(const String&)
 
 	// ======================================

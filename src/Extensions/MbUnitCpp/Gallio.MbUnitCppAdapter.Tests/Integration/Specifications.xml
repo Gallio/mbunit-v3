@@ -12,16 +12,24 @@
   <Test name="/Outcome/Assert_Fail_with_custom_wide_message" expectedStatus="Failed" expectedAssertCount="1" expectedFailureLog="Boom!" />
   <Test name="/Outcome/Assert_Fail_with_custom_String_message" expectedStatus="Failed" expectedAssertCount="1" expectedFailureLog="Boom!" />
 
-  <Test name="/Logic" expectedStatus="Failed" expectedAssertCount="10" />
+  <Test name="/Logic" expectedStatus="Failed" expectedAssertCount="18" />
   <Test name="/Logic/Assert_IsTrue_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
   <Test name="/Logic/Assert_IsTrue_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
   <Test name="/Logic/Assert_IsTrue_as_int_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
   <Test name="/Logic/Assert_IsTrue_as_int_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="/Logic/Assert_IsTrue_constant_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="/Logic/Assert_IsTrue_constant_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="/Logic/Assert_IsTrue_as_constant_int_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="/Logic/Assert_IsTrue_as_constant_int_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
   <Test name="/Logic/Assert_IsTrue_should_fail_with_custom_message" expectedStatus="Failed" expectedAssertCount="1" expectedFailureLog="This is a custom message." />
   <Test name="/Logic/Assert_IsFalse_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
   <Test name="/Logic/Assert_IsFalse_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
   <Test name="/Logic/Assert_IsFalse_as_int_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
   <Test name="/Logic/Assert_IsFalse_as_int_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="/Logic/Assert_IsFalse_constant_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="/Logic/Assert_IsFalse_constant_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="/Logic/Assert_IsFalse_as_constant_int_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="/Logic/Assert_IsFalse_as_constant_int_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
   <Test name="/Logic/Assert_IsFalse_should_fail_with_custom_message" expectedStatus="Failed" expectedAssertCount="1" expectedFailureLog="This is a custom message." />
   
   <Test name="/Equality" expectedStatus="Failed" expectedAssertCount="30" />
