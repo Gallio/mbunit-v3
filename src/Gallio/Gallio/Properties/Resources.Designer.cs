@@ -160,7 +160,7 @@ namespace Gallio.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Internationalized attribute strings must supply a resource.
+        ///   Looks up a localized string similar to Localized attribute strings must supply a resource.
         /// </summary>
         internal static string CommandLineArgumentAttribute_NoResourceException {
             get {
@@ -169,7 +169,7 @@ namespace Gallio.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Internationalized attribute string does not point to a string resource.
+        ///   Looks up a localized string similar to Localized attribute string does not point to a string resource.
         /// </summary>
         internal static string CommandLineArgumentAttribute_ResourceNotAStringException {
             get {
@@ -178,7 +178,7 @@ namespace Gallio.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Internationalized attribute string not found in resource named.
+        ///   Looks up a localized string similar to Localized attribute string not found in resource named.
         /// </summary>
         internal static string CommandLineArgumentAttribute_ResourceNotFoundException {
             get {

@@ -74,8 +74,16 @@ namespace Gallio.Runtime.ConsoleSupport
         /// </summary>
         public string ShortName
         {
-            get { return GetResourceLookup(shortName); }
+            get { return shortName; }
             set { shortName = value; }
+        }
+
+        /// <summary>
+        /// The localized short name of the argument.
+        /// </summary>
+        public string LocalizedShortName
+        {
+            get { return GetResourceLookup(shortName); }
         }
 
         /// <summary>
@@ -91,8 +99,16 @@ namespace Gallio.Runtime.ConsoleSupport
         /// </summary>
         public string LongName
         {
-            get { return GetResourceLookup(longName); }
+            get { return longName; }
             set { longName = value; }
+        }
+
+        /// <summary>
+        /// The localized long name of the argument.
+        /// </summary>
+        public string LocalizedLongName
+        {
+            get { return GetResourceLookup(longName); }
         }
 
         /// <summary>
@@ -100,17 +116,33 @@ namespace Gallio.Runtime.ConsoleSupport
         /// </summary>
 		public string Description
 		{
-			get { return GetResourceLookup(description); }
+			get { return description; }
             set { description = value; }
 		}
+
+        /// <summary>
+        /// The localized description of the argument.
+        /// </summary>
+        public string LocalizedDescription
+        {
+            get { return GetResourceLookup(description); }
+        }
 
         ///<summary>
         /// The description of the argument value.
         ///</summary>
         public string ValueLabel
         {
-            get { return GetResourceLookup(valueLabel); }
+            get { return valueLabel; }
             set { valueLabel = value; }
+        }
+
+        ///<summary>
+        /// The localized description of the argument value.
+        ///</summary>
+        public string LocalizedValueLabel
+        {
+            get { return GetResourceLookup(valueLabel); }
         }
 
         /// <summary>
@@ -118,18 +150,16 @@ namespace Gallio.Runtime.ConsoleSupport
         /// </summary>
         public string[] Synonyms
         {
-            get 
-            {
-                if (synonyms == null)
-                    return synonyms;
-
-                for (int x = synonyms.GetLowerBound(0); x <= synonyms.GetUpperBound(0); x++)
-                {
-                    synonyms[x] = GetResourceLookup(synonyms[x]);
-                }
-                return synonyms;
-            }
+            get { return synonyms; }
             set { synonyms = value; } 
+        }
+
+        /// <summary>
+        /// Gets an array of localized additional synonyms that are silently accepted.
+        /// </summary>
+        public string[] LocalizedSynonyms
+        {
+            get { return GenericCollectionUtils.ConvertAllToArray(synonyms, GetResourceLookup); }
         }
 
         /// <summary>
@@ -142,26 +172,20 @@ namespace Gallio.Runtime.ConsoleSupport
         }
 
         /// <summary>
-        /// Gets or sets a resource to use for internationalization of strings
+        /// Gets or sets a resource to use for localization of strings
         /// </summary>
         private string GetResourceLookup(string resourceName)
         {
-            if (resourceType == null && resourceName != null && resourceName.StartsWith("#"))
-            {
-                throw new InvalidOperationException(Resources.CommandLineArgumentAttribute_NoResourceException);
-            }
-
-            if (resourceType == null)
-            {
-                return resourceName;
-            }
-
             if (resourceName == null)
             {
-                return resourceName;
+                return null;
             }
+
             if (resourceName.StartsWith("#"))
             {
+                if (resourceType == null)
+                    throw new InvalidOperationException(Resources.CommandLineArgumentAttribute_NoResourceException);
+
                 PropertyInfo property = resourceType.GetProperty(resourceName.Substring(1), BindingFlags.NonPublic | BindingFlags.Static);
                 if (property == null)
                 {

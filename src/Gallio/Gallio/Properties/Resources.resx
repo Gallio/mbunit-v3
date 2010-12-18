@@ -307,12 +307,12 @@
     <value>Dictionary is read-only.</value>
   </data>
   <data name="CommandLineArgumentAttribute_NoResourceException" xml:space="preserve">
-    <value>Internationalized attribute strings must supply a resource</value>
+    <value>Localized attribute strings must supply a resource</value>
   </data>
   <data name="CommandLineArgumentAttribute_ResourceNotAStringException" xml:space="preserve">
-    <value>Internationalized attribute string does not point to a string resource</value>
+    <value>Localized attribute string does not point to a string resource</value>
   </data>
   <data name="CommandLineArgumentAttribute_ResourceNotFoundException" xml:space="preserve">
-    <value>Internationalized attribute string not found in resource named</value>
+    <value>Localized attribute string not found in resource named</value>
   </data>
 </root>
