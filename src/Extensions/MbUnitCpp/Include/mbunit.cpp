@@ -71,6 +71,9 @@ namespace mbunit
 
 	void String::AppendImpl(const wchar_t* wstr, int n)
 	{
+        if (n < 0)
+            n = wcslen(wstr);
+
 		if ((n > 0) || (length < 0))
 		{
             if (length < 0)
@@ -130,6 +133,10 @@ namespace mbunit
 	_Impl_StringAppend(double, AppendFormat("%Lf", arg))
 	_Impl_StringAppend(char*, AppendImpl(arg))
 	_Impl_StringAppend(wchar_t*, AppendImpl(arg, (int)wcslen(arg)))
+
+    #ifdef _AFX
+	_Impl_StringAppend(CString, AppendImpl(arg.GetBuffer()))
+    #endif
 
 	String& String::AppendFormat(const char* format, ...)
 	{
@@ -671,87 +678,46 @@ namespace mbunit
 	}
 
     // Assertion that makes inconditionally the test fail.
-    #define _AssertionFramework_Fail(MESSAGETYPE) \
-        _Impl_AssertionFramework_Fail(MESSAGETYPE)
-
-    #define _Impl_AssertionFramework_Fail(MESSAGETYPE) \
-        void AssertionFramework::Fail(MESSAGETYPE message) \
-        { \
-            IncrementAssertCount(); \
-		    AssertionFailure failure; \
-		    failure.DescriptionId = AddNewString(L"An assertion failed."); \
-		    failure.MessageId = AddNewString(message); \
-		    throw failure; \
-        }
-
-    _AssertionFramework_Fail(const String&)
+    void AssertionFramework::Fail(const String& message)
+    {
+        IncrementAssertCount();
+		AssertionFailure failure;
+		failure.DescriptionId = AddNewString(L"An assertion failed.");
+		failure.MessageId = AddNewString(message);
+		throw failure;
+    }
 
 	// Asserts that the specified boolean value is true.
-	#define _AssertionFramework_IsTrue(MESSAGETYPE) \
-    	_Impl_AssertionFramework_IsTrue(bool, !actualValue, MESSAGETYPE)
-
-    #define _Impl_AssertionFramework_IsTrue(TYPE, CONDITION, MESSAGETYPE) \
-		void AssertionFramework::IsTrue(TYPE actualValue, MESSAGETYPE message) \
-		{ \
-			IncrementAssertCount(); \
-			if (CONDITION) \
-			{ \
-				AssertionFailure failure; \
-				failure.DescriptionId = AddNewString(L"Expected value to be true."); \
-				failure.Actual.Set(AddNewString(L"false"), TypeBoolean); \
-				failure.MessageId = AddNewString(message); \
-				throw failure; \
-			} \
+	void AssertionFramework::IsTrue(bool actualValue, const String& message)
+	{
+		IncrementAssertCount();
+		if (!actualValue)
+		{
+			AssertionFailure failure;
+			failure.DescriptionId = AddNewString(L"Expected value to be true.");
+			failure.Actual.Set(AddNewString(L"false"), TypeBoolean);
+			failure.MessageId = AddNewString(message);
+			throw failure;
 		}
-
-    _AssertionFramework_IsTrue(const String&)
+	}
 
 	// Asserts that the specified boolean value is false.
-	#define _AssertionFramework_IsFalse(MESSAGETYPE) \
-    	_Impl_AssertionFramework_IsFalse(bool, actualValue, MESSAGETYPE)
-
-	#define _Impl_AssertionFramework_IsFalse(TYPE, CONDITION, MESSAGETYPE) \
-		void AssertionFramework::IsFalse(TYPE actualValue, MESSAGETYPE message) \
-		{ \
-			IncrementAssertCount(); \
-			if (CONDITION) \
-			{ \
-				AssertionFailure failure; \
-				failure.DescriptionId = AddNewString(L"Expected value to be false."); \
-				failure.Actual.Set(AddNewString(L"true"), TypeBoolean); \
-				failure.MessageId = AddNewString(message); \
-				throw failure; \
-			} \
+	void AssertionFramework::IsFalse(bool actualValue, const String& message)
+	{
+		IncrementAssertCount();
+		if (actualValue)
+		{
+			AssertionFailure failure;
+			failure.DescriptionId = AddNewString(L"Expected value to be false.");
+			failure.Actual.Set(AddNewString(L"true"), TypeBoolean);
+			failure.MessageId = AddNewString(message);
+			throw failure;
 		}
-
-    _AssertionFramework_IsFalse(const String&)
+	}
 
 	// Asserts that the expected value and the actual value are equivalent.
-	#define _AssertionFramework_AreEqual(MESSAGETYPE) \
-        _Impl_AssertionFramework_AreEqual(bool, expectedValue != actualValue, TypeBoolean, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreEqual(char, expectedValue != actualValue, TypeChar, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreEqual(wchar_t, expectedValue != actualValue, TypeChar, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreEqual(unsigned char, expectedValue != actualValue, TypeByte, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreEqual(short, expectedValue != actualValue, TypeInt16, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreEqual(unsigned short, expectedValue != actualValue, TypeUInt16, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreEqual(int, expectedValue != actualValue, TypeInt32, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreEqual(unsigned int, expectedValue != actualValue, TypeUInt32, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreEqual(long, expectedValue != actualValue, TypeUInt64, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreEqual(unsigned long, expectedValue != actualValue, TypeUInt64, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreEqual(long long, expectedValue != actualValue, TypeUInt64, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreEqual(unsigned long long, expectedValue != actualValue, TypeUInt64, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreEqual(float, expectedValue != actualValue, TypeSingle, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreEqual(double, expectedValue != actualValue, TypeDouble, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreEqual(char*, strcmp(expectedValue, actualValue) != 0, TypeString, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreEqual(const char*, strcmp(expectedValue, actualValue) != 0, TypeString, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreEqual(wchar_t*, wcscmp(expectedValue, actualValue) != 0, TypeString, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreEqual(const wchar_t*, wcscmp(expectedValue, actualValue) != 0, TypeString, MESSAGETYPE)
-
-	#define _AssertionFramework_AreEqual_AFX(MESSAGETYPE) \
-    	_Impl_AssertionFramework_AreEqual(CString, (expectedValue).Compare(actualValue) != 0, TypeString, MESSAGETYPE) \
-	
-    #define _Impl_AssertionFramework_AreEqual(TYPE, CONDITION, MANAGEDTYPE, MESSAGETYPE) \
-		template<> void AssertionFramework::AreEqual<TYPE>(TYPE expectedValue, TYPE actualValue, MESSAGETYPE message) \
+    #define _Impl_AssertionFramework_AreEqual(TYPE, CONDITION, MANAGEDTYPE) \
+		template<> void AssertionFramework::AreEqual<TYPE>(TYPE expectedValue, TYPE actualValue, const String& message) \
 		{ \
 			IncrementAssertCount(); \
 			if (CONDITION) \
@@ -765,31 +731,71 @@ namespace mbunit
 			} \
 		}
 
-    _AssertionFramework_AreEqual(const String&)
+    _Impl_AssertionFramework_AreEqual(bool, expectedValue != actualValue, TypeBoolean)
+    _Impl_AssertionFramework_AreEqual(char, expectedValue != actualValue, TypeChar)
+    _Impl_AssertionFramework_AreEqual(wchar_t, expectedValue != actualValue, TypeChar)
+    _Impl_AssertionFramework_AreEqual(unsigned char, expectedValue != actualValue, TypeByte)
+    _Impl_AssertionFramework_AreEqual(short, expectedValue != actualValue, TypeInt16)
+    _Impl_AssertionFramework_AreEqual(unsigned short, expectedValue != actualValue, TypeUInt16)
+    _Impl_AssertionFramework_AreEqual(int, expectedValue != actualValue, TypeInt32)
+    _Impl_AssertionFramework_AreEqual(unsigned int, expectedValue != actualValue, TypeUInt32)
+    _Impl_AssertionFramework_AreEqual(long, expectedValue != actualValue, TypeUInt64)
+    _Impl_AssertionFramework_AreEqual(unsigned long, expectedValue != actualValue, TypeUInt64)
+    _Impl_AssertionFramework_AreEqual(long long, expectedValue != actualValue, TypeUInt64)
+    _Impl_AssertionFramework_AreEqual(unsigned long long, expectedValue != actualValue, TypeUInt64)
+    _Impl_AssertionFramework_AreEqual(float, expectedValue != actualValue, TypeSingle)
+    _Impl_AssertionFramework_AreEqual(double, expectedValue != actualValue, TypeDouble)
+    _Impl_AssertionFramework_AreEqual(char*, strcmp(expectedValue, actualValue) != 0, TypeString)
+    _Impl_AssertionFramework_AreEqual(const char*, strcmp(expectedValue, actualValue) != 0, TypeString)
+    _Impl_AssertionFramework_AreEqual(wchar_t*, wcscmp(expectedValue, actualValue) != 0, TypeString)
+    _Impl_AssertionFramework_AreEqual(const wchar_t*, wcscmp(expectedValue, actualValue) != 0, TypeString)
 
     #ifdef _AFX
-    _AssertionFramework_AreEqual_AFX(const wchar_t*)
-    _AssertionFramework_AreEqual_AFX(const char*)
+    _Impl_AssertionFramework_AreEqual(CString, (expectedValue).Compare(actualValue) != 0, TypeString)
+    #endif
+
+	// Asserts that the unexpected value and the actual value are not equivalent.
+    #define _Impl_AssertionFramework_AreNotEqual(TYPE, CONDITION, MANAGEDTYPE) \
+		template<> void AssertionFramework::AreNotEqual<TYPE>(TYPE unexpectedValue, TYPE actualValue, const String& message) \
+		{ \
+			IncrementAssertCount(); \
+			if (CONDITION) \
+			{ \
+				AssertionFailure failure; \
+				failure.DescriptionId = AddNewString(L"Expected values to be non-equal."); \
+				failure.Unexpected.Set(AddNewStringFrom(unexpectedValue), MANAGEDTYPE); \
+				failure.Actual.Set(AddNewStringFrom(actualValue), MANAGEDTYPE); \
+				failure.MessageId = AddNewString(message); \
+				throw failure; \
+			} \
+		}
+
+    _Impl_AssertionFramework_AreNotEqual(bool, unexpectedValue == actualValue, TypeBoolean)
+    _Impl_AssertionFramework_AreNotEqual(char, unexpectedValue == actualValue, TypeChar)
+    _Impl_AssertionFramework_AreNotEqual(wchar_t, unexpectedValue == actualValue, TypeChar)
+    _Impl_AssertionFramework_AreNotEqual(unsigned char, unexpectedValue == actualValue, TypeByte)
+    _Impl_AssertionFramework_AreNotEqual(short, unexpectedValue == actualValue, TypeInt16)
+    _Impl_AssertionFramework_AreNotEqual(unsigned short, unexpectedValue == actualValue, TypeUInt16)
+    _Impl_AssertionFramework_AreNotEqual(int, unexpectedValue == actualValue, TypeInt32)
+    _Impl_AssertionFramework_AreNotEqual(unsigned int, unexpectedValue == actualValue, TypeUInt32)
+    _Impl_AssertionFramework_AreNotEqual(long, unexpectedValue == actualValue, TypeUInt64)
+    _Impl_AssertionFramework_AreNotEqual(unsigned long, unexpectedValue == actualValue, TypeUInt64)
+    _Impl_AssertionFramework_AreNotEqual(long long, unexpectedValue == actualValue, TypeUInt64)
+    _Impl_AssertionFramework_AreNotEqual(unsigned long long, unexpectedValue == actualValue, TypeUInt64)
+    _Impl_AssertionFramework_AreNotEqual(float, unexpectedValue == actualValue, TypeSingle)
+    _Impl_AssertionFramework_AreNotEqual(double, unexpectedValue == actualValue, TypeDouble)
+    _Impl_AssertionFramework_AreNotEqual(char*, strcmp(unexpectedValue, actualValue) == 0, TypeString)
+    _Impl_AssertionFramework_AreNotEqual(const char*, strcmp(unexpectedValue, actualValue) == 0, TypeString)
+    _Impl_AssertionFramework_AreNotEqual(wchar_t*, wcscmp(unexpectedValue, actualValue) == 0, TypeString)
+    _Impl_AssertionFramework_AreNotEqual(const wchar_t*, wcscmp(unexpectedValue, actualValue) == 0, TypeString)
+
+    #ifdef _AFX
+    _Impl_AssertionFramework_AreEqual(CString, (expectedValue).Compare(actualValue) != 0, TypeString)
     #endif
 
     // Asserts that the expected value and the actual value are approximately equal.
-	#define _AssertionFramework_AreApproximatelyEqual(MESSAGETYPE) \
-        _Impl_AssertionFramework_AreApproximatelyEqual(char, abs(expectedValue - actualValue) > delta, TypeChar, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreApproximatelyEqual(wchar_t, abs(expectedValue - actualValue) > delta, TypeChar, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreApproximatelyEqual(unsigned char, abs((short)expectedValue - (short)actualValue) > (short)delta, TypeByte, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreApproximatelyEqual(short, abs(expectedValue - actualValue) > delta, TypeInt16, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreApproximatelyEqual(unsigned short, abs((int)expectedValue - (int)actualValue) > (int)delta, TypeUInt16, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreApproximatelyEqual(int, abs(expectedValue - actualValue) > delta, TypeInt32, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreApproximatelyEqual(unsigned int, _abs64((long long)expectedValue - (long long)actualValue) > (long long)delta, TypeUInt32, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreApproximatelyEqual(long, abs(expectedValue - actualValue) > delta, TypeInt32, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreApproximatelyEqual(unsigned long, _abs64((long long)expectedValue - (long long)actualValue) > (long long)delta, TypeUInt32, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreApproximatelyEqual(long long, _abs64(expectedValue - actualValue) > delta, TypeInt64, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreApproximatelyEqual(unsigned long long, fabs((double)expectedValue - (double)actualValue) > (double)delta, TypeInt64, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreApproximatelyEqual(float, fabs(expectedValue - actualValue) > delta, TypeSingle, MESSAGETYPE) \
-        _Impl_AssertionFramework_AreApproximatelyEqual(double, fabs(expectedValue - actualValue) > delta, TypeDouble, MESSAGETYPE)
-
-    #define _Impl_AssertionFramework_AreApproximatelyEqual(TYPE, CONDITION, MANAGEDTYPE, MESSAGETYPE) \
-		template<> void AssertionFramework::AreApproximatelyEqual<TYPE>(TYPE expectedValue, TYPE actualValue, TYPE delta, MESSAGETYPE message) \
+    #define _Impl_AssertionFramework_AreApproximatelyEqual(TYPE, CONDITION, MANAGEDTYPE) \
+		template<> void AssertionFramework::AreApproximatelyEqual<TYPE>(TYPE expectedValue, TYPE actualValue, TYPE delta, const String& message) \
 		{ \
 			IncrementAssertCount(); \
 			if (CONDITION) \
@@ -804,7 +810,19 @@ namespace mbunit
 			} \
 		}
 
-    _AssertionFramework_AreApproximatelyEqual(const String&)
+    _Impl_AssertionFramework_AreApproximatelyEqual(char, abs(expectedValue - actualValue) > delta, TypeChar)
+    _Impl_AssertionFramework_AreApproximatelyEqual(wchar_t, abs(expectedValue - actualValue) > delta, TypeChar)
+    _Impl_AssertionFramework_AreApproximatelyEqual(unsigned char, abs((short)expectedValue - (short)actualValue) > (short)delta, TypeByte)
+    _Impl_AssertionFramework_AreApproximatelyEqual(short, abs(expectedValue - actualValue) > delta, TypeInt16)
+    _Impl_AssertionFramework_AreApproximatelyEqual(unsigned short, abs((int)expectedValue - (int)actualValue) > (int)delta, TypeUInt16)
+    _Impl_AssertionFramework_AreApproximatelyEqual(int, abs(expectedValue - actualValue) > delta, TypeInt32)
+    _Impl_AssertionFramework_AreApproximatelyEqual(unsigned int, _abs64((long long)expectedValue - (long long)actualValue) > (long long)delta, TypeUInt32)
+    _Impl_AssertionFramework_AreApproximatelyEqual(long, abs(expectedValue - actualValue) > delta, TypeInt32)
+    _Impl_AssertionFramework_AreApproximatelyEqual(unsigned long, _abs64((long long)expectedValue - (long long)actualValue) > (long long)delta, TypeUInt32)
+    _Impl_AssertionFramework_AreApproximatelyEqual(long long, _abs64(expectedValue - actualValue) > delta, TypeInt64)
+    _Impl_AssertionFramework_AreApproximatelyEqual(unsigned long long, fabs((double)expectedValue - (double)actualValue) > (double)delta, TypeInt64)
+    _Impl_AssertionFramework_AreApproximatelyEqual(float, fabs(expectedValue - actualValue) > delta, TypeSingle)
+    _Impl_AssertionFramework_AreApproximatelyEqual(double, fabs(expectedValue - actualValue) > delta, TypeDouble)
 
 	// ======================================
 	// Interface functions for Gallio adapter

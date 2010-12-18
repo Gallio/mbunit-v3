@@ -56,6 +56,10 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
                 {
                     builder.AddRawExpectedAndActualValuesWithDiffs(failure.ExpectedValue, failure.ActualValue);
                 }
+                else if (failure.HasUnexpectedValue && failure.HasActualValue && failure.Diffing)
+                {
+                    builder.AddRawLabeledValuesWithDiffs("Unexpected Value", failure.UnexpectedValue, "Actual Value", failure.ActualValue);
+                }
                 else
                 {
                     if (failure.HasExpectedValue)
@@ -63,6 +67,9 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
 
                     if (failure.HasActualValue)
                         builder.AddRawActualValue(failure.ActualValue);
+
+                    if (failure.HasUnexpectedValue)
+                        builder.AddRawLabeledValue("Unexpected Value", failure.UnexpectedValue);
                 }
 
                 foreach (var extra in failure.ExtraLabeledValues)

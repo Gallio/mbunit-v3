@@ -52,6 +52,11 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         public NativeLabeledValue ExpectedValue;
 
         /// <summary>
+        /// An optional labeled value for the unexpected value.
+        /// </summary>
+        public NativeLabeledValue UnexpectedValue;
+
+        /// <summary>
         /// An optional labeled value for the actual value.
         /// </summary>
         public NativeLabeledValue ActualValue;

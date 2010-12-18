@@ -23,7 +23,7 @@ namespace mbunit
 	{
 		wchar_t* buffer;
 		int length;
-		void AppendImpl(const wchar_t* wstr, int n);
+		void AppendImpl(const wchar_t* wstr, int n = -1);
 		void AppendImpl(const char* str);
 
 		public:
@@ -132,6 +132,7 @@ namespace mbunit
         StringId DescriptionId;
         StringId MessageId;
 		LabeledValue Expected;
+		LabeledValue Unexpected;
         LabeledValue Actual;
         LabeledValue Extra_0;
         LabeledValue Extra_1;
@@ -170,6 +171,8 @@ namespace mbunit
 		void IsFalse(bool actualValue) { IsFalse(actualValue, ""); }
 		template<typename T> void AreEqual(T expectedValue, T actualValue, const String& message);
 		template<typename T> void AreEqual(T expectedValue, T actualValue) { AreEqual<T>(expectedValue, actualValue, ""); }
+		template<typename T> void AreNotEqual(T unexpectedValue, T actualValue, const String& message);
+		template<typename T> void AreNotEqual(T unexpectedValue, T actualValue) { AreNotEqual<T>(unexpectedValue, actualValue, ""); }
 		template<typename T> void AreApproximatelyEqual(T expectedValue, T actualValue, T delta, const String& message);
 		template<typename T> void AreApproximatelyEqual(T expectedValue, T actualValue, T delta) { AreApproximatelyEqual<T>(expectedValue, actualValue, delta, ""); }
     };

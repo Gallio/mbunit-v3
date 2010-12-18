@@ -18,6 +18,8 @@ namespace Gallio.MbUnitCppAdapter.Model
         private readonly bool hasActualValue;
         private readonly object expectedValue;
         private readonly bool hasExpectedValue;
+        private readonly object unexpectedValue;
+        private readonly bool hasUnexpectedValue;
         private readonly bool diffing;
         private readonly Pair<string, object>[] extraLabeledValues;
 
@@ -85,7 +87,28 @@ namespace Gallio.MbUnitCppAdapter.Model
         }
 
         /// <summary>
-        /// Should diffing be applied when displaying the expected and the actual value?
+        /// Gets the raw unexpected value.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Null if no unexpected value is applicable to that assertion failure.
+        /// </para>
+        /// </remarks>
+        public object UnexpectedValue
+        {
+            get { return unexpectedValue; }
+        }
+
+        /// <summary>
+        /// Indicates whether the assertion failure provides an unexpected value.
+        /// </summary>
+        public bool HasUnexpectedValue
+        {
+            get { return hasUnexpectedValue; }
+        }
+
+        /// <summary>
+        /// Should diffing be applied when displaying the expected/unexpected and the actual value?
         /// </summary>
         public bool Diffing
         {
@@ -116,6 +139,7 @@ namespace Gallio.MbUnitCppAdapter.Model
             message = stringResolver.GetString(native.MessageId);
             hasActualValue = native.ActualValue.IsValid;
             hasExpectedValue = native.ExpectedValue.IsValid;
+            hasUnexpectedValue = native.UnexpectedValue.IsValid;
 
             if (hasActualValue)
                 actualValue = NativeValueParser.Parse(stringResolver.GetString(native.ActualValue.ValueId), native.ActualValue.ValueType);
@@ -123,9 +147,12 @@ namespace Gallio.MbUnitCppAdapter.Model
             if (hasExpectedValue)
                 expectedValue = NativeValueParser.Parse(stringResolver.GetString(native.ExpectedValue.ValueId), native.ExpectedValue.ValueType);
 
-            diffing = hasActualValue && hasExpectedValue &&
-                (native.ActualValue.ValueType == NativeValueType.String) &&
-                (native.ExpectedValue.ValueType == NativeValueType.String);
+            if (hasUnexpectedValue)
+                unexpectedValue = NativeValueParser.Parse(stringResolver.GetString(native.UnexpectedValue.ValueId), native.UnexpectedValue.ValueType);
+
+            diffing = hasActualValue && (native.ActualValue.ValueType == NativeValueType.String) &&
+                ((hasExpectedValue && (native.ExpectedValue.ValueType == NativeValueType.String)) ||
+                (hasUnexpectedValue && (native.UnexpectedValue.ValueType == NativeValueType.String)));
 
             extraLabeledValues = GenericCollectionUtils.ToArray(GetExtraLabeledValues(native, stringResolver));
         }

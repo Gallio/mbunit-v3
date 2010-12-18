@@ -33,6 +33,9 @@
     <ClCompile Include="GeneralTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="InequalityTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
