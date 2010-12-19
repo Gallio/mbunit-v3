@@ -44,7 +44,7 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NHamcrest, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="NHamcrest, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\NHamcrest\NHamcrest.dll</HintPath>
     </Reference>
