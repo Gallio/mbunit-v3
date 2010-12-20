@@ -113,10 +113,11 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         /// <summary>
         /// Builds and returns an artifical stack trace that points to the current test/fixture.
         /// </summary>
-        /// <returns></returns>
-        public StackTraceData GetStackTraceData()
+        /// <param name="line">The line where the assertion failed, or zero if undefined.</param>
+        /// <returns>The stack trace data.</returns>
+        public StackTraceData GetStackTraceData(int line)
         {
-            return new StackTraceData(String.Format("   at {0} in {1}:line {2}\r\n", Name, FileName, native.LineNumber));
+            return new StackTraceData(String.Format("   at {0} in {1}:line {2}\r\n", Name, FileName, line > 0 ? line : native.LineNumber));
         }
 
         /// <summary>

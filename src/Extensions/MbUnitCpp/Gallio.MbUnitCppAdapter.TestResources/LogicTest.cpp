@@ -16,6 +16,8 @@
 #include "stdafx.h"
 #include "mbunit.h"
 
+#pragma warning (disable: 4800)
+
 TESTFIXTURE(Logic)
 {
     TEST(Assert_IsTrue_should_pass)

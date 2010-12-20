@@ -77,6 +77,7 @@ namespace mbunit
     class TestList;
 	class TestFixture;
     class TestFixtureList;
+	class AssertionFrameworkController;
 
     // Standard outcome of a test.
     enum Outcome
@@ -129,6 +130,7 @@ namespace mbunit
 
     struct AssertionFailure
     {
+		int LineNumber;
         StringId DescriptionId;
         StringId MessageId;
 		LabeledValue Expected;
@@ -153,16 +155,10 @@ namespace mbunit
     // The MbUnitCpp Assertion Framework.
     class AssertionFramework
     {
-        Test *test;
-        void IncrementAssertCount();
-		StringMap& Map() const;
-		template<typename T> StringId AddNewStringFrom(T arg);
-		StringId AddNewString(const char* str);
-		StringId AddNewString(const wchar_t* wstr);
-		StringId AddNewString(const String& str);
+        AssertionFrameworkController *controller;
 
         public:
-        AssertionFramework(Test* test);
+        AssertionFramework(AssertionFrameworkController* controller);
         void Fail(const String& message);
 		void Fail() { Fail(""); }
 		void IsTrue(bool actualValue, const String& message);
@@ -177,9 +173,28 @@ namespace mbunit
 		template<typename T> void AreApproximatelyEqual(T expectedValue, T actualValue, T delta) { AreApproximatelyEqual<T>(expectedValue, actualValue, delta, ""); }
     };
 
+	class AssertionFrameworkController
+	{
+		int lineNumber;
+		Test* test;
+		AssertionFramework framework;
+
+		public:
+		AssertionFrameworkController(Test* test);
+		AssertionFramework& Get(int lineNumber);
+        void IncrementAssertCount();
+		StringMap& Map() const;
+		template<typename T> StringId AddNewStringFrom(T arg);
+		StringId AddNewString(const char* str);
+		StringId AddNewString(const wchar_t* wstr);
+		StringId AddNewString(const String& str);
+		int GetLineNumber() { return lineNumber; }
+	};
+
 	// Provides an access to the Gallio test log.
 	class TestLogRecorder
 	{
+		private:
         Test *test;
 
 		public:
@@ -254,11 +269,13 @@ namespace mbunit
         void Clear();
 
         protected:
-        AssertionFramework Assert;
+        AssertionFrameworkController controller;
 		TestLogRecorder TestLog;
 		void Bind(AbstractDataSource* dataSource);
 		virtual void BindDataRow(void* dataRow);
     };
+
+#define Assert controller.Get(__LINE__)
 
     // A chained list of tests.
     class TestList

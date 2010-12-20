@@ -80,7 +80,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
                 if (failure.Message.Length > 0)
                     builder.SetMessage(failure.Message);
 
-                builder.SetStackTrace(testInfoData.GetStackTraceData());
+                builder.SetStackTrace(testInfoData.GetStackTraceData(failure.Line));
                 builder.ToAssertionFailure().WriteTo(testContext.LogWriter.Failures);
             }
         }

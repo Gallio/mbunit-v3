@@ -21,6 +21,7 @@ namespace Gallio.MbUnitCppAdapter.Model
         private readonly object unexpectedValue;
         private readonly bool hasUnexpectedValue;
         private readonly bool diffing;
+        private readonly int line;
         private readonly Pair<string, object>[] extraLabeledValues;
 
         /// <summary>
@@ -116,6 +117,14 @@ namespace Gallio.MbUnitCppAdapter.Model
         }
 
         /// <summary>
+        /// Gets the line where the assertion has failed.
+        /// </summary>
+        public int Line
+        {
+            get { return line; }
+        }
+
+        /// <summary>
         /// Gets an array of extra labeled values.
         /// </summary>
         /// <remarks>
@@ -140,6 +149,7 @@ namespace Gallio.MbUnitCppAdapter.Model
             hasActualValue = native.ActualValue.IsValid;
             hasExpectedValue = native.ExpectedValue.IsValid;
             hasUnexpectedValue = native.UnexpectedValue.IsValid;
+            line = native.Line;
 
             if (hasActualValue)
                 actualValue = NativeValueParser.Parse(stringResolver.GetString(native.ActualValue.ValueId), native.ActualValue.ValueType);

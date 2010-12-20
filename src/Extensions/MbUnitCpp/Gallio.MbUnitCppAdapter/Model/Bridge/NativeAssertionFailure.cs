@@ -27,6 +27,11 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
     public struct NativeAssertionFailure
     {
         /// <summary>
+        /// The line where the assertion has failed.
+        /// </summary>
+        public int Line;
+
+        /// <summary>
         /// The ID of the string that holds the description of the failure.
         /// </summary>
         /// <remarks>
