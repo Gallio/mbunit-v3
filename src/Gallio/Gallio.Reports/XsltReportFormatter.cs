@@ -160,10 +160,12 @@ namespace Gallio.Reports
         {
             foreach (string resourcePath in resourcePaths)
             {
-                string sourceContentPath = Path.Combine(resourceDirectory.FullName, resourcePath);
-                string destContentPath = Path.Combine(reportWriter.ReportContainer.ReportName, resourcePath);
-
-                ReportContainerUtils.CopyToReport(reportWriter.ReportContainer, sourceContentPath, destContentPath);
+                if (resourcePath.Length > 0)
+                {
+                    string sourceContentPath = Path.Combine(resourceDirectory.FullName, resourcePath);
+                    string destContentPath = Path.Combine(reportWriter.ReportContainer.ReportName, resourcePath);
+                    ReportContainerUtils.CopyToReport(reportWriter.ReportContainer, sourceContentPath, destContentPath);
+                }
             }
         }
 
