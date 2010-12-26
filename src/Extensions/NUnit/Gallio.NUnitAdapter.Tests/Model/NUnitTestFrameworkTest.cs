@@ -106,5 +106,21 @@ namespace Gallio.NUnitAdapter.Tests.Model
             Assert.AreEqual("Test", test.Name);
             Assert.IsNull(test.CodeElement);
         }
+
+#if NUNITLATEST
+        [Test, Description(" Issue 677: NUnit TestCases and Theories display an incorrect hierarchy")]
+        public void ParameterizedTestHasMethodAsCodeElement() 
+        {
+            TestModel testModel = PopulateTestTree();
+
+            Test fixture = GetDescendantByName(testModel.RootTest, typeof(ParameterizedTest).Name);
+            Assert.Count(1, fixture.Children);
+
+            Test test = fixture.Children[0];
+            Assert.AreEqual("Test", test.Name);
+            Assert.AreEqual(CodeElementKind.Method, test.CodeElement.Kind);
+            Assert.AreEqual("Test", test.CodeElement.Name);
+        }
+#endif
     }
 }
