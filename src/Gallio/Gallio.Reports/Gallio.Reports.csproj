@@ -35,6 +35,9 @@
     <DocumentationFile>bin\Gallio.Reports.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NVelocity">
+      <HintPath>..\libs\NVelocity\NVelocity.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -42,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseReportFormatter.cs" />
+    <Compile Include="VtlReportFormatter.cs" />
     <Compile Include="MHtmlReportFormatter.cs" />
     <Compile Include="MultipartMimeReportContainer.cs" />
     <Compile Include="NamespaceDoc.cs" />
@@ -97,6 +101,9 @@
     <Content Include="Resources\xsl\Gallio-Report.txt.xsl" />
     <Content Include="Resources\xsl\Gallio-Report.xhtml-condensed.xsl" />
     <Content Include="Resources\xsl\Gallio-Report.xhtml.xsl" />
+    <Content Include="Resources\vm\Gallio-Report.txt-condensed.vm" />
+    <Content Include="Resources\vm\Gallio-Report.txt.vm" />
+    <Content Include="Resources\vm\Gallio-Report.txt-common.vm" />
     <Content Include="Gallio.Reports.plugin" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -53,6 +53,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NVelocity">
+      <HintPath>..\libs\NVelocity\NVelocity.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -60,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseReportFormatter.cs" />
+    <Compile Include="VtlReportFormatter.cs" />
     <Compile Include="MHtmlReportFormatter.cs" />
     <Compile Include="MultipartMimeReportContainer.cs" />
     <Compile Include="NamespaceDoc.cs" />
@@ -109,15 +113,18 @@
     <Content Include="Resources\xsl\Gallio-Report.ccnet-details-condensed.xsl" />
     <Content Include="Resources\xsl\Gallio-Report.ccnet-details.xsl" />
     <Content Include="Resources\xsl\Gallio-Report.common.xsl" />
-    <Content Include="Resources\xsl\Gallio-Report.html+xhtml.xsl">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="Resources\xsl\Gallio-Report.html+xhtml.xsl" />
     <Content Include="Resources\xsl\Gallio-Report.html-condensed.xsl" />
     <Content Include="Resources\xsl\Gallio-Report.html.xsl" />
     <Content Include="Resources\xsl\Gallio-Report.txt.xsl" />
     <Content Include="Resources\xsl\Gallio-Report.xhtml-condensed.xsl" />
     <Content Include="Resources\xsl\Gallio-Report.xhtml.xsl" />
-    <Content Include="Gallio.Reports.plugin" />
+    <Content Include="Resources\vm\Gallio-Report.txt-condensed.vm" />
+    <Content Include="Resources\vm\Gallio-Report.txt.vm" />
+    <Content Include="Resources\vm\Gallio-Report.txt-common.vm" />
+    <Content Include="Gallio.Reports.plugin">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -135,6 +142,8 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -42,6 +42,7 @@
     <file path="Resources\xsl\Gallio-Report.txt-condensed.xsl" />
     <file path="Resources\xsl\Gallio-Report.xhtml-condensed.xsl" />
     <file path="Resources\xsl\Gallio-Report.xhtml.xsl" />
+    <file path="Resources\vtl\Gallio-Report.txt-common.vtl" />
   </files>
 
   <assemblies>
@@ -225,6 +226,42 @@
         <description>Generates MHTML reports that omit passing tests.</description>
       </traits>
     </component>
+
+    <component componentId="ReportFormatter.Text-New"
+               serviceId="Gallio.ReportFormatter"
+               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+      <parameters>
+        <extension>txt</extension>
+        <contentType>text/plain</contentType>
+        <defaultAttachmentContentDisposition>Absent</defaultAttachmentContentDisposition>
+        <resourceDirectory>plugin://Gallio.Reports/Resources/</resourceDirectory>
+        <templatePath>vm/Gallio-Report.txt.vm</templatePath>
+        <resourcePaths></resourcePaths>
+      </parameters>
+      <traits>
+        <name>Text-New</name>
+        <description>Generates plain text reports.</description>
+      </traits>
+    </component>
+
+    <component componentId="ReportFormatter.Text-Condensed-New"
+               serviceId="Gallio.ReportFormatter"
+               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+      <parameters>
+        <extension>txt</extension>
+        <contentType>text/plain</contentType>
+        <defaultAttachmentContentDisposition>Absent</defaultAttachmentContentDisposition>
+        <resourceDirectory>plugin://Gallio.Reports/Resources/</resourceDirectory>
+        <templatePath>vm/Gallio-Report.txt-condensed.vm</templatePath>
+        <resourcePaths></resourcePaths>
+      </parameters>
+      <traits>
+        <name>Text-Condensed-New</name>
+        <description>Generates plain text reports without passing tests.</description>
+      </traits>
+    </component>
+
+
 
     <component componentId="Gallio.Reports.Installer"
                serviceId="Gallio.Installer"
