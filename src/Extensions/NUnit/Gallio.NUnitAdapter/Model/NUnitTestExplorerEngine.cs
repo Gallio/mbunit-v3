@@ -90,6 +90,13 @@ namespace Gallio.NUnitAdapter.Model
                     codeElement = ParseTestFixtureName(assembly, nunitTest.TestName.FullName);
                     break;
 
+#if NUNITLATEST
+                case @"ParameterizedTest":
+                    kind = TestKinds.Suite;
+                    codeElement = ParseTestCaseName(assembly, nunitTest.TestName.FullName);
+                    break;
+#endif
+
                 default:
                     kind = nunitTest.IsSuite ? TestKinds.Suite : TestKinds.Test;
                     codeElement = parentTest.CodeElement;
