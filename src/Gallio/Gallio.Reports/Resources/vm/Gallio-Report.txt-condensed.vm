@@ -1,4 +1,4 @@
-## Velocity Template Language (VTL) to generate a plain text report.
+﻿## Velocity Template Language (VTL) to generate a plain text report.
 ##
 #set($showPassed=false)
 ##
