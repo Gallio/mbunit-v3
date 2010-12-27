@@ -42,7 +42,9 @@
     <file path="Resources\xsl\Gallio-Report.txt-condensed.xsl" />
     <file path="Resources\xsl\Gallio-Report.xhtml-condensed.xsl" />
     <file path="Resources\xsl\Gallio-Report.xhtml.xsl" />
-    <file path="Resources\vtl\Gallio-Report.txt-common.vtl" />
+    <file path="Resources\vm\Gallio-Report.txt.vm" />
+    <file path="Resources\vm\Gallio-Report.txt-condensed.vm" />
+    <file path="Resources\vm\Gallio-Report.txt-common.vm" />
   </files>
 
   <assemblies>
