@@ -201,7 +201,15 @@
                     </Component>
                 </Directory>
             </Directory>
-        </DirectoryRef>
+
+            <Directory Id="Reports.vm" Name="vm">
+                <Component Id="Gallio.Resources.vm" Guid="{BD86EC02-7140-407D-B36B-F0539064D37B}" Win64="$(var.Win64Binary)">
+                    <File Id="Gallio.Report.txt.vm" Name="Gallio-Report.txt.vm" />
+                    <File Id="Gallio.Report.txt.common.vm" Name="Gallio-Report.txt-common.vm" />
+                    <File Id="Gallio.Report.txt.condensed.vm" Name="Gallio-Report.txt-condensed.vm" />
+				</Component>
+            </Directory>
+		</DirectoryRef>
 
         <DirectoryRef Id="docsFolder" FileSource="$(var.GallioTargetDir)\docs\">
 <?ifdef FEATURE_CHM_HELP ?>
@@ -280,6 +288,7 @@
             <ComponentRef Id="Gallio.Resources.xsl"/>
             <ComponentRef Id="Gallio.Resources.img"/>
             <ComponentRef Id="Gallio.Resources.img.testkinds"/>
+            <ComponentRef Id="Gallio.Resources.vm"/>
 
             <ComponentRef Id="GallioMenuFolder.RemoveFolder"/>
 

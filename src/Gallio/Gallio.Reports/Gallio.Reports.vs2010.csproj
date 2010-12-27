@@ -54,7 +54,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NVelocity">
-      <HintPath>..\libs\NVelocity\NVelocity.dll</HintPath>
+      <HintPath>..\libs\NVelocity.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
