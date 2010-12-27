@@ -125,6 +125,9 @@
     <File Include="Gallio.Reports\Resources\xsl\*">
       <ImagePath>bin\Resources\xsl</ImagePath>
     </File>
+    <File Include="Gallio.Reports\Resources\vm\*">
+      <ImagePath>bin\Resources\vm</ImagePath>
+    </File>
 
     <LicenseFile Include="libs\Mono.Cecil.license.html">
       <ImagePath>licenses</ImagePath>
