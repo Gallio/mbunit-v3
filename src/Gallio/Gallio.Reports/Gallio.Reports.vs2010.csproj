@@ -123,6 +123,9 @@
     <Content Include="Resources\vm\Gallio-Report.txt-condensed.vm" />
     <Content Include="Resources\vm\Gallio-Report.txt.vm" />
     <Content Include="Resources\vm\Gallio-Report.txt-common.vm" />
+    <Content Include="Resources\vm\Gallio-Report.html-condensed.vm" />
+    <Content Include="Resources\vm\Gallio-Report.html.vm" />
+    <Content Include="Resources\vm\Gallio-Report.html+xhtml.vm" />
     <Content Include="Gallio.Reports.plugin">
       <SubType>Designer</SubType>
     </Content>
@@ -143,13 +146,6 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\vm\Gallio-Report.html-condensed.vm" />
-    <Content Include="Resources\vm\Gallio-Report.html.vm" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\vm\Gallio-Report.html+xhtml.vm" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

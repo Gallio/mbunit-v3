@@ -439,6 +439,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Reports\SampleTemplate.vm" />
     <None Include="Resources\SampleIcon.ico" />
   </ItemGroup>
   <ItemGroup>
