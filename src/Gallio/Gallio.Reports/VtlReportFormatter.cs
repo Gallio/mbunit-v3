@@ -31,6 +31,7 @@ using System.Collections;
 using NVelocity.Runtime;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Common;
+using System.Text.RegularExpressions;
 
 namespace Gallio.Reports
 {
@@ -178,6 +179,11 @@ namespace Gallio.Reports
             public string NormalizeEndOfLines(string text)
             {
                 return text.Replace("\n", Environment.NewLine);
+            }
+
+            public string BreakWord(string text)
+            {
+                return Regex.Replace(text, @"([\s\\]+)", "$1<wbr/>");
             }
         }
 

@@ -54,7 +54,9 @@
 	  <h2>Files</h2>
 	  <div class="section-content">
 		<ul>
-#foreach		
+#foreach ($file in $report.TestPackage.Files)
+<li>$helper.BreakWord($file)</li>
+#end		
 		</ul>
 	  </div>
 	</div>
