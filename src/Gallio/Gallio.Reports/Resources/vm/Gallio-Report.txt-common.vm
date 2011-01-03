@@ -8,7 +8,7 @@
 #if($item.Step.IsTestCase && ($showPassed || $item.Result.Outcome.Status.ToString() != "Passed"))
 [$item.Result.Outcome.Status] $item.Step.Metadata.GetValue("TestKind") $item.Step.FullName
 #foreach($stream in $item.TestLog.Streams)
-$stream.ToString().Replace($cr, $newLine)
+$helper.NormalizeEndOfLines($stream.ToString())
 #end
 #end
 #end

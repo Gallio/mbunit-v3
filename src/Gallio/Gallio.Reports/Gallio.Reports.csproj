@@ -35,7 +35,8 @@
     <DocumentationFile>bin\Gallio.Reports.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NVelocity">
+    <Reference Include="NVelocity, Version=1.1.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\NVelocity.dll</HintPath>
     </Reference>
     <Reference Include="System" />

@@ -42,9 +42,12 @@
     <file path="Resources\xsl\Gallio-Report.txt-condensed.xsl" />
     <file path="Resources\xsl\Gallio-Report.xhtml-condensed.xsl" />
     <file path="Resources\xsl\Gallio-Report.xhtml.xsl" />
+    <file path="Resources\vm\Gallio-Report.txt-common.vm" />
     <file path="Resources\vm\Gallio-Report.txt.vm" />
     <file path="Resources\vm\Gallio-Report.txt-condensed.vm" />
-    <file path="Resources\vm\Gallio-Report.txt-common.vm" />
+    <file path="Resources\vm\Gallio-Report.html+xhtml.vm" />
+    <file path="Resources\vm\Gallio-Report.html.vm" />
+    <file path="Resources\vm\Gallio-Report.html-condensed.vm" />
   </files>
 
   <assemblies>
@@ -263,6 +266,49 @@
       </traits>
     </component>
 
+    <component componentId="ReportFormatter.Html-New"
+               serviceId="Gallio.ReportFormatter"
+               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+      <parameters>
+        <extension>html</extension>
+        <contentType>text/html</contentType>
+        <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
+        <resourceDirectory>plugin://Gallio.Reports/Resources/</resourceDirectory>
+        <templatePath>vm/Gallio-Report.html.vm</templatePath>
+        <resourcePaths>css;js;img</resourcePaths>
+      </parameters>
+      <traits>
+        <name>Html-New</name>
+        <description>
+          Generates HTML reports.
+
+          Supported report formatter properties:
+          - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
+        </description>
+      </traits>
+    </component>
+
+    <component componentId="ReportFormatter.Html-Condensed-New"
+               serviceId="Gallio.ReportFormatter"
+               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+      <parameters>
+        <extension>html</extension>
+        <contentType>text/html</contentType>
+        <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
+        <resourceDirectory>plugin://Gallio.Reports/Resources/</resourceDirectory>
+        <templatePath>vm/Gallio-Report.html-condensed.vm</templatePath>
+        <resourcePaths>css;js;img</resourcePaths>
+      </parameters>
+      <traits>
+        <name>Html-Condensed-New</name>
+        <description>
+          Generates HTML reports that omit passing tests.
+
+          Supported report formatter properties:
+          - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
+        </description>
+      </traits>
+    </component>
 
 
     <component componentId="Gallio.Reports.Installer"

@@ -1,0 +1,71 @@
+﻿## Velocity Template Language (VTL) to generate an HTML document.
+##
+#set($stats = $report.TestPackageRun.Statistics)
+##
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en" dir="ltr">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Type" content="; charset=utf-8">
+<title>Gallio Test Report</title>
+<link rel="stylesheet" type="text/css" href="Sample.Html/css/Gallio-Report.css">
+<link rel="stylesheet" type="text/css" href="Sample.Html/css/Gallio-Report.generated.css">
+<script type="text/javascript" src="Sample.Html/js/Gallio-Report.js"></script>
+<style type="text/css">html { overflow: auto; }</style>
+<body class="gallio-report">
+  <div id="Header" class="header"><div class="header-image"></div></div>
+  <div id="Navigator" class="navigator">
+## TODO: navigator
+  </div>
+  <div id="Content" class="content">
+    <iframe id="_asyncLoadFrame" src="about:blank" style="border:0; margin:0; padding:0; width:0; height:0; display:none;" onload="_asyncLoadFrameOnLoad()"></iframe>
+	<div id="Statistics" class="section">
+	  <h2>Statistics</h2>
+	  <div class="section-content">
+		<table class="statistics-table">
+		  <tr>
+			<td class="statistics-label-cell">Start time:</td>
+			<td>$report.TestPackageRun.StartTime</td>
+		  </tr>
+		  <tr class="alternate-row">
+			<td class="statistics-label-cell">End time:</td>
+			<td>$report.TestPackageRun.EndTime</td>
+		  </tr>
+		  <tr>
+			<td class="statistics-label-cell">Tests:</td>
+			<td>$stats.TestCount ($stats.StepCount steps)</td>
+		  </tr>
+		  <tr class="alternate-row">
+			<td class="statistics-label-cell">Results:</td>
+			<td>$stats.RunCount run, $stats.PassedCount passed, $stats.FailedCount failed, $stats.InconclusiveCount inconclusive, $stats.SkippedCount skipped</td>
+		  </tr>
+		  <tr>
+			<td class="statistics-label-cell">Duration:</td>
+			<td>$stats.Duration.ToString("F2") s</td>
+		  </tr>
+		  <tr class="alternate-row">
+		    <td class="statistics-label-cell">Assertions:</td>
+			<td>$stats.AssertCount</td>
+		  </tr>
+		</table>
+	  </div>
+	</div>
+	<div id="Files" class="section">
+	  <h2>Files</h2>
+	  <div class="section-content">
+		<ul>
+#foreach		
+		</ul>
+	  </div>
+	</div>
+
+	
+	
+  </div>
+</body>
+</link>
+</link>
+</meta>
+</META>
+</head>
+</html>

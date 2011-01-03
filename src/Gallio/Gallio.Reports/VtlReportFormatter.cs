@@ -30,6 +30,7 @@ using NVelocity.App;
 using System.Collections;
 using NVelocity.Runtime;
 using Gallio.Runner.Reports.Schema;
+using Gallio.Common;
 
 namespace Gallio.Reports
 {
@@ -62,7 +63,8 @@ namespace Gallio.Reports
         private readonly DirectoryInfo resourceDirectory;
         private readonly string templatePath;
         private readonly string[] resourcePaths;
-        private string templateFilePath;
+        private readonly string templateFilePath;
+        private IVelocityEngineFactory velocityEngineFactory;
 
         /// <summary>
         /// Creates an XSLT report formatter.
@@ -92,6 +94,7 @@ namespace Gallio.Reports
             this.resourceDirectory = resourceDirectory;
             this.templatePath = templatePath;
             this.resourcePaths = resourcePaths;
+            templateFilePath = Path.Combine(resourceDirectory.FullName, templatePath);
         }
 
         /// <inheritdoc />
@@ -119,21 +122,20 @@ namespace Gallio.Reports
             }
         }
 
-        private VelocityEngine CreateVelocityEngine()
+        internal IVelocityEngineFactory VelocityEngineFactory
         {
-            var engine = new VelocityEngine();
-            engine.SetProperty(RuntimeConstants_Fields.FILE_RESOURCE_LOADER_PATH, Path.GetDirectoryName(templateFilePath));
-            engine.Init();
-            return engine;
-        }
+            get
+            { 
+                if (velocityEngineFactory == null)
+                    velocityEngineFactory = new DefaultVelocityEngineFactory(templateFilePath);
 
-        private VelocityContext CreateVelocityContext(Report report)
-        {
-            var context = new VelocityContext();
-            context.Put("report", report);
-            context.Put("cr", "\n");
-            context.Put("newLine", Environment.NewLine);
-            return context;
+                return velocityEngineFactory;
+            }
+        
+            set
+            {
+                velocityEngineFactory = value;
+            }
         }
 
         /// <summary>
@@ -141,16 +143,15 @@ namespace Gallio.Reports
         /// </summary>
         protected virtual void ApplyTemplate(IReportWriter reportWriter, AttachmentContentDisposition attachmentContentDisposition, ReportFormatterOptions options)
         {
-            templateFilePath = Path.Combine(resourceDirectory.FullName, templatePath);
-            VelocityEngine engine = CreateVelocityEngine();
-            VelocityContext context = CreateVelocityContext(reportWriter.Report);
-            string reportPath = reportWriter.ReportContainer.ReportName + @"." + extension;
+            VelocityEngine engine = VelocityEngineFactory.CreateVelocityEngine();
+            VelocityContext context = VelocityEngineFactory.CreateVelocityContext(reportWriter.Report);
+            string reportPath = reportWriter.ReportContainer.ReportName + "." + extension;
             Encoding encoding = new UTF8Encoding(false);
+            Template template = engine.GetTemplate(Path.GetFileName(templatePath), encoding.BodyName);
 
-            using (var writer =  new StreamWriter(reportWriter.ReportContainer.OpenWrite(reportPath, contentType, encoding)))
-            using (Stream template = new FileStream(templateFilePath, FileMode.Open))
+            using (var writer = new StreamWriter(reportWriter.ReportContainer.OpenWrite(reportPath, contentType, encoding)))
             {
-                engine.Evaluate(context, writer, String.Empty, template);
+                template.Merge(context, writer);
             }
 
             reportWriter.AddReportDocumentPath(reportPath);
@@ -169,6 +170,51 @@ namespace Gallio.Reports
                     string destContentPath = Path.Combine(reportWriter.ReportContainer.ReportName, resourcePath);
                     ReportContainerUtils.CopyToReport(reportWriter.ReportContainer, sourceContentPath, destContentPath);
                 }
+            }
+        }
+
+        internal class FormatHelper
+        {
+            public string NormalizeEndOfLines(string text)
+            {
+                return text.Replace("\n", Environment.NewLine);
+            }
+        }
+
+        internal interface IVelocityEngineFactory
+        {
+            VelocityEngine CreateVelocityEngine();
+            VelocityContext CreateVelocityContext(Report report);
+        }
+
+        internal class DefaultVelocityEngineFactory : IVelocityEngineFactory
+        {
+            private readonly string templateDirectory;
+
+            public DefaultVelocityEngineFactory(string templateDirectory)
+            {
+                this.templateDirectory = templateDirectory;
+            }
+
+            public VelocityEngine CreateVelocityEngine()
+            {
+                var engine = new VelocityEngine();
+                SetupVelocityEngine(engine);
+                engine.Init();
+                return engine;
+            }
+
+            protected virtual void SetupVelocityEngine(VelocityEngine engine)
+            {
+                engine.SetProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, Path.GetDirectoryName(templateDirectory));
+            }
+
+            public VelocityContext CreateVelocityContext(Report report)
+            {
+                var context = new VelocityContext();
+                context.Put("report", report);
+                context.Put("helper", new FormatHelper());
+                return context;
             }
         }
     }

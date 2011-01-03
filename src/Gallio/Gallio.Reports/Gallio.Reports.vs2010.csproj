@@ -53,7 +53,8 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NVelocity">
+    <Reference Include="NVelocity, Version=1.1.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\NVelocity.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -144,6 +145,11 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\vm\Gallio-Report.html-condensed.vm" />
+    <Content Include="Resources\vm\Gallio-Report.html.vm" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\vm\Gallio-Report.html+xhtml.vm" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

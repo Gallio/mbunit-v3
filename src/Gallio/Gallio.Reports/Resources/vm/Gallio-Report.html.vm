@@ -1,0 +1,5 @@
+﻿## Velocity Template Language (VTL) to generate an HTML document.
+##
+#set($showPassed=true)
+##
+#parse("Gallio-Report.html+xhtml.vm")
