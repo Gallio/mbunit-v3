@@ -37,6 +37,10 @@
     <DocumentationFile>bin\Gallio.Tests.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NVelocity, Version=1.1.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\NVelocity.dll</HintPath>
+    </Reference>
     <Reference Include="Rhino.Mocks, Version=3.1.0.584, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\tools\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
