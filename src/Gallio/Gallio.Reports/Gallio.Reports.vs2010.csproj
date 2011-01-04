@@ -125,6 +125,8 @@
     <Content Include="Resources\vm\Gallio-Report.txt-common.vm" />
     <Content Include="Resources\vm\Gallio-Report.html-condensed.vm" />
     <Content Include="Resources\vm\Gallio-Report.html.vm" />
+    <Content Include="Resources\vm\Gallio-Report.xhtml-condensed.vm" />
+    <Content Include="Resources\vm\Gallio-Report.xhtml.vm" />
     <Content Include="Resources\vm\Gallio-Report.html+xhtml.vm" />
     <Content Include="Gallio.Reports.plugin">
       <SubType>Designer</SubType>

@@ -309,7 +309,50 @@
         </description>
       </traits>
     </component>
+	
+    <component componentId="ReportFormatter.XHtml-New"
+               serviceId="Gallio.ReportFormatter"
+               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+      <parameters>
+        <extension>xhtml</extension>
+        <contentType>text/xhtml+xml</contentType>
+        <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
+        <resourceDirectory>plugin://Gallio.Reports/Resources/</resourceDirectory>
+        <templatePath>vm/Gallio-Report.xhtml.vm</templatePath>
+        <resourcePaths>css;js;img</resourcePaths>
+      </parameters>
+      <traits>
+        <name>XHtml-New</name>
+        <description>
+          Generates XHTML reports.
 
+          Supported report formatter properties:
+          - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
+        </description>
+      </traits>
+    </component>
+
+    <component componentId="ReportFormatter.XHtml-Condensed-New"
+               serviceId="Gallio.ReportFormatter"
+               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+      <parameters>
+        <extension>xhtml</extension>
+        <contentType>text/xhtml+xml</contentType>
+        <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
+        <resourceDirectory>plugin://Gallio.Reports/Resources/</resourceDirectory>
+        <templatePath>vm/Gallio-Report.xhtml-condensed.vm</templatePath>
+        <resourcePaths>css;js;img</resourcePaths>
+      </parameters>
+      <traits>
+        <name>XHtml-Condensed-New</name>
+        <description>
+          Generates XHTML reports that omit passing tests.
+
+          Supported report formatter properties:
+          - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
+        </description>
+      </traits>
+    </component>
 
     <component componentId="Gallio.Reports.Installer"
                serviceId="Gallio.Installer"

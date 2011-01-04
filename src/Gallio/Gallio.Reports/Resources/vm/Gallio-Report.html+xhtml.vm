@@ -2,16 +2,30 @@
 ##
 #set($stats = $report.TestPackageRun.Statistics)
 ##
+#if ($xhtml)
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:msxsl="urn:schemas-microsoft-com:xslt" xmlns:g="http://www.gallio.org/">
+#else
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en" dir="ltr">
+#end
+<!-- saved from url=(0014)about:internet -->
 <head>
+#if ($xhtml)
+<meta http-equiv="Content-Type" content="NaN; charset=utf-8" />
+#else
 <META http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Type" content="; charset=utf-8">
+#end
 <title>Gallio Test Report</title>
-<link rel="stylesheet" type="text/css" href="Sample.Html/css/Gallio-Report.css">
-<link rel="stylesheet" type="text/css" href="Sample.Html/css/Gallio-Report.generated.css">
+<link rel="stylesheet" type="text/css" href="Sample.Html/css/Gallio-Report.css" #if($xhtml)/#end>
+<link rel="stylesheet" type="text/css" href="Sample.Html/css/Gallio-Report.generated.css" #if($xhtml)/#end>
 <script type="text/javascript" src="Sample.Html/js/Gallio-Report.js"></script>
 <style type="text/css">html { overflow: auto; }</style>
+#if ($xhtml)
+</head>
+#end
 <body class="gallio-report">
   <div id="Header" class="header"><div class="header-image"></div></div>
   <div id="Navigator" class="navigator">
@@ -55,19 +69,49 @@
 	  <div class="section-content">
 		<ul>
 #foreach ($file in $report.TestPackage.Files)
-<li>$helper.BreakWord($file)</li>
-#end		
+           <li>$helper.BreakWord($file)</li>
+#end
 		</ul>
 	  </div>
 	</div>
-
-	
-	
+	<div id="Summary" class="section">
+	  <h2>Summary#if ($condensed) (Condensed)#end</h2>
+	  <div class="section-content">
+## TODO: summary
+	  </div>
+	</div>
+	<div id="Details" class="section">
+	  <h2>Summary#if ($condensed) (Condensed)#end</h2>
+	  <div class="section-content">
+## TODO: details
+	  </div>
+	</div>
+    <div id="Log" class="section">
+	  <h2>Diagnostic Log</h2>
+      <div class="section-content">
+        <ul>
+#foreach ($entry in $report.LogEntries)
+#if ($entry.Severity != "Debug")
+		  <li class="logEntry logEntry-severity-$entry.Severity.ToString().ToLower()">
+		    <div class="logEntry-text">[$entry.Severity] $helper.BreakWord($entry.Message)</div>
+#if($entry.Details.Length > 0)
+            <div class="logEntry-details">$helper.BreakWord($entry.Details)</div>
+#end
+		  </li>
+#end
+#end
+		</ul>
+	  </div>
+	</div>
   </div>
 </body>
+#if ($xhtml)
+<script type="text/javascript">reportLoaded();</script>
+#else
 </link>
 </link>
 </meta>
 </META>
 </head>
+#end
 </html>

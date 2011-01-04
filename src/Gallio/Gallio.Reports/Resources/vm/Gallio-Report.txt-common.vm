@@ -5,7 +5,7 @@
 * Results: $stats.RunCount run, $stats.PassedCount passed, $stats.FailedCount failed, $stats.InconclusiveCount inconclusive, $stats.SkippedCount skipped
 
 #foreach ($item in $report.TestPackageRun.AllTestStepRuns)
-#if($item.Step.IsTestCase && ($showPassed || $item.Result.Outcome.Status.ToString() != "Passed"))
+#if($item.Step.IsTestCase && ($showPassed || $item.Result.Outcome.Status != "Passed"))
 [$item.Result.Outcome.Status] $item.Step.Metadata.GetValue("TestKind") $item.Step.FullName
 #foreach($stream in $item.TestLog.Streams)
 $helper.NormalizeEndOfLines($stream.ToString())
@@ -32,7 +32,7 @@ $helper.NormalizeEndOfLines($stream.ToString())
 
 * Diagnostic Log:
 #foreach ($entry in $report.LogEntries)
-#if($entry.Severity.ToString() != "Debug")
+#if($entry.Severity != "Debug")
 [$entry.Severity] $entry.Message
 #if($entry.Details.Length > 0)
     $entry.Details
