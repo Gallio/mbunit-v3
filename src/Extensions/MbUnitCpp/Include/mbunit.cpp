@@ -319,7 +319,7 @@ namespace mbunit
 		, name(name)
 		, fileName(fileName)
 		, lineNumber(lineNumber)
-		, controller(this)
+		, assertionFrameworkController(this)
 		, TestLog(this)
 		, testLogId(0)
 		, dataSource(0)
@@ -810,7 +810,7 @@ namespace mbunit
     _Impl_AssertionFramework_AreNotEqual(const wchar_t*, wcscmp(unexpectedValue, actualValue) == 0, TypeString)
 
     #ifdef _AFX
-    _Impl_AssertionFramework_AreEqual(CString, (expectedValue).Compare(actualValue) != 0, TypeString)
+    _Impl_AssertionFramework_AreNotEqual(CString, (unexpectedValue).Compare(actualValue) != 0, TypeString)
     #endif
 
     // Asserts that the expected value and the actual value are approximately equal.

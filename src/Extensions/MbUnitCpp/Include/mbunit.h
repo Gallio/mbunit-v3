@@ -269,13 +269,13 @@ namespace mbunit
         void Clear();
 
         protected:
-        AssertionFrameworkController controller;
+        AssertionFrameworkController assertionFrameworkController;
 		TestLogRecorder TestLog;
 		void Bind(AbstractDataSource* dataSource);
 		virtual void BindDataRow(void* dataRow);
     };
 
-#define Assert controller.Get(__LINE__)
+#define Assert assertionFrameworkController.Get(__LINE__)
 
     // A chained list of tests.
     class TestList
