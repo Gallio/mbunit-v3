@@ -99,7 +99,7 @@ namespace mbunit
 
 	void String::AppendImpl(const char* str)
 	{
-		int n = (int)mbstowcs(0, str, -1);
+		int n = (int)mbstowcs(0, str, INT_MAX);
 		wchar_t* tmp = new wchar_t[n + 1];
 		mbstowcs(tmp, str, n);
 		AppendImpl(tmp, n);
