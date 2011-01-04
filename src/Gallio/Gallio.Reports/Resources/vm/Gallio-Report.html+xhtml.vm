@@ -13,15 +13,15 @@
 <!-- saved from url=(0014)about:internet -->
 <head>
 #if ($xhtml)
-<meta http-equiv="Content-Type" content="NaN; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 #else
 <META http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta http-equiv="Content-Type" content="; charset=utf-8">
+<meta http-equiv="Content-Type" content="charset=utf-8">
 #end
 <title>Gallio Test Report</title>
-<link rel="stylesheet" type="text/css" href="Sample.Html/css/Gallio-Report.css" #if($xhtml)/#end>
-<link rel="stylesheet" type="text/css" href="Sample.Html/css/Gallio-Report.generated.css" #if($xhtml)/#end>
-<script type="text/javascript" src="Sample.Html/js/Gallio-Report.js"></script>
+<link rel="stylesheet" type="text/css" href="$resourceRoot/css/Gallio-Report.css" #if($xhtml)/#end>
+<link rel="stylesheet" type="text/css" href="$resourceRoot/css/Gallio-Report.generated.css" #if($xhtml)/#end>
+<script type="text/javascript" src="$resourceRoot/js/Gallio-Report.js"></script>
 <style type="text/css">html { overflow: auto; }</style>
 #if ($xhtml)
 </head>

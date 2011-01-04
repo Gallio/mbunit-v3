@@ -145,7 +145,7 @@ namespace Gallio.Reports
         protected virtual void ApplyTemplate(IReportWriter reportWriter, AttachmentContentDisposition attachmentContentDisposition, ReportFormatterOptions options)
         {
             VelocityEngine engine = VelocityEngineFactory.CreateVelocityEngine();
-            VelocityContext context = VelocityEngineFactory.CreateVelocityContext(reportWriter.Report);
+            VelocityContext context = VelocityEngineFactory.CreateVelocityContext(reportWriter);
             string reportPath = reportWriter.ReportContainer.ReportName + "." + extension;
             Encoding encoding = new UTF8Encoding(false);
             Template template = engine.GetTemplate(Path.GetFileName(templatePath), encoding.BodyName);
@@ -190,7 +190,7 @@ namespace Gallio.Reports
         internal interface IVelocityEngineFactory
         {
             VelocityEngine CreateVelocityEngine();
-            VelocityContext CreateVelocityContext(Report report);
+            VelocityContext CreateVelocityContext(IReportWriter reportWriter);
         }
 
         internal class DefaultVelocityEngineFactory : IVelocityEngineFactory
@@ -215,11 +215,13 @@ namespace Gallio.Reports
                 engine.SetProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, Path.GetDirectoryName(templateDirectory));
             }
 
-            public VelocityContext CreateVelocityContext(Report report)
+            public VelocityContext CreateVelocityContext(IReportWriter reportWriter)
             {
                 var context = new VelocityContext();
-                context.Put("report", report);
+                context.Put("report", reportWriter.Report);
                 context.Put("helper", new FormatHelper());
+                var resourcesPath = RuntimeAccessor.Instance.ResourceLocator.ResolveResourcePath(new Uri("plugin://Gallio.Reports/Resources/"));
+                context.Put("resourceRoot", reportWriter.ReportContainer.ReportName);
                 return context;
             }
         }
