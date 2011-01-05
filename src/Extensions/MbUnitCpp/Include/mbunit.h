@@ -273,6 +273,7 @@ namespace mbunit
 		TestLogRecorder TestLog;
 		void Bind(AbstractDataSource* dataSource);
 		virtual void BindDataRow(void* dataRow);
+		virtual void RunWithCustomExceptionHandler();
     };
 
 #define Assert assertionFrameworkController.Get(__LINE__)
@@ -451,3 +452,21 @@ namespace mbunit
 	virtual void BindDataRow(void* dataRow) { row = *(DataSource##name::DataRow*)dataRow; } \
 	void Decorate2() {
 	
+// Expected exception decorator.
+#define EXPECTED_EXCEPTION(ExpectedExceptionType) \
+	Decorate3(); } \
+	virtual void RunWithCustomExceptionHandler() \
+	{ \
+		bool caught = false; \
+		try { RunImpl(); } \
+        catch (ExpectedExceptionType const&) { caught = true; } \
+		if (!caught) \
+		{ \
+			mbunit::AssertionFailure failure; \
+			failure.DescriptionId = assertionFrameworkController.AddNewString(L"Expected an exception of a specific type but none was thrown."); \
+			failure.Extra_0.Set(assertionFrameworkController.AddNewString(#ExpectedExceptionType), mbunit::TypeRaw, assertionFrameworkController.AddNewString(L"Expected Exception Type")); \
+			failure.LineNumber = assertionFrameworkController.GetLineNumber(); \
+			throw failure; \
+		} \
+	} \
+	void Decorate3() {

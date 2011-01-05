@@ -164,4 +164,9 @@
   <Test name="/MetadataInTestFixture" expectedStatus="Passed" expectedAssertCount="0" />
   <Test name="/MetadataInTestFixture/Sample" expectedStatus="Passed" expectedAssertCount="0" expectedMetadata="Category=Sample,Author=Charlie Chaplin,Description=This is a simple test" />
 
+  <Test name="/ExpectedException" expectedStatus="Failed" expectedAssertCount="0" />
+  <Test name="/ExpectedException/ExpectedException_should_pass_when_exception_is_actually_thrown" expectedStatus="Passed" expectedAssertCount="0" />
+  <Test name="/ExpectedException/ExpectedException_should_fail_when_exception_is_not_thrown" expectedStatus="Failed" expectedAssertCount="0" />
+  <Test name="/ExpectedException/ExpectedException_should_fail_when_exception_of_a_wrong_type_is_thrown" expectedStatus="Failed" expectedAssertCount="0" />
+
 </Specifications>

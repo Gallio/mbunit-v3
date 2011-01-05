@@ -348,7 +348,7 @@ namespace mbunit
         {
             Clear();
 			BindDataRow(dataRow);
-            RunImpl();
+            RunWithCustomExceptionHandler();
             testResultData->NativeOutcome = Passed;
 		}
         catch (AssertionFailure failure)
@@ -371,6 +371,11 @@ namespace mbunit
 		testResultData->TestLogId = testLogId;
         testResultData->AssertCount = assertCount;
     }
+
+	void Test::RunWithCustomExceptionHandler()
+	{
+		RunImpl(); // Default does not handle with any custom exception.
+	}
 
 	// Clears internal variables for new run.
     void Test::Clear()
