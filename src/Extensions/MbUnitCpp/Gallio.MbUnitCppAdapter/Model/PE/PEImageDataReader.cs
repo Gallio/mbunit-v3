@@ -25,6 +25,9 @@ using Gallio.Common.Collections;
 
 namespace Gallio.MbUnitCppAdapter.Model.PE
 {
+    /// <summary>
+    /// Specialized binary reader to get data from a PE image file.
+    /// </summary>
     public class PEImageDataReader : IDisposable
     {
         private readonly Stream stream;
@@ -32,6 +35,10 @@ namespace Gallio.MbUnitCppAdapter.Model.PE
         private readonly bool ownStream;
         private bool disposed;
 
+        /// <summary>
+        /// Constructs a data reader for the specified file.
+        /// </summary>
+        /// <param name="file">The name of the file to read the PE image from.</param>
         public PEImageDataReader(string file)
         {
             ownStream = true;
@@ -39,6 +46,15 @@ namespace Gallio.MbUnitCppAdapter.Model.PE
             reader = new BinaryReader(stream);
         }
 
+        /// <summary>
+        /// Constructs a data reader from the specified stream.
+        /// </summary>
+        /// <param name="stream">The stream to read the PE image from.</param>
+        /// <remarks>
+        /// <para>
+        /// The stream is not disposed when the reader is disposed.
+        /// </para>
+        /// </remarks>
         public PEImageDataReader(Stream stream)
         {
             if (stream == null)
@@ -62,6 +78,7 @@ namespace Gallio.MbUnitCppAdapter.Model.PE
             disposed = true;
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);
@@ -73,24 +90,44 @@ namespace Gallio.MbUnitCppAdapter.Model.PE
             stream.Seek(offset, SeekOrigin.Begin);
         }
 
+        /// <summary>
+        /// Reads the unsigned 16-bits integer at the specified offset.
+        /// </summary>
+        /// <param name="offset">The offset from the beginning of the file.</param>
+        /// <returns>The value read at the specified position.</returns>
         public ushort ReadUInt16(long offset)
         {
             Seek(offset);
             return reader.ReadUInt16();
         }
 
+        /// <summary>
+        /// Reads the signed 32-bits integer at the specified offset.
+        /// </summary>
+        /// <param name="offset">The offset from the beginning of the file.</param>
+        /// <returns>The value read at the specified position.</returns>
         public int ReadInt32(long offset)
         {
             Seek(offset);
             return reader.ReadInt32();
         }
 
+        /// <summary>
+        /// Reads the unsigned 32-bits integer at the specified offset.
+        /// </summary>
+        /// <param name="offset">The offset from the beginning of the file.</param>
+        /// <returns>The value read at the specified position.</returns>
         public uint ReadUInt32(long offset)
         {
             Seek(offset);
             return reader.ReadUInt32();
         }
 
+        /// <summary>
+        /// Reads the null-terminated ASCII string at the specified offset.
+        /// </summary>
+        /// <param name="offset">The offset from the beginning of the file.</param>
+        /// <returns>The string read at the specified position.</returns>
         public string ReadAsciiString(long offset)
         {
             Seek(offset);

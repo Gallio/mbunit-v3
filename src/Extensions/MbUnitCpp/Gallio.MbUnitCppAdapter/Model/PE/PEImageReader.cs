@@ -25,6 +25,20 @@ using Gallio.Common.Collections;
 
 namespace Gallio.MbUnitCppAdapter.Model.PE
 {
+    /// <summary>
+    /// A reader that gets useful information from the PE image of a target DLL.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The reader does not lock the DLL, nor it causes its dependencies to be loaded.
+    /// </para>
+    /// <para>
+    /// Information found in the PE image might be useful for determining whether
+    /// a DLL is suitable to a given unmanaged test framework adapter. We might look
+    /// if the DLL references a particular DLL (e.g. "boost_unit_test_framework.dll") or
+    /// if it exports a specific function (e.g. "MbUnitCpp_RunTests").
+    /// </para>
+    /// </remarks>
     public class PEImageReader : IDisposable
     {
         private readonly PEImageDataReader reader;
@@ -102,6 +116,10 @@ namespace Gallio.MbUnitCppAdapter.Model.PE
             }
         }
 
+        /// <summary>
+        /// Constructs a reader from the specified file.
+        /// </summary>
+        /// <param name="file">The file to read data from.</param>
         public PEImageReader(string file)
         {
             if (file == null)
@@ -110,6 +128,15 @@ namespace Gallio.MbUnitCppAdapter.Model.PE
             reader = new PEImageDataReader(file);
         }
 
+        /// <summary>
+        /// Constructs a reader from the specified stream.
+        /// </summary>
+        /// <param name="stream">The stream to read data from.</param>
+        /// <remarks>
+        /// <para>
+        /// The stream is not disposed when the reader is disposed.
+        /// </para>
+        /// </remarks>
         public PEImageReader(Stream stream)
         {
             reader = new PEImageDataReader(stream);
@@ -125,12 +152,17 @@ namespace Gallio.MbUnitCppAdapter.Model.PE
             disposed = true;
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Reads the PE image.
+        /// </summary>
+        /// <returns>Information found in the PE image, or a null reference if not found or not applicable.</returns>
         public PEImageInfo Read()
         {
             if (!VerifySignature())

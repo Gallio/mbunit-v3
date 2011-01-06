@@ -26,7 +26,7 @@ using Gallio.Common.Collections;
 namespace Gallio.MbUnitCppAdapter.Model.PE
 {
     /// <summary>
-    /// Information about a PE file.
+    /// Information found in the PE image file.
     /// </summary>
     public class PEImageInfo
     {
@@ -45,6 +45,10 @@ namespace Gallio.MbUnitCppAdapter.Model.PE
             }
         }
 
+        /// <summary>
+        /// Gets the list of imports.
+        /// </summary>
+        /// <example>"KERNEL32.dll"</example>
         public IList<string> Imports
         {
             get
@@ -53,6 +57,10 @@ namespace Gallio.MbUnitCppAdapter.Model.PE
             }
         }
 
+        /// <summary>
+        /// Gets the list of exported functions.
+        /// </summary>
+        /// <example>"MyFunc"</example>
         public IList<string> Exports
         {
             get
@@ -61,6 +69,12 @@ namespace Gallio.MbUnitCppAdapter.Model.PE
             }
         }
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="architecture">The CPU architecture that the executable file is intended for.</param>
+        /// <param name="imports">An enumeration of imports.</param>
+        /// <param name="exports">An enumeration of exported functions.</param>
         public PEImageInfo(ProcessorArchitecture architecture, IEnumerable<string> imports, IEnumerable<string> exports)
         {
             this.architecture = architecture;
