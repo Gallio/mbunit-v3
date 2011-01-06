@@ -41,7 +41,7 @@ using System.Security;
 // Ensure CLS compliance for as much of the framework as possible.
 // We will individually mark certain constructs non-compliant as needed
 // but setting this attribute on the assembly lets the compiler help us.
-[assembly: CLSCompliant(true)]
+[assembly: CLSCompliant(false)]
 
 // Allow partially trusted callers to use the MbUnit framework.
 // This isn't enough to ensure that we properly support partially trusted

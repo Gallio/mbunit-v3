@@ -81,7 +81,6 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
             try
             {
                 hLibrary = NativeMethods.LoadLibrary(fileName);
-                int error = Marshal.GetLastWin32Error();
 
                 if (hLibrary != IntPtr.Zero)
                 {

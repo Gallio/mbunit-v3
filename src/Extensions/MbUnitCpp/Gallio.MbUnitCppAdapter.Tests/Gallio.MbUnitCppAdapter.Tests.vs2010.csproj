@@ -39,7 +39,7 @@
   <ItemGroup>
     <Compile Include="Helper.cs" />
     <Compile Include="Integration\RunTest.cs" />
-    <Compile Include="Model\Bridge\UnmanagedDllHelperTest.cs" />
+    <Compile Include="Model\PE\PEImageReaderTest.cs" />
     <Compile Include="Model\Bridge\UnmanagedTestRepositoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -29,6 +29,7 @@ using Gallio.Model.Isolation;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.MbUnitCppAdapter.Model.PE;
 
 namespace Gallio.MbUnitCppAdapter.Model
 {
@@ -98,7 +99,13 @@ namespace Gallio.MbUnitCppAdapter.Model
         private HostSetup CreateHostSetup(TestPackage testPackage, FileInfo file)
         {
             HostSetup hostSetup = testPackage.CreateHostSetup();
-            hostSetup.ProcessorArchitecture = UnmanagedDllHelper.GetArchitecture(file.FullName);
+
+            using (var reader = new PEImageReader(file.FullName))
+            {
+                PEImageInfo info = reader.Read();
+                hostSetup.ProcessorArchitecture = info.Architecture;
+            }
+
             return hostSetup;
         }
     }

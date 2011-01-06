@@ -52,13 +52,15 @@
     <Compile Include="Model\Bridge\Position.cs" />
     <Compile Include="Model\Bridge\TestInfoData.cs" />
     <Compile Include="Model\Bridge\TestStepResult.cs" />
-    <Compile Include="Model\Bridge\UnmanagedDllHelper.cs" />
     <Compile Include="Model\Bridge\UnmanagedTestRepository.cs" />
     <Compile Include="Model\MbUnitCppAssertionFailure.cs" />
     <Compile Include="Model\MbUnitCppTest.cs" />
     <Compile Include="Model\MbUnitCppTestDriver.cs" />
     <Compile Include="Model\MbUnitCppTestFileTypeRecognizer.cs" />
     <Compile Include="Model\MbUnitCppTestFramework.cs" />
+    <Compile Include="Model\PE\PEImageReader.cs" />
+    <Compile Include="Model\PE\PEImageDataReader.cs" />
+    <Compile Include="Model\PE\PEImageInfo.cs" />
     <Compile Include="Model\Tasks\AbstractTask.cs" />
     <Compile Include="Model\Tasks\AssertionFailureReporter.cs" />
     <Compile Include="Model\Tasks\ExploreTask.cs" />

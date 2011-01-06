@@ -20,6 +20,7 @@ using Gallio.MbUnitCppAdapter.Model.Bridge;
 using Gallio.Runtime.FileTypes;
 using System;
 using System.IO;
+using Gallio.MbUnitCppAdapter.Model.PE;
 
 namespace Gallio.MbUnitCppAdapter.Model
 {
@@ -31,17 +32,16 @@ namespace Gallio.MbUnitCppAdapter.Model
         /// <inheritdoc />
         public bool IsRecognizedFile(IFileInspector fileInspector)
         {
-            FileInfo fileInfo;
+            Stream stream;
 
-            if (fileInspector.TryGetFileInfo(out fileInfo))
+            if (!fileInspector.TryGetStream(out stream))
+                return false;
+
+            using (var reader = new PEImageReader(stream))
             {
-                using (var repository = new UnmanagedTestRepository(fileInfo.FullName))
-                {
-                    return repository.IsValid;
-                }
+                PEImageInfo info = reader.Read();
+                return (info != null) && info.Exports.Contains("MbUnitCpp_RunTest");
             }
-
-            return false;
         }
     }
 }
