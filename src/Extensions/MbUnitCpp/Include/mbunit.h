@@ -459,7 +459,7 @@ namespace mbunit
 	{ \
 		bool caught = false; \
 		try { RunImpl(); } \
-        catch (ExpectedExceptionType const&) { caught = true; } \
+        catch (ExpectedExceptionType) { caught = true; } \
 		if (!caught) \
 		{ \
 			mbunit::AssertionFailure failure; \
