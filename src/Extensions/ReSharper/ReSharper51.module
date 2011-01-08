@@ -18,6 +18,10 @@
     <File Include="Gallio.ReSharperRunner\Resources\resharper.ico">
       <ImagePath>bin\ReSharper\v5.1\Resources</ImagePath>
     </File>
+	
+	<File Include="Gallio.ReSharperRunner\MbUnit.xml">
+      <ImagePath>bin\ReSharper\v5.1</ImagePath>
+    </File>
 
 	<!--
     <TestAssembly Include="Gallio.ReSharperRunner.Tests\bin\v5.1\Gallio.ReSharperRunner51.Tests.dll" />

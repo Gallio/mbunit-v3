@@ -30,7 +30,16 @@
 
         <DirectoryRef Id="TARGETDIR">
             <Directory Id="RESHARPER_V51_VS9_INSTALLDIR" Name="ReSharper_V51_VS90">
-                <Directory Id="JetBrains.ReSharper.V51.VS9.PluginsDir" Name="Plugins">
+				
+				<Directory Id="JetBrains.ReSharper.V51.VS9.ExternalAnnotationsDir" Name="ExternalAnnotations">
+					<Directory Id="JetBrains.Resharper.V51.VS9.MbUnitDir" Name="MbUnit">
+                        <Component Id="MbUnit.V51.VS9.xml" Guid="{E6E3E73E-C60A-46fb-B315-13B33D0C82FE}" Win64="no">
+                            <File Id="MbUnit.V51.VS9.xml" Source="$(var.GallioTargetDir)\bin\ReSharper\v5.1\MbUnit.xml" KeyPath="yes" />
+                        </Component>					
+					</Directory>
+                </Directory>
+				
+				<Directory Id="JetBrains.ReSharper.V51.VS9.PluginsDir" Name="Plugins">
                     <Directory Id="JetBrains.Resharper.V51.VS9.GallioDir" Name="Gallio">
                         <Component Id="Gallio.ReSharperRunner.V51.VS9.dll" Guid="{F32F20BD-69A1-49cb-9448-46588122032A}" Win64="no">
                             <File Id="Gallio.ReSharperRunner.V51.VS9.dll" Source="$(var.GallioTargetDir)\bin\ReSharper\v5.1\Gallio.ReSharperRunner51.dll" KeyPath="yes" />
@@ -46,7 +55,16 @@
             </Directory>
     
             <Directory Id="RESHARPER_V51_VS10_INSTALLDIR" Name="ReSharper_V51_VS100">
-                <Directory Id="JetBrains.ReSharper.V51.VS10.PluginsDir" Name="Plugins">
+				
+				<Directory Id="JetBrains.ReSharper.V51.VS10.ExternalAnnotationsDir" Name="ExternalAnnotations">
+					<Directory Id="JetBrains.Resharper.V51.VS10.MbUnitDir" Name="MbUnit">
+                        <Component Id="MbUnit.V51.VS10.xml" Guid="{DE1A9B51-8B42-4739-B089-BC7FA497BECF}" Win64="no">
+                            <File Id="MbUnit.V51.VS10.xml" Source="$(var.GallioTargetDir)\bin\ReSharper\v5.1\MbUnit.xml" KeyPath="yes" />
+                        </Component>					
+					</Directory>
+                </Directory>
+                
+				<Directory Id="JetBrains.ReSharper.V51.VS10.PluginsDir" Name="Plugins">
                     <Directory Id="JetBrains.Resharper.V51.VS10.GallioDir" Name="Gallio">
                         <Component Id="Gallio.ReSharperRunner.V51.VS10.dll" Guid="{388491BF-2934-4e3c-B8B5-E5BF44CA3BB5}" Win64="no">
                             <File Id="Gallio.ReSharperRunner.V51.VS10.dll" Source="$(var.GallioTargetDir)\bin\ReSharper\v5.1\Gallio.ReSharperRunner51.dll" KeyPath="yes" />
@@ -59,7 +77,9 @@
 						</Directory>
                     </Directory>
                 </Directory>
-            </Directory>            
+				
+            </Directory>  
+			
         </DirectoryRef>
 
         <Feature Id="feat_Gallio.ReSharper.V51" Title="ReSharper v5.1 Plug-in" Level="0" AllowAdvertise="no"
@@ -70,12 +90,14 @@
 
             <Feature Id="feat_Gallio.ReSharper.V51.VS9" Title="Visual Studio 2008" Level="0" AllowAdvertise="no">
                 <Condition Level="1">RESHARPER_V51_VS9_INSTALLDIR</Condition>
+				<ComponentRef Id="MbUnit.V51.VS9.xml"/>
                 <ComponentRef Id="Gallio.ReSharperRunner.V51.VS9.dll"/>
 				<ComponentRef Id="Gallio.ReSharperRunner.V51.VS9.Icon"/>
             </Feature>
 
             <Feature Id="feat_Gallio.ReSharper.V51.VS10" Title="Visual Studio 2010" Level="0" AllowAdvertise="no">
                 <Condition Level="1">RESHARPER_V51_VS10_INSTALLDIR</Condition>
+				<ComponentRef Id="MbUnit.V51.VS10.xml"/>
                 <ComponentRef Id="Gallio.ReSharperRunner.V51.VS10.dll"/>
 				<ComponentRef Id="Gallio.ReSharperRunner.V51.VS10.Icon"/>
             </Feature> 
