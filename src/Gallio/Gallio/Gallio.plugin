@@ -453,7 +453,7 @@
       <traits>
         <id>Project</id>
         <description>A Gallio project file.</description>
-        <fileNameRegex>.*\.gallio</fileNameRegex>
+        <fileNameRegex>.*\.gallio$</fileNameRegex>
       </traits>
     </component>
 
@@ -462,7 +462,7 @@
       <traits>
         <id>Executable</id>
         <description>A library or program file.</description>
-        <fileNameRegex>.*\.(dll|exe)</fileNameRegex>
+        <fileNameRegex>.*\.(dll|exe)$</fileNameRegex>
       </traits>
     </component>
 
