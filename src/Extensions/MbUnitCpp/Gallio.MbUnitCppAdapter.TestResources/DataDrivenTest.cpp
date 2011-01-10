@@ -21,24 +21,24 @@ TESTFIXTURE(DataDriven)
 	DATA(First, int x)
 	{
 		ROW(123)
-		ROW(456)
+		ROW(456, "Optional description of the data row")
 		ROW(789)
 	}
 
     TEST(BoundToFirst, BIND(First, Row))
     {
-		TestLog.WriteLineFormat(L"x = %d", Row.x);
+		TestLog.WriteLineFormat(L"x = %d, dataRowDescription = '%s'", Row.x, Row.dataRowDescription.GetBuffer());
     }
 
 	DATA(Second, int i, const wchar_t* text, double d)
 	{
 		ROW(0, L"Red", 3.14159)
 		ROW(1, L"Green", 1.41421)
-		ROW(2, L"Blue", 2.71828)
+		ROW(2, L"Blue", 2.71828, "This data row is blue")
 	}
 
     TEST(BoundToSecond, BIND(Second, Row))
     {
-		TestLog.WriteLineFormat(L"i = %d, text = %s, d = %lf", Row.i, Row.text, Row.d);
+		TestLog.WriteLineFormat(L"i = %d, text = %s, d = %.5lf, dataRowDescription = '%s'", Row.i, Row.text, Row.d, Row.dataRowDescription.GetBuffer());
     }
 }

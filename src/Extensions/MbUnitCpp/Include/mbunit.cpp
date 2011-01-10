@@ -891,7 +891,6 @@ namespace mbunit
 
 		    testInfoData->FileName = test->GetFileName();
 			testInfoData->LineNumber = test->GetLineNumber();
-			testInfoData->Name = test->GetName();
 			testInfoData->Index = test->GetIndex();
 			testInfoData->Position.TestFixture = testFixture;
 			testInfoData->Position.Test = test;
@@ -900,6 +899,7 @@ namespace mbunit
 			if (dataRow == 0)
 			{
 				testInfoData->Position.DataRow = 0;
+				testInfoData->Name = test->GetName();
 				
 				if (test->GetDataSource() != 0)
 				{
@@ -919,6 +919,7 @@ namespace mbunit
 		
 			testInfoData->Kind = KindRowTest;
 			testInfoData->Position.DataRow = dataRow;
+			testInfoData->Name = test->GetDataSource()->GetDataRowDescription(dataRow).GetBuffer();
 			position->DataRow = test->GetDataSource()->GetNextRow(dataRow);
 			if (position->DataRow == 0)
 				position->Test = test->GetNext();

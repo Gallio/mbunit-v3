@@ -84,13 +84,13 @@ namespace Gallio.MbUnitCppAdapter.Tests.Integration
 
         [Test]
         [Row("/DataDriven/BoundToFirst", new[] { 
-            "x = 123", 
-            "x = 456", 
-            "x = 789" })]
+            "x = 123, dataRowDescription = ''", 
+            "x = 456, dataRowDescription = 'Optional description of the data row'", 
+            "x = 789, dataRowDescription = ''" })]
         [Row("/DataDriven/BoundToSecond", new[] { 
-            "i = 0, text = Red, d = 3.14159", 
-            "i = 1, text = Green, d = 1.41421", 
-            "i = 2, text = Blue, d = 2.71828" })]
+            "i = 0, text = Red, d = 3.14159, dataRowDescription = ''", 
+            "i = 1, text = Green, d = 1.41421, dataRowDescription = ''", 
+            "i = 2, text = Blue, d = 2.71828, dataRowDescription = 'This data row is blue'" })]
         public void RunDataDrivenTests(string fullName, string[] expectedTestLogOutput)
         {
             TestStepRun run = Runner.GetPrimaryTestStepRun(r => r.Step.FullName.EndsWith(fullName));

@@ -236,6 +236,7 @@ namespace mbunit
 		public:
         void* GetHead() const { return head; }
 		virtual void* GetNextRow(void* dataRow) = 0;
+		virtual mbunit::String& GetDataRowDescription(void* dataRow) = 0;
 	};
 
     // Base class for executable tests.
@@ -422,6 +423,7 @@ namespace mbunit
         { \
 			struct DataRow* next; \
             MBU_FOR_EACH MBU_LP _0 MBU_C __VA_ARGS__ MBU_RP \
+			mbunit::String dataRowDescription; \
         }; \
         private: \
         struct DataRow* tail; \
@@ -434,6 +436,7 @@ namespace mbunit
         } \
         public: \
 		virtual void* GetNextRow(void* dataRow) { return ((struct DataRow*)dataRow)->next; } \
+		virtual mbunit::String& GetDataRowDescription(void* dataRow) { return ((struct DataRow*)dataRow)->dataRowDescription; } \
         DataSource##name() : tail(0) { Populate(); } \
         ~DataSource##name() \
         { \

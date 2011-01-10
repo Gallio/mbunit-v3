@@ -159,6 +159,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Tasks
                         break;
 
                     case NativeTestKind.RowTest:
+                        test.Name = group.Name + ((test.Name.Length > 0) ? String.Format(" ({0})", test.Name) : String.Empty);
                         group.AddChild(test);
                         break;
              
