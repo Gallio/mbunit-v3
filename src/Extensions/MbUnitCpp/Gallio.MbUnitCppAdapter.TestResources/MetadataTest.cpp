@@ -43,10 +43,27 @@ TESTFIXTURE(MetadataInTest)
 
 TESTFIXTURE(MetadataInTestFixture,
 		CATEGORY("Sample"), 
-		AUTHOR("Charlie Chaplin"), 
-		DESCRIPTION("This is a simple test"))
+		AUTHOR("Charlie Chaplin"))
 {
-    TEST(Sample)
+    TEST(Sample1)
+    {
+    }
+
+    TEST(Sample2, DESCRIPTION("This is a simple test"))
+    {
+    }
+}
+
+TESTFIXTURE(DataDrivenTestWithMetadata, CATEGORY("Yipee"))
+{
+	DATA(Source, int x)
+	{
+		ROW(123, "123")
+		ROW(456, "456")
+		ROW(789, "789")
+	}
+
+    TEST(Test, BIND(Source, row), DESCRIPTION("blah blah"))
     {
     }
 }

@@ -162,7 +162,12 @@
   <Test name="/MetadataInTest/WithDescription" expectedStatus="Passed" expectedAssertCount="0" expectedMetadata="Description=This is a simple test" />
   <Test name="/MetadataInTest/WithSeveralAttributes" expectedStatus="Passed" expectedAssertCount="0" expectedMetadata="Category=Sample,Author=Charlie Chaplin,Description=This is a simple test" />
   <Test name="/MetadataInTestFixture" expectedStatus="Passed" expectedAssertCount="0" />
-  <Test name="/MetadataInTestFixture/Sample" expectedStatus="Passed" expectedAssertCount="0" expectedMetadata="Category=Sample,Author=Charlie Chaplin,Description=This is a simple test" />
+  <Test name="/MetadataInTestFixture/Sample1" expectedStatus="Passed" expectedAssertCount="0" expectedMetadata="Category=Sample,Author=Charlie Chaplin" />
+  <Test name="/MetadataInTestFixture/Sample2" expectedStatus="Passed" expectedAssertCount="0" expectedMetadata="Category=Sample,Author=Charlie Chaplin,Description=This is a simple test" />
+  <Test name="/DataDrivenTestWithMetadata" expectedStatus="Passed" expectedAssertCount="0" />
+  <Test name="/DataDrivenTestWithMetadata/Test/Test (123)" expectedStatus="Passed" expectedAssertCount="0" expectedMetadata="Category=Yipee,Description=blah blah" />
+  <Test name="/DataDrivenTestWithMetadata/Test/Test (456)" expectedStatus="Passed" expectedAssertCount="0" expectedMetadata="Category=Yipee,Description=blah blah" />
+  <Test name="/DataDrivenTestWithMetadata/Test/Test (789)" expectedStatus="Passed" expectedAssertCount="0" expectedMetadata="Category=Yipee,Description=blah blah" />
 
   <Test name="/ExpectedException" expectedStatus="Failed" expectedAssertCount="0" />
   <Test name="/ExpectedException/ExpectedException_should_pass_when_exception_is_actually_thrown" expectedStatus="Passed" expectedAssertCount="0" />

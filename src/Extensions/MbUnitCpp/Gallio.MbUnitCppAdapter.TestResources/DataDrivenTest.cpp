@@ -25,9 +25,9 @@ TESTFIXTURE(DataDriven)
 		ROW(789)
 	}
 
-    TEST(BoundToFirst, BIND(First, Row))
+    TEST(BoundToFirst, BIND(First, row))
     {
-		TestLog.WriteLineFormat(L"x = %d, dataRowDescription = '%s'", Row.x, Row.dataRowDescription.GetBuffer());
+		TestLog.WriteLineFormat(L"x = %d, dataRowDescription = '%s'", row.x, row.dataRowDescription.GetBuffer());
     }
 
 	DATA(Second, int i, const wchar_t* text, double d)
@@ -37,8 +37,8 @@ TESTFIXTURE(DataDriven)
 		ROW(2, L"Blue", 2.71828, "This data row is blue")
 	}
 
-    TEST(BoundToSecond, BIND(Second, Row))
+    TEST(BoundToSecond, BIND(Second, row))
     {
-		TestLog.WriteLineFormat(L"i = %d, text = %s, d = %.5lf, dataRowDescription = '%s'", Row.i, Row.text, Row.d, Row.dataRowDescription.GetBuffer());
+		TestLog.WriteLineFormat(L"i = %d, text = %s, d = %.5lf, dataRowDescription = '%s'", row.i, row.text, row.d, row.dataRowDescription.GetBuffer());
     }
 }

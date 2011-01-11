@@ -43,6 +43,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         private bool isValid;
         private readonly IntPtr hModule;
         private readonly string fileName;
+        private readonly IDictionary<int, string> stringMapCache = new Dictionary<int, string>();
 
         /// <summary>
         /// Gets a value indicating whether the test library was successfully loaded.
@@ -172,10 +173,16 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
             if (stringId == 0)
                 return String.Empty;
 
+            string cached;
+
+            if (stringMapCache.TryGetValue(stringId, out cached))
+                return cached;
+
             var getString = (GetStringDelegate)Marshal.GetDelegateForFunctionPointer(procGetString, typeof(GetStringDelegate));
             var releaseString = (ReleaseStringDelegate)Marshal.GetDelegateForFunctionPointer(procReleaseString, typeof(ReleaseStringDelegate));
             string result = Marshal.PtrToStringUni(getString(stringId));
             releaseString(stringId);
+            stringMapCache.Add(stringId, result);
             return result;
         }
 
