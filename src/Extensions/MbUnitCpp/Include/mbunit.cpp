@@ -286,15 +286,10 @@ namespace mbunit
 	}
 		
 	// Attaches a key/value metadata to the current test or test fixture.
-	void DecoratorTarget::SetMetadata(const wchar_t* key, const wchar_t* value)
+	void DecoratorTarget::SetMetadata(const wchar_t* key, const String& value)
 	{
-		AppendTo(metadataId, String::Format(L"%s={%s},", key, value));
-	}
-
-	void DecoratorTarget::SetMetadata(const wchar_t* key, const char* value)
-	{
-		String strValue(value);
-		SetMetadata(key, strValue.GetBuffer());
+		String s(value);
+		AppendTo(metadataId, String::Format(L"%s={%s},", key, s.GetBuffer()));
 	}
 
 	// Create a new string ID or append the specified text if it already exists.

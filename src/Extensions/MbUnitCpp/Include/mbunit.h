@@ -216,8 +216,7 @@ namespace mbunit
 		protected:
 		DecoratorTarget(int metadataPrototypeId = 0);
 		void AppendTo(int& id, const String& s);
-		virtual void SetMetadata(const wchar_t* key, const wchar_t* value);
-		virtual void SetMetadata(const wchar_t* key, const char* value);
+		virtual void SetMetadata(const wchar_t* key, const String& value);
 		void NoOp() const { }
 
 		public:
