@@ -348,16 +348,7 @@ namespace mbunit
             Clear();
 			BindDataRow(dataRow);
             RunWithCustomExceptionHandler();
-
-			if (hasLateFailure != 0)
-			{
-				testResultData->NativeOutcome = Failed;
-				testResultData->Failure = lateFailure;
-			}
-			else
-			{
-				testResultData->NativeOutcome = Passed;
-			}
+            testResultData->NativeOutcome = Passed;
 		}
         catch (AssertionFailure failure)
         {
@@ -378,6 +369,12 @@ namespace mbunit
 		{
             testResultData->NativeOutcome = Failed;
             testResultData->Failure = AssertionFailure::FromException();
+		}
+
+		if (hasLateFailure)
+		{
+			testResultData->NativeOutcome = Failed;
+			testResultData->Failure = lateFailure;
 		}
 
 		testResultData->DurationMilliseconds = 1000 * (clock() - started) / CLOCKS_PER_SEC;
@@ -623,7 +620,7 @@ namespace mbunit
 			test->SetLateFailure(failure);
 		}
 	}
-
+    
 	void GoogleMockListener::SetTest(Test* test)
 	{
 		this->test = test;
