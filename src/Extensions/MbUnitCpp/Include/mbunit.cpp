@@ -20,6 +20,7 @@
 #include <wchar.h>
 #include <math.h>
 #include <time.h>
+#include <exception>
 #include "mbunit.h"
 
 #pragma warning (disable: 4996 4355) // Hide some warnings.
@@ -316,6 +317,7 @@ namespace mbunit
 		, lineNumber(lineNumber)
 		, testLogId(0)
 		, dataSource(0)
+		, hasLateFailure(false)
     {
 	}
 
@@ -336,6 +338,9 @@ namespace mbunit
     void Test::Run(TestResultData* testResultData, void* dataRow)
     {
 		BeforeRun();
+#ifdef MBUNITCPP_SUPPORT_GOOGLE_MOCK
+		GoogleMockRegistration::GetInstance().Run(this);
+#endif
 		clock_t started = clock();
 
         try
@@ -343,17 +348,31 @@ namespace mbunit
             Clear();
 			BindDataRow(dataRow);
             RunWithCustomExceptionHandler();
-            testResultData->NativeOutcome = Passed;
+
+			if (hasLateFailure != 0)
+			{
+				testResultData->NativeOutcome = Failed;
+				testResultData->Failure = lateFailure;
+			}
+			else
+			{
+				testResultData->NativeOutcome = Passed;
+			}
 		}
         catch (AssertionFailure failure)
         {
             testResultData->NativeOutcome = Failed;
             testResultData->Failure = failure;
         }
-		catch (char* exceptionMessage)
+		catch (char* e)
 		{
             testResultData->NativeOutcome = Failed;
-            testResultData->Failure = AssertionFailure::FromException(exceptionMessage);
+            testResultData->Failure = AssertionFailure::FromException(e, "char*");
+		}
+		catch (std::exception e)
+		{
+            testResultData->NativeOutcome = Failed;
+            testResultData->Failure = AssertionFailure::FromException(e.what(), "std::exception");
 		}
 		catch (...)
 		{
@@ -404,6 +423,15 @@ namespace mbunit
 	// Binds the specified data row to the test step.
 	void Test::BindDataRow(void* dataRow) 
 	{
+	}
+
+	void Test::SetLateFailure(const AssertionFailure& lateFailure)
+	{
+		if (!hasLateFailure)
+		{
+			this->lateFailure = lateFailure;
+			hasLateFailure = true;
+		}
 	}
 
     // Constructs an empty list of tests.
@@ -542,11 +570,13 @@ namespace mbunit
 	}
 
 	// Creates an assertion failure for an unhandled exception.
-	AssertionFailure AssertionFailure::FromException(char* exceptionMessage)
+	AssertionFailure AssertionFailure::FromException(const char* exceptionMessage, const char* exceptionType)
 	{
 		StringMap& map = TestFixture::GetStringMap();
 		AssertionFailure failure;
-		failure.DescriptionId = map.Add(new String(L"An unhandled exception was thrown"));
+		failure.DescriptionId = (exceptionType == 0)
+			? map.Add(new String(L"An unhandled exception was thrown."))
+			: map.Add(new String(String::Format("An unhandled exception of type '%s' was thrown.", exceptionType)));
 		failure.MessageId = map.Add(exceptionMessage == 0 ? 0 : new String(exceptionMessage));
 		return failure;
 	}
@@ -570,6 +600,63 @@ namespace mbunit
 	{
 		head = dataRow;
 	}
+
+	// ===================
+	// Google Mock Support
+	// ===================
+
+#ifdef MBUNITCPP_SUPPORT_GOOGLE_MOCK
+
+	GoogleMockListener::GoogleMockListener()
+		: test(0)
+	{
+	}
+
+	void GoogleMockListener::OnTestPartResult(const testing::TestPartResult& test_part_result) 
+	{
+		if (test_part_result.failed())
+		{
+			StringMap& map = TestFixture::GetStringMap();
+			AssertionFailure failure;
+			failure.DescriptionId = map.Add(new String(test_part_result.summary()));
+			failure.LineNumber = test_part_result.line_number();
+			test->SetLateFailure(failure);
+		}
+	}
+
+	void GoogleMockListener::SetTest(Test* test)
+	{
+		this->test = test;
+	}
+
+	GoogleMockRegistration::GoogleMockRegistration()
+		: registered(false), listener(0)
+	{
+	}
+
+	void GoogleMockRegistration::Run(Test* test)
+	{
+		if (!registered)
+		{
+			int argc = 0;
+			char* argv = "";
+			testing::InitGoogleMock(&argc, &argv);
+			testing::TestEventListeners& listeners = testing::UnitTest::GetInstance()->listeners();
+			listener = new GoogleMockListener;
+			listeners.Append(listener);
+			registered = true;
+		}
+
+		listener->SetTest(test);
+	}
+
+    GoogleMockRegistration& GoogleMockRegistration::GetInstance()
+    {
+        static GoogleMockRegistration instance;
+        return instance;
+    }
+
+#endif
 
 	// =============
 	// Log Recording
@@ -935,7 +1022,14 @@ namespace mbunit
         void __cdecl MbUnitCpp_RunTest(Position* position, TestResultData* testResultData)
         {
             Test* test = position->Test;
-            test->Run(testResultData, position->DataRow);
+
+			try
+			{
+				test->Run(testResultData, position->DataRow);
+			}
+			catch (...)
+			{
+			}
         }
 
 		wchar_t* __cdecl MbUnitCpp_GetString(StringId stringId)

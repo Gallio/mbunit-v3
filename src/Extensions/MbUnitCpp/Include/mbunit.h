@@ -16,6 +16,10 @@
 #pragma once
 #pragma warning (disable: 4003)
 
+#ifdef MBUNITCPP_SUPPORT_GOOGLE_MOCK
+#include "gmock\gmock.h"
+#endif
+
 namespace mbunit
 {
 	// A simple general purpose string container with formatting capabilities.
@@ -139,7 +143,7 @@ namespace mbunit
         LabeledValue Extra_0;
         LabeledValue Extra_1;
 		AssertionFailure();
-		static AssertionFailure FromException(char* exceptionMessage = 0);
+		static AssertionFailure FromException(const char* exceptionMessage = 0, const char* exceptionType = 0);
     };
 
     // Describes the result of a test.
@@ -212,7 +216,6 @@ namespace mbunit
 	// Base class for tests and test fixtures.
 	class DecoratorTarget
 	{
-		private:
         int metadataId;
 
 		protected:
@@ -227,7 +230,6 @@ namespace mbunit
 	
 	class AbstractDataSource
 	{
-		private:
         void* head;
 	    
 		protected:
@@ -251,6 +253,8 @@ namespace mbunit
         int assertCount;
 		int testLogId;
 		AbstractDataSource* dataSource;
+		AssertionFailure lateFailure;
+		bool hasLateFailure;
 
         public:
         Test(TestFixture* testFixture, const wchar_t* name, const wchar_t* fileName, int lineNumber);
@@ -266,6 +270,7 @@ namespace mbunit
         void IncrementAssertCount();
 		void AppendToTestLog(const String& s);
 		AbstractDataSource* GetDataSource() const { return dataSource; }
+		void SetLateFailure(const AssertionFailure& laterFailure);
 
         private:
         void Clear();
@@ -342,6 +347,33 @@ namespace mbunit
         public:
         TestFixtureRecorder(TestFixtureList& list, TestFixture* pTestFixture);
     };
+
+#ifdef MBUNITCPP_SUPPORT_GOOGLE_MOCK
+	// Google mock listener.
+	class GoogleMockListener : public testing::EmptyTestEventListener 
+	{
+		private:
+		Test* test;
+
+		public:
+		GoogleMockListener();
+		void SetTest(Test* test);
+		void OnTestPartResult(const testing::TestPartResult& test_part_result);
+	};
+
+	// Google mock listener registration helper
+	class GoogleMockRegistration
+	{
+		private:
+		bool registered;
+		GoogleMockListener* listener;
+
+		public:
+		GoogleMockRegistration();
+        static GoogleMockRegistration& GetInstance();
+		void Run(Test* test);
+	};
+#endif
 }
 
 // Helper macros.
@@ -379,6 +411,9 @@ namespace mbunit
 #define MBU_PRINT_ARG(x) x MBU_SC
 
 // Macro to create a new test fixture.
+#ifdef TESTFIXTURE
+#undef TESTFIXTURE
+#endif
 #define TESTFIXTURE(Name, ...) MBU_TESTFIXTURE MBU_LP Name, NoOp MBU_LP MBU_RP MBU_SC MBU_C __VA_ARGS__ MBU_RP
 #define MBU_TESTFIXTURE(Name, _0, ...) \
     namespace NamespaceTestFixture##Name \
@@ -398,6 +433,9 @@ namespace mbunit
     namespace NamespaceTestFixture##Name
 
 // Macro to create a new test.
+#ifdef TEST
+#undef TEST
+#endif
 #define TEST(Name, ...) MBU_TEST MBU_LP Name, NoOp MBU_LP MBU_RP MBU_SC MBU_C __VA_ARGS__ MBU_RP
 #define MBU_TEST(Name, _0, ...) \
     class Test##Name : public mbunit::Test \
