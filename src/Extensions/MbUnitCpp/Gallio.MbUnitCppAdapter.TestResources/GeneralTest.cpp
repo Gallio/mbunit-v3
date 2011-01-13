@@ -35,4 +35,15 @@ TESTFIXTURE(General)
 	{
 		throw FooException();
 	}
+
+	void MyFunc(int value)
+	{
+		Assert.AreEqual(123, value);
+		TestLog.WriteFormat("value = %d", value);
+	}
+
+	TEST(Assert_and_TestLog_are_accessible_from_outside_function)
+	{
+		MyFunc(123);
+	}
 }

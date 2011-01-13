@@ -180,7 +180,7 @@ namespace mbunit
 		AssertionFramework framework;
 
 		public:
-		AssertionFrameworkController(Test* test);
+		AssertionFrameworkController();
 		AssertionFramework& Get(int lineNumber);
         void IncrementAssertCount();
 		StringMap& Map() const;
@@ -189,6 +189,7 @@ namespace mbunit
 		StringId AddNewString(const wchar_t* wstr);
 		StringId AddNewString(const String& str);
 		int GetLineNumber() { return lineNumber; }
+		void SetTest(Test* test);
 	};
 
 	// Provides an access to the Gallio test log.
@@ -198,13 +199,14 @@ namespace mbunit
         Test *test;
 
 		public:
-		TestLogRecorder(Test* test);
+		TestLogRecorder();
 		void Write(const String& str);
 		void WriteLine(const String& str);
 		void WriteFormat(const char* format, ...);
 		void WriteFormat(const wchar_t* format, ...);
 		void WriteLineFormat(const char* format, ...);
 		void WriteLineFormat(const wchar_t* format, ...);
+		void SetTest(Test* test);
 	};
 
 	// Base class for tests and test fixtures.
@@ -269,11 +271,10 @@ namespace mbunit
         void Clear();
 
         protected:
-        AssertionFrameworkController assertionFrameworkController;
-		TestLogRecorder TestLog;
 		void Bind(AbstractDataSource* dataSource);
 		virtual void BindDataRow(void* dataRow);
 		virtual void RunWithCustomExceptionHandler();
+		virtual void BeforeRun() = 0;
     };
 
 #define Assert assertionFrameworkController.Get(__LINE__)
@@ -391,6 +392,8 @@ namespace mbunit
         } testFixtureInstance; \
         \
         mbunit::TestFixtureRecorder fixtureRecorder(mbunit::TestFixture::GetTestFixtureList(), &testFixtureInstance); \
+        mbunit::AssertionFrameworkController assertionFrameworkController; \
+		mbunit::TestLogRecorder TestLog; \
     } \
     namespace NamespaceTestFixture##Name
 
@@ -403,6 +406,7 @@ namespace mbunit
 		Test##Name() : mbunit::Test(&testFixtureInstance, L#Name, MBU_WFILE, __LINE__) { Decorate(); } \
         private: \
 		void Decorate() { MBU_FOR_EACH MBU_LP _0 MBU_C __VA_ARGS__ MBU_RP } \
+		void BeforeRun() { assertionFrameworkController.SetTest(this); TestLog.SetTest(this); } \
         virtual void RunImpl(); \
     } test##Name##Instance; \
     mbunit::TestRecorder recorder##Name (testFixtureInstance.GetTestList(), &test##Name##Instance); \

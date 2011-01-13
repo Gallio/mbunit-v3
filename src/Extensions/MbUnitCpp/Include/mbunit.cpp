@@ -314,8 +314,6 @@ namespace mbunit
 		, name(name)
 		, fileName(fileName)
 		, lineNumber(lineNumber)
-		, assertionFrameworkController(this)
-		, TestLog(this)
 		, testLogId(0)
 		, dataSource(0)
     {
@@ -337,6 +335,7 @@ namespace mbunit
     // Runs the current test and captures the failure(s).
     void Test::Run(TestResultData* testResultData, void* dataRow)
     {
+		BeforeRun();
 		clock_t started = clock();
 
         try
@@ -576,11 +575,16 @@ namespace mbunit
 	// Log Recording
 	// =============
 
-	TestLogRecorder::TestLogRecorder(Test* test)
-		: test(test)
+	TestLogRecorder::TestLogRecorder()
+		: test(0)
 	{
 	}
 	
+	void TestLogRecorder::SetTest(Test* test)
+	{
+		this->test = test;
+	}
+
     void TestLogRecorder::Write(const String& str)
     {
 		test->AppendToTestLog(str);
@@ -665,8 +669,8 @@ namespace mbunit
 		return TestFixture::GetStringMap(); 
 	}
 
-	AssertionFrameworkController::AssertionFrameworkController(Test* test)
-		: lineNumber(0), test(test), framework(this)
+	AssertionFrameworkController::AssertionFrameworkController()
+		: lineNumber(0), test(0), framework(this)
 	{
 	}
 		
@@ -681,6 +685,11 @@ namespace mbunit
     {
         test->IncrementAssertCount();
     }
+
+	void AssertionFrameworkController::SetTest(Test* test)
+	{
+		this->test = test;
+	}
 
 	// ===================
 	// Assertion Framework 
