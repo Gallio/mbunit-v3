@@ -574,6 +574,11 @@
             Does not query Registry, like DTE Commands object would do for names.
             </summary>
         </member>
+        <member name="M:JetBrains.VsIntegration.ActionManagement.VsCommandHelpersTodo.TryGetActionsInCommandBar(Microsoft.VisualStudio.CommandBars.CommandBar)">
+            <summary>
+            Skips what it cannot get (a command is not a button, is not our action, is not updatable, etc).
+            </summary>
+        </member>
         <member name="M:JetBrains.VsIntegration.ActionManagement.VsCommandHelpersTodo.ParseVsCommandNameOrCommandId(System.String,System.ComponentModel.Design.CommandID@,System.String@)">
             <summary>
             Parses a string representation of a VS command, which can either be a “<c>(GUID:INT)</c>” command ID, or a command name.
@@ -1372,6 +1377,11 @@
         <member name="M:JetBrains.VsIntegration.Whidbey.DocumentModel.VsDocumentWhidbey.MakeReadonly(JetBrains.Util.TextRange)">
             <summary>
             Locks a document range temporarily to prevent it from being edited. To unlock, dispose of the return value.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.DocumentModel.VsDocumentWhidbey.PersistDocData">
+            <summary>
+            Gets the persist-doc-data interface, if implemented by this document, and when this document is really attached to any underlying VS buffer.
             </summary>
         </member>
         <member name="P:JetBrains.VsIntegration.Whidbey.DocumentModel.VsDocumentWhidbey.Moniker">
@@ -3035,12 +3045,12 @@
             Identifies the Visual Studio text control scroll axis.
             </summary>
         </member>
-        <member name="T:JetBrains.VsIntegration.Markup.VsDocumentMarkupCommon">
+        <member name="T:JetBrains.VsIntegration.Markup.IVsDocumentMarkup">
             <summary>
             Base impl for VS-based markup models.
             </summary>
         </member>
-        <member name="M:JetBrains.VsIntegration.Markup.VsDocumentMarkupCommon.MakeReadonly(JetBrains.Util.TextRange)">
+        <member name="M:JetBrains.VsIntegration.Markup.IVsDocumentMarkup.MakeReadonly(JetBrains.Util.TextRange)">
             <summary>
             Creates a readonly lock for the given text range.
             </summary>

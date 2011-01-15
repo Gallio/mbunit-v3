@@ -1086,6 +1086,12 @@
             Makes sure we cancel a pending click when we're turned off / closed / etc.
             </summary>
         </member>
+        <member name="F:JetBrains.ReSharper.Feature.Services.Hyperlink.HyperlinkManager.myDisposableHyperlink">
+            <summary>
+            Alive while a hyperlink is visible, also ensures the prev hyperlink is not visible when a new one is created.
+            Must be guarded and readlocked.
+            </summary>
+        </member>
         <member name="F:JetBrains.ReSharper.Feature.Services.Hyperlink.HyperlinkManager.myDisposablesCurrentState">
             <summary>
             Cleared when exiting current state.

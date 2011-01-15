@@ -71,6 +71,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
 
         public override void SaveXml(XmlElement element)
         {
+            element.SetAttribute("runnerID", RunnerID);
             element.SetAttribute("facadeTaskType", facadeTask.GetType().FullName);
             facadeTask.SaveXml(element);
         }

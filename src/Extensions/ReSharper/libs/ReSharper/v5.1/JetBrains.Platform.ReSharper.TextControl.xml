@@ -678,9 +678,9 @@
             Creates the text control for the document, using the default scheme and highlighting.
             </summary>
         </member>
-        <member name="T:JetBrains.TextControl.Data.RangeableComparer">
+        <member name="M:JetBrains.TextControl.Data.RangeableContainer`2.EnsureUpdated">
             <summary>
-            Compares rangeables by start offset
+            Make the container updated for the recent document change, and return if the futher container modification should be reflected in <see cref="F:JetBrains.TextControl.Data.RangeableContainer`2.myDocumentChangeData"/>
             </summary>
         </member>
         <member name="T:JetBrains.TextControl.DocOffsetAndVirtual">
