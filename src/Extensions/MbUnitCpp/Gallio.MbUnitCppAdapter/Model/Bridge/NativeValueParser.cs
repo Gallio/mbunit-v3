@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Gallio.Model;
+using System.Runtime.InteropServices;
 
 namespace Gallio.MbUnitCppAdapter.Model.Bridge
 {
@@ -76,6 +77,9 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
                     case NativeValueType.Double:
                         return Double.Parse(field);
 
+                    case NativeValueType.Address:
+                        return NativeIntPtr.Parse(field);
+
                     default:
                         throw new ModelException(String.Format("Cannot parse the native unmanaged type value: unsupported type '{0}'.", valueType));
                 }
@@ -85,7 +89,5 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
                 throw new ModelException(String.Format("Cannot parse the native unmanaged type value: invalid value '{0}' of type '{1}'.", field, valueType), exception);
             }
         }
-
-
     }
 }

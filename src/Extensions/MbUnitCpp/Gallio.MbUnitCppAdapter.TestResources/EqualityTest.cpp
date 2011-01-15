@@ -227,5 +227,23 @@ TESTFIXTURE(Equality)
 		const wchar_t* actual = L"Crazy World";
         Assert.AreEqual(expected, actual);
     }
+
+	class Foo
+	{
+	};
+
+	TEST(Assert_AreEqual_pointer_should_pass)
+	{
+		Foo foo1;
+		Foo& foo2 = foo1;
+		Assert.AreEqual<void*>(&foo1, &foo2);
+	}
+
+	TEST(Assert_AreEqual_pointer_should_fail)
+	{
+		Foo foo1;
+		Foo foo2;
+		Assert.AreEqual<void*>(&foo1, &foo2);
+	}
 }
 

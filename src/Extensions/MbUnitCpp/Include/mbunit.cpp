@@ -134,6 +134,7 @@ namespace mbunit
 	_Impl_StringAppend(double, AppendFormat("%Lf", arg))
 	_Impl_StringAppend(char*, AppendImpl(arg))
 	_Impl_StringAppend(wchar_t*, AppendImpl(arg, (int)wcslen(arg)))
+	_Impl_StringAppend(void*, AppendFormat(L"%lu", arg))
 
     #ifdef _AFX
 	_Impl_StringAppend(CString, AppendImpl(arg.GetBuffer()))
@@ -861,6 +862,7 @@ namespace mbunit
     _Impl_AssertionFramework_AreEqual(const char*, strcmp(expectedValue, actualValue) != 0, TypeString)
     _Impl_AssertionFramework_AreEqual(wchar_t*, wcscmp(expectedValue, actualValue) != 0, TypeString)
     _Impl_AssertionFramework_AreEqual(const wchar_t*, wcscmp(expectedValue, actualValue) != 0, TypeString)
+    _Impl_AssertionFramework_AreEqual(void*, expectedValue != actualValue, TypeAddress)
 
     #ifdef _AFX
     _Impl_AssertionFramework_AreEqual(CString, (expectedValue).Compare(actualValue) != 0, TypeString)
@@ -901,6 +903,7 @@ namespace mbunit
     _Impl_AssertionFramework_AreNotEqual(const char*, strcmp(unexpectedValue, actualValue) == 0, TypeString)
     _Impl_AssertionFramework_AreNotEqual(wchar_t*, wcscmp(unexpectedValue, actualValue) == 0, TypeString)
     _Impl_AssertionFramework_AreNotEqual(const wchar_t*, wcscmp(unexpectedValue, actualValue) == 0, TypeString)
+    _Impl_AssertionFramework_AreNotEqual(void*, unexpectedValue == actualValue, TypeAddress)
 
     #ifdef _AFX
     _Impl_AssertionFramework_AreNotEqual(CString, (unexpectedValue).Compare(actualValue) != 0, TypeString)

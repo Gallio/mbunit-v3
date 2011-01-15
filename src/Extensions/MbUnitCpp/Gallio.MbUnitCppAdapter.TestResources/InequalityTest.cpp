@@ -227,5 +227,23 @@ TESTFIXTURE(Inequality)
 		const wchar_t* actual = L"Crazy World";
         Assert.AreNotEqual(expected, actual);
     }
+
+	class Foo
+	{
+	};
+
+	TEST(Assert_AreNotEqual_pointer_should_fail)
+	{
+		Foo foo1;
+		Foo& foo2 = foo1;
+		Assert.AreNotEqual<void*>(&foo1, &foo2);
+	}
+
+	TEST(Assert_AreNotEqual_pointer_should_pass)
+	{
+		Foo foo1;
+		Foo foo2;
+		Assert.AreNotEqual<void*>(&foo1, &foo2);
+	}
 }
 

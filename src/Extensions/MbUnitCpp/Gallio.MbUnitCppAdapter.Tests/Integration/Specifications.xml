@@ -33,7 +33,7 @@
   <Test name="/Logic/Assert_IsFalse_as_constant_int_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
   <Test name="/Logic/Assert_IsFalse_should_fail_with_custom_message" expectedStatus="Failed" expectedAssertCount="1" expectedFailureLog="This is a custom message." />
 
-  <Test name="/Equality" expectedStatus="Failed" expectedAssertCount="30" />
+  <Test name="/Equality" expectedStatus="Failed" expectedAssertCount="32" />
   <Test name="/Equality/Assert_AreEqual_bool_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
   <Test name="/Equality/Assert_AreEqual_bool_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
   <Test name="/Equality/Assert_AreEqual_char_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
@@ -64,8 +64,10 @@
   <Test name="/Equality/Assert_AreEqual_wide_char_pointer_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
   <Test name="/Equality/Assert_AreEqual_constant_wide_char_pointer_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
   <Test name="/Equality/Assert_AreEqual_constant_wide_char_pointer_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="/Equality/Assert_AreEqual_pointer_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="/Equality/Assert_AreEqual_pointer_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
 
-  <Test name="/Inequality" expectedStatus="Failed" expectedAssertCount="30" />
+  <Test name="/Inequality" expectedStatus="Failed" expectedAssertCount="32" />
   <Test name="/Inequality/Assert_AreNotEqual_bool_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
   <Test name="/Inequality/Assert_AreNotEqual_bool_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
   <Test name="/Inequality/Assert_AreNotEqual_char_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
@@ -96,6 +98,8 @@
   <Test name="/Inequality/Assert_AreNotEqual_wide_char_pointer_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
   <Test name="/Inequality/Assert_AreNotEqual_constant_wide_char_pointer_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
   <Test name="/Inequality/Assert_AreNotEqual_constant_wide_char_pointer_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="/Inequality/Assert_AreNotEqual_pointer_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="/Inequality/Assert_AreNotEqual_pointer_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
 
   <Test name="/AproximateEquality" expectedStatus="Failed" expectedAssertCount="52" />
   <Test name="/AproximateEquality/Assert_AreApproximatelyEqual_higher_char_should_pass" expectedStatus="Passed" expectedAssertCount="1" />

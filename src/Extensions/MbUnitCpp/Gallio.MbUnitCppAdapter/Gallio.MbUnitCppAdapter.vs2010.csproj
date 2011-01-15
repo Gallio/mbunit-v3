@@ -36,6 +36,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Bridge\NativeIntPtr.cs" />
     <Compile Include="Model\Bridge\UnmanagedAssemblyInfo.cs" />
     <Compile Include="Model\Bridge\NativeLabeledValue.cs" />
     <Compile Include="Model\Bridge\FakeMemberInfo.cs" />

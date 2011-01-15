@@ -29,6 +29,9 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
     /// a text to the adapter. We use the value type to parse it as an equivalent
     /// managed type and to display it properly in the report/log.
     /// </para>
+    /// <para>
+    /// Values should match "enum ValueType" as defined in "mbunit.h".
+    /// </para>
     /// </remarks>
     public enum NativeValueType
     {
@@ -40,7 +43,7 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         /// </para>
         /// </remarks>
         /// </summary>
-        Raw,
+        Raw = 0,
 
         /// <summary>
         /// Simple unicode text.
@@ -50,61 +53,67 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
         /// Displayed with diffing if both the actual and the expected values are available.
         /// </para>
         /// </remarks>
-        String,
+        String = 1,
 
         /// <summary>
         /// A boolean value parsed with <see cref="System.Boolean.Parse"/>.
         /// </summary>
-        Boolean,
+        Boolean = 2,
 
         /// <summary>
         /// A unicode character value parsed with <see cref="System.Char.Parse"/>.
         /// </summary>
-        Char,
+        Char = 3,
 
         /// <summary>
         /// An unsigned 8-bit value parsed with <see cref="System.Byte.Parse"/>.
         /// </summary>
-        Byte,
+        Byte = 4,
 
         /// <summary>
         /// An signed 16-bit value parsed with <see cref="System.Int16.Parse"/>.
         /// </summary>
-        Int16,
+        Int16 = 5,
 
         /// <summary>
         /// An unsigned 16-bit value parsed with <see cref="System.UInt16.Parse"/>.
         /// </summary>
-        UInt16,
+        UInt16 = 6,
 
         /// <summary>
         /// An signed 32-bit value parsed with <see cref="System.Int32.Parse"/>.
         /// </summary>
-        Int32,
+        Int32 = 7,
 
         /// <summary>
         /// An unsigned 32-bit value parsed with <see cref="System.UInt32.Parse"/>.
         /// </summary>
-        UInt32,
+        UInt32 = 8,
 
         /// <summary>
         /// An signed 64-bit value parsed with <see cref="System.Int64.Parse"/>.
         /// </summary>
-        Int64,
+        Int64 = 9,
 
         /// <summary>
         /// An unsigned 64-bit value parsed with <see cref="System.UInt64.Parse"/>.
         /// </summary>
-        UInt64,
+        UInt64 = 10,
 
         /// <summary>
         /// An floating point 32-bit value parsed with <see cref="System.Single.Parse"/>.
         /// </summary>
-        Single,
+        Single = 11,
 
         /// <summary>
         /// An floating point 64-bit value parsed with <see cref="System.Double.Parse"/>.
         /// </summary>
-        Double,
+        Double = 12,
+
+        /// <summary>
+        /// The address of an objet/variable. Parsed with <see cref="System.UInt64.Parse"/> and
+        /// displayed in hexadecimal.
+        /// </summary>
+        Address = 13,
     }
 }

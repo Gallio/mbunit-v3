@@ -120,6 +120,9 @@ namespace mbunit
 		TypeUInt64 = 10,
 		TypeSingle = 11,
 		TypeDouble = 12,
+
+		// The address of an object/variable (void*)
+		TypeAddress = 13,
 	};
 
     // Represents a single assertion failure.
