@@ -1,0 +1,1114 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.VSI</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.VSI.Misc.LocalProj">
+            <summary>
+            Runs some of the <c>Local.Proj</c> tasks.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VSI.Misc.LocalProj.RegisterAndDevenvSetup">
+            <summary>
+            Does local registration and runs devenv/setup. Returns the success flag.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.Actions.StdAfxAction.Execute(JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.DelegateExecute)">
+            <summary>
+            Executes action. Called after Update, that set ActionPresentation.Enabled to true.
+            </summary>
+            <param name="context">DataContext</param>
+            <param name="nextExecute">delegate to call</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.Actions.StdAfxAction.Update(JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
+            <summary>
+            Updates action visual presentation. If presentation.Enabled is set to false, ExecuteAsync
+            will not be called.
+            </summary>
+            <param name="context">DataContext</param>
+            <param name="presentation">presentation to update</param>
+            <param name="nextUpdate">delegate to call</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.Actions.StdAfxAction.MenuController.#ctor(JetBrains.UI.GotoByName.GotoByNameModel)">
+            <summary> 
+            Creates the controller and attaches to the model.
+            The controller lifetime is also synchronized to the model lifetime. That is, when the model is disposed of, the controller is also disposed of (but not the other way).
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.Actions.StdAfxAction.MenuController.ExecuteItem(JetBrains.UI.PopupMenu.Impl.JetPopupMenuItem)">
+            <summary>
+            Called when an item is to be executed.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.Actions.StdAfxAction.MenuController.UpdateItems(System.String,System.Func{System.Collections.Generic.IEnumerable{JetBrains.UI.PopupMenu.Impl.JetPopupMenuItem},JetBrains.UI.GotoByName.GotoByNameController.AddItemsBehavior,System.Boolean})">
+            <summary>
+            When the items get dirty (<see cref="F:JetBrains.UI.GotoByName.GotoByNameController.ItemsGottenDirty"/>), this function is called on the secondary thread.
+            The function should be checking for <paramref name="checkCancelled"/> every so often.
+            </summary>
+            <param name="filterString">The filtering string against which the items list should be produced.</param>
+            <param name="checkCancelled">Call from time to time, on <c>True</c>, abort immediately.</param>
+            <param name="itemsConsumer">A function you can use to add items to the output collection in a thread-safe manner. The function checks for the items limit and returns whether more items can be added.</param>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Common.UI.DeclaredElementView">
+            <summary>
+            Provides a customizable presentation for a declared element that can be used in runs of text.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Common.UI.DeclaredElementView.myDeclaredElementEnvoy">
+            <summary>
+            Helps tracking the <see cref="F:JetBrains.ReSharper.Features.Common.UI.DeclaredElementView.DeclaredElementProperty"/> value across document changes.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Common.UI.DeclaredElementView.myIsInternalDeclaredElementChange">
+            <summary>
+            Raised when changing the <see cref="F:JetBrains.ReSharper.Features.Common.UI.DeclaredElementView.DeclaredElementProperty"/> due to a change in the envoy.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Common.UI.DeclaredElementView.AttachEnvoy(JetBrains.ReSharper.Psi.IDeclaredElement)">
+            <summary>
+            Creates a new envoy for the new declared element.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Common.UI.DeclaredElementView.OnGotoDeclaredElement(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            When the hyperlink is clicked, navigates to the target.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Common.UI.DeclaredElementView.UpdateChildren">
+            <summary>
+            Updates the visual presentation of the object.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Common.UI.DeclaredElementView.DeclaredElement">
+            <summary>
+            Gets or sets the declared element presented by this instance.
+            The declared element tries to track changes in the document and remain valid as long as possible.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.VSI.Components.SolutionWatchdog">
+            <summary>
+            Watches for any leaked solutions.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VSI.Components.SolutionWatchdog.SolCompo.System#IDisposable#Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="F:JetBrains.ReSharper.VSI.Components.TextControlDebugMonitor.ShowWindow">
+            <summary>
+            Shows the monitor window.
+            Routed thru a signal to deactivate on disposal.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VSI.Components.TextControlDebugMonitor.InitWindow_Viewport">
+            <summary>
+            Last focused text control viewport coordinates.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VSI.Components.TextControlDebugMonitor.ShowScrollingAndCaret">
+            <summary>
+            Shows text control scrolling and caret info for the last-focused text control.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VSI.Components.TextControlDebugMonitor.System#IDisposable#Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:JetBrains.ReSharper.VSI.Components.TextControlDebugMonitor.ShowActionHandler.JetBrains#ActionManagement#IActionHandler#Execute(JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.DelegateExecute)">
+            <summary>
+            Executes action. Called after Update, that set ActionPresentation.Enabled to true.
+            </summary>
+            <param name="context">DataContext</param>
+            <param name="nextExecute">delegate to call</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.VSI.Components.TextControlDebugMonitor.ShowActionHandler.JetBrains#ActionManagement#IActionHandler#Update(JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
+            <summary>
+            Updates action visual presentation. If presentation.Enabled is set to false, Execute
+            will not be called.
+            </summary>
+            <param name="context">DataContext</param>
+            <param name="presentation">presentation to update</param>
+            <param name="nextUpdate">delegate to call</param>
+        </member>
+        <member name="T:JetBrains.ReSharper.VSI.ErrorStripeProto.ErrorStripeEditorStyle">
+            <summary>
+            Switches the error stripe into the editor colors mode. Optionally.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.VS.OptionPages.InternalPage.PageCreate">
+            <summary>
+            Fires when the internal page is shown.
+            Allows to add more controls to it (as a stack panel). Sink <see cref="F:JetBrains.ReSharper.VS.OptionPages.InternalPage.Commit"/> to save on OK.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.VS.OptionPages.InternalPage.Commit">
+            <summary>
+            Fires when the page is committed with OK.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Infra.IRefactoring">
+            <summary>
+            Describes the workflow of a refactoring. Classes implementing this interface and marked with <see cref="T:JetBrains.ReSharper.Refactorings.Infra.RefactoringAttribute"/> are added to the <see cref="T:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager"/> store.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.IRefactoring.CanRun(JetBrains.ActionManagement.IDataContext)">
+            <summary>
+            Checks whether the refactoring can run on the given data context.
+            Typically used by the actions' <see cref="M:JetBrains.ActionManagement.IUpdatableAction.Update(JetBrains.ActionManagement.IDataContext)"/> handler to disable the refactoring.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.IRefactoring.IsSupported">
+            <summary>
+            Gets whether the refactoring is supported in the current environment.
+            Typically used by the actions' <see cref="M:JetBrains.ActionManagement.IUpdatableAction.Update(JetBrains.ActionManagement.IDataContext)"/> handler to control the refactoring action visibility.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.IRefactoring.Name">
+            <summary>
+            Gets the short name of the refactoring. Goes to the refactoring window title.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.IRefactoring.WorkflowChart">
+            <summary>
+            Gets the workflow chart for this refactoring that defines what actions should be executed, in what sequence, and what data (UI) pages might be displayed by the refactoring.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Infra.IRefactoringDefinition">
+            <summary>
+            Describes the workflow of a refactoring. Classes implementing this interface and marked with <see cref="T:JetBrains.ReSharper.Refactorings.Infra.RefactoringAttribute"/> are added to the <see cref="T:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager"/> store.
+            Created one per session (mostly, a singleton).
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.IRefactoringDefinition.CanRun(JetBrains.DataFlow.IPropertyBag)">
+            <summary>
+            Checks whether the refactoring can run on the given data context.
+            Typically used by the actions' <see cref="M:JetBrains.ActionManagement.IUpdatableAction.Update(JetBrains.ActionManagement.IDataContext)"/> handler to disable the refactoring.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.IRefactoringDefinition.AcquireContext(JetBrains.ActionManagement.IDataContext,JetBrains.DataFlow.IPropertyBag)">
+            <summary>
+            <para>Acquires the environmental information from the data context and transfers to the bag.</para>
+            <para>As the refactoring is running, its only source of information is the bag. It's easy to populate the bag when running the refactoring programmatically. When run from UI, this information has to be collected from the action's data context.</para>
+            <para>Don't copy excessive information from the data context, as this will make it harder for plugin writers to learn what your refactoring wants. To obtain that information, they should inspect the bag after calling this method.</para>
+            </summary>
+            <param name="datacontext">The action's data context, to take the useful environmental information from.</param>
+            <param name="bag">The property bag on which the refactoring will run.</param>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.IRefactoringDefinition.IsSupported">
+            <summary>
+            Gets whether the refactoring is supported in the current environment.
+            Typically used by the actions' <see cref="M:JetBrains.ActionManagement.IUpdatableAction.Update(JetBrains.ActionManagement.IDataContext)"/> handler to control the refactoring action visibility.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.IRefactoringDefinition.Name">
+            <summary>
+            Gets the short name of the refactoring. Goes to the refactoring window title.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.IRefactoringDefinition.WorkflowChart">
+            <summary>
+            Gets the workflow chart for this refactoring that defines what actions should be executed, in what sequence, and what data (UI) pages might be displayed by the refactoring.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Infra.IRefactoringPage">
+            <summary>
+            The base interface for the data component of the refactoring workflow.
+            Provides for setting input data for the refactoring, either programmatically, or thru the optional user interface.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Infra.IRefactoringPageUiSequenceControl">
+            <summary>
+            A refactoring page might implement this interface if it desires to invoke UI Sequence transitions on its own.
+            For example, a button on the page may alter the setting for an alternate execution branch and immediately trigger the “Continue” button.
+            Note that this interface MIGHT be ignored by the refactoring execution host, so you MUST always expect that your page will be left by the ordinary “Continue” button, even though <see cref="P:JetBrains.ReSharper.Refactorings.Infra.IRefactoringPageUiSequenceControl.ContinueSuppressed"/>, and that firnig the <see cref="E:JetBrains.ReSharper.Refactorings.Infra.IRefactoringPageUiSequenceControl.GoBackward"/>/<see cref="E:JetBrains.ReSharper.Refactorings.Infra.IRefactoringPageUiSequenceControl.GoForward"/> events MIGHT be ignored.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.IRefactoringPageUiSequenceControl.ContinueSuppressed">
+            <summary>
+            Indicates whether the “Continue” button should not be available for the page, as the page might wish to disable it if it provides a set of custom Continue buttons for alternate navigation.
+            </summary>
+        </member>
+        <member name="E:JetBrains.ReSharper.Refactorings.Infra.IRefactoringPageUiSequenceControl.GoBackward">
+            <summary>
+            Fires when the UI sequence should be traversed backward. Simulates the “Back” button click.
+            </summary>
+        </member>
+        <member name="E:JetBrains.ReSharper.Refactorings.Infra.IRefactoringPageUiSequenceControl.GoForward">
+            <summary>
+            Fires when the UI sequence should be traversed forward. Simulates the “Continue” button click.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.IValidator.Message">
+            <summary>
+            Gets the error message.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.IValidator.Severity">
+            <summary>
+            Gets the severity of this validator in its current state.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Infra.RefactoringAttribute">
+            <summary>
+            The refactoring workflow implementations marked with this attribute are automatically collected by the <see cref="T:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager"/> class.
+            The class must implement the <see cref="T:JetBrains.ReSharper.Refactorings.Infra.IRefactoringDefinition"/> interface. The type of the refactoring is the key to the refactoring in the manager.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost">
+            <summary>
+            Hosts exexution of a refactoring.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.myExecutionLimit">
+            <summary>
+            The maximum number of steps per one <c>Go</c> execution.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.myIsBusy">
+            <summary>
+            Is currently running (calling <see cref="M:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.Step"/>, maybe async), don't touch, will stop some day either in the final state or on a data page.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.myIsInStep">
+            <summary>
+            Inside the <see cref="M:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.Step"/> function?
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.myMapStatesToSteps">
+            <summary>
+            Contains the steps to be executed for each of the states.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.myReadonlyCookie">
+            <summary>
+            Readonly cookie for properties of this host.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.myWorkflowChart">
+            <summary>
+            Stores the private and locked copy of the chart.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.IsFinalState(JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.States)">
+            <summary>
+            Gets whether the refactoring has terminated execution and is now in the final state.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.IsRunningState(JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.States)">
+            <summary>
+            Gets whether the refactoring is running in this state.
+            All the states but <see cref="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.States.Ready"/>, <see cref="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.States.Completed"/>, and <see cref="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.States.Failed"/> are considered to be runnning states.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.Go">
+            <summary>
+            If the refactoring is in the initial or running state, proceeds to the next data state or to the final state, synchronousely.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.InitDataFlow" -->
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.InitPropertyBag">
+            <summary>
+            Adds environment constants to the <see cref="P:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.PropertyBag"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.InitStep_Execution(System.Collections.Generic.IEnumerable{System.Action{JetBrains.DataFlow.IPropertyBag}},JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.States)">
+            <summary>
+            Action on the *Execute state.
+            </summary>
+            <param name="handlers">Handlers to call.</param>
+            <param name="nextstate">The state to transition into when done here.</param>
+            <returns>A func that implements this state.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.InitSteps">
+            <summary>
+            Fills in the actions for stepping in each of the <see cref="T:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.States"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.InitUiSequence">
+            <summary>
+            Prepares the refactoring's UI sequence chart.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.Step">
+            <summary>
+            Performs a single state machine step.
+            Returns whether more steps are desired immediately after this one.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.CurrentDataPage">
+            <summary>
+            Gets the current data page of the refactoring, in case its <see cref="P:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.State"/> is <see cref="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.States.UiSequence"/> and the active chart component is a <see cref="T:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowDataComponent"/>.
+            Otherwise, <c>Null</c>.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.IsBusy">
+            <summary>
+            The refactoring is currently busy (calling the <see cref="M:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.Step"/> function repeatedly, maybe asynchronousely), don't touch, will stop some day either in the final state or on a data page.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.PropertyBag">
+            <summary>
+            Gets the data context with environment constants.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.RefactoringDefinition">
+            <summary>
+            The definition for the refactoring whose execution is hosted in this object.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.State">
+            <summary>
+            Gets the current stage of the refactoring execution. Readonly.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.WorkflowChart">
+            <summary>
+            Gets the private and frozen copy of the chart.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.States">
+            <summary>
+            Enumerates the possible states for a refactoring host.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.States.Ready">
+            <summary>
+            The refactoring has not started yet.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.States.UiSequence">
+            <summary>
+            The refactoring is going through the UI sequence, as described by the <see cref="T:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.States.PreExecution">
+            <summary>
+            TODO.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.States.Execution">
+            <summary>
+            TODO.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.States.PostExecution">
+            <summary>
+            TODO.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.States.Completed">
+            <summary>
+            The refactoring has successfully completed the execution.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.States.Failed">
+            <summary>
+            The refactoring failed to complete the execution for some reason (aborted, could not recover from external changes, failed with an error, etc).
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.UiSequenceHost">
+            <summary>
+            Governs execution of the UI sequence within the global refactoring sequence.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.UiSequenceHost.myCurrentChartComponent">
+            <summary>
+            The name of the current component in the <see cref="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.UiSequenceHost.myWorkflowChart"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.UiSequenceHost.myCurrentDataPage">
+            <summary>
+            When stopped at a data component, stores an instance of its page.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.UiSequenceHost.myDataPagesCache">
+            <summary>
+            Caches the data pages that are created when executing the data components, so that they were reused on back-forward navigation.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.UiSequenceHost.myDiverge">
+            <summary>
+            After entering a component, stores whether we should diverge when leaving it on the next step.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.UiSequenceHost.myWorkflowChart">
+            <summary>
+            Stores the private and locked copy of the chart.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.UiSequenceHost.Step">
+            <summary>
+            Performs a single state machine step.
+            Returns whether more steps are desired immediately after this one.
+            </summary>
+            <remarks>
+            Sequence:
+            (1) Execute the current track.
+            (2) Execute the new component.
+            (3) Return whether not Data and not Final.
+            </remarks>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.UiSequenceHost.Step_FollowTrack(JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart,System.String,System.Boolean)">
+            <summary>
+            Follows the specified track out of the component. Most of all, reports the errors verbosely.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.UiSequenceHost.Step_ExecuteComponent">
+            <summary>
+            Executes component.
+            Returns whether wants to execute more (does not tell the final one apart).
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost.UiSequenceHost.CurrentDataPage">
+            <summary>
+            When stopped at a data component, stores an instance of its page.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager.myReadonlyCookie">
+            <summary>
+            The readonly cookie for limiting access to the properties and collections.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager.myRefactorings">
+            <summary>
+            <see cref="P:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager.Refactorings"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager.TryGetInstance">
+            <summary>
+            The one and only manager instance.
+            Returns <c>Null</c> if ReSharper is not loaded.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager.ExecuteRefactoring(System.Type,JetBrains.ActionManagement.IDataContext)">
+            <summary>
+            Starts execution of the specified refactoring.
+            This function runs the refactoring with the full user interface; you may create a <see cref="T:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost"/> instance manually to better control the execution. 
+            </summary>
+            <param name="type">Type that identifies the refactoring.</param>
+            <param name="context">Context in which the refactoring will be executed.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager.ExecuteRefactoring(JetBrains.ReSharper.Refactorings.Infra.IRefactoringDefinition,JetBrains.ActionManagement.IDataContext)">
+            <summary>
+            Starts execution of the specified refactoring.
+            This function runs the refactoring with the full user interface; you may create a <see cref="T:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost"/> instance manually to better control the execution. 
+            </summary>
+            <param name="refactoring">The refactoring to execute.</param>
+            <param name="context">Context in which the refactoring will be executed.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager.GetRefactoring(System.Type)">
+            <summary>
+            A method for looking up a refactoring in the <see cref="P:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager.Refactorings"/> collection.
+            Works like the collection indexer, but the exception that is frown when there is no such refactoring is more specific.
+            For other collection operations, use the <see cref="P:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager.Refactorings"/> map.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager.InitDataFlow">
+            <summary>
+            Establishes property bindings and validators.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager.UpdateRefactoringActionPresentation(System.Type,JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.ActionPresentation)">
+            <summary>
+            Checks whether the refactoring is available in the current context, for the sake of updating its UI action.
+            </summary>
+            <param name="type">Type that uniquely identifies the refactoring we're querying.</param>
+            <param name="context">Data context to check for availability in.</param>
+            <param name="presentation">Additional information (visible, enabled, etc).</param>
+            <returns>Whether the refactoring is visible and enabled, ie whether the its action can be executed.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager.UpdateRefactoringActionPresentation(JetBrains.ReSharper.Refactorings.Infra.IRefactoringDefinition,JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.ActionPresentation)">
+            <summary>
+            Checks whether the refactoring is available in the current context, for the sake of updating its UI action.
+            </summary>
+            <param name="refactoring">The refactoring to check.</param>
+            <param name="context">Data context to check for availability in.</param>
+            <param name="presentation">Additional information (visible, enabled, etc).</param>
+            <returns>Whether the refactoring is visible and enabled, ie whether the its action can be executed.</returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager.Instance">
+            <summary>
+            The one and only manager instance.
+            Throws if ReSharper is not loaded.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager.Refactorings">
+            <summary>
+            Gets the list of refactorings registered to the system.
+            You can use the existing ones, or add your own.
+            By default, all the refactorings marked with the <see cref="T:JetBrains.ReSharper.Refactorings.Infra.RefactoringAttribute"/> are harvested on startup.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager.RunningRefactorings">
+            <summary>
+            Gets the collection of refactorings that are currently in the running state.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager.ViewManager">
+            <summary>
+            Gets a manager for the refactoring views.
+            Its primary mission is to control the refactoring view resources, like sharing the toolwindow between the refactorings running with full UI.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Infra.RefactoringViewManager">
+            <summary>
+            The manager for the refactoring views, a helper to the <see cref="T:JetBrains.ReSharper.Refactorings.Infra._RefactoringsManager"/>.
+            Its primary mission is to control the refactoring view resources, like sharing the toolwindow between the refactorings running with full UI.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Infra.RefactoringViewManager.ToolWindowID">
+            <summary>
+            ID for the tool window, as registered with the tool window wrapper subsystem.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Infra.RefactoringViewManager.myPrimaryView">
+            <summary>
+            The primary view, as we're using the single-refactoring model.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringViewManager.TryGetInstance">
+            <summary>
+            Gets the one and only instance of the manager.
+            Returns <c>Null</c> if there is no solution.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringViewManager.TryGetViewForUiExecution">
+            <summary>
+            Summons a <see cref="T:JetBrains.ReSharper.Refactorings.WorkflowX.RefactoringView"/> suitable for full-UI execution of a refactoring.
+            <c>Null</c> means execution was refused.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringViewManager.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringViewManager.Instance">
+            <summary>
+            Gets the one and only instance of the manager.
+            Throws if there is no solution.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringViewManager.PrimaryView">
+            <summary>
+            Gets the primary view, as we're using the single-refactoring model.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart">
+            <summary>
+            Statically defines the refactoring workflow chart that will be executed by the <see cref="T:JetBrains.ReSharper.Refactorings.Workflow.Avalon.RefactoringExecutionHost"/>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Infra.IFreezable">
+            <summary>
+            An interface for the object that can be frozen to prevent further changes to it.
+            All attempts to modify the object will fail after it's frozen.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.IFreezable.Freeze">
+            <summary>
+            Freezes the object. This action is irrevertible.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.IFreezable.IsFrozen">
+            <summary>
+            Gets whether the object has been frozen.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.myIsFrozen">
+            <summary>
+            A prop that allows to listen for changes.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.#ctor">
+            <summary>
+            Creates a new, empty chart.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.#ctor(System.Action{JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart,System.String,System.String})">
+            <summary>
+            Cretaes a workflow using a function that injects its custom steps in between the components given as arguments.
+            Such a public function can be implemented on your refactoring to enable injecting it into composite refactorings.
+            </summary>
+            <param name="inject">A handler that should inject the custom steps into the given chart in between the components specified.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.#ctor(System.Action{JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart,System.String,System.String},System.Action{JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart})">
+            <summary>
+            Cretaes a workflow using a function that injects its custom steps in between the components given as arguments.
+            Such a public function can be implemented on your refactoring to enable injecting it into composite refactorings.
+            </summary>
+            <param name="injectUi">A handler that should inject the custom steps into the given chart in between the components specified.</param>
+            <param name="injectExecution">A handler that should inject the *execute steps into the chart.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.AssertValid">
+            <summary>
+            Checks various constraints on the current chart.
+            Throws if broken.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.Clone">
+            <summary>
+            Creates a shallow copy of the workflow.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.GetIncomingTracks(System.String,JetBrains.DataFlow.IDictionaryEvents{System.String,System.String})">
+            <summary>
+            Filters the collection to get the incoming tracks that end in the specified state.
+            Pass either <see cref="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.StraightTracks"/> or <see cref="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.DivergingTracks"/> as the <paramref name="tracks"/> parameter. 
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.Init_TerminalStates">
+            <summary>
+            Creates the two terminal states for the chart.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.OnTrackAddRemoveValidation(JetBrains.DataFlow.AddRemoveEventArgs{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Boolean)">
+            <summary>
+            Validates both straight and diverging tracks when they're added or removed in the chart.
+            </summary>
+            <param name="args"></param>
+            <param name="diverging"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.System#ICloneable#Clone">
+            <summary>
+            Creates a new object that is a copy of the current instance.
+            </summary>
+            
+            <returns>
+            A new object that is a copy of this instance.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.Freeze">
+            <summary>
+            Freezes the object. This action is irrevertible.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.FinalStateName">
+            <summary>
+            Gets the final state of the workflow.
+            You cannot change the final state, but you should direct the links from the last custom components to this state.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.InitialStateName">
+            <summary>
+            Gets the initial state of the workflow.
+            You cannot change the initial state, but you can use it for linking the first custom components to it.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.DivergingTracks">
+            <summary>
+            Gets the list of diverging tracks between the states. A track described by a <see cref="T:System.Collections.Generic.KeyValuePair`2"/> goes from <c>TKey</c> and into the <c>TValue</c>, which are the names of states. <see cref="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.StraightTracks"/> and <see cref="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.DivergingTracks"/> together comprise the full set of tracks between the states.
+            Each state can have any number of incoming tracks.
+            The final state (<see cref="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.FinalStateName"/>) has no outgoing tracks.
+            The “switch” state (<see cref="T:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowSwitchComponent"/>) has two emerging tracks, one of which is straight, and the other is diverging; whether to go straight or diverge is defined by the criterion on the track.
+            All the other states have exactly one outgoing track, which is straight.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.HandlePostExecute">
+            <summary>
+            The list of handlers that are run on the Post Execute stage of the refactoring.
+            TODO: define the stage
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.HandlePreExecute">
+            <summary>
+            The list of handlers that are run on the Pre Execute stage of the refactoring.
+            TODO: define the stage
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.HandleRollbackPreExecute">
+            <summary>
+            The list of handlers that are run to roll back the changes performed on the Pre Execute stage of the refactoring.
+            TODO: define the stage
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.HandleTransExecute">
+            <summary>
+            The list of handlers that are run on the Execute stage of the refactoring.
+            TODO: define the stage
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.States">
+            <summary>
+            Gets the collection of the states for this workflow chart.
+            The string key is always the name of the component implementing the state.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.StraightTracks">
+            <summary>
+            Gets the list of straight tracks between the states. A track described by a <see cref="T:System.Collections.Generic.KeyValuePair`2"/> goes from <c>TKey</c> and into the <c>TValue</c>, which are the names of states.
+            See <see cref="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.DivergingTracks"/> for info on which of them are straight. Every state but the final one has an outgoing straight track.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.IsFrozen">
+            <summary>
+            Gets whether the object has been frozen.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowComponent">
+            <summary>
+            The base component of the refactoring workflow.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowComponent.myIsFrozen">
+            <summary>
+            A prop that allows to listen for changes.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowComponent.#ctor(System.String)">
+            <summary>
+            Creates the component, setting its name. From this point on, the name does not change.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowComponent.AssertValid">
+            <summary>
+            Checks constraints on the object. Throws if violated.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowComponent.Clone">
+            <summary>
+            Creates a shallow copy of the instance.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowComponent.System#ICloneable#Clone">
+            <summary>
+            Creates a new object that is a copy of the current instance.
+            </summary>
+            
+            <returns>
+            A new object that is a copy of this instance.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowComponent.Freeze">
+            <summary>
+            Freezes the object. This action is irrevertible.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowComponent.Name">
+            <summary>
+            Gets the name of the component.
+            This name cannot change.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowComponent.IsFrozen">
+            <summary>
+            Gets whether the object has been frozen.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowDataComponent">
+            <summary>
+            Represents a page node in the refactoring workflow chart.
+            A page is a data-only node; it can collect data from the consumer (with UI controls in the case when refactorings are running in the UI mode), and should not run any activities other than for the needs of the data collectors on the page.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowDataComponent.#ctor(System.String,System.Type)">
+            <summary>
+            Initializes the data component with a unique name and the type of the page it presents.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowDataComponent.CreatePage(JetBrains.DataFlow.IPropertyBag)">
+            <summary>
+            Creates a new instance of the page object.
+            The properties in the <paramref name="bag"/> can be used to initialize it with the context.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowDataComponent.PageType">
+            <summary>
+            Gets or sets the type that implements the <see cref="T:JetBrains.ReSharper.Refactorings.Infra.IRefactoringPage"/> interface and holds the data and presentation of this data component.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowDataComponent`1">
+            <summary>
+            Represents a page node in the refactoring workflow chart.
+            A page is a data-only node; it can collect data from the consumer (with UI controls in the case when refactorings are running in the UI mode), and should not run any activities other than for the needs of the data collectors on the page.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowDataComponent`1.AssertValid">
+            <summary>
+            Checks constraints on the object. Throws if violated.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowDataComponent`1.Clone">
+            <summary>
+            Creates a shallow copy of the instance.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowDataComponent`1.CreatePage(JetBrains.DataFlow.IPropertyBag)">
+            <summary>
+            Creates a new instance of the page object.
+            The properties in the <paramref name="bag"/> can be used to initialize it with the context.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowDataComponent`1.FuncCreateDataPage">
+            <summary>
+            Gets or sets the function that instantiates the data page object.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Infra.EmptyRefactoringPage">
+            <summary>
+            A refactoring page stub that has no data fields and an empty view.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowActivityComponent">
+            <summary>
+            The activities are inserted between the pages and prepare data for the following pages, or direct the flow of the chart.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowActivityComponent.#ctor(System.String,System.Action{JetBrains.DataFlow.IPropertyBag})">
+            <summary>
+            Initializes the activity component by assigning it a name and the action to be performed upon execution.
+            </summary>
+            <param name="name">A unique name for this component. Cannot be changed after the component is created.</param>
+            <param name="activity">The action to be performed. Can be reassigned later.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowActivityComponent.AssertValid">
+            <summary>
+            Checks constraints on the object. Throws if violated.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowActivityComponent.Clone">
+            <summary>
+            Creates a shallow copy of the instance.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowActivityComponent.Activity">
+            <summary>
+            Gets or sets the implementation of the activity.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowSwitchComponent">
+            <summary>
+            A junction allows to branch the execution path depending on the value.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowSwitchComponent.#ctor(System.String,System.Func{JetBrains.DataFlow.IPropertyBag,System.Boolean})">
+            <summary>
+            Initializes the switch component with a name and the function that makes the decision.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowSwitchComponent.AssertValid">
+            <summary>
+            Checks constraints on the object. Throws if violated.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowSwitchComponent.Clone">
+            <summary>
+            Creates a shallow copy of the instance.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowSwitchComponent.IsDiverging">
+            <summary>
+            Gets or sets the diverge criteria: whether the execution flow will follow the straight track (<c>False</c>) or the diverging track (<c>True</c>).
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers">
+            <summary>
+            Helper methods for the chart that do not carry useful logic or access its internals.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.AddComponent(JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart,JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowComponent)">
+            <summary>
+            Adds a new state to the workflow.
+            Same as calling <see cref="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart.States"/>::<see cref="M:System.Collections.Generic.ICollection`1.Add(`0)"/> with the <paramref name="state"/>::<see cref="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowComponent.Name"/> as a key.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.After(JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart,JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.StringOrEnum)">
+            <summary>
+            Allows to add more components after the given one, on the straight path.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.AfterInitial(JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowChart)">
+            <summary>
+            Allows to add more components after the very first state of the chart.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.Queueing">
+            <summary>
+            Helps with queueing chart components, one after another.
+            You pick the initial, then go adding to the sequence one by one.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.Queueing.AddActivity(JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.StringOrEnum,System.Action{JetBrains.DataFlow.IPropertyBag})">
+            <summary>
+            Adds one more activity to the chain.
+            Always goes on the straight track after that.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.Queueing.AddData``1(JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.StringOrEnum,System.Func{JetBrains.DataFlow.IPropertyBag,``0})">
+            <summary>
+            Adds one more data (UI) component to the chain.
+            Always goes on the straight track after that.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.Queueing.AddSwitch(JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.StringOrEnum,System.Func{JetBrains.DataFlow.IPropertyBag,System.Boolean})">
+            <summary>
+            Adds one more switch to the chain.
+            Always goes on the straight track after that.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.Queueing.Diverge">
+            <summary>
+            The next (and only one) component will be added on a diverging track.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.Queueing.Link(JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.StringOrEnum)">
+            <summary>
+            Links to an already existing component (for example, when a diverging track goes around a data component).
+            The active pointer moves to the <paramref name="sToName"/> component after that.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.Queueing.Stop">
+            <summary>
+            Links to the terminal state.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.Queueing.EitherTracks">
+            <summary>
+            Returns the appropriate tracks collection, based on <see cref="F:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.Queueing.myIsDiverging"/> value.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.StringOrEnum">
+            <summary>
+            A class that allows passing the name in as either a string or an enum member.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.StringOrEnum.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"></see> that represents the current <see cref="T:System.Object"></see>.
+            </summary>
+            
+            <returns>
+            A <see cref="T:System.String"></see> that represents the current <see cref="T:System.Object"></see>.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.StringOrEnum.Value">
+            <summary>
+            Gets the string value of the object, as it's stored.
+            Same as <see cref="M:JetBrains.ReSharper.Refactorings.Infra.RefactoringWorkflowHelpers.StringOrEnum.ToString"/>.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.ValidationHost.JetBrains#ReSharper#Refactorings#Infra#IValidator#Message">
+            <summary>
+            Gets the error message.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Infra.ValidationHost.JetBrains#ReSharper#Refactorings#Infra#IValidator#Severity">
+            <summary>
+            Gets the severity of this validator in its current state.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.WorkflowX.RefactoringView">
+            <summary>
+            Implements the view for the refactoring execution workflow.
+            This control provides the Back/Forward buttons and presents the views of the refactoring pages.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.WorkflowX.RefactoringView.myCachePageViews">
+            <summary>
+            Caches the views of data component pages, to avoid creating a new instance each time we back-forward.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.WorkflowX.RefactoringView.myFlow_IsBusy">
+            <summary>
+            The executor is busy with some action.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.WorkflowX.RefactoringView.myViewEmptyCueBanner">
+            <summary>
+            A banner displayed when there is no useful content in the window.
+            Created in <see cref="M:JetBrains.ReSharper.Refactorings.WorkflowX.RefactoringView.InitView_EmptyCueBanner"/>
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.WorkflowX.RefactoringView.myViewWizard">
+            <summary>
+            The variant of the view that implements the Refactoring Wizard.
+            Available when there is a refactoring running, and that refactoring is in the UI stage.
+            Created in <see cref="M:JetBrains.ReSharper.Refactorings.WorkflowX.RefactoringView.InitView_Wizard"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.WorkflowX.RefactoringView.Next">
+            <summary>
+            Performs the “Next” button action.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.WorkflowX.RefactoringView.OnCurrentPageChanged_UiSequenceControl(JetBrains.DataFlow.PropertyChangedEventArgs{JetBrains.ReSharper.Refactorings.Infra.IRefactoringPage})">
+            <summary>
+            When a new page is assigned, starts listening for its UI Sequence Control events, if any.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.WorkflowX.RefactoringView.Host">
+            <summary>
+            Gets the host for the refactoring workflow logic.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompilerImpl.myOutputLine">
+            <summary>
+            Fires when the compiler sends a line to the output.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompilerImpl.PublishInstance">
+            <summary>
+            Publishes the implementation instance into the public interface.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompilerImpl.OutputLine">
+            <summary>
+            Fires when the compiler sends a line to the output.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompilerImpl.MSBuildLogger">
+            <summary>
+            A logger that captures the MSBuild log events (status, error, warnings) and directs them into the SolutionBuilder log system.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompilerImpl.MSBuildLogger.Initialize(Microsoft.Build.Framework.IEventSource)">
+            <summary>
+            Subscribes loggers to specific events. This method is called when the logger is registered with the build engine, before any events are raised.
+            </summary>
+            
+            <param name="eventSource">The events available to loggers.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompilerImpl.MSBuildLogger.Shutdown">
+            <summary>
+            Releases the resources allocated to the logger at the time of initialization or during the build. This method is called when the logger is unregistered from the engine, after all events are raised. A host of  typically unregisters loggers immediately before quitting.
+            </summary>
+            
+        </member>
+        <member name="P:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompilerImpl.MSBuildLogger.Parameters">
+            <summary>
+            Gets or sets the user-defined parameters of the logger. 
+            </summary>
+            
+            <returns>
+            The logger parameters.
+            </returns>
+            
+        </member>
+        <member name="P:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompilerImpl.MSBuildLogger.Verbosity">
+            <summary>
+            Gets or sets the level of detail to show in the event log.
+            </summary>
+            
+            <returns>
+            One of the enumeration values. The default is <see cref="F:Microsoft.Build.Framework.LoggerVerbosity.Normal"></see>.
+            </returns>
+            
+        </member>
+    </members>
+</doc>

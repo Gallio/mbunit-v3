@@ -1,0 +1,381 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Intentions.CSharp</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Misc.Check.CheckArgumentActionBase.CreateMemberInfo(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+              Creates the member info.
+            </summary>
+            <param name="element">The expression.</param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Misc.Check.CheckArgumentActionBase.IsSupportedArgument(JetBrains.Util.Pair{System.String,JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.MemberInfo})">
+            <summary>
+              Determines whether [is supported argument] [the specified pair].
+            </summary>
+            <param name="pair">The pair.</param>
+            <returns>
+              <c>true</c>
+              if [is supported argument] [the specified pair]; otherwise,
+              <c>false</c>
+              .
+            </returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Misc.Check.CheckArgumentActionBase.ParameterName">
+            <summary>
+              Gets the name of the parameter.
+            </summary>
+            <value>
+              The name of the parameter.
+            </value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Misc.Check.CheckArgumentActionBase.ConditionalExpressionFormat">
+            <summary>
+              Gets the conditional expression format.
+            </summary>
+            <value>
+              The conditional expression format.
+            </value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Misc.Check.CheckArgumentActionBase.IfStatementFormat">
+            <summary>
+              Gets if statement format.
+            </summary>
+            <value>If statement format.</value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Misc.Check.CheckArgumentActionBase.SurroundIfStatementFormat">
+            <summary>
+              Gets the surround if statement format.
+            </summary>
+            <value>
+              The surround if statement format.
+            </value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Misc.Check.CheckArgumentActionBase.SingleIfStatementFormat">
+            <summary>
+              Gets the single if statement format.
+            </summary>
+            <value>
+              The single if statement format.
+            </value>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckArrayIndexValueActionBase.IsSupportedParamenter(JetBrains.ReSharper.Psi.IParametersOwner)">
+            <summary>
+              Determines whether [is supported paramenter] [the specified parameters owner].
+            </summary>
+            <param name="parametersOwner">
+              The parameters owner.
+            </param>
+            <returns>
+              <c>true</c>
+              if [is supported paramenter] [the specified parameters owner]; otherwise,
+              <c>false</c>
+              .
+            </returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckArrayIndexValueActionBase.IsSupportedArgument(JetBrains.Util.Pair{System.String,JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.MemberInfo})">
+            <summary>
+              Determines whether [is supported argument] [the specified pair].
+            </summary>
+            <param name="pair">The pair.</param>
+            <returns>
+              <c>true</c>
+              if [is supported argument] [the specified pair]; otherwise,
+              <c>false</c>
+              .
+            </returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckArrayIndexValueActionBase.GetText(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>Gets the text.</summary>
+            <param name="argumentValue">The argument value.</param>
+            <param name="argumentOwner">The argument owner.</param>
+            <returns></returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckArrayIndexValueActionBase.ParameterName">
+            <summary>
+              Gets the name of the parameter.
+            </summary>
+            <value>
+              The name of the parameter.
+            </value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckArrayIndexValueActionBase.ConditionalExpressionFormat">
+            <summary>
+              Gets the conditional expression format.
+            </summary>
+            <value>
+              The conditional expression format.
+            </value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckArrayIndexValueActionBase.Text">
+            <summary>Gets the text.</summary>
+            <value>The text.</value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckArrayIndexValueActionBase.IfStatementFormat">
+            <summary>
+              Gets if statement format.
+            </summary>
+            <value>If statement format.</value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckArrayIndexValueActionBase.SurroundIfStatementFormat">
+            <summary>
+              Gets the surround if statement format.
+            </summary>
+            <value>
+              The surround if statement format.
+            </value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckArrayIndexValueActionBase.SingleIfStatementFormat">
+            <summary>
+              Gets the single if statement format.
+            </summary>
+            <value>
+              The single if statement format.
+            </value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckArrayIndexValueActionBase.SupportedType">
+            <summary>
+              Gets the type of the supported.
+            </summary>
+            <value>
+              The type of the supported.
+            </value>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckCollectionIndexValueActionBase.IsSupportedParamenter(JetBrains.ReSharper.Psi.IParametersOwner)">
+            <summary>
+              Determines whether [is supported paramenter] [the specified parameters owner].
+            </summary>
+            <param name="parametersOwner">
+              The parameters owner.
+            </param>
+            <returns>
+              <c>true</c>
+              if [is supported paramenter] [the specified parameters owner]; otherwise,
+              <c>false</c>
+              .
+            </returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckCollectionIndexValueActionBase.GetText(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>Gets the text.</summary>
+            <param name="argumentValue">The argument value.</param>
+            <param name="argumentOwner">The argument owner.</param>
+            <returns></returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckCollectionIndexValueActionBase.ParameterName">
+            <summary>
+              Gets the name of the parameter.
+            </summary>
+            <value>
+              The name of the parameter.
+            </value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckCollectionIndexValueActionBase.ConditionalExpressionFormat">
+            <summary>
+              Gets the conditional expression format.
+            </summary>
+            <value>
+              The conditional expression format.
+            </value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckCollectionIndexValueActionBase.Text">
+            <summary>Gets the text.</summary>
+            <value>The text.</value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckCollectionIndexValueActionBase.IfStatementFormat">
+            <summary>
+              Gets if statement format.
+            </summary>
+            <value>If statement format.</value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckCollectionIndexValueActionBase.SurroundIfStatementFormat">
+            <summary>
+              Gets the surround if statement format.
+            </summary>
+            <value>
+              The surround if statement format.
+            </value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckCollectionIndexValueActionBase.SingleIfStatementFormat">
+            <summary>
+              Gets the single if statement format.
+            </summary>
+            <value>
+              The single if statement format.
+            </value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckCollectionIndexValueActionBase.ActionTextFormat">
+            <summary>
+              Gets the action text format.
+            </summary>
+            <value>
+              The action text format.
+            </value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckCollectionIndexValueActionBase.SupportedInterfaces">
+            <summary>
+              Gets the supported interfaces.
+            </summary>
+            <value>
+              The supported interfaces.
+            </value>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckDictionaryKeyValueAction.IsSupportedArgument(JetBrains.Util.Pair{System.String,JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.MemberInfo})">
+            <summary>
+              Determines whether [is supported argument] [the specified pair].
+            </summary>
+            <param name="pair">The pair.</param>
+            <returns>
+              <c>true</c>
+              if [is supported argument] [the specified pair]; otherwise,
+              <c>false</c>
+              .
+            </returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckDictionaryKeyValueAction.ParameterName">
+            <summary>
+              Gets the name of the parameter.
+            </summary>
+            <value>
+              The name of the parameter.
+            </value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckDictionaryKeyValueAction.NotOperator">
+            <summary>
+              Gets the not operator.
+            </summary>
+            <value>The not operator.</value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckDictionaryKeyValueAction.ConditionalExpressionFormat">
+            <summary>
+              Gets the conditional expression format.
+            </summary>
+            <value>
+              The conditional expression format.
+            </value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckDictionaryKeyValueAction.IfStatementFormat">
+            <summary>
+              Gets if statement format.
+            </summary>
+            <value>If statement format.</value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckDictionaryKeyValueAction.SurroundIfStatementFormat">
+            <summary>
+              Gets the surround if statement format.
+            </summary>
+            <value>
+              The surround if statement format.
+            </value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckDictionaryKeyValueAction.SingleIfStatementFormat">
+            <summary>
+              Gets the single if statement format.
+            </summary>
+            <value>
+              The single if statement format.
+            </value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckDictionaryKeyValueAction.ActionTextFormat">
+            <summary>
+              Gets the action text format.
+            </summary>
+            <value>
+              The action text format.
+            </value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckDictionaryKeyValueAction.SupportedInterfaces">
+            <summary>
+              Gets the supported interfaces.
+            </summary>
+            <value>
+              The supported interfaces.
+            </value>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckStringIndexValueActionBase.IsSupportedArgument(JetBrains.Util.Pair{System.String,JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.MemberInfo})">
+            <summary>
+              Determines whether [is supported argument] [the specified pair].
+            </summary>
+            <param name="pair">The pair.</param>
+            <returns>
+              <c>true</c>
+              if [is supported argument] [the specified pair]; otherwise,
+              <c>false</c>
+              .
+            </returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckStringIndexValueActionBase.SupportedType">
+            <summary>
+              Gets the type of the supported.
+            </summary>
+            <value>
+              The type of the supported.
+            </value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Check.CheckStringBuilderIndexValueAction.SupportedType">
+            <summary>
+              Gets the type of the supported.
+            </summary>
+            <value>
+              The type of the supported.
+            </value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Misc.ConvertRegularStringToVerbatimAction.Text">
+            <summary>Gets the text.</summary>
+            <value>The text.</value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Misc.ConvertVerbatimStringToRegularAction.Text">
+            <summary>Gets the text.</summary>
+            <value>The text.</value>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Misc.DecToHexAction.GetSelectedExpression">
+            <summary>
+              Gets the selected expression.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Misc.DecToHexAction.IsValidText(System.String)">
+            <summary>
+              Determines whether [is valid text] [the specified text].
+            </summary>
+            <param name="text">The text.</param>
+            <returns>
+              <c>true</c>
+              if [is valid text] [the specified text]; otherwise,
+              <c>false</c>
+              .
+            </returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.CSharp.ContextActions.Misc.DecToHexAction.ToHex(System.IFormattable)">
+            <summary>
+              Converts value to hex.
+            </summary>
+            <param name="value">The value.</param>
+            <returns></returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.ContextActions.NonI18n.UseEnvironmentNewLineAction.Text">
+            <summary>Gets the text.</summary>
+            <value>The text.</value>
+        </member>
+        <member name="T:JetBrains.ReSharper.Intentions.CSharp.Options.CsharpContextActionsPage">
+            <summary>Context actions.</summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.CSharp.Options.CsharpContextActionsPage.Id">
+            <summary>
+              Gets the ID of this option page.
+              <see cref="T:JetBrains.UI.Options.IOptionsDialog"/>
+              or
+              <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/>
+              could be used to retrieve the
+              <see cref="T:JetBrains.UI.Options.OptionsManager"/>
+              out of it.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.CSharp.QuickFixes.InitializeVarFix.StringTemplateExpression.Serialize">
+            <summary>
+              Serializes the expression
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.ExternalProcessStorage</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.ExternalProcessStorage.SolutionAnalysis.IDependencyToFileIdsMap.GetFilesToRehighlight(System.UInt32[])">
+            <returns>Map from file id's to a change</returns>
+        </member>
+    </members>
+</doc>

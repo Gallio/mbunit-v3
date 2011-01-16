@@ -1,0 +1,319 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Features.Intellisense</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Features.Intellisense.Options.CompletionAppearancePage">
+            <summary>
+            The visual completion settings.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Intellisense.Options.CompletionBehaviorPage">
+            <summary>
+            The behavioral code completion settings.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Intellisense.Options.EditorPage">
+            <summary>
+            The Editor-related options.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.Options.IntelliSenseGeneralPage.UseReSharperIntelliSense">
+            <summary>
+            Mirrors the <see cref="F:JetBrains.ReSharper.Feature.Services.Options.UseReSharperIntelliSense.Property"/> property, reflects the current in-options value.
+            Binded in <see cref="M:JetBrains.ReSharper.Features.Intellisense.Options.IntelliSenseGeneralPage.InitControls"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Intellisense.Options.IntelliSenseGeneralPage.AddDisabledMembersCueBanner(System.Windows.Forms.Control)">
+            <summary>
+            Creates a cue banner to be placed on the top of dependent pages that tells why some of the controls have been disabled (R# intellisense off), and how to reenable them.
+            The banner is hidden when R# intellisense is on.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Intellisense.Options.IntelliSensePage">
+            <summary>
+            The IntelliSense node in the options tree.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Intellisense.Options.ParameterInfoPage">
+            <summary>
+            IntelliSense Parameter Info.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.EditorParameterInfoHandler.myNextArrow">
+            <summary>
+            Handling of arrows while popu is shown
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.EditorParameterInfoHandler.mySolution">
+            <summary>
+            The solution in which we are
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.EditorParameterInfoHandler.myTextControl">
+            <summary>
+            The editor to use
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.EditorParameterInfoHandler.myContext">
+            <summary>
+            The current context
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.EditorParameterInfoHandler.myAlarm">
+            <summary>
+            The alarm to use
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.EditorParameterInfoHandler.myLBoundRangeMarker">
+            <summary>
+            Marker to the left bound
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.EditorParameterInfoHandler.myIsShownOnTop">
+            <summary>
+            True if parameter info is shown on top
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.EditorParameterInfoHandler.Context">
+            <summary>
+            Gets the context
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.EditorParameterInfoHandler.TextControl">
+            <summary>
+            Gets the editor
+            </summary>
+        </member>
+        <member name="E:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.EditorParameterInfoHandler.ContextChanged">
+            <summary>
+            Event which is fired when context changes
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.InvocableControl">
+            <summary>
+            Once a control, nowdays it's only a renderer for a single signature from the <see cref="T:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.ParameterInfoControl"/> form.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.IParameterInfoHandlerFactory">
+            <summary>
+            A factory for instantiating parameter info handlers
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.ParameterInfoAction">
+            <summary>
+            Action for showing parameter info in method calls (IDEA's Ctrl+P feature).
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.ParameterInfoControlBase.myWantsResize">
+            <summary>
+            Fires when the control would like to be reasked of its desired size.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.ParameterInfoControlBase.ShowWithoutActivation">
+            <summary>
+            Gets a value indicating whether the window will be activated when it is shown.
+            </summary>
+            
+            <returns>
+            True if the window will not be activated when it is shown; otherwise, false. The default is false.
+            </returns>
+            
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.ParameterInfoControlBase.WantsResize">
+            <summary>
+            Fires when the control would like to be reasked of its desired size.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.ParameterInfoPopupControllerImpl">
+            <summary>
+            Controls autopopup for parameter info
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView">
+            <summary>
+            Implements the view that displays a QuickDoc extract from the XmlDoc help on the given declared element.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.HeaderHeight">
+            <summary>
+            QuickDock window header height
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.InitialWidth">
+            <summary>
+            The initial width of the control.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.OptionWidthOnScreenFactor">
+            <summary>
+            Fraction of the screen width that can be occupied, at most, by the window when auto-sizing to fit the content horizontally.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.QuickDocWidthSettingsKey">
+            <summary>
+            Settings key for the QuickDoc window custom width.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.BorderSize">
+            <summary>
+            Border size, or padding of the Web browser control within the outer form bounds.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.BrowserMinSize">
+            <summary>
+            Minimum size of the Web browser control, as it wouldn't behave well when size is too small.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.MinLength">
+            <summary>
+            Minimum recommended length of the window against the corresponding dimensions. Restores after new content is loaded into the window; temporarily may be scaled down below this value.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.myQDControl">
+            <summary>
+            The Web browser control than renders the content.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.myWantsResize">
+            <summary>
+            Fires when the control would like to be reasked of its desired size.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.myAutoSizeToFit">
+            <summary>
+            <see cref="P:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.AutoSizeToFit"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.myDesiredSize">
+            <summary>
+            The size of the form that's recommended so that the browser content fit into the form.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.mySizeBarHitTestResults">
+            <summary>
+            A lazy-init collection of the hit test results that identify the size bars.
+            Use <see cref="P:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.SizeBarHitTestResults"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.HitTest(System.Drawing.Point)">
+            <summary>
+            Hit-tests the window areas and returns the result. <see cref="F:JetBrains.Interop.WinApi.HitTestResult.HTTRANSPARENT"/> means the result is unspecified (eg, normal client area or outside the window).
+            </summary>
+            <param name="ptHitClient">The hit point, in client coordinates.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.InitControls">
+            <summary>
+            Inits the instance UI.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.OnClosing(System.ComponentModel.CancelEventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Windows.Forms.Form.Closing"></see> event.
+            </summary>
+            
+            <param name="e">A <see cref="T:System.ComponentModel.CancelEventArgs"></see> that contains the event data. </param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.OnKeyDown(System.Windows.Forms.KeyEventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Windows.Forms.Control.KeyDown"></see> event.
+            </summary>
+            
+            <param name="e">A <see cref="T:System.Windows.Forms.KeyEventArgs"></see> that contains the event data. </param>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.QuickDocViewWidth">
+            <summary>
+            Gets or sets the QuickDocView custom width global setting.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.AutoSizeToFit">
+            <summary>
+            Gets or sets whether the control should accomodate its size to fit the content when navigating to another documentation.
+            This mode is turned off for the current instance after the user resizes its manually.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.SizeBarHitTestResults">
+            <summary>
+            Gets the collection of the hit test results that identify the size bars.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocView.WantsResize">
+            <summary>
+            Fires when the control would like to be reasked of its desired size.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Intellisense.QuickDoc.StandAlone.QuickDocControl">
+            <summary>
+            Displays QuickDoc
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.QuickDoc.StandAlone.QuickDocControl.myBrowser">
+            <summary>
+            The Web browser control than renders the content.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Intellisense.QuickDoc.StandAlone.QuickDocControl.GetPrefferedWidth">
+            <summary>
+            Performs layout calculations to eleminate scrolling.
+            </summary>
+            <returns>Width of control without line breaks and horizontal scrolling</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Intellisense.QuickDoc.StandAlone.QuickDocControl.GetPrefferedHeight(System.Int32)">
+            <summary>
+            Performs layoput calculations to eleminate scrolling
+            </summary>
+            <param name="desiredWidth">Desired control width</param>
+            <returns>Height of control without vertical scrolling</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Intellisense.QuickDoc.StandAlone.QuickDocControl.OnKeyDown(System.Windows.Forms.KeyEventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Windows.Forms.Control.KeyDown"></see> event.
+            </summary>
+            <param name="e">A <see cref="T:System.Windows.Forms.KeyEventArgs"></see> that contains the event data. </param>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Intellisense.QuickDoc.StandAlone.QuickDocControl.DocumentText">
+            <summary>
+            Text displaying in control. Can be used for hacks
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Intellisense.QuickDoc.StandAlone.QuickDocController">
+            <summary>
+            Controller for QuickDocControl. Performs navigation, tracks history. It <b>MUST</b> be explicitly disposed. 
+            Control can be disposed instead of controller.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Intellisense.QuickDoc.StandAlone.QuickDocController.#ctor(JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.Psi.PsiLanguageType)">
+            <summary>
+            Creates controller
+            </summary>
+            <param name="solution">Solution</param>
+            <param name="language">Default language to render</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Intellisense.QuickDoc.StandAlone.QuickDocController.OpenInEditor">
+            <summary>
+            Opens current item in VS editor
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Intellisense.QuickDoc.StandAlone.QuickDocController.UpdateContent">
+            <summary>
+            Updates the entry of control
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Intellisense.QuickDoc.StandAlone.QuickDocController.ContentUpdated">
+            <summary>
+            Raised when control content is updated
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Intellisense.QuickDoc.StandAlone.QuickDocController.KeyPressed">
+            <summary>
+            Raised when key is pressed. Currenly only Escape passed.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Intellisense.QuickDoc.StandAlone.QuickDocController.DefaultLanguage">
+            <summary>
+            Default language for view
+            </summary>
+        </member>
+    </members>
+</doc>
