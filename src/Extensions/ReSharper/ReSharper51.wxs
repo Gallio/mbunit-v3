@@ -7,24 +7,16 @@
     <Fragment>
         <!-- Locate the R# InstallDir. -->
         <Property Id="RESHARPER_V51_VS9_INSTALLDIR">
-            <RegistrySearch Id="JetBrainsReSharperRegistryLM.V51.VS9" Type="raw" Win64="no"
+            <RegistrySearch Id="JetBrainsReSharperRegistryLM.V51.VS9" Type="raw" Win64="$(var.Win64Binary)"
                 Root='HKLM' Key="Software\JetBrains\ReSharper\v5.1\vs9.0" Name="InstallDir" />
-            <RegistrySearch Id="JetBrainsReSharperRegistryCU.V51.VS9" Type="raw" Win64="no"
-                Root='HKCU' Key="Software\JetBrains\ReSharper\v5.1\vs9.0" Name="InstallDir" />
-			<RegistrySearch Id="JetBrainsReSharperRegistryLM64.V51.VS9" Type="raw" Win64="yes"
-                Root='HKLM' Key="Software\JetBrains\ReSharper\v5.1\vs9.0" Name="InstallDir" />
-            <RegistrySearch Id="JetBrainsReSharperRegistryCU64.V51.VS9" Type="raw" Win64="yes"
+            <RegistrySearch Id="JetBrainsReSharperRegistryCU.V51.VS9" Type="raw" Win64="$(var.Win64Binary)"
                 Root='HKCU' Key="Software\JetBrains\ReSharper\v5.1\vs9.0" Name="InstallDir" />
         </Property>
 
         <Property Id="RESHARPER_V51_VS10_INSTALLDIR"> 
-            <RegistrySearch Id='JetBrainsReSharperRegistryLM.V51.VS10' Type="raw" Win64="no"
+            <RegistrySearch Id='JetBrainsReSharperRegistryLM.V51.VS10' Type="raw" Win64="$(var.Win64Binary)"
                 Root='HKLM' Key='Software\JetBrains\ReSharper\v5.1\vs10.0' Name='InstallDir' />
-            <RegistrySearch Id='JetBrainsReSharperRegistryCU.V51.VS10' Type="raw" Win64="no"
-                Root='HKCU' Key='Software\JetBrains\ReSharper\v5.1\vs10.0' Name='InstallDir' />
-            <RegistrySearch Id='JetBrainsReSharperRegistryLM64.V51.VS10' Type="raw" Win64="yes"
-                Root='HKLM' Key='Software\JetBrains\ReSharper\v5.1\vs10.0' Name='InstallDir' />	
-			<RegistrySearch Id='JetBrainsReSharperRegistryCU64.V51.VS10' Type="raw" Win64="yes"
+            <RegistrySearch Id='JetBrainsReSharperRegistryCU.V51.VS10' Type="raw" Win64="$(var.Win64Binary)"
                 Root='HKCU' Key='Software\JetBrains\ReSharper\v5.1\vs10.0' Name='InstallDir' />
         </Property>
 
