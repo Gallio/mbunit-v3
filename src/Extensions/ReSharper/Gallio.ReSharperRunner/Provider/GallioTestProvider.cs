@@ -548,6 +548,7 @@ namespace Gallio.ReSharperRunner.Provider
                 // arbitrary elements.  We don't care about the structure of the task tree beyond this depth.
 
                 // Add the assembly location.
+				tasks.Add(new UnitTestTask(null, new AssemblyLoadTask(topElement.GetAssemblyLocation())));
                 tasks.Add(new UnitTestTask(null, facadeTaskFactory.CreateAssemblyTaskFrom(topElement)));
 
                 if (explicitElements.Count != 0)
