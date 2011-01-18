@@ -20,7 +20,7 @@ using MbUnit.Framework;
 
 namespace Gallio.Tests.Runtime.ConsoleSupport
 {
-    [TestFixture] [Author("JCL")]
+    [TestFixture] 
     public class CommandLineArgumentAttributeTests
     {
         [Test]
