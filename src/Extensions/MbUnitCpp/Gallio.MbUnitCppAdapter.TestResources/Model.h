@@ -22,5 +22,5 @@ class Foo
     public:
     Foo(int value);
     ~Foo();
-    int GetValue() const { return m_value; }
+    int GetValue() const;
 };

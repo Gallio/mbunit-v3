@@ -44,9 +44,6 @@ namespace Gallio.MbUnitCppAdapter.Tests.Integration
             IEnumerable<TestStepRun> runs = Runner.Report.TestPackageRun.AllTestStepRuns;
             string[] names = runs.Select(x => x.Step.FullName).Where(x => x.Length > 0).ToArray();
             Assert.IsNotEmpty(names);
-
-            //foreach (string name in names)
-            //    TestLog.WriteLine("> " + name);
         }
 
         [Test, XmlData("//Test", ResourcePath = "Specifications.xml")]
@@ -69,7 +66,10 @@ namespace Gallio.MbUnitCppAdapter.Tests.Integration
                 Assert.AreEqual(expectedAssertCount, run.Result.AssertCount);
 
                 if (expectedFailureLog != null)
-                    AssertLogContains(run, expectedFailureLog, MarkupStreamNames.Failures);
+                {
+                    foreach (string pattern in expectedFailureLog.Split(','))
+                        AssertLogLike(run, pattern.Trim(), MarkupStreamNames.Failures);
+                }
 
                 if (expectedDefaultLog != null)
                     AssertLogContains(run, expectedDefaultLog.Replace("\\n", "\n"), MarkupStreamNames.Default);

@@ -739,15 +739,8 @@ namespace mbunit
 
 	StringId AssertionFrameworkController::AddNewString(const String& str)
     {
-		return Map().Add(new String(str));
+		return (str.GetLength() == 0) ? 0 : Map().Add(new String(str));
     }
-
-	template<typename T> StringId AssertionFrameworkController::AddNewStringFrom(T arg)
-	{
-		String str;
-		str.Append(arg);
-		return Map().Add(new String(str));
-	}
 
 	StringMap& AssertionFrameworkController::Map() const
 	{ 
@@ -776,7 +769,102 @@ namespace mbunit
 		this->test = test;
 	}
 
-	// ===================
+    // =========================
+    // Assertion failure builder
+    // =========================
+
+    AssertionFailureBuilder::AssertionFailureBuilder(const String& description)
+        : description(description), message(0), expected(0), actual(0), unexpected(0), 
+        extraLabel0(0), extraValue0(0), extraLabel1(0), extraValue1(0)
+    {
+    }
+
+    AssertionFailureBuilder::~AssertionFailureBuilder()
+    {
+        if (message != 0)
+            delete message;
+        if (expected != 0)
+            delete expected;
+        if (actual != 0)
+            delete actual;
+        if (unexpected != 0)
+            delete unexpected;
+        if (extraLabel0 != 0)
+            delete extraLabel0;
+        if (extraValue0 != 0)
+            delete extraValue0;
+        if (extraLabel1 != 0)
+            delete extraLabel1;
+        if (extraValue1 != 0)
+            delete extraValue1;
+    }
+
+    AssertionFailureBuilder& AssertionFailureBuilder::Message(const String& message)
+    {
+        this->message = new String(message);
+        return *this;
+    }
+
+    AssertionFailureBuilder& AssertionFailureBuilder::Expected(const String& expected, ValueType type)
+    {
+        this->expected = new String(expected);
+        expectedType = type;
+        return *this;
+    }
+
+    AssertionFailureBuilder& AssertionFailureBuilder::Actual(const String& actual, ValueType type)
+    {
+        this->actual = new String(actual);
+        actualType = type;
+        return *this;
+    }
+
+    AssertionFailureBuilder& AssertionFailureBuilder::Unexpected(const String& unexpected, ValueType type)
+    {
+        this->unexpected = new String(unexpected);
+        unexpectedType = type;
+        return *this;
+    }
+
+    AssertionFailureBuilder& AssertionFailureBuilder::Extra_0(const String& label, const String& value, ValueType type)
+    {
+        this->extraLabel0 = new String(label);
+        this->extraValue0 = new String(value);
+        extraType0 = type;
+        return *this;
+    }
+
+    AssertionFailureBuilder& AssertionFailureBuilder::Extra_1(const String& label, const String& value, ValueType type)
+    {
+        this->extraLabel1 = new String(label);
+        this->extraValue1 = new String(value);
+        extraType1 = type;
+        return *this;
+    }
+
+    AssertionFailure AssertionFailureBuilder::ToAssertionFailure(AssertionFrameworkController* controller)
+    {
+        AssertionFailure failure;
+        failure.DescriptionId = controller->AddNewString(description);
+        
+        if (expected != 0)
+            failure.Expected.Set(controller->AddNewString(*expected), expectedType);
+        if (actual != 0)
+            failure.Actual.Set(controller->AddNewString(*actual), actualType);
+        if (unexpected != 0)
+            failure.Unexpected.Set(controller->AddNewString(*unexpected), unexpectedType);
+        if (message != 0)
+            failure.MessageId = controller->AddNewString(*message);
+        if (extraLabel0 != 0)
+            failure.Extra_0.Set(controller->AddNewString(*extraValue0), extraType0, controller->AddNewString(*extraLabel0));
+        if (extraLabel1 != 0)
+            failure.Extra_1.Set(controller->AddNewString(*extraValue1), extraType1, controller->AddNewString(*extraLabel1));
+
+        failure.LineNumber = controller->GetLineNumber();
+        return failure;
+    }
+
+    // ===================
 	// Assertion Framework 
 	// ===================
 
@@ -790,11 +878,9 @@ namespace mbunit
     void AssertionFramework::Fail(const String& message)
     {
         controller->IncrementAssertCount();
-		AssertionFailure failure;
-		failure.DescriptionId = controller->AddNewString(L"An assertion failed.");
-		failure.MessageId = controller->AddNewString(message);
-		failure.LineNumber = controller->GetLineNumber();
-		throw failure;
+        throw AssertionFailureBuilder("An assertion failed.")
+            .Message(message)
+            .ToAssertionFailure(controller);
     }
 
 	// Asserts that the specified boolean value is true.
@@ -803,12 +889,10 @@ namespace mbunit
 		controller->IncrementAssertCount();
 		if (!actualValue)
 		{
-			AssertionFailure failure;
-			failure.DescriptionId = controller->AddNewString(L"Expected value to be true.");
-			failure.Actual.Set(controller->AddNewString(L"false"), TypeBoolean);
-			failure.MessageId = controller->AddNewString(message);
-			failure.LineNumber = controller->GetLineNumber();
-			throw failure;
+            throw AssertionFailureBuilder("Expected value to be true.")
+                .Actual("false", TypeBoolean)
+                .Message(message)
+                .ToAssertionFailure(controller);
 		}
 	}
 
@@ -818,12 +902,10 @@ namespace mbunit
 		controller->IncrementAssertCount();
 		if (actualValue)
 		{
-			AssertionFailure failure;
-			failure.DescriptionId = controller->AddNewString(L"Expected value to be false.");
-			failure.Actual.Set(controller->AddNewString(L"true"), TypeBoolean);
-			failure.MessageId = controller->AddNewString(message);
-			failure.LineNumber = controller->GetLineNumber();
-			throw failure;
+            throw AssertionFailureBuilder("Expected value to be false.")
+                .Actual("true", TypeBoolean)
+                .Message(message)
+                .ToAssertionFailure(controller);
 		}
 	}
 
@@ -834,13 +916,14 @@ namespace mbunit
 			controller->IncrementAssertCount(); \
 			if (CONDITION) \
 			{ \
-				AssertionFailure failure; \
-				failure.DescriptionId = controller->AddNewString(L"Expected values to be equal."); \
-				failure.Expected.Set(controller->AddNewStringFrom(expectedValue), MANAGEDTYPE); \
-				failure.Actual.Set(controller->AddNewStringFrom(actualValue), MANAGEDTYPE); \
-				failure.MessageId = controller->AddNewString(message); \
-				failure.LineNumber = controller->GetLineNumber(); \
-				throw failure; \
+                String expected, actual; \
+                expected.Append(expectedValue); \
+                actual.Append(actualValue); \
+                throw AssertionFailureBuilder("Expected values to be equal.") \
+                    .Actual(actual, MANAGEDTYPE) \
+                    .Expected(expected, MANAGEDTYPE) \
+                    .Message(message) \
+                    .ToAssertionFailure(controller); \
 			} \
 		}
 
@@ -875,13 +958,14 @@ namespace mbunit
 			controller->IncrementAssertCount(); \
 			if (CONDITION) \
 			{ \
-				AssertionFailure failure; \
-				failure.DescriptionId = controller->AddNewString(L"Expected values to be non-equal."); \
-				failure.Unexpected.Set(controller->AddNewStringFrom(unexpectedValue), MANAGEDTYPE); \
-				failure.Actual.Set(controller->AddNewStringFrom(actualValue), MANAGEDTYPE); \
-				failure.MessageId = controller->AddNewString(message); \
-				failure.LineNumber = controller->GetLineNumber(); \
-				throw failure; \
+                String unexpected, actual; \
+                unexpected.Append(unexpectedValue); \
+                actual.Append(actualValue); \
+                throw AssertionFailureBuilder("Expected values to be non-equal.") \
+                    .Actual(actual, MANAGEDTYPE) \
+                    .Unexpected(unexpected, MANAGEDTYPE) \
+                    .Message(message) \
+                    .ToAssertionFailure(controller); \
 			} \
 		}
 
@@ -916,14 +1000,16 @@ namespace mbunit
 			controller->IncrementAssertCount(); \
 			if (CONDITION) \
 			{ \
-				AssertionFailure failure; \
-				failure.DescriptionId = controller->AddNewString(L"Expected values to be approximately equal to within a delta."); \
-				failure.Expected.Set(controller->AddNewStringFrom(expectedValue), MANAGEDTYPE); \
-				failure.Actual.Set(controller->AddNewStringFrom(actualValue), MANAGEDTYPE); \
-				failure.Extra_0.Set(controller->AddNewStringFrom(delta), MANAGEDTYPE, controller->AddNewString(L"Delta")); \
-				failure.MessageId = controller->AddNewString(message); \
-				failure.LineNumber = controller->GetLineNumber(); \
-				throw failure; \
+                String expected, actual, deltas; \
+                expected.Append(expectedValue); \
+                actual.Append(actualValue); \
+                deltas.Append(delta); \
+                throw AssertionFailureBuilder("Expected values to be approximately equal to within a delta.") \
+                    .Actual(actual, MANAGEDTYPE) \
+                    .Expected(expected, MANAGEDTYPE) \
+                    .Extra_0("Delta", deltas, MANAGEDTYPE) \
+                    .Message(message) \
+                    .ToAssertionFailure(controller); \
 			} \
 		}
 

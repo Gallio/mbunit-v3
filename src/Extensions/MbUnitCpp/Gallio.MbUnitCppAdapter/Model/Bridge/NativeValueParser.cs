@@ -41,6 +41,8 @@ namespace Gallio.MbUnitCppAdapter.Model.Bridge
                 switch (valueType)
                 {
                     case NativeValueType.Raw:
+                        return new NativeRawObject(field);
+
                     case NativeValueType.String:
                         return field;
 

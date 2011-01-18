@@ -42,8 +42,8 @@ namespace mbunit
 		String& AppendFormat(const wchar_t* format, ...);
 		String& AppendFormat(const wchar_t* format, va_list args);
 		String& AppendFormat(const char* format, va_list args);
-		wchar_t* GetBuffer() { return buffer; }
-		size_t GetLength() { return length; }
+		wchar_t* GetBuffer() const { return buffer; }
+		size_t GetLength() const { return length; }
 
 		public:
 		static String Format(const char* format, ...);
@@ -191,13 +191,42 @@ namespace mbunit
 		AssertionFramework& Get(int lineNumber);
         void IncrementAssertCount();
 		StringMap& Map() const;
-		template<typename T> StringId AddNewStringFrom(T arg);
 		StringId AddNewString(const char* str);
 		StringId AddNewString(const wchar_t* wstr);
 		StringId AddNewString(const String& str);
 		int GetLineNumber() { return lineNumber; }
 		void SetTest(Test* test);
 	};
+
+    class AssertionFailureBuilder
+    {
+        String description;
+        String *message;
+        String *expected;
+        String *unexpected;
+        String *actual;
+        String *extraLabel0;
+        String *extraValue0;
+        String *extraLabel1;
+        String *extraValue1;
+        ValueType expectedType;
+        ValueType unexpectedType;
+        ValueType actualType;
+        ValueType extraType0;
+        ValueType extraType1;
+    
+        public:
+        AssertionFailureBuilder(const String& description);
+        ~AssertionFailureBuilder();
+        AssertionFailureBuilder& Message(const String& message);
+        AssertionFailureBuilder& Expected(const String& expected, ValueType type = TypeRaw);
+        AssertionFailureBuilder& Actual(const String& actual, ValueType type = TypeRaw);
+        AssertionFailureBuilder& Unexpected(const String& unexpected, ValueType type = TypeRaw);
+        AssertionFailureBuilder& Extra_0(const String& label, const String& value, ValueType type = TypeRaw);
+        AssertionFailureBuilder& Extra_1(const String& label, const String& value, ValueType type = TypeRaw);
+        AssertionFailure ToAssertionFailure(AssertionFrameworkController* controller);
+    };
+
 
 	// Provides an access to the Gallio test log.
 	class TestLogRecorder

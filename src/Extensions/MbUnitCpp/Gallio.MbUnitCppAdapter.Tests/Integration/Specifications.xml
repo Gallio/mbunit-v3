@@ -22,7 +22,7 @@
   <Test name="/Logic/Assert_IsTrue_constant_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
   <Test name="/Logic/Assert_IsTrue_as_constant_int_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
   <Test name="/Logic/Assert_IsTrue_as_constant_int_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
-  <Test name="/Logic/Assert_IsTrue_should_fail_with_custom_message" expectedStatus="Failed" expectedAssertCount="1" expectedFailureLog="This is a custom message." />
+  <Test name="/Logic/Assert_IsTrue_should_fail_with_custom_message" expectedStatus="Failed" expectedAssertCount="1" expectedFailureLog="This is a custom message\." />
   <Test name="/Logic/Assert_IsFalse_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
   <Test name="/Logic/Assert_IsFalse_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
   <Test name="/Logic/Assert_IsFalse_as_int_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
@@ -31,7 +31,7 @@
   <Test name="/Logic/Assert_IsFalse_constant_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
   <Test name="/Logic/Assert_IsFalse_as_constant_int_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
   <Test name="/Logic/Assert_IsFalse_as_constant_int_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
-  <Test name="/Logic/Assert_IsFalse_should_fail_with_custom_message" expectedStatus="Failed" expectedAssertCount="1" expectedFailureLog="This is a custom message." />
+  <Test name="/Logic/Assert_IsFalse_should_fail_with_custom_message" expectedStatus="Failed" expectedAssertCount="1" expectedFailureLog="This is a custom message\." />
 
   <Test name="/Equality" expectedStatus="Failed" expectedAssertCount="32" />
   <Test name="/Equality/Assert_AreEqual_bool_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
@@ -178,5 +178,11 @@
   <Test name="/ExpectedException/ExpectedException_should_pass_when_exception_is_actually_thrown" expectedStatus="Passed" expectedAssertCount="0" />
   <Test name="/ExpectedException/ExpectedException_should_fail_when_exception_is_not_thrown" expectedStatus="Failed" expectedAssertCount="0" />
   <Test name="/ExpectedException/ExpectedException_should_fail_when_exception_of_a_wrong_type_is_thrown" expectedStatus="Failed" expectedAssertCount="0" />
+
+  <Test name="/Extensibility" expectedStatus="Failed" expectedAssertCount="4" />
+  <Test name="/Extensibility/Foo_equality_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="/Extensibility/Foo_equality_should_fail" expectedStatus="Failed" expectedAssertCount="1" expectedFailureLog="Expected Value\s*:\s*{Foo\: value = 123\}, Actual Value\s*:\s*\{Foo\: value = 456\}" />
+  <Test name="/Extensibility/Foo_inequality_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="/Extensibility/Foo_inequality_should_fail" expectedStatus="Failed" expectedAssertCount="1" expectedFailureLog="Unexpected Value\s*:\s*\{Foo\: value = 123\}, Actual Value\s*:\s*\{Foo\: value = 123\}" />
 
 </Specifications>

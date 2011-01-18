@@ -24,3 +24,8 @@ Foo::Foo(int value)
 Foo::~Foo()
 {
 }
+
+int Foo::GetValue() const 
+{ 
+	return m_value; 
+}
