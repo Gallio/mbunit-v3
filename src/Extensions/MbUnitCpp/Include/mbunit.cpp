@@ -343,6 +343,7 @@ namespace mbunit
 		GoogleMockRegistration::GetInstance().Run(this);
 #endif
 		clock_t started = clock();
+		bool unhandledException = false;
 
         try
         {
@@ -360,19 +361,22 @@ namespace mbunit
 		{
             testResultData->NativeOutcome = Failed;
             testResultData->Failure = AssertionFailure::FromException(e, "char*");
+			unhandledException = true;
 		}
 		catch (std::exception e)
 		{
             testResultData->NativeOutcome = Failed;
             testResultData->Failure = AssertionFailure::FromException(e.what(), "std::exception");
+			unhandledException = true;
 		}
 		catch (...)
 		{
             testResultData->NativeOutcome = Failed;
             testResultData->Failure = AssertionFailure::FromException();
+			unhandledException = true;
 		}
 
-		if (hasLateFailure)
+		if (hasLateFailure && !unhandledException)
 		{
 			testResultData->NativeOutcome = Failed;
 			testResultData->Failure = lateFailure;
