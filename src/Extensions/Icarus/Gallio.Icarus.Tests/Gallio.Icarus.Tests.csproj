@@ -85,6 +85,7 @@
     <Compile Include="Commands\SaveProjectCommandTests.cs" />
     <Compile Include="Controllers\AboutControllerTest.cs" />
     <Compile Include="Controllers\AnnotationsControllerTest.cs" />
+    <Compile Include="Controllers\ApplicationControllerTest.cs" />
     <Compile Include="Controllers\ExecutionLogControllerTest.cs" />
     <Compile Include="Controllers\FilterControllerTests.cs" />
     <Compile Include="Controllers\NotifyControllerTest.cs" />
