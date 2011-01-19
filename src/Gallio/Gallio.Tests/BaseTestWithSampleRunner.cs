@@ -124,6 +124,16 @@ namespace Gallio.Tests
             Assert.DoesNotContain((stream == null) ? String.Empty : stream.ToString(), expectedOutput);
         }
 
+        protected static void AssertLogLike(TestStepRun run, string expectedOutputPattern, string streamName)
+        {
+            if (run == null)
+                throw new ArgumentNullException("run");
+
+            StructuredStream stream = run.TestLog.GetStream(streamName);
+            string log = (stream == null) ? String.Empty : stream.ToString();
+            Assert.Like(log, expectedOutputPattern);
+        }
+
         /// <summary>
         /// Returns the log of the specified test step run.
         /// </summary>
