@@ -256,6 +256,8 @@
     <Compile Include="Reports\VtlReportFormatterTest.cs" />
     <Compile Include="Reports\ManualTestLogFeatureTest.cs" />
     <Compile Include="Reports\MHtmlReportFormatterTest.cs" />
+    <Compile Include="Reports\Vtl\TestStepRunTreeStatisticsTest.cs" />
+    <Compile Include="Reports\Vtl\FormatHelperTest.cs" />
     <Compile Include="Reports\XmlReportFormatterTest.cs" />
     <Compile Include="Reports\XsltReportFormatterTest.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtilsTest.cs" />

@@ -57,6 +57,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ReportResourcesInstaller.cs" />
+    <Compile Include="Vtl\TestStepRunTreeStatistics.cs" />
+    <Compile Include="Vtl\FormatHelper.cs" />
+    <Compile Include="Vtl\DefaultVelocityEngineFactory.cs" />
+    <Compile Include="Vtl\IVelocityEngineFactory.cs" />
     <Compile Include="XmlReportFormatter.cs" />
     <Compile Include="XsltReportFormatter.cs" />
   </ItemGroup>
@@ -110,6 +114,7 @@
     <Content Include="Resources\vm\Gallio-Report.xhtml-condensed.vm" />
     <Content Include="Resources\vm\Gallio-Report.xhtml.vm" />
     <Content Include="Resources\vm\Gallio-Report.html+xhtml.vm" />
+    <Content Include="Resources\vm\Gallio-Report.html+xhtml.detailed-item.vm" />
     <Content Include="Gallio.Reports.plugin" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

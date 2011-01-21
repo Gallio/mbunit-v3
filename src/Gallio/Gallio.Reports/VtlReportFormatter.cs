@@ -28,10 +28,13 @@ using Path = System.IO.Path;
 using NVelocity;
 using NVelocity.App;
 using System.Collections;
+using System.Collections.Generic;
 using NVelocity.Runtime;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Common;
 using System.Text.RegularExpressions;
+using Gallio.Model;
+using Gallio.Reports.Vtl;
 
 namespace Gallio.Reports
 {
@@ -171,58 +174,6 @@ namespace Gallio.Reports
                     string destContentPath = Path.Combine(reportWriter.ReportContainer.ReportName, resourcePath);
                     ReportContainerUtils.CopyToReport(reportWriter.ReportContainer, sourceContentPath, destContentPath);
                 }
-            }
-        }
-
-        internal class FormatHelper
-        {
-            public string NormalizeEndOfLines(string text)
-            {
-                return text.Replace("\n", Environment.NewLine);
-            }
-
-            public string BreakWord(string text)
-            {
-                return Regex.Replace(text, @"([\s\\]+)", "$1<wbr/>");
-            }
-        }
-
-        internal interface IVelocityEngineFactory
-        {
-            VelocityEngine CreateVelocityEngine();
-            VelocityContext CreateVelocityContext(IReportWriter reportWriter);
-        }
-
-        internal class DefaultVelocityEngineFactory : IVelocityEngineFactory
-        {
-            private readonly string templateDirectory;
-
-            public DefaultVelocityEngineFactory(string templateDirectory)
-            {
-                this.templateDirectory = templateDirectory;
-            }
-
-            public VelocityEngine CreateVelocityEngine()
-            {
-                var engine = new VelocityEngine();
-                SetupVelocityEngine(engine);
-                engine.Init();
-                return engine;
-            }
-
-            protected virtual void SetupVelocityEngine(VelocityEngine engine)
-            {
-                engine.SetProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, Path.GetDirectoryName(templateDirectory));
-            }
-
-            public VelocityContext CreateVelocityContext(IReportWriter reportWriter)
-            {
-                var context = new VelocityContext();
-                context.Put("report", reportWriter.Report);
-                context.Put("helper", new FormatHelper());
-                var resourcesPath = RuntimeAccessor.Instance.ResourceLocator.ResolveResourcePath(new Uri("plugin://Gallio.Reports/Resources/"));
-                context.Put("resourceRoot", reportWriter.ReportContainer.ReportName);
-                return context;
             }
         }
     }

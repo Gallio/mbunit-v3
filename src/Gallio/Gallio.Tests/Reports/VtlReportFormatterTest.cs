@@ -35,6 +35,7 @@ using Gallio.Runner.Reports.Schema;
 using NVelocity.App;
 using NVelocity.Runtime;
 using System.Reflection;
+using Gallio.Reports.Vtl;
 
 namespace Gallio.Tests.Reports
 {
@@ -178,7 +179,7 @@ namespace Gallio.Tests.Reports
             }
         }
 
-        private class ResourceVelocityEngineFactory : VtlReportFormatter.DefaultVelocityEngineFactory
+        private class ResourceVelocityEngineFactory : DefaultVelocityEngineFactory
         {
             public ResourceVelocityEngineFactory()
                 : base(null)
@@ -191,25 +192,6 @@ namespace Gallio.Tests.Reports
                 engine.SetProperty("assembly.resource.loader.class", "NVelocity.Runtime.Resource.Loader.AssemblyResourceLoader, NVelocity");
                 engine.SetProperty("assembly.resource.loader.assembly", Assembly.GetExecutingAssembly().GetName().Name);
             }
-        }
-
-        [Test]
-        public void FormatHelper_NormalizeEndOfLines()
-        {
-            var helper = new VtlReportFormatter.FormatHelper();
-            string actual = helper.NormalizeEndOfLines("line 1\nline 2\n");
-            string expected = String.Format("line 1{0}line 2{0}", Environment.NewLine);
-            Assert.AreEqual(expected, actual);
-        }
-
-        [Test]
-        [Row("The antbirds are a large family of passerine birds", "The <wbr/>antbirds <wbr/>are <wbr/>a <wbr/>large <wbr/>family <wbr/>of <wbr/>passerine <wbr/>birds")]
-        [Row(@"D:\Root\Folder\File.ext", @"D:\<wbr/>Root\<wbr/>Folder\<wbr/>File.ext")]
-        public void FormatHelper_BreakWord(string text, string expected)
-        {
-            var helper = new VtlReportFormatter.FormatHelper();
-            string actual = helper.BreakWord(text);
-            Assert.AreEqual(expected, actual);
         }
     }
 }

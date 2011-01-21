@@ -1,6 +1,6 @@
 ﻿## Velocity Template Language (VTL) to generate an HTML document.
 ##
-#set($stats = $report.TestPackageRun.Statistics)
+#set ($stats = $report.TestPackageRun.Statistics)
 ##
 #if ($xhtml)
 <?xml version="1.0" encoding="utf-8" ?>
@@ -18,6 +18,12 @@
 <META http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Type" content="charset=utf-8">
 #end
+#*
+	====================================================
+	 TITLE AND HEADER
+	====================================================
+*#
+  <div id="Navigator" class="navigator">
 <title>Gallio Test Report</title>
 <link rel="stylesheet" type="text/css" href="$resourceRoot/css/Gallio-Report.css" #if($xhtml)/#end>
 <link rel="stylesheet" type="text/css" href="$resourceRoot/css/Gallio-Report.generated.css" #if($xhtml)/#end>
@@ -28,6 +34,11 @@
 #end
 <body class="gallio-report">
   <div id="Header" class="header"><div class="header-image"></div></div>
+#*
+	====================================================
+	 NAVIGATION SIDE BAR
+	====================================================
+*#
   <div id="Navigator" class="navigator">
 ## TODO: navigator
   </div>
@@ -64,6 +75,11 @@
 		</table>
 	  </div>
 	</div>
+#*
+	====================================================
+	 FILES SECTION
+	====================================================
+*#
 	<div id="Files" class="section">
 	  <h2>Files</h2>
 	  <div class="section-content">
@@ -74,18 +90,53 @@
 		</ul>
 	  </div>
 	</div>
+#*
+	====================================================
+	 SUMMARY SECTION
+	====================================================
+*#
 	<div id="Summary" class="section">
 	  <h2>Summary#if ($condensed) (Condensed)#end</h2>
 	  <div class="section-content">
-## TODO: summary
+#if ($stats.RunCount == 0)
+		<em>This report does not contain any test runs.</em>
+#elseif ($condensed && $stats.RunCount == $stats.PassedCount)
+		<em>All tests passed.</em>
+#else
+		<ul>
+		</ul>
+#end
 	  </div>
 	</div>
+#*
+	====================================================
+	 DETAILS SECTION
+	====================================================
+*#
 	<div id="Details" class="section">
-	  <h2>Summary#if ($condensed) (Condensed)#end</h2>
+	  <h2>Details#if ($condensed) (Condensed)#end</h2>
 	  <div class="section-content">
-## TODO: details
+#if ($stats.RunCount == 0)
+		<em>This report does not contain any test runs.</em>
+#elseif ($condensed && $stats.RunCount == $stats.PassedCount)
+		<em>All tests passed.</em>
+#else
+#set ($nestingLevel = 0)
+#foreach ($run in $helper.GetVisibleChildren($report.TestPackageRun.RootTestStepRun, $condensed))
+#parse ("Gallio-Report.html+xhtml.detailed-item.vm")
+#beforeall
+  <ul class="testStepRunContainer">
+#afterall
+  </ul>
+#end
+#end
 	  </div>
 	</div>
+#*
+	====================================================
+	 DIAGNOSTIC LOG SECTION
+	====================================================
+*#
     <div id="Log" class="section">
 	  <h2>Diagnostic Log</h2>
       <div class="section-content">
@@ -103,6 +154,11 @@
 		</ul>
 	  </div>
 	</div>
+#*
+	====================================================
+	 FOOTER
+	====================================================
+*#
   </div>
 </body>
 #if ($xhtml)

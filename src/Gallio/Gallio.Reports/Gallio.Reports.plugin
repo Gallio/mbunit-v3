@@ -46,6 +46,7 @@
     <file path="Resources\vm\Gallio-Report.txt.vm" />
     <file path="Resources\vm\Gallio-Report.txt-condensed.vm" />
     <file path="Resources\vm\Gallio-Report.html+xhtml.vm" />
+    <file path="Resources\vm\Gallio-Report.html+xhtml.detailed-item.vm" />
     <file path="Resources\vm\Gallio-Report.html.vm" />
     <file path="Resources\vm\Gallio-Report.html-condensed.vm" />
   </files>
