@@ -81,7 +81,7 @@ namespace Gallio.Tests.Reports.Vtl
             Assert.AreEqual("4 passed", rootStatistics.FormatPassedCountWithCategories());
             Assert.AreEqual("2 failed", rootStatistics.FormatFailedCountWithCategories());
             Assert.AreEqual("3 skipped (1 pending, 1 ignored)", rootStatistics.FormatSkippedCountWithCategories());
-            Assert.AreEqual("1 inconclusive", rootStatistics.FormatInconclusiveCountWithCategories());
+            Assert.AreEqual("1 inconclusive (1 canceled)", rootStatistics.FormatInconclusiveCountWithCategories());
 
             // Child node statistics
             var child33Statistics = new TestStepRunTreeStatistics(child33);
