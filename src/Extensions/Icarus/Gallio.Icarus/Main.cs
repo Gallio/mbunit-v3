@@ -336,16 +336,22 @@ namespace Gallio.Icarus
         {
             using (var saveProjectDialog = Dialogs.CreateSaveProjectDialog())
             {
-                if (saveProjectDialog.ShowDialog() != DialogResult.OK)
-                    return;
-
-                applicationController.Title = saveProjectDialog.FileName;
-                SaveProject();
+                SaveProject(true);
             }
         }
 
-        private void SaveProject()
+        private void SaveProject(Boolean saveAs)
         {
+            if (saveAs || applicationController.DefaultProject )
+            {
+                using (var saveProjectDialog = Dialogs.CreateSaveProjectDialog())
+                {
+                    if (saveProjectDialog.ShowDialog() != DialogResult.OK)
+                        return;
+
+                    applicationController.Title = saveProjectDialog.FileName;
+                }                
+            }
             applicationController.SaveProject(true);
         }
 
@@ -390,7 +396,7 @@ namespace Gallio.Icarus
 
         private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveProject();
+            SaveProject(false);
         }
 
         private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -519,7 +525,7 @@ namespace Gallio.Icarus
 
         private void saveProjectToolStripButton_Click(object sender, EventArgs e)
         {
-            SaveProject();
+            SaveProject(false);
         }
 
         private void addFilesToolStripButton_Click(object sender, EventArgs e)

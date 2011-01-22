@@ -37,7 +37,7 @@ namespace Gallio.Icarus.Controllers
         Handles<RunStarted>, Handles<RunFinished>, Handles<ExploreFinished>, 
         Handles<TestsFailed>
     {
-        private string projectFileName = string.Empty;
+        private string projectFileName = Paths.DefaultProject;
 
         private readonly IFileSystem fileSystem;
         private readonly IOptionsController optionsController;
@@ -50,8 +50,7 @@ namespace Gallio.Icarus.Controllers
         {
             get
             {
-                return string.IsNullOrEmpty(projectFileName) ? Properties.Resources.ApplicationName :
-                    string.Format("{0} - {1}", Path.GetFileNameWithoutExtension(projectFileName), 
+                return string.Format("{0} - {1}", Path.GetFileNameWithoutExtension(projectFileName), 
                     Properties.Resources.ApplicationName);
             }
             set
@@ -59,6 +58,11 @@ namespace Gallio.Icarus.Controllers
                 projectFileName = value;
                 OnPropertyChanged(new PropertyChangedEventArgs("ProjectFileName"));
             }
+        }
+
+        public Boolean DefaultProject
+        {
+            get { return (projectFileName.ToUpper() == Paths.DefaultProject.ToUpper()); }
         }
 
         public ToolStripMenuItem[] RecentProjects

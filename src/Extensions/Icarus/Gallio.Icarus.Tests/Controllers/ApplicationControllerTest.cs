@@ -21,6 +21,7 @@ using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Icarus.Utilities;
+using Gallio.Runner.Projects;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Common.Policies;
 using Gallio.UI.Events;
@@ -32,6 +33,7 @@ using Gallio.Icarus.Commands;
 namespace Gallio.Icarus.Tests.Controllers
 {
     [MbUnit.Framework.Category("Controllers"), TestsOn(typeof(ApplicationController))]
+    [Author("JCL")]
     public class ApplicationControllerTest
     {
         private ApplicationController applicationController;
@@ -62,9 +64,9 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
-        public void ProjectFileName_should_be_App_name_if_not_set()
+        public void ProjectFileName_should_be_default_if_not_set()
         {
-            Assert.AreEqual(Icarus.Properties.Resources.ApplicationName, 
+            Assert.AreEqual(string.Format("Default - {0}", Icarus.Properties.Resources.ApplicationName),
                 applicationController.Title);
         }
         
@@ -72,7 +74,8 @@ namespace Gallio.Icarus.Tests.Controllers
         public void ProjectFileName_should_be_App_name_followed_by_project_name_if_set()
         {
             const string projectName = "test";
-            applicationController.Title = projectName;
+            string projectFileName = projectName + TestProject.Extension;
+            applicationController.Title = projectFileName;
 
             Assert.AreEqual(string.Format("{0} - {1}", projectName, Icarus.Properties.Resources.ApplicationName), 
                 applicationController.Title);
@@ -91,6 +94,28 @@ namespace Gallio.Icarus.Tests.Controllers
             applicationController.Title = "test";
 
             Assert.AreEqual(true, propertyChangedFlag);
+        }
+
+        [Test]
+        public void DefaultProject_should_be_true_by_default()
+        {
+            Assert.IsTrue(applicationController.DefaultProject);            
+        }
+
+        [Test]
+        public void DefaultProject_should_be_true_for_default_project()
+        {
+            applicationController.Title = Paths.DefaultProject;
+
+            Assert.IsTrue(applicationController.DefaultProject);
+        }
+
+        [Test]
+        public void DefaultProject_should_be_false_for_other_project()
+        {
+            applicationController.Title = "test" + TestProject.Extension;
+
+            Assert.IsFalse(applicationController.DefaultProject);
         }
 
         [Test]
@@ -182,7 +207,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void SaveProject_with_true_should_queue_task()
         {
-            string projectName = string.Empty;
+            string projectName = Paths.DefaultProject;
             commandFactory.Stub(cf => cf.CreateSaveProjectCommand(projectName)).Return(command);
 
             applicationController.SaveProject(true);
@@ -196,8 +221,8 @@ namespace Gallio.Icarus.Tests.Controllers
             var mocks = new MockRepository();
             command = mocks.StrictMock<ICommand>();
             command.Stub(c => c.Execute(NullProgressMonitor.CreateInstance())).IgnoreArguments();
-            
-            string projectName = string.Empty;
+
+            string projectName = Paths.DefaultProject;
             commandFactory.Stub(cf => cf.CreateSaveProjectCommand(projectName)).Return(command);
 
             mocks.ReplayAll();
@@ -209,7 +234,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void SaveProject_with_false_and_execute_exception_should_report_error()
         {
-            string projectName = string.Empty;
+            string projectName = Paths.DefaultProject;
             commandFactory.Stub(cf => cf.CreateSaveProjectCommand(projectName)).Return(command);
             var exception = new Exception();
             command.Stub(c => c.Execute(NullProgressMonitor.CreateInstance())).IgnoreArguments().Throw(exception);
@@ -235,7 +260,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void Shutdown_should_save_options_and_project()
         {
-            string projectName = string.Empty;
+            string projectName = Paths.DefaultProject;
             commandFactory.Stub(cf => cf.CreateSaveProjectCommand(projectName)).Return(command);
 
             applicationController.Shutdown();
