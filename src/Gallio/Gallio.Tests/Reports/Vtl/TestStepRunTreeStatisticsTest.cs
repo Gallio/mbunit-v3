@@ -91,10 +91,10 @@ namespace Gallio.Tests.Reports.Vtl
             Assert.AreEqual(0, child33Statistics.SkippedCount);
             Assert.AreEqual(1, child33Statistics.InconclusiveCount);
             Assert.AreEqual(1, child33Statistics.SkippedOrInconclusiveCount);
-            Assert.AreEqual("2 passed", rootStatistics.FormatPassedCountWithCategories());
-            Assert.AreEqual("0 failed", rootStatistics.FormatFailedCountWithCategories());
-            Assert.AreEqual("0 skipped", rootStatistics.FormatSkippedCountWithCategories());
-            Assert.AreEqual("1 inconclusive (1 canceled)", rootStatistics.FormatInconclusiveCountWithCategories());
+            Assert.AreEqual("2 passed", child33Statistics.FormatPassedCountWithCategories());
+            Assert.AreEqual("0 failed", child33Statistics.FormatFailedCountWithCategories());
+            Assert.AreEqual("0 skipped", child33Statistics.FormatSkippedCountWithCategories());
+            Assert.AreEqual("1 inconclusive (1 canceled)", child33Statistics.FormatInconclusiveCountWithCategories());
         }
     }
 }
