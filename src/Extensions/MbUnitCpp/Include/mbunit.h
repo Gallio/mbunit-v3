@@ -243,6 +243,11 @@ namespace mbunit
 		void WriteLineFormat(const char* format, ...);
 		void WriteLineFormat(const wchar_t* format, ...);
 		void SetTest(Test* test);
+
+#ifdef _AFX
+		void Write(CString& str);
+		void WriteLine(CString& str);
+#endif
 	};
 
 	// Base class for tests and test fixtures.

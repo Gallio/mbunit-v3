@@ -727,6 +727,22 @@ namespace mbunit
 		test->AppendToTestLog(String(L"\r\n"));
     }
 
+#ifdef _AFX
+
+    void TestLogRecorder::Write(CString& str)
+    {
+		test->AppendToTestLog(str.GetBuffer());
+		str.ReleaseBuffer();
+    }
+
+    void TestLogRecorder::WriteLine(CString& str)
+    {
+		Write(str);
+		test->AppendToTestLog(String(L"\r\n"));
+    }
+
+#endif
+
 	// ===================
 	// Assertion Framework 
 	// ===================
