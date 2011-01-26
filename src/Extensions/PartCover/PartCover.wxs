@@ -4,29 +4,65 @@
 
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Directory Id="TeamCityIntegration" Name="TeamCity">
-                <Component Id="Gallio.TeamCityIntegration.dll" Guid="{E729AAA0-3E16-4ac9-BB82-26F2F2F93BA4}" Win64="$(var.Win64Binary)">
-                    <File Name="Gallio.TeamCityIntegration.dll" KeyPath="yes" />
-                    <File Name="Gallio.TeamCityIntegration.plugin" />
-                </Component>
-		
-                <Component Id="TeamCity.Readme.txt" Guid="{7E2D01EA-590D-4822-9748-691332285A1D}" Win64="$(var.Win64Binary)">
-                    <File Id="TeamCity.Readme.txt" Name="Readme.txt" KeyPath="yes" />
-                </Component>
-				
-                <Directory Id="TeamCityIntegration.Resources" Name="Resources">
-                    <Component Id="Gallio.TeamCityIntegration.Resources" Guid="{7144C8C9-C73E-41c9-AA46-EF4C14783C5E}" Win64="$(var.Win64Binary)">
-                        <File Name="TeamCity.ico" KeyPath="yes" />
-                    </Component>
-                </Directory>
+          <Directory Id="PartCoverIntegration" Name="PartCover">
+            <Component Id="Gallio.PartCoverIntegration.dll" Guid="{03377F66-FA71-4A70-8DA8-352C5DA83D94}" Win64="$(var.Win64Binary)">
+              <File Name="Gallio.PartCoverIntegration.dll" KeyPath="yes" />
+              <File Name="Gallio.PartCoverIntegration.plugin" />
+            </Component>
+
+            <Directory Id="PartCoverIntegration.Resources" Name="Resources">
+              <Component Id="Gallio.PartCoverIntegration.Resources" Guid="{22982F70-D961-4F05-98F7-21EE169139BE}" Win64="$(var.Win64Binary)">
+                <File Name="PartCover.ico" KeyPath="yes" />
+              </Component>
             </Directory>
+
+            <Directory Id="PartCover.libs" Name="libs">
+              <Directory Id="PartCover.libs.PartCover" Name="PartCover">
+                <Component Id="PartCover.Program" Guid="{D8712BAB-EEFB-484A-8B9A-C3CC71EC42F3}" Win64="$(var.Win64Binary)">
+                  <File Name="app.ico" />
+                  <File Name="Credits.txt" />
+                  <File Name="Interop.PartCover.dll"/>
+                  <File Name="licence.txt"/>
+                  <File Name="log4net.dll"/>
+                  <File Name="PartCover.Browser.Api.dll"/>
+                  <File Name="PartCover.Browser.exe"/>
+                  <File Name="PartCover.Browser.exe.config"/>
+                  <File Name="PartCover.dll"/>
+                  <File Name="PartCover.exe" KeyPath="yes" />
+                  <File Name="PartCover.exe.config" />
+                  <File Name="PartCover.Framework.dll" />
+                  <File Name="PartCover.Registration.exe" />
+                  <File Name="PartCover.Registration.exe.config" />
+                  <File Name="PartViewer.dll" />
+                </Component>
+                <Directory Id="PartCover.libs.PartCover.xslt" Name="xslt">
+                  <Component Id="PartCover.xslt.Program" Guid="{309DF187-261D-4862-AFE6-33F93B248902}" Win64="$(var.Win64Binary)">
+                    <File Name="Report By Assembly.xslt" />
+                    <File Name="Report By Class.xslt" />
+                  </Component>
+                </Directory>
+              </Directory>
+              <Directory Id="PartCover.libs.ReportGenerator" Name="ReportGenerator">
+                <Component Id="ReportGenerator.Program" Guid="{B5E958B9-4ADA-45b0-885C-601087A5A3E0}" Win64="$(var.Win64Binary)">
+                  <File Name="ICSharpCode.NRefactory.dll"/>
+                  <File Name="LICENSE.txt"/>
+                  <File Name="log4net.dll"/>
+                  <File Name="Readme.txt"/>
+                  <File Name="ReportGenerator.exe" KeyPath="yes" />
+                  <File Name="ReportGenerator.exe.config"/>
+                </Component>
+              </Directory>
+            </Directory>
+          </Directory>
         </DirectoryRef>
 
-        <Feature Id='feat_TeamCityIntegration' Title='TeamCity Integration' Level='1' AllowAdvertise="no"
-            Description='Provides integration with the TeamCity test reporting features.'>
-            <ComponentRef Id="Gallio.TeamCityIntegration.dll"/>
-            <ComponentRef Id="TeamCity.Readme.txt"/>
-			<ComponentRef Id="Gallio.TeamCityIntegration.Resources"/>
+        <Feature Id='feat_PartCoverIntegration' Title='PartCover Integration' Level='1' AllowAdvertise="no"
+            Description='Provides integration with the PartCover test reporting features.'>
+            <ComponentRef Id="Gallio.PartCoverIntegration.dll"/>
+          <ComponentRef Id="Gallio.PartCoverIntegration.Resources"/>
+          <ComponentRef Id="PartCover.Program"/>
+          <ComponentRef Id="PartCover.xslt.Program"/>
+          <ComponentRef Id="ReportGenerator.Program"/>
         </Feature>
     </Fragment>
 </Wix>
