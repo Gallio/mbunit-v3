@@ -512,7 +512,7 @@ namespace Gallio.Icarus
             if (!optionsController.AlwaysReloadFiles)
             {
                 var reloadDialog = new ReloadDialog(fileName, optionsController);
-                if (reloadDialog.ShowDialog(this) != DialogResult.OK)
+                if (reloadDialog.ShowDialogIfNotVisible(this) != DialogResult.OK)
                     return;
             }
             Reload();
