@@ -36,6 +36,7 @@ using Gallio.Runner.Reports.Schema;
 using NVelocity.App;
 using NVelocity.Runtime;
 using System.Reflection;
+using Gallio.Common.Markup.Tags;
 
 namespace Gallio.Tests.Reports.Vtl
 {
@@ -44,18 +45,27 @@ namespace Gallio.Tests.Reports.Vtl
     public class FormatHelperTest
     {
         [Test]
-        public void FormatHelper_NormalizeEndOfLines()
+        public void NormalizeEndOfLinesText()
         {
             var helper = new FormatHelper();
-            string actual = helper.NormalizeEndOfLines("line 1\nline 2\n");
-            string expected = String.Format("line 1{0}line 2{0}", Environment.NewLine);
-            Assert.AreEqual(expected, actual);
+            string actual = helper.NormalizeEndOfLinesText("line 1\nline 2\nline 3\n");
+            Assert.AreEqual("line 1\r\nline 2\r\nline 3\r\n", actual);
         }
 
         [Test]
-        [Row("The antbirds are a large family of passerine birds", "The <wbr/>antbirds <wbr/>are <wbr/>a <wbr/>large <wbr/>family <wbr/>of <wbr/>passerine <wbr/>birds")]
-        [Row(@"D:\Root\Folder\File.ext", @"D:\<wbr/>Root\<wbr/>Folder\<wbr/>File.ext")]
-        public void FormatHelper_BreakWord(string text, string expected)
+        public void NormalizeEndOfLinesHtml()
+        {
+            var helper = new FormatHelper();
+            string actual = helper.NormalizeEndOfLinesHtml("line 1\nline 2\r\nline 3\n");
+            Assert.AreEqual("line 1<br>line 2<br>line 3<br>", actual);
+        }
+
+        [Test]
+        [Row("The antbirds are a large family of passerine birds.",
+             "The&nbsp;<wbr/>antbirds&nbsp;<wbr/>are&nbsp;<wbr/>a&nbsp;<wbr/>large&nbsp;<wbr/>family&nbsp;<wbr/>of&nbsp;<wbr/>passerine&nbsp;<wbr/>birds<wbr/>.")]
+        [Row(@"D:\Root\Folder\File.ext",
+             @"D<wbr/>:<wbr/>\Root<wbr/>\Folder<wbr/>\File<wbr/>.ext")]
+        public void BreakWord(string text, string expected)
         {
             var helper = new FormatHelper();
             string actual = helper.BreakWord(text);
@@ -66,11 +76,30 @@ namespace Gallio.Tests.Reports.Vtl
         [Row("Blue Red.Green. Magenta  .", "BlueRedGreenMagenta")]
         [Row(" .. .", "")]
         [Row("", "")]
-        public void FormatHelper_RemoveChars(string input, string expectedOutput)
+        public void RemoveChars(string input, string expectedOutput)
         {
             var helper = new FormatHelper();
             string output = helper.RemoveChars(input, " .");
             Assert.AreEqual(expectedOutput, output);
+        }
+
+        [Test]
+        [Row("name1", "value1")]
+        [Row("name2", "value2")]
+        [Row("name3", "value3")]
+        [Row("inexisting", "", Description = "Inexisting attribute should return empty value.")]
+        public void GetAttributeValue(string searched, string expectedValue)
+        {
+            // Create sample marker tag.
+            var tag = new MarkerTag(Marker.Label);
+            tag.Attributes.Add(new MarkerTag.Attribute("name1", "value1"));
+            tag.Attributes.Add(new MarkerTag.Attribute("name2", "value2"));
+            tag.Attributes.Add(new MarkerTag.Attribute("name3", "value3"));
+
+            // Find attribute value.
+            var helper = new FormatHelper();
+            string value = helper.GetAttributeValue(tag, searched);
+            Assert.AreEqual(expectedValue, value);
         }
     }
 }

@@ -23,6 +23,8 @@ using System.Text.RegularExpressions;
 using Gallio.Model;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Common.Collections;
+using Gallio.Common.Markup.Tags;
+using Gallio.Common.Markup;
 
 namespace Gallio.Reports.Vtl
 {
@@ -30,14 +32,64 @@ namespace Gallio.Reports.Vtl
     {
         private readonly IDictionary<string, TestStepRunTreeStatistics> map = new Dictionary<string, TestStepRunTreeStatistics>();
 
-        public string NormalizeEndOfLines(string text)
+        public string NormalizeEndOfLinesText(string text)
         {
-            return text.Replace("\n", Environment.NewLine);
+            return text.Replace("\n", "\r\n");
+        }
+
+        public string NormalizeEndOfLinesHtml(string text)
+        {
+            return text
+                .Replace("\r\n", "<br>")
+                .Replace("\n", "<br>");
         }
 
         public string BreakWord(string text)
         {
-            return Regex.Replace(text, @"([\s\\]+)", "$1<wbr/>");
+            var output = new StringBuilder();
+
+            foreach (char c in text)
+            {
+                switch (c)
+                {
+                    // Natural word breaks. Always replace spaces by non-breaking spaces followed by word-breaks to ensure that
+                    // text can reflow without actually consuming the space.  Without this detail it can happen that spaces that 
+                    // are supposed to be highligted (perhaps as part of a marker for a diff) will instead vanish when the text 
+                    // reflow occurs, giving a false impression of the content.
+                    case ' ':
+                        output.Append("&nbsp;<wbr/>");
+                        break;
+
+                    // Characters to break before.
+                    case '_':
+                    case '/':
+                    case ';':
+                    case ':':
+                    case '.':
+                    case '\\':
+                    case '(':
+                    case '{':
+                    case '[':
+                        output.Append("<wbr/>");
+                        output.Append(c);
+                        break;
+
+                    // Characters to break after.
+                    case '>':
+                    case ')':
+                    case ']':
+                    case '}':
+                        output.Append(c);
+                        output.Append("<wbr/>");
+                        break;
+
+                    default:
+                        output.Append(c);
+                        break;
+                }
+            }
+
+            return output.ToString();
         }
 
         public string RemoveChars(string text, string chars)
@@ -94,6 +146,30 @@ namespace Gallio.Reports.Vtl
                 if (!condensed || run.Result.Outcome != TestOutcome.Passed)
                     yield return child;
             }
+        }
+
+        public string GetAttributeValue(MarkerTag markerTag, string name)
+        {
+            int index = markerTag.Attributes.FindIndex(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            return (index < 0) ? String.Empty : markerTag.Attributes[index].Value;
+        }
+
+        public AttachmentData FindAttachment(TestStepRun run, string attachmentName)
+        {
+            return run.TestLog.Attachments.Find(x => x.Name == attachmentName);
+        }
+
+        public string PathToUri(string path)
+        { 
+            return path
+                .Replace('\\', '/')
+                .Replace("%", "%25")
+                .Replace(" ", "%20");
+        }
+
+        public string GenerateId()
+        {
+            return Guid.NewGuid().ToString("N");
         }
     }
 }

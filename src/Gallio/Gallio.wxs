@@ -209,6 +209,7 @@
                     <File Id="Gallio.Report.txt.condensed.vm" Name="Gallio-Report.txt-condensed.vm" />
                     <File Id="Gallio.Report.htmlxhtml.vm" Name="Gallio-Report.html+xhtml.vm" />
                     <File Id="Gallio.Report.htmlxhtml.detailed.item.vm" Name="Gallio-Report.html+xhtml.detailed-item.vm" />
+                    <File Id="Gallio.Report.htmlxhtml.detailed.item.log.vm" Name="Gallio-Report.html+xhtml.detailed-item.log.vm" />
                     <File Id="Gallio.Report.html.vm" Name="Gallio-Report.html.vm" />
                     <File Id="Gallio.Report.html.condensed.vm" Name="Gallio-Report.html-condensed.vm" />
                     <File Id="Gallio.Report.xhtml.vm" Name="Gallio-Report.xhtml.vm" />

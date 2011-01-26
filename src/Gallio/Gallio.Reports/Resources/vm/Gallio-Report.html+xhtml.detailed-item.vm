@@ -75,22 +75,42 @@ Duration: $current.Result.Duration.TotalSeconds.ToString("0.00") s, Assertions: 
 #afterall
     </ul>
 #end
-    <div id="log-$current.Step.Id" class="log">
 #*
 	====================================================
 	 TEST LOG
 	====================================================
 *#
+    <div id="testStepRun-$current.Step.Id" class="testStepRun">
+      <div id="log-$current.Step.Id" class="log">
 #foreach ($stream in $current.TestLog.Streams)
-      <div id="logStream logStream-$stream.Name">
-        <span class="logStreamHeading">$stream.Name</span>
-        <div class="logStreamBody">
-        
-        ## TODO
-        
-        </div>
-      </div>
+        <div class="logStream logStream-$stream.Name">
+          <span class="logStreamHeading">$stream.Name</span>
+          <div class="logStreamBody">
+#foreach ($currentTag in $stream.Body.Contents)
+#parse ("Gallio-Report.html+xhtml.detailed-item.log.vm")
 #end
+          </div>
+        </div>
+#end
+#*
+	====================================================
+	 ATTACHMENTS
+	====================================================
+*#
+#foreach ($attachment in $current.TestLog.Attachments)
+  #if ($attachment.ContentDisposition == "Link")
+  <a href="$helper.PathToUri($attachment.ContentPath)" class="attachmentLink">$attachment.Name</a>
+  #else
+  $attachment.Name (n/a)
+  #end
+#between
+, 
+#beforeall
+        <div class="logAttachmentList">Attachments:
+#afterall
+        </div>
+#end
+      </div>
     </div>
 #*
 	====================================================
@@ -104,9 +124,9 @@ Duration: $current.Result.Duration.TotalSeconds.ToString("0.00") s, Assertions: 
 #afterall
     </ul>
 #nodata
-#if ($run.Result.Outcome.Status == "Passed")
-    <script type="text/javascript">toggle('detailPanel-$current.Step.Id');</script>
-#end
+  #if ($run.Result.Outcome.Status == "Passed")
+<script type="text/javascript">toggle('detailPanel-$current.Step.Id');</script>
+  #end
 #end
   </div>
 </li>
