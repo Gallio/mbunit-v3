@@ -13,7 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 using System;
+using System.Reflection;
 using Gallio.Common.Collections;
+using Gallio.Properties;
 
 namespace Gallio.Runtime.ConsoleSupport
 {
@@ -40,6 +42,7 @@ namespace Gallio.Runtime.ConsoleSupport
         private string description = @"";
         private string valueLabel;
         private string[] synonyms = EmptyArray<string>.Instance;
+        private Type resourceType;
 
         /// <summary>
         /// Allows control of command line parsing.
@@ -76,6 +79,14 @@ namespace Gallio.Runtime.ConsoleSupport
         }
 
         /// <summary>
+        /// The localized short name of the argument.
+        /// </summary>
+        public string LocalizedShortName
+        {
+            get { return GetResourceLookup(shortName); }
+        }
+
+        /// <summary>
         /// Returns true if the argument did not have an explicit long name specified.
         /// </summary>
         public bool IsDefaultLongName
@@ -93,13 +104,29 @@ namespace Gallio.Runtime.ConsoleSupport
         }
 
         /// <summary>
+        /// The localized long name of the argument.
+        /// </summary>
+        public string LocalizedLongName
+        {
+            get { return GetResourceLookup(longName); }
+        }
+
+        /// <summary>
         /// The description of the argument.
         /// </summary>
 		public string Description
 		{
 			get { return description; }
-			set { description = value; }
+            set { description = value; }
 		}
+
+        /// <summary>
+        /// The localized description of the argument.
+        /// </summary>
+        public string LocalizedDescription
+        {
+            get { return GetResourceLookup(description); }
+        }
 
         ///<summary>
         /// The description of the argument value.
@@ -110,13 +137,70 @@ namespace Gallio.Runtime.ConsoleSupport
             set { valueLabel = value; }
         }
 
+        ///<summary>
+        /// The localized description of the argument value.
+        ///</summary>
+        public string LocalizedValueLabel
+        {
+            get { return GetResourceLookup(valueLabel); }
+        }
+
         /// <summary>
         /// Gets or sets an array of additional synonyms that are silently accepted.
         /// </summary>
         public string[] Synonyms
         {
             get { return synonyms; }
-            set { synonyms = value; }
+            set { synonyms = value; } 
+        }
+
+        /// <summary>
+        /// Gets an array of localized additional synonyms that are silently accepted.
+        /// </summary>
+        public string[] LocalizedSynonyms
+        {
+            get { return GenericCollectionUtils.ConvertAllToArray(synonyms, GetResourceLookup); }
+        }
+
+        /// <summary>
+        /// Gets or sets a resource to use for internationalization of strings
+        /// </summary>
+        public Type ResourceType
+        {
+            get { return resourceType; }
+            set { resourceType = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a resource to use for localization of strings
+        /// </summary>
+        private string GetResourceLookup(string resourceName)
+        {
+            if (resourceName == null)
+            {
+                return null;
+            }
+
+            if (resourceName.StartsWith("#"))
+            {
+                if (resourceType == null)
+                    throw new InvalidOperationException(Resources.CommandLineArgumentAttribute_NoResourceException);
+
+                PropertyInfo property = resourceType.GetProperty(resourceName.Substring(1), BindingFlags.NonPublic | BindingFlags.Static);
+                if (property == null)
+                {
+                    throw new InvalidOperationException(Resources.CommandLineArgumentAttribute_ResourceNotFoundException);
+                }
+                if (property.PropertyType != typeof(string))
+                {
+                    throw new InvalidOperationException(Resources.CommandLineArgumentAttribute_ResourceNotAStringException);
+                }
+                return (string)property.GetValue(null, null);
+            }
+            else
+            {
+                return resourceName;
+            }
         }
     }
 }

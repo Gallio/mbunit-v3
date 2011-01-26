@@ -262,6 +262,7 @@
     <Compile Include="Runtime\Caching\DiskCacheExceptionTest.cs" />
     <Compile Include="Runtime\Caching\SimpleDiskCacheTest.cs" />
     <Compile Include="Runtime\Caching\TemporaryDiskCacheTest.cs" />
+    <Compile Include="Runtime\ConsoleSupport\CommandLineArgumentAttributeTests.cs" />
     <Compile Include="Runtime\Conversions\ArrayToArrayConversionRuleTest.cs" />
     <Compile Include="Runtime\Conversions\BaseConversionRuleTest.cs" />
     <Compile Include="Runtime\Conversions\BaseConverterTest.cs" />
@@ -438,6 +439,7 @@
     <None Include="Resources\SampleImage.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\CommandLineArgumentAttributeTests_NotAStringResource.ico" />
     <EmbeddedResource Include="Common\Xml\Paths\SolarSystem.xml" />
     <Content Include="Reports\Diagnostic.xslt" />
     <EmbeddedResource Include="Common\IO\SampleResource.txt" />

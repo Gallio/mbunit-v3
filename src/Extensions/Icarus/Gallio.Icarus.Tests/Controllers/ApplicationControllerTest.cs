@@ -21,71 +21,69 @@ using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Icarus.Utilities;
+using Gallio.Runner.Projects;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.Common.Policies;
+using Gallio.UI.Events;
+using Gallio.UI.ProgressMonitoring;
 using MbUnit.Framework;
 using Rhino.Mocks;
 using Gallio.Icarus.Commands;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
-    internal class ApplicationControllerTest
+    [MbUnit.Framework.Category("Controllers"), TestsOn(typeof(ApplicationController))]
+    [Author("JCL")]
+    public class ApplicationControllerTest
     {
-        [Test]
-        public void Ctor_should_throw_if_args_is_null()
+        private ApplicationController applicationController;
+        private IOptionsController optionsController;
+        private IFileSystem fileSystem;
+        private ITaskManager taskManager;
+        private ITestController testController;
+        private IProjectController projectController;
+        private IUnhandledExceptionPolicy unhandledExceptionPolicy;
+        private IEventAggregator eventAggregator;
+        private ICommandFactory commandFactory;
+        private ICommand command;
+
+        [SetUp]
+        public void SetUp()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => new ApplicationController(null, 
-                MockRepository.GenerateStub<IMediator>(), MockRepository.GenerateStub<IFileSystem>()));
-            Assert.AreEqual("arguments", ex.ParamName);
+            optionsController = MockRepository.GenerateStub<IOptionsController>();
+            fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            taskManager = MockRepository.GenerateStub<ITaskManager>();
+            testController = MockRepository.GenerateStub<ITestController>();
+            projectController = MockRepository.GenerateStub<IProjectController>();
+            unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
+            eventAggregator = MockRepository.GenerateStub<IEventAggregator>();
+            commandFactory = MockRepository.GenerateStub<ICommandFactory>();
+            applicationController = new ApplicationController(optionsController,fileSystem,taskManager,testController,
+                                projectController,unhandledExceptionPolicy,eventAggregator,commandFactory);
+            command = MockRepository.GenerateStub<ICommand>();
         }
 
         [Test]
-        public void Ctor_should_throw_if_mediator_is_null()
+        public void ProjectFileName_should_be_default_if_not_set()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => new ApplicationController(new IcarusArguments(),
-                null, MockRepository.GenerateStub<IFileSystem>()));
-            Assert.AreEqual("mediator", ex.ParamName);
-        }
-
-        [Test]
-        public void Ctor_should_throw_if_filesystem_is_null()
-        {
-            var ex = Assert.Throws<ArgumentNullException>(() => new ApplicationController(new IcarusArguments(),
-                MockRepository.GenerateStub<IMediator>(), null));
-            Assert.AreEqual("fileSystem", ex.ParamName);
-        }
-
-        [Test]
-        public void ProjectFileName_should_be_App_name_if_not_set()
-        {
-            var mediator = MockRepository.GenerateStub<IMediator>();
-            mediator.OptionsController = MockRepository.GenerateStub<IOptionsController>();
-            var applicationController = new ApplicationController(new IcarusArguments(), 
-                mediator, MockRepository.GenerateStub<IFileSystem>());
-
-            Assert.AreEqual(Icarus.Properties.Resources.ApplicationName, 
+            Assert.AreEqual(string.Format("Default - {0}", Icarus.Properties.Resources.ApplicationName),
                 applicationController.Title);
         }
-
+        
         [Test]
         public void ProjectFileName_should_be_App_name_followed_by_project_name_if_set()
         {
-            var mediator = MockRepository.GenerateStub<IMediator>();
-            mediator.OptionsController = MockRepository.GenerateStub<IOptionsController>();
-            var applicationController = new ApplicationController(new IcarusArguments(),
-                mediator, MockRepository.GenerateStub<IFileSystem>()); 
-            const string projectFileName = "test";
+            const string projectName = "test";
+            string projectFileName = projectName + TestProject.Extension;
             applicationController.Title = projectFileName;
 
-            Assert.AreEqual(string.Format("{0} - {1}", projectFileName, Icarus.Properties.Resources.ApplicationName), 
+            Assert.AreEqual(string.Format("{0} - {1}", projectName, Icarus.Properties.Resources.ApplicationName), 
                 applicationController.Title);
         }
-
+        
         [SyncTest]
         public void ProjectFileName_should_notify_when_set()
         {
-            var mediator = MockRepository.GenerateStub<IMediator>();
-            mediator.OptionsController = MockRepository.GenerateStub<IOptionsController>();
-            var applicationController = new ApplicationController(new IcarusArguments(),
-                mediator, MockRepository.GenerateStub<IFileSystem>());
             var propertyChangedFlag = false;
             applicationController.PropertyChanged += delegate(object sender, PropertyChangedEventArgs e)
             {
@@ -99,23 +97,41 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
+        public void DefaultProject_should_be_true_by_default()
+        {
+            Assert.IsTrue(applicationController.DefaultProject);            
+        }
+
+        [Test]
+        public void DefaultProject_should_be_true_for_default_project()
+        {
+            applicationController.Title = Paths.DefaultProject;
+
+            Assert.IsTrue(applicationController.DefaultProject);
+        }
+
+        [Test]
+        public void DefaultProject_should_be_false_for_other_project()
+        {
+            applicationController.Title = "test" + TestProject.Extension;
+
+            Assert.IsFalse(applicationController.DefaultProject);
+        }
+
+        [Test]
         public void Load_files_from_arguments_should_be_added_if_they_exist()
         {
             const string file1 = "test1.dll";
             const string file2 = "test2.dll";
+            var files = new List<string>() {file1};
             var arguments = new IcarusArguments { Files = new[] { file1, file2 } };
-            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             fileSystem.Stub(fs => fs.FileExists(file1)).Return(true);
-            var mediator = MockRepository.GenerateStub<IMediator>();
-            mediator.OptionsController = MockRepository.GenerateStub<IOptionsController>();
-            var taskManager = new TestTaskManager();
-            mediator.TaskManager = taskManager;
-            var applicationController = new ApplicationController(arguments, mediator, fileSystem);
+            commandFactory.Stub(cf => cf.CreateAddFilesCommand(files)).Return(command);            
 
+            applicationController.Arguments = arguments;
             applicationController.Load();
 
-            Assert.AreEqual(1, taskManager.Queue.Count);
-            Assert.IsInstanceOfType(typeof(AddFilesCommand), taskManager.Queue[0]);
+            taskManager.AssertWasCalled(t => t.QueueTask(command));
         }
 
         [Test]
@@ -123,110 +139,135 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             const string projectFile = "test.gallio";
             var arguments = new IcarusArguments { Files = new[] { projectFile } };
-            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             fileSystem.Stub(fs => fs.FileExists(projectFile)).Return(true);
-            var mediator = MockRepository.GenerateStub<IMediator>();
-            mediator.OptionsController = MockRepository.GenerateStub<IOptionsController>();
-            var taskManager = new TestTaskManager();
-            mediator.TaskManager = taskManager;
-            var applicationController = new ApplicationController(arguments, mediator, fileSystem);
+            commandFactory.Stub(cf => cf.CreateOpenProjectCommand(projectFile)).Return(command);
 
+            applicationController.Arguments = arguments;
             applicationController.Load();
 
-            Assert.AreEqual(1, taskManager.Queue.Count);
-            Assert.IsInstanceOfType(typeof(OpenProjectCommand), taskManager.Queue[0]);
-            var command = (OpenProjectCommand)taskManager.Queue[0];
-            Assert.AreEqual(projectFile, command.FileName);
+            taskManager.AssertWasCalled(t => t.QueueTask(command));
         }
-
+        
         [Test]
         public void Load_should_restore_last_project_used_if_required_and_no_args_supplied()
         {
             const string projectFile = "test.gallio";
-            var mediator = MockRepository.GenerateMock<IMediator>();
-            mediator.Stub(m => m.OptionsController).Return(MockRepository.GenerateStub<IOptionsController>());
-            mediator.OptionsController.RestorePreviousSettings = true;
-            mediator.OptionsController.Stub(oc => oc.RecentProjects).Return(new MRUList(
-                new List<string>(new[] { projectFile }), 10));
-            var taskManager = new TestTaskManager();
-            mediator.TaskManager = taskManager;
-            var applicationController = new ApplicationController(new IcarusArguments(), mediator, 
-                MockRepository.GenerateStub<IFileSystem>());
+            var arguments = new IcarusArguments();
+            optionsController.RestorePreviousSettings = true;
+            optionsController.Stub(oc => oc.RecentProjects).Return(new MRUList(new List<string>(new[] { projectFile }), 10));
+            fileSystem.Stub(fs => fs.FileExists(projectFile)).Return(true);
+            commandFactory.Stub(cf => cf.CreateOpenProjectCommand(projectFile)).Return(command);
 
+            applicationController.Arguments = arguments;
             applicationController.Load();
 
-            Assert.AreEqual(1, taskManager.Queue.Count);
-            Assert.IsInstanceOfType(typeof(OpenProjectCommand), taskManager.Queue[0]);
-            var command = (OpenProjectCommand)taskManager.Queue[0];
-            Assert.AreEqual(projectFile, command.FileName);
+            taskManager.AssertWasCalled(t => t.QueueTask(command));
         }
 
         [Test]
-        public void OpenProject_should_call_mediator()
+        public void Load_with_no_restore_and_no_args_should_create_new_project()
         {
             const string projectFile = "test.gallio";
-            var mediator = MockRepository.GenerateStub<IMediator>();
-            mediator.OptionsController = MockRepository.GenerateStub<IOptionsController>();
-            var taskManager = new TestTaskManager();
-            mediator.TaskManager = taskManager;
-            var applicationController = new ApplicationController(new IcarusArguments(),
-                mediator, MockRepository.GenerateStub<IFileSystem>());
+            var arguments = new IcarusArguments();
+            optionsController.RestorePreviousSettings = false;
+            optionsController.Stub(oc => oc.RecentProjects).Return(new MRUList(new List<string>(new[] { projectFile }), 10));
+            commandFactory.Stub(c => c.CreateNewProjectCommand()).Return(command);
 
-            applicationController.OpenProject(projectFile);
+            applicationController.Arguments = arguments;
+            applicationController.Load();
 
-            Assert.AreEqual(1, taskManager.Queue.Count);
-            Assert.IsInstanceOfType(typeof(OpenProjectCommand), taskManager.Queue[0]);
-            var command = (OpenProjectCommand)taskManager.Queue[0];
-            Assert.AreEqual(projectFile, command.FileName);
+            Assert.AreEqual(string.Format("Default - {0}", Icarus.Properties.Resources.ApplicationName),
+                            applicationController.Title);
+            taskManager.AssertWasCalled(t => t.QueueTask(command));
         }
 
-        [SyncTest]
-        public void OpenProject_should_notify_filename_has_changed()
+        [Test]
+        public void OpenProject_should_update_title()
         {
-            var mediator = MockRepository.GenerateMock<IMediator>();
-            mediator.Stub(m => m.OptionsController).Return(MockRepository.GenerateStub<IOptionsController>());
-            var applicationController = new ApplicationController(new IcarusArguments(),
-                mediator, MockRepository.GenerateStub<IFileSystem>()); 
-            var propertyChangedFlag = false;
-            applicationController.PropertyChanged += delegate(object sender, PropertyChangedEventArgs e)
-            {
-                Assert.AreEqual("ProjectFileName", e.PropertyName);
-                propertyChangedFlag = true;
-            };
+            const string projectName = "test";
+            commandFactory.Stub(cf => cf.CreateOpenProjectCommand(projectName)).Return(command);
+
+            applicationController.OpenProject(projectName);
+
+            Assert.AreEqual(string.Format("{0} - {1}", projectName, Icarus.Properties.Resources.ApplicationName),
+                applicationController.Title);
+        }
+
+        [Test]
+        public void OpenProject_should_queue_task()
+        {
+            const string projectName = "test";
+            commandFactory.Stub(cf => cf.CreateOpenProjectCommand(projectName)).Return(command);
+
+            applicationController.OpenProject(projectName);
+
+            taskManager.AssertWasCalled(t => t.QueueTask(command));
+        }
+
+        [Test]
+        public void SaveProject_with_true_should_queue_task()
+        {
+            string projectName = Paths.DefaultProject;
+            commandFactory.Stub(cf => cf.CreateSaveProjectCommand(projectName)).Return(command);
+
+            applicationController.SaveProject(true);
+
+            taskManager.AssertWasCalled(t => t.QueueTask(command));
+        }
+
+        [Test]
+        public void SaveProject_with_false_should_execute_command()
+        {
+            var mocks = new MockRepository();
+            command = mocks.StrictMock<ICommand>();
+            command.Stub(c => c.Execute(NullProgressMonitor.CreateInstance())).IgnoreArguments();
+
+            string projectName = Paths.DefaultProject;
+            commandFactory.Stub(cf => cf.CreateSaveProjectCommand(projectName)).Return(command);
+
+            mocks.ReplayAll();
+            applicationController.SaveProject(false);
             
-            applicationController.OpenProject("test.gallio");
-
-            Assert.AreEqual(true, propertyChangedFlag);
+            command.VerifyAllExpectations();
         }
 
         [Test]
-        public void SaveProject_should_call_mediator()
+        public void SaveProject_with_false_and_execute_exception_should_report_error()
         {
-            const string projectFile = "test.gallio";
-            var mediator = MockRepository.GenerateMock<IMediator>();
-            mediator.Stub(m => m.OptionsController).Return(MockRepository.GenerateStub<IOptionsController>());
-            var applicationController = new ApplicationController(new IcarusArguments(),
-                mediator, MockRepository.GenerateStub<IFileSystem>())
-                {
-                    Title = projectFile 
-                };
+            string projectName = Paths.DefaultProject;
+            commandFactory.Stub(cf => cf.CreateSaveProjectCommand(projectName)).Return(command);
+            var exception = new Exception();
+            command.Stub(c => c.Execute(NullProgressMonitor.CreateInstance())).IgnoreArguments().Throw(exception);
 
-            applicationController.SaveProject();
+            applicationController.SaveProject(false);
 
-            mediator.AssertWasCalled(m => m.SaveProject(projectFile));
-        }
-
+            commandFactory.AssertWasCalled(cf => cf.CreateSaveProjectCommand(projectName));
+            unhandledExceptionPolicy.AssertWasCalled(uep => uep.Report("Error saving project",exception));
+        }      
+        
         [Test]
-        public void NewProject_should_call_mediator()
+        public void NewProject_should_queue_task()
         {
-            var mediator = MockRepository.GenerateMock<IMediator>();
-            mediator.Stub(m => m.OptionsController).Return(MockRepository.GenerateStub<IOptionsController>());
-            var applicationController = new ApplicationController(new IcarusArguments(),
-                mediator, MockRepository.GenerateStub<IFileSystem>());
+            commandFactory.Stub(c => c.CreateNewProjectCommand()).Return(command);
 
             applicationController.NewProject();
+            
+            Assert.AreEqual(string.Format("Default - {0}",  Icarus.Properties.Resources.ApplicationName),
+                            applicationController.Title); 
+            taskManager.AssertWasCalled(t => t.QueueTask(command));
+        }
 
-            mediator.AssertWasCalled(m => m.NewProject());
+        [Test]
+        public void Shutdown_should_save_options_and_project()
+        {
+            string projectName = Paths.DefaultProject;
+            commandFactory.Stub(cf => cf.CreateSaveProjectCommand(projectName)).Return(command);
+
+            applicationController.Shutdown();
+
+            optionsController.AssertWasCalled(oc => oc.Save());
+            commandFactory.AssertWasCalled(cf => cf.CreateSaveProjectCommand(projectName));           
+
         }
     }
 }
