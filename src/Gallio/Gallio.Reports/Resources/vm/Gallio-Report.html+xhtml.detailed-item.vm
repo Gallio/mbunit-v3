@@ -19,11 +19,11 @@
   <span class="testStepRunHeading testStepRunHeading-Level$nestingLevel">
     <img src="$resourceRoot/img/Minus.gif" class="toggle" id="toggle-detailPanel-$current.Step.Id" onclick="toggle('detailPanel-$current.Step.Id');" alt="Toggle Button" ></img>
     <span class="testKind#if($kind) testKind-$helper.RemoveChars($kind, " .")#end"></span>
-#if (!$path)
+    #if (!$path)
     $helper.BreakWord($current.Step.Name)
-#else
+    #else
     <a class="crossref" href="gallio:navigateTo?path=$path#if($line>0)&amp;line=$line#if($column>0)&amp;column=$column#end#end">$helper.BreakWord($current.Step.Name)</a>
-#end
+    #end
     <table class="outcome-bar">
       <tr>
         <td>
@@ -31,13 +31,13 @@
         </td>
       </tr>
     </table>
-#if ($current.Children.Count > 0)
+    #if ($current.Children.Count > 0)
     <span class="outcome-icons">
       <img src="$resourceRoot/img/Passed.gif" alt="Passed"/>$statistics.PassedCount
       <img src="$resourceRoot/img/Failed.gif" alt="Failed"/>$statistics.FailedCount
       <img src="$resourceRoot/img/Ignored.gif" alt="Inconclusive or Skipped"/>$statistics.SkippedOrInconclusiveCount
     </span>
-#end
+    #end
   </span>
 #*
 	====================================================
@@ -45,7 +45,7 @@
 	====================================================
 *#
   <div id="detailPanel-$current.Step.Id" class="panel">
-#if ($nestingLevel == 1)
+    #if ($nestingLevel == 1)
     <table class="statistics-table">
       <tr class="alternate-row">
         <td class="statistics-label-cell">Results:</td>
@@ -60,21 +60,21 @@
         <td>$current.Result.AssertCount</td>
       </tr>
     </table>
-#else
-Duration: $current.Result.Duration.TotalSeconds.ToString("0.00") s, Assertions: $current.Result.AssertCount.
-#end
+    #else
+    Duration: $current.Result.Duration.TotalSeconds.ToString("0.00") s, Assertions: $current.Result.AssertCount.
+    #end
 #*
 	====================================================
 	 METADATA
 	====================================================
 *#
-#foreach ($entry in $helper.GetVisibleMetadataEntries($current))
+    #foreach ($entry in $helper.GetVisibleMetadataEntries($current))
       <li>$helper.BreakWord($entry)</li>
-#beforeall
+    #beforeall
     <ul class="metadata">
-#afterall
+    #afterall
     </ul>
-#end
+    #end
 #*
 	====================================================
 	 TEST LOG
@@ -82,32 +82,25 @@ Duration: $current.Result.Duration.TotalSeconds.ToString("0.00") s, Assertions: 
 *#
     <div id="testStepRun-$current.Step.Id" class="testStepRun">
       <div id="log-$current.Step.Id" class="log">
-#foreach ($stream in $current.TestLog.Streams)
+        #foreach ($stream in $current.TestLog.Streams)
         <div class="logStream logStream-$stream.Name">
           <span class="logStreamHeading">$stream.Name</span>
           <div class="logStreamBody">
-#foreach ($currentTag in $stream.Body.Contents)
-#parse ("Gallio-Report.html+xhtml.detailed-item.log.vm")
-#end
+          #foreach ($currentTag in $stream.Body.Contents)
+          #parse ("Gallio-Report.html+xhtml.detailed-item.log.vm")
+          #end
           </div>
         </div>
-#end
+        #end
 #*
 	====================================================
 	 ATTACHMENTS
 	====================================================
 *#
-#foreach ($attachment in $current.TestLog.Attachments)
-  #if ($attachment.ContentDisposition == "Link")
-  <a href="$helper.PathToUri($attachment.ContentPath)" class="attachmentLink">$attachment.Name</a>
-  #else
-  $attachment.Name (n/a)
-  #end
-#between
-, 
-#beforeall
-        <div class="logAttachmentList">Attachments:
-#afterall
+        #foreach ($attachment in $current.TestLog.Attachments)
+#if ($attachment.ContentDisposition == "Link")<a href="$helper.PathToUri($attachment.ContentPath)" class="attachmentLink">$attachment.Name</a>#else$attachment.Name (n/a)#end#between
+, #beforeall
+        <div class="logAttachmentList">Attachments: #afterall
         </div>
 #end
       </div>
@@ -117,17 +110,17 @@ Duration: $current.Result.Duration.TotalSeconds.ToString("0.00") s, Assertions: 
 	 CHILDREN
 	====================================================
 *#
-#foreach ($run in $helper.GetVisibleChildren($current, $condensed))
-#parse ("Gallio-Report.html+xhtml.detailed-item.vm")
-#beforeall
+    #foreach ($run in $helper.GetVisibleChildren($current, $condensed))
+    #parse ("Gallio-Report.html+xhtml.detailed-item.vm")
+    #beforeall
     <ul class="testStepRunContainer">
-#afterall
+    #afterall
     </ul>
-#nodata
-  #if ($run.Result.Outcome.Status == "Passed")
-<script type="text/javascript">toggle('detailPanel-$current.Step.Id');</script>
-  #end
-#end
+    #nodata
+    #if ($run.Result.Outcome.Status == "Passed")
+    <script type="text/javascript">toggle('detailPanel-$current.Step.Id');</script>
+    #end
+    #end
   </div>
 </li>
 #set ($nestingLevel = $nestingLevel - 1)

@@ -35,7 +35,7 @@
 #end
     </a>
 #elseif ($tag.Class == "Link")
-    <a class="crossref" href="$helper.GetAttributeValue($tag, "url")">
+    <a class="crossref" href="$helper.GetMarkerAttributeValue($tag, "url")">
 #foreach ($currentTag in $tag.Contents)
 #parse ("Gallio-Report.html+xhtml.detailed-item.log.vm")
 #end

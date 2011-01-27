@@ -23,7 +23,7 @@
 	 TITLE AND HEADER
 	====================================================
 *#
-  <div id="Navigator" class="navigator">
+<div id="Navigator" class="navigator">
 <title>Gallio Test Report</title>
 <link rel="stylesheet" type="text/css" href="$resourceRoot/css/Gallio-Report.css" #if($xhtml)/#end>
 <link rel="stylesheet" type="text/css" href="$resourceRoot/css/Gallio-Report.generated.css" #if($xhtml)/#end>
@@ -33,7 +33,9 @@
 </head>
 #end
 <body class="gallio-report">
-  <div id="Header" class="header"><div class="header-image"></div></div>
+  <div id="Header" class="header">
+    <div class="header-image" />
+  </div>
 #*
 	====================================================
 	 NAVIGATION SIDE BAR
@@ -42,124 +44,129 @@
   <div id="Navigator" class="navigator">
 ## TODO: navigator
   </div>
+#*
+	====================================================
+	 STATISTICS
+	====================================================
+*#
   <div id="Content" class="content">
     <iframe id="_asyncLoadFrame" src="about:blank" style="border:0; margin:0; padding:0; width:0; height:0; display:none;" onload="_asyncLoadFrameOnLoad()"></iframe>
-	<div id="Statistics" class="section">
-	  <h2>Statistics</h2>
-	  <div class="section-content">
-		<table class="statistics-table">
-		  <tr>
-			<td class="statistics-label-cell">Start time:</td>
-			<td>$report.TestPackageRun.StartTime</td>
-		  </tr>
-		  <tr class="alternate-row">
-			<td class="statistics-label-cell">End time:</td>
-			<td>$report.TestPackageRun.EndTime</td>
-		  </tr>
-		  <tr>
-			<td class="statistics-label-cell">Tests:</td>
-			<td>$stats.TestCount ($stats.StepCount steps)</td>
-		  </tr>
-		  <tr class="alternate-row">
-			<td class="statistics-label-cell">Results:</td>
-			<td>$stats.RunCount run, $stats.PassedCount passed, $stats.FailedCount failed, $stats.InconclusiveCount inconclusive, $stats.SkippedCount skipped</td>
-		  </tr>
-		  <tr>
-			<td class="statistics-label-cell">Duration:</td>
-			<td>$stats.Duration.ToString("F2") s</td>
-		  </tr>
-		  <tr class="alternate-row">
-		    <td class="statistics-label-cell">Assertions:</td>
-			<td>$stats.AssertCount</td>
-		  </tr>
-		</table>
-	  </div>
-	</div>
+    <div id="Statistics" class="section">
+      <h2>Statistics</h2>
+      <div class="section-content">
+      <table class="statistics-table">
+        <tr>
+        <td class="statistics-label-cell">Start time:</td>
+        <td>$report.TestPackageRun.StartTime</td>
+        </tr>
+        <tr class="alternate-row">
+        <td class="statistics-label-cell">End time:</td>
+        <td>$report.TestPackageRun.EndTime</td>
+        </tr>
+        <tr>
+        <td class="statistics-label-cell">Tests:</td>
+        <td>$stats.TestCount ($stats.StepCount steps)</td>
+        </tr>
+        <tr class="alternate-row">
+        <td class="statistics-label-cell">Results:</td>
+        <td>$stats.RunCount run, $stats.PassedCount passed, $stats.FailedCount failed, $stats.InconclusiveCount inconclusive, $stats.SkippedCount skipped</td>
+        </tr>
+        <tr>
+        <td class="statistics-label-cell">Duration:</td>
+        <td>$stats.Duration.ToString("F2") s</td>
+        </tr>
+        <tr class="alternate-row">
+          <td class="statistics-label-cell">Assertions:</td>
+        <td>$stats.AssertCount</td>
+        </tr>
+      </table>
+      </div>
+    </div>
 #*
 	====================================================
 	 FILES SECTION
 	====================================================
 *#
-	<div id="Files" class="section">
-	  <h2>Files</h2>
-	  <div class="section-content">
-		<ul>
-#foreach ($file in $report.TestPackage.Files)
-           <li>$helper.BreakWord($file)</li>
-#end
-		</ul>
-	  </div>
-	</div>
+    <div id="Files" class="section">
+      <h2>Files</h2>
+      <div class="section-content">
+      <ul>
+      #foreach ($file in $report.TestPackage.Files)
+        <li>$helper.BreakWord($file)</li>
+      #end
+      </ul>
+      </div>
+    </div>
 #*
 	====================================================
 	 SUMMARY SECTION
 	====================================================
 *#
-	<div id="Summary" class="section">
-	  <h2>Summary#if ($condensed) (Condensed)#end</h2>
-	  <div class="section-content">
-    #if ($stats.RunCount == 0)
-      <em>This report does not contain any test runs.</em>
-    #elseif ($condensed && $stats.RunCount == $stats.PassedCount)
-      <em>All tests passed.</em>
-    #else
-      #set ($nestingLevel = 0)
-      #foreach ($run in $helper.GetVisibleChildren($report.TestPackageRun.RootTestStepRun, $condensed))
-        #parse ("Gallio-Report.html+xhtml.summary-item.vm")
-      #beforeall
-      <ul>
-      #afterall
-      </ul>
+    <div id="Summary" class="section">
+      <h2>Summary#if ($condensed) (Condensed)#end</h2>
+      <div class="section-content">
+      #if ($stats.RunCount == 0)
+        <em>This report does not contain any test runs.</em>
+      #elseif ($condensed && $stats.RunCount == $stats.PassedCount)
+        <em>All tests passed.</em>
+      #else
+        #set ($nestingLevel = 0)
+        #foreach ($run in $helper.GetVisibleChildren($report.TestPackageRun.RootTestStepRun, $condensed))
+          #parse ("Gallio-Report.html+xhtml.summary-item.vm")
+        #beforeall
+        <ul>
+        #afterall
+        </ul>
+        #end
       #end
-    #end
-	  </div>
-	</div>
+      </div>
+    </div>
 #*
 	====================================================
 	 DETAILS SECTION
 	====================================================
 *#
-	<div id="Details" class="section">
-	  <h2>Details#if ($condensed) (Condensed)#end</h2>
-	  <div class="section-content">
-#if ($stats.RunCount == 0)
-		<em>This report does not contain any test runs.</em>
-#elseif ($condensed && $stats.RunCount == $stats.PassedCount)
-		<em>All tests passed.</em>
-#else
-#set ($nestingLevel = 0)
-#foreach ($run in $helper.GetVisibleChildren($report.TestPackageRun.RootTestStepRun, $condensed))
-#parse ("Gallio-Report.html+xhtml.detailed-item.vm")
-#beforeall
-  <ul class="testStepRunContainer">
-#afterall
-  </ul>
-#end
-#end
-	  </div>
-	</div>
+    <div id="Details" class="section">
+      <h2>Details#if ($condensed) (Condensed)#end</h2>
+      <div class="section-content">
+      #if ($stats.RunCount == 0)
+        <em>This report does not contain any test runs.</em>
+      #elseif ($condensed && $stats.RunCount == $stats.PassedCount)
+        <em>All tests passed.</em>
+      #else
+        #set ($nestingLevel = 0)
+        #foreach ($run in $helper.GetVisibleChildren($report.TestPackageRun.RootTestStepRun, $condensed))
+        #parse ("Gallio-Report.html+xhtml.detailed-item.vm")
+        #beforeall
+        <ul class="testStepRunContainer">
+        #afterall
+        </ul>
+        #end
+      #end
+      </div>
+    </div>
 #*
 	====================================================
 	 DIAGNOSTIC LOG SECTION
 	====================================================
 *#
     <div id="Log" class="section">
-	  <h2>Diagnostic Log</h2>
+      <h2>Diagnostic Log</h2>
       <div class="section-content">
         <ul>
-#foreach ($entry in $report.LogEntries)
-#if ($entry.Severity != "Debug")
-		  <li class="logEntry logEntry-severity-$entry.Severity.ToString().ToLower()">
-		    <div class="logEntry-text">[$entry.Severity] $helper.BreakWord($entry.Message)</div>
-#if($entry.Details.Length > 0)
+        #foreach ($entry in $report.LogEntries)
+          #if ($entry.Severity != "Debug")
+          <li class="logEntry logEntry-severity-$entry.Severity.ToString().ToLower()">
+            <div class="logEntry-text">[$entry.Severity] $helper.BreakWord($entry.Message)</div>
+            #if($entry.Details.Length > 0)
             <div class="logEntry-details">$helper.BreakWord($entry.Details)</div>
-#end
-		  </li>
-#end
-#end
-		</ul>
-	  </div>
-	</div>
+            #end
+          </li>
+          #end
+        #end
+        </ul>
+      </div>
+    </div>
 #*
 	====================================================
 	 FOOTER

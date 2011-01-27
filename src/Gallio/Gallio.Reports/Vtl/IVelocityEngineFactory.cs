@@ -22,9 +22,22 @@ using Gallio.Runner.Reports;
 
 namespace Gallio.Reports.Vtl
 {
+    /// <summary>
+    /// Factory which builds and initializes a Velocity templace engine.
+    /// </summary>
     internal interface IVelocityEngineFactory
     {
+        /// <summary>
+        /// Creates a Velocity template engine.
+        /// </summary>
+        /// <returns>A newly created Velocity templace engine.</returns>
         VelocityEngine CreateVelocityEngine();
+
+        /// <summary>
+        /// Creates and initializes a contextual data container for the Velocity engine.
+        /// </summary>
+        /// <param name="reportWriter">The current report writer.</param>
+        /// <returns>A fully initialized context.</returns>
         VelocityContext CreateVelocityContext(IReportWriter reportWriter);
     }
 }

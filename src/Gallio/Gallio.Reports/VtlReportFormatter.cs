@@ -39,26 +39,7 @@ using Gallio.Reports.Vtl;
 namespace Gallio.Reports
 {
     /// <summary>
-    /// <para>
-    /// Generic report formatter based on the NVelocity template engine.
-    /// </para>
-    /// <para>
-    /// Recognizes the following options:
-    /// <list type="bullet">
-    /// <listheader>
-    /// <term>Option</term>
-    /// <description>Description</description>
-    /// </listheader>
-    /// <item>
-    /// <term>AttachmentContentDisposition</term>
-    /// <description>Overrides the default attachment content disposition for the format.
-    /// The content disposition may be "Absent" to exclude attachments, "Link" to
-    /// include attachments by reference to external files, or "Inline" to include attachments as
-    /// inline content within the formatted document.  Different formats use different
-    /// default content dispositions.</description>
-    /// </item>
-    /// </list>
-    /// </para>
+    /// Generic report formatter based on the Castle NVelocity template engine.
     /// </summary>
     public class VtlReportFormatter : BaseReportFormatter
     {
@@ -71,7 +52,7 @@ namespace Gallio.Reports
         private IVelocityEngineFactory velocityEngineFactory;
 
         /// <summary>
-        /// Creates an XSLT report formatter.
+        /// Creates a VTL report formatter.
         /// </summary>
         /// <param name="extension">The preferred extension without a '.'</param>
         /// <param name="contentType">The content type of the main report document.</param>

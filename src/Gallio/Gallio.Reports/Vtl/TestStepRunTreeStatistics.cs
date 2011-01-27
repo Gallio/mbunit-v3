@@ -7,6 +7,9 @@ using Gallio.Common;
 
 namespace Gallio.Reports.Vtl
 {
+    /// <summary>
+    /// Aggregates statistics for an entire tree branch.
+    /// </summary>
     internal class TestStepRunTreeStatistics
     {
         private class TestStatusData
@@ -15,7 +18,7 @@ namespace Gallio.Reports.Vtl
             public Memoizer<IDictionary<string, int>> CountPerCategory = new Memoizer<IDictionary<string, int>>();
         }
 
-        private readonly TestStepRun run;
+        private readonly TestStepRun root;
         private Memoizer<int> runCount = new Memoizer<int>();
         private readonly IDictionary<TestStatus, TestStatusData> map = new Dictionary<TestStatus, TestStatusData>
         {
@@ -25,26 +28,50 @@ namespace Gallio.Reports.Vtl
             { TestStatus.Inconclusive, new TestStatusData() },
         };
 
-        public int RunCount
-        { 
-            get { return runCount.Memoize(() => CountImpl(run, null)); } 
+        /// <summary>
+        /// Constructs statistics for the branch identified by the specified root element.
+        /// </summary>
+        /// <param name="root">The root element of the branch</param>
+        public TestStepRunTreeStatistics(TestStepRun root)
+        {
+            this.root = root;
         }
 
+        /// <summary>
+        /// Gets the number of runs in the branch.
+        /// </summary>
+        public int RunCount
+        {
+            get { return runCount.Memoize(() => CountImpl(root, null)); } 
+        }
+
+        /// <summary>
+        /// Gets the number of passed steps in the branch.
+        /// </summary>
         public int PassedCount
         {
             get { return CountPerStatus(TestStatus.Passed); }
         }
 
+        /// <summary>
+        /// Gets the number of failed steps in the branch.
+        /// </summary>
         public int FailedCount
         {
             get { return CountPerStatus(TestStatus.Failed); }
         }
 
+        /// <summary>
+        /// Gets the number of skipped steps in the branch.
+        /// </summary>
         public int SkippedCount
         {
             get { return CountPerStatus(TestStatus.Skipped); }
         }
 
+        /// <summary>
+        /// Gets the number of inconclusive steps in the branch.
+        /// </summary>
         public int InconclusiveCount
         {
             get { return CountPerStatus(TestStatus.Inconclusive); }
@@ -52,29 +79,60 @@ namespace Gallio.Reports.Vtl
 
         private int CountPerStatus(TestStatus status)
         {
-            return map[status].Count.Memoize(() => CountImpl(run, status));
+            return map[status].Count.Memoize(() => CountImpl(root, status));
         }
 
+        /// <summary>
+        /// Gets the number of skipped and inconclusive steps in the branch.
+        /// </summary>
         public int SkippedOrInconclusiveCount
         {
             get { return SkippedCount + InconclusiveCount; }
         }
 
+        /// <summary>
+        /// Formats the number of passed steps in the branch with details about the inner categories.
+        /// </summary>
+        /// <example>
+        /// "8 passed"
+        /// </example>
+        /// <returns>A comprehensive description of the step count.</returns>
         public string FormatPassedCountWithCategories()
         {
             return FormatCountWithCategories(TestStatus.Passed);
         }
 
+        /// <summary>
+        /// Formats the number of failed steps in the branch with details about the inner categories.
+        /// </summary>
+        /// <example>
+        /// "5 failed (2 error, 1 timeout)"
+        /// </example>
+        /// <returns>A comprehensive description of the step count.</returns>
         public string FormatFailedCountWithCategories()
         {
             return FormatCountWithCategories(TestStatus.Failed);
         }
 
+        /// <summary>
+        /// Formats the number of skipped steps in the branch with details about the inner categories.
+        /// </summary>
+        /// <example>
+        /// "6 skipped (2 pending, 1 ignored)"
+        /// </example>
+        /// <returns>A comprehensive description of the step count.</returns>
         public string FormatSkippedCountWithCategories()
         {
             return FormatCountWithCategories(TestStatus.Skipped);
         }
 
+        /// <summary>
+        /// Formats the number of inconclusive steps in the branch with details about the inner categories.
+        /// </summary>
+        /// <example>
+        /// "4 inconclusive (1 canceled)"
+        /// </example>
+        /// <returns>A comprehensive description of the step count.</returns>
         public string FormatInconclusiveCountWithCategories()
         {
             return FormatCountWithCategories(TestStatus.Inconclusive);
@@ -85,12 +143,12 @@ namespace Gallio.Reports.Vtl
             return map[status].CountPerCategory.Memoize(() =>
             {
                 var aggregator = new Dictionary<string, int>();
-                CountCategories(run, status, aggregator);
+                CountCategories(root, status, aggregator);
                 return aggregator;
             });
         }
 
-        public string FormatCountWithCategories(TestStatus status)
+        private string FormatCountWithCategories(TestStatus status)
         {
             var output = new StringBuilder();
             output.Append(CountPerStatus(status) + " " + status.ToString().ToLower());
@@ -104,9 +162,7 @@ namespace Gallio.Reports.Vtl
                 foreach (var pair in categories)
                 {
                     if (!first)
-                    {
                         output.Append(", ");
-                    }
 
                     output.Append(pair.Value + " " + pair.Key);
                     first = false;
@@ -116,11 +172,6 @@ namespace Gallio.Reports.Vtl
             }
 
             return output.ToString();
-        }
-
-        public TestStepRunTreeStatistics(TestStepRun run)
-        {
-            this.run = run;
         }
 
         private static int CountImpl(TestStepRun run, TestStatus? status)

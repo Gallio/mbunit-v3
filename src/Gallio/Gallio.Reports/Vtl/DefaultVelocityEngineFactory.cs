@@ -23,18 +23,25 @@ using NVelocity.Runtime;
 using Gallio.Runtime;
 using Gallio.Model;
 using System.IO;
+using Gallio.Runner.Reports.Schema;
 
 namespace Gallio.Reports.Vtl
 {
+    /// <inheritdoc />
     internal class DefaultVelocityEngineFactory : IVelocityEngineFactory
     {
         private readonly string templateDirectory;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="templateDirectory">The directory where the VTL templates files (.vm) are located.</param>
         public DefaultVelocityEngineFactory(string templateDirectory)
         {
             this.templateDirectory = templateDirectory;
         }
 
+        /// <inheritdoc />
         public VelocityEngine CreateVelocityEngine()
         {
             var engine = new VelocityEngine();
@@ -43,11 +50,16 @@ namespace Gallio.Reports.Vtl
             return engine;
         }
 
+        /// <summary>
+        /// Sets internal properties of the Velocity engine.
+        /// </summary>
+        /// <param name="engine">The velocity engine to set properties.</param>
         protected virtual void SetupVelocityEngine(VelocityEngine engine)
         {
             engine.SetProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, Path.GetDirectoryName(templateDirectory));
         }
 
+        /// <inheritdoc />
         public VelocityContext CreateVelocityContext(IReportWriter reportWriter)
         {
             var context = new VelocityContext();
@@ -55,7 +67,6 @@ namespace Gallio.Reports.Vtl
             var helper = new FormatHelper();
             helper.BuildParentMap(reportWriter.Report.TestPackageRun.RootTestStepRun);
             context.Put("helper", helper);
-            var resourcesPath = RuntimeAccessor.Instance.ResourceLocator.ResolveResourcePath(new Uri("plugin://Gallio.Reports/Resources/"));
             context.Put("resourceRoot", reportWriter.ReportContainer.ReportName);
             context.Put("passed", TestStatus.Passed);
             context.Put("failed", TestStatus.Failed);

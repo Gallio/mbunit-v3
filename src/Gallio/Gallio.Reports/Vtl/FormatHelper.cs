@@ -28,15 +28,36 @@ using Gallio.Common.Markup;
 
 namespace Gallio.Reports.Vtl
 {
+    /// <summary>
+    /// A general purpose class that helps in formatting stuff for the VTL template engine.
+    /// </summary>
     internal class FormatHelper
     {
-        private readonly IDictionary<string, TestStepRunTreeStatistics> map = new Dictionary<string, TestStepRunTreeStatistics>();
-
+        /// <summary>
+        /// Normalizes the end of lines for text-based formats.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Replaces single LF characters by CR/LF pairs.
+        /// </para>
+        /// </remarks>
+        /// <param name="text">The text to be normalized.</param>
+        /// <returns>The normalized text.</returns>
         public string NormalizeEndOfLinesText(string text)
         {
             return text.Replace("\n", "\r\n");
         }
 
+        /// <summary>
+        /// Normalizes the end of lines for HTML-based formats.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Replaces LF and CR/LF characters by a HTML breaking line tag.
+        /// </para>
+        /// </remarks>
+        /// <param name="text">The text to be normalized.</param>
+        /// <returns>The normalized text.</returns>
         public string NormalizeEndOfLinesHtml(string text)
         {
             return text
@@ -44,6 +65,11 @@ namespace Gallio.Reports.Vtl
                 .Replace("\n", "<br>");
         }
 
+        /// <summary>
+        /// Inserts HTML break word tags where it is necessary.
+        /// </summary>
+        /// <param name="text">The text to process.</param>
+        /// <returns>The processed text.</returns>
         public string BreakWord(string text)
         {
             var output = new StringBuilder();
@@ -92,16 +118,27 @@ namespace Gallio.Reports.Vtl
             return output.ToString();
         }
 
+        /// <summary>
+        /// Removes characters from the specified text.
+        /// </summary>
+        /// <param name="text">The text to process.</param>
+        /// <param name="chars">The characters to remove from the string.</param>
+        /// <returns>The processed text.</returns>
         public string RemoveChars(string text, string chars)
         {
-            foreach (char c in chars)
-            {
-                text = text.Replace(c.ToString(), String.Empty);
-            }
+            var builder = new StringBuilder(text);
 
-            return text;
+            foreach (char @char in chars)
+                builder.Replace(@char.ToString(), String.Empty);
+
+            return builder.ToString();
         }
 
+        /// <summary>
+        /// Returns statistics for the entire branch identified by the specified root test step run element.
+        /// </summary>
+        /// <param name="run"></param>
+        /// <returns></returns>
         public TestStepRunTreeStatistics GetStatistics(TestStepRun run)
         {
             TestStepRunTreeStatistics statistics;
@@ -115,6 +152,13 @@ namespace Gallio.Reports.Vtl
             return statistics;
         }
 
+        private readonly IDictionary<string, TestStepRunTreeStatistics> map = new Dictionary<string, TestStepRunTreeStatistics>();
+
+        /// <summary>
+        /// Returns the list of the visible metadata entries for the specified test step run.
+        /// </summary>
+        /// <param name="run">The test step run.</param>
+        /// <returns>A sorted list of metadata entries.</returns>
         public IList<string> GetVisibleMetadataEntries(TestStepRun run)
         {
             var list = new List<string>(GetEnumerableVisibleMetadataEntries(run));
@@ -134,12 +178,18 @@ namespace Gallio.Reports.Vtl
             }
         }
 
+        /// <summary>
+        /// Returns the list of the visible children of the specified test step run.
+        /// </summary>
+        /// <param name="run">The parent test step run.</param>
+        /// <param name="condensed">Indicates whether the current report is condensed.</param>
+        /// <returns>A list of child test step runs.</returns>
         public IList<TestStepRun> GetVisibleChildren(TestStepRun run, bool condensed)
         {
             return new List<TestStepRun>(GetEnumerableVisibleChildren(run, condensed));
         }
 
-        public IEnumerable<TestStepRun> GetEnumerableVisibleChildren(TestStepRun run, bool condensed)
+        private IEnumerable<TestStepRun> GetEnumerableVisibleChildren(TestStepRun run, bool condensed)
         {
             foreach (TestStepRun child in run.Children)
             {
@@ -148,17 +198,34 @@ namespace Gallio.Reports.Vtl
             }
         }
 
-        public string GetAttributeValue(MarkerTag markerTag, string name)
+        /// <summary>
+        /// Returns the value of the specified attribute in a marker tag.
+        /// </summary>
+        /// <param name="markerTag">The marker tag.</param>
+        /// <param name="name">The name of the searched attribute.</param>
+        /// <returns>The value of the attribute, or an empty string if not found.</returns>
+        public string GetMarkerAttributeValue(MarkerTag markerTag, string name)
         {
             int index = markerTag.Attributes.FindIndex(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             return (index < 0) ? String.Empty : markerTag.Attributes[index].Value;
         }
 
+        /// <summary>
+        /// Returns an attachment in the specified test step run.
+        /// </summary>
+        /// <param name="run">The current test step run.</param>
+        /// <param name="attachmentName">The name of the attachment to find.</param>
+        /// <returns>Attachment data.</returns>
         public AttachmentData FindAttachment(TestStepRun run, string attachmentName)
         {
             return run.TestLog.Attachments.Find(x => x.Name == attachmentName);
         }
 
+        /// <summary>
+        /// Transforms a file path to an URI.
+        /// </summary>
+        /// <param name="path">The path to transform.</param>
+        /// <returns>The resulting URI.</returns>
         public string PathToUri(string path)
         { 
             return path
@@ -167,17 +234,27 @@ namespace Gallio.Reports.Vtl
                 .Replace(" ", "%20");
         }
 
+        /// <summary>
+        /// Generates a unique id (GUID).
+        /// </summary>
+        /// <returns>A unique id.</returns>
         public string GenerateId()
         {
             return Guid.NewGuid().ToString("N");
         }
 
-        public IList<TestStepRun> GetVisibleSummaryChildren(TestStepRun run, bool condensed)
+        /// <summary>
+        /// Returns a list of the visible children for the summary section.
+        /// </summary>
+        /// <param name="parent">The parent test step run.</param>
+        /// <param name="condensed">Indicates whether the current report is condensed.</param>
+        /// <returns>A list of child test step runs.</returns>
+        public IList<TestStepRun> GetVisibleSummaryChildren(TestStepRun parent, bool condensed)
         {
-            return new List<TestStepRun>(GetEnumerableVisibleSummaryChildren(run, condensed));
+            return new List<TestStepRun>(GetEnumerableVisibleSummaryChildren(parent, condensed));
         }
 
-        public IEnumerable<TestStepRun> GetEnumerableVisibleSummaryChildren(TestStepRun run, bool condensed)
+        private IEnumerable<TestStepRun> GetEnumerableVisibleSummaryChildren(TestStepRun run, bool condensed)
         {
             foreach (TestStepRun child in run.Children)
             {
@@ -188,6 +265,10 @@ namespace Gallio.Reports.Vtl
 
         private readonly IDictionary<string, string> parentMap = new Dictionary<string, string>();
 
+        /// <summary>
+        /// Builds a map of the parent step id's.
+        /// </summary>
+        /// <param name="root">The root test step run of the tree.</param>
         public void BuildParentMap(TestStepRun root)
         {
             parentMap.Clear();
@@ -204,6 +285,11 @@ namespace Gallio.Reports.Vtl
             }
         }
 
+        /// <summary>
+        /// Enumerates the id's of the specified step and the ancestors'.
+        /// </summary>
+        /// <param name="id">The id of child element.</param>
+        /// <returns>An enumeration of step id's.</returns>
         public IEnumerable<string> GetSelfAndAncestorIds(string id)
         {
             while (id != null)
