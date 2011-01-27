@@ -116,6 +116,7 @@
     <Content Include="Resources\vm\Gallio-Report.html+xhtml.vm" />
     <Content Include="Resources\vm\Gallio-Report.html+xhtml.detailed-item.vm" />
     <Content Include="Resources\vm\Gallio-Report.html+xhtml.detailed-item.log.vm" />
+    <Content Include="Resources\vm\Gallio-Report.html+xhtml.summary-item.vm" />
     <Content Include="Gallio.Reports.plugin" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -98,14 +98,20 @@
 	<div id="Summary" class="section">
 	  <h2>Summary#if ($condensed) (Condensed)#end</h2>
 	  <div class="section-content">
-#if ($stats.RunCount == 0)
-		<em>This report does not contain any test runs.</em>
-#elseif ($condensed && $stats.RunCount == $stats.PassedCount)
-		<em>All tests passed.</em>
-#else
-		<ul>
-		</ul>
-#end
+    #if ($stats.RunCount == 0)
+      <em>This report does not contain any test runs.</em>
+    #elseif ($condensed && $stats.RunCount == $stats.PassedCount)
+      <em>All tests passed.</em>
+    #else
+      #set ($nestingLevel = 0)
+      #foreach ($run in $helper.GetVisibleChildren($report.TestPackageRun.RootTestStepRun, $condensed))
+        #parse ("Gallio-Report.html+xhtml.summary-item.vm")
+      #beforeall
+      <ul>
+      #afterall
+      </ul>
+      #end
+    #end
 	  </div>
 	</div>
 #*

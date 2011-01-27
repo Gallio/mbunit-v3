@@ -171,5 +171,46 @@ namespace Gallio.Reports.Vtl
         {
             return Guid.NewGuid().ToString("N");
         }
+
+        public IList<TestStepRun> GetVisibleSummaryChildren(TestStepRun run, bool condensed)
+        {
+            return new List<TestStepRun>(GetEnumerableVisibleSummaryChildren(run, condensed));
+        }
+
+        public IEnumerable<TestStepRun> GetEnumerableVisibleSummaryChildren(TestStepRun run, bool condensed)
+        {
+            foreach (TestStepRun child in run.Children)
+            {
+                if (!child.Step.IsTestCase && (!condensed || child.Result.Outcome != TestOutcome.Passed))
+                    yield return child;
+            }
+        }
+
+        private readonly IDictionary<string, string> parentMap = new Dictionary<string, string>();
+
+        public void BuildParentMap(TestStepRun root)
+        {
+            parentMap.Clear();
+            parentMap.Add(root.Step.Id, null);
+            BuildParentMapImpl(root);
+        }
+
+        private void BuildParentMapImpl(TestStepRun parent)
+        {
+            foreach (TestStepRun run in parent.Children)
+            {
+                parentMap.Add(run.Step.Id, parent.Step.Id);
+                BuildParentMapImpl(run);
+            }
+        }
+
+        public IEnumerable<string> GetSelfAndAncestorIds(string id)
+        {
+            while (id != null)
+            {
+                yield return id;
+                id = parentMap[id];
+            }
+        }
     }
 }

@@ -52,7 +52,9 @@ namespace Gallio.Reports.Vtl
         {
             var context = new VelocityContext();
             context.Put("report", reportWriter.Report);
-            context.Put("helper", new FormatHelper());
+            var helper = new FormatHelper();
+            helper.BuildParentMap(reportWriter.Report.TestPackageRun.RootTestStepRun);
+            context.Put("helper", helper);
             var resourcesPath = RuntimeAccessor.Instance.ResourceLocator.ResolveResourcePath(new Uri("plugin://Gallio.Reports/Resources/"));
             context.Put("resourceRoot", reportWriter.ReportContainer.ReportName);
             context.Put("passed", TestStatus.Passed);

@@ -1,0 +1,54 @@
+﻿#*
+	====================================================
+	 LOCAL VARIABLES
+	====================================================
+*#
+#set ($nestingLevel = $nestingLevel + 1)
+#set ($current = $run)
+#set ($statistics = $helper.GetStatistics($current))
+#set ($kind = $current.Step.Metadata.GetValue("TestKind"))
+#*
+	====================================================
+	 HEADER
+	====================================================
+*#
+<li>
+  <span>
+    #if ($current.Step.IsTestCase)
+    <img src="$resourceRoot/img/FullStop.gif" class="toggle" alt="Toggle Placeholder" />
+    #else
+    <img src="$resourceRoot/img/Minus.gif" class="toggle" id="toggle-summaryPanel-$current.Step.Id" onclick="toggle('summaryPanel-$current.Step.Id');" alt="Toggle Button" />
+    #end
+    <span class="testKind#if($kind) testKind-$helper.RemoveChars($kind, " .")#end"></span>
+    <a class="crossref" href="#testStepRun-$current.Step.Id" onclick="expand(['#foreach ($rid in $helper.GetSelfAndAncestorIds($current.Step.Id))
+detailPanel-$rid#between
+', '#end']);">$helper.BreakWord($current.Step.Name)</a>
+    <table class="outcome-bar">
+      <tr>
+        <td>
+          <div class="outcome-bar status-$current.Result.Outcome#if($current.Children.Count==0) condensed#end" title="$current.Result.Outcome" />
+        </td>
+      </tr>
+    </table>
+    #if ($current.Children.Count > 0)
+    <span class="outcome-icons">
+      <img src="$resourceRoot/img/Passed.gif" alt="Passed"/>$statistics.PassedCount
+      <img src="$resourceRoot/img/Failed.gif" alt="Failed"/>$statistics.FailedCount
+      <img src="$resourceRoot/img/Ignored.gif" alt="Inconclusive or Skipped"/>$statistics.SkippedOrInconclusiveCount
+    </span>
+    #end
+  </span>
+#*
+	====================================================
+	 CHILDREN
+	====================================================
+*#
+  <div class="panel">
+    #foreach ($run in $helper.GetVisibleSummaryChildren($current, $condensed))
+    <ul id="summaryPanel-$run.Step.Id">
+      #parse ("Gallio-Report.html+xhtml.summary-item.vm")
+    </ul>
+    #end
+  </div>
+</li>
+#set ($nestingLevel = $nestingLevel - 1)
