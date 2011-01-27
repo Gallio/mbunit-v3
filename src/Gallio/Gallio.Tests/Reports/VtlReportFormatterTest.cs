@@ -36,6 +36,7 @@ using NVelocity.App;
 using NVelocity.Runtime;
 using System.Reflection;
 using Gallio.Reports.Vtl;
+using Gallio.Model.Schema;
 
 namespace Gallio.Tests.Reports
 {
@@ -99,6 +100,7 @@ namespace Gallio.Tests.Reports
             mockReportContainer.Stub(x => x.ReportName).Return("output");
             mockReportContainer.Stub(x => x.OpenWrite(null, null, null)).IgnoreArguments().Return(stream);
             fakeReport.TestPackageRun = new TestPackageRun();
+            fakeReport.TestPackageRun.RootTestStepRun = new TestStepRun(new TestStepData("", "", "", ""));
             fakeReport.TestPackageRun.Statistics.RunCount = 123;
             var formatter = new VtlReportFormatter("ext", MimeTypes.PlainText, new DirectoryInfo("content"), "Gallio.Tests.Reports.SampleTemplate.vm", EmptyArray<string>.Instance);
             formatter.VelocityEngineFactory = new ResourceVelocityEngineFactory();
