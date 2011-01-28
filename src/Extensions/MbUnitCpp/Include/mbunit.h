@@ -178,6 +178,10 @@ namespace mbunit
 		template<typename T> void AreNotEqual(T unexpectedValue, T actualValue) { AreNotEqual<T>(unexpectedValue, actualValue, ""); }
 		template<typename T> void AreApproximatelyEqual(T expectedValue, T actualValue, T delta, const String& message);
 		template<typename T> void AreApproximatelyEqual(T expectedValue, T actualValue, T delta) { AreApproximatelyEqual<T>(expectedValue, actualValue, delta, ""); }
+		void IsNull(void* actualValue) { IsNull(actualValue, ""); }
+		void IsNull(void* actualValue, const String& message);
+		void IsNotNull(void* actualValue) { IsNotNull(actualValue, ""); }
+		void IsNotNull(void* actualValue, const String& message);
     };
 
 	class AssertionFrameworkController

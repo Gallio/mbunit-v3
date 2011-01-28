@@ -185,4 +185,10 @@
   <Test name="/Extensibility/Foo_inequality_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
   <Test name="/Extensibility/Foo_inequality_should_fail" expectedStatus="Failed" expectedAssertCount="1" expectedFailureLog="Unexpected Value\s*:\s*\{Foo\: value = 123\}, Actual Value\s*:\s*\{Foo\: value = 123\}" />
 
+  <Test name="/Nullity" expectedStatus="Failed" expectedAssertCount="4" />
+  <Test name="/Nullity/Assert_IsNull_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="/Nullity/Assert_IsNull_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+  <Test name="/Nullity/Assert_IsNotNull_should_pass" expectedStatus="Passed" expectedAssertCount="1" />
+  <Test name="/Nullity/Assert_IsNotNull_should_fail" expectedStatus="Failed" expectedAssertCount="1" />
+
 </Specifications>

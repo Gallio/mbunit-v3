@@ -1047,6 +1047,33 @@ namespace mbunit
     _Impl_AssertionFramework_AreApproximatelyEqual(float, fabs(expectedValue - actualValue) > delta, TypeSingle)
     _Impl_AssertionFramework_AreApproximatelyEqual(double, fabs(expectedValue - actualValue) > delta, TypeDouble)
 
+	// Verifies that an actual value is null.
+	void AssertionFramework::IsNull(void* actualValue, const String& message)
+	{
+		controller->IncrementAssertCount();
+		if (actualValue != 0)
+		{
+            String actual;
+            actual.Append(actualValue);
+            throw AssertionFailureBuilder("Expected value to be null.")
+                .Actual(actual, TypeAddress)
+                .Message(message)
+                .ToAssertionFailure(controller);
+		}
+	}
+
+	// Verifies that an actual value is not null.
+	void AssertionFramework::IsNotNull(void* actualValue, const String& message)
+	{
+		controller->IncrementAssertCount();
+		if (actualValue == 0)
+		{
+            throw AssertionFailureBuilder("Expected value to be non-null.")
+                .Message(message)
+                .ToAssertionFailure(controller);
+		}
+	}
+
 	// ======================================
 	// Interface functions for Gallio adapter
 	// ======================================
