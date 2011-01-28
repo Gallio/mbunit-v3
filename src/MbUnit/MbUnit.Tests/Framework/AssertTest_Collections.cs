@@ -399,17 +399,6 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        public void xxx()
-        {
-            var data = new[] { "Athos", "Porthos", "Aramis", "D'Artagnan" };
-            Assert.ForAll(data, x => 
-            {
-                Assert.StartsWith(x, "A");
-                Assert.EndsWith(x, "s"); 
-            });
-        }
-
-        [Test]
         public void ForAllActionIndex_should_fail()
         {
             var data = new[] { "Athos", "Porthos", "Aramis", "D'Artagnan" };
