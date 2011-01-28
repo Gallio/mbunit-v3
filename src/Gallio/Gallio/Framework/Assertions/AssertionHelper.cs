@@ -213,15 +213,30 @@ namespace Gallio.Framework.Assertions
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="explanation"/> is null.</exception>
         public static void Explain(Action action, AssertionFailureExplanation explanation)
         {
+            Explain(action, AssertionFailureBehavior.Throw, explanation);
+        }
+
+        /// <summary>
+        /// Performs an action and combines the possible assertion failures
+        /// that were observed within the block, into a single outer failure with
+        /// a common explanation.
+        /// </summary>
+        /// <param name="action">The action to invoke.</param>
+        /// <param name="assertionFailureBehavior">The assertion failure behavior to use while the action runs.</param>
+        /// <param name="explanation">A function that takes an array of inner failures and
+        /// returns a single outer failure with a common explanation.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="explanation"/> is null.</exception>
+        public static void Explain(Action action, AssertionFailureBehavior assertionFailureBehavior, AssertionFailureExplanation explanation)
+        {
             if (action == null)
                 throw new ArgumentNullException("action");
-
             if (explanation == null)
                 throw new ArgumentNullException("explanation");
 
             Verify(() =>
             {
-                AssertionFailure[] failures = Eval(action);
+                AssertionFailure[] failures = Eval(action, assertionFailureBehavior);
                 return failures.Length == 0 ? null : explanation(failures);
             });
         }

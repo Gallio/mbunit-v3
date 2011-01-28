@@ -176,7 +176,7 @@ namespace Gallio.Tests.Framework.Assertions
                 AssertionHelper.Explain(() =>
                 {
                     Assert.Fail("Inner reason");
-                
+
                 }, innerFailures =>
                     new AssertionFailureBuilder("Outer reason")
                         .AddInnerFailures(innerFailures)
@@ -187,6 +187,29 @@ namespace Gallio.Tests.Framework.Assertions
             Assert.AreEqual("Outer reason", failures[0].Description);
             Assert.Count(1, failures[0].InnerFailures);
             Assert.AreEqual("Inner reason", failures[0].InnerFailures[0].Message);
+        }
+
+        [Test]
+        public void Explain_should_decorate_several_inner_assertion_failures()
+        {
+            AssertionFailure[] failures = AssertionHelper.Eval(() =>
+            {
+                AssertionHelper.Explain(() =>
+                {
+                    Assert.Fail("Inner reason #1");
+                    Assert.Fail("Inner reason #2");
+
+                }, AssertionFailureBehavior.CaptureAndContinue, innerFailures =>
+                    new AssertionFailureBuilder("Outer reason")
+                        .AddInnerFailures(innerFailures)
+                        .ToAssertionFailure());
+            });
+
+            Assert.Count(1, failures);
+            Assert.AreEqual("Outer reason", failures[0].Description);
+            Assert.Count(2, failures[0].InnerFailures);
+            Assert.AreEqual("Inner reason #1", failures[0].InnerFailures[0].Message);
+            Assert.AreEqual("Inner reason #2", failures[0].InnerFailures[1].Message);
         }
 
         [Test]

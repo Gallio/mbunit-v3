@@ -871,6 +871,87 @@ namespace MbUnit.Framework
             });
         }
 
+        /// <summary>
+        /// Verifies that all the elements of the sequence pass the validation.
+        /// </summary>
+        /// <typeparam name="T">The type of values in the sequence.</typeparam>
+        /// <param name="values">The sequence of values to evaluate.</param>
+        /// <param name="action">The assertion block that validates each element of the sequence.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        public static void ForAll<T>(IEnumerable<T> values, Action<T> action)
+        {
+            ForAll(values, action, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that all the elements of the sequence pass the validation.
+        /// </summary>
+        /// <typeparam name="T">The type of values in the sequence.</typeparam>
+        /// <param name="values">The sequence of values to evaluate.</param>
+        /// <param name="action">The assertion block that validates each element of the sequence.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        public static void ForAll<T>(IEnumerable<T> values, Action<T> action, string messageFormat, params object[] messageArgs)
+        {
+            if (values == null)
+                throw new ArgumentException("values");
+            if (action == null)
+                throw new ArgumentException("action");
+
+            ForAll(values, (value, index) => action(value), messageFormat, messageArgs);
+        }
+
+        /// <summary>
+        /// Verifies that all the elements of the sequence pass the validation.
+        /// </summary>
+        /// <typeparam name="T">The type of values in the sequence.</typeparam>
+        /// <param name="values">The sequence of values to evaluate.</param>
+        /// <param name="action">The assertion block that validates each element of the sequence based on the element's value and index.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        public static void ForAll<T>(IEnumerable<T> values, Action<T, int> action)
+        {
+            ForAll(values, action, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that all the elements of the sequence pass the validation.
+        /// </summary>
+        /// <typeparam name="T">The type of values in the sequence.</typeparam>
+        /// <param name="values">The sequence of values to evaluate.</param>
+        /// <param name="action">The assertion block that validates each element of the sequence based on the element's value and index.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        public static void ForAll<T>(IEnumerable<T> values, Action<T, int> action, string messageFormat, params object[] messageArgs)
+        {
+            if (values == null)
+                throw new ArgumentException("values");
+            if (action == null)
+                throw new ArgumentException("action");
+
+            AssertionHelper.Explain(() =>
+            {
+                int index = 0;
+
+                foreach (T value in values)
+                {
+                    T valueCopy = value;
+                    AssertionHelper.Explain(() => action(valueCopy, index), AssertionFailureBehavior.CaptureAndContinue, failures =>
+                        new AssertionFailureBuilder(String.Format("Element #{0} failed.", index))
+                            .AddInnerFailures(failures)
+                            .AddRawLabeledValue("Element Value", valueCopy)
+                            .ToAssertionFailure());
+
+                    index++;
+                }
+            }, AssertionFailureBehavior.CaptureAndContinue, failures => 
+                new AssertionFailureBuilder("Expected all the elements of the sequence to pass assert validations, but at least one failed.")
+                    .AddInnerFailures(failures)
+                    .SetMessage(messageFormat, messageArgs)
+                    .ToAssertionFailure());
+        }
+
         #endregion
 
         #region Exists
