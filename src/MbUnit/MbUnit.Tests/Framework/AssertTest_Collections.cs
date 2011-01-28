@@ -25,8 +25,8 @@ using MbUnit.Framework;
 namespace MbUnit.Tests.Framework
 {
     [TestsOn(typeof(Assert))]
-	public class AssertTest_Collections : BaseAssertTest
-	{
+    public class AssertTest_Collections : BaseAssertTest
+    {
         #region AreElementsEqual
         [Test]
         public void AreElementsEqual_with_strings()
@@ -379,6 +379,48 @@ namespace MbUnit.Tests.Framework
             AssertionFailure[] failures = Capture(() => Assert.ForAll(data, x => x.StartsWith("A")));
             Assert.Count(1, failures);
             Assert.AreEqual("Expected all the elements of the sequence to meet the specified condition, but at least one failed.", failures[0].Description);
+        }
+
+        [Test]
+        public void ForAllAction_should_pass()
+        {
+            var data = new[] { "Athos", "Porthos", "Aramis" };
+            Assert.ForAll(data, x => { Assert.Contains(x, "s"); });
+        }
+
+        [Test]
+        public void ForAllAction_should_fail()
+        {
+            var data = new[] { "Athos", "Porthos", "Aramis", "D'Artagnan" };
+            AssertionFailure[] failures = Capture(() => Assert.ForAll(data, x => { Assert.StartsWith(x, "A"); }));
+            Assert.Count(1, failures);
+            Assert.AreEqual("Expected all the elements of the sequence to pass assert validations, but at least one failed.", failures[0].Description);
+            Assert.Count(2, failures[0].InnerFailures);
+        }
+
+        [Test]
+        public void xxx()
+        {
+            var data = new[] { "Athos", "Porthos", "Aramis", "D'Artagnan" };
+            Assert.ForAll(data, x => 
+            {
+                Assert.StartsWith(x, "A");
+                Assert.EndsWith(x, "s"); 
+            });
+        }
+
+        [Test]
+        public void ForAllActionIndex_should_fail()
+        {
+            var data = new[] { "Athos", "Porthos", "Aramis", "D'Artagnan" };
+            AssertionFailure[] failures = Capture(() => Assert.ForAll(data, (value, index) =>
+            {
+                if (index < 3)
+                    Assert.StartsWith(value, "A");
+            }));
+            Assert.Count(1, failures);
+            Assert.AreEqual("Expected all the elements of the sequence to pass assert validations, but at least one failed.", failures[0].Description);
+            Assert.Count(1, failures[0].InnerFailures); // The D'Artagnan should not be checked because only the first three entries are validated.
         }
 
         #endregion
