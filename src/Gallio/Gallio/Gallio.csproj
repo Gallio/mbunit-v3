@@ -437,6 +437,7 @@
     <Compile Include="Runtime\Conversions\CustomConverters.cs" />
     <Compile Include="Runtime\Extensibility\IExtensionPoints.cs" />
     <Compile Include="Runtime\Extensibility\DefaultExtensionPoints.cs" />
+    <Compile Include="Runtime\Formatting\MemberInfoFormattingRule.cs" />
     <Compile Include="Runtime\Formatting\FormattingFunc.cs" />
     <Compile Include="Runtime\Formatting\CustomFormattingRule.cs" />
     <Compile Include="Runtime\Formatting\CustomFormatters.cs" />

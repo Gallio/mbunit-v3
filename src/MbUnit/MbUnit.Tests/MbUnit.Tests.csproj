@@ -57,6 +57,7 @@
     <Compile Include="Framework\ContractVerifiers\HashCodeAcceptanceContractTest.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassCollectionTest.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassTest.cs" />
+    <Compile Include="Framework\AssertTest_HasAttribute.cs" />
     <Compile Include="Framework\DataGeneratorsTest_Join.cs" />
     <Compile Include="Framework\DisableAttributeTest.cs" />
     <Compile Include="Framework\MirrorTest.cs" />
