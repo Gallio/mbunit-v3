@@ -182,7 +182,15 @@ namespace mbunit
 		void IsNull(void* actualValue, const String& message);
 		void IsNotNull(void* actualValue) { IsNotNull(actualValue, ""); }
 		void IsNotNull(void* actualValue, const String& message);
-    };
+		template<typename T> void GreaterThan(T left, T right, const String& message);
+		template<typename T> void GreaterThan(T left, T right) { GreaterThan<T>(left, right, ""); }
+		template<typename T> void GreaterThanOrEqualTo(T left, T right, const String& message);
+		template<typename T> void GreaterThanOrEqualTo(T left, T right) { GreaterThanOrEqualTo<T>(left, right, ""); }
+		template<typename T> void LessThan(T left, T right, const String& message);
+		template<typename T> void LessThan(T left, T right) { LessThan<T>(left, right, ""); }
+		template<typename T> void LessThanOrEqualTo(T left, T right, const String& message);
+		template<typename T> void LessThanOrEqualTo(T left, T right) { LessThanOrEqualTo<T>(left, right, ""); }
+	};
 
 	class AssertionFrameworkController
 	{

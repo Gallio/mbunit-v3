@@ -45,6 +45,9 @@
     <ClCompile Include="NullityTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="ComparisonTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />

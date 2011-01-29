@@ -1074,6 +1074,89 @@ namespace mbunit
 		}
 	}
 
+    // Compares the left and the right values.
+    #define _Impl_AssertionFramework_CompareValues(FUNC, TYPE, CONDITION, MANAGEDTYPE, MESSAGE) \
+		template<> void AssertionFramework::FUNC<TYPE>(TYPE left, TYPE right, const String& message) \
+		{ \
+			controller->IncrementAssertCount(); \
+			if (CONDITION) \
+			{ \
+                String leftFormatted, rightFormatted; \
+                leftFormatted.Append(left); \
+                rightFormatted.Append(right); \
+                throw AssertionFailureBuilder(MESSAGE) \
+                    .Extra_0("Left Value", leftFormatted, MANAGEDTYPE) \
+                    .Extra_1("Right Value", rightFormatted, MANAGEDTYPE) \
+                    .Message(message) \
+                    .ToAssertionFailure(controller); \
+			} \
+		}
+
+    #define _Impl_AssertionFramework_GreaterThan(TYPE, CONDITION, MANAGEDTYPE) \
+		_Impl_AssertionFramework_CompareValues(GreaterThan, TYPE, CONDITION, MANAGEDTYPE, "Expected left to be greater than right.")
+	#define _Impl_AssertionFramework_GreaterThanOrEqualTo(TYPE, CONDITION, MANAGEDTYPE) \
+		_Impl_AssertionFramework_CompareValues(GreaterThanOrEqualTo, TYPE, CONDITION, MANAGEDTYPE, "Expected left to be greater than or equal to right.")
+	#define _Impl_AssertionFramework_LessThan(TYPE, CONDITION, MANAGEDTYPE) \
+		_Impl_AssertionFramework_CompareValues(LessThan, TYPE, CONDITION, MANAGEDTYPE, "Expected left to be less than right.")
+	#define _Impl_AssertionFramework_LessThanOrEqualTo(TYPE, CONDITION, MANAGEDTYPE) \
+		_Impl_AssertionFramework_CompareValues(LessThanOrEqualTo, TYPE, CONDITION, MANAGEDTYPE, "Expected left to be less than or equal to right.")
+
+    _Impl_AssertionFramework_GreaterThan(char, left <= right, TypeChar)
+    _Impl_AssertionFramework_GreaterThan(wchar_t, left <= right, TypeChar)
+    _Impl_AssertionFramework_GreaterThan(unsigned char, left <= right, TypeByte)
+    _Impl_AssertionFramework_GreaterThan(short, left <= right, TypeInt16)
+    _Impl_AssertionFramework_GreaterThan(unsigned short, left <= right, TypeUInt16)
+    _Impl_AssertionFramework_GreaterThan(int, left <= right, TypeInt32)
+    _Impl_AssertionFramework_GreaterThan(unsigned int, left <= right, TypeUInt32)
+    _Impl_AssertionFramework_GreaterThan(long, left <= right, TypeInt32)
+    _Impl_AssertionFramework_GreaterThan(unsigned long, left <= right, TypeUInt32)
+    _Impl_AssertionFramework_GreaterThan(long long, left <= right, TypeInt64)
+    _Impl_AssertionFramework_GreaterThan(unsigned long long, left <= right, TypeInt64)
+    _Impl_AssertionFramework_GreaterThan(float, left <= right, TypeSingle)
+    _Impl_AssertionFramework_GreaterThan(double, left <= right, TypeDouble)
+
+    _Impl_AssertionFramework_GreaterThanOrEqualTo(char, left < right, TypeChar)
+    _Impl_AssertionFramework_GreaterThanOrEqualTo(wchar_t, left < right, TypeChar)
+    _Impl_AssertionFramework_GreaterThanOrEqualTo(unsigned char, left < right, TypeByte)
+    _Impl_AssertionFramework_GreaterThanOrEqualTo(short, left < right, TypeInt16)
+    _Impl_AssertionFramework_GreaterThanOrEqualTo(unsigned short, left < right, TypeUInt16)
+    _Impl_AssertionFramework_GreaterThanOrEqualTo(int, left < right, TypeInt32)
+    _Impl_AssertionFramework_GreaterThanOrEqualTo(unsigned int, left < right, TypeUInt32)
+    _Impl_AssertionFramework_GreaterThanOrEqualTo(long, left < right, TypeInt32)
+    _Impl_AssertionFramework_GreaterThanOrEqualTo(unsigned long, left < right, TypeUInt32)
+    _Impl_AssertionFramework_GreaterThanOrEqualTo(long long, left < right, TypeInt64)
+    _Impl_AssertionFramework_GreaterThanOrEqualTo(unsigned long long, left < right, TypeInt64)
+    _Impl_AssertionFramework_GreaterThanOrEqualTo(float, left < right, TypeSingle)
+    _Impl_AssertionFramework_GreaterThanOrEqualTo(double, left < right, TypeDouble)
+
+    _Impl_AssertionFramework_LessThan(char, left >= right, TypeChar)
+    _Impl_AssertionFramework_LessThan(wchar_t, left >= right, TypeChar)
+    _Impl_AssertionFramework_LessThan(unsigned char, left >= right, TypeByte)
+    _Impl_AssertionFramework_LessThan(short, left >= right, TypeInt16)
+    _Impl_AssertionFramework_LessThan(unsigned short, left >= right, TypeUInt16)
+    _Impl_AssertionFramework_LessThan(int, left >= right, TypeInt32)
+    _Impl_AssertionFramework_LessThan(unsigned int, left >= right, TypeUInt32)
+    _Impl_AssertionFramework_LessThan(long, left >= right, TypeInt32)
+    _Impl_AssertionFramework_LessThan(unsigned long, left >= right, TypeUInt32)
+    _Impl_AssertionFramework_LessThan(long long, left >= right, TypeInt64)
+    _Impl_AssertionFramework_LessThan(unsigned long long, left >= right, TypeInt64)
+    _Impl_AssertionFramework_LessThan(float, left >= right, TypeSingle)
+    _Impl_AssertionFramework_LessThan(double, left >= right, TypeDouble)
+
+    _Impl_AssertionFramework_LessThanOrEqualTo(char, left > right, TypeChar)
+    _Impl_AssertionFramework_LessThanOrEqualTo(wchar_t, left > right, TypeChar)
+    _Impl_AssertionFramework_LessThanOrEqualTo(unsigned char, left > right, TypeByte)
+    _Impl_AssertionFramework_LessThanOrEqualTo(short, left > right, TypeInt16)
+    _Impl_AssertionFramework_LessThanOrEqualTo(unsigned short, left > right, TypeUInt16)
+    _Impl_AssertionFramework_LessThanOrEqualTo(int, left > right, TypeInt32)
+    _Impl_AssertionFramework_LessThanOrEqualTo(unsigned int, left > right, TypeUInt32)
+    _Impl_AssertionFramework_LessThanOrEqualTo(long, left > right, TypeInt32)
+    _Impl_AssertionFramework_LessThanOrEqualTo(unsigned long, left > right, TypeUInt32)
+    _Impl_AssertionFramework_LessThanOrEqualTo(long long, left > right, TypeInt64)
+    _Impl_AssertionFramework_LessThanOrEqualTo(unsigned long long, left > right, TypeInt64)
+    _Impl_AssertionFramework_LessThanOrEqualTo(float, left > right, TypeSingle)
+    _Impl_AssertionFramework_LessThanOrEqualTo(double, left > right, TypeDouble)
+
 	// ======================================
 	// Interface functions for Gallio adapter
 	// ======================================
