@@ -20,6 +20,7 @@ using Gallio.Common.Text;
 using Gallio.Runtime.Formatting;
 using Gallio.Common.Diagnostics;
 using Gallio.Common.Markup;
+using Gallio.Common;
 
 namespace Gallio.Framework.Assertions
 {
@@ -385,6 +386,20 @@ namespace Gallio.Framework.Assertions
 
             foreach (AssertionFailure innerFailure in innerFailures)
                 AddInnerFailure(innerFailure);
+            return this;
+        }
+
+        /// <summary>
+        /// Executes an action on the assertion failure builder if the specified condition is true.
+        /// </summary>
+        /// <param name="condition">The condition to evaluate.</param>
+        /// <param name="build">The build action to execute if the condition is true.</param>
+        /// <returns>The builder, to allow for fluent method chaining.</returns>
+        public AssertionFailureBuilder If(bool condition, Action<AssertionFailureBuilder> build)
+        {
+            if (condition)
+                build(this);
+
             return this;
         }
 
