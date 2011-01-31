@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Gallio.Icarus.Commands;
 using Gallio.Runtime.Extensibility;
 using MbUnit.Framework;
-using NHamcrest.Core;
 using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.Commands

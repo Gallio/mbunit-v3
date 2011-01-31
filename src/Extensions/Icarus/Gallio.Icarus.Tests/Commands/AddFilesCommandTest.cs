@@ -21,7 +21,6 @@ using Gallio.Icarus.Tests.Utilities;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;
 using MbUnit.Framework;
-using NHamcrest.Core;
 using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.Commands

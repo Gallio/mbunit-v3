@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using Gallio.Icarus.WindowManager;
 using Gallio.UI.Menus;
 using MbUnit.Framework;
-using NHamcrest.Core;
 
 namespace Gallio.Icarus.Tests.WindowManager
 {
