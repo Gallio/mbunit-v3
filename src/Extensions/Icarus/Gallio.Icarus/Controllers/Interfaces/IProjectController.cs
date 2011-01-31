@@ -54,7 +54,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         void RemoveHintDirectory(string hintDirectory);
         void RemoveTestRunnerExtensionSpecification(string testRunnerExtensionSpecification);
         void SaveFilterSet(string filterName, FilterSet<ITestDescriptor> filterSet);
-        void SaveProject(IProgressMonitor progressMonitor, string projectLocation);
+        void Save(string projectLocation, IProgressMonitor progressMonitor);
         void SetApplicationBaseDirectory(string applicationBaseDirectory);
         void SetReportNameFormat(string reportNameFormat);
         void SetShadowCopy(bool shadowCopy);

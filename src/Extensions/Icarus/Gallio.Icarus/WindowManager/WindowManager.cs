@@ -31,6 +31,11 @@ namespace Gallio.Icarus.WindowManager
 
         public IMenuManager MenuManager { get; private set; }
 
+        public WindowManager(IMenuManager menuManager)
+        {
+            MenuManager = menuManager;
+        }
+
         public Window Add(string identifier, Control content, string caption)
         {
             return Add(identifier, content, caption, null);
@@ -122,14 +127,9 @@ namespace Gallio.Icarus.WindowManager
             hooks.Add(identifier, action);
         }
 
-        public void SetDockPanel(DockPanel panel)
+        internal void SetDockPanel(DockPanel panel)
         {
             dockPanel = panel;
-        }
-
-        public void SetMenuManager(IMenuManager menuManager)
-        {
-            MenuManager = menuManager;
         }
 
         public IAsyncResult BeginInvoke(Delegate method, object[] args)

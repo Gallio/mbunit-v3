@@ -25,33 +25,32 @@ namespace Gallio.Icarus.Commands
     public class AddFilesCommand : ICommand
     {
         private readonly IProjectController projectController;
-        private readonly ITestController testController;
+        private readonly ICommandFactory commandFactory;
 
         public IList<string> Files { get; set; }
 
-        public AddFilesCommand(IProjectController projectController, ITestController testController)
+        public AddFilesCommand(IProjectController projectController, ICommandFactory commandFactory)
         {
             this.projectController = projectController;
-            this.testController = testController;
-            Files = new List<string>();
+            this.commandFactory = commandFactory;
         }
 
         public void Execute(IProgressMonitor progressMonitor)
         {
+            if (Files == null || Files.Count == 0)
+                throw new Exception("No files to add");
+
             using (progressMonitor.BeginTask(Resources.AddingFiles, 100))
             {
-                // add files to test package
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
+                {
                     projectController.AddFiles(subProgressMonitor, Files);
+                }
 
-                if (progressMonitor.IsCanceled)
-                    throw new OperationCanceledException();
-
-                // reload tests
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
                 {
-                    testController.SetTestPackage(projectController.TestPackage);
-                    testController.Explore(subProgressMonitor, projectController.TestRunnerExtensionSpecifications);
+                    var loadPackageCommand = commandFactory.CreateLoadPackageCommand();
+                    loadPackageCommand.Execute(subProgressMonitor);
                 }
             }
         }

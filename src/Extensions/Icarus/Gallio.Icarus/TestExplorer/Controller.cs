@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Gallio.Common.Policies;
 using Gallio.Icarus.Commands;
+using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
@@ -28,12 +29,12 @@ using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.TestExplorer
 {
-    public class Controller : IController, Handles<ApplicationShutdown>, Handles<Reloading>, Handles<RunStarted>,
+    public class Controller : IController, Handles<SavingProject>, Handles<Reloading>, Handles<RunStarted>,
         Handles<RunFinished>, Handles<ExploreStarted>, Handles<ExploreFinished>, Handles<UserOptionsLoaded>
     {
         private readonly IModel model;
         private readonly IEventAggregator eventAggregator;
-        private readonly IUserOptionsController userOptionsController;
+        private readonly IProjectUserOptionsController projectUserOptionsController;
         private readonly ITaskManager taskManager;
         private readonly ICommandFactory commandFactory;
 
@@ -41,12 +42,12 @@ namespace Gallio.Icarus.TestExplorer
         public event EventHandler RestoreState;
 
         public Controller(IModel model, IEventAggregator eventAggregator, IOptionsController optionsController, 
-            IUserOptionsController userOptionsController, ITaskManager taskManager, ICommandFactory commandFactory)
+            IProjectUserOptionsController projectUserOptionsController, ITaskManager taskManager, ICommandFactory commandFactory)
         {
             this.model = model;
             this.commandFactory = commandFactory;
             this.eventAggregator = eventAggregator;
-            this.userOptionsController = userOptionsController;
+            this.projectUserOptionsController = projectUserOptionsController;
             this.taskManager = taskManager;
 
             model.PassedColor.Value = optionsController.PassedColor;
@@ -56,12 +57,12 @@ namespace Gallio.Icarus.TestExplorer
 
             model.TreeViewCategories = optionsController.SelectedTreeViewCategories;
 
-            model.CollapsedNodes.Value = new List<string>(userOptionsController.CollapsedNodes);
+            model.CollapsedNodes.Value = new List<string>(projectUserOptionsController.CollapsedNodes);
         }
 
         public void SortTree(SortOrder sortOrder)
         {
-            eventAggregator.Send(new SortTreeEvent(sortOrder));
+            eventAggregator.Send(this, new SortTreeEvent(sortOrder));
         }
 
         public void FilterStatus(TestStatus testStatus)
@@ -80,7 +81,7 @@ namespace Gallio.Icarus.TestExplorer
                     model.FilterInconclusive.Value = !model.FilterInconclusive;
                     break;
             }
-            eventAggregator.Send(new FilterTestStatusEvent(testStatus));
+            eventAggregator.Send(this, new FilterTestStatusEvent(testStatus));
         }
 
         public void AddFiles(string[] fileNames)
@@ -104,7 +105,7 @@ namespace Gallio.Icarus.TestExplorer
         public void ChangeTreeCategory(string newCategory, Action<IProgressMonitor> continuation)
         {
             model.CurrentTreeViewCategory.Value = newCategory;
-            eventAggregator.Send(new TreeViewCategoryChanged(newCategory));
+            eventAggregator.Send(this, new TreeViewCategoryChanged(newCategory));
             var command = commandFactory.CreateRefreshTestTreeCommand();
             taskManager.QueueTask(command);
             taskManager.QueueTask(new DelegateCommand(continuation));
@@ -118,7 +119,7 @@ namespace Gallio.Icarus.TestExplorer
 
         public void SetCollapsedNodes(IEnumerable<string> collapsedNodes)
         {
-            userOptionsController.SetCollapsedNodes(collapsedNodes);
+            projectUserOptionsController.SetCollapsedNodes(collapsedNodes);
         }
 
         public void ResetTests()
@@ -129,22 +130,22 @@ namespace Gallio.Icarus.TestExplorer
 
         public void SetTreeSelection(IEnumerable<TestTreeNode> nodes)
         {
-            eventAggregator.Send(new TestSelectionChanged(nodes));
+            eventAggregator.Send(this, new TestSelectionChanged(nodes));
         }
 
-        public void Handle(ApplicationShutdown @event)
+        public void Handle(SavingProject @event)
         {
-            EventHandlerPolicy.SafeInvoke(SaveState, 
-                this, EventArgs.Empty);
+            TriggerStateSave();
+        }
 
-            var command = commandFactory.CreateSaveFilterCommand("AutoSave");
-            command.Execute(NullProgressMonitor.CreateInstance());
+        private void TriggerStateSave()
+        {
+            EventHandlerPolicy.SafeInvoke(SaveState, this, EventArgs.Empty);
         }
 
         public void Handle(Reloading @event)
         {
-            EventHandlerPolicy.SafeInvoke(SaveState,
-                this, EventArgs.Empty);
+            TriggerStateSave();
         }
 
         public void Handle(RunStarted @event)
@@ -171,8 +172,8 @@ namespace Gallio.Icarus.TestExplorer
 
         public void Handle(UserOptionsLoaded @event)
         {
-            model.CollapsedNodes.Value = new List<string>(userOptionsController.CollapsedNodes);
-            model.CurrentTreeViewCategory.Value = userOptionsController.TreeViewCategory;
+            model.CollapsedNodes.Value = new List<string>(projectUserOptionsController.CollapsedNodes);
+            model.CurrentTreeViewCategory.Value = projectUserOptionsController.TreeViewCategory;
         }
     }
 }

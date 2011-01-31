@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 using Gallio.Common.Collections;
 using Gallio.Common.Reflection;
@@ -78,16 +79,18 @@ namespace Gallio.Icarus
             {
                 // wire up services & components
                 var scanner = new DefaultConventionScanner(RuntimeAccessor.Registry);
-                scanner.Scan();
+                scanner.Scan("Gallio.Icarus", Assembly.GetExecutingAssembly());
+
+                LoadPackages();
 
                 var optionsController = RuntimeAccessor.ServiceLocator.Resolve<IOptionsController>();
                 
                 // create & initialize a test runner whenever the test runner factory is changed
                 optionsController.TestRunnerFactory.PropertyChanged += (s, e) => 
                     ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
-                
+
                 ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
-                
+
                 var runtimeLogController = RuntimeAccessor.ServiceLocator.Resolve<IRuntimeLogController>();
                 runtimeLogController.SetLogger(runtimeLogger);
 
@@ -95,6 +98,8 @@ namespace Gallio.Icarus
                 applicationController.Arguments = Arguments;
 
                 ErrorDialogUnhandledExceptionHandler.RunApplicationWithHandler(new Main(applicationController));
+
+                UnloadPackages();
             }
 
             return ResultCode.Success;
@@ -117,6 +122,36 @@ namespace Gallio.Icarus
             var testRunnerFactory = testRunnerManager.GetFactory(factoryName);
 
             testController.SetTestRunnerFactory(testRunnerFactory);
+        }
+
+        private static void LoadPackages()
+        {
+            foreach (var package in RuntimeAccessor.ServiceLocator.ResolveAll<IPackage>())
+            {
+                try
+                {
+                    package.Load();
+                }
+                catch (Exception ex)
+                {
+                    UnhandledExceptionPolicy.Report("Error loading package", ex);
+                }
+            }
+        }
+
+        private static void UnloadPackages()
+        {
+            foreach (var package in RuntimeAccessor.ServiceLocator.ResolveAll<IPackage>())
+            {
+                try
+                {
+                    package.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    UnhandledExceptionPolicy.Report("Error unloading package", ex);
+                }
+            }
         }
 
         protected override void ShowHelp()

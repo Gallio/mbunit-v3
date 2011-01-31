@@ -18,9 +18,10 @@ using System.Collections.Generic;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Tests.Utilities;
-using Gallio.Model;
-using Gallio.Model.Schema;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.ProgressMonitoring;
 using MbUnit.Framework;
+using NHamcrest.Core;
 using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.Commands
@@ -28,37 +29,61 @@ namespace Gallio.Icarus.Tests.Commands
     [Category("Commands"), TestsOn(typeof(AddFilesCommand))]
     internal class AddFilesCommandTest
     {
-        [Test, Author("Graham Hay")]
-        public void Execute_with_files_set()
-        {
-            var projectController = MockRepository.GenerateStub<IProjectController>();
-            var testPackage = new TestPackage();
-            projectController.Stub(pc => pc.TestPackage).Return(testPackage);
-            var testRunnerExtensions = new System.ComponentModel.BindingList<string>(new List<string>());
-            projectController.Stub(pc => pc.TestRunnerExtensionSpecifications).Return(testRunnerExtensions);
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var command = new AddFilesCommand(projectController, testController);
-            var files = new List<string>();
-            command.Files = files;
-            var progressMonitor = MockProgressMonitor.Instance;
-            
-            command.Execute(progressMonitor);
+        private AddFilesCommand command;
+        private IProjectController projectController;
+        private ICommandFactory commandFactory;
+        private ICommand loadPackageCommand;
 
-            projectController.AssertWasCalled(pc => pc.AddFiles(progressMonitor, files));
-            testController.AssertWasCalled(tc => tc.SetTestPackage(testPackage));
-            testController.AssertWasCalled(tc => tc.Explore(progressMonitor, testRunnerExtensions));
+        [SetUp]
+        public void SetUp()
+        {
+            projectController = MockRepository.GenerateStub<IProjectController>();
+            commandFactory = MockRepository.GenerateStub<ICommandFactory>();
+            loadPackageCommand = MockRepository.GenerateStub<ICommand>();
+            commandFactory.Stub(cf => cf.CreateLoadPackageCommand())
+                .Return(loadPackageCommand);
+
+            command = new AddFilesCommand(projectController, commandFactory);
         }
 
-        [Test, Author("Graham Hay")]
-        public void Execute_should_throw_if_canceled()
+        [Test]
+        public void Execute_should_throw_if_files_are_not_set()
         {
-            var projectController = MockRepository.GenerateStub<IProjectController>();
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var command = new AddFilesCommand(projectController, testController);
-            var progressMonitor = MockProgressMonitor.Instance;
-            progressMonitor.Stub(pm => pm.IsCanceled).Return(true);
+            var exception = Assert.Throws<Exception>(() => command.Execute(MockProgressMonitor.Instance));
 
-            Assert.Throws<OperationCanceledException>(() => command.Execute(progressMonitor));
+            Assert.AreEqual("No files to add", exception.Message);
+        }
+
+        [Test]
+        public void Execute_should_throw_if_file_list_is_empty()
+        {
+            command.Files = new List<string>();
+
+            var exception = Assert.Throws<Exception>(() => command.Execute(MockProgressMonitor.Instance));
+
+			Assert.AreEqual("No files to add", exception.Message);
+        }
+
+        [Test]
+        public void Execute_should_add_files_to_project()
+        {
+            var files = new List<string> { "a" };
+            command.Files = files;
+
+            command.Execute(MockProgressMonitor.Instance);
+
+            projectController.AssertWasCalled(pc => pc.AddFiles(Arg<IProgressMonitor>.Is.Anything, 
+                Arg.Is(files)));
+        }
+
+        [Test]
+        public void Execute_should_load_the_package()
+        {
+            command.Files = new List<string> { "a" };
+
+            command.Execute(MockProgressMonitor.Instance);
+
+            loadPackageCommand.AssertWasCalled(c => c.Execute(Arg<IProgressMonitor>.Is.Anything));
         }
     }
 }

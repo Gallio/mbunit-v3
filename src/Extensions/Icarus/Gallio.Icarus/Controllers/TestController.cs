@@ -68,7 +68,7 @@ namespace Gallio.Icarus.Controllers
         {
             using (progressMonitor.BeginTask("Exploring the tests", 100))
             {
-                eventAggregator.Send(new ExploreStarted());
+                eventAggregator.Send(this, new ExploreStarted());
 
                 DoWithTestRunner(testRunner =>
                 {
@@ -80,7 +80,7 @@ namespace Gallio.Icarus.Controllers
                     RefreshTestTree(progressMonitor.CreateSubProgressMonitor(10));
                 }, progressMonitor, 10, testRunnerExtensions);
 
-                eventAggregator.Send(new ExploreFinished());
+                eventAggregator.Send(this, new ExploreFinished());
             }
         }
 
@@ -89,7 +89,7 @@ namespace Gallio.Icarus.Controllers
         {
             using (progressMonitor.BeginTask("Running the tests.", 100))
             {
-                eventAggregator.Send(new RunStarted());
+                eventAggregator.Send(this, new RunStarted());
                 testsFailed = false;
 
                 progressMonitor.Worked(5);
@@ -97,7 +97,7 @@ namespace Gallio.Icarus.Controllers
                 DoWithTestRunner(testRunner => RunTests(debug, testRunner, progressMonitor),
                     progressMonitor, 5, testRunnerExtensions);
 
-                eventAggregator.Send(new RunFinished());
+                eventAggregator.Send(this, new RunFinished());
             }
         }
 
@@ -135,7 +135,7 @@ namespace Gallio.Icarus.Controllers
         {
             using (progressMonitor.BeginTask("Refreshing test tree.", 100))
             {
-                eventAggregator.Send(new TestsReset());
+                eventAggregator.Send(this, new TestsReset());
 
                 var options = new TreeBuilderOptions
                 {
@@ -158,7 +158,7 @@ namespace Gallio.Icarus.Controllers
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(4))
                     testTreeModel.ResetTestStatus(subProgressMonitor);
 
-                eventAggregator.Send(new TestsReset());
+                eventAggregator.Send(this, new TestsReset());
             }
         }
 
@@ -235,14 +235,14 @@ namespace Gallio.Icarus.Controllers
             testRunner.Events.TestStepFinished += (sender, e) =>
                 taskManager.BackgroundTask(() =>
                 {
-                    eventAggregator.Send(new TestStepFinished(e.Test,
-                        e.TestStepRun));
+                    eventAggregator.Send(this, new TestStepFinished(e.Test,
+                                                                    e.TestStepRun));
 
                     if (false == ShouldSendTestsFailedEvent(e.TestStepRun.Result.Outcome.Status)) 
                         return;
 
                     testsFailed = true;
-                    eventAggregator.Send(new TestsFailed());
+                    eventAggregator.Send(this, new TestsFailed());
                 });
         }
 

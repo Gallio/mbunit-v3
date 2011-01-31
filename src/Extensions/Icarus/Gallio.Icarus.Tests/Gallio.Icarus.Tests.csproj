@@ -41,6 +41,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Gallio\libs\Aga.Controls.dll</HintPath>
     </Reference>
+    <Reference Include="NHamcrest, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31c3ea0b6fcf8c4a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\MbUnit\lib\NHamcrest\NHamcrest.dll</HintPath>
+    </Reference>
     <Reference Include="Rhino.Mocks, Version=3.1.0.584, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\tools\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
@@ -61,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Commands\AddFilesCommandTest.cs" />
     <Compile Include="Commands\ApplyFilterCommandTest.cs" />
+    <Compile Include="Commands\CommandFactoryTests.cs" />
     <Compile Include="Commands\ConvertSavedReportCommandTest.cs" />
     <Compile Include="Commands\RestoreFilterCommandTest.cs" />
     <Compile Include="Commands\ResetTestsCommandTest.cs" />
@@ -77,10 +82,11 @@
     <Compile Include="Commands\OpenReportCommandTest.cs" />
     <Compile Include="Commands\RefreshTestTreeCommandTest.cs" />
     <Compile Include="Commands\ReloadCommandTest.cs" />
+    <Compile Include="Commands\SaveProjectCommandTests.cs" />
     <Compile Include="Controllers\AboutControllerTest.cs" />
     <Compile Include="Controllers\AnnotationsControllerTest.cs" />
-    <Compile Include="Controllers\ApplicationControllerTest.cs" />
     <Compile Include="Controllers\ExecutionLogControllerTest.cs" />
+    <Compile Include="Controllers\FilterControllerTests.cs" />
     <Compile Include="Controllers\NotifyControllerTest.cs" />
     <Compile Include="Controllers\OptionsControllerTest.cs" />
     <Compile Include="Controllers\ProjectControllerTest.cs" />
@@ -113,7 +119,7 @@
     <Compile Include="Models\TreeModelDecoratorTest.cs" />
     <Compile Include="ProgressMonitoring\Win7TaskBarTest.cs" />
     <Compile Include="ProjectProperties\ControllerTest.cs" />
-    <Compile Include="Projects\UserOptionsControllerTest.cs" />
+    <Compile Include="Projects\ProjectUserOptionsControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -139,6 +145,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\TestTaskManager.cs" />
+    <Compile Include="WindowManager\MenuManagerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.csproj">

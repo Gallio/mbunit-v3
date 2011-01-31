@@ -16,10 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using System.Windows.Forms;
 using Gallio.Common;
-using Gallio.Common.Policies;
 using Gallio.Model.Schema;
 using Gallio.Runner.Reports.Schema;
 
@@ -38,7 +36,6 @@ namespace Gallio.UI.Reports
     {
         private HtmlTestStepRunFormatter formatter;
         private volatile FileInfo htmlFile;
-        private bool initialized;
 
         /// <summary>
         /// Creates a test step run viewer.
@@ -48,7 +45,16 @@ namespace Gallio.UI.Reports
             InitializeComponent();
 
             Disposed += HandleDisposed;
-            Paint += HandleWebBrowserInit;
+        }
+
+        /// <summary>
+        /// Raises the <see cref="E:System.Windows.Forms.UserControl.Load"/> event.
+        /// </summary>
+        /// <param name="e">An <see cref="T:System.EventArgs"/> that contains the event data.</param>
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            UpdateAsync();
         }
 
         /// <summary>
@@ -101,32 +107,20 @@ namespace Gallio.UI.Reports
             UpdateAsync();
         }
 
-        private void HandleWebBrowserInit(object sender, EventArgs e)
-        {
-            if (!initialized)
-            {
-                initialized = true;
-                UpdateAsync();
-            }
-        }
-
         private void HandleDisposed(object sender, EventArgs e)
         {
             ClearNoUpdate();
-            initialized = false;
         }
 
         private void UpdateAsync()
         {
-            if (!initialized)
-                return;
-
             DoAsync(() =>
             {
                 if (webBrowser.IsBusy)
                     webBrowser.Stop();
 
-                FileInfo cachedHtmlFile = htmlFile; // in case it changes concurrently
+                var cachedHtmlFile = htmlFile; // in case it changes concurrently
+
                 if (cachedHtmlFile != null)
                 {
                     webBrowser.Url = new Uri(cachedHtmlFile.FullName);

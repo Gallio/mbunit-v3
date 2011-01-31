@@ -15,10 +15,12 @@
 
 using Gallio.Icarus.Models;
 using Gallio.Model.Schema;
+using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.TreeBuilders
 {
+    [Traits(typeof(TreeBuilderTraits))]
     public interface ITreeBuilder
     {
         bool CanHandle(string treeViewCategory);

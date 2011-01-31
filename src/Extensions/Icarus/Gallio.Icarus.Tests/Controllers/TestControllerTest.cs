@@ -70,7 +70,7 @@ namespace Gallio.Icarus.Tests.Controllers
 
             testController.Explore(progressMonitor, new List<string>());
 
-            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<ExploreStarted>.Is.Anything));
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg.Is(testController), Arg<ExploreStarted>.Is.Anything));
         }
 
         private void StubTestRunnerFactory()
@@ -109,7 +109,7 @@ namespace Gallio.Icarus.Tests.Controllers
 
             testController.Explore(progressMonitor, new List<string>());
 
-            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<ExploreFinished>.Is.Anything));
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg.Is(testController), Arg<ExploreFinished>.Is.Anything));
         }
 
         [Test]
@@ -132,8 +132,8 @@ namespace Gallio.Icarus.Tests.Controllers
             testRunnerEvents.Raise(tre => tre.TestStepFinished += null, testRunner, 
                 testStepFinishedEventArgs);
 
-            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<TestStepFinished>.Matches(tsf => 
-                tsf.TestData == testData && tsf.TestStepRun == testStepRun)));
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg.Is(testController), Arg<TestStepFinished>.Matches(tsf => 
+                                                                                              tsf.TestData == testData && tsf.TestStepRun == testStepRun)));
         }
 
         [Test]
@@ -153,7 +153,7 @@ namespace Gallio.Icarus.Tests.Controllers
 
             testRunnerEvents.Raise(tre => tre.TestStepFinished += null, testRunner, testStepFinishedEventArgs);
 
-            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<TestsFailed>.Is.Anything));
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg.Is(testController), Arg<TestsFailed>.Is.Anything));
         }
 
         [Test]
@@ -218,7 +218,7 @@ namespace Gallio.Icarus.Tests.Controllers
 
             testController.Run(false, progressMonitor, new List<string>());
 
-            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<RunStarted>.Is.Anything));
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg.Is(testController), Arg<RunStarted>.Is.Anything));
         }
 
         [Test]
@@ -252,7 +252,7 @@ namespace Gallio.Icarus.Tests.Controllers
 
             testController.Run(false, progressMonitor, new List<string>());
 
-            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<RunFinished>.Is.Anything));
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg.Is(testController), Arg<RunFinished>.Is.Anything));
         }
 
         [Test]

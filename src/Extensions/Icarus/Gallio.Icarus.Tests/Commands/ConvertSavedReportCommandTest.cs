@@ -13,11 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Gallio.Common.IO;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Tests.Utilities;
+using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
+using NHamcrest.Core;
 using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.Commands
@@ -25,48 +28,76 @@ namespace Gallio.Icarus.Tests.Commands
     [Category("Commands"), TestsOn(typeof(ConvertSavedReportCommand))]
     internal class ConvertSavedReportCommandTest
     {
-        [Test]
-        public void Execute_should_call_Convert_on_ReportController()
+        private IReportController reportController;
+        private IFileSystem fileSystem;
+        private ConvertSavedReportCommand command;
+
+        [SetUp]
+        public void SetUp()
         {
-            var reportController = MockRepository.GenerateStub<IReportController>();
-            const string fileName = "fileName";
-            const string format = "format";
-            var progressMonitor = MockProgressMonitor.Instance;
-            const string generatedFile = "generatedFile";
-            reportController.Stub(rc => rc.ConvertSavedReport(fileName, format, progressMonitor)).Return(generatedFile);
-            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            fileSystem.Stub(fs => fs.FileExists(generatedFile)).Return(true);
-            var command = new ConvertSavedReportCommand(reportController, fileName, format, fileSystem);
-
-            command.Execute(progressMonitor);
-
-            fileSystem.AssertWasCalled(fs => fs.OpenFile(generatedFile));
+            reportController = MockRepository.GenerateStub<IReportController>();
+            fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            command = new ConvertSavedReportCommand(reportController, fileSystem);
         }
 
         [Test]
-        public void FileName_should_return_value_from_ctor()
+        public void Execute_should_throw_if_filename_is_not_set()
         {
-            var reportController = MockRepository.GenerateStub<IReportController>();
-            const string fileName = "fileName";
+            const string fileName = null;
             const string format = "format";
-            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            command.FileName = fileName;
+            command.Format = format;
 
-            var command = new ConvertSavedReportCommand(reportController, fileName, format, fileSystem);
+            var exception = Assert.Throws<ArgumentException>(() => command.Execute(MockProgressMonitor.Instance));
 
-            Assert.AreEqual(fileName, command.FileName);
+            Assert.AreEqual("FileName cannot be null or empty", exception.Message);
         }
 
         [Test]
-        public void Format_should_return_value_from_ctor()
+        public void Execute_should_throw_if_format_is_not_set()
         {
-            var reportController = MockRepository.GenerateStub<IReportController>();
+            const string fileName = "file";
+            const string format = null;
+            command.FileName = fileName;
+            command.Format = format;
+
+            var exception = Assert.Throws<ArgumentException>(() => command.Execute(MockProgressMonitor.Instance));
+
+            Assert.AreEqual("Format cannot be null or empty", exception.Message);
+        }
+
+        [Test]
+        public void Execute_should_convert_saved_report()
+        {
             const string fileName = "fileName";
             const string format = "format";
-            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            command.FileName = fileName;
+            command.Format = format;
 
-            var command = new ConvertSavedReportCommand(reportController, fileName, format, fileSystem);
+            command.Execute(MockProgressMonitor.Instance);
 
-            Assert.AreEqual(format, command.Format);
+            reportController.AssertWasCalled(rc => rc.ConvertSavedReport(Arg.Is(fileName), 
+                Arg.Is(format), Arg<IProgressMonitor>.Is.Anything));
+        }
+
+        [Test]
+        public void Execute_should_open_report_if_it_is_valid()
+        {
+            command.FileName = "fileName";
+            command.Format = "format";
+            const string path = "path/to/generated/report";
+            StubGeneratedPath(path);
+
+            command.Execute(MockProgressMonitor.Instance);
+
+            fileSystem.AssertWasCalled(fs => fs.OpenFile(path));
+        }
+
+        private void StubGeneratedPath(string path)
+        {
+            reportController.Stub(rc => rc.ConvertSavedReport(Arg<string>.Is.Anything, Arg<string>.Is.Anything, 
+                Arg<IProgressMonitor>.Is.Anything)).Return(path);
+            fileSystem.Stub(fs => fs.FileExists(path)).Return(true);
         }
     }
 }

@@ -13,6 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using Gallio.Model.Filters;
+using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.Extensibility;
 using Gallio.UI.ProgressMonitoring;
 
@@ -37,10 +40,24 @@ namespace Gallio.Icarus.Commands
             return (T)serviceLocator.ResolveByComponentId(typeof (T).FullName);
         }
 
+        public ICommand CreateSaveProjectCommand(string fileName)
+        {
+            var command = GetCommand<SaveProjectCommand>();
+            command.ProjectLocation = fileName;
+            return command;
+        }
+
         public ICommand CreateShowReportCommand(string reportFormat)
         {
             var command = GetCommand<ShowReportCommand>();
             command.ReportFormat = reportFormat;
+            return command;
+        }
+
+        public ICommand CreateRestoreFilterCommand(string filterName)
+        {
+            var command = GetCommand<RestoreFilterCommand>();
+            command.FilterName = filterName;
             return command;
         }
 
@@ -51,11 +68,50 @@ namespace Gallio.Icarus.Commands
             return command;
         }
 
-        public ICommand CreateAddFilesCommand(string[] files)
+        public ICommand CreateAddFilesCommand(IList<string> files)
         {
             var command = GetCommand<AddFilesCommand>();
             command.Files = files;
             return command;
+        }
+
+        public ICommand CreateApplyFilterCommand(FilterSet<ITestDescriptor> filterSet)
+        {
+            var command = GetCommand<ApplyFilterCommand>();
+            command.FilterSet = filterSet;
+            return command;
+        }
+
+        public ICommand CreateConvertSavedReportCommand(string fileName, string format)
+        {
+            var command = GetCommand<ConvertSavedReportCommand>();
+            command.FileName = fileName;
+            command.Format = format;
+            return command;
+        }
+
+        public ICommand CreateDeleteFilterCommand(FilterInfo filterInfo)
+        {
+            var command = GetCommand<DeleteFilterCommand>();
+            command.FilterInfo = filterInfo;
+            return command;
+        }
+
+        public ICommand CreateDeleteReportCommand(string fileName)
+        {
+            var command = GetCommand<DeleteReportCommand>();
+            command.FileName = fileName;
+            return command;
+        }
+
+        public ICommand CreateLoadPackageCommand()
+        {
+            return GetCommand<LoadPackageCommand>();
+        }
+
+        public ICommand CreateNewProjectCommand()
+        {
+            return GetCommand<NewProjectCommand>();
         }
 
         public ICommand CreateRemoveAllFilesCommand()

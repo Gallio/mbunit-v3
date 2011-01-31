@@ -33,6 +33,16 @@ namespace Gallio.UI.Tests.Events
             Assert.IsTrue(handler.Handled);
         }
 
+        [Test]
+        public void Proxies_should_be_considered_equal_if_target_is_the_same()
+        {
+            var handler = new TestHandler(new TestEvent());
+            var proxy = new EventHandlerProxy<TestEvent>(handler);
+            var proxy2 = new EventHandlerProxy<TestEvent>(handler);
+
+            Assert.AreEqual(proxy, proxy2);
+        }
+
         private class TestEvent : Event { }
 
         private class TestHandler : Handles<TestEvent>

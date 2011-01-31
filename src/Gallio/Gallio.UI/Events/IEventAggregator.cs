@@ -24,8 +24,9 @@ namespace Gallio.UI.Events
         ///<summary>
         /// Send an event to all interested parties (synchronous).
         ///</summary>
+        ///<param name="sender">The sender of the message.</param>
         ///<param name="message">The message to send.</param>
         ///<typeparam name="T">The type of event.</typeparam>
-        void Send<T>(T message) where T : Event;
+        void Send<T>(object sender, T message) where T : Event;
     }
 }

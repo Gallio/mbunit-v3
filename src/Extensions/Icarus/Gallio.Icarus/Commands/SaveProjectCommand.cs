@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Icarus.Projects;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.UI.ProgressMonitoring;
@@ -22,21 +23,56 @@ namespace Gallio.Icarus.Commands
     internal class SaveProjectCommand : ICommand
     {
         private readonly IProjectController projectController;
+        private readonly IProjectUserOptionsController projectUserOptionsController;
+        private readonly ICommandFactory commandFactory;
 
-        public string FileName
+        public string ProjectLocation
         {
             get;
             set;
         }
 
-        public SaveProjectCommand(IProjectController projectController)
+        public SaveProjectCommand(IProjectController projectController, IProjectUserOptionsController projectUserOptionsController, 
+            ICommandFactory commandFactory)
         {
             this.projectController = projectController;
+            this.projectUserOptionsController = projectUserOptionsController;
+            this.commandFactory = commandFactory;
         }
 
         public void Execute(IProgressMonitor progressMonitor)
         {
-            projectController.SaveProject(progressMonitor, FileName);
+            using (progressMonitor.BeginTask("Saving project", 100))
+            {
+                SaveCurrentTestFilter(progressMonitor);
+                SaveProject(progressMonitor);
+                SaveUserOptions(progressMonitor);
+            }
+        }
+
+        private void SaveCurrentTestFilter(IProgressMonitor progressMonitor)
+        {
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
+            {
+                var command = commandFactory.CreateSaveFilterCommand("AutoSave");
+                command.Execute(subProgressMonitor);
+            }
+        }
+
+        private void SaveProject(IProgressMonitor progressMonitor)
+        {
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
+            {
+                projectController.Save(ProjectLocation, subProgressMonitor);
+            }
+        }
+
+        private void SaveUserOptions(IProgressMonitor progressMonitor)
+        {
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(40))
+            {
+                projectUserOptionsController.SaveUserOptions(ProjectLocation, subProgressMonitor);
+            }
         }
     }
 }

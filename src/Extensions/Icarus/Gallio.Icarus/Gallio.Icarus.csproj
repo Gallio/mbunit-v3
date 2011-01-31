@@ -107,6 +107,7 @@
     <Compile Include="Controllers\ExecutionLogController.cs" />
     <Compile Include="Controllers\Interfaces\IExecutionLogController.cs" />
     <Compile Include="Controllers\ProgressEvent.cs" />
+    <Compile Include="Controllers\SavingProject.cs" />
     <Compile Include="Events\OptionsChanged.cs" />
     <Compile Include="ExecutionLogWindow.cs">
       <SubType>Form</SubType>
@@ -126,11 +127,12 @@
     <Compile Include="ProjectProperties\View.Designer.cs">
       <DependentUpon>View.cs</DependentUpon>
     </Compile>
-    <Compile Include="Projects\IUserOptionsController.cs" />
+    <Compile Include="Projects\IProjectUserOptionsController.cs" />
     <Compile Include="Projects\UserOptions.cs" />
-    <Compile Include="Projects\UserOptionsController.cs" />
+    <Compile Include="Projects\ProjectUserOptionsController.cs" />
     <Compile Include="Projects\UserOptionsLoaded.cs" />
     <Compile Include="Projects\UserOptionsSaved.cs" />
+    <Compile Include="Runtime\IPluginScanner.cs" />
     <Compile Include="Search\IModel.cs" />
     <Compile Include="Specifications\MetadataSpecification.cs" />
     <Compile Include="Specifications\NameSpecification.cs" />
@@ -267,6 +269,7 @@
     </Compile>
     <Compile Include="Services\FilterService.cs" />
     <Compile Include="Services\IFilterService.cs" />
+    <Compile Include="TreeBuilders\TreeBuilderTraits.cs" />
     <Compile Include="Utilities\TestRunnerExtensionFactory.cs" />
     <Compile Include="Utilities\ITestRunnerExtensionFactory.cs" />
     <Compile Include="WindowManager\MenuList.cs" />

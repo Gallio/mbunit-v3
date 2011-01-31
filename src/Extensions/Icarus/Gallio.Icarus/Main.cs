@@ -48,8 +48,7 @@ namespace Gallio.Icarus
         private readonly ITaskManager taskManager;
         private readonly IProjectController projectController;
         private readonly IOptionsController optionsController;
-
-        private IWindowManager windowManager;
+        private readonly IWindowManager windowManager;
 
         // dock panel windows
         private readonly TestExplorer.View testExplorer;
@@ -112,8 +111,13 @@ namespace Gallio.Icarus
             var testExplorerModel = RuntimeAccessor.ServiceLocator.Resolve<IModel>();
             var testExplorerController = RuntimeAccessor.ServiceLocator.Resolve<IController>();
             testExplorer = new TestExplorer.View(testExplorerController, testExplorerModel);
-            
-            projectExplorer = new ProjectExplorer(projectController, testController, reportController, taskManager);
+
+            commandFactory = RuntimeAccessor.ServiceLocator.Resolve<ICommandFactory>();
+            testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
+            windowManager = RuntimeAccessor.ServiceLocator.Resolve<IWindowManager>();    
+
+            projectExplorer = new ProjectExplorer(projectController, testController, reportController, taskManager, 
+                commandFactory, windowManager);
             testResults = new TestResults.TestResults(testResultsController, optionsController, testTreeModel, testStatistics);
             runtimeLogWindow = new RuntimeLogWindow(runtimeLogController);
             filtersWindow = new FiltersWindow(filterController, projectController);
@@ -157,9 +161,6 @@ namespace Gallio.Icarus
             };
             progressController.DisplayProgressDialog += (s, e) => BeginInvoke((MethodInvoker) (() => 
                 new ProgressMonitorDialog(e.ProgressMonitor).Show(this)));
-
-            commandFactory = RuntimeAccessor.ServiceLocator.Resolve<ICommandFactory>();
-            testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
         }
 
         private static bool RunningOnWin7()
@@ -221,10 +222,10 @@ namespace Gallio.Icarus
             Text = applicationController.Title;
 
             // setup window manager
-            windowManager = RuntimeAccessor.ServiceLocator.Resolve<IWindowManager>();
             var manager = (WindowManager.WindowManager) windowManager;
             manager.SetDockPanel(dockPanel);
-            manager.SetMenuManager(new MenuManager(menuStrip.Items));
+            var menuManager = (MenuManager)manager.MenuManager;
+            menuManager.SetToolstrip(menuStrip.Items);
 
             // deal with arguments
             applicationController.Load();
@@ -318,9 +319,6 @@ namespace Gallio.Icarus
         {
             var command = commandFactory.CreateReloadCommand();
             taskManager.QueueTask(command);
-
-            if (optionsController.RunTestsAfterReload)
-                StartTests(false);
         }
 
         private void openProject_Click(object sender, EventArgs e)
@@ -338,22 +336,16 @@ namespace Gallio.Icarus
         {
             using (var saveProjectDialog = Dialogs.CreateSaveProjectDialog())
             {
-                SaveProject(true);
+                if (saveProjectDialog.ShowDialog() != DialogResult.OK)
+                    return;
+
+                applicationController.Title = saveProjectDialog.FileName;
+                SaveProject();
             }
         }
 
-        private void SaveProject(Boolean saveAs)
+        private void SaveProject()
         {
-            if (saveAs || applicationController.DefaultProject )
-            {
-                using (var saveProjectDialog = Dialogs.CreateSaveProjectDialog())
-                {
-                    if (saveProjectDialog.ShowDialog() != DialogResult.OK)
-                        return;
-
-                    applicationController.Title = saveProjectDialog.FileName;
-                }                
-            }
             applicationController.SaveProject(true);
         }
 
@@ -398,7 +390,7 @@ namespace Gallio.Icarus
 
         private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveProject(false);
+            SaveProject();
         }
 
         private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -514,7 +506,7 @@ namespace Gallio.Icarus
             if (!optionsController.AlwaysReloadFiles)
             {
                 var reloadDialog = new ReloadDialog(fileName, optionsController);
-                if (reloadDialog.ShowDialogIfNotVisible(this) != DialogResult.OK)
+                if (reloadDialog.ShowDialog(this) != DialogResult.OK)
                     return;
             }
             Reload();
@@ -527,7 +519,7 @@ namespace Gallio.Icarus
 
         private void saveProjectToolStripButton_Click(object sender, EventArgs e)
         {
-            SaveProject(false);
+            SaveProject();
         }
 
         private void addFilesToolStripButton_Click(object sender, EventArgs e)

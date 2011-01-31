@@ -62,17 +62,13 @@ namespace Gallio.UI.Tree.Nodes
         }
 
         ///<summary>
-        /// Default ctor.
-        ///</summary>
-        public ThreeStateNode() { }
-
-        ///<summary>
         /// Ctor.
         ///</summary>
         ///<param name="text">The text to display.</param>
         public ThreeStateNode(string text)
             : base(text)
-        { }
+        {
+        }
 
         /// <summary>
         /// Returns the 'combined' state for all siblings of a node.

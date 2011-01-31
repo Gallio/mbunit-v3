@@ -67,7 +67,7 @@ namespace Gallio.Icarus.Controls
              nodeCheckBox.EditEnabled = enabled;
         }
 
-        public IList<string> GetCollapsedNodes()
+        public IEnumerable<string> GetCollapsedNodes()
         {
             var collapsedNodes = new List<string>();
             foreach (var treeNode in AllNodes)
@@ -93,16 +93,16 @@ namespace Gallio.Icarus.Controls
             EndUpdate();
         }
 
-        private void ExpandNode(TreeNodeAdv node, TestStatus state)
+        private static void ExpandNode(TreeNodeAdv node, TestStatus state)
         {
             if (((TestTreeNode)node.Tag).TestStatus == state)
                 Expand(node);
 
-            foreach (TreeNodeAdv tNode in node.Children)
+            foreach (var tNode in node.Children)
                 ExpandNode(tNode, state);
         }
 
-        public void Expand(TreeNodeAdv node)
+        private static void Expand(TreeNodeAdv node)
         {
             // Loop through all parent nodes that are not already
             // expanded and expand them.
@@ -115,7 +115,7 @@ namespace Gallio.Icarus.Controls
         public void CollapseNodes(IList<string> nodes)
         {
             ExpandAll();
-            foreach (TreeNodeAdv treeNode in AllNodes)
+            foreach (var treeNode in AllNodes)
             {
                 if (treeNode.IsExpanded && nodes.Contains(((TestTreeNode)treeNode.Tag).Id))
                     treeNode.Collapse();
@@ -134,7 +134,7 @@ namespace Gallio.Icarus.Controls
             EndUpdate();
         }
 
-        private void SelectNode(TreeNodeAdv node, TestStatus testStatus)
+        private static void SelectNode(TreeNodeAdv node, TestStatus testStatus)
         {
             var testDataNode = node.Tag as TestDataNode;
 

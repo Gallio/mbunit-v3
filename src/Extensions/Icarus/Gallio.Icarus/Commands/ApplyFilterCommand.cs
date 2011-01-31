@@ -23,18 +23,16 @@ namespace Gallio.Icarus.Commands
     public class ApplyFilterCommand : ICommand
     {
         private readonly IFilterService filterService;
-        private readonly FilterSet<ITestDescriptor> filterSet;
+        public FilterSet<ITestDescriptor> FilterSet { get; set; }
 
-        public ApplyFilterCommand(IFilterService filterService, 
-            FilterSet<ITestDescriptor> filterSet)
+        public ApplyFilterCommand(IFilterService filterService)
         {
             this.filterService = filterService;
-            this.filterSet = filterSet;
         }
 
         public void Execute(IProgressMonitor progressMonitor)
         {
-            filterService.ApplyFilterSet(filterSet);
+            filterService.ApplyFilterSet(FilterSet);
         }
     }
 }

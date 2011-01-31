@@ -65,7 +65,7 @@ namespace Gallio.Icarus.Commands
 
         private void SaveLastRunFilter(IProgressMonitor progressMonitor)
         {
-            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
+            using (progressMonitor.CreateSubProgressMonitor(5))
             {
                 var filterSet = filterService.GenerateFilterSetFromSelectedTests();
                 projectController.SaveFilterSet("LastRun", filterSet);

@@ -25,7 +25,6 @@ using Gallio.Icarus.Events;
 using Gallio.UI.Controls;
 using Gallio.Icarus.Helpers;
 using Gallio.Runner.Projects;
-using Gallio.Runtime;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Common.Policies;
 using Gallio.UI.DataBinding;
@@ -38,13 +37,11 @@ namespace Gallio.Icarus.Controllers
         Handles<RunStarted>, Handles<RunFinished>, Handles<ExploreFinished>, 
         Handles<TestsFailed>
     {
-        private string projectFileName = Paths.DefaultProject;
+        private string projectFileName = string.Empty;
 
         private readonly IFileSystem fileSystem;
         private readonly IOptionsController optionsController;
         private readonly ITaskManager taskManager;
-        private readonly ITestController testController;
-        private readonly IProjectController projectController;
         private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
         private readonly IEventAggregator eventAggregator;
         private readonly ICommandFactory commandFactory;
@@ -53,7 +50,8 @@ namespace Gallio.Icarus.Controllers
         {
             get
             {
-                return string.Format("{0} - {1}", Path.GetFileNameWithoutExtension(projectFileName), 
+                return string.IsNullOrEmpty(projectFileName) ? Properties.Resources.ApplicationName :
+                    string.Format("{0} - {1}", Path.GetFileNameWithoutExtension(projectFileName), 
                     Properties.Resources.ApplicationName);
             }
             set
@@ -61,11 +59,6 @@ namespace Gallio.Icarus.Controllers
                 projectFileName = value;
                 OnPropertyChanged(new PropertyChangedEventArgs("ProjectFileName"));
             }
-        }
-
-        public Boolean DefaultProject
-        {
-            get { return (projectFileName.ToUpper() == Paths.DefaultProject.ToUpper()); }
         }
 
         public ToolStripMenuItem[] RecentProjects
@@ -96,8 +89,6 @@ namespace Gallio.Icarus.Controllers
             this.optionsController = optionsController;
             this.fileSystem = fileSystem;
             this.taskManager = taskManager;
-            this.testController = testController;
-            this.projectController = projectController;
             this.unhandledExceptionPolicy = unhandledExceptionPolicy;
             this.eventAggregator = eventAggregator;
             this.commandFactory = commandFactory;
@@ -113,8 +104,6 @@ namespace Gallio.Icarus.Controllers
 
         public void Load()
         {
-            LoadPackages();
-
             HandleArguments();
         }
 
@@ -127,7 +116,7 @@ namespace Gallio.Icarus.Controllers
             }
             if (optionsController.RestorePreviousSettings && optionsController.RecentProjects.Count > 0)
             {
-                string projectName = optionsController.RecentProjects.Items[0];
+                var projectName = optionsController.RecentProjects.Items[0];
                 if (fileSystem.FileExists(projectName))
                 {
                     OpenProject(projectName);
@@ -152,44 +141,9 @@ namespace Gallio.Icarus.Controllers
                 }
                 files.Add(file);
             }
-                
-            var command = new AddFilesCommand(projectController, testController)
-              {
-                  Files = files
-              };
+
+            var command = commandFactory.CreateAddFilesCommand(files);
             taskManager.QueueTask(command);
-        }
-
-        private void LoadPackages()
-        {
-            var serviceLocator = RuntimeAccessor.ServiceLocator;
-            foreach (var package in serviceLocator.ResolveAll<IPackage>())
-            {
-                try
-                {
-                    package.Load();
-                }
-                catch (Exception ex)
-                {
-                    unhandledExceptionPolicy.Report("Error loading package", ex);
-                }
-            }
-        }
-
-        private void UnloadPackages()
-        {
-            var serviceLocator = RuntimeAccessor.ServiceLocator;
-            foreach (var package in serviceLocator.ResolveAll<IPackage>())
-            {
-                try
-                {
-                    package.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    unhandledExceptionPolicy.Report("Error unloading package", ex);
-                }
-            }
         }
 
         public void OpenProject(string projectName)
@@ -202,17 +156,17 @@ namespace Gallio.Icarus.Controllers
 
         public void SaveProject(bool queueTask)
         {
-            var cmd = new SaveProjectCommand(projectController) { FileName = projectFileName };
+            var command = commandFactory.CreateSaveProjectCommand(projectFileName);
             if (queueTask)
             {
-                taskManager.QueueTask(cmd);
+                taskManager.QueueTask(command);
             }
             else
             {
                 // we're shutting down, so eat any errors
                 try
                 {
-                    cmd.Execute(NullProgressMonitor.CreateInstance());
+                    command.Execute(NullProgressMonitor.CreateInstance());
                 }
                 catch (Exception ex)
                 {
@@ -225,34 +179,30 @@ namespace Gallio.Icarus.Controllers
         {
             // TODO: DRY, this shouldn't be necessary here
             Title = Paths.DefaultProject;
-            var cmd = new NewProjectCommand(projectController, testController);
-            taskManager.QueueTask(cmd);
+            var command = commandFactory.CreateNewProjectCommand();
+            taskManager.QueueTask(command);
         }
 
         public void Shutdown()
         {
-            eventAggregator.Send(new ApplicationShutdown());
+            eventAggregator.Send(this, new ApplicationShutdown());
             optionsController.Save();
-            UnloadPackages();
             SaveProject(false);
         }
 
         public void Handle(RunStarted @event)
         {
-            EventHandlerPolicy.SafeInvoke(RunStarted, this, 
-                System.EventArgs.Empty);
+            EventHandlerPolicy.SafeInvoke(RunStarted, this, System.EventArgs.Empty);
         }
 
         public void Handle(RunFinished @event)
         {
-            EventHandlerPolicy.SafeInvoke(RunFinished, this, 
-                System.EventArgs.Empty);
+            EventHandlerPolicy.SafeInvoke(RunFinished, this, System.EventArgs.Empty);
         }
 
         public void Handle(ExploreFinished @event)
         {
-            EventHandlerPolicy.SafeInvoke(ExploreFinished, this,
-                System.EventArgs.Empty);
+            EventHandlerPolicy.SafeInvoke(ExploreFinished, this, System.EventArgs.Empty);
         }
 
         public void Handle(TestsFailed @event)

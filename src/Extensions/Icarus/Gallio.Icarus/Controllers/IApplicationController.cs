@@ -23,7 +23,6 @@ namespace Gallio.Icarus.Controllers
     public interface IApplicationController : INotifyPropertyChanged
     {
         string Title { get; set; }
-        Boolean DefaultProject { get; }
         ToolStripMenuItem[] RecentProjects { get; } // TODO: fix this!
         IcarusArguments Arguments { get; set; }
         Observable<bool> CanRunTests { get; }

@@ -13,63 +13,119 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using System.ComponentModel;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
-using Gallio.Icarus.Services;
+using Gallio.Icarus.Projects;
 using Gallio.Icarus.Tests.Utilities;
-using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.UI.DataBinding;
 using Gallio.UI.Events;
+using Gallio.UI.ProgressMonitoring;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.Commands
 {
-    [MbUnit.Framework.Category("Commands"), TestsOn(typeof(ReloadCommand))]
+    [Category("Commands"), TestsOn(typeof(ReloadCommand))]
     public class ReloadCommandTest
     {
-        private ReloadCommand reloadCommand;
-        private ITestController testController;
-        private IProjectController projectController;
+        private ReloadCommand command;
         private IEventAggregator eventAggregator;
+        private IOptionsController optionsController;
+        private ICommandFactory commandFactory;
+        private ICommand restoreFilterCommand;
+        private ICommand saveFilterCommand;
+        private ICommand loadPackageCommand;
 
         [SetUp]
         public void SetUp()
         {
-            testController = MockRepository.GenerateStub<ITestController>();
-            projectController = MockRepository.GenerateStub<IProjectController>();
             eventAggregator = MockRepository.GenerateStub<IEventAggregator>();
-            var filterService = MockRepository.GenerateStub<IFilterService>();
-            reloadCommand = new ReloadCommand(testController, projectController, eventAggregator, filterService);
+            optionsController = MockRepository.GenerateStub<IOptionsController>();
+            commandFactory = MockRepository.GenerateStub<ICommandFactory>();
+            StubCommands();
+
+            command = new ReloadCommand(commandFactory, eventAggregator, optionsController);
+        }
+
+        private void StubCommands()
+        {
+            saveFilterCommand = MockRepository.GenerateStub<ICommand>();
+            commandFactory.Stub(cf => cf.CreateSaveFilterCommand(Arg<string>.Is.Anything))
+                .Return(saveFilterCommand);
+
+            loadPackageCommand = MockRepository.GenerateStub<ICommand>();
+            commandFactory.Stub(cf => cf.CreateLoadPackageCommand())
+                .Return(loadPackageCommand);
+
+            restoreFilterCommand = MockRepository.GenerateStub<ICommand>();
+            commandFactory.Stub(cf => cf.CreateRestoreFilterCommand(Arg<string>.Is.Anything))
+                .Return(restoreFilterCommand);
         }
 
         [Test]
-        public void Execute_should_explore_with_test_runner_extensions()
+        public void Execute_should_send_a_reloading_event()
         {
-            var testRunnerExtensions = new BindingList<string>();
-            projectController.Stub(pc => pc.TestRunnerExtensionSpecifications).Return(testRunnerExtensions);
-            projectController.Stub(pc => pc.TestFilters).Return(new Observable<IList<FilterInfo>>(new List<FilterInfo>()));
+            command.Execute(MockProgressMonitor.Instance);
 
-            reloadCommand.Execute(MockProgressMonitor.Instance);
-
-            testController.AssertWasCalled(tc => tc.Explore(Arg<IProgressMonitor>.Is.Anything, 
-                Arg.Is(testRunnerExtensions)));
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg.Is(command), Arg<Reloading>.Is.Anything));
         }
 
         [Test]
-        public void Execute_should_send_an_event()
+        public void Execute_should_save_current_test_filter()
         {
-            var testRunnerExtensions = new BindingList<string>();
-            projectController.Stub(pc => pc.TestRunnerExtensionSpecifications).Return(testRunnerExtensions);
-            projectController.Stub(pc => pc.TestFilters).Return(new Observable<IList<FilterInfo>>(new List<FilterInfo>()));
+            command.Execute(MockProgressMonitor.Instance);
 
-            reloadCommand.Execute(MockProgressMonitor.Instance);
+            commandFactory.AssertWasCalled(cf => cf.CreateSaveFilterCommand("AutoSave"));
+            saveFilterCommand.AssertWasCalled(c => c.Execute(Arg<IProgressMonitor>.Is.Anything));
+        }
 
-            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<Reloading>.Is.Anything));
+        [Test]
+        public void Execute_should_load_package()
+        {
+            command.Execute(MockProgressMonitor.Instance);
+
+            loadPackageCommand.AssertWasCalled(c => c.Execute(Arg<IProgressMonitor>.Is.Anything));
+        }
+
+        [Test]
+        public void Execute_should_restore_test_filter()
+        {
+            command.Execute(MockProgressMonitor.Instance);
+
+            restoreFilterCommand.AssertWasCalled(c => c.Execute(Arg<IProgressMonitor>.Is.Anything));
+        }
+
+        [Test]
+        public void Execute_should_restore_test_tree_state()
+        {
+            command.Execute(MockProgressMonitor.Instance);
+
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg.Is(command), 
+                Arg<UserOptionsLoaded>.Is.Anything));
+        }
+
+        [Test]
+        public void Tests_should_not_be_run_if_option_is_not_set()
+        {
+            optionsController.RunTestsAfterReload = false;
+
+            command.Execute(MockProgressMonitor.Instance);
+
+            commandFactory.AssertWasNotCalled(cf => cf.CreateRunTestsCommand(Arg<bool>.Is.Anything));
+        }
+
+        [Test]
+        public void Tests_should_be_run_if_option_is_set()
+        {
+            optionsController.RunTestsAfterReload = true;
+            var runTestsCommand = MockRepository.GenerateStub<ICommand>();
+            commandFactory.Stub(cf => cf.CreateRunTestsCommand(Arg<bool>.Is.Anything))
+                .Return(runTestsCommand);
+
+            command.Execute(MockProgressMonitor.Instance);
+
+            runTestsCommand.AssertWasCalled(c => c.Execute(Arg<IProgressMonitor>.Is.Anything));
         }
     }
 }

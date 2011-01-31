@@ -15,7 +15,7 @@
 
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
-using Gallio.Icarus.Services;
+using Gallio.Icarus.Projects;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Events;
 using Gallio.UI.ProgressMonitoring;
@@ -24,36 +24,68 @@ namespace Gallio.Icarus.Commands
 {
     public class ReloadCommand : ICommand
     {
-        private readonly ITestController testController;
-        private readonly IProjectController projectController;
         private readonly IEventAggregator eventAggregator;
-        private readonly IFilterService filterService;
+        private readonly IOptionsController optionsController;
+        private readonly ICommandFactory commandFactory;
 
-        public ReloadCommand(ITestController testController, IProjectController projectController, 
-            IEventAggregator eventAggregator, IFilterService filterService)
+        public ReloadCommand(ICommandFactory commandFactory, IEventAggregator eventAggregator, 
+            IOptionsController optionsController)
         {
-            this.testController = testController;
-            this.projectController = projectController;
             this.eventAggregator = eventAggregator;
-            this.filterService = filterService;
+            this.optionsController = optionsController;
+            this.commandFactory = commandFactory;
         }
 
         public void Execute(IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Reloading", 100))
             {
-                eventAggregator.Send(new Reloading());
+                SaveCurrentState(progressMonitor);
+                LoadPackage(progressMonitor);
+                RestoreTestFilter(progressMonitor);
 
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(95))
-                {
-                    testController.Explore(subProgressMonitor, projectController.TestRunnerExtensionSpecifications);
-                }
+                if (optionsController.RunTestsAfterReload)
+                    RunTests(progressMonitor);
+            }
+        }
 
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
-                {
-                    var restoreFilterCommand = new RestoreFilterCommand(filterService, projectController);
-                    restoreFilterCommand.Execute(subProgressMonitor);
-                }
+        private void SaveCurrentState(IProgressMonitor progressMonitor)
+        {
+            eventAggregator.Send(this, new Reloading());
+            eventAggregator.Send(this, new UserOptionsLoaded());
+            
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
+            {
+                var command = commandFactory.CreateSaveFilterCommand("AutoSave");
+                command.Execute(subProgressMonitor);
+            }
+        }
+
+        private void LoadPackage(IProgressMonitor progressMonitor)
+        {
+            var workUnits = optionsController.RunTestsAfterReload ? 35 : 85;
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(workUnits))
+            {
+                var command = commandFactory.CreateLoadPackageCommand();
+                command.Execute(subProgressMonitor);
+            }
+        }
+
+        private void RestoreTestFilter(IProgressMonitor progressMonitor)
+        {
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
+            {
+                var restoreFilterCommand = commandFactory.CreateRestoreFilterCommand("AutoSave");
+                restoreFilterCommand.Execute(subProgressMonitor);
+            }
+        }
+
+        private void RunTests(IProgressMonitor progressMonitor)
+        {
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
+            {
+                var runTestsCommand = commandFactory.CreateRunTestsCommand(false);
+                runTestsCommand.Execute(subProgressMonitor);
             }
         }
     }

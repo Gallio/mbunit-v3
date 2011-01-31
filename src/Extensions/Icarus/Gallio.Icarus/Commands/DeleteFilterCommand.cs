@@ -23,17 +23,16 @@ namespace Gallio.Icarus.Commands
     internal class DeleteFilterCommand : ICommand
     {
         private readonly IProjectController projectController;
-        private readonly FilterInfo filterInfo;
+        public FilterInfo FilterInfo { get; set; }
 
-        public DeleteFilterCommand(IProjectController projectController, FilterInfo filterInfo)
+        public DeleteFilterCommand(IProjectController projectController)
         {
             this.projectController = projectController;
-            this.filterInfo = filterInfo;
         }
 
         public void Execute(IProgressMonitor progressMonitor)
         {
-            projectController.DeleteFilter(progressMonitor, filterInfo);
+            projectController.DeleteFilter(progressMonitor, FilterInfo);
         }
     }
 }

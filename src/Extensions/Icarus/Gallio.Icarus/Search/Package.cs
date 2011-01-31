@@ -44,16 +44,12 @@ namespace Gallio.Icarus.Search
 
         private void AddMenuItem()
         {
-            var menu = windowManager.MenuManager.GetMenu("Tools");
-
-            var menuCommand = new MenuCommand
+            windowManager.MenuManager.Add("Tools", () => new MenuCommand
             {
                 Command = new DelegateCommand(pm => windowManager.Show(WindowId)),
                 Text = Resources.Search_Package_AddMenuItem_Search,
                 Shortcut = "Ctrl + F"
-            };
-
-            menu.Add(menuCommand);
+            });
         }
 
         private void RegisterWindow()

@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Services;
 using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model.Filters;
@@ -24,13 +23,15 @@ namespace Gallio.Icarus.Commands
 {
     public class RestoreFilterCommand : ICommand
     {
-        private readonly IFilterService filterService;
         private readonly IProjectController projectController;
+        private readonly ICommandFactory commandFactory;
 
-        public RestoreFilterCommand(IFilterService filterService, IProjectController projectController)
+        public string FilterName { get; set; }
+
+        public RestoreFilterCommand(IProjectController projectController, ICommandFactory commandFactory)
         {
-            this.filterService = filterService;
             this.projectController = projectController;
+            this.commandFactory = commandFactory;
         }
 
         public void Execute(IProgressMonitor progressMonitor)
@@ -42,7 +43,7 @@ namespace Gallio.Icarus.Commands
             {
                 foreach (var filterInfo in testFilters)
                 {
-                    if (filterInfo.FilterName != "AutoSave")
+                    if (filterInfo.FilterName != FilterName)
                     {
                         progressMonitor.Worked(1);
                         continue;
@@ -57,8 +58,8 @@ namespace Gallio.Icarus.Commands
         private void ApplyFilter(IProgressMonitor progressMonitor, FilterInfo filterInfo)
         {
             var filterSet = FilterUtils.ParseTestFilterSet(filterInfo.FilterExpr);
-            var applyFilterCommand = new ApplyFilterCommand(filterService, filterSet);
-            applyFilterCommand.Execute(progressMonitor);
+            var command = commandFactory.CreateApplyFilterCommand(filterSet);
+            command.Execute(progressMonitor);
         }
     }
 }

@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Gallio.Common.Collections;
 using Gallio.Common.Reflection;
 using Gallio.Model;
@@ -21,7 +22,7 @@ using Gallio.Model.Schema;
 
 namespace Gallio.Icarus.Models.TestTreeNodes
 {
-    public sealed class TestDataNode : TestTreeNode, ITestDescriptor
+    public sealed class TestDataNode : TestTreeNode, ITestDescriptor, ICloneable
     {
         private readonly TestData testData;
 
@@ -107,6 +108,11 @@ namespace Gallio.Icarus.Models.TestTreeNodes
         public override string ToString()
         {
             return testData.ToString();
+        }
+
+        public object Clone()
+        {
+            return new TestDataNode(testData);
         }
     }
 }
