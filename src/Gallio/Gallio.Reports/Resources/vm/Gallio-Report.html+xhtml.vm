@@ -23,7 +23,6 @@
 	 TITLE AND HEADER
 	====================================================
 *#
-<div id="Navigator" class="navigator">
 <title>Gallio Test Report</title>
 <link rel="stylesheet" type="text/css" href="$resourceRoot/css/Gallio-Report.css" #if($xhtml)/#end>
 <link rel="stylesheet" type="text/css" href="$resourceRoot/css/Gallio-Report.generated.css" #if($xhtml)/#end>
@@ -42,7 +41,13 @@
 	====================================================
 *#
   <div id="Navigator" class="navigator">
-## TODO: navigator
+    <div class="navigator-stripes">
+    #foreach ($item in $helper.GetVisibleNavigatorTestStepRuns($report))
+    <a href="#testStepRun-$item.Run.Step.Id" style="top:$item.TopPosition%" class="status-$item.Run.Result.Outcome.Status.ToString().ToLower()" title="$item.Run.Step.Name $item.Run.Result.Outcome.Status" onclick="expand(['#foreach ($rid in $helper.GetSelfAndAncestorIds($item.Run.Step.Id))
+detailPanel-$rid#between
+', '#end']);"></a>
+    #end
+    </div>
   </div>
 #*
 	====================================================

@@ -290,12 +290,57 @@ namespace Gallio.Reports.Vtl
         /// </summary>
         /// <param name="id">The id of child element.</param>
         /// <returns>An enumeration of step id's.</returns>
-        public IEnumerable<string> GetSelfAndAncestorIds(string id)
+        public IList<string> GetSelfAndAncestorIds(string id)
+        {
+            return new List<string>(GetEnumerableSelfAndAncestorIds(id));
+        }
+
+        private IEnumerable<string> GetEnumerableSelfAndAncestorIds(string id)
         {
             while (id != null)
             {
                 yield return id;
                 id = parentMap[id];
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public class NavigatorTestStepRun
+        {
+            public TestStepRun Run { get; set; }
+            public int Index { get; set; }
+            public double TopPosition { get; set; }
+        };
+
+        /// <summary>
+        /// Returns a list of the visible children for the navigator side bar.
+        /// </summary>
+        /// <param name="report">The test report.</param>
+        /// <returns>A list of child test step runs.</returns>
+        public IList<NavigatorTestStepRun> GetVisibleNavigatorTestStepRuns(Report report)
+        {
+            var all = new List<TestStepRun>(report.TestPackageRun.AllTestStepRuns);
+            var count = all.Count;
+            return new List<NavigatorTestStepRun>(GetEnumerableVisibleSummaryChildren(all));
+        }
+
+        private IEnumerable<NavigatorTestStepRun> GetEnumerableVisibleSummaryChildren(IList<TestStepRun> all)
+        {
+            int i = 0;
+
+            foreach (TestStepRun run in all)
+            {
+                if ((run.Result.Outcome != TestOutcome.Passed) && (run.Step.IsTestCase || run.Children.Count == 0))
+                    yield return new NavigatorTestStepRun 
+                    { 
+                        Run = run,
+                        Index = i,
+                        TopPosition = i * 98.0 / all.Count,
+                    };
+
+                i++;
             }
         }
     }
