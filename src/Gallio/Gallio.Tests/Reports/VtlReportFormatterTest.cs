@@ -191,7 +191,7 @@ namespace Gallio.Tests.Reports
             protected override void SetupVelocityEngine(VelocityEngine engine)
             {
                 engine.SetProperty(RuntimeConstants.RESOURCE_LOADER, "assembly");
-                engine.SetProperty("assembly.resource.loader.class", "NVelocity.Runtime.Resource.Loader.AssemblyResourceLoader, NVelocity");
+                engine.SetProperty("assembly.resource.loader.class", "NVelocity.Runtime.Resource.Loader.AssemblyResourceLoader");
                 engine.SetProperty("assembly.resource.loader.assembly", Assembly.GetExecutingAssembly().GetName().Name);
             }
         }
