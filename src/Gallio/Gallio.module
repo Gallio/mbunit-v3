@@ -100,10 +100,10 @@
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
 
-    <AssemblyFile Include="Gallio.Reports\bin\Gallio.Reports.dll">
+    <AssemblyFile Include="$(ModuleTempDir)\Gallio.Reports.dll">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
-    <PdbFile Include="Gallio.Reports\bin\Gallio.Reports.pdb">
+    <PdbFile Include="$(ModuleTempDir)\Gallio.Reports.pdb">
       <ExcludeFromImage>true</ExcludeFromImage>
     </PdbFile>
     <XmlDocFile Include="Gallio.Reports\bin\Gallio.Reports.xml">
