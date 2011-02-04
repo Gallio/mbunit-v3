@@ -142,6 +142,18 @@ namespace Gallio.Model
         public const string ExpectedException = "ExpectedException";
 
         /// <summary>
+        /// The metadata key for the expected inner exception type which should be the name,
+        /// full name or assembly-qualified name of the expected inner exception type.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// May be derived from <c>ExpectedExceptionAttribute</c> in MbUnit
+        /// or its equivalent.
+        /// </para>
+        /// </remarks>
+        public const string ExpectedInnerException = "ExpectedInnerException";
+
+        /// <summary>
         /// The metadata key for the expected exception message.
         /// May be a substring of the actual exception message.
         /// </summary>

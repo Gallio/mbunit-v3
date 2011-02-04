@@ -65,6 +65,22 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
+        /// Gets or sets the type of inner exception that should be set in an
+        /// exception thrown when the values provided by the data source are consumed
+        /// by test.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This value is ignored if the <see cref="ExpectedException"/> property is not set.
+        /// </para>
+        /// </remarks>
+        public Type ExpectedInnerException
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets the metadata for the data source.
         /// </summary>
         /// <returns>The metadata keys and values.</returns>
@@ -76,6 +92,8 @@ namespace MbUnit.Framework
                 yield return new KeyValuePair<string, string>(MetadataKeys.ExpectedException, ExpectedException.FullName);
             if (ExpectedExceptionMessage != null)
                 yield return new KeyValuePair<string, string>(MetadataKeys.ExpectedExceptionMessage, ExpectedExceptionMessage);
+            if (ExpectedInnerException != null)
+                yield return new KeyValuePair<string, string>(MetadataKeys.ExpectedInnerException, ExpectedInnerException.FullName);
         }
     }
 }
