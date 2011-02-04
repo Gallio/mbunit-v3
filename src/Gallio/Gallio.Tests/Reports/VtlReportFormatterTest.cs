@@ -86,7 +86,7 @@ namespace Gallio.Tests.Reports
             new VtlReportFormatter("ext", MimeTypes.PlainText, new DirectoryInfo("content"), "vm", new string[] { null });
         }
 
-        [Test]
+        [Test, Pending]
         public void Format()
         {
             var mockReportWriter = MockRepository.GenerateStub<IReportWriter>();
