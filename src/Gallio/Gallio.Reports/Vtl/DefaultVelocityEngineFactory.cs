@@ -24,6 +24,7 @@ using Gallio.Runtime;
 using Gallio.Model;
 using System.IO;
 using Gallio.Runner.Reports.Schema;
+using Commons.Collections;
 
 namespace Gallio.Reports.Vtl
 {
@@ -44,8 +45,9 @@ namespace Gallio.Reports.Vtl
         /// <inheritdoc />
         public VelocityEngine CreateVelocityEngine()
         {
-            var engine = new VelocityEngine();
-            SetupVelocityEngine(engine);
+            var properties = new ExtendedProperties();
+            SetupVelocityEngine(properties);
+            var engine = new VelocityEngine(properties);
             engine.Init();
             return engine;
         }
@@ -53,10 +55,10 @@ namespace Gallio.Reports.Vtl
         /// <summary>
         /// Sets internal properties of the Velocity engine.
         /// </summary>
-        /// <param name="engine">The velocity engine to set properties.</param>
-        protected virtual void SetupVelocityEngine(VelocityEngine engine)
+        /// <param name="properties">The velocity engine extended properties.</param>
+        protected virtual void SetupVelocityEngine(ExtendedProperties properties)
         {
-            engine.SetProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, Path.GetDirectoryName(templateDirectory));
+            properties.AddProperty("file.resource.loader.path", Path.GetDirectoryName(templateDirectory));
         }
 
         /// <inheritdoc />

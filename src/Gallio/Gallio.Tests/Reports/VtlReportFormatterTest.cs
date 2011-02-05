@@ -37,6 +37,7 @@ using NVelocity.Runtime;
 using System.Reflection;
 using Gallio.Reports.Vtl;
 using Gallio.Model.Schema;
+using Commons.Collections;
 
 namespace Gallio.Tests.Reports
 {
@@ -188,11 +189,11 @@ namespace Gallio.Tests.Reports
             {
             }
 
-            protected override void SetupVelocityEngine(VelocityEngine engine)
+            protected override void SetupVelocityEngine(ExtendedProperties properties)
             {
-                engine.SetProperty(RuntimeConstants.RESOURCE_LOADER, "assembly");
-                engine.SetProperty("assembly.resource.loader.class", "NVelocity.Runtime.Resource.Loader.AssemblyResourceLoader");
-                engine.SetProperty("assembly.resource.loader.assembly", Assembly.GetExecutingAssembly().GetName().Name);
+                properties.SetProperty("resource.loader", "assembly");
+                properties.SetProperty("assembly.resource.loader.class", "NVelocity.Runtime.Resource.Loader.AssemblyResourceLoader");
+                properties.SetProperty("assembly.resource.loader.assembly", Assembly.GetExecutingAssembly().GetName().Name);
             }
         }
     }
