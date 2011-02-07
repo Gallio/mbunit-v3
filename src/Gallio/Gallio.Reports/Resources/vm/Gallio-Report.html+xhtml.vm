@@ -42,8 +42,8 @@
 *#
   <div id="Navigator" class="navigator">
     <div class="navigator-stripes">
-    #foreach ($item in $helper.GetVisibleNavigatorTestStepRuns($report))
-    <a href="#testStepRun-$item.Run.Step.Id" style="top:$item.TopPosition%" class="status-$item.Run.Result.Outcome.Status.ToString().ToLower()" title="$item.Run.Step.Name $item.Run.Result.Outcome.Status" onclick="expand(['#foreach ($rid in $helper.GetSelfAndAncestorIds($item.Run.Step.Id))
+    #foreach ($item in $helper.Navigation.GetVisibleNavigatorTestStepRuns($report))
+    <a href="#testStepRun-$item.Run.Step.Id" style="top:$item.TopPosition%" class="status-$item.Run.Result.Outcome.Status.ToString().ToLower()" title="$item.Run.Step.Name $item.Run.Result.Outcome.Status" onclick="expand(['#foreach ($rid in $helper.Navigation.GetSelfAndAncestorIds($item.Run.Step.Id))
 detailPanel-$rid#between
 ', '#end']);"></a>
     #end
@@ -97,7 +97,7 @@ detailPanel-$rid#between
       <div class="section-content">
       <ul>
       #foreach ($file in $report.TestPackage.Files)
-        <li>$helper.BreakWord($file)</li>
+        <li>$helper.Html.BreakWord($file)</li>
       #end
       </ul>
       </div>
@@ -116,7 +116,7 @@ detailPanel-$rid#between
         <em>All tests passed.</em>
       #else
         #set ($nestingLevel = 0)
-        #foreach ($run in $helper.GetVisibleChildren($report.TestPackageRun.RootTestStepRun, $condensed))
+        #foreach ($run in $helper.Navigation.GetVisibleChildren($report.TestPackageRun.RootTestStepRun, $condensed))
           #parse ("Gallio-Report.html+xhtml.summary-item.vm")
         #beforeall
         <ul>
@@ -140,7 +140,7 @@ detailPanel-$rid#between
         <em>All tests passed.</em>
       #else
         #set ($nestingLevel = 0)
-        #foreach ($run in $helper.GetVisibleChildren($report.TestPackageRun.RootTestStepRun, $condensed))
+        #foreach ($run in $helper.Navigation.GetVisibleChildren($report.TestPackageRun.RootTestStepRun, $condensed))
         #parse ("Gallio-Report.html+xhtml.detailed-item.vm")
         #beforeall
         <ul class="testStepRunContainer">
@@ -162,9 +162,9 @@ detailPanel-$rid#between
         #foreach ($entry in $report.LogEntries)
           #if ($entry.Severity != "Debug")
           <li class="logEntry logEntry-severity-$entry.Severity.ToString().ToLower()">
-            <div class="logEntry-text">[$entry.Severity] $helper.BreakWord($entry.Message)</div>
+            <div class="logEntry-text">[$entry.Severity] $helper.Html.BreakWord($entry.Message)</div>
             #if($entry.Details.Length > 0)
-            <div class="logEntry-details">$helper.BreakWord($entry.Details)</div>
+            <div class="logEntry-details">$helper.Html.BreakWord($entry.Details)</div>
             #end
           </li>
           #end

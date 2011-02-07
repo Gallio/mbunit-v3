@@ -26,16 +26,16 @@
 #elseif ($tag.GetType().Name == "MarkerTag")
   <span class="logStreamMarker-$tag.Class">
 #if ($tag.Class == "CodeLocation")
-#set ($path = $helper.GetAttributeValue($tag, "path"))
-#set ($line = $helper.GetAttributeValue($tag, "line"))
-#set ($column = $helper.GetAttributeValue($tag, "column"))
+#set ($path = $helper.Navigation.GetAttributeValue($tag, "path"))
+#set ($line = $helper.Navigation.GetAttributeValue($tag, "line"))
+#set ($column = $helper.Navigation.GetAttributeValue($tag, "column"))
     <a class="crossref" href="gallio:navigateTo?path=$path#if($line.Length>0)&amp;line=$line#if($column.Length>0)&amp;column=$column#end#end">
 #foreach ($currentTag in $tag.Contents)
 #parse ("Gallio-Report.html+xhtml.detailed-item.log.vm")
 #end
     </a>
 #elseif ($tag.Class == "Link")
-    <a class="crossref" href="$helper.GetMarkerAttributeValue($tag, "url")">
+    <a class="crossref" href="$helper.Navigation.GetMarkerAttributeValue($tag, "url")">
 #foreach ($currentTag in $tag.Contents)
 #parse ("Gallio-Report.html+xhtml.detailed-item.log.vm")
 #end
@@ -52,16 +52,16 @@
 	====================================================
 *#
 #elseif ($tag.GetType().Name == "TextTag")
-  $helper.BreakWord($helper.NormalizeEndOfLinesHtml($tag.Text))
+  $helper.Html.BreakWord($helper.Html.NormalizeEndOfLines($tag.Text))
 #*
 	====================================================
 	 EMBED
 	====================================================
 *#
 #elseif ($tag.GetType().Name == "EmbedTag")
- #set ($a = $helper.FindAttachment($current, $tag.AttachmentName))
- #set ($id = $helper.GenerateId())
- #set ($uri = $helper.PathToUri($a.ContentPath))
+ #set ($a = $helper.Navigation.FindAttachment($current, $tag.AttachmentName))
+ #set ($id = $helper.Html.GenerateId())
+ #set ($uri = $helper.Html.PathToUri($a.ContentPath))
  #if ($a.ContentDisposition == "Link")
   #if ($a.ContentType.StartsWith("image/"))
     <div id="$id" class="logStreamEmbed">

@@ -5,7 +5,7 @@
 *#
 #set ($nestingLevel = $nestingLevel + 1)
 #set ($current = $run)
-#set ($statistics = $helper.GetStatistics($current))
+#set ($statistics = $helper.Navigation.GetStatistics($current))
 #set ($kind = $current.Step.Metadata.GetValue("TestKind"))
 #*
 	====================================================
@@ -19,10 +19,10 @@
     #else
     <img src="$resourceRoot/img/Minus.gif" class="toggle" id="toggle-summaryPanel-$current.Step.Id" onclick="toggle('summaryPanel-$current.Step.Id');" alt="Toggle Button" />
     #end
-    <span class="testKind#if($kind) testKind-$helper.RemoveChars($kind, " .")#end"></span>
-    <a class="crossref" href="#testStepRun-$current.Step.Id" onclick="expand(['#foreach ($rid in $helper.GetSelfAndAncestorIds($current.Step.Id))
+    <span class="testKind#if($kind) testKind-$helper.Text.RemoveChars($kind, " .")#end"></span>
+    <a class="crossref" href="#testStepRun-$current.Step.Id" onclick="expand(['#foreach ($rid in $helper.Navigation.GetSelfAndAncestorIds($current.Step.Id))
 detailPanel-$rid#between
-', '#end']);">$helper.BreakWord($current.Step.Name)</a>
+', '#end']);">$helper.Html.BreakWord($current.Step.Name)</a>
     <table class="outcome-bar">
       <tr>
         <td>
@@ -44,7 +44,7 @@ detailPanel-$rid#between
 	====================================================
 *#
   <div class="panel">
-    #foreach ($run in $helper.GetVisibleSummaryChildren($current, $condensed))
+    #foreach ($run in $helper.Navigation.GetVisibleSummaryChildren($current, $condensed))
     <ul id="summaryPanel-$run.Step.Id">
       #parse ("Gallio-Report.html+xhtml.summary-item.vm")
     </ul>

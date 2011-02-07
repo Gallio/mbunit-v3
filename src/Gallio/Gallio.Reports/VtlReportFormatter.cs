@@ -133,10 +133,16 @@ namespace Gallio.Reports
             string reportPath = reportWriter.ReportContainer.ReportName + "." + extension;
             Encoding encoding = new UTF8Encoding(false);
             Template template = engine.GetTemplate(Path.GetFileName(templatePath), encoding.BodyName);
+            var stringBuilder = new StringBuilder();
 
-            using (var writer = new StreamWriter(reportWriter.ReportContainer.OpenWrite(reportPath, contentType, encoding)))
+            using (var stringWriter = new StringWriter(stringBuilder))
             {
-                template.Merge(context, writer);
+                template.Merge(context, stringWriter);
+
+                using (var fileWriter = new StreamWriter(reportWriter.ReportContainer.OpenWrite(reportPath, contentType, encoding)))
+                {
+                    fileWriter.Write(FormatHtmlHelper.Flatten(stringBuilder.ToString()));
+                }
             }
 
             reportWriter.AddReportDocumentPath(reportPath);

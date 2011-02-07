@@ -57,6 +57,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ReportResourcesInstaller.cs" />
+    <Compile Include="Vtl\FormatNavigationHelper.cs" />
+    <Compile Include="Vtl\FormatHtmlHelper.cs" />
+    <Compile Include="Vtl\FormatTextHelper.cs" />
     <Compile Include="Vtl\TestStepRunTreeStatistics.cs" />
     <Compile Include="Vtl\FormatHelper.cs" />
     <Compile Include="Vtl\DefaultVelocityEngineFactory.cs" />

@@ -29,36 +29,39 @@ using Gallio.Common.Markup;
 namespace Gallio.Reports.Vtl
 {
     /// <summary>
-    /// A general purpose class that helps in formatting stuff for the VTL template engine.
+    /// Provides helper methods to ease text formating from VTL template engine.
     /// </summary>
-    internal class FormatHelper
+    internal class FormatTextHelper
     {
-        private readonly FormatTextHelper text = new FormatTextHelper();
-        private readonly FormatHtmlHelper html = new FormatHtmlHelper();
-        private readonly FormatNavigationHelper navigation = new FormatNavigationHelper();
-
         /// <summary>
-        /// Provides helper methods to ease text formating from VTL template engine.
+        /// Normalizes the end of lines for text-based formats.
         /// </summary>
-        public FormatTextHelper Text
-        { 
-            get { return text; } 
+        /// <remarks>
+        /// <para>
+        /// Replaces single LF characters by CR/LF pairs.
+        /// </para>
+        /// </remarks>
+        /// <param name="text">The text to be normalized.</param>
+        /// <returns>The normalized text.</returns>
+        public string NormalizeEndOfLinesText(string text)
+        {
+            return text.Replace("\n", "\r\n");
         }
 
         /// <summary>
-        /// Provides helper methods to ease HTML formating from VTL template engine.
+        /// Removes characters from the specified text.
         /// </summary>
-        public FormatHtmlHelper Html
+        /// <param name="text">The text to process.</param>
+        /// <param name="chars">The characters to remove from the string.</param>
+        /// <returns>The processed text.</returns>
+        public string RemoveChars(string text, string chars)
         {
-            get { return html; }
-        }
+            var builder = new StringBuilder(text);
 
-        /// <summary>
-        /// Provides helper methods to navigate into the test step run tree and find visible items.
-        /// </summary>
-        public FormatNavigationHelper Navigation
-        {
-            get { return navigation; }
+            foreach (char @char in chars)
+                builder.Replace(@char.ToString(), String.Empty);
+
+            return builder.ToString();
         }
     }
 }

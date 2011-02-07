@@ -42,48 +42,9 @@ using Gallio.Model.Schema;
 namespace Gallio.Tests.Reports.Vtl
 {
     [TestFixture]
-    [TestsOn(typeof(FormatHelper))]
-    public class FormatHelperTest
+    [TestsOn(typeof(FormatNavigationHelper))]
+    public class FormatNavigationHelperTest
     {
-        [Test]
-        public void NormalizeEndOfLinesText()
-        {
-            var helper = new FormatHelper();
-            string actual = helper.NormalizeEndOfLinesText("line 1\nline 2\nline 3\n");
-            Assert.AreEqual("line 1\r\nline 2\r\nline 3\r\n", actual);
-        }
-
-        [Test]
-        public void NormalizeEndOfLinesHtml()
-        {
-            var helper = new FormatHelper();
-            string actual = helper.NormalizeEndOfLinesHtml("line 1\nline 2\r\nline 3\n");
-            Assert.AreEqual("line 1<br>line 2<br>line 3<br>", actual);
-        }
-
-        [Test]
-        [Row("The antbirds are a large family of passerine birds.",
-             "The&nbsp;<wbr/>antbirds&nbsp;<wbr/>are&nbsp;<wbr/>a&nbsp;<wbr/>large&nbsp;<wbr/>family&nbsp;<wbr/>of&nbsp;<wbr/>passerine&nbsp;<wbr/>birds<wbr/>.")]
-        [Row(@"D:\Root\Folder\File.ext",
-             @"D<wbr/>:<wbr/>\Root<wbr/>\Folder<wbr/>\File<wbr/>.ext")]
-        public void BreakWord(string text, string expected)
-        {
-            var helper = new FormatHelper();
-            string actual = helper.BreakWord(text);
-            Assert.AreEqual(expected, actual);
-        }
-
-        [Test]
-        [Row("Blue Red.Green. Magenta  .", "BlueRedGreenMagenta")]
-        [Row(" .. .", "")]
-        [Row("", "")]
-        public void RemoveChars(string input, string expectedOutput)
-        {
-            var helper = new FormatHelper();
-            string output = helper.RemoveChars(input, " .");
-            Assert.AreEqual(expectedOutput, output);
-        }
-
         [Test]
         [Row("name1", "value1")]
         [Row("name2", "value2")]
@@ -98,7 +59,7 @@ namespace Gallio.Tests.Reports.Vtl
             tag.Attributes.Add(new MarkerTag.Attribute("name3", "value3"));
 
             // Find attribute value.
-            var helper = new FormatHelper();
+            var helper = new FormatNavigationHelper();
             string value = helper.GetMarkerAttributeValue(tag, searched);
             Assert.AreEqual(expectedValue, value);
         }
@@ -143,7 +104,7 @@ namespace Gallio.Tests.Reports.Vtl
             var child3 = CreateFakeRun("3", child31, child32, child33);
             var root = CreateFakeRun("Root", child1, child2, child3);
 
-            var helper = new FormatHelper();
+            var helper = new FormatNavigationHelper();
             helper.BuildParentMap(root);
             Assert.AreElementsEqual(new[] { "322", "32", "3", "Root" }, helper.GetSelfAndAncestorIds(child322.Step.Id));
             Assert.AreElementsEqual(new[] { "31", "3", "Root" }, helper.GetSelfAndAncestorIds(child31.Step.Id));
