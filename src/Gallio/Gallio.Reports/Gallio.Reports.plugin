@@ -47,6 +47,8 @@
     <file path="Resources\vm\Gallio-Report.txt-condensed.vm" />
     <file path="Resources\vm\Gallio-Report.html+xhtml.vm" />
     <file path="Resources\vm\Gallio-Report.html+xhtml.detailed-item.vm" />
+    <file path="Resources\vm\Gallio-Report.html+xhtml.detailed-item.log.vm" />
+    <file path="Resources\vm\Gallio-Report.html+xhtml.summary-item.vm" />
     <file path="Resources\vm\Gallio-Report.html.vm" />
     <file path="Resources\vm\Gallio-Report.html-condensed.vm" />
   </files>
@@ -230,6 +232,134 @@
       </parameters>
       <traits>
         <name>XHtml-Condensed</name>
+        <description>
+          Generates XHTML reports that omit passing tests.
+
+          Supported report formatter properties:
+          - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
+        </description>
+      </traits>
+    </component>
+    
+    <component componentId="ReportFormatter.Text-New"
+               serviceId="Gallio.ReportFormatter"
+               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+      <parameters>
+        <extension>txt</extension>
+        <contentType>text/plain</contentType>
+        <defaultAttachmentContentDisposition>Absent</defaultAttachmentContentDisposition>
+        <resourceDirectory>plugin://Gallio.Reports/Resources/</resourceDirectory>
+        <templatePath>vm/Gallio-Report.txt.vm</templatePath>
+        <resourcePaths></resourcePaths>
+        <supportSplit>False</supportSplit>
+      </parameters>
+      <traits>
+        <name>Text-New</name>
+        <description>Generates plain text reports.</description>
+      </traits>
+    </component>
+
+    <component componentId="ReportFormatter.Text-Condensed-New"
+               serviceId="Gallio.ReportFormatter"
+               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+      <parameters>
+        <extension>txt</extension>
+        <contentType>text/plain</contentType>
+        <defaultAttachmentContentDisposition>Absent</defaultAttachmentContentDisposition>
+        <resourceDirectory>plugin://Gallio.Reports/Resources/</resourceDirectory>
+        <templatePath>vm/Gallio-Report.txt-condensed.vm</templatePath>
+        <resourcePaths></resourcePaths>
+        <supportSplit>False</supportSplit>
+      </parameters>
+      <traits>
+        <name>Text-Condensed-New</name>
+        <description>Generates plain text reports without passing tests.</description>
+      </traits>
+    </component>
+
+    <component componentId="ReportFormatter.Html-New"
+               serviceId="Gallio.ReportFormatter"
+               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+      <parameters>
+        <extension>html</extension>
+        <contentType>text/html</contentType>
+        <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
+        <resourceDirectory>plugin://Gallio.Reports/Resources/</resourceDirectory>
+        <templatePath>vm/Gallio-Report.html.vm</templatePath>
+        <resourcePaths>css;js;img</resourcePaths>
+        <supportSplit>True</supportSplit>
+      </parameters>
+      <traits>
+        <name>Html-New</name>
+        <description>
+          Generates HTML reports.
+
+          Supported report formatter properties:
+          - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
+        </description>
+      </traits>
+    </component>
+
+    <component componentId="ReportFormatter.Html-Condensed-New"
+               serviceId="Gallio.ReportFormatter"
+               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+      <parameters>
+        <extension>html</extension>
+        <contentType>text/html</contentType>
+        <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
+        <resourceDirectory>plugin://Gallio.Reports/Resources/</resourceDirectory>
+        <templatePath>vm/Gallio-Report.html-condensed.vm</templatePath>
+        <resourcePaths>css;js;img</resourcePaths>
+        <supportSplit>False</supportSplit>
+      </parameters>
+      <traits>
+        <name>Html-Condensed-New</name>
+        <description>
+          Generates HTML reports that omit passing tests.
+
+          Supported report formatter properties:
+          - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
+        </description>
+      </traits>
+    </component>
+	
+    <component componentId="ReportFormatter.XHtml-New"
+               serviceId="Gallio.ReportFormatter"
+               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+      <parameters>
+        <extension>xhtml</extension>
+        <contentType>text/xhtml+xml</contentType>
+        <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
+        <resourceDirectory>plugin://Gallio.Reports/Resources/</resourceDirectory>
+        <templatePath>vm/Gallio-Report.xhtml.vm</templatePath>
+        <resourcePaths>css;js;img</resourcePaths>
+        <supportSplit>True</supportSplit>
+      </parameters>
+      <traits>
+        <name>XHtml-New</name>
+        <description>
+          Generates XHTML reports.
+
+          Supported report formatter properties:
+          - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
+        </description>
+      </traits>
+    </component>
+
+    <component componentId="ReportFormatter.XHtml-Condensed-New"
+               serviceId="Gallio.ReportFormatter"
+               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+      <parameters>
+        <extension>xhtml</extension>
+        <contentType>text/xhtml+xml</contentType>
+        <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
+        <resourceDirectory>plugin://Gallio.Reports/Resources/</resourceDirectory>
+        <templatePath>vm/Gallio-Report.xhtml-condensed.vm</templatePath>
+        <resourcePaths>css;js;img</resourcePaths>
+        <supportSplit>False</supportSplit>
+      </parameters>
+      <traits>
+        <name>XHtml-Condensed-New</name>
         <description>
           Generates XHTML reports that omit passing tests.
 
