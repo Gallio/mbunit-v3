@@ -66,7 +66,7 @@ namespace Gallio.Reports.Vtl
         {
             var context = new VelocityContext();
             context.Put("report", reportWriter.Report);
-            helper.Navigation.BuildParentMap(reportWriter.Report.TestPackageRun.RootTestStepRun);
+            helper.Navigation.BuildParentMap(reportWriter.Report.TestModel.RootTest);
             context.Put("helper", helper);
             context.Put("resourceRoot", reportWriter.ReportContainer.ReportName);
             context.Put("passed", TestStatus.Passed);

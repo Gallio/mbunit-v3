@@ -20,7 +20,7 @@
     <img src="$resourceRoot/img/Minus.gif" class="toggle" id="toggle-summaryPanel-$current.Step.Id" onclick="toggle('summaryPanel-$current.Step.Id');" alt="Toggle Button" />
     #end
     <span class="testKind#if($kind) testKind-$helper.Text.RemoveChars($kind, " .")#end"></span>
-    <a class="crossref" href="#if ($pagingEnabled)$helper.Paging.GetReportPath($helper.Paging.GetPageOf($index, $pageSize))#end#testStepRun-$current.Step.Id" onclick="expand(['#foreach ($rid in $helper.Navigation.GetSelfAndAncestorIds($current.Step.Id))
+    <a class="crossref" href="#if ($pagingEnabled)$helper.Paging.GetReportPath($helper.Paging.GetPageOf($index, $pageSize))#end#testStepRun-$current.Step.Id" onclick="expand(['#foreach ($rid in $helper.Navigation.GetSelfAndAncestorIds($current.Step.TestId))
 detailPanel-$rid#between
 ', '#end']);">$helper.Html.BreakWord($current.Step.Name)</a>
     <table class="outcome-bar">

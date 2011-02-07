@@ -64,11 +64,11 @@ namespace Gallio.Tests.Reports.Vtl
             Assert.AreEqual(expectedValue, value);
         }
 
-        private TestStepRun CreateFakeRun(string id, params TestStepRun[] children)
+        private TestData CreateFakeTest(string id, params TestData[] children)
         {
-            var run = new TestStepRun(new TestStepData(id, id, id, id));
-            run.Children.AddRange(children);
-            return run;
+            var test = new TestData(id, "Name-" + id, "FullName-" + id);
+            test.Children.AddRange(children);
+            return test;
         }
 
         [Test]
@@ -89,27 +89,27 @@ namespace Gallio.Tests.Reports.Vtl
             //             +- Child332
             //             +- Child333
 
-            var child1 = CreateFakeRun("1");
-            var child2 = CreateFakeRun("2");
-            var child331 = CreateFakeRun("331");
-            var child332 = CreateFakeRun("332");
-            var child333 = CreateFakeRun("333");
-            var child33 = CreateFakeRun("33", child331, child332, child333);
-            var child321 = CreateFakeRun("321");
-            var child322 = CreateFakeRun("322");
-            var child323 = CreateFakeRun("323");
-            var child324 = CreateFakeRun("324");
-            var child32 = CreateFakeRun("32", child321, child322, child323, child324);
-            var child31 = CreateFakeRun("31");
-            var child3 = CreateFakeRun("3", child31, child32, child33);
-            var root = CreateFakeRun("Root", child1, child2, child3);
+            var child1 = CreateFakeTest("1");
+            var child2 = CreateFakeTest("2");
+            var child331 = CreateFakeTest("331");
+            var child332 = CreateFakeTest("332");
+            var child333 = CreateFakeTest("333");
+            var child33 = CreateFakeTest("33", child331, child332, child333);
+            var child321 = CreateFakeTest("321");
+            var child322 = CreateFakeTest("322");
+            var child323 = CreateFakeTest("323");
+            var child324 = CreateFakeTest("324");
+            var child32 = CreateFakeTest("32", child321, child322, child323, child324);
+            var child31 = CreateFakeTest("31");
+            var child3 = CreateFakeTest("3", child31, child32, child33);
+            var root = CreateFakeTest("Root", child1, child2, child3);
 
             var helper = new FormatNavigationHelper();
             helper.BuildParentMap(root);
-            Assert.AreElementsEqual(new[] { "322", "32", "3", "Root" }, helper.GetSelfAndAncestorIds(child322.Step.Id));
-            Assert.AreElementsEqual(new[] { "31", "3", "Root" }, helper.GetSelfAndAncestorIds(child31.Step.Id));
-            Assert.AreElementsEqual(new[] { "2", "Root" }, helper.GetSelfAndAncestorIds(child2.Step.Id));
-            Assert.AreElementsEqual(new[] { "Root" }, helper.GetSelfAndAncestorIds(root.Step.Id));
+            Assert.AreElementsEqual(new[] { "322", "32", "3", "Root" }, helper.GetSelfAndAncestorIds(child322.Id));
+            Assert.AreElementsEqual(new[] { "31", "3", "Root" }, helper.GetSelfAndAncestorIds(child31.Id));
+            Assert.AreElementsEqual(new[] { "2", "Root" }, helper.GetSelfAndAncestorIds(child2.Id));
+            Assert.AreElementsEqual(new[] { "Root" }, helper.GetSelfAndAncestorIds(root.Id));
         }
     }
 }

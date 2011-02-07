@@ -25,6 +25,7 @@ using Gallio.Runner.Reports.Schema;
 using Gallio.Common.Collections;
 using Gallio.Common.Markup.Tags;
 using Gallio.Common.Markup;
+using Gallio.Model.Schema;
 
 namespace Gallio.Reports.Vtl
 {
@@ -146,19 +147,19 @@ namespace Gallio.Reports.Vtl
         /// Builds a map of the parent step id's.
         /// </summary>
         /// <param name="root">The root test step run of the tree.</param>
-        public void BuildParentMap(TestStepRun root)
+        public void BuildParentMap(TestData root)
         {
             parentMap.Clear();
-            parentMap.Add(root.Step.Id, null);
+            parentMap.Add(root.Id, null);
             BuildParentMapImpl(root);
         }
 
-        private void BuildParentMapImpl(TestStepRun parent)
+        private void BuildParentMapImpl(TestData parent)
         {
-            foreach (TestStepRun run in parent.Children)
+            foreach (TestData test in parent.Children)
             {
-                parentMap.Add(run.Step.Id, parent.Step.Id);
-                BuildParentMapImpl(run);
+                parentMap.Add(test.Id, parent.Id);
+                BuildParentMapImpl(test);
             }
         }
 

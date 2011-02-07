@@ -43,7 +43,7 @@
   <div id="Navigator" class="navigator">
     <div class="navigator-stripes">
     #foreach ($item in $helper.Navigation.GetVisibleNavigatorTestStepRuns($report))
-    <a href="#if ($pagingEnabled)$helper.Paging.GetReportPath($helper.Paging.GetPageOf($item.Index, $pageSize))#end#testStepRun-$item.Run.Step.Id" style="top:$item.TopPosition%" class="status-$item.Run.Result.Outcome.Status.ToString().ToLower()" title="$item.Run.Step.Name $item.Run.Result.Outcome.Status" onclick="expand(['#foreach ($rid in $helper.Navigation.GetSelfAndAncestorIds($item.Run.Step.Id))
+    <a href="#if ($pagingEnabled)$helper.Paging.GetReportPath($helper.Paging.GetPageOf($item.Index, $pageSize))#end#testStepRun-$item.Run.Step.Id" style="top:$item.TopPosition%" class="status-$item.Run.Result.Outcome.Status.ToString().ToLower()" title="$item.Run.Step.Name $item.Run.Result.Outcome.Status" onclick="expand(['#foreach ($rid in $helper.Navigation.GetSelfAndAncestorIds($item.Run.Step.TestId))
 detailPanel-$rid#between
 ', '#end']);"></a>
     #end
