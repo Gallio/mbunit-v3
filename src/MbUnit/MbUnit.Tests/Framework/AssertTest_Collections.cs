@@ -351,7 +351,7 @@ namespace MbUnit.Tests.Framework
                 { new List<int>(new[] {3, 4}), "2`" },
             };
             AssertionFailure[] failures = Capture(() =>
-                Assert.ContainsKey(dictionary, new List<int>(new[] { 5 }), "{0} message.", "custom"));
+                Assert.ContainsKey(dictionary, new List<int>(new[] { 5 })));
             Assert.Count(1, failures);
             Assert.AreEqual("Expected the key to appear within the dictionary.", failures[0].Description);
             Assert.AreEqual("Expected Key", failures[0].LabeledValues[0].Label);
@@ -359,8 +359,17 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("Dictionary", failures[0].LabeledValues[1].Label);
             Assert.AreEqual("[[1, 2]: \"1\", [3, 4]: \"2`\"]",
                 failures[0].LabeledValues[1].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void Contains_fails_with_custom_message()
+        {
+            AssertionFailure[] failures = Capture(() =>
+                Assert.Contains(new List<int>(new[] { 1, 2, 3 }), 5, "{0} message.", "custom"));
+            Assert.Count(1, failures);
             Assert.AreEqual("custom message.", failures[0].Message);
         }
+
         #endregion
 
         #region ForAll
@@ -412,6 +421,15 @@ namespace MbUnit.Tests.Framework
             Assert.Count(1, failures[0].InnerFailures); // The D'Artagnan should not be checked because only the first three entries are validated.
         }
 
+        [Test]
+        public void ForAll_should_fail_with_custom_message()
+        {
+            var data = new[] { "Athos", "Porthos", "Aramis" };
+            AssertionFailure[] failures = Capture(() => Assert.ForAll(data, x => x.Contains("x"),"{0} message.","Custom"));
+            Assert.Count(1, failures);
+            Assert.AreEqual("Custom message.", failures[0].Message);
+        }
+
         #endregion
 
         #region Exists
@@ -432,6 +450,15 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("Expected at least one element of the sequence to meet the specified condition, but none passed.", failures[0].Description);
         }
 
+        [Test]
+        public void Exists_should_fail_with_custom_message()
+        {
+            var data = new[] { "Athos", "Porthos", "Aramis" };
+            AssertionFailure[] failures = Capture(() => Assert.Exists(data, x => x == "D'Artagnan","{0} message.","Custom"));
+            Assert.Count(1, failures);
+            Assert.AreEqual("Custom message.", failures[0].Message);
+        }
+
         #endregion
 
         #region IsEmpty
@@ -442,7 +469,7 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        public void IsEmpty_pass()
+        public void IsEmpty_should_pass()
         {
             Assert.IsEmpty(EmptyArray<int>.Instance);
             Assert.IsEmpty(new List<int>());
@@ -450,7 +477,7 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        public void IsEmpty_fail()
+        public void IsEmpty_should_fail()
         {
             AssertionFailure[] failures = Capture(() => Assert.IsEmpty(new[] { 123, 456, 789 }));
             Assert.Count(1, failures);
@@ -463,6 +490,14 @@ namespace MbUnit.Tests.Framework
                 Assert.Like(failures[0].LabeledValues[i].Label, @"^Actual Value \([\w ]+\)?$");
                 Assert.AreEqual("3", failures[0].LabeledValues[i].FormattedValue.ToString());
             }
+        }
+
+        [Test]
+        public void IsEmpty_should_fail_with_custom_message()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.IsEmpty(new[] { 13, 46, 79 }, "{0} message.", "Custom"));
+            Assert.Count(1, failures);
+            Assert.AreEqual("Custom message.", failures[0].Message);
         }
 
         #endregion
