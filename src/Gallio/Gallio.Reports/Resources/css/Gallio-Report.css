@@ -525,3 +525,15 @@ div.gallio-report div.navigator
 	text-decoration: none;
 	border-bottom: dotted 1px #aa00dd;
 }
+
+/* Pager */
+.gallio-report div.pager
+{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.gallio-report div.pager a
+{
+	color: #222244;
+}

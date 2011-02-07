@@ -36,6 +36,7 @@ namespace Gallio.Reports.Vtl
         private readonly FormatTextHelper text = new FormatTextHelper();
         private readonly FormatHtmlHelper html = new FormatHtmlHelper();
         private readonly FormatNavigationHelper navigation = new FormatNavigationHelper();
+        private readonly FormatPagingHelper paging = new FormatPagingHelper();
 
         /// <summary>
         /// Provides helper methods to ease text formating from VTL template engine.
@@ -59,6 +60,14 @@ namespace Gallio.Reports.Vtl
         public FormatNavigationHelper Navigation
         {
             get { return navigation; }
+        }
+
+        /// <summary>
+        /// Provides helper methods to ease HTML report paging from VTL template engine.
+        /// </summary>
+        public FormatPagingHelper Paging
+        {
+            get { return paging; }
         }
     }
 }

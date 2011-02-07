@@ -62,11 +62,10 @@ namespace Gallio.Reports.Vtl
         }
 
         /// <inheritdoc />
-        public VelocityContext CreateVelocityContext(IReportWriter reportWriter)
+        public VelocityContext CreateVelocityContext(IReportWriter reportWriter, FormatHelper helper)
         {
             var context = new VelocityContext();
             context.Put("report", reportWriter.Report);
-            var helper = new FormatHelper();
             helper.Navigation.BuildParentMap(reportWriter.Report.TestPackageRun.RootTestStepRun);
             context.Put("helper", helper);
             context.Put("resourceRoot", reportWriter.ReportContainer.ReportName);
@@ -74,6 +73,10 @@ namespace Gallio.Reports.Vtl
             context.Put("failed", TestStatus.Failed);
             context.Put("skipped", TestStatus.Skipped);
             context.Put("inconclusive", TestStatus.Inconclusive);
+            context.Put("pagingEnabled", false);
+            context.Put("pageIndex", 0);
+            context.Put("pageSize", 0);
+            context.Put("pageCount", 1);
             return context;
         }
     }

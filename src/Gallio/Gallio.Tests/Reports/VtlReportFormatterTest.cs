@@ -49,42 +49,42 @@ namespace Gallio.Tests.Reports
         [ExpectedArgumentNullException]
         public void Constructs_with_null_extension_should_throw_exception()
         {
-            new VtlReportFormatter(null, MimeTypes.PlainText, new DirectoryInfo("content"), "vm", EmptyArray<string>.Instance);
+            new VtlReportFormatter(null, MimeTypes.PlainText, new DirectoryInfo("content"), "vm", EmptyArray<string>.Instance, true);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Constructs_with_null_contentType_should_throw_exception()
         {
-            new VtlReportFormatter("ext", null, new DirectoryInfo("content"), "vm", EmptyArray<string>.Instance);
+            new VtlReportFormatter("ext", null, new DirectoryInfo("content"), "vm", EmptyArray<string>.Instance, true);
         }   
 
         [Test]
         [ExpectedArgumentNullException]
         public void Constructs_with_null_resourceDirectory_should_throw_exception()
         {
-            new VtlReportFormatter("ext", MimeTypes.PlainText, null, "vm", EmptyArray<string>.Instance);
+            new VtlReportFormatter("ext", MimeTypes.PlainText, null, "vm", EmptyArray<string>.Instance, true);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Constructs_with_null_templatePath_should_throw_exception()
         {
-            new VtlReportFormatter("ext", MimeTypes.PlainText, new DirectoryInfo("content"), null, EmptyArray<string>.Instance);
+            new VtlReportFormatter("ext", MimeTypes.PlainText, new DirectoryInfo("content"), null, EmptyArray<string>.Instance, true);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Constructs_with_null_resourcePaths_should_throw_exception()
         {
-            new VtlReportFormatter("ext", MimeTypes.PlainText, new DirectoryInfo("content"), "vm", null);
+            new VtlReportFormatter("ext", MimeTypes.PlainText, new DirectoryInfo("content"), "vm", null, true);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Constructs_with_null_resource_containing_null_element_should_throw_exception()
         {
-            new VtlReportFormatter("ext", MimeTypes.PlainText, new DirectoryInfo("content"), "vm", new string[] { null });
+            new VtlReportFormatter("ext", MimeTypes.PlainText, new DirectoryInfo("content"), "vm", new string[] { null }, true);
         }
 
         [Test, Explicit("Can't make it pass on the build server!")]
@@ -103,7 +103,7 @@ namespace Gallio.Tests.Reports
             fakeReport.TestPackageRun = new TestPackageRun();
             fakeReport.TestPackageRun.RootTestStepRun = new TestStepRun(new TestStepData("", "", "", ""));
             fakeReport.TestPackageRun.Statistics.RunCount = 123;
-            var formatter = new VtlReportFormatter("ext", MimeTypes.PlainText, new DirectoryInfo("content"), "Gallio.Tests.Reports.SampleTemplate.vm", EmptyArray<string>.Instance);
+            var formatter = new VtlReportFormatter("ext", MimeTypes.PlainText, new DirectoryInfo("content"), "Gallio.Tests.Reports.SampleTemplate.vm", EmptyArray<string>.Instance, false);
             formatter.VelocityEngineFactory = new ResourceVelocityEngineFactory();
             formatter.Format(mockReportWriter, new ReportFormatterOptions(), mockProgressMonitor);
             Assert.AreEqual("This is the test report (123)", output.ToString());

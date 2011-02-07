@@ -187,6 +187,7 @@ namespace Gallio.Reports.Vtl
         public class NavigatorTestStepRun
         {
             public TestStepRun Run { get; set; }
+            public int Index { get; set; }
             public double TopPosition { get; set; }
         };
 
@@ -210,8 +211,9 @@ namespace Gallio.Reports.Vtl
             {
                 if ((run.Result.Outcome != TestOutcome.Passed) && (run.Step.IsTestCase || run.Children.Count == 0))
                     yield return new NavigatorTestStepRun 
-                    { 
+                    {
                         Run = run,
+                        Index = i,
                         TopPosition = i * 98.0 / all.Count,
                     };
 

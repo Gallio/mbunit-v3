@@ -37,7 +37,8 @@ namespace Gallio.Reports.Vtl
         /// Creates and initializes a contextual data container for the Velocity engine.
         /// </summary>
         /// <param name="reportWriter">The current report writer.</param>
+        /// <param name="helper">A format helper class.</param>
         /// <returns>A fully initialized context.</returns>
-        VelocityContext CreateVelocityContext(IReportWriter reportWriter);
+        VelocityContext CreateVelocityContext(IReportWriter reportWriter, FormatHelper helper);
     }
 }

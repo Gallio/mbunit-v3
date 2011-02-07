@@ -49,7 +49,12 @@ namespace Gallio.Reports
         private readonly string templatePath;
         private readonly string[] resourcePaths;
         private readonly string templateFilePath;
+        private readonly bool supportSplit;
         private IVelocityEngineFactory velocityEngineFactory;
+
+        // TODO: Move in the registry as a preference.
+        private bool splitEnabled = true;
+        private int splitSize = 100;//1000;
 
         /// <summary>
         /// Creates a VTL report formatter.
@@ -58,10 +63,10 @@ namespace Gallio.Reports
         /// <param name="contentType">The content type of the main report document.</param>
         /// <param name="resourceDirectory">The resource directory.</param>
         /// <param name="templatePath">The path of the NVelocity template relative to the resource directory.</param>
-        /// <param name="resourcePaths">The paths of the resources (such as images or CSS) to copy
-        /// to the report directory relative to the resource directory.</param>
+        /// <param name="resourcePaths">The paths of the resources (such as images or CSS) to copy to the report directory relative to the resource directory.</param>
+        /// <param name="supportSplit">Indicates whether the format supports file splitting.</param>
         /// <exception cref="ArgumentNullException">Thrown if any arguments are null.</exception>
-        public VtlReportFormatter(string extension, string contentType, DirectoryInfo resourceDirectory, string templatePath, string[] resourcePaths)
+        public VtlReportFormatter(string extension, string contentType, DirectoryInfo resourceDirectory, string templatePath, string[] resourcePaths, bool supportSplit)
         {
             if (extension == null)
                 throw new ArgumentNullException(@"extension");
@@ -79,6 +84,7 @@ namespace Gallio.Reports
             this.resourceDirectory = resourceDirectory;
             this.templatePath = templatePath;
             this.resourcePaths = resourcePaths;
+            this.supportSplit = supportSplit;
             templateFilePath = Path.Combine(resourceDirectory.FullName, templatePath);
         }
 
@@ -128,24 +134,19 @@ namespace Gallio.Reports
         /// </summary>
         protected virtual void ApplyTemplate(IReportWriter reportWriter, AttachmentContentDisposition attachmentContentDisposition, ReportFormatterOptions options)
         {
-            VelocityEngine engine = VelocityEngineFactory.CreateVelocityEngine();
-            VelocityContext context = VelocityEngineFactory.CreateVelocityContext(reportWriter);
-            string reportPath = reportWriter.ReportContainer.ReportName + "." + extension;
-            Encoding encoding = new UTF8Encoding(false);
-            Template template = engine.GetTemplate(Path.GetFileName(templatePath), encoding.BodyName);
-            var stringBuilder = new StringBuilder();
+            VelocityEngine velocityEngine = VelocityEngineFactory.CreateVelocityEngine();
+            var helper = new FormatHelper();
+            VelocityContext velocityContext = VelocityEngineFactory.CreateVelocityContext(reportWriter, helper);
+            var writer = GetReportWriter(velocityEngine, velocityContext, reportWriter, helper);
+            writer.Run();
+        }
 
-            using (var stringWriter = new StringWriter(stringBuilder))
-            {
-                template.Merge(context, stringWriter);
+        private VtlReportWriter GetReportWriter(VelocityEngine velocityEngine, VelocityContext velocityContext, IReportWriter reportWriter, FormatHelper helper)
+        {
+            if  (supportSplit && splitEnabled && reportWriter.Report.TestPackageRun.Statistics.TestCount > splitSize)
+                return new MultipleFilesVtlReportWriter(velocityEngine, velocityContext, reportWriter, templatePath, contentType, extension, helper, splitSize);
 
-                using (var fileWriter = new StreamWriter(reportWriter.ReportContainer.OpenWrite(reportPath, contentType, encoding)))
-                {
-                    fileWriter.Write(FormatHtmlHelper.Flatten(stringBuilder.ToString()));
-                }
-            }
-
-            reportWriter.AddReportDocumentPath(reportPath);
+            return new SingleFileVtlReportWriter(velocityEngine, velocityContext, reportWriter, templatePath, contentType, extension, helper);
         }
 
         /// <summary>
