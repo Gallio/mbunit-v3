@@ -115,15 +115,14 @@
 
     <component componentId="ReportFormatter.Text"
                serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+               componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
       <parameters>
         <extension>txt</extension>
         <contentType>text/plain</contentType>
         <defaultAttachmentContentDisposition>Absent</defaultAttachmentContentDisposition>
         <resourceDirectory>plugin://Gallio.Reports/Resources/</resourceDirectory>
-        <templatePath>vm/Gallio-Report.txt.vm</templatePath>
+        <xsltPath>xsl/Gallio-Report.txt.xsl</xsltPath>
         <resourcePaths></resourcePaths>
-        <supportSplit>False</supportSplit>
       </parameters>
       <traits>
         <name>Text</name>
@@ -132,34 +131,32 @@
     </component>
 
     <component componentId="ReportFormatter.Text-Condensed"
-               serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+           serviceId="Gallio.ReportFormatter"
+           componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
       <parameters>
         <extension>txt</extension>
         <contentType>text/plain</contentType>
         <defaultAttachmentContentDisposition>Absent</defaultAttachmentContentDisposition>
         <resourceDirectory>plugin://Gallio.Reports/Resources/</resourceDirectory>
-        <templatePath>vm/Gallio-Report.txt-condensed.vm</templatePath>
+        <xsltPath>xsl/Gallio-Report.txt-condensed.xsl</xsltPath>
         <resourcePaths></resourcePaths>
-        <supportSplit>False</supportSplit>
       </parameters>
       <traits>
         <name>Text-Condensed</name>
         <description>Generates plain text reports without passing tests.</description>
       </traits>
     </component>
-
+    
     <component componentId="ReportFormatter.Html"
                serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+               componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
       <parameters>
         <extension>html</extension>
         <contentType>text/html</contentType>
         <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
         <resourceDirectory>plugin://Gallio.Reports/Resources/</resourceDirectory>
-        <templatePath>vm/Gallio-Report.html.vm</templatePath>
+        <xsltPath>xsl/Gallio-Report.html.xsl</xsltPath>
         <resourcePaths>css;js;img</resourcePaths>
-        <supportSplit>True</supportSplit>
       </parameters>
       <traits>
         <name>Html</name>
@@ -174,15 +171,14 @@
 
     <component componentId="ReportFormatter.Html-Condensed"
                serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+               componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
       <parameters>
         <extension>html</extension>
         <contentType>text/html</contentType>
         <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
         <resourceDirectory>plugin://Gallio.Reports/Resources/</resourceDirectory>
-        <templatePath>vm/Gallio-Report.html-condensed.vm</templatePath>
+        <xsltPath>xsl/Gallio-Report.html-condensed.xsl</xsltPath>
         <resourcePaths>css;js;img</resourcePaths>
-        <supportSplit>False</supportSplit>
       </parameters>
       <traits>
         <name>Html-Condensed</name>
@@ -194,18 +190,17 @@
         </description>
       </traits>
     </component>
-	
+
     <component componentId="ReportFormatter.XHtml"
                serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+               componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
       <parameters>
         <extension>xhtml</extension>
         <contentType>text/xhtml+xml</contentType>
         <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
         <resourceDirectory>plugin://Gallio.Reports/Resources/</resourceDirectory>
-        <templatePath>vm/Gallio-Report.xhtml.vm</templatePath>
+        <xsltPath>xsl/Gallio-Report.xhtml.xsl</xsltPath>
         <resourcePaths>css;js;img</resourcePaths>
-        <supportSplit>True</supportSplit>
       </parameters>
       <traits>
         <name>XHtml</name>
@@ -220,15 +215,14 @@
 
     <component componentId="ReportFormatter.XHtml-Condensed"
                serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+               componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
       <parameters>
         <extension>xhtml</extension>
         <contentType>text/xhtml+xml</contentType>
         <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
         <resourceDirectory>plugin://Gallio.Reports/Resources/</resourceDirectory>
-        <templatePath>vm/Gallio-Report.xhtml-condensed.vm</templatePath>
+        <xsltPath>xsl/Gallio-Report.xhtml-condensed.xsl</xsltPath>
         <resourcePaths>css;js;img</resourcePaths>
-        <supportSplit>False</supportSplit>
       </parameters>
       <traits>
         <name>XHtml-Condensed</name>
