@@ -315,7 +315,7 @@ namespace MbUnit.Framework.ContractVerifiers
         ///     {
         ///         PropertyName = "MyProperty",
         ///         ValidValues = { 123, 456, 789 },
-        ///         IncompetentValues =
+        ///         InvalidValues =
         ///         {
         ///             { typeof(ArgumentOutOfRangeException), -100, -999, 1000, 99999 },
         ///             { typeof(ArgumentException), 666 }
