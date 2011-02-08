@@ -43,7 +43,6 @@ namespace MbUnit.Framework
     [AttributeUsage(PatternAttributeTargets.TestParameter, AllowMultiple = true, Inherited = true)]
     public class BindAttribute : TestParameterDecoratorPatternAttribute
     {
-        private string source;
         private readonly string path;
         private readonly int? index;
 
@@ -81,8 +80,8 @@ namespace MbUnit.Framework
         /// </remarks>
         public string Source
         {
-            get { return source; }
-            set { source = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -105,7 +104,7 @@ namespace MbUnit.Framework
         protected override void DecorateTestParameter(IPatternScope slotScope, ISlotInfo slot)
         {
             var binding = new DataBinding(index, path);
-            slotScope.TestParameterBuilder.Binder = new ScalarDataBinder(binding, source ?? @"");
+            slotScope.TestParameterBuilder.Binder = new ScalarDataBinder(binding, Source ?? @"");
         }
     }
 }

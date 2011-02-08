@@ -33,8 +33,6 @@ namespace MbUnit.Framework
     public class ExpectedExceptionAttribute : TestMethodDecoratorPatternAttribute
     {
         private readonly Type exceptionType;
-        private string message;
-        private Type innerExceptionType;
 
         /// <summary>
         /// Declares that the associated test is expected to throw an exception of
@@ -85,8 +83,8 @@ namespace MbUnit.Framework
                 throw new ArgumentNullException(@"exceptionType");
 
             this.exceptionType = exceptionType;
-            this.message = message;
-            this.innerExceptionType = innerExceptionType;
+            this.Message = message;
+            this.InnerExceptionType = innerExceptionType;
         }
 
         /// <summary>
@@ -103,8 +101,8 @@ namespace MbUnit.Framework
         /// </summary>
         public string Message
         {
-            get { return message; }
-            set { message = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -112,8 +110,8 @@ namespace MbUnit.Framework
         /// </summary>
         public Type InnerExceptionType
         {
-            get { return innerExceptionType; }
-            set { innerExceptionType = value; }
+            get;
+            set;
         }
 
         /// <inheritdoc />
@@ -121,11 +119,11 @@ namespace MbUnit.Framework
         {
             methodScope.TestBuilder.AddMetadata(MetadataKeys.ExpectedException, exceptionType.FullName);
 
-            if (message != null)
-                methodScope.TestBuilder.AddMetadata(MetadataKeys.ExpectedExceptionMessage, message);
+            if (Message != null)
+                methodScope.TestBuilder.AddMetadata(MetadataKeys.ExpectedExceptionMessage, Message);
 
-            if (innerExceptionType != null)
-                methodScope.TestBuilder.AddMetadata(MetadataKeys.ExpectedInnerException, innerExceptionType.FullName);
+            if (InnerExceptionType != null)
+                methodScope.TestBuilder.AddMetadata(MetadataKeys.ExpectedInnerException, InnerExceptionType.FullName);
         }
     }
 }

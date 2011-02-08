@@ -35,7 +35,6 @@ namespace MbUnit.Framework
         private readonly PropertyBag metadata = new PropertyBag();
 
         private TimeSpan? timeout;
-        private ICodeElementInfo codeElement;
 
         /// <summary>
         /// Creates a test.
@@ -116,8 +115,8 @@ namespace MbUnit.Framework
         /// </summary>
         public ICodeElementInfo CodeElement
         {
-            get { return codeElement; }
-            set { codeElement = value; }
+            get;
+            set;
         }
 
         /// <inheritdoc />
@@ -181,7 +180,7 @@ namespace MbUnit.Framework
                     if (tearDown != null)
                         tearDown();
                 }
-            }, Timeout, IsTestCase, codeElement ?? declaringCodeElement).Outcome;
+            }, Timeout, IsTestCase, CodeElement ?? declaringCodeElement).Outcome;
         }
 
         /// <summary>

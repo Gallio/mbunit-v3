@@ -139,7 +139,6 @@ namespace MbUnit.Framework
     public class CatchExceptionAttribute : TestDecoratorPatternAttribute
     {
         private readonly Type exceptionType;
-        private string exceptionMessage;
         private TestStatus outcomeStatus = TestOutcome.Error.Status;
         private string outcomeCategory = TestOutcome.Error.Category;
 
@@ -217,8 +216,8 @@ namespace MbUnit.Framework
         /// </summary>
         public string ExceptionMessage
         {
-            get { return exceptionMessage; }
-            set { exceptionMessage = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -396,7 +395,7 @@ namespace MbUnit.Framework
             //NOTE: Much of this logic was adapted from the ExpectedException logic in <see cref="TestAttribute.Execute"/>
             return (ex != null)
                 && (ReflectionUtils.IsAssignableFrom(exceptionType.FullName, ex.GetType())
-                && (exceptionMessage == null || ex.Message.Contains(exceptionMessage)));
+                && (ExceptionMessage == null || ex.Message.Contains(ExceptionMessage)));
         }
 
         /// <summary>

@@ -42,7 +42,7 @@ namespace MbUnit.Framework
     [AttributeUsage(PatternAttributeTargets.ContributionMethod, AllowMultiple = false, Inherited = true)]
     public abstract class AbstractComparerAttribute : ExtensionPointPatternAttribute
     {
-        private IExtensionPoints extensionPoints;
+        private readonly IExtensionPoints extensionPoints;
 
         /// <summary>
         /// Gets the entry point for the registration of 
