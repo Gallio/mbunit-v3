@@ -249,6 +249,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reports\Preferences\ReportPreferencePane.resx">
+      <DependentUpon>ReportPreferencePane.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\TestStepRunViewer.resx">
       <DependentUpon>TestStepRunViewer.cs</DependentUpon>
       <SubType>Designer</SubType>
