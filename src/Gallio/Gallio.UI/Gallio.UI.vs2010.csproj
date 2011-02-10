@@ -204,6 +204,14 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Reports\NamespaceDoc.cs" />
+    <Compile Include="Reports\Preferences\NamespaceDoc.cs" />
+    <Compile Include="Reports\Preferences\ReportPreferencePane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Reports\Preferences\ReportPreferencePane.designer.cs">
+      <DependentUpon>ReportPreferencePane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\Preferences\ReportPreferencePaneProvider.cs" />
     <Compile Include="Reports\TestStepRunViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -257,6 +265,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\Preferences\ReportPreferencePane.resx">
+      <DependentUpon>ReportPreferencePane.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\TestStepRunViewer.resx">
       <DependentUpon>TestStepRunViewer.cs</DependentUpon>

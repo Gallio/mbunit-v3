@@ -254,6 +254,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Runner\Reports\Preferences\HtmlReportSplitSettingsTest.cs" />
     <Compile Include="Reports\VtlReportFormatterTest.cs" />
     <Compile Include="Reports\ManualTestLogFeatureTest.cs" />
     <Compile Include="Reports\MHtmlReportFormatterTest.cs" />

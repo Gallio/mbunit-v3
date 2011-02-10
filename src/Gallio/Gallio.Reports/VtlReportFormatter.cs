@@ -35,6 +35,7 @@ using Gallio.Common;
 using System.Text.RegularExpressions;
 using Gallio.Model;
 using Gallio.Reports.Vtl;
+using Gallio.Runner.Reports.Preferences;
 
 namespace Gallio.Reports
 {
@@ -43,6 +44,7 @@ namespace Gallio.Reports
     /// </summary>
     public class VtlReportFormatter : BaseReportFormatter
     {
+        private readonly ReportPreferenceManager preferenceManager;
         private readonly string extension;
         private readonly string contentType;
         private readonly DirectoryInfo resourceDirectory;
@@ -52,13 +54,10 @@ namespace Gallio.Reports
         private readonly bool supportSplit;
         private IVelocityEngineFactory velocityEngineFactory;
 
-        // TODO: Move in the registry as a preference.
-        private bool splitEnabled = true;
-        private int splitSize = 100;//1000;
-
         /// <summary>
         /// Creates a VTL report formatter.
         /// </summary>
+        /// <param name="preferenceManager">The user preference manager</param>
         /// <param name="extension">The preferred extension without a '.'</param>
         /// <param name="contentType">The content type of the main report document.</param>
         /// <param name="resourceDirectory">The resource directory.</param>
@@ -66,8 +65,10 @@ namespace Gallio.Reports
         /// <param name="resourcePaths">The paths of the resources (such as images or CSS) to copy to the report directory relative to the resource directory.</param>
         /// <param name="supportSplit">Indicates whether the format supports file splitting.</param>
         /// <exception cref="ArgumentNullException">Thrown if any arguments are null.</exception>
-        public VtlReportFormatter(string extension, string contentType, DirectoryInfo resourceDirectory, string templatePath, string[] resourcePaths, bool supportSplit)
+        public VtlReportFormatter(ReportPreferenceManager preferenceManager, string extension, string contentType, DirectoryInfo resourceDirectory, string templatePath, string[] resourcePaths, bool supportSplit)
         {
+            if (preferenceManager == null)
+                throw new ArgumentNullException(@"preferenceManager");
             if (extension == null)
                 throw new ArgumentNullException(@"extension");
             if (contentType == null)
@@ -79,6 +80,7 @@ namespace Gallio.Reports
             if (resourcePaths == null || Array.IndexOf(resourcePaths, null) >= 0)
                 throw new ArgumentNullException(@"resourcePaths");
 
+            this.preferenceManager = preferenceManager;
             this.extension = extension;
             this.contentType = contentType;
             this.resourceDirectory = resourceDirectory;
@@ -143,8 +145,10 @@ namespace Gallio.Reports
 
         private VtlReportWriter GetReportWriter(VelocityEngine velocityEngine, VelocityContext velocityContext, IReportWriter reportWriter, FormatHelper helper)
         {
-            if  (supportSplit && splitEnabled && reportWriter.Report.TestPackageRun.Statistics.TestCount > splitSize)
-                return new MultipleFilesVtlReportWriter(velocityEngine, velocityContext, reportWriter, templatePath, contentType, extension, helper, splitSize);
+            HtmlReportSplitSettings settings = preferenceManager.HtmlReportSplitSettings;
+
+            if (supportSplit && settings.Enabled && reportWriter.Report.TestPackageRun.Statistics.TestCount > settings.PageSize)
+                return new MultipleFilesVtlReportWriter(velocityEngine, velocityContext, reportWriter, templatePath, contentType, extension, helper, settings.PageSize);
 
             return new SingleFileVtlReportWriter(velocityEngine, velocityContext, reportWriter, templatePath, contentType, extension, helper);
         }

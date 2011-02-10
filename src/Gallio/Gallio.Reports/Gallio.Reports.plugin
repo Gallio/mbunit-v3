@@ -11,6 +11,7 @@
 
   <dependencies>
     <dependency pluginId="Gallio" />
+    <dependency pluginId="Gallio.UI" />
   </dependencies>
 
   <files>
@@ -54,15 +55,26 @@
   </files>
 
   <assemblies>
-    <assembly fullName="Gallio.Reports, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
-              codeBase="Gallio.Reports.dll"
-              qualifyPartialName="true" />
+    <assembly 
+      fullName="Gallio.Reports, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
+      codeBase="Gallio.Reports.dll"
+      qualifyPartialName="true" />
   </assemblies>
+  
+  <services>
+    <service 
+      serviceId="Gallio.ReportPreferenceManager"
+      serviceType="Gallio.Runner.Reports.Preferences.ReportPreferenceManager, Gallio" />
+ </services>
 
   <components>
-    <component componentId="ReportFormatter.Xml"
-               serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.XmlReportFormatter, Gallio.Reports">
+  
+    <!-- Formatters -->
+
+    <component 
+      componentId="ReportFormatter.Xml"
+      serviceId="Gallio.ReportFormatter"
+      componentType="Gallio.Reports.XmlReportFormatter, Gallio.Reports">
       <parameters>
         <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
       </parameters>
@@ -77,9 +89,10 @@
       </traits>
     </component>
 
-    <component componentId="ReportFormatter.Xml-Inline"
-               serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.XmlReportFormatter, Gallio.Reports">
+    <component 
+      componentId="ReportFormatter.Xml-Inline"
+      serviceId="Gallio.ReportFormatter"
+      componentType="Gallio.Reports.XmlReportFormatter, Gallio.Reports">
       <parameters>
         <defaultAttachmentContentDisposition>Inline</defaultAttachmentContentDisposition>
       </parameters>
@@ -89,9 +102,10 @@
       </traits>
     </component>
 
-    <component componentId="ReportFormatter.MHtml"
-               serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.MHtmlReportFormatter, Gallio.Reports">
+    <component 
+      componentId="ReportFormatter.MHtml"
+      serviceId="Gallio.ReportFormatter"
+      componentType="Gallio.Reports.MHtmlReportFormatter, Gallio.Reports">
       <parameters>
         <htmlReportFormatter>${ReportFormatter.Html}</htmlReportFormatter>
       </parameters>
@@ -101,9 +115,10 @@
       </traits>
     </component>
 
-    <component componentId="ReportFormatter.MHtml-Condensed"
-               serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.MHtmlReportFormatter, Gallio.Reports">
+    <component 
+      componentId="ReportFormatter.MHtml-Condensed"
+      serviceId="Gallio.ReportFormatter"
+      componentType="Gallio.Reports.MHtmlReportFormatter, Gallio.Reports">
       <parameters>
         <htmlReportFormatter>${ReportFormatter.Html-Condensed}</htmlReportFormatter>
       </parameters>
@@ -113,9 +128,12 @@
       </traits>
     </component>
 
-    <component componentId="ReportFormatter.Text"
-               serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
+    <!-- Old XSLT-Based Formatters (to be replaced by VTL-based formatters, see below) -->
+    
+    <component 
+      componentId="ReportFormatter.Text"
+      serviceId="Gallio.ReportFormatter"
+      componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
       <parameters>
         <extension>txt</extension>
         <contentType>text/plain</contentType>
@@ -130,9 +148,10 @@
       </traits>
     </component>
 
-    <component componentId="ReportFormatter.Text-Condensed"
-           serviceId="Gallio.ReportFormatter"
-           componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
+    <component 
+      componentId="ReportFormatter.Text-Condensed"
+      serviceId="Gallio.ReportFormatter"
+      componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
       <parameters>
         <extension>txt</extension>
         <contentType>text/plain</contentType>
@@ -147,9 +166,10 @@
       </traits>
     </component>
     
-    <component componentId="ReportFormatter.Html"
-               serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
+    <component 
+      componentId="ReportFormatter.Html"
+      serviceId="Gallio.ReportFormatter"
+      componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
       <parameters>
         <extension>html</extension>
         <contentType>text/html</contentType>
@@ -169,9 +189,10 @@
       </traits>
     </component>
 
-    <component componentId="ReportFormatter.Html-Condensed"
-               serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
+    <component 
+      componentId="ReportFormatter.Html-Condensed"
+      serviceId="Gallio.ReportFormatter"
+      componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
       <parameters>
         <extension>html</extension>
         <contentType>text/html</contentType>
@@ -191,9 +212,10 @@
       </traits>
     </component>
 
-    <component componentId="ReportFormatter.XHtml"
-               serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
+    <component 
+      componentId="ReportFormatter.XHtml"
+      serviceId="Gallio.ReportFormatter"
+      componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
       <parameters>
         <extension>xhtml</extension>
         <contentType>text/xhtml+xml</contentType>
@@ -213,9 +235,10 @@
       </traits>
     </component>
 
-    <component componentId="ReportFormatter.XHtml-Condensed"
-               serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
+    <component 
+      componentId="ReportFormatter.XHtml-Condensed"
+      serviceId="Gallio.ReportFormatter"
+      componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
       <parameters>
         <extension>xhtml</extension>
         <contentType>text/xhtml+xml</contentType>
@@ -235,9 +258,12 @@
       </traits>
     </component>
     
-    <component componentId="ReportFormatter.Text-New"
-               serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+    <!-- New VTL-Based Formatters -->
+    
+    <component 
+      componentId="ReportFormatter.Text-New"
+      serviceId="Gallio.ReportFormatter"
+      componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
       <parameters>
         <extension>txt</extension>
         <contentType>text/plain</contentType>
@@ -253,9 +279,10 @@
       </traits>
     </component>
 
-    <component componentId="ReportFormatter.Text-Condensed-New"
-               serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+    <component 
+      componentId="ReportFormatter.Text-Condensed-New"
+      serviceId="Gallio.ReportFormatter"
+      componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
       <parameters>
         <extension>txt</extension>
         <contentType>text/plain</contentType>
@@ -271,9 +298,10 @@
       </traits>
     </component>
 
-    <component componentId="ReportFormatter.Html-New"
-               serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+    <component 
+      componentId="ReportFormatter.Html-New"
+      serviceId="Gallio.ReportFormatter"
+      componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
       <parameters>
         <extension>html</extension>
         <contentType>text/html</contentType>
@@ -294,9 +322,10 @@
       </traits>
     </component>
 
-    <component componentId="ReportFormatter.Html-Condensed-New"
-               serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+    <component 
+      componentId="ReportFormatter.Html-Condensed-New"
+      serviceId="Gallio.ReportFormatter"
+      componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
       <parameters>
         <extension>html</extension>
         <contentType>text/html</contentType>
@@ -317,9 +346,10 @@
       </traits>
     </component>
 	
-    <component componentId="ReportFormatter.XHtml-New"
-               serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+    <component 
+      componentId="ReportFormatter.XHtml-New"
+      serviceId="Gallio.ReportFormatter"
+      componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
       <parameters>
         <extension>xhtml</extension>
         <contentType>text/xhtml+xml</contentType>
@@ -340,9 +370,10 @@
       </traits>
     </component>
 
-    <component componentId="ReportFormatter.XHtml-Condensed-New"
-               serviceId="Gallio.ReportFormatter"
-               componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
+    <component 
+      componentId="ReportFormatter.XHtml-Condensed-New"
+      serviceId="Gallio.ReportFormatter"
+      componentType="Gallio.Reports.VtlReportFormatter, Gallio.Reports">
       <parameters>
         <extension>xhtml</extension>
         <contentType>text/xhtml+xml</contentType>
@@ -363,9 +394,12 @@
       </traits>
     </component>
 
-    <component componentId="Gallio.Reports.Installer"
-               serviceId="Gallio.Installer"
-               componentType="Gallio.Reports.ReportResourcesInstaller, Gallio.Reports">
+    <!-- Installation Components -->
+    
+    <component 
+      componentId="Gallio.Reports.Installer"
+      serviceId="Gallio.Installer"
+      componentType="Gallio.Reports.ReportResourcesInstaller, Gallio.Reports">
       <parameters>
         <testKindImageDir>plugin://Gallio.Reports/Resources/img/testkinds/</testKindImageDir>
         <generatedCssFile>plugin://Gallio.Reports/Resources/css/Gallio-Report.Generated.css</generatedCssFile>
@@ -374,5 +408,23 @@
         <requiresElevation>true</requiresElevation>
       </traits>
     </component>
+    
+    <!-- User Preferences (Control Panel) -->
+
+    <component
+      componentId="Gallio.UI.ReportPreferencePaneProvider"
+      serviceId="Gallio.UI.PreferencePaneProvider"
+      componentType="Gallio.UI.Reports.Preferences.ReportPreferencePaneProvider, Gallio.UI">
+      <traits>
+        <path>Gallio/Reports</path>
+        <icon>plugin://Gallio/Resources/Gallio.ico</icon>
+      </traits>
+    </component>
+
+    <component 
+      componentId="Gallio.ReportPreferenceManager"
+      serviceId="Gallio.ReportPreferenceManager"
+      componentType="Gallio.Runner.Reports.Preferences.ReportPreferenceManager, Gallio" />      
+
   </components>
 </plugin>

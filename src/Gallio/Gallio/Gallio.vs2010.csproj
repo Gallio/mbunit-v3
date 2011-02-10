@@ -449,6 +449,8 @@
     <Compile Include="Runner\Reports\ArchiveReportContainer.cs" />
     <Compile Include="Runner\Reports\DefaultReportMerger.cs" />
     <Compile Include="Runner\Reports\IReportMerger.cs" />
+    <Compile Include="Runner\Reports\Preferences\HtmlReportSplitSettings.cs" />
+    <Compile Include="Runner\Reports\Preferences\ReportPreferenceManager.cs" />
     <Compile Include="Runner\Reports\ReportArchive.cs" />
     <Compile Include="Runner\Reports\ReportContainerFactory.cs" />
     <Compile Include="Runtime\Conversions\Conversion.cs" />

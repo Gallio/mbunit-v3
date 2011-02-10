@@ -187,6 +187,14 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Reports\NamespaceDoc.cs" />
+    <Compile Include="Reports\Preferences\NamespaceDoc.cs" />
+    <Compile Include="Reports\Preferences\ReportPreferencePane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Reports\Preferences\ReportPreferencePane.designer.cs">
+      <DependentUpon>ReportPreferencePane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\Preferences\ReportPreferencePaneProvider.cs" />
     <Compile Include="Reports\TestStepRunViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
