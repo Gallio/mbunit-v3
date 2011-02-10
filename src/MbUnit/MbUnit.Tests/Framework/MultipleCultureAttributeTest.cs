@@ -41,7 +41,7 @@ namespace MbUnit.Tests.Framework
         public void RunMultipleCulture()
         {
             var run = Runner.GetPrimaryTestStepRun(typeof(MultipleCultureSample), "Test");
-            string[] cultures = run.Children.Select(x => x.TestLog.GetStream(MarkupStreamNames.Default).ToString()).ToArray();
+            var cultures = GetLogs(run.Children);
             Assert.AreElementsEqualIgnoringOrder(new[] { "en-US", "en-GB", "fr-FR" }, cultures, (x, y) => y.StartsWith(x));
         }
 
@@ -56,7 +56,7 @@ namespace MbUnit.Tests.Framework
         public void RunMultipleCultureWithThreads([Column("Test1", "Test2")] string methodName) // Issue 572 (http://code.google.com/p/mb-unit/issues/detail?id=572)
         {
             var runs = Runner.GetTestStepRuns(typeof(MultipleCultureWithThreadsSample), methodName);
-            string[] cultures = runs.Select(x => x.TestLog.GetStream(MarkupStreamNames.Default).ToString()).Where(x => Regex.IsMatch(x, @"^\w{2}-\w{2}$")).ToArray();
+            var cultures = GetLogs(runs).Where(x => Regex.IsMatch(x, @"^\w{2}-\w{2}"));
             Assert.AreElementsEqualIgnoringOrder(new[] { "en-US", "en-US", "fr-FR", "fr-FR" }, cultures, (x, y) => y.StartsWith(x));
         }
 

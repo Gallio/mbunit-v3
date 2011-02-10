@@ -19,6 +19,7 @@ using Gallio.Framework.Utilities;
 using Gallio.Common.Markup;
 using Gallio.Runner.Reports.Schema;
 using MbUnit.Framework;
+using System.Collections.Generic;
 
 namespace Gallio.Tests
 {
@@ -121,6 +122,44 @@ namespace Gallio.Tests
 
             StructuredStream stream = run.TestLog.GetStream(streamName);
             Assert.DoesNotContain((stream == null) ? String.Empty : stream.ToString(), expectedOutput);
+        }
+
+        /// <summary>
+        /// Returns the log of the specified test step run.
+        /// </summary>
+        /// <param name="run">The test step run.</param>
+        /// <returns>The log text or an empty string.</returns>
+        protected static string GetLog(TestStepRun run)
+        {
+            return GetLog(run, MarkupStreamNames.Default);
+        }
+
+        /// <summary>
+        /// Returns the log of the specified test step run.
+        /// </summary>
+        /// <param name="run">The test step run.</param>
+        /// <param name="streamName">The name of log stream.</param>
+        /// <returns>The log text or an empty string.</returns>
+        protected static string GetLog(TestStepRun run, string streamName)
+        {
+            StructuredStream stream = run.TestLog.GetStream(streamName);
+            return (stream == null) ? String.Empty : stream.ToString();
+        }
+
+        /// <summary>
+        /// Returns the default non-empty logs of the specified test step runs.
+        /// </summary>
+        /// <param name="runs">The test step runs.</param>
+        /// <returns>An enumeration of non-empty logs.</returns>
+        protected static IEnumerable<string> GetLogs(IEnumerable<TestStepRun> runs)
+        {
+            foreach (TestStepRun run in runs)
+            {
+                string log = GetLog(run);
+
+                if (!String.IsNullOrEmpty(log))
+                    yield return log;
+            }
         }
     }
 }

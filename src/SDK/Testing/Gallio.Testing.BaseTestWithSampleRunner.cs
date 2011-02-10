@@ -116,6 +116,22 @@ namespace Gallio.Testing
         }
 
         /// <summary>
+        /// Returns the default non-empty logs of the specified test step runs.
+        /// </summary>
+        /// <param name="runs">The test step runs.</param>
+        /// <returns>An enumeration of non-empty logs.</returns>
+        protected static IEnumerable<string> GetLogs(IEnumerable<TestStepRun> runs)
+        {
+            foreach (TestStepRun run in runs)
+            {
+                string log = GetLog(run);
+
+                if (!String.IsNullOrEmpty(log))
+                    yield return log;
+            }
+        }
+
+        /// <summary>
         /// Returns all the test step runs for the specified test method.
         /// </summary>
         /// <param name="fixtureType">The searched fixture type.</param>
