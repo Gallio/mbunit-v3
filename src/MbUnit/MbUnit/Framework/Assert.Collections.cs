@@ -999,6 +999,52 @@ namespace MbUnit.Framework
         }
 
         #endregion
+        
+        #region DoesNotExist
+
+        /// <summary>
+        /// Verifies that none of the elements in the sequence meets the specified condition.
+        /// </summary>
+        /// <typeparam name="T">The type of values in the sequence.</typeparam>
+        /// <param name="values">The sequence of values to evaluate.</param>
+        /// <param name="predicate">The condition that must not be fulfilled (returns <c>true</c>) by any of the elements of the sequence.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        public static void DoesNotExist<T>(IEnumerable<T> values, Predicate<T> predicate)
+        {
+            DoesNotExist(values, predicate, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that none of the elements in the sequence meets the specified condition.
+        /// </summary>
+        /// <typeparam name="T">The type of values in the sequence.</typeparam>
+        /// <param name="values">The sequence of values to evaluate.</param>
+        /// <param name="predicate">The condition that must not be fulfilled (returns <c>true</c>) by any of the elements of the sequence.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        public static void DoesNotExist<T>(IEnumerable<T> values, Predicate<T> predicate, string messageFormat, params object[] messageArgs)
+        {
+            if (values == null)
+                throw new ArgumentNullException("values");
+            if (predicate == null)
+                throw new ArgumentNullException("predicate");
+
+            AssertionHelper.Verify(() =>
+            {
+                foreach (T value in values)
+                {
+                    if (predicate(value))
+                        return new AssertionFailureBuilder("Expected none of the elements of the sequence to meet the specified condition, but one did.")
+                            .SetMessage(messageFormat, messageArgs)
+                            .ToAssertionFailure();
+                }
+                
+                return null;
+            });
+        }
+
+        #endregion
 
         internal static int CountRemainingElements(IEnumerator enumerator)
         {

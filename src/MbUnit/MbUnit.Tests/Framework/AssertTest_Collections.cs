@@ -434,6 +434,51 @@ namespace MbUnit.Tests.Framework
 
         #endregion
 
+        #region DoesNotExist
+
+        [Test]
+        public void DoesNotExist_should_pass()
+        {
+            var data = new[] { "Athos", "Porthos", "Aramis" };
+            Assert.DoesNotExist(data, x => x.Contains("D'A"));
+        }
+
+        [Test]
+        public void DoesNotExist_should_fail()
+        {
+            var data = new[] { "Athos", "Porthos", "Aramis" };
+            AssertionFailure[] failures = Capture(() => Assert.DoesNotExist(data, x => x == "Porthos"));
+            Assert.Count(1, failures);
+            Assert.AreEqual("Expected none of the elements of the sequence to meet the specified condition, but one did.", failures[0].Description);
+        }
+
+        [Test]
+        public void DoesNotExist_should_fail_with_custom_message()
+        {
+            var data = new[] { "Athos", "Porthos", "Aramis" };
+            AssertionFailure[] failures = Capture(() => Assert.DoesNotExist(data, x => x == "Porthos","{0} message.","Custom"));
+            Assert.Count(1, failures);
+            Assert.AreEqual("Custom message.", failures[0].Message);
+        }
+
+        [Test]
+        [ExpectedArgumentNullException]
+        public void DoesNotExist_throws_exception_with_null_values_argument()
+        {
+            string[] data = null;
+            Assert.DoesNotExist(data, x => x == "Porthos", "{0} message.", "Custom");
+        }
+
+        [Test]
+        [ExpectedArgumentNullException]
+        public void DoesNotExist_throws_exception_with_null_predicate_argument()
+        {
+            var data = new[] { "Athos", "Porthos", "Aramis" };
+            Assert.DoesNotExist(data, null);
+        }
+
+        #endregion
+
         #region IsEmpty
 
         private static IEnumerable GetEmptyEnumeration()
