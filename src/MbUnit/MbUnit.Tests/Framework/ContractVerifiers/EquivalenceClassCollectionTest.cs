@@ -23,53 +23,54 @@ using MbUnit.Framework.ContractVerifiers;
 namespace MbUnit.Tests.Framework.ContractVerifiers
 {
     [TestFixture]
+    [TestsOn(typeof(EquivalenceClassCollection))]
     public class EquivalenceClassCollectionTest
     {
         [Test]
         public void ConstructEmpty()
         {
-            var collection = new EquivalenceClassCollection<object>();
-            Assert.IsEmpty(collection.EquivalenceClasses);
+            var collection = new EquivalenceClassCollection();
+            Assert.IsEmpty(collection);
         }
 
         [Test]
         public void ConstructWithListInitializer()
         {
-            var collection = new EquivalenceClassCollection<int>
+            var collection = new EquivalenceClassCollection
             {
-                {1, 2, 3},
-                {4, 5, 6, 7},
-                {8, 9}
+                {1, "2", 3},
+                {4, 5d, "6", 7},
+                {8, 9m}
             };
 
             Assert.Count(3, collection);
-            Assert.AreElementsEqual(new[] { 1, 2, 3 }, collection.ElementAt(0));
-            Assert.AreElementsEqual(new[] { 4, 5, 6, 7 }, collection.ElementAt(1));
-            Assert.AreElementsEqual(new[] { 8, 9 }, collection.ElementAt(2));
+            Assert.AreElementsEqual(new object[] { 1, "2", 3 }, collection[0].Cast<object>());
+            Assert.AreElementsEqual(new object[] { 4, 5d, "6", 7 }, collection[1].Cast<object>());
+            Assert.AreElementsEqual(new object[] { 8, 9m }, collection[2].Cast<object>());
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void ConstructWithNullParameter()
         {
-            new EquivalenceClassCollection<object>(null);
+            new EquivalenceClassCollection(null);
         }
 
         [Test]
         [ExpectedArgumentException]
         public void ConstructWithParameterHavingNullInstance()
         {
-            new EquivalenceClassCollection<object>(new object[] { new object(), new object(), null });
+            new EquivalenceClassCollection(new[] { new object(), new object(), null });
         }
 
         [Test]
         public void ConstructWithParameter()
         {
-            var collection = new EquivalenceClassCollection<int>(new[] { 1, 2, 3 });
+            var collection = new EquivalenceClassCollection(new object[] { 1, "2", 3d });
             Assert.Count(3, collection);
-            Assert.AreElementsEqual(new[] { 1 }, collection.ElementAt(0));
-            Assert.AreElementsEqual(new[] { 2 }, collection.ElementAt(1));
-            Assert.AreElementsEqual(new[] { 3 }, collection.ElementAt(2));
+            Assert.AreElementsEqual(new object[] { 1 }, collection[0].Cast<object>());
+            Assert.AreElementsEqual(new object[] { "2" }, collection[1].Cast<object>());
+            Assert.AreElementsEqual(new object[] { 3d }, collection[2].Cast<object>());
         }
     }
 }

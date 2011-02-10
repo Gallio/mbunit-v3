@@ -44,12 +44,12 @@ namespace Gallio.Tests.Common.Markup.Tags
             DistinctInstances = DataGenerators.Random.Strings(100000, @"[A-Za-z0-9 ]{4,100}").Select(text => new TextTag(text)),
         };
 
-        public override EquivalenceClassCollection<TextTag> GetEquivalenceClasses()
+        public override EquivalenceClassCollection GetEquivalenceClasses()
         {
             return equivalenceClasses;
         }
 
-        private static readonly EquivalenceClassCollection<TextTag> equivalenceClasses = new EquivalenceClassCollection<TextTag>
+        private static readonly EquivalenceClassCollection equivalenceClasses = new EquivalenceClassCollection
         {
             new TextTag(""),
             new TextTag("text"),

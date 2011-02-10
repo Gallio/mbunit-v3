@@ -134,7 +134,7 @@ namespace MbUnit.Framework.ContractVerifiers
         public ComparisonContract()
         {
             this.ImplementsOperatorOverloads = true;
-            this.EquivalenceClasses = new EquivalenceClassCollection<TTarget>();
+            this.EquivalenceClasses = new EquivalenceClassCollection();
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Gets or sets the collection of equivalence classes of instances
         /// to feed the contract verifier.
         /// </summary>
-        public EquivalenceClassCollection<TTarget> EquivalenceClasses
+        public EquivalenceClassCollection EquivalenceClasses
         {
             get;
             set;
@@ -166,146 +166,264 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <inheritdoc />
         protected override IEnumerable<Test> GetContractVerificationTests()
         {
-            // Is IComparable.CompareTo implementation OK?
-            yield return CreateComparisonTest("ComparableCompareTo",
-                GetIComparableInterface().GetMethod("CompareTo", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(TTarget) }, null),
-                String.Format("bool CompareTo({0})", typeof(TTarget).Name),
-                TernaryComparerFactory,
-                TernaryClassifier, 
-                (leftIndex, rightIndex) => leftIndex.CompareTo(rightIndex));
+            const BindingFlags bindingCommon = BindingFlags.InvokeMethod | BindingFlags.Public;
+            const BindingFlags bindingAllInstance = bindingCommon | BindingFlags.NonPublic | BindingFlags.Instance;
+            const BindingFlags bindingAllStatic = bindingCommon | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy;
+            Type[] comparableTypes = GetAllComparableInterfaces();
+
+            foreach (Type type in comparableTypes)
+            {
+                var typeCopy = type;
+                yield return CreateComparisonTest<int>(new ComparisonSpecifications<int>
+                {
+                    Name = "ComparableCompareTo" + ((comparableTypes.Length == 1) ? String.Empty : "_" + typeCopy.Name),
+                    MethodFriendlyName = String.Format("int CompareTo({0})", typeCopy.Name),
+                    GetWorkingType = obj => GetComparableInterface(obj, typeCopy),
+                    GetComparisonMethod = t => t.GetMethod("CompareTo", bindingAllInstance, null, new[] { typeCopy }, null),
+                    IsComparisonMethodRequired = o => typeCopy.IsAssignableFrom(o.GetType()),
+                    AdjustExpectedEquivalence = i => i,
+                    FormatResult = i => (i < 0) ? "negative" : ((i > 0) ? "positive" : "zero"),
+                    IsSecondArgumentCompatible = o => typeCopy.IsAssignableFrom(o.GetType()),
+                });
+            }
 
             if (ImplementsOperatorOverloads)
             {
                 // Is "Greater Than" operator overload implementation OK?
-                yield return CreateComparisonTest("OperatorGreaterThan",
-                    typeof(TTarget).GetMethod("op_GreaterThan", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { typeof(TTarget), typeof(TTarget) }, null),
-                    String.Format("static bool operator >({0}, {0})", typeof(TTarget).Name),
-                    BinaryComparerFactory,
-                    BinaryClassifier, 
-                    (leftIndex, rightIndex) => leftIndex > rightIndex);
+                yield return CreateComparisonTest<bool>(new ComparisonSpecifications<bool>
+                {
+                    Name = "OperatorGreaterThan",
+                    MethodFriendlyName = String.Format("static bool operator >({0}, {0})", typeof(TTarget).Name),
+                    GetWorkingType = o => o.GetType(),
+                    GetComparisonMethod = t => t.GetMethod("op_GreaterThan", bindingAllStatic, null, new[] { typeof(TTarget), typeof(TTarget) }, null),
+                    IsComparisonMethodRequired = IsTargetTypeExactly,
+                    AdjustExpectedEquivalence = i => i > 0,
+                    FormatResult = b => b.ToString(),
+                    IsSecondArgumentCompatible = IsTargetTypeOrDerived,
+                });
 
                 // Is "Greater Than Or Equal" operator overload implementation OK?
-                yield return CreateComparisonTest("OperatorGreaterThanOrEqual",
-                    typeof(TTarget).GetMethod("op_GreaterThanOrEqual", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { typeof(TTarget), typeof(TTarget) }, null),
-                    String.Format("static bool operator >=({0}, {0})", typeof(TTarget).Name),
-                    BinaryComparerFactory,
-                    BinaryClassifier, 
-                    (leftIndex, rightIndex) => leftIndex >= rightIndex);
+                yield return CreateComparisonTest<bool>(new ComparisonSpecifications<bool>
+                {
+                    Name = "OperatorGreaterThanOrEqual",
+                    MethodFriendlyName = String.Format("static bool operator >=({0}, {0})", typeof(TTarget).Name),
+                    GetWorkingType = o => o.GetType(),
+                    GetComparisonMethod = t => t.GetMethod("op_GreaterThanOrEqual", bindingAllStatic, null, new[] { typeof(TTarget), typeof(TTarget) }, null),
+                    IsComparisonMethodRequired = IsTargetTypeExactly,
+                    AdjustExpectedEquivalence = i => i >= 0,
+                    FormatResult = b => b.ToString(),
+                    IsSecondArgumentCompatible = IsTargetTypeOrDerived,
+                });
 
                 // Is "Less Than" operator overload implementation OK?
-                yield return CreateComparisonTest("OperatorLessThan",
-                    typeof(TTarget).GetMethod("op_LessThan", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { typeof(TTarget), typeof(TTarget) }, null),
-                    String.Format("static bool operator <({0}, {0})", typeof(TTarget).Name),
-                    BinaryComparerFactory,
-                    BinaryClassifier, 
-                    (leftIndex, rightIndex) => leftIndex < rightIndex);
+                yield return CreateComparisonTest<bool>(new ComparisonSpecifications<bool>
+                {
+                    Name = "OperatorLessThan",
+                    MethodFriendlyName = String.Format("static bool operator <({0}, {0})", typeof(TTarget).Name),
+                    GetWorkingType = o => o.GetType(),
+                    GetComparisonMethod = t => t.GetMethod("op_LessThan", bindingAllStatic, null, new[] { typeof(TTarget), typeof(TTarget) }, null),
+                    IsComparisonMethodRequired = IsTargetTypeExactly,
+                    AdjustExpectedEquivalence = i => i < 0,
+                    FormatResult = b => b.ToString(),
+                    IsSecondArgumentCompatible = IsTargetTypeOrDerived,
+                });
 
                 // Is "Less Than Or Equal" operator overload implementation OK?
-                yield return CreateComparisonTest("OperatorLessThanOrEqual",
-                    typeof(TTarget).GetMethod("op_LessThanOrEqual", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { typeof(TTarget), typeof(TTarget) }, null),
-                    String.Format("static bool operator <=({0}, {0})", typeof(TTarget).Name),
-                    BinaryComparerFactory,
-                    BinaryClassifier, 
-                    (leftIndex, rightIndex) => leftIndex <= rightIndex);
+                yield return CreateComparisonTest<bool>(new ComparisonSpecifications<bool>
+                {
+                    Name = "OperatorLessThanOrEqual",
+                    MethodFriendlyName = String.Format("static bool operator <=({0}, {0})", typeof(TTarget).Name),
+                    GetWorkingType = o => o.GetType(),
+                    GetComparisonMethod = t => t.GetMethod("op_LessThanOrEqual", bindingAllStatic, null, new[] { typeof(TTarget), typeof(TTarget) }, null),
+                    IsComparisonMethodRequired = IsTargetTypeExactly,
+                    AdjustExpectedEquivalence = i => i <= 0,
+                    FormatResult = b => b.ToString(),
+                    IsSecondArgumentCompatible = IsTargetTypeOrDerived,
+                });
             }
         }
 
-        private Test CreateComparisonTest<TResult>(string name, MethodInfo method, string methodSignature, Func<MethodInfo, Func<object, object, TResult>> comparerFactory, Func<TResult, string> classifier, Func<int, int, TResult> referenceComparer)
+        private struct ComparisonSpecifications<TResult>
         {
-            return new TestCase(name, () =>
-            {
-                AssertMethodExists(method, methodSignature);
-                Func<object, object, TResult> comparer = comparerFactory(method);
-
-                Assert.Multiple(() =>
-                {
-                    if (!typeof(TTarget).IsValueType && method.IsStatic)
-                    {
-                        VerifyComparison(null, null, int.MinValue, int.MinValue, comparer, classifier, referenceComparer, Context);
-                    }
-
-                    int leftIndex = 0;
-
-                    foreach (EquivalenceClass<TTarget> leftClass in EquivalenceClasses)
-                    {
-                        foreach (TTarget leftValue in leftClass)
-                        {
-                            if (!typeof (TTarget).IsValueType)
-                            {
-                                VerifyComparison(leftValue, null, 0, int.MinValue, comparer, classifier, referenceComparer, Context);
-
-                                if (method.IsStatic)
-                                {
-                                    VerifyComparison(null, leftValue, int.MinValue, 0, comparer, classifier, referenceComparer, Context);
-                                }
-                            }
-
-                            int rightIndex = 0;
-
-                            foreach (EquivalenceClass<TTarget> rightClass in EquivalenceClasses)
-                            {
-                                foreach (TTarget rightValue in rightClass)
-                                {
-                                    VerifyComparison(leftValue, rightValue, leftIndex, rightIndex, comparer, classifier, referenceComparer, Context);
-                                }
-
-                                rightIndex ++;
-                            }
-                        }
-
-                        leftIndex ++;
-                    }
-                });
-            });
+            public string Name;
+            public string MethodFriendlyName;
+            public Func<object, Type> GetWorkingType;
+            public Func<Type, MethodInfo> GetComparisonMethod;
+            public Func<object, bool> IsComparisonMethodRequired;
+            public Func<int, TResult> AdjustExpectedEquivalence;
+            public Func<TResult, string> FormatResult;
+            public Func<object, bool> IsSecondArgumentCompatible;
         }
 
-        private static void VerifyComparison<TResult>(object leftValue, object rightValue, int leftIndex, int rightIndex,
-            Func<object, object, TResult> comparer, Func<TResult, string> classifier,
-            Func<int, int, TResult> referenceComparer, ContractVerificationContext context)
+        private Test CreateComparisonTest<TResult>(ComparisonSpecifications<TResult> spec)
         {
-            TResult actualResult = comparer(leftValue, rightValue);
-            TResult expectedResult = referenceComparer(leftIndex, rightIndex);
+            return new TestCase(spec.Name, () => Assert.Multiple(() =>
+            {
+                foreach (InstancePair pair in GetAllPairs())
+                {
+                    if (IsTargetTypeOrDerived(pair.First))
+                    {
+                        Type workingType = spec.GetWorkingType(pair.First);
+
+                        if (workingType != null)
+                        {
+                            MethodInfo methodInfo = spec.GetComparisonMethod(workingType);
+
+                            if (MethodExists(methodInfo, spec.MethodFriendlyName, spec.IsComparisonMethodRequired(pair.First)))
+                            {
+                                ComparerDelegate<TResult> comparer = GetBinaryComparer<TResult>(methodInfo);
+
+                                if (pair.IsNewFirst)
+                                {
+                                    if (methodInfo.IsStatic && IsReferenceType(pair.First) && IsReferenceType(pair.Second))
+                                        VerifyComparison<TResult>(spec, comparer, methodInfo, new InstancePair(null, null, 0));
+
+                                    if (IsReferenceType(pair.Second))
+                                        VerifyComparison<TResult>(spec, comparer, methodInfo, new InstancePair(pair.First, null, 1));
+                                }
+
+                                if (spec.IsSecondArgumentCompatible(pair.Second))
+                                {
+                                    VerifyComparison<TResult>(spec, comparer, methodInfo, pair);
+
+                                    if (methodInfo.IsStatic && IsReferenceType(pair.First))
+                                        VerifyComparison<TResult>(spec, comparer, methodInfo, new InstancePair(null, pair.Second, -1));
+                                }
+                            }
+                        }
+                    }
+                }
+            }));
+        }
+
+        private void VerifyComparison<TResult>(ComparisonSpecifications<TResult> spec, ComparerDelegate<TResult> comparer, MethodInfo methodInfo, InstancePair pair)
+        {
+            string actual = spec.FormatResult(comparer(pair.First, pair.Second));
+            string expected = spec.FormatResult(spec.AdjustExpectedEquivalence(pair.Equivalence));
 
             AssertionHelper.Explain(() =>
-                Assert.AreEqual(classifier(expectedResult), classifier(actualResult)),
+                Assert.AreEqual(expected, actual),
                 innerFailures => new AssertionFailureBuilder("The comparison between left and right values did not produce the expected result.")
-                    .AddRawLabeledValue("Left Value", leftValue)
-                    .AddRawLabeledValue("Right Value", rightValue)
-                    .AddLabeledValue("Expected Result", classifier(expectedResult))
-                    .AddLabeledValue("Actual Result", classifier(actualResult))
-                    .SetStackTrace(context.GetStackTraceData())
+                    .AddRawLabeledValue("Left Value", pair.First)
+                    .AddRawLabeledValue("Right Value", pair.Second)
+                    .AddRawLabeledValue("Expected Result", expected)
+                    .AddRawLabeledValue("Actual Result", actual)
+                    .SetStackTrace(Context.GetStackTraceData())
                     .AddInnerFailures(innerFailures)
                     .ToAssertionFailure());
         }
 
-        private static Func<object, object, int> TernaryComparerFactory(MethodInfo method)
+        private delegate TResult ComparerDelegate<TResult>(object first, object second);
+
+        private static ComparerDelegate<TResult> GetBinaryComparer<TResult>(MethodInfo methodInfo)
         {
-            return (leftValue, rightValue) => method.IsStatic
-                ? (int) method.Invoke(null, new object[] { leftValue, rightValue })
-                : (int) method.Invoke(leftValue, new object[] { rightValue });
+            return (first, second) => methodInfo.IsStatic
+                ? (TResult)methodInfo.Invoke(null, new object[] { first, second })
+                : (TResult)methodInfo.Invoke(first, new object[] { second });
         }
 
-        private static string TernaryClassifier(int discriminator)
+        #region Reflection helpers
+
+        private struct InstancePair
         {
-            return discriminator < 0 ? "negative" : discriminator > 0 ? "positive" : "zero";
+            private readonly object first;
+            private readonly object second;
+            private readonly int equivalence;
+            private readonly bool isNewFirst;
+
+            public object First { get { return first; } }
+            public object Second { get { return second; } }
+            public int Equivalence { get { return equivalence; } }
+            public bool IsNewFirst { get { return isNewFirst; } }
+
+            public InstancePair(object first, object second, int equivalence)
+                : this(first, second, equivalence, false)
+            {
+            }
+
+            public InstancePair(object first, object second, int equivalence, bool isNewFirst)
+            {
+                this.first = first;
+                this.second = second;
+                this.equivalence = equivalence;
+                this.isNewFirst = isNewFirst;
+            }
         }
 
-        private static Func<object, object, bool> BinaryComparerFactory(MethodInfo method)
+        private Type[] GetAllComparableInterfaces()
         {
-            return (leftValue, rightValue) => method.IsStatic
-                ? (bool) method.Invoke(null, new object[] { leftValue, rightValue })
-                : (bool) method.Invoke(leftValue, new object[] { rightValue });
+            var types = new List<Type>();
+
+            foreach (object instance in GetAllInstances())
+            {
+                foreach (Type interfaceType in instance.GetType().FindInterfaces(Module.FilterTypeName, typeof(IComparable<>).Name))
+                {
+                    Type type = interfaceType.GetGenericArguments()[0];
+
+                    if (!types.Contains(type))
+                        types.Add(type);
+                }
+            }
+
+            return types.ToArray();
         }
 
-        private static string BinaryClassifier(bool discriminator)
+        private IEnumerable<object> GetAllInstances()
         {
-            return discriminator ? "true" : "false";
+            foreach (var @class in EquivalenceClasses)
+            {
+                foreach (object instance in @class)
+                {
+                    yield return instance;
+                }
+            }
         }
 
-        private static Type GetIComparableInterface()
+        private IEnumerable<InstancePair> GetAllPairs()
         {
-            return GetInterface(typeof(TTarget), typeof(IComparable<>)
-                .MakeGenericType(typeof(TTarget)));
+            for (int i = 0; i < EquivalenceClasses.Count; i++)
+            {
+                bool isNewFirst = true;
+
+                foreach (object first in EquivalenceClasses[i])
+                {
+                    for (int j = 0; j < EquivalenceClasses.Count; j++)
+                    {
+                        foreach (object second in EquivalenceClasses[j])
+                        {
+                            yield return new InstancePair(first, second, i.CompareTo(j), isNewFirst);
+                            isNewFirst = false;
+                        }
+                    }
+                }
+            }
         }
+
+        private static Type GetComparableInterface(object instance, Type equatableType)
+        {
+            return GetInterface(instance.GetType(), typeof(IComparable<>).MakeGenericType(equatableType));
+        }
+
+        private static bool IsTargetTypeOrDerived(object obj)
+        {
+            return typeof(TTarget).IsAssignableFrom(obj.GetType());
+        }
+
+        private static bool IsTargetTypeExactly(object obj)
+        {
+            return typeof(TTarget) == obj.GetType();
+        }
+
+        private static bool IsValueType(object obj)
+        {
+            return obj.GetType().IsValueType;
+        }
+
+        private static bool IsReferenceType(object obj)
+        {
+            return !obj.GetType().IsValueType;
+        }
+
+        #endregion
     }
 }

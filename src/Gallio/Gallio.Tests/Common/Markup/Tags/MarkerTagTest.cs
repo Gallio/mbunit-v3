@@ -28,18 +28,18 @@ namespace Gallio.Tests.Common.Markup.Tags
             EquivalenceClasses = equivalenceClasses
         };
     
-        public override EquivalenceClassCollection<MarkerTag> GetEquivalenceClasses()
+        public override EquivalenceClassCollection GetEquivalenceClasses()
         {
             return equivalenceClasses;
         }
 
-        private static readonly EquivalenceClassCollection<MarkerTag> equivalenceClasses = new EquivalenceClassCollection<MarkerTag>
+        private static readonly EquivalenceClassCollection equivalenceClasses = new EquivalenceClassCollection
         {
-            { new MarkerTag(Marker.AssertionFailure) },
-            { new MarkerTag(Marker.Highlight) },
-            { new MarkerTag(Marker.AssertionFailure.WithAttribute("x", "y")) },
-            { new MarkerTag(Marker.Highlight) { Contents = { new TextTag("text") }}},
-            { new MarkerTag(Marker.Highlight) { Contents = { new TextTag("text"), new TextTag("more") }}}
+            new MarkerTag(Marker.AssertionFailure),
+            new MarkerTag(Marker.Highlight),
+            new MarkerTag(Marker.AssertionFailure.WithAttribute("x", "y")),
+            new MarkerTag(Marker.Highlight) { Contents = { new TextTag("text") }},
+            new MarkerTag(Marker.Highlight) { Contents = { new TextTag("text"), new TextTag("more") }}
         };
     }
 }
