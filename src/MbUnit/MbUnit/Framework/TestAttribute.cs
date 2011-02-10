@@ -81,33 +81,70 @@ namespace MbUnit.Framework
 
                 Type exceptionType = ex.GetType();
 
-                if (ReflectionUtils.IsAssignableFrom(expectedExceptionType, exceptionType)
-                    && (expectedExceptionMessage == null || ex.Message.Contains(expectedExceptionMessage)))
-                    return;
-
-                if (ex is TestException)
-                    throw;
-
-                using (TestLog.Failures.BeginSection("Expected Exception"))
+                if (!ReflectionUtils.IsAssignableFrom(expectedExceptionType, exceptionType)
+                    || (expectedExceptionMessage != null && !ex.Message.Contains(expectedExceptionMessage)))
                 {
-                    if (expectedExceptionMessage != null)
-                    {
-                        TestLog.Failures.WriteLine(
-                            "Expected an exception of type '{0}' with message substring '{1}' but a different exception was thrown.",
-                            expectedExceptionType, expectedExceptionMessage);
-                    }
-                    else
-                    {
-                        TestLog.Failures.WriteLine(
-                            "Expected an exception of type '{0}' but a different exception was thrown.",
-                            expectedExceptionType);
-                    }
+                    if (ex is TestException)
+                        throw;
 
-                    TestLog.Failures.WriteException(ex);
+                    LogExpectedExceptionFailure(ex, expectedExceptionType, expectedExceptionMessage);
+                }
+                else
+                {
+                    string expectedInnerExceptionType = state.TestStep.Metadata.GetValue(MetadataKeys.ExpectedInnerException)
+                        ?? state.Test.Metadata.GetValue(MetadataKeys.ExpectedInnerException);
+
+                    if (expectedInnerExceptionType == null ||
+                        (ex.InnerException != null && ReflectionUtils.IsAssignableFrom(expectedInnerExceptionType, ex.InnerException.GetType())))
+                        return;
+
+                    LogExpectedInnerExceptionFailure(ex, expectedInnerExceptionType);
                 }
             }
 
             throw new SilentTestException(TestOutcome.Failed);
+        }
+
+        private static void LogExpectedExceptionFailure(Exception ex, string expectedExceptionType, string expectedExceptionMessage)
+        {
+            using (TestLog.Failures.BeginSection("Expected Exception"))
+            {
+                if (expectedExceptionMessage != null)
+                {
+                    TestLog.Failures.WriteLine(
+                        "Expected an exception of type '{0}' with message substring '{1}' but a different exception was thrown.",
+                        expectedExceptionType, expectedExceptionMessage);
+                }
+                else
+                {
+                    TestLog.Failures.WriteLine(
+                        "Expected an exception of type '{0}' but a different exception was thrown.",
+                        expectedExceptionType);
+                }
+
+                TestLog.Failures.WriteException(ex);
+            }
+        }
+
+        private static void LogExpectedInnerExceptionFailure(Exception ex, string expectedInnerExceptionType)
+        {
+            using (TestLog.Failures.BeginSection("Expected Inner Exception"))
+            {
+                if (ex.InnerException == null)
+                {
+                    TestLog.Failures.WriteLine(
+                        "Expected an inner exception of type '{0}' but an exception without an inner exception was thrown.",
+                        expectedInnerExceptionType);
+                }
+                else
+                {
+                    TestLog.Failures.WriteLine(
+                        "Expected an inner exception of type '{0}' but an exception with a different type of inner exception was thrown.",
+                        expectedInnerExceptionType);
+
+                    TestLog.Failures.WriteException(ex.InnerException);
+                }
+            }
         }
     }
 }

@@ -34,6 +34,7 @@ namespace MbUnit.Framework
     {
         private readonly Type exceptionType;
         private string message;
+        private Type innerExceptionType;
 
         /// <summary>
         /// Declares that the associated test is expected to throw an exception of
@@ -60,12 +61,32 @@ namespace MbUnit.Framework
         /// May be a substring of the actual exception message.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="exceptionType"/> is null.</exception>
         public ExpectedExceptionAttribute(Type exceptionType, string message)
+            : this(exceptionType, message, null)
+        {
+        }
+
+        /// <summary>
+        /// Declares that the associated test is expected to throw an exception of
+        /// a particular type.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The expected contents of the exception message may also optionally be specified.
+        /// </para>
+        /// </remarks>
+        /// <param name="exceptionType">The expected exception type.</param>
+        /// <param name="message">The expected exception message, or null if not specified.
+        /// May be a substring of the actual exception message.</param>
+        /// <param name="innerExceptionType">The expected inner exception type, or null if not specified.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exceptionType"/> is null.</exception>
+        public ExpectedExceptionAttribute(Type exceptionType, string message, Type innerExceptionType)
         {
             if (exceptionType == null)
                 throw new ArgumentNullException(@"exceptionType");
 
             this.exceptionType = exceptionType;
             this.message = message;
+            this.innerExceptionType = innerExceptionType;
         }
 
         /// <summary>
@@ -86,6 +107,15 @@ namespace MbUnit.Framework
             set { message = value; }
         }
 
+        /// <summary>
+        /// Gets or sets expected inner exception type.
+        /// </summary>
+        public Type InnerExceptionType
+        {
+            get { return innerExceptionType; }
+            set { innerExceptionType = value; }
+        }
+
         /// <inheritdoc />
         protected override void DecorateMethodTest(IPatternScope methodScope, IMethodInfo method)
         {
@@ -93,6 +123,9 @@ namespace MbUnit.Framework
 
             if (message != null)
                 methodScope.TestBuilder.AddMetadata(MetadataKeys.ExpectedExceptionMessage, message);
+
+            if (innerExceptionType != null)
+                methodScope.TestBuilder.AddMetadata(MetadataKeys.ExpectedInnerException, innerExceptionType.FullName);
         }
     }
 }
