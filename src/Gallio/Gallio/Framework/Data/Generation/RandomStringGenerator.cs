@@ -24,18 +24,8 @@ namespace Gallio.Framework.Data.Generation
     /// <summary>
     /// Generator of random <see cref="String"/> objects based on a regular expression filter mask.
     /// </summary>
-    public abstract class RandomStringGenerator : Generator<string>
+    public abstract class RandomStringGenerator : RandomGenerator<string>
     {
-        /// <summary>
-        /// Gets or sets the length of the sequence of strings
-        /// created by the generator.
-        /// </summary>
-        public int? Count
-        {
-            get;
-            set;
-        }
-
         /// <summary>
         /// Constructs a generator of random <see cref="String"/> objects.
         /// </summary>
@@ -44,18 +34,7 @@ namespace Gallio.Framework.Data.Generation
         }
 
         /// <inheritdoc/>
-        public override IEnumerable Run()
-        {
-            if (!Count.HasValue)
-                throw new GenerationException("The 'Count' property must be initialized.");
-
-            if (Count.Value < 0)
-                throw new GenerationException("The 'Count' property wich specifies the length of the sequence must be strictly positive.");
-
-            return GetSequence();
-        }
-
-        private IEnumerable GetSequence()
+        protected override IEnumerable<string> GetSequence()
         {
             int i = 0;
 

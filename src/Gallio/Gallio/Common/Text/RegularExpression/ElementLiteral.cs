@@ -43,7 +43,7 @@ namespace Gallio.Common.Text.RegularExpression
         }
 
         /// <inheritdoc />
-        protected override string GetRandomStringImpl()
+        protected override string GetRandomStringImpl(Random random)
         {
             return literal;
         }

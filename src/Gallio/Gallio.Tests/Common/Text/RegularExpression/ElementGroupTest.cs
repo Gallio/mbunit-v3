@@ -49,14 +49,15 @@ namespace Gallio.Tests.Common.Text.RegularExpression
         [Row(2, 3, new[] { "ABCDEFGHIABCDEFGHI", "ABCDEFGHIABCDEFGHIABCDEFGHI" })]
         public void GetRandomString(int minimum, int maximum, string[] expected)
         {
+            var random = new Random();
             var mockChild1 = MockRepository.GenerateMock<IElement>();
             var mockChild2 = MockRepository.GenerateMock<IElement>();
             var mockChild3 = MockRepository.GenerateMock<IElement>();
-            mockChild1.Expect(x => x.GetRandomString()).Repeat.Any().Return("ABC");
-            mockChild2.Expect(x => x.GetRandomString()).Repeat.Any().Return("DEF");
-            mockChild3.Expect(x => x.GetRandomString()).Repeat.Any().Return("GHI");
+            mockChild1.Expect(x => x.GetRandomString(random)).Repeat.Any().Return("ABC");
+            mockChild2.Expect(x => x.GetRandomString(random)).Repeat.Any().Return("DEF");
+            mockChild3.Expect(x => x.GetRandomString(random)).Repeat.Any().Return("GHI");
             var element = new ElementGroup(new Quantifier(minimum, maximum), new[] { mockChild1, mockChild2, mockChild3 });
-            string actual = element.GetRandomString();
+            string actual = element.GetRandomString(random);
             Assert.Contains(expected, actual);
             mockChild1.VerifyAllExpectations();
             mockChild2.VerifyAllExpectations();

@@ -61,7 +61,7 @@ namespace Gallio.Tests.Common.Markup.Tags
                 {
                     var bytes = new byte[random.Next(0, 1000)];
                     random.NextBytes(bytes);
-                    yield return new BinaryAttachment(nameGenerator.GetRandomString(), mimeType, bytes);
+                    yield return new BinaryAttachment(nameGenerator.GetRandomString(random), mimeType, bytes);
                 }
         }
     }

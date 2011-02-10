@@ -60,11 +60,11 @@ namespace Gallio.Tests.Common.Markup.Tags
 
             for(int i=0; i<10000; i++)
             {
-                var tag = new SectionTag(nameGenerator.GetRandomString());
+                var tag = new SectionTag(nameGenerator.GetRandomString(random));
                 int count = random.Next(0, 10);
 
                 for (int j = 0; j < count; j++)
-                    tag.Contents.Add(new TextTag(nameGenerator.GetRandomString()));
+                    tag.Contents.Add(new TextTag(nameGenerator.GetRandomString(random)));
 
                 yield return tag;
             }

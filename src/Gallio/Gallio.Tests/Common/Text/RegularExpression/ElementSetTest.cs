@@ -60,10 +60,11 @@ namespace Gallio.Tests.Common.Text.RegularExpression
         public void GetRandomString(int minimum, int maximum, string raw, string expected)
         {
             var element = new ElementSet(new Quantifier(minimum, maximum), raw);
+            var random = new Random();
 
             for (int i = 0; i < 10; i++)
             {
-                string actual = element.GetRandomString();
+                string actual = element.GetRandomString(random);
                 TestLog.WriteLine(actual);
                 Assert.FullMatch(actual, expected);
             }

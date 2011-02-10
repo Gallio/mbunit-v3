@@ -95,6 +95,75 @@ namespace MbUnit.Framework
             }
 
             /// <summary>
+            /// Returns the an enumeration of random numbers.
+            /// </summary>
+            /// <param name="count">The number of strings to generate.</param>
+            /// <param name="minimum">The lower bound of the range.</param>
+            /// <param name="maximum">The upper bound of the range.</param>
+            /// <param name="seed">A seed value to initialize the random number generator.</param>
+            /// <returns>An enumeration of random number values.</returns>
+            /// <exception cref="GenerationException">Thrown if the specified parameters are inconsistent or invalid.</exception>
+            public static IEnumerable<decimal> Numbers(int count, decimal minimum, decimal maximum, int seed)
+            {
+                var generator = new RandomDecimalGenerator
+                {
+                    Count = count,
+                    Minimum = minimum,
+                    Maximum = maximum,
+                    Seed = seed,
+                };
+
+                foreach (decimal value in generator.Run())
+                    yield return value;
+            }
+
+            /// <summary>
+            /// Returns the an enumeration of random numbers.
+            /// </summary>
+            /// <param name="count">The number of strings to generate.</param>
+            /// <param name="minimum">The lower bound of the range.</param>
+            /// <param name="maximum">The upper bound of the range.</param>
+            /// <param name="seed">A seed value to initialize the random number generator.</param>
+            /// <returns>An enumeration of random number values.</returns>
+            /// <exception cref="GenerationException">Thrown if the specified parameters are inconsistent or invalid.</exception>
+            public static IEnumerable<double> Numbers(int count, double minimum, double maximum, int seed)
+            {
+                var generator = new RandomDoubleGenerator
+                {
+                    Count = count,
+                    Minimum = minimum,
+                    Maximum = maximum,
+                    Seed = seed,
+                };
+
+                foreach (double value in generator.Run())
+                    yield return value;
+            }
+
+            /// <summary>
+            /// Returns the an enumeration of random numbers.
+            /// </summary>
+            /// <param name="count">The number of strings to generate.</param>
+            /// <param name="minimum">The lower bound of the range.</param>
+            /// <param name="maximum">The upper bound of the range.</param>
+            /// <param name="seed">A seed value to initialize the random number generator.</param>
+            /// <returns>An enumeration of random number values.</returns>
+            /// <exception cref="GenerationException">Thrown if the specified parameters are inconsistent or invalid.</exception>
+            public static IEnumerable<int> Numbers(int count, int minimum, int maximum, int seed)
+            {
+                var generator = new RandomInt32Generator
+                {
+                    Count = count,
+                    Minimum = minimum,
+                    Maximum = maximum,
+                    Seed = seed,
+                };
+
+                foreach (int value in generator.Run())
+                    yield return value;
+            }
+
+            /// <summary>
             /// Returns an enumeration of random strings based on a regular expression filter.
             /// </summary>
             /// <param name="count">The number of strings to generate.</param>
@@ -126,6 +195,48 @@ namespace MbUnit.Framework
                 {
                     Count = count,
                     Values = RandomStringStockInfo.FromStock(stock).GetItems(),
+                };
+
+                foreach (string value in generator.Run())
+                    yield return value;
+            }
+
+            /// <summary>
+            /// Returns an enumeration of random strings based on a regular expression filter.
+            /// </summary>
+            /// <param name="count">The number of strings to generate.</param>
+            /// <param name="regularExpressionPattern">The regular expression filter.</param>
+            /// <param name="seed">A seed value to initialize the random number generator.</param>
+            /// <returns>An enumeration of random string values.</returns>
+            /// <exception cref="GenerationException">Thrown if the specified parameters are inconsistent or invalid.</exception>
+            public static IEnumerable<string> Strings(int count, string regularExpressionPattern, int seed)
+            {
+                var generator = new RandomRegexLiteStringGenerator
+                {
+                    Count = count,
+                    RegularExpressionPattern = regularExpressionPattern,
+                    Seed = seed,
+                };
+
+                foreach (string value in generator.Run())
+                    yield return value;
+            }
+
+            /// <summary>
+            /// Returns an enumeration of random strings from a pre-existing stock of values.
+            /// </summary>
+            /// <param name="count">The number of strings to generate.</param>
+            /// <param name="stock">A stock of preset values.</param>
+            /// <param name="seed">A seed value to initialize the random number generator.</param>
+            /// <returns>An enumeration of random string values.</returns>
+            /// <exception cref="GenerationException">Thrown if the specified parameters are inconsistent or invalid.</exception>
+            public static IEnumerable<string> Strings(int count, RandomStringStock stock, int seed)
+            {
+                var generator = new RandomStockStringGenerator
+                {
+                    Count = count,
+                    Values = RandomStringStockInfo.FromStock(stock).GetItems(),
+                    Seed = seed,
                 };
 
                 foreach (string value in generator.Run())

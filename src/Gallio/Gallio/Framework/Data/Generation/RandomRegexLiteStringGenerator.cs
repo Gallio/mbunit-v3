@@ -44,20 +44,27 @@ namespace Gallio.Framework.Data.Generation
         {
         }
 
+
+        /// <inheritdoc/>
+        protected override void Verify()
+        {
+            base.Verify();
+
+            if (RegularExpressionPattern == null)
+                throw new GenerationException("The 'RegularExpressionPattern' property must be initialized.");
+        }
+
+
         /// <inheritdoc/>
         public override IEnumerable Run()
         {
-            if (RegularExpressionPattern == null)
-                throw new GenerationException("The 'RegularExpressionPattern' property must be initialized.");
-
             try
             {
                 regex = new RegexLite(RegularExpressionPattern);
             }
             catch (RegexLiteException exception)
             {
-                throw new GenerationException(String.Format(
-                    "The specified regular expression cannot be parsed ({0}).", exception.Message), exception);
+                throw new GenerationException(String.Format("The specified regular expression cannot be parsed ({0}).", exception.Message), exception);
             }
 
             return base.Run();
@@ -66,7 +73,7 @@ namespace Gallio.Framework.Data.Generation
         /// <inheritdoc/>
         protected override string GetNextString()
         {
-            return regex.GetRandomString();
+            return regex.GetRandomString(InnerGenerator);
         }
     }
 }

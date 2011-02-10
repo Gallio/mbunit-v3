@@ -27,11 +27,6 @@ namespace Gallio.Common.Text.RegularExpression
         private readonly Quantifier quantifier;
 
         /// <summary>
-        /// A shared built-in generator of random numbers.
-        /// </summary>
-        protected readonly static Random Generator = new Random();
-
-        /// <summary>
         /// Constructs an inner element of a regular expression composite tree.
         /// </summary>
         /// <param name="quantifier">A quantifier specifying how many times the element is repeated.</param>
@@ -45,14 +40,14 @@ namespace Gallio.Common.Text.RegularExpression
         }
 
         /// <inheritdoc />
-        public string GetRandomString()
+        public string GetRandomString(Random random)
         {
             var output = new StringBuilder();
-            int repeat = quantifier.GetRandomRepeat();
+            int repeat = quantifier.GetRandomRepeat(random);
 
             for (int i = 0; i < repeat; i++)
             {
-                output.Append(GetRandomStringImpl());
+                output.Append(GetRandomStringImpl(random));
             }
 
             return output.ToString();
@@ -61,7 +56,8 @@ namespace Gallio.Common.Text.RegularExpression
         /// <summary>
         /// Returns the random string that matches the regular expression element.
         /// </summary>
+        /// <param name="random">A random number generator.</param>
         /// <returns>A random string.</returns>
-        protected abstract string GetRandomStringImpl();
+        protected abstract string GetRandomStringImpl(Random random);
     }
 }

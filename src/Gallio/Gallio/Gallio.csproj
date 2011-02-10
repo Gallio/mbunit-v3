@@ -303,6 +303,7 @@
     <Compile Include="Framework\Assertions\NamespaceDoc.cs" />
     <Compile Include="Framework\Capture.cs" />
     <Compile Include="Framework\ComparisonSemantics.cs" />
+    <Compile Include="Framework\Data\Generation\RandomRangeGenerator.cs" />
     <Compile Include="Framework\Data\Generation\SequentialInt32Generator.cs" />
     <Compile Include="Framework\Data\Generation\SequentialDoubleGenerator.cs" />
     <Compile Include="Framework\Data\Generation\RandomInt32Generator.cs" />

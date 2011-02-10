@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Framework;
 using Gallio.Framework.Data;
 using Gallio.Framework.Data.Generation;
 using Gallio.Framework.Pattern;
@@ -55,8 +56,7 @@ namespace MbUnit.Framework
             }
             catch (ArgumentException exception)
             {
-                throw new PatternUsageErrorException(String.Format(
-                    "The MbUnit data generator was incorrectly initialized ({0}).", exception.Message), exception);
+                throw new PatternUsageErrorException(String.Format("The MbUnit data generator was incorrectly initialized ({0}).", exception.Message), exception);
             }
         }
 

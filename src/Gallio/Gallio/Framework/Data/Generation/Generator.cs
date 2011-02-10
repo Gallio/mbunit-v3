@@ -27,7 +27,7 @@ namespace Gallio.Framework.Data.Generation
     /// </summary>
     /// <typeparam name="T">The type of the values returned by the generator.</typeparam>
     public abstract class Generator<T> : IGenerator
-        where T : IComparable<T>, IEquatable<T>
+        where T : IEquatable<T>
     {
         /// <summary>
         /// Gets or sets the filter function that can be used

@@ -49,10 +49,11 @@ namespace Gallio.Tests.Common.Text.RegularExpression
         public void GetRandomString(int minimum, int maximum, string expected)
         {
             var element = new ElementLiteral(new Quantifier(minimum, maximum), "Hello");
+            var random = new Random();
 
             for (int i = 0; i < 10; i++)
             {
-                string actual = element.GetRandomString();
+                string actual = element.GetRandomString(random);
                 Assert.FullMatch(actual, expected);
             }
         }

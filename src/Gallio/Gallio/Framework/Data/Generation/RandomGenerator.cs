@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Collections;
+using Gallio.Common.Security;
 
 namespace Gallio.Framework.Data.Generation
 {
@@ -25,29 +26,41 @@ namespace Gallio.Framework.Data.Generation
     /// </summary>
     /// <typeparam name="T">The type of the value to generate.</typeparam>
     public abstract class RandomGenerator<T> : Generator<T>
-        where T : struct, IComparable<T>, IEquatable<T>
+        where T : IEquatable<T>
     {
+        private static readonly FnvHasher hasher = new FnvHasher();
+        private int seed;
+        private Random innerGenerator;
+
         /// <summary>
         /// A general purpose pseudo-random number generator.
         /// </summary>
-        protected readonly static Random InnerGenerator = new Random();
-
-        /// <summary>
-        /// Gets the lower bound of the range.
-        /// </summary>
-        public T? Minimum
+        protected Random InnerGenerator
         {
-            get;
-            set;
+            get
+            {
+                return innerGenerator;
+            }
         }
 
         /// <summary>
-        /// Gets the upper bound of the range.
+        /// Gets or sets the seed value.
         /// </summary>
-        public T? Maximum
+        public int? Seed
         {
-            get;
-            set;
+            get
+            {
+                return seed;
+            }
+
+            set
+            {
+                if (value.HasValue)
+                {
+                    seed = value.Value;
+                    innerGenerator = new Random(seed);
+                }
+            }
         }
 
         /// <summary>
@@ -65,23 +78,27 @@ namespace Gallio.Framework.Data.Generation
         /// </summary>
         protected RandomGenerator()
         {
+            seed = hasher.Add(DateTime.Now.Ticks).ToValue();
+            innerGenerator = new Random(seed);
+        }
+
+        /// <summary>
+        /// Verifies the properties of the generator.
+        /// </summary>
+        protected virtual void Verify()
+        {
+            if (!Count.HasValue)
+                throw new GenerationException("The 'Count' property must be initialized.");
+            if (Count.Value < 0)
+                throw new GenerationException("The 'Count' property wich specifies the length of the sequence must be strictly positive.");
+
+            CheckProperty(Count.Value, "Count");
         }
 
         /// <inheritdoc/>
         public override IEnumerable Run()
         {
-            if (!Minimum.HasValue)
-                throw new GenerationException("The 'Minimum' property must be initialized.");
-            if (!Maximum.HasValue)
-                throw new GenerationException("The 'Maximum' property must be initialized.");
-            if (!Count.HasValue)
-                throw new GenerationException("The 'Count' property must be initialized.");
-            if (Minimum.Value.CompareTo(Maximum.Value) > 0)
-                throw new GenerationException("The 'Minimum' property must be less than or equal to the 'Maximum' property.");
-            if (Count.Value < 0)
-                throw new GenerationException("The 'Count' property wich specifies the length of the sequence must be strictly positive.");
-
-            CheckProperty(Count.Value, "Count");
+            Verify();
             return GetSequence();
         }
 

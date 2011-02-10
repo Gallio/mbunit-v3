@@ -64,7 +64,7 @@ namespace Gallio.Tests.Common.Markup.Tags
                 int count = random.Next(1, 10);
 
                 for (int j = 0; j < count; j++)
-                    tag.Contents.Add(new TextTag(nameGenerator.GetRandomString()));
+                    tag.Contents.Add(new TextTag(nameGenerator.GetRandomString(random)));
 
                 yield return tag;
             }

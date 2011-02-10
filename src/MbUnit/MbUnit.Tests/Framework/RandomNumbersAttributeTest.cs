@@ -15,6 +15,7 @@
 
 using System;
 using System.Transactions;
+using Gallio.Common.Security;
 using Gallio.Framework;
 using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
@@ -73,6 +74,14 @@ namespace MbUnit.Tests.Framework
             });
         }
 
+        [Test]
+        public void Using_the_same_seed_should_generate_the_same_sequence()
+        {
+            var sequence1 = GetActualValues("RandomWithSeed1");
+            var sequence2 = GetActualValues("RandomWithSeed2");
+            Assert.AreElementsEqual(sequence1, sequence2);
+        }
+
         [TestFixture, Explicit("Sample")]
         public class RandomNumbersSample
         {
@@ -92,6 +101,18 @@ namespace MbUnit.Tests.Framework
             {
                 int n = (int)Convert.ChangeType(value, typeof(int));
                 return 0 == n % 2;
+            }
+
+            [Test]
+            public void RandomWithSeed1([RandomNumbers(Minimum = 0, Maximum = 1000, Count = 50, Seed = 123456)] int value)
+            {
+                TestLog.WriteLine("[{0}]", value);
+            }
+
+            [Test]
+            public void RandomWithSeed2([RandomNumbers(Minimum = 0, Maximum = 1000, Count = 50, Seed = 123456)] int value)
+            {
+                TestLog.WriteLine("[{0}]", value);
             }
         }
     }
