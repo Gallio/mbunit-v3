@@ -50,13 +50,19 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void Contains_fail_test_with_custom_message()
         {
-            AssertionFailure[] failures = Capture(() => Assert.Contains("ABCDEF", "xyz","{0} message","custom"));
+            AssertionFailure[] failures = Capture(() => Assert.Contains("ABCDEF", "xyz","{0} message", "custom"));
             Assert.Count(1, failures);
             Assert.AreEqual("Expected string to contain a particular substring.", failures[0].Description);
             Assert.AreEqual("Expected Substring", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("\"xyz\"", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("\"ABCDEF\"", failures[0].LabeledValues[1].FormattedValue.ToString());
             Assert.AreEqual("custom message", failures[0].Message);
+        }
+
+        [Test]
+        public void Contains_with_comparison_type_simple_test()
+        {
+            Assert.Contains("Abcdef", "CDe", StringComparison.OrdinalIgnoreCase);
         }
         #endregion
         
@@ -67,7 +73,13 @@ namespace MbUnit.Tests.Framework
         {
             Assert.DoesNotContain("Abcdef", "xyz");
         }
-        
+
+        [Test]
+        public void DoesNotContain_should_not_find_substring_with_different_casing()
+        {
+            Assert.DoesNotContain("Abcdef", "ABC");
+        }
+
         [Test]
         public void DoesNotContain_fails_when_simple_substring_is_found()
         {
@@ -95,7 +107,28 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("\"BCD\"", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("\"ABCDEF\"", failures[0].LabeledValues[1].FormattedValue.ToString());
             Assert.AreEqual("custom message", failures[0].Message);
-        } 
+        }
+
+        [Test]
+        public void DoesNotContain_with_comparison_type_simple_test()
+        {
+            Assert.DoesNotContain("Abcdef", "xyz", StringComparison.OrdinalIgnoreCase);
+        }
+
+        [Test]
+        public void DoesNotContain_with_comparison_type_fail_test_with_custom_message()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.DoesNotContain("ABCDEF", "bcD", StringComparison.OrdinalIgnoreCase, "{0} message", "custom"));
+            Assert.Count(1, failures);
+            Assert.AreEqual("Expected string to not contain a particular substring.", failures[0].Description);
+            Assert.AreEqual("Comparison Type", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("{OrdinalIgnoreCase}", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("Unexpected Substring", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("\"bcD\"", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("\"ABCDEF\"", failures[0].LabeledValues[2].FormattedValue.ToString());
+            Assert.AreEqual("custom message", failures[0].Message);
+        }
+
         #endregion
 
         #region AreEqual
@@ -112,7 +145,7 @@ namespace MbUnit.Tests.Framework
             Assert.Count(1, failures);
             Assert.AreEqual("Expected values to be equal according to string comparison type.", failures[0].Description);
             Assert.AreEqual("Comparison Type", failures[0].LabeledValues[0].Label);
-            Assert.AreEqual("InvariantCultureIgnoreCase", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("{InvariantCultureIgnoreCase}", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("Expected Value", failures[0].LabeledValues[1].Label);
             Assert.AreEqual("\"test\"", failures[0].LabeledValues[1].FormattedValue.ToString());
             Assert.AreEqual("Actual Value", failures[0].LabeledValues[2].Label);
@@ -124,7 +157,7 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.AreEqual("test", null, StringComparison.InvariantCultureIgnoreCase));
             Assert.Count(1, failures);
-            Assert.AreEqual("InvariantCultureIgnoreCase", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("{InvariantCultureIgnoreCase}", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("\"test\"", failures[0].LabeledValues[1].FormattedValue.ToString());
             Assert.AreEqual("null", failures[0].LabeledValues[2].FormattedValue.ToString());
         }
@@ -362,6 +395,25 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("MB1 message Mb2", failures[0].Message);
         }
 
+        [Test]
+        public void StartsWith_with_comparison_type_sucessful_tests()
+        {
+            Assert.StartsWith("mbTest", "MBT", StringComparison.OrdinalIgnoreCase);
+        }
+
+        [Test]
+        public void StartsWith_with_comparison_type_fails_when_testValue_does_not_start_with_pattern()
+        {
+            AssertionFailure[] failures = AssertTest.Capture(() => Assert.StartsWith("mbTest", "jb", StringComparison.OrdinalIgnoreCase));
+            Assert.Count(1, failures);
+            Assert.AreEqual("Expected string to start with the specified text.", failures[0].Description);
+            Assert.AreEqual("Comparison Type", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("{OrdinalIgnoreCase}", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("Actual Value", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("\"mbTest\"", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("Expected Text", failures[0].LabeledValues[2].Label);
+            Assert.AreEqual("\"jb\"", failures[0].LabeledValues[2].FormattedValue.ToString());
+        }
         #endregion
 
         #region EndsWith
@@ -405,6 +457,46 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("MB1 message Mb2", failures[0].Message);
         }
 
+        [Test]
+        public void EndsWith_with_comparison_type_sucessful_tests()
+        {
+            Assert.EndsWith("mbTest", "EsT", StringComparison.OrdinalIgnoreCase);
+        }
+
+        [Test]
+        public void EndsWith_with_comparison_type_fails_when_testValue_is_null()
+        {
+            AssertionFailure[] failures = AssertTest.Capture(() => Assert.EndsWith(null, "", StringComparison.OrdinalIgnoreCase));
+            Assert.Count(1, failures);
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void EndsWith_with_comparison_type_test_for_ArgumentNullException_when_pattern_is_null()
+        {
+            Assert.EndsWith("mbTest", null, StringComparison.OrdinalIgnoreCase);
+        }
+
+        [Test]
+        public void EndsWith_with_comparison_type_fails_when_testValue_does_not_start_with_pattern()
+        {
+            AssertionFailure[] failures = AssertTest.Capture(() => Assert.EndsWith("mbTest", "jb", StringComparison.OrdinalIgnoreCase));
+            Assert.Count(1, failures);
+            Assert.AreEqual("Expected string to end with the specified text.", failures[0].Description);
+            Assert.AreEqual("Comparison Type", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("{OrdinalIgnoreCase}", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("Actual Value", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("\"mbTest\"", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("Expected Text", failures[0].LabeledValues[2].Label);
+            Assert.AreEqual("\"jb\"", failures[0].LabeledValues[2].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void EndsWith_with_comparison_type_fail_test_with_custom_message()
+        {
+            AssertionFailure[] failures = AssertTest.Capture(() => Assert.EndsWith("mbTest", "jb", StringComparison.OrdinalIgnoreCase, "{0} message {1}", "MB1", "Mb2"));
+            Assert.Count(1, failures);
+            Assert.AreEqual("MB1 message Mb2", failures[0].Message);
+        }
         #endregion
 
     }

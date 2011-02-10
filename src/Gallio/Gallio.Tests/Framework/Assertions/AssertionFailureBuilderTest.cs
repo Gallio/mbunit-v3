@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Linq;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
 using Gallio.Common.Text;
@@ -341,6 +342,24 @@ namespace Gallio.Tests.Framework.Assertions
 
             Assert.Over.Pairs(new[] { inner1, inner2, inner3 }, builder.ToAssertionFailure().InnerFailures,
                 Assert.AreEqual);
+        }
+
+        [Test]
+        public void Conditionally_builds_false()
+        {
+            var failure = new AssertionFailureBuilder("Description")
+                .If(false, builder => builder.AddLabeledValue("Label", "Value"))
+                .ToAssertionFailure();
+            Assert.ForAll(failure.LabeledValues, x => x.Label != "Label");
+        }
+
+        [Test]
+        public void Conditionally_builds_true()
+        {
+            var failure = new AssertionFailureBuilder("Description")
+                .If(true, builder => builder.AddLabeledValue("Label", "Value"))
+                .ToAssertionFailure();
+            Assert.Exists(failure.LabeledValues, x => x.Label == "Label");
         }
     }
 }

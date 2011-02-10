@@ -55,21 +55,69 @@ namespace MbUnit.Framework
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedSubstring"/> is null.</exception>
         public static void Contains(string actualValue, string expectedSubstring, string messageFormat, params object[] messageArgs)
         {
+            ContainsInternal(actualValue, expectedSubstring, null, messageFormat, messageArgs);
+        }
+
+        /// <summary>
+        /// Verifies that a string contains some expected value.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="expectedSubstring">The expected substring.</param>
+        /// <param name="comparisonType">One of the <see cref="StringComparison"/> values that determines how the expected substring is compared to the actual value.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedSubstring"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="comparisonType"> has invalid value.</paramref></exception>
+        public static void Contains(string actualValue, string expectedSubstring, StringComparison comparisonType)
+        {
+            Contains(actualValue, expectedSubstring, comparisonType, null);
+        }
+
+        /// <summary>
+        /// Verifies that a string contains some expected value.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="expectedSubstring">The expected substring.</param>
+        /// <param name="comparisonType">One of the <see cref="StringComparison"/> values that determines how the expected substring is compared to the actual value.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedSubstring"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="comparisonType"> has invalid value.</paramref></exception>
+        public static void Contains(string actualValue, string expectedSubstring, StringComparison comparisonType, string messageFormat, params object[] messageArgs)
+        {
+            ContainsInternal(actualValue, expectedSubstring, comparisonType, messageFormat, messageArgs);
+        }
+
+        private static void ContainsInternal(string actualValue, string expectedSubstring, StringComparison? comparisonType, string messageFormat, object[] messageArgs)
+        {
             if (expectedSubstring == null)
                 throw new ArgumentNullException("expectedSubstring");
 
             AssertionHelper.Verify(delegate
             {
-                if (actualValue != null && actualValue.Contains(expectedSubstring))
+                if (actualValue != null && actualValue.IndexOf(expectedSubstring, comparisonType ?? StringComparison.Ordinal) >= 0)
                     return null;
 
                 return new AssertionFailureBuilder("Expected string to contain a particular substring.")
-                    .SetMessage(messageFormat, messageArgs)
+                    .If(comparisonType.HasValue, builder => builder.AddRawLabeledValue("Comparison Type", comparisonType.Value))
                     .AddRawLabeledValue("Expected Substring", expectedSubstring)
                     .AddRawActualValue(actualValue)
+                    .SetMessage(messageFormat, messageArgs)
                     .ToAssertionFailure();
             });
+
         }
+
         #endregion
 
         #region DoesNotContain
@@ -106,18 +154,64 @@ namespace MbUnit.Framework
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="unexpectedSubstring"/> is null.</exception>
         public static void DoesNotContain(string actualValue, string unexpectedSubstring, string messageFormat, params object[] messageArgs)
         {
+            DoesNotContainInternal(actualValue, unexpectedSubstring, null, messageFormat, messageArgs);
+        }
+
+        /// <summary>
+        /// Verifies that a string does not contain some unexpected substring.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="unexpectedSubstring">The unexpected substring.</param>
+        /// <param name="comparisonType">One of the <see cref="StringComparison"/> values that determines how unexpected text is compared to the actual value.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="unexpectedSubstring"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="comparisonType"> has invalid value.</paramref></exception>
+        public static void DoesNotContain(string actualValue, string unexpectedSubstring, StringComparison comparisonType)
+        {
+            DoesNotContain(actualValue, unexpectedSubstring, comparisonType, null);
+        }
+
+        /// <summary>
+        /// Verifies that a string does not contain some unexpected substring.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="unexpectedSubstring">The unexpected substring.</param>
+        /// <param name="comparisonType">One of the <see cref="StringComparison"/> values that determines how unexpected text is compared to the actual value.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="unexpectedSubstring"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="comparisonType"> has invalid value.</paramref></exception>
+        public static void DoesNotContain(string actualValue, string unexpectedSubstring, StringComparison comparisonType, string messageFormat, params object[] messageArgs)
+        {
+            DoesNotContainInternal(actualValue, unexpectedSubstring, comparisonType, messageFormat, messageArgs);
+        }
+
+        private static void DoesNotContainInternal(string actualValue, string unexpectedSubstring, StringComparison? comparisonType, string messageFormat, object[] messageArgs)
+        {
             if (unexpectedSubstring == null)
                 throw new ArgumentNullException("unexpectedSubstring");
 
             AssertionHelper.Verify(delegate
             {
-                if (actualValue != null && !actualValue.Contains(unexpectedSubstring))
+                if (actualValue != null && actualValue.IndexOf(unexpectedSubstring, comparisonType ?? StringComparison.Ordinal) < 0)
                     return null;
 
                 return new AssertionFailureBuilder("Expected string to not contain a particular substring.")
-                    .SetMessage(messageFormat, messageArgs)
+                    .If(comparisonType.HasValue, builder => builder.AddRawLabeledValue("Comparison Type", comparisonType.Value))
                     .AddRawLabeledValue("Unexpected Substring", unexpectedSubstring)
                     .AddRawActualValue(actualValue)
+                    .SetMessage(messageFormat, messageArgs)
                     .ToAssertionFailure();
             });
         }
@@ -152,19 +246,19 @@ namespace MbUnit.Framework
                 if (String.Compare(expectedValue, actualValue, comparisonType) == 0)
                     return null;
 
-                AssertionFailureBuilder builder = new AssertionFailureBuilder("Expected values to be equal according to string comparison type.")
+                bool diffing = comparisonType != StringComparison.CurrentCultureIgnoreCase &&
+                    comparisonType != StringComparison.InvariantCultureIgnoreCase &&
+                    comparisonType != StringComparison.OrdinalIgnoreCase;
+
+                return new AssertionFailureBuilder("Expected values to be equal according to string comparison type.")
+                    .AddRawLabeledValue("Comparison Type", comparisonType)
+                    .If(diffing, builder => builder
+                        .AddRawLabeledValue("Expected Value", expectedValue)
+                        .AddRawLabeledValue("Actual Value", actualValue))
+                    .If(!diffing, builder => builder
+                        .AddRawExpectedAndActualValuesWithDiffs(expectedValue, actualValue))
                     .SetMessage(messageFormat, messageArgs)
-                    .AddLabeledValue("Comparison Type", comparisonType.ToString());
-
-                if (comparisonType == StringComparison.CurrentCultureIgnoreCase
-                    || comparisonType == StringComparison.InvariantCultureIgnoreCase
-                    || comparisonType == StringComparison.OrdinalIgnoreCase)
-                    builder.AddRawLabeledValue("Expected Value", expectedValue)
-                        .AddRawLabeledValue("Actual Value", actualValue);
-                else
-                    builder.AddRawExpectedAndActualValuesWithDiffs(expectedValue, actualValue);
-
-                return builder.ToAssertionFailure();
+                    .ToAssertionFailure();
             });
         }
         #endregion
@@ -199,10 +293,10 @@ namespace MbUnit.Framework
                     return null;
 
                 return new AssertionFailureBuilder("Expected values to be unequal according to string comparison type.")
-                    .SetMessage(messageFormat, messageArgs)
                     .AddRawLabeledValue("Comparison Type", comparisonType)
                     .AddRawLabeledValue("Unexpected Value", unexpectedValue)
                     .AddRawLabeledValue("Actual Value", actualValue)
+                    .SetMessage(messageFormat, messageArgs)
                     .ToAssertionFailure();
             });
         }
@@ -656,22 +750,69 @@ namespace MbUnit.Framework
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedText"/> is null.</exception>
         public static void StartsWith(string actualValue, string expectedText, string messageFormat, params object[] messageArgs)
         {
+            StartsWithInternal(actualValue, expectedText, null, messageFormat, messageArgs);
+        }
+
+        /// <summary>
+        /// Verifies that a string starts with the specified text.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="String.StartsWith(string)"/>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="expectedText">The expected pattern.</param>
+        /// <param name="comparisonType">One of the <see cref="StringComparison"/> values that determines how the expected text is compared to the actual value.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedText"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="comparisonType"> has invalid value.</paramref></exception>
+        public static void StartsWith(string actualValue, string expectedText, StringComparison comparisonType)
+        {
+            StartsWith(actualValue, expectedText, comparisonType, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that a string starts with the specified text.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="String.StartsWith(string)"/>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="expectedText">The expected pattern.</param>
+        /// <param name="comparisonType">One of the <see cref="StringComparison"/> values that determines how the expected text is compared to the actual value.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedText"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="comparisonType"> has invalid value.</paramref></exception>
+        public static void StartsWith(string actualValue, string expectedText, StringComparison comparisonType, string messageFormat, params object[] messageArgs)
+        {
+            StartsWithInternal(actualValue, expectedText, comparisonType, messageFormat, messageArgs);
+        }
+
+        private static void StartsWithInternal(string actualValue, string expectedText, StringComparison? comparisonType, string messageFormat, object[] messageArgs)
+        {
             if (expectedText == null)
                 throw new ArgumentNullException("expectedText");
 
             AssertionHelper.Verify(delegate
             {
-                if (actualValue != null && actualValue.StartsWith(expectedText))
+                if (actualValue != null && actualValue.StartsWith(expectedText, comparisonType ?? StringComparison.Ordinal))
                     return null;
 
                 return new AssertionFailureBuilder("Expected string to start with the specified text.")
-                    .SetMessage(messageFormat, messageArgs)
+                    .If(comparisonType.HasValue, builder => builder.AddRawLabeledValue("Comparison Type", comparisonType.Value))
                     .AddRawActualValue(actualValue)
                     .AddRawLabeledValue("Expected Text", expectedText)
+                    .SetMessage(messageFormat, messageArgs)
                     .ToAssertionFailure();
             });
         }
-
         #endregion
 
         #region EndsWith
@@ -711,18 +852,66 @@ namespace MbUnit.Framework
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedText"/> is null.</exception>
         public static void EndsWith(string actualValue, string expectedText, string messageFormat, params object[] messageArgs)
         {
+            EndsWithInternal(actualValue, expectedText, null, messageFormat, messageArgs);
+        }
+
+        /// <summary>
+        /// Verifies that a string ends with the specified text.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="String.EndsWith(string)"/>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="expectedText">The expected pattern.</param>
+        /// <param name="comparisonType">One of the <see cref="StringComparison"/> values that determines how the expected text is compared to the actual value.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedText"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="comparisonType"> has invalid value.</paramref></exception>
+        public static void EndsWith(string actualValue, string expectedText, StringComparison comparisonType)
+        {
+            EndsWith(actualValue, expectedText, comparisonType, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that a string ends with the specified text.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="String.EndsWith(string)"/>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="expectedText">The expected pattern.</param>
+        /// <param name="comparisonType">One of the <see cref="StringComparison"/> values that determines how the expected text is compared to the actual value.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedText"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="comparisonType"> has invalid value.</paramref></exception>
+        public static void EndsWith(string actualValue, string expectedText, StringComparison comparisonType, string messageFormat, params object[] messageArgs)
+        {
+            EndsWithInternal(actualValue, expectedText, comparisonType, messageFormat, messageArgs);
+        }
+
+        private static void EndsWithInternal(string actualValue, string expectedText, StringComparison? comparisonType, string messageFormat, object[] messageArgs)
+        {
             if (expectedText == null)
                 throw new ArgumentNullException("expectedText");
 
             AssertionHelper.Verify(delegate
             {
-                if (actualValue != null && actualValue.EndsWith(expectedText))
+                if (actualValue != null && actualValue.EndsWith(expectedText, comparisonType ?? StringComparison.Ordinal))
                     return null;
 
                 return new AssertionFailureBuilder("Expected string to end with the specified text.")
-                    .SetMessage(messageFormat, messageArgs)
+                    .If(comparisonType.HasValue, builder => builder.AddRawLabeledValue("Comparison Type", comparisonType.Value))
                     .AddRawActualValue(actualValue)
                     .AddRawLabeledValue("Expected Text", expectedText)
+                    .SetMessage(messageFormat, messageArgs)
                     .ToAssertionFailure();
             });
         }
