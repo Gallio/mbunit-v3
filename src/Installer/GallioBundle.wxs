@@ -228,6 +228,7 @@
 <?endif?>
             <FeatureRef Id='feat_TeamCityIntegration'/>
             <FeatureRef Id='feat_TypeMockIntegration'/>
+			<FeatureRef Id='feat_PartCoverIntegration'/>
         </Feature>
 
         <Feature Id='feat_Docs' Title='Documentation' Level="1" Display="14" AllowAdvertise="no">
