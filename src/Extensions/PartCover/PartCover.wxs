@@ -47,7 +47,7 @@
                   <File Name="ICSharpCode.NRefactory.dll"/>
                   <File Name="LICENSE.txt"/>
                   <File Id="ReportGenerator.lo4net" Name="log4net.dll"/>
-                  <File Name="Readme.txt"/>
+                  <File Id="ReportGenerator.readme" Name="Readme.txt"/>
                   <File Name="ReportGenerator.exe" KeyPath="yes" />
                   <File Name="ReportGenerator.exe.config"/>
                 </Component>
