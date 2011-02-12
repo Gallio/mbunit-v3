@@ -172,6 +172,9 @@
     <Compile Include="..\Extensions\TypeMock\TypeMock.wxs">
       <Link>TypeMock.wxs</Link>
     </Compile>
+	<Compile Include="..\Extensions\PartCover\PartCover.wxs">
+      <Link>PartCover.wxs</Link>
+    </Compile>
     <Compile Include="..\Extensions\VisualStudio\VisualStudio.wxs">
       <Link>VisualStudio.wxs</Link>
     </Compile>
