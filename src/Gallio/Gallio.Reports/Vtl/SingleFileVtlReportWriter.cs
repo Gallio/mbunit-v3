@@ -24,20 +24,20 @@ using System.IO;
 namespace Gallio.Reports.Vtl
 {
     /// <summary>
-    /// 
+    /// VTL engine-based report writer for one page document.
     /// </summary>
     internal class SingleFileVtlReportWriter : VtlReportWriter
     {
         /// <summary>
-        /// 
+        /// Constructor.
         /// </summary>
-        /// <param name="velocityEngine"></param>
-        /// <param name="velocityContext"></param>
-        /// <param name="reportWriter"></param>
-        /// <param name="templatePath"></param>
-        /// <param name="contentType"></param>
-        /// <param name="extension"></param>
-        /// <param name="helper"></param>
+        /// <param name="velocityEngine">The velocity engine</param>
+        /// <param name="velocityContext">The current velocity context.</param>
+        /// <param name="reportWriter">The report writer</param>
+        /// <param name="templatePath">The template path.</param>
+        /// <param name="contentType">The content type of the report.</param>
+        /// <param name="extension">The extension of the report file.</param>
+        /// <param name="helper">The formatting helper class.</param>
         public SingleFileVtlReportWriter(VelocityEngine velocityEngine, VelocityContext velocityContext, IReportWriter reportWriter, string templatePath, string contentType, string extension, FormatHelper helper)
             : base(velocityEngine, velocityContext, reportWriter, templatePath, contentType, extension, helper)
         {

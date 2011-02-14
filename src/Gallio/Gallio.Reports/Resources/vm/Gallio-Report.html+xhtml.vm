@@ -42,13 +42,14 @@
 *#
   <div id="Navigator" class="navigator">
     <div class="navigator-stripes">
-    #foreach ($item in $helper.Navigation.GetVisibleNavigatorTestStepRuns($report))
-    <a href="#if ($pagingEnabled)$helper.Paging.GetReportPath($helper.Paging.GetPageOf($item.Index, $pageSize))#end#testStepRun-$item.Run.Step.Id" style="top:$item.TopPosition%" class="status-$item.Run.Result.Outcome.Status.ToString().ToLower()" title="$item.Run.Step.Name $item.Run.Result.Outcome.Status" onclick="expand(['#foreach ($rid in $helper.Navigation.GetSelfAndAncestorIds($item.Run.Step.TestId))
+    #foreach ($item in $tree.GetNavigatorChildren())
+    <a href="#if ($pagingEnabled)$helper.Paging.GetReportPath($helper.Paging.GetPageOf($item.Index, $pageSize))#end#testStepRun-$item.Run.Step.Id" style="top:$item.GetTopPosition($tree.Count)%" class="status-$item.Run.Result.Outcome.Status.ToString().ToLower()" title="$item.Run.Step.Name $item.Run.Result.Outcome.Status" onclick="expand(['#foreach ($rid in $item.GetSelfAndAncestorIds())
 detailPanel-$rid#between
 ', '#end']);"></a>
     #end
     </div>
   </div>
+
 #*
 	====================================================
 	 STATISTICS
@@ -116,15 +117,11 @@ detailPanel-$rid#between
       #elseif ($condensed && $stats.RunCount == $stats.PassedCount)
         <em>All tests passed.</em>
       #else
-        #set ($nestingLevel = 0)
-        #set ($index = 0)
-        #foreach ($run in $helper.Navigation.GetVisibleChildren($report.TestPackageRun.RootTestStepRun, $condensed))
-          #parse ("Gallio-Report.html+xhtml.summary-item.vm")
-        #beforeall
         <ul>
-        #afterall
+          #set ($nestingLevel = 0)
+          #set ($node = $tree)
+          #parse ("Gallio-Report.html+xhtml.summary-item.vm")
         </ul>
-        #end
       #end
       </div>
     </div>
@@ -154,6 +151,7 @@ detailPanel-$rid#between
 *#
     #if (!$pagingEnabled || $pageIndex > 0)
     <div id="Details" class="section">
+      <a name="Details" />
       <h2>Details#if ($condensed) (Condensed)#end#if ($pageIndex > 0) (page $pageIndex of $pageCount)#end</h2>
       <div class="section-content">
       #if ($stats.RunCount == 0)
@@ -163,20 +161,16 @@ detailPanel-$rid#between
       #else
         #if ($pageIndex > 0)
         #set ($previousPageIndex = $pageIndex - 1)
-        <div class="pager"><a href="$helper.Paging.GetReportPath($previousPageIndex)">&lt;&lt; Previous page</a></div>
+        <div class="pager"><a href="$helper.Paging.GetReportPath($previousPageIndex)#Details">&lt;&lt; Previous page</a></div>
         #end
-        #set ($nestingLevel = 0)
-        #set ($index = 0)
-        #foreach ($run in $helper.Navigation.GetVisibleChildren($report.TestPackageRun.RootTestStepRun, $condensed))
-        #parse ("Gallio-Report.html+xhtml.detailed-item.vm")
-        #beforeall
         <ul class="testStepRunContainer">
-        #afterall
+          #set ($nestingLevel = 0)
+          #set ($node = $tree)
+          #parse ("Gallio-Report.html+xhtml.detailed-item.vm")
         </ul>
-        #end
         #if ($pageIndex < $pageCount)
         #set ($nextPageIndex = $pageIndex + 1)
-        <div class="pager"><a href="$helper.Paging.GetReportPath($nextPageIndex)">Next page &gt;&gt;</a></div>
+        <div class="pager"><a href="$helper.Paging.GetReportPath($nextPageIndex)#Details">Next page &gt;&gt;</a></div>
         #end
       #end
       </div>

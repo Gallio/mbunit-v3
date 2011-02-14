@@ -34,7 +34,7 @@ namespace Gallio.Reports.Vtl
     internal class FormatPagingHelper
     {
         /// <summary>
-        /// 
+        /// Gets or sets the report name.
         /// </summary>
         public string ReportName
         {
@@ -43,7 +43,7 @@ namespace Gallio.Reports.Vtl
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets the report file extension.
         /// </summary>
         public string Extension
         {
@@ -52,10 +52,10 @@ namespace Gallio.Reports.Vtl
         }
 
         /// <summary>
-        /// 
+        /// Returns the name of paged report file.
         /// </summary>
-        /// <param name="pageIndex"></param>
-        /// <returns></returns>
+        /// <param name="pageIndex">The index of the page.</param>
+        /// <returns>The name of the paged report file.</returns>
         public string GetReportPath(int pageIndex)
         {
             var output = new StringBuilder(ReportName);
@@ -68,27 +68,11 @@ namespace Gallio.Reports.Vtl
         }
 
         /// <summary>
-        /// 
+        /// Returns the page index of the test step at the specified index.
         /// </summary>
-        /// <param name="index"></param>
-        /// <param name="pageIndex"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
-        public bool IsVisible(int index, int pageIndex, int pageSize)
-        {
-            if (pageIndex == 0)
-                return true;
-
-            int start = (pageIndex - 1) * pageSize;
-            return (index >= start) && (index < start + pageSize);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
+        /// <param name="index">The index of the test step.</param>
+        /// <param name="pageSize">The sise of a page.</param>
+        /// <returns>The page index.</returns>
         public int GetPageOf(int index, int pageSize)
         {
             return 1 + (index / pageSize);

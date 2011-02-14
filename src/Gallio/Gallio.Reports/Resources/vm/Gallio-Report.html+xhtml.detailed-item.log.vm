@@ -35,7 +35,7 @@
 #end
     </a>
 #elseif ($tag.Class == "Link")
-    <a class="crossref" href="$helper.Navigation.GetMarkerAttributeValue($tag, "url")">
+    <a class="crossref" href="$current.GetMarkerAttributeValue($tag, "url")">
 #foreach ($currentTag in $tag.Contents)
 #parse ("Gallio-Report.html+xhtml.detailed-item.log.vm")
 #end
@@ -59,7 +59,7 @@
 	====================================================
 *#
 #elseif ($tag.GetType().Name == "EmbedTag")
- #set ($a = $helper.Navigation.FindAttachment($current, $tag.AttachmentName))
+ #set ($a = $current.FindAttachment($tag.AttachmentName))
  #set ($id = $helper.Html.GenerateId())
  #set ($uri = $helper.Html.PathToUri($a.ContentPath))
  #if ($a.ContentDisposition == "Link")

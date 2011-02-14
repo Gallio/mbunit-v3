@@ -35,7 +35,6 @@ namespace Gallio.Reports.Vtl
     {
         private readonly FormatTextHelper text = new FormatTextHelper();
         private readonly FormatHtmlHelper html = new FormatHtmlHelper();
-        private readonly FormatNavigationHelper navigation = new FormatNavigationHelper();
         private readonly FormatPagingHelper paging = new FormatPagingHelper();
 
         /// <summary>
@@ -52,14 +51,6 @@ namespace Gallio.Reports.Vtl
         public FormatHtmlHelper Html
         {
             get { return html; }
-        }
-
-        /// <summary>
-        /// Provides helper methods to navigate into the test step run tree and find visible items.
-        /// </summary>
-        public FormatNavigationHelper Navigation
-        {
-            get { return navigation; }
         }
 
         /// <summary>

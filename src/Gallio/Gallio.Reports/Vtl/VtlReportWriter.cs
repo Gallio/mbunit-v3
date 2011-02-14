@@ -23,7 +23,7 @@ using Gallio.Runner.Reports;
 namespace Gallio.Reports.Vtl
 {
     /// <summary>
-    /// 
+    /// Abstract base class for VTL engine-based report writer.
     /// </summary>
     internal abstract class VtlReportWriter
     {
@@ -36,7 +36,7 @@ namespace Gallio.Reports.Vtl
         private readonly FormatHelper helper;
 
         /// <summary>
-        /// 
+        /// Gets the velocity engine.
         /// </summary>
         protected VelocityEngine VelocityEngine
         {
@@ -44,7 +44,7 @@ namespace Gallio.Reports.Vtl
         }
 
         /// <summary>
-        /// 
+        /// Gets the current velocity context.
         /// </summary>
         protected VelocityContext VelocityContext
         {
@@ -52,7 +52,7 @@ namespace Gallio.Reports.Vtl
         }
 
         /// <summary>
-        /// 
+        /// Gets the report writer.
         /// </summary>
         protected IReportWriter ReportWriter
         {
@@ -60,7 +60,7 @@ namespace Gallio.Reports.Vtl
         }
 
         /// <summary>
-        /// 
+        /// Gets the template path.
         /// </summary>
         protected string TemplatePath
         {
@@ -68,7 +68,7 @@ namespace Gallio.Reports.Vtl
         }
 
         /// <summary>
-        /// 
+        /// Gets the content type of the report.
         /// </summary>
         protected string ContentType
         {
@@ -76,7 +76,7 @@ namespace Gallio.Reports.Vtl
         }
 
         /// <summary>
-        /// 
+        /// Gets the extension of the report file.
         /// </summary>
         protected string Extension
         {
@@ -84,7 +84,7 @@ namespace Gallio.Reports.Vtl
         }
 
         /// <summary>
-        /// 
+        /// Gets the formatting helper class.
         /// </summary>
         protected FormatHelper Helper
         {
@@ -92,15 +92,15 @@ namespace Gallio.Reports.Vtl
         }
 
         /// <summary>
-        /// 
+        /// Constructor.
         /// </summary>
-        /// <param name="velocityEngine"></param>
-        /// <param name="velocityContext"></param>
-        /// <param name="reportWriter"></param>
-        /// <param name="templatePath"></param>
-        /// <param name="contentType"></param>
-        /// <param name="extension"></param>
-        /// <param name="helper"></param>
+        /// <param name="velocityEngine">The velocity engine</param>
+        /// <param name="velocityContext">The current velocity context.</param>
+        /// <param name="reportWriter">The report writer</param>
+        /// <param name="templatePath">The template path.</param>
+        /// <param name="contentType">The content type of the report.</param>
+        /// <param name="extension">The extension of the report file.</param>
+        /// <param name="helper">The formatting helper class.</param>
         protected VtlReportWriter(VelocityEngine velocityEngine, VelocityContext velocityContext, IReportWriter reportWriter, 
             string templatePath, string contentType, string extension, FormatHelper helper)
         {
@@ -136,7 +136,7 @@ namespace Gallio.Reports.Vtl
         }
 
         /// <summary>
-        /// 
+        /// Generates the report document.
         /// </summary>
         public abstract void Run();
     }

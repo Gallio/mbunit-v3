@@ -10,7 +10,7 @@ namespace Gallio.Reports.Vtl
     /// <summary>
     /// Aggregates statistics for an entire tree branch.
     /// </summary>
-    internal class TestStepRunTreeStatistics
+    public class TestStepRunTreeStatistics
     {
         private class TestStatusData
         {

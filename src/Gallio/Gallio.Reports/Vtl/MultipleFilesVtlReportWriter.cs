@@ -24,31 +24,31 @@ using System.IO;
 namespace Gallio.Reports.Vtl
 {
     /// <summary>
-    /// 
+    /// VTL engine-based report writer for multiple pages document.
     /// </summary>
     internal class MultipleFilesVtlReportWriter : VtlReportWriter
     {
-        private readonly int size;
+        private readonly int pageSize;
         private readonly Encoding encoding = new UTF8Encoding(false);
 
         /// <summary>
-        /// 
+        /// Constructor.
         /// </summary>
-        /// <param name="velocityEngine"></param>
-        /// <param name="velocityContext"></param>
-        /// <param name="reportWriter"></param>
-        /// <param name="templatePath"></param>
-        /// <param name="contentType"></param>
-        /// <param name="extension"></param>
-        /// <param name="helper"></param>
-        /// <param name="size"></param>
-        public MultipleFilesVtlReportWriter(VelocityEngine velocityEngine, VelocityContext velocityContext, IReportWriter reportWriter, string templatePath, string contentType, string extension, FormatHelper helper, int size)
+        /// <param name="velocityEngine">The velocity engine</param>
+        /// <param name="velocityContext">The current velocity context.</param>
+        /// <param name="reportWriter">The report writer</param>
+        /// <param name="templatePath">The template path.</param>
+        /// <param name="contentType">The content type of the report.</param>
+        /// <param name="extension">The extension of the report file.</param>
+        /// <param name="helper">The formatting helper class.</param>
+        /// <param name="pageSize">The number of test steps displayed in one page.</param>
+        public MultipleFilesVtlReportWriter(VelocityEngine velocityEngine, VelocityContext velocityContext, IReportWriter reportWriter, string templatePath, string contentType, string extension, FormatHelper helper, int pageSize)
             : base(velocityEngine, velocityContext, reportWriter, templatePath, contentType, extension, helper)
         {
-            if (size <= 0)
+            if (pageSize <= 0)
                 throw new ArgumentOutOfRangeException("size", "Must be greater than zero.");
 
-            this.size = size;
+            this.pageSize = pageSize;
         }
 
         /// <inheritdoc />
@@ -56,7 +56,7 @@ namespace Gallio.Reports.Vtl
         {
             int pageCount = GetPageCount();
             VelocityContext.Put("pagingEnabled", true);
-            VelocityContext.Put("pageSize", size);
+            VelocityContext.Put("pageSize", pageSize);
             VelocityContext.Put("pageCount", pageCount);
             Template template = VelocityEngine.GetTemplate(Path.GetFileName(TemplatePath), encoding.BodyName);
 
@@ -88,7 +88,7 @@ namespace Gallio.Reports.Vtl
         private int GetPageCount()
         {
             int n = ReportWriter.Report.TestPackageRun.Statistics.TestCount;
-            return (n / size) + ((n % size) != 0 ? 1 : 0);
+            return (n / pageSize) + ((n % pageSize) != 0 ? 1 : 0);
         }
     }
 }
