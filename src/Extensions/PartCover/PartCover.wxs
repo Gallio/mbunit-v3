@@ -45,7 +45,7 @@
               <Directory Id="PartCover.libs.ReportGenerator" Name="ReportGenerator">
                 <Component Id="ReportGenerator.Program" Guid="{B5E958B9-4ADA-45b0-885C-601087A5A3E0}" Win64="$(var.Win64Binary)">
                   <File Name="ICSharpCode.NRefactory.dll"/>
-                  <File Name="LICENSE.txt"/>
+                  <File Id="ReportGenerator.licence" Name="LICENSE.txt"/>
                   <File Id="ReportGenerator.lo4net" Name="log4net.dll"/>
                   <File Id="ReportGenerator.readme" Name="Readme.txt"/>
                   <File Name="ReportGenerator.exe" KeyPath="yes" />
@@ -58,7 +58,7 @@
 
         <Feature Id='feat_PartCoverIntegration' Title='PartCover Integration' Level='1' AllowAdvertise="no"
             Description='Provides integration with the PartCover test reporting features.'>
-            <ComponentRef Id="Gallio.PartCoverIntegration.dll"/>
+          <ComponentRef Id="Gallio.PartCoverIntegration.dll"/>
           <ComponentRef Id="Gallio.PartCoverIntegration.Resources"/>
           <ComponentRef Id="PartCover.Program"/>
           <ComponentRef Id="PartCover.xslt.Program"/>
