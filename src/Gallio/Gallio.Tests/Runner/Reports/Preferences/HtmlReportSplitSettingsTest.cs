@@ -32,9 +32,9 @@ namespace Gallio.Tests.Runner.Reports
         {
             var settings = new HtmlReportSplitSettings();
             Assert.IsTrue(settings.Enabled);
-            Assert.AreEqual(1000, settings.PageSize);
+            Assert.AreEqual(2000, settings.PageSize);
         }
-
+        
         [VerifyContract]
         public readonly IContract PageSizeAccessorTests = new AccessorContract<HtmlReportSplitSettings, int>
         {

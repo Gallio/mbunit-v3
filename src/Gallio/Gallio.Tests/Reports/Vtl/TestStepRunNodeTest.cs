@@ -80,6 +80,13 @@ namespace Gallio.Tests.Reports.Vtl
             Assert.AreEqual(1, node.Count);
         }
 
+        [Test]
+        public void BuildTreeFromRoot_with_null_root()
+        {
+            var tree = TestStepRunNode.BuildTreeFromRoot(null);
+            Assert.AreEqual(1, tree.Count);
+        }
+
         private TestStepRun CreateFakeTestStepRun(string id, bool isTestCase, TestOutcome outcome, params TestStepRun[] children)
         {
             var step = new TestStepData(id, "Name-" + id, "FullName-" + id, "Test-" + id);

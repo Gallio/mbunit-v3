@@ -204,6 +204,13 @@ namespace Gallio.Reports.Vtl
         /// <returns></returns>
         public static TestStepRunNode BuildTreeFromRoot(TestStepRun root)
         {
+            if (root == null)
+            {
+                var step = new TestStepData(String.Empty, String.Empty, String.Empty, String.Empty);
+                root = new TestStepRun(step);
+                root.Result = new TestResult();
+            }
+
             int index = 0;
             var node = new TestStepRunNode(root, null, index++);
             node.Children.AddRange(GetChildren(node, ref index));
