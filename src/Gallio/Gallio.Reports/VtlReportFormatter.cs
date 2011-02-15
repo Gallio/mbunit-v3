@@ -146,8 +146,9 @@ namespace Gallio.Reports
         private VtlReportWriter GetReportWriter(VelocityEngine velocityEngine, VelocityContext velocityContext, IReportWriter reportWriter, FormatHelper helper)
         {
             HtmlReportSplitSettings settings = preferenceManager.HtmlReportSplitSettings;
+            int testCount = (reportWriter.Report.TestPackageRun == null) ? 0 : reportWriter.Report.TestPackageRun.Statistics.TestCount;
 
-            if (supportSplit && settings.Enabled && reportWriter.Report.TestPackageRun.Statistics.TestCount > settings.PageSize)
+            if (supportSplit && settings.Enabled && testCount > settings.PageSize)
                 return new MultipleFilesVtlReportWriter(velocityEngine, velocityContext, reportWriter, templatePath, contentType, extension, helper, settings.PageSize);
 
             return new SingleFileVtlReportWriter(velocityEngine, velocityContext, reportWriter, templatePath, contentType, extension, helper);
