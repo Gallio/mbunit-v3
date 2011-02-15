@@ -15,7 +15,7 @@
 	====================================================
 *#
 <li id="testStepRun-$current.Run.Step.Id">
-  #if ($current.IsVisible($pageIndex, $pageSize))
+  #if ($current.IsVisibleInPage($pageIndex, $pageSize))
   <span class="testStepRunHeading testStepRunHeading-Level$nestingLevel">
     <img src="$resourceRoot/img/Minus.gif" class="toggle" id="toggle-detailPanel-$current.Run.Step.Id" onclick="toggle('detailPanel-$current.Run.Step.Id');" alt="Toggle Button" ></img>
     <span class="testKind#if($kind) testKind-$helper.Text.RemoveChars($kind, " .")#end"></span>
@@ -46,7 +46,7 @@
 	====================================================
 *#
   <div id="detailPanel-$current.Run.Step.Id" class="panel">
-    #if ($current.IsVisible($pageIndex, $pageSize))
+    #if ($current.IsVisibleInPage($pageIndex, $pageSize))
     #if ($nestingLevel == 1)
     <table class="statistics-table">
       <tr class="alternate-row">
