@@ -27,7 +27,7 @@ namespace Gallio.Runner.Reports.Preferences
     public sealed class HtmlReportSplitSettings
     {
         private const bool DefaultEnabled = true;
-        private const int DefaultPageSize = 1000;
+        private const int DefaultPageSize = 2000;
         private int pageSize;
 
         /// <summary>

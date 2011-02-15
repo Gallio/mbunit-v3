@@ -78,6 +78,7 @@
     <Compile Include="Vtl\FormatPagingHelper.cs" />
     <Compile Include="Vtl\MultipleFilesVtlReportWriter.cs" />
     <Compile Include="Vtl\NamespaceDoc.cs" />
+    <Compile Include="Vtl\PagerRenderer.cs" />
     <Compile Include="Vtl\TestStepRunNode.cs" />
     <Compile Include="Vtl\VtlReportWriter.cs" />
     <Compile Include="Vtl\FormatHtmlHelper.cs" />

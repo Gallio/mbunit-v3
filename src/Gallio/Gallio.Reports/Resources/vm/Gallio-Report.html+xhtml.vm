@@ -57,6 +57,7 @@ detailPanel-$rid#between
 *#
   <div id="Content" class="content">
     <iframe id="_asyncLoadFrame" src="about:blank" style="border:0; margin:0; padding:0; width:0; height:0; display:none;" onload="_asyncLoadFrameOnLoad()"></iframe>
+    $helper.Paging.Generate($pageIndex, $pageCount)
     #if ($pageIndex == 0)
     <div id="Statistics" class="section">
       <h2>Statistics</h2>
@@ -106,24 +107,6 @@ detailPanel-$rid#between
     </div>
 #*
 	====================================================
-	 PAGE SUMMARY SECTION
-	====================================================
-*#
-    #if ($pagingEnabled)
-    <div id="Pages" class="section">
-      <h2>Pages</h2>
-      <div class="section-content">
-      <ul>
-        <li>#if ($pageIndex == 0)Index#else<a href="$helper.Paging.GetReportPath(0)">Index</a>#end</li>
-        #foreach ($i in [1..$pageCount])
-        <li>#if ($pageIndex == $i)Page $i#else<a href="$helper.Paging.GetReportPath($i)">Page $i</a>#end</li>
-        #end
-      </ul>
-      </div>
-    </div>
-    #end
-#*
-	====================================================
 	 SUMMARY SECTION
 	====================================================
 *#
@@ -151,7 +134,7 @@ detailPanel-$rid#between
 *#
     #if (!$pagingEnabled || $pageIndex > 0)
     <div id="Details" class="section">
-      <a name="Details" />
+      <a name="Details"></a>
       <h2>Details#if ($condensed) (Condensed)#end#if ($pageIndex > 0) (page $pageIndex of $pageCount)#end</h2>
       <div class="section-content">
       #if ($stats.RunCount == 0)
@@ -159,19 +142,11 @@ detailPanel-$rid#between
       #elseif ($condensed && $stats.RunCount == $stats.PassedCount)
         <em>All tests passed.</em>
       #else
-        #if ($pageIndex > 0)
-        #set ($previousPageIndex = $pageIndex - 1)
-        <div class="pager"><a href="$helper.Paging.GetReportPath($previousPageIndex)#Details">&lt;&lt; Previous page</a></div>
-        #end
         <ul class="testStepRunContainer">
           #set ($nestingLevel = 0)
           #set ($node = $tree)
           #parse ("Gallio-Report.html+xhtml.detailed-item.vm")
         </ul>
-        #if ($pageIndex < $pageCount)
-        #set ($nextPageIndex = $pageIndex + 1)
-        <div class="pager"><a href="$helper.Paging.GetReportPath($nextPageIndex)#Details">Next page &gt;&gt;</a></div>
-        #end
       #end
       </div>
     </div>
@@ -205,6 +180,7 @@ detailPanel-$rid#between
 	 FOOTER
 	====================================================
 *#
+  $helper.Paging.Generate($pageIndex, $pageCount)
   </div>
 </body>
 #if ($xhtml)

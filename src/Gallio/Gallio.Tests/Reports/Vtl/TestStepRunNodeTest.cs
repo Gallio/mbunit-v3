@@ -193,7 +193,6 @@ namespace Gallio.Tests.Reports.Vtl
             TestStepRunNode tree = BuildFakeTree();
             var child321 = tree.Children[2].Children[1].Children[0];
             Assert.AreElementsEqual(new[] { "Test-321", "Test-32", "Test-3", "Test-Root" }, child321.GetSelfAndAncestorIds());
-        
         }
 
         [Test]

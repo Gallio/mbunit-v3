@@ -25,6 +25,8 @@ using Gallio.Runner.Reports.Schema;
 using Gallio.Common.Collections;
 using Gallio.Common.Markup.Tags;
 using Gallio.Common.Markup;
+using System.Xml;
+using System.IO;
 
 namespace Gallio.Reports.Vtl
 {
@@ -76,6 +78,18 @@ namespace Gallio.Reports.Vtl
         public int GetPageOf(int index, int pageSize)
         {
             return 1 + (index / pageSize);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageCount"></param>
+        /// <returns></returns>
+        public string Generate(int pageIndex, int pageCount)
+        {
+            var renderer = new PagerRenderer(pageIndex, pageCount, 6, i => GetReportPath(i));
+            return renderer.Run();
         }
     }
 }

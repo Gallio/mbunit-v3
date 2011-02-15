@@ -527,13 +527,57 @@ div.gallio-report div.navigator
 }
 
 /* Pager */
-.gallio-report div.pager
+.gallio-report ul.pager 
 {
-  margin-top: 10px;
-  margin-bottom: 10px;
+  list-style-type: none;
+  padding: 5px;
+  margin: 5px;
+	overflow:hidden;
 }
 
-.gallio-report div.pager a
+.gallio-report ul.pager li
 {
-	color: #222244;
+  float: left;
+	text-align:center;
+	background-color: #fff;
 }
+
+.gallio-report ul.pager li a
+{
+  text-decoration: none;
+	display: block;
+	border: 1px solid #000;
+	margin: 1px;
+	padding: 1px 5px;
+	color: #000;
+}
+
+.gallio-report ul.pager li span
+{
+	display: block;
+	margin: 1px;
+	padding: 1px 5px;
+}
+
+.gallio-report ul.pager li span.disabled 
+{
+	border: 1px solid #ccc;
+	color: #ccc;
+}
+
+.gallio-report ul.pager li span.current 
+{
+	border: 1px solid #000;
+	color: #000;
+	background-color: #FFA970;
+	font-weight: bold;
+}
+
+.gallio-report ul.pager li span.raw 
+{
+	border: 0;
+	color: #ccc;
+}
+
+
+
