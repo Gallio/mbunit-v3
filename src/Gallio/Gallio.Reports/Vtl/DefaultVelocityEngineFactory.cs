@@ -59,6 +59,7 @@ namespace Gallio.Reports.Vtl
         protected virtual void SetupVelocityEngine(ExtendedProperties properties)
         {
             properties.AddProperty("file.resource.loader.path", Path.GetDirectoryName(templateDirectory));
+            properties.AddProperty("directive.parse.max.depth", 100);
         }
 
         /// <inheritdoc />
