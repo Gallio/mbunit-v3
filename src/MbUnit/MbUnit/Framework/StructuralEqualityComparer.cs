@@ -520,7 +520,18 @@ namespace MbUnit.Framework
         /// <returns>true if the specified objects are equal; otherwise, false.</returns>
         public bool Equals(T x, T y)
         {
-            return conditions.TrueForAll(predicate => predicate(x, y));
+            return conditions.TrueForAll(predicate => EqualsImpl(predicate, x, y));
+        }
+
+        private static bool EqualsImpl(EqualityComparison<T> predicate, T x, T y)
+        {
+            if (Object.ReferenceEquals(x, y))
+                return true;
+
+            if (Object.ReferenceEquals(x, null) || Object.ReferenceEquals(y, null))
+                return false;
+
+            return predicate(x, y);
         }
 
         /// <summary>
