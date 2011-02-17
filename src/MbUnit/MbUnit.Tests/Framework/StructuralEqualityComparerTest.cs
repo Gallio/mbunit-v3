@@ -159,6 +159,22 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(expected, result);
         }
 
+        [Test]
+        public void Compare_null_references()
+        {
+            var comparer = new StructuralEqualityComparer<Foo>
+            {
+                { x => x.Number },
+            };
+
+            var foo = new Foo() { Number = 123, Text = "Hello", Duration = TimeSpan.FromMinutes(600) };
+
+            Assert.IsFalse(comparer.Equals(foo, null));
+            Assert.IsFalse(comparer.Equals(null, foo));
+            Assert.IsTrue(comparer.Equals(null, null));
+        }
+
+
         public IEnumerable<object[]> ProvideTestData2()
         {
             yield return new object[] 
