@@ -1,0 +1,219 @@
+Index: WinFormsUI/Docking/DockContentCollection.cs
+===================================================================
+--- WinFormsUI/Docking/DockContentCollection.cs	(revision 115)
++++ WinFormsUI/Docking/DockContentCollection.cs	(working copy)
+@@ -99,6 +99,30 @@
+                 return GetIndexOfVisibleContents(content);
+         }
+ 
++        private ActivityHistory m_activityHistory = new ActivityHistory();
++
++        public IDockContent GetActive(DockState dockState)
++        {
++            return m_activityHistory.GetActive(dockState);
++        }
++
++        public void Activate(IDockContent content)
++        {
++            if (content == null ||  !Contains(content))
++                return;
++
++            m_activityHistory.Activate(content);
++        }
++
++        public void Deactivate(IDockContent content)
++        {
++            if (content == null || !Contains(content))
++                return;
++
++            m_activityHistory.Deactivate(content);
++        }
++
++
+         internal void Remove(IDockContent content)
+         {
+             if (DockPane != null)
+@@ -108,6 +132,7 @@
+                 return;
+ 
+             Items.Remove(content);
++            m_activityHistory.Deactivate(content);
+         }
+ 
+         private int CountOfVisibleContents
+@@ -171,5 +196,37 @@
+             }
+             return -1;
+         }
++
++        private class ActivityHistory
++        {
++            private List<IDockContent> m_activityHistory = new List<IDockContent>();
++
++            public IDockContent GetActive(DockState dockState)
++            {
++                for (int index = m_activityHistory.Count - 1; index >= 0; index--)
++                {
++                    if (m_activityHistory[index].DockHandler.DockState == dockState)
++                    {
++                        return m_activityHistory[index];
++                    }
++                    else
++                    {
++                        m_activityHistory.RemoveAt(index);
++                    }
++                }
++                return null;
++            }
++
++            public void Activate(IDockContent content)
++            {
++                m_activityHistory.Remove(content);
++                m_activityHistory.Add(content);
++            }
++
++            public void Deactivate(IDockContent content)
++            {
++                m_activityHistory.Remove(content);
++            }
++        }
+     }
+ }
+Index: WinFormsUI/Docking/DockContentHandler.cs
+===================================================================
+--- WinFormsUI/Docking/DockContentHandler.cs	(revision 115)
++++ WinFormsUI/Docking/DockContentHandler.cs	(working copy)
+@@ -1019,6 +1019,7 @@
+ 					}
+ 					pane.SetContentIndex(Content, newIndex);
+ 				}
++                Pane.ActiveContent = Content;
+ 			}
+ 			else
+ 			{
+Index: WinFormsUI/Docking/DockPane.cs
+===================================================================
+--- WinFormsUI/Docking/DockPane.cs	(revision 115)
++++ WinFormsUI/Docking/DockPane.cs	(working copy)
+@@ -173,6 +173,7 @@
+                     DockPanel.ActiveAutoHideContent = null;
+ 
+                 m_activeContent = value;
++                Contents.Activate(value);
+ 
+                 if (DockPanel.DocumentStyle == DocumentStyle.DockingMdi && DockState == DockState.Document)
+                 {
+@@ -491,6 +492,8 @@
+             if (!content.DockHandler.CloseButton)
+                 return;
+ 
++            Contents.Deactivate(content);
++
+             dockPanel.SuspendLayout(true);
+ 
+             try
+@@ -727,28 +730,28 @@
+             if (DisplayingContents.IndexOf(ActiveContent) >= 0)
+                 return;
+ 
+-            IDockContent prevVisible = null;
+-            for (int i = Contents.IndexOf(ActiveContent) - 1; i >= 0; i--)
+-                if (Contents[i].DockHandler.DockState == DockState)
++            IDockContent newActive = Contents.GetActive(DockState);
++            if (newActive == null)
++            {
++                for (int i = Contents.IndexOf(ActiveContent) - 1; i >= 0; i--)
++                    if (Contents[i].DockHandler.DockState == DockState)
++                    {
++                        newActive = Contents[i];
++                        break;
++                    }
++             
++                if (newActive == null)
+                 {
+-                    prevVisible = Contents[i];
+-                    break;
++                    for (int i = Contents.IndexOf(ActiveContent) + 1; i < Contents.Count; i++)
++                        if (Contents[i].DockHandler.DockState == DockState)
++                        {
++                            newActive = Contents[i];
++                            break;
++                        }
+                 }
++            }
+ 
+-            IDockContent nextVisible = null;
+-            for (int i = Contents.IndexOf(ActiveContent) + 1; i < Contents.Count; i++)
+-                if (Contents[i].DockHandler.DockState == DockState)
+-                {
+-                    nextVisible = Contents[i];
+-                    break;
+-                }
+-
+-            if (prevVisible != null)
+-                ActiveContent = prevVisible;
+-            else if (nextVisible != null)
+-                ActiveContent = nextVisible;
+-            else
+-                ActiveContent = null;
++            ActiveContent = newActive;
+         }
+ 
+         private static readonly object DockStateChangedEvent = new object();
+Index: WinFormsUI/Docking/DockPaneStripBase.cs
+===================================================================
+--- WinFormsUI/Docking/DockPaneStripBase.cs	(revision 115)
++++ WinFormsUI/Docking/DockPaneStripBase.cs	(working copy)
+@@ -182,17 +182,27 @@
+             base.OnMouseDown(e);
+ 
+             int index = HitTest();
+-            if (index != -1)
++
++            if (index != -1 && e.Button == MouseButtons.Middle)
+             {
++                // Close the specified content.
+                 IDockContent content = Tabs[index].Content;
+-                if (DockPane.ActiveContent != content)
+-                    DockPane.ActiveContent = content;
++                DockPane.CloseContent(content);
+             }
+-
+-            if (e.Button == MouseButtons.Left)
++            else
+             {
+-                if (DockPane.DockPanel.AllowEndUserDocking && DockPane.AllowDockDragAndDrop && DockPane.ActiveContent.DockHandler.AllowEndUserDocking)
+-                    DockPane.DockPanel.BeginDrag(DockPane.ActiveContent.DockHandler);
++                if (index != -1)
++                {
++                    IDockContent content = Tabs[index].Content;
++                    if (DockPane.ActiveContent != content)
++                        DockPane.ActiveContent = content;
++                }
++
++                if (e.Button == MouseButtons.Left)
++                {
++                    if (DockPane.DockPanel.AllowEndUserDocking && DockPane.AllowDockDragAndDrop && DockPane.ActiveContent.DockHandler.AllowEndUserDocking)
++                        DockPane.DockPanel.BeginDrag(DockPane.ActiveContent.DockHandler);
++                }
+             }
+         }
+ 
+@@ -212,17 +222,6 @@
+ 
+             if (e.Button == MouseButtons.Right)
+                 ShowTabPageContextMenu(new Point(e.X, e.Y));
+-            else if ((e.Button == MouseButtons.Middle) && (DockPane.Appearance == Docking.DockPane.AppearanceStyle.Document))
+-            {
+-                // Get the content located under the click (if there is one)
+-                int index = HitTest();
+-                if (index != -1)
+-                {
+-                    // Close the specified content.
+-                    IDockContent content = Tabs[index].Content;
+-                    DockPane.CloseContent(content);
+-                }
+-            }
+         }
+ 
+         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]

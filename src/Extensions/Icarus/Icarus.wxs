@@ -21,6 +21,9 @@
             <Component Id="ICSharpCode.TextEditor.dll" Guid="7b12c1e0-c859-4ca8-a32a-b3e1f5059055" Win64="$(var.Win64Binary)">
                 <File Name="ICSharpCode.TextEditor.dll" Assembly=".net" AssemblyApplication="Gallio.Icarus.exe" KeyPath="yes" />
             </Component>
+            <Component Id="WeifenLuo.WinFormsUI.Docking.dll" Guid="CD3A8E5D-4C06-4e1a-A6A9-06ABA2EEE06A" Win64="$(var.Win64Binary)">
+                <File Name="WeifenLuo.WinFormsUI.Docking.dll" Assembly=".net" AssemblyApplication="Gallio.Icarus.exe" KeyPath="yes" />
+            </Component>
         </DirectoryRef>
 
         <DirectoryRef Id="ResourcesFolder" FileSource="$(var.GallioTargetDir)\bin\Resources\">
@@ -33,6 +36,9 @@
          <Component Id="ICSharpCode.TextEditor.License" Guid="{E8452C8B-016B-4306-AD12-759FF64AFC7C}">
            <File Id="ICSharpCode.TextEditor.License.txt" Name="ICSharpCode.TextEditor.License.txt" KeyPath="yes" />
          </Component>
+         <Component Id="WeifenLuo.WinFormsUI.Docking.License" Guid="{15FFA461-FD24-4322-9488-85856FA7D21B}">
+           <File Id="WeifenLuo.WinFormsUI.Docking.License.txt" Name="ICSharpCode.TextEditor.License.txt" KeyPath="yes" />
+         </Component>
        </DirectoryRef>
 
         <Feature Id="feat_Gallio.Icarus" Title="Icarus (GUI Test Runner)" Level="1" AllowAdvertise="no"
@@ -42,6 +48,9 @@
 
           <ComponentRef Id="ICSharpCode.TextEditor.dll" />
           <ComponentRef Id="ICSharpCode.TextEditor.License" />
+
+          <ComponentRef Id="WeifenLuo.WinFormsUI.Docking.dll" />
+          <ComponentRef Id="WeifenLuo.WinFormsUI.Docking.License" />
         </Feature>
     </Fragment>
 </Wix>
