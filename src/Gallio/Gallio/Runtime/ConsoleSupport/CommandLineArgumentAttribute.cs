@@ -159,7 +159,7 @@ namespace Gallio.Runtime.ConsoleSupport
         /// </summary>
         public string[] LocalizedSynonyms
         {
-            get { return GenericCollectionUtils.ConvertAllToArray(synonyms, GetResourceLookup); }
+            get { return GenericCollectionUtils.ConvertAllToArray<string, string>(synonyms, GetResourceLookup); }
         }
 
         /// <summary>

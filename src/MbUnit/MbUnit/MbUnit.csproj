@@ -43,6 +43,10 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NHamcrest, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\NHamcrest\NHamcrest.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
@@ -219,6 +223,7 @@
     <Compile Include="Framework\XmlPath.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\Assert.That.cs" />
     <None Include="Resources\Database_Schema.xsd" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

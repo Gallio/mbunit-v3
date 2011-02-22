@@ -34,6 +34,13 @@
       <ImagePath>bin\Resources</ImagePath>
     </File>
     
+	<AssemblyFile Include="MbUnit\bin\NHamcrest.dll">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+    <PdbFile Include="MbUnit\bin\NHamcrest.pdb">
+      <ImagePath>bin</ImagePath>
+    </PdbFile>
+	
     <AssemblyFile Include="MbUnit35\bin\MbUnit35.dll">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
