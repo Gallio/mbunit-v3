@@ -57,8 +57,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Framework\ContractVerifiers\Core\NotEnoughHashesException.cs" />
-    <Compile Include="Framework\RandomGenerationDataAttribute.cs" />
     <Compile Include="Framework\Assert.HasAttribute.cs" />
+    <Compile Include="Framework\RandomGenerationDataAttribute.cs" />
     <Compile Include="Framework\DisableAttribute.cs" />
     <Compile Include="Framework\AnnotationAttribute.cs" />
     <Compile Include="Framework\ApartmentStateAttribute.cs" />
@@ -224,6 +224,7 @@
     <Compile Include="Framework\XmlPath.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\Assert.That.cs" />
     <None Include="Resources\Database_Schema.xsd" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
