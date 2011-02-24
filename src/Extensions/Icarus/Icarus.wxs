@@ -28,13 +28,20 @@
                 <File Id="Gallio.Icarus.ico" Name="Gallio.Icarus.ico" KeyPath="yes" />
             </Component>
         </DirectoryRef>
-	
+
+       <DirectoryRef Id="licensesFolder" FileSource="$(var.GallioTargetDir)\licenses\">
+         <Component Id="ICSharpCode.TextEditor.License" Guid="{E8452C8B-016B-4306-AD12-759FF64AFC7C}">
+           <File Id="ICSharpCode.TextEditor.License.txt" Name="ICSharpCode.TextEditor.License.txt" KeyPath="yes" />
+         </Component>
+       </DirectoryRef>
+
         <Feature Id="feat_Gallio.Icarus" Title="Icarus (GUI Test Runner)" Level="1" AllowAdvertise="no"
             Description="Installs the Gallio GUI-based test runner.">
             <ComponentRef Id="Gallio.Icarus.exe" />
             <ComponentRef Id="Gallio.Icarus.Resources" />
 
-            <ComponentRef Id="ICSharpCode.TextEditor.dll" />
+          <ComponentRef Id="ICSharpCode.TextEditor.dll" />
+          <ComponentRef Id="ICSharpCode.TextEditor.License" />
         </Feature>
     </Fragment>
 </Wix>

@@ -27,7 +27,11 @@
     <AssemblyFile Include="libs\ICSharpCode.TextEditor.dll">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
-    
+
+    <LicenseFile Include="libs\ICSharpCode.TextEditor.License.txt">
+      <ImagePath>licenses</ImagePath>
+    </LicenseFile>
+
     <TestAssembly Include="Gallio.Icarus.Tests\bin\Gallio.Icarus.Tests.dll" />
   </ItemGroup>
 </Project>
