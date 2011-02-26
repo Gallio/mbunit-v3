@@ -32,6 +32,16 @@
       <ImagePath>licenses</ImagePath>
     </LicenseFile>
 
+
+    <AssemblyFile Include="libs\WeifenLuo.WinFormsUI.Docking.dll">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+
+    <LicenseFile Include="libs\WeifenLuo.WinFormsUI.Docking.License.txt">
+      <ImagePath>licenses</ImagePath>
+    </LicenseFile>
+
+
     <TestAssembly Include="Gallio.Icarus.Tests\bin\Gallio.Icarus.Tests.dll" />
   </ItemGroup>
 </Project>

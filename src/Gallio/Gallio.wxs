@@ -119,9 +119,6 @@
             <Component Id="Aga.Controls.dll" Guid="3c58ac7a-fe23-4bd4-9bb4-1bd5c107ba89" Win64="$(var.Win64Binary)">
                 <File Name="Aga.Controls.dll" Assembly=".net" AssemblyApplication="Aga.Controls.dll" KeyPath="yes" />
             </Component>
-            <Component Id="WeifenLuo.WinFormsUI.Docking.dll" Guid="3B11B01F-71EB-4423-AC66-55CE8E6E30D9" Win64="$(var.Win64Binary)">
-                <File Name="WeifenLuo.WinFormsUI.Docking.dll" Assembly=".net" AssemblyApplication="WeifenLuo.WinFormsUI.Docking.dll" KeyPath="yes" />
-            </Component>
 
             <Directory Id="ResourcesFolder" Name="Resources" />
         </DirectoryRef>
@@ -272,7 +269,6 @@
             <ComponentRef Id="Gallio.ControlPanel.Resources"/>
             <ComponentRef Id="Gallio.Reports"/>
             <ComponentRef Id="Aga.Controls.dll" />
-            <ComponentRef Id="WeifenLuo.WinFormsUI.Docking.dll" />
 
             <ComponentRef Id="Gallio.Resources"/>
             <ComponentRef Id="Gallio.Resources.css"/>

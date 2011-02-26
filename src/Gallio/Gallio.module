@@ -96,9 +96,6 @@
     <AssemblyFile Include="libs\Aga.Controls.dll">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
-    <AssemblyFile Include="libs\WeifenLuo.WinFormsUI.Docking.dll">
-      <ImagePath>bin</ImagePath>
-    </AssemblyFile>
 
     <AssemblyFile Include="Gallio.Reports\bin\Gallio.Reports.dll">
       <ImagePath>bin</ImagePath>

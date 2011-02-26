@@ -55,7 +55,7 @@ namespace MbUnit.Framework
     ///     public void ShoppingCartTotalWithSingleItem(string item, decimal unitPrice, decimal quantity)
     ///     {
     ///         ShoppingCart shoppingCart = new ShoppingCart();
-    ///         shoppingCart.Add(item, unitprice, quantity);
+    ///         shoppingCart.Add(item, unitPrice, quantity);
     ///         Assert.AreEqual(unitPrice * quantity, shoppingCart.TotalCost);
     ///     }
     /// }
