@@ -51,7 +51,7 @@ namespace Gallio.Framework.Data
         public FactoryDataSet(Func<IEnumerable> factory, FactoryKind factoryKind, int columnCount)
         {
             if (factory == null)
-                throw new ArgumentNullException(Resources.Argument_Factory);
+                throw new ArgumentNullException("factory");
             if (! Enum.IsDefined(typeof(FactoryKind), factoryKind))
                 throw new ArgumentOutOfRangeException("factoryKind", factoryKind, "Invalid factory kind.");
             if (columnCount < 0)

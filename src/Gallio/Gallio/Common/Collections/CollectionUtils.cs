@@ -87,7 +87,7 @@ namespace Gallio.Common.Collections
         public static T[] ConstantArray<T>(T value, int length)
         {
             if (length < 0)
-                throw new ArgumentOutOfRangeException(Resources.Argument_Length, Resources.ExceptionDescription_ZeroOrGreater);
+                throw new ArgumentOutOfRangeException("length", Resources.ExceptionDescription_ZeroOrGreater);
 
             var array = new T[length];
 

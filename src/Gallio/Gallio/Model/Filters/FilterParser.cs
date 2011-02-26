@@ -45,7 +45,7 @@ namespace Gallio.Model.Filters
         public FilterParser(IFilterFactory<T> factory)
         {
             if (factory == null)
-                throw new ArgumentNullException(Resources.Argument_Factory);
+                throw new ArgumentNullException("factory");
 
             this.factory = factory;
         }

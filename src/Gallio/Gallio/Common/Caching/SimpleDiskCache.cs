@@ -16,7 +16,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using Gallio.Common;
 using Gallio.Common.IO;
 using Gallio.Properties;
 
@@ -40,7 +39,7 @@ namespace Gallio.Common.Caching
         public SimpleDiskCache(string cacheDirectoryPath)
         {
             if (cacheDirectoryPath == null)
-                throw new ArgumentNullException(Resources.SimpleDiskCache_CacheDirectoryPath);
+                throw new ArgumentNullException("cacheDirectoryPath");
             this.cacheDirectoryPath = Path.GetFullPath(cacheDirectoryPath);
         }
 
@@ -89,7 +88,7 @@ namespace Gallio.Common.Caching
             get
             {
                 if (key == null)
-                    throw new ArgumentNullException(Resources.Argument_Key);
+                    throw new ArgumentNullException("key");
                 return GetGroup(key);
             }
         }
@@ -114,11 +113,11 @@ namespace Gallio.Common.Caching
             public Group(IDiskCache cache, string key, DirectoryInfo location)
             {
                 if (cache == null)
-                    throw new ArgumentNullException(Resources.Argument_Cache);
+                    throw new ArgumentNullException("cache");
                 if (key == null)
-                    throw new ArgumentNullException(Resources.Argument_Key);
+                    throw new ArgumentNullException("key");
                 if (location == null)
-                    throw new ArgumentNullException(Resources.Argument_Location);
+                    throw new ArgumentNullException("location");
 
                 this.cache = cache;
                 this.key = key;
@@ -186,7 +185,7 @@ namespace Gallio.Common.Caching
             public FileInfo GetFileInfo(string relativeFilePath)
             {
                 if (relativeFilePath == null)
-                    throw new ArgumentNullException(Resources.Argument_RelativeFilePath);
+                    throw new ArgumentNullException("relativeFilePath");
 
             	var fileName = Path.Combine(location.FullName, relativeFilePath);
 
@@ -199,7 +198,7 @@ namespace Gallio.Common.Caching
             public DirectoryInfo GetSubdirectoryInfo(string relativeDirectoryPath)
             {
                 if (relativeDirectoryPath == null)
-                    throw new ArgumentNullException(Resources.Argument_RelativeDirectoryPath);
+                    throw new ArgumentNullException("relativeDirectoryPath");
                 return new DirectoryInfo(Path.Combine(location.FullName, relativeDirectoryPath));
             }
 
