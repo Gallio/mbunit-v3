@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using Gallio.Common;
 using Gallio.Common.IO;
@@ -186,7 +187,12 @@ namespace Gallio.Common.Caching
             {
                 if (relativeFilePath == null)
                     throw new ArgumentNullException(Resources.Argument_RelativeFilePath);
-                return new FileInfo(Path.Combine(location.FullName, relativeFilePath));
+
+            	var fileName = Path.Combine(location.FullName, relativeFilePath);
+
+				Debug.Assert(fileName.Length < 260, "Max length for a file path is 260");
+
+				return new FileInfo(fileName);
             }
 
             /// <inheritdoc />
