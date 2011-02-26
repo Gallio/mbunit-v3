@@ -19,6 +19,7 @@ using Gallio.Common.Markup;
 using Gallio.Common.Text.RegularExpression;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
+using NHamcrest.Core;
 
 namespace Gallio.Tests.Common.Markup.Tags
 {
@@ -64,5 +65,13 @@ namespace Gallio.Tests.Common.Markup.Tags
                     yield return new BinaryAttachment(nameGenerator.GetRandomString(random), mimeType, bytes);
                 }
         }
+
+    	[Test]
+    	public void Throw_if_name_is_too_long()
+    	{
+			Assert.That(() => new BinaryAttachment("aVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongString", MimeTypes.Png, new byte[0]), 
+				Throws.An<ArgumentException>()
+					.With(e => e.Message == "name must be 100 chars or less\r\nParameter name: name" && e.ParamName == "name"));
+    	}
     }
 }

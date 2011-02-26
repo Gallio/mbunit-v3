@@ -43,6 +43,9 @@ namespace Gallio.Common.Markup
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="contentType"/> is null.</exception>
         internal /*to prevent subclassing outside of the framework*/ Attachment(string name, string contentType)
         {
+			if (name != null && name.Length > 100)
+				throw new ArgumentException("name must be 100 chars or less", "name");
+
             if (contentType == null)
                 throw new ArgumentNullException("contentType");
 

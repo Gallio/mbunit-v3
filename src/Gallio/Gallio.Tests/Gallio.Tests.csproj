@@ -37,6 +37,10 @@
     <DocumentationFile>bin\Gallio.Tests.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NHamcrest, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31c3ea0b6fcf8c4a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\MbUnit\lib\NHamcrest\NHamcrest.dll</HintPath>
+    </Reference>
     <Reference Include="NVelocity, Version=1.1.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\NVelocity.dll</HintPath>
