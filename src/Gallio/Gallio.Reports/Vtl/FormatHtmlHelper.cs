@@ -45,7 +45,7 @@ namespace Gallio.Reports.Vtl
         /// <returns>The normalized text.</returns>
         public string NormalizeEndOfLines(string text)
         {
-            return text
+            return (text ?? String.Empty)
                 .Replace("\r\n", "<br>")
                 .Replace("\n", "<br>");
         }
@@ -59,7 +59,7 @@ namespace Gallio.Reports.Vtl
         {
             var output = new StringBuilder();
 
-            foreach (char @char in text)
+            foreach (char @char in (text ?? String.Empty))
             {
                 switch (@char)
                 {
@@ -109,8 +109,8 @@ namespace Gallio.Reports.Vtl
         /// <param name="path">The path to transform.</param>
         /// <returns>The resulting URI.</returns>
         public string PathToUri(string path)
-        { 
-            return path
+        {
+            return (path ?? String.Empty)
                 .Replace('\\', '/')
                 .Replace("%", "%25")
                 .Replace(" ", "%20");
@@ -131,7 +131,7 @@ namespace Gallio.Reports.Vtl
         /// <param name="xml"></param>
         public static string Flatten(string xml)
         {
-            return Regex.Replace(xml, @"\r?\n\s*", String.Empty);
+            return Regex.Replace((xml ?? String.Empty), @"\r?\n\s*", String.Empty);
         }
     }
 }

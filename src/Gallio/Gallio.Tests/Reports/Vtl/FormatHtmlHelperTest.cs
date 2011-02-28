@@ -58,6 +58,7 @@ namespace Gallio.Tests.Reports.Vtl
              "The&nbsp;<wbr/>antbirds&nbsp;<wbr/>are&nbsp;<wbr/>a&nbsp;<wbr/>large&nbsp;<wbr/>family&nbsp;<wbr/>of&nbsp;<wbr/>passerine&nbsp;<wbr/>birds<wbr/>.")]
         [Row(@"D:\Root\Folder\File.ext",
              @"D<wbr/>:<wbr/>\Root<wbr/>\Folder<wbr/>\File<wbr/>.ext")]
+        [Row(null, "")]
         public void BreakWord(string text, string expected)
         {
             var helper = new FormatHtmlHelper();
@@ -77,6 +78,23 @@ namespace Gallio.Tests.Reports.Vtl
                 Assert.DoesNotContain(list, id);
                 list.Add(id);
             }
+        }
+
+        [Test]
+        public void Flatten_null_string()
+        {
+            string flat = FormatHtmlHelper.Flatten(null);
+            Assert.IsEmpty(flat);
+        }
+
+        [Test]
+        [Row(@"root\parent\a child folder\item%.txt", "root/parent/a%20child%20folder/item%25.txt")]
+        [Row(null, "")]
+        public void PathToUri(string path, string expected)
+        {
+            var helper = new FormatHtmlHelper();
+            string actual = helper.PathToUri(path);
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
