@@ -23,6 +23,7 @@ using System.Text;
 using Gallio.Common.Collections;
 using System.Reflection;
 using System.IO;
+using System.Xml;
 
 namespace MbUnit.Tests.Framework
 {
@@ -48,7 +49,7 @@ namespace MbUnit.Tests.Framework
         [Row("<Parent><Child/><Child/><Child/></Parent>", "<Parent><Child/><Child/><Child/></Parent>")]
         [Row("<Root><Item x='1'/><Item x='2'/><Item x='3'/></Root>", "<Root><Item x='1'></Item><Item x='2'/><Item  x='3' /></Root>")]
         [Row("<Root><Item x='1'/><Item x='2'/><Item x='3'/></Root>", "<Root><Item x='2'/><Item x='1'></Item><Item  x='3' /></Root>")]
-        public void AreEqual_passes(string expected, string actual,  [Column(true, false)] bool withDeclaration)
+        public void AreEqual_passes(string expected, string actual, [Column(true, false)] bool withDeclaration)
         {
             if (withDeclaration)
             {
@@ -57,6 +58,22 @@ namespace MbUnit.Tests.Framework
             }
 
             Assert.Xml.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void AreEqual_with_multiple_root_elements_should_throw_exception()
+        {
+            string xml = "<a/><b/><c/>";
+            AssertionFailure[] failures = Capture(() => Assert.Xml.AreEqual(xml, xml));
+            Assert.Count(1, failures);
+            Assert.AreEqual("Cannot parse the actual XML fragment.", failures[0].Message);
+        }
+
+        [Test]
+        public void AreEqual_with_multiple_root_elements_should_pass_when_enclosed_within_a_root_element()
+        {
+            string xml = "<a/><b/><c/>";
+            Assert.Xml.AreEqual(xml, xml, XmlOptions.Custom.Enclose);
         }
 
         public struct ExpectedFailureData
@@ -72,14 +89,10 @@ namespace MbUnit.Tests.Framework
                 builder.Append("\n\nPath : " + Path);
 
                 if (!String.IsNullOrEmpty(Expected))
-                {
                     builder.AppendFormat("\nExpected Value : \"{0}\"", Expected);
-                }
 
                 if (!String.IsNullOrEmpty(Actual))
-                {
                     builder.AppendFormat("\nActual Value : \"{0}\"", Actual);
-                }
 
                 return builder.ToString();
             }

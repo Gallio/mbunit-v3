@@ -341,6 +341,34 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
+        /// Encloses the XML fragments within a "root" element.
+        /// </summary>
+        /// <remarks> 
+        /// <para>
+        /// The .NET XML parser (<see cref="System.Xml.XmlReader"/>) does not support multiple root elements.
+        /// This option encloses the multiple elements within a unique root element.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code><![CDATA[
+        /// [Test]
+        /// public void MyXmlTest()
+        /// {
+        ///     string expected = "<a/><b/><c/>"; // Multiple root elements!
+        ///     string actual = "<a/><b/><c/>";
+        ///     Assert.Xml.AreEqual(expected, actual, XmlOptions.Custom.EncloseInRootElement); // Pass!
+        /// }
+        /// ]]></code>
+        /// </example>
+        public CustomXmlOptions Enclose
+        {
+            get 
+            {
+                return new CustomXmlOptions(Value | Options.Enclose);
+            }
+        }
+
+        /// <summary>
         /// Combines the options <see cref="IgnoreElementsNameCase"/> and <see cref="IgnoreElementsValueCase"/>
         /// </summary>
         public CustomXmlOptions IgnoreElementsCase

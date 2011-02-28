@@ -37,6 +37,9 @@ namespace Gallio.Common.Xml
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null.</exception>
         public static NodeFragment Run(string xml, Options options)
         {
+            if ((options & Options.Enclose) != 0)
+                xml = "<root>" + xml + "</root>";
+
             var parser = new Parser(xml);
             return parser.RunImpl(options);
         }

@@ -85,5 +85,10 @@ namespace Gallio.Common.Xml
         /// "<!-- This is a comment... -->".
         /// ]]></example>
         IgnoreComments = 64,
+
+        /// <summary>
+        /// Encloses the XML fragments within a "root" element.
+        /// </summary>
+        Enclose = 128,
     }
 }
