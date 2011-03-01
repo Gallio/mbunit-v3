@@ -61,12 +61,12 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        public void AreEqual_with_multiple_root_elements_should_throw_exception()
+        public void AreEqual_with_multiple_root_elements_should_fail()
         {
             string xml = "<a/><b/><c/>";
             AssertionFailure[] failures = Capture(() => Assert.Xml.AreEqual(xml, xml));
             Assert.Count(1, failures);
-            Assert.AreEqual("Cannot parse the actual XML fragment.", failures[0].Message);
+            Assert.AreEqual("Cannot parse the actual XML fragment.", failures[0].Description);
         }
 
         [Test]
