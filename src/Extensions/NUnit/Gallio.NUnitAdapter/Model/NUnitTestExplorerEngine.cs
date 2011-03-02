@@ -15,9 +15,7 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using Gallio.Common.Reflection;
 using Gallio.Model;
 using Gallio.Model.Tree;
@@ -94,6 +92,11 @@ namespace Gallio.NUnitAdapter.Model
                 case @"ParameterizedTest":
                     kind = TestKinds.Suite;
                     codeElement = ParseTestCaseName(assembly, nunitTest.TestName.FullName);
+                    break;
+
+                case @"Namespace":
+                    kind = TestKinds.Namespace;
+                    codeElement = parentTest.CodeElement;
                     break;
 #endif
 

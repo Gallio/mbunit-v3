@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Reflection;
 using Gallio.Model.Tree;
 using Gallio.NUnitAdapter.Model;
 using Gallio.Common.Reflection;
@@ -120,6 +118,18 @@ namespace Gallio.NUnitAdapter.Tests.Model
             Assert.AreEqual("Test", test.Name);
             Assert.AreEqual(CodeElementKind.Method, test.CodeElement.Kind);
             Assert.AreEqual("Test", test.CodeElement.Name);
+        }
+
+        [Test, Description(" Issue 801: NUnit Tests are nested inside their namespaces twice on the test tree, don't honour 'Flat'")]
+        public void NamespacesHaveTestKindNamespace()
+        {
+            TestModel testModel = PopulateTestTree();
+
+            Test assembly = testModel.RootTest.Children[0];
+            Test namespaceTest = assembly.Children[0];
+
+            Assert.AreEqual("Gallio", namespaceTest.Name);
+            Assert.AreEqual(TestKinds.Namespace, namespaceTest.Kind);
         }
 #endif
     }

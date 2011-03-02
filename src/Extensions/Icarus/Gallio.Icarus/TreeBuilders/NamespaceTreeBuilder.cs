@@ -19,6 +19,7 @@ using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Model.Schema;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Model;
 
 namespace Gallio.Icarus.TreeBuilders
 {
@@ -64,9 +65,20 @@ namespace Gallio.Icarus.TreeBuilders
             TreeBuilderOptions options)
         {
             var testTreeNode = new TestDataNode(testData);
-            
-            if (FixtureNode(testData))
+
+            if (options.NamespaceHierarchy == NamespaceHierarchy.Flat)
+            {
+                if (testTreeNode.TestKind == TestKinds.Namespace && parent.TestKind == TestKinds.Namespace)
+                {
+                    parent.Text += string.Format(".{0}", testData.Name);
+                    return parent;
+                }
+            }
+
+            if (FixtureNode(testData) && parent.TestKind != TestKinds.Namespace) 
+            {
                 parent = BuildNamespaceNode(testData, parent, options);
+            }
             
             parent.Nodes.Add(testTreeNode);
          
