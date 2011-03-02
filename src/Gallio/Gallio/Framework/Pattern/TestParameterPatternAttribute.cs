@@ -72,6 +72,8 @@ namespace Gallio.Framework.Pattern
         /// <inheritdoc />
         public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
+            //TODO: Review: Issue 762: Shouldn't the base method be invoked here?
+            //base.Consume(containingScope, codeElement, skipChildren);
             var slot = codeElement as ISlotInfo;
             Validate(containingScope, slot);
 
@@ -142,6 +144,8 @@ namespace Gallio.Framework.Pattern
 
             public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
             {
+                //TODO: Review: Issue 762: Shouldn't the base method be invoked here?
+                //base.Consume(containingScope, codeElement, skipChildren);
                 if (IsTestPart(containingScope.Evaluator, codeElement))
                     base.Consume(containingScope, codeElement, skipChildren);
             }

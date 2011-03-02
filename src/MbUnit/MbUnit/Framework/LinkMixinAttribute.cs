@@ -46,6 +46,8 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
+            //TODO: Review: Issue 762: Shouldn't the base method be invoked here?
+            //base.Consume(containingScope, codeElement, skipChildren);
             if (!IsReadableFieldOrProperty(codeElement))
                 ThrowUsageErrorException("This attribute may only be applied to fields and properties with getters.");
 

@@ -35,6 +35,8 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         public override void Process(IPatternScope scope, ICodeElementInfo codeElement)
         {
+            //TODO: Review: Issue 762: Shouldn't the base method be invoked here?
+            //base.Process(scope, codeElement);
             Validate(scope, codeElement);
 
             IJoinStrategy strategy = GetJoinStrategy();

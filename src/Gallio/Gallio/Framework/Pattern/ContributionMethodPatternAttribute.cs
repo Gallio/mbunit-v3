@@ -42,6 +42,8 @@ namespace Gallio.Framework.Pattern
         /// <inheritdoc />
         public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
+            //TODO: Review: Issue 762: Shouldn't the base method be invoked here?
+            //base.Consume(containingScope, codeElement, skipChildren);
             IMethodInfo method = codeElement as IMethodInfo;
             Validate(containingScope, method);
             containingScope.TestComponentBuilder.AddDeferredAction(codeElement, Order, () => DecorateContainingScope(containingScope, method));

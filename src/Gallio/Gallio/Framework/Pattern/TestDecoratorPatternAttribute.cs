@@ -30,6 +30,8 @@ namespace Gallio.Framework.Pattern
         /// <inheritdoc />
         public override void Process(IPatternScope scope, ICodeElementInfo codeElement)
         {
+            //TODO: Review: Issue 762: Shouldn't the base method be invoked here?
+            //base.Process(scope, codeElement);
             Validate(scope, codeElement);
 
             scope.TestBuilder.AddDeferredAction(codeElement, Order, delegate

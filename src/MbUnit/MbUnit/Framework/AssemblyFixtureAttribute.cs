@@ -63,6 +63,8 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
+            //TODO: Review: Issue 762: Shouldn't the base method be invoked here?
+            //base.Consume(containingScope, codeElement, skipChildren);
             var type = codeElement as ITypeInfo;
             Validate(containingScope, type);
 
