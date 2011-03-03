@@ -84,20 +84,50 @@ namespace Gallio.Icarus.Tests.TreeBuilders
             var nsLevel2Test = new TestData(nsLevel2, true);
             nsLevel1Test.Children.Add(nsLevel2Test);
 
-            var fixtureCodeElement = mocks.StrictMock<ICodeElementInfo>();
-            var fixtureCodeReference = new CodeReference("assembly", "nsRoot.nsLevel1.nsLevel2", "fixture", null, null);
-            var fixture = new Test("fixture", fixtureCodeElement);
+            var nsLevel2aCodeElement = mocks.StrictMock<ICodeElementInfo>();
+            var nsLevel2aCodeReference = new CodeReference("assembly", null, null, null, null);
+            var nsLevel2a = new Test("nsLevel2a", nsLevel2aCodeElement);
 
             using (mocks.Record())
             {
-                Expect.Call(fixtureCodeElement.CodeReference).Return(fixtureCodeReference);
-                Expect.Call(fixtureCodeElement.GetCodeLocation()).Return(new CodeLocation("about:blank", 1, 1));
+                Expect.Call(nsLevel2aCodeElement.CodeReference).Return(nsLevel2aCodeReference);
+                Expect.Call(nsLevel2aCodeElement.GetCodeLocation()).Return(new CodeLocation("about:blank", 1, 1));
             }
-            fixture.Kind = Gallio.Model.TestKinds.Fixture;
-            fixture.IsTestCase = false;
+            nsLevel2a.Kind = Gallio.Model.TestKinds.Namespace;
+            nsLevel2a.IsTestCase = false;
 
-            var fixtureTest = new TestData(fixture, true);
-            nsLevel2Test.Children.Add(fixtureTest);
+            var nsLevel2aTest = new TestData(nsLevel2a, true);
+            nsLevel1Test.Children.Add(nsLevel2aTest);
+
+            var fixture1CodeElement = mocks.StrictMock<ICodeElementInfo>();
+            var fixture1CodeReference = new CodeReference("assembly", "nsRoot.nsLevel1.nsLevel2", "fixture1", null, null);
+            var fixture1 = new Test("fixture1", fixture1CodeElement);
+
+            using (mocks.Record())
+            {
+                Expect.Call(fixture1CodeElement.CodeReference).Return(fixture1CodeReference);
+                Expect.Call(fixture1CodeElement.GetCodeLocation()).Return(new CodeLocation("about:blank", 1, 1));
+            }
+            fixture1.Kind = Gallio.Model.TestKinds.Fixture;
+            fixture1.IsTestCase = false;
+
+            var fixture1Test = new TestData(fixture1, true);
+            nsLevel2Test.Children.Add(fixture1Test);
+
+            var fixture2CodeElement = mocks.StrictMock<ICodeElementInfo>();
+            var fixture2CodeReference = new CodeReference("assembly", "nsRoot.nsLevel1.nsLevel2a", "fixture2", null, null);
+            var fixture2 = new Test("fixture2", fixture2CodeElement);
+
+            using (mocks.Record())
+            {
+                Expect.Call(fixture2CodeElement.CodeReference).Return(fixture2CodeReference);
+                Expect.Call(fixture2CodeElement.GetCodeLocation()).Return(new CodeLocation("about:blank", 1, 1));
+            }
+            fixture2.Kind = Gallio.Model.TestKinds.Fixture;
+            fixture2.IsTestCase = false;
+
+            var fixture2Test = new TestData(fixture2, true);
+            nsLevel2aTest.Children.Add(fixture2Test);
         }
 
         [Test]
@@ -120,13 +150,13 @@ namespace Gallio.Icarus.Tests.TreeBuilders
             var nsLevel1 = nsRoot.Nodes[0];
             Assert.AreEqual("nsLevel1", nsLevel1.Text);
 
-            Assert.AreEqual(1, nsLevel1.Nodes.Count);
+            Assert.AreEqual(2, nsLevel1.Nodes.Count);
             var nsLevel2 = nsLevel1.Nodes[0];
             Assert.AreEqual("nsLevel2", nsLevel2.Text);
 
             Assert.AreEqual(1, nsLevel2.Nodes.Count);
             var fixture = nsLevel2.Nodes[0];
-            Assert.AreEqual("fixture", fixture.Text);
+            Assert.AreEqual("fixture1", fixture.Text);
         }
 
         [Test]
@@ -141,13 +171,15 @@ namespace Gallio.Icarus.Tests.TreeBuilders
             var assembly = node.Nodes[0];
             Assert.AreEqual("assembly", assembly.Text);
 
-            Assert.AreEqual(1, assembly.Nodes.Count);
-            var ns = assembly.Nodes[0];
-            Assert.AreEqual("nsRoot.nsLevel1.nsLevel2", ns.Text);
+            Assert.AreEqual(2, assembly.Nodes.Count);
+            Assert.AreEqual("nsRoot.nsLevel1.nsLevel2", assembly.Nodes[0].Text);
+            Assert.AreEqual("nsRoot.nsLevel1.nsLevel2a", assembly.Nodes[1].Text);
 
-            Assert.AreEqual(1, ns.Nodes.Count);
-            var fixture = ns.Nodes[0];
-            Assert.AreEqual("fixture", fixture.Text);
+            Assert.AreEqual(1, assembly.Nodes[0].Nodes.Count);
+            Assert.AreEqual("fixture1", assembly.Nodes[0].Nodes[0].Text);
+
+            Assert.AreEqual(1, assembly.Nodes[1].Nodes.Count);
+            Assert.AreEqual("fixture2", assembly.Nodes[1].Nodes[0].Text);
         }
     }
 }

@@ -68,9 +68,13 @@ namespace Gallio.Icarus.TreeBuilders
 
             if (options.NamespaceHierarchy == NamespaceHierarchy.Flat)
             {
-                if (testTreeNode.TestKind == TestKinds.Namespace && parent.TestKind == TestKinds.Namespace)
+                if (FixtureNode(testData) && parent.TestKind != TestKinds.Namespace)
                 {
-                    parent.Text += string.Format(".{0}", testData.Name);
+                    var @namespace = testData.CodeReference.NamespaceName;
+                    parent = FindOrAddNamespaceNode(parent, @namespace, @namespace);
+                }
+                else if (testTreeNode.TestKind == TestKinds.Namespace)
+                {
                     return parent;
                 }
             }
