@@ -257,6 +257,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Reports\Vtl\FormatContentsHelperTest.cs" />
     <Compile Include="Reports\Vtl\FormatPagingHelperTest.cs" />
     <Compile Include="Runner\Reports\Preferences\HtmlReportSplitSettingsTest.cs" />
     <Compile Include="Reports\VtlReportFormatterTest.cs" />

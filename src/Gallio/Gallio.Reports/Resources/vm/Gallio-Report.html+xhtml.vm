@@ -106,6 +106,50 @@ detailPanel-$rid#between
     </div>
 #*
 	====================================================
+	 ANNOTATIONS SECTION
+	====================================================
+*#
+    #foreach ($annotation in $helper.Contents.GetAnnotations($report))
+          <li class="annotation annotation-type-$annotation.Type.ToString().ToLower()" >
+            <div class="annotation-message">[$annotation.Type.ToString()] $helper.Html.BreakWord($annotation.Message)</div>
+            #if ($annotation.CodeLocation.ToString().Length > 0)
+              #set ($path = $annotation.CodeLocation.Path)
+              #set ($line = $annotation.CodeLocation.Line)
+              #set ($column = $annotation.CodeLocation.Column)
+              <div class="annotation-location">Location: <a class="crossref" href="gallio:navigateTo?path=$path#if($line>0)&amp;line=$line#if($column>0)&amp;column=$column#end#end">$path#if($line>0)($line#if($column>0), $column#end)#end</a></div>
+            #end
+            #if ($annotation.CodeReference.AssemblyName != $null && $annotation.CodeReference.AssemblyName.Length > 0)
+              <div class="annotation-reference">Reference: $annotation.CodeReference.AssemblyName</div>
+            #end
+            #if ($annotation.Details != $null && $annotation.Details.Length > 0)
+              <div class="annotation-details">Details: $annotation.Details</div>
+            #end
+          </li>
+    #beforeall
+    <div id="Annotations" class="section">
+      <h2>Annotations</h2>
+      <div class="section-content">
+        <ul>
+    #afterall
+        </ul>
+      </div>
+    </div>
+    #end
+    
+    
+    
+    #if($annotation.CodeLocation.ToString().Length > 0)
+    Location: $annotation.CodeLocation.ToString()
+#end
+#if($annotation.CodeReference.ToString().Length > 0)
+    Reference: $annotation.CodeReference.ToString()
+#end
+#if($annotation.Details.Length > 0)
+    Details: $annotation.Details
+#end
+
+#*
+	====================================================
 	 SUMMARY SECTION
 	====================================================
 *#

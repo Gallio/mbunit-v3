@@ -57,6 +57,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ReportResourcesInstaller.cs" />
+    <Compile Include="Vtl\FormatContentsHelper.cs" />
     <Compile Include="Vtl\FormatPagingHelper.cs" />
     <Compile Include="Vtl\MultipleFilesVtlReportWriter.cs" />
     <Compile Include="Vtl\NamespaceDoc.cs" />

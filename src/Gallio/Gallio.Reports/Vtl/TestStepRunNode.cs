@@ -281,18 +281,6 @@ namespace Gallio.Reports.Vtl
         }
 
         /// <summary>
-        /// Returns the value of the specified attribute in a marker tag.
-        /// </summary>
-        /// <param name="markerTag">The marker tag.</param>
-        /// <param name="name">The name of the searched attribute.</param>
-        /// <returns>The value of the attribute, or an empty string if not found.</returns>
-        public static string GetMarkerAttributeValue(MarkerTag markerTag, string name)
-        {
-            int index = markerTag.Attributes.FindIndex(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-            return (index < 0) ? String.Empty : markerTag.Attributes[index].Value;
-        }
-
-        /// <summary>
         /// Determines whether the test step at the current index is visible on the specified page.
         /// </summary>
         /// <param name="pageIndex">The index of the page.</param>

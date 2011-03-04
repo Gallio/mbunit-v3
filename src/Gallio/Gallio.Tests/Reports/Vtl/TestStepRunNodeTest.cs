@@ -217,23 +217,5 @@ namespace Gallio.Tests.Reports.Vtl
             bool actualVisible = node.IsVisibleInPage(pageIndex, 1000);
             Assert.AreEqual(expectedVisible, actualVisible);
         }
-
-        [Test]
-        [Row("name1", "value1")]
-        [Row("name2", "value2")]
-        [Row("name3", "value3")]
-        [Row("inexisting", "", Description = "Inexisting attribute should return empty value.")]
-        public void GetMarkerAttributeValue(string searched, string expectedValue)
-        {
-            // Create sample marker tag.
-            var tag = new MarkerTag(Marker.Label);
-            tag.Attributes.Add(new MarkerTag.Attribute("name1", "value1"));
-            tag.Attributes.Add(new MarkerTag.Attribute("name2", "value2"));
-            tag.Attributes.Add(new MarkerTag.Attribute("name3", "value3"));
-
-            // Find attribute value.
-            string value = TestStepRunNode.GetMarkerAttributeValue(tag, searched);
-            Assert.AreEqual(expectedValue, value);
-        }
     }
 }

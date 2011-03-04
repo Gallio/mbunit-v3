@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -258,6 +258,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Reports\Vtl\FormatContentsHelperTest.cs" />
     <Compile Include="Reports\Vtl\FormatPagingHelperTest.cs" />
     <Compile Include="Runner\Reports\Preferences\HtmlReportSplitSettingsTest.cs" />
     <Compile Include="Reports\VtlReportFormatterTest.cs" />
