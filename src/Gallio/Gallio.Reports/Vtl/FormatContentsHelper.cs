@@ -59,6 +59,9 @@ namespace Gallio.Reports.Vtl
 
         private static IEnumerable<AnnotationData> GetAnnotationsWithType(Report report, AnnotationType type)
         {
+            if (report.TestModel == null)
+                yield break;
+
             foreach (AnnotationData annotation in report.TestModel.Annotations)
             {
                 if (annotation.Type == type)
