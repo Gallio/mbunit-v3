@@ -41,6 +41,7 @@ namespace Gallio.Icarus
         private int inconclusiveColor = Color.Gold.ToArgb();
         private int skippedColor = Color.SlateGray.ToArgb();
         private bool generateReportAfterTestRun = true;
+        private bool recursiveExecutionLog = true;
         private readonly List<string> extensionSpecifications = new List<string>();
 
         public static readonly string Extension = ".settings";
@@ -170,6 +171,12 @@ namespace Gallio.Icarus
             AnnotationsShowErrors = true;
             AnnotationsShowInfos = true;
             AnnotationsShowWarnings = true;
+        }
+
+        [XmlElement("recursiveExecutionLog")]
+        public bool RecursiveExecutionLog { 
+            get { return recursiveExecutionLog; }
+            set { recursiveExecutionLog = value; } 
         }
     }
 }

@@ -195,6 +195,12 @@ namespace Gallio.Icarus.Controllers
             set { settings.NamespaceHierarchy = value; }
         }
 
+        public bool RecursiveExecutionLog
+        {
+            get { return settings.RecursiveExecutionLog; }
+            set { settings.RecursiveExecutionLog = value; }
+        }
+
         public OptionsController(IFileSystem fileSystem, IXmlSerializer xmlSerializer, 
             IUnhandledExceptionPolicy unhandledExceptionPolicy, IEventAggregator eventAggregator)
         {

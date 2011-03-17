@@ -108,6 +108,13 @@
     <Compile Include="Controllers\Interfaces\IExecutionLogController.cs" />
     <Compile Include="Controllers\ProgressEvent.cs" />
     <Compile Include="Controllers\SavingProject.cs" />
+    <Compile Include="ControlPanel\ExecutionLogPane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\ExecutionLogPane.Designer.cs">
+      <DependentUpon>ExecutionLogPane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlPanel\ExecutionLogPaneProvider.cs" />
     <Compile Include="Events\OptionsChanged.cs" />
     <Compile Include="ExecutionLogWindow.cs">
       <SubType>Form</SubType>
@@ -464,6 +471,10 @@
     <Compile Include="Paths.cs" />
     <Compile Include="IcarusProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="ControlPanel\ExecutionLogPane.resx">
+      <DependentUpon>ExecutionLogPane.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="FiltersWindow.resx">
       <DependentUpon>FiltersWindow.cs</DependentUpon>
       <SubType>Designer</SubType>

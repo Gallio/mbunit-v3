@@ -85,6 +85,11 @@ namespace Gallio.UI.Reports
 
         public FileInfo Format(ICollection<TestStepRun> stepRuns, TestModelData modelData)
         {
+            return Format(stepRuns, modelData, true);
+        }
+
+        public FileInfo Format(ICollection<TestStepRun> stepRuns, TestModelData modelData, bool recurse)
+        {
             cacheGroup.Create();
 
             var htmlFile = reportFilePool.GetNext();
@@ -94,7 +99,7 @@ namespace Gallio.UI.Reports
 
             using (var htmlFileWriter = new StreamWriter(fileStream, new UTF8Encoding(false)))
             {
-                Format(htmlFileWriter, stepRuns, modelData);
+                Format(htmlFileWriter, stepRuns, modelData, recurse);
             }
 
             return htmlFile;
@@ -102,8 +107,13 @@ namespace Gallio.UI.Reports
 
         private void Format(TextWriter writer, IEnumerable<TestStepRun> stepRuns, TestModelData modelData)
         {
+            Format(writer, stepRuns, modelData, true);
+        }
+
+        private void Format(TextWriter writer, IEnumerable<TestStepRun> stepRuns, TestModelData modelData, bool recurse)
+        {
             var reportWriter = new TestStepReportWriter(this, writer, modelData);
-            reportWriter.RenderReport(stepRuns);
+            reportWriter.RenderReport(stepRuns, recurse);
         }
 
         private void SaveAttachments(TestStepRun stepRun)
@@ -237,6 +247,11 @@ namespace Gallio.UI.Reports
 
             public void RenderReport(IEnumerable<TestStepRun> rootRuns)
             {
+                RenderReport(rootRuns, true);
+            }
+
+            public void RenderReport(IEnumerable<TestStepRun> rootRuns, bool recurse)
+            {
                 bool flashEnabled = ShouldUseFlash(rootRuns);
 
                 writer.Write("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\r\n");
@@ -271,7 +286,7 @@ namespace Gallio.UI.Reports
                 writer.Write("<div id=\"Details\" class=\"section\"><div class=\"section-content\"><ul class=\"testStepRunContainer\">");
 
                 foreach (TestStepRun testStepRun in rootRuns)
-                    RenderTestStepRun(testStepRun, 1, flashEnabled);
+                    RenderTestStepRun(testStepRun, 1, flashEnabled, recurse);
 
                 writer.Write("</ul></div></div></div><script type=\"text/javascript\">reportLoaded();</script></body></html>");
                 writer.Flush();
@@ -362,7 +377,7 @@ namespace Gallio.UI.Reports
                 return statistics.PassedCount > 0 ? "status-passed" : "status-skipped";
             }
 
-            private void RenderTestStepRun(TestStepRun testStepRun, int nestingLevel, bool flashEnabled)
+            private void RenderTestStepRun(TestStepRun testStepRun, int nestingLevel, bool flashEnabled, bool recurse)
             {
                 formatter.SaveAttachments(testStepRun);
 
@@ -423,12 +438,15 @@ namespace Gallio.UI.Reports
                 writer.Write("</div>");
 
                 // child steps
-                if (testStepRun.Children.Count > 0)
+                if (recurse)
                 {
-                    writer.Write("<ul class=\"testStepRunContainer\">");
-                    foreach (TestStepRun tsr in testStepRun.Children)
-                        RenderTestStepRun(tsr, nestingLevel + 1, flashEnabled);
-                    writer.Write("</ul>");
+                    if (testStepRun.Children.Count > 0)
+                    {
+                        writer.Write("<ul class=\"testStepRunContainer\">");
+                        foreach (TestStepRun tsr in testStepRun.Children)
+                            RenderTestStepRun(tsr, nestingLevel + 1, flashEnabled, true);
+                        writer.Write("</ul>");
+                    }
                 }
                 writer.Write("</div></li>");
             }

@@ -14,22 +14,22 @@
 // limitations under the License.
 
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.UI.ControlPanel.Preferences;
 
-namespace Gallio.Icarus
+namespace Gallio.Icarus.ControlPanel
 {
-    internal partial class ExecutionLogWindow : DockWindow
+    public class ExecutionLogPaneProvider : IPreferencePaneProvider
     {
-        public ExecutionLogWindow(IExecutionLogController executionLogController, IOptionsController optionsController)
+        private readonly IOptionsController optionsController;
+
+        public ExecutionLogPaneProvider(IOptionsController optionsController)
         {
-            InitializeComponent();
+            this.optionsController = optionsController;
+        }
 
-            executionLogController.ExecutionLogUpdated += (sender, e) =>
-            {
-                if (!IsHidden)
-                    reportViewer.Show(e.TestStepRuns, optionsController.RecursiveExecutionLog);
-            };
-
-            executionLogController.ExecutionLogReset += (sender, e) => reportViewer.Clear();
+        public PreferencePane CreatePreferencePane()
+        {
+            return new ExecutionLogPane(optionsController);
         }
     }
 }

@@ -80,7 +80,17 @@ namespace Gallio.UI.Reports
         /// <param name="testStepRuns">The test step runs.</param>
         public void Show(ICollection<TestStepRun> testStepRuns)
         {
-            Show(testStepRuns, null);
+            Show(testStepRuns, true);
+        }
+
+        /// <summary>
+        /// Displays information about a set of test step run.
+        /// </summary>
+        /// <param name="testStepRuns">The test step runs.</param>
+        /// <param name="recurse">Show child test results recursively</param>
+        public void Show(ICollection<TestStepRun> testStepRuns, bool recurse)
+        {
+            Show(testStepRuns, null, recurse);
         }
 
         /// <summary>
@@ -89,7 +99,8 @@ namespace Gallio.UI.Reports
         /// </summary>
         /// <param name="testStepRuns">The test step runs.</param>
         /// <param name="testModelData">The test model data, or null if not available.</param>
-        public void Show(ICollection<TestStepRun> testStepRuns, TestModelData testModelData)
+        /// <param name="recurse">Show child test results recursively</param>
+        public void Show(ICollection<TestStepRun> testStepRuns, TestModelData testModelData, bool recurse)
         {
             if (testStepRuns == null || testStepRuns.Contains(null))
                 throw new ArgumentNullException("testStepRuns");
@@ -101,7 +112,7 @@ namespace Gallio.UI.Reports
             else
             {
                 EnsureFormatter();
-                htmlFile = formatter.Format(testStepRuns, testModelData);
+                htmlFile = formatter.Format(testStepRuns, testModelData, recurse);
             }
 
             UpdateAsync();

@@ -121,7 +121,7 @@ namespace Gallio.Icarus
             testResults = new TestResults.TestResults(testResultsController, optionsController, testTreeModel, testStatistics);
             runtimeLogWindow = new RuntimeLogWindow(runtimeLogController);
             filtersWindow = new FiltersWindow(filterController, projectController);
-            executionLogWindow = new ExecutionLogWindow(executionLogController);
+            executionLogWindow = new ExecutionLogWindow(executionLogController, optionsController);
             annotationsWindow = new AnnotationsWindow(annotationsController, sourceCodeController);
 
             // moved this below the service locator calls as the optionsController was being used _before_ it was initialised :(

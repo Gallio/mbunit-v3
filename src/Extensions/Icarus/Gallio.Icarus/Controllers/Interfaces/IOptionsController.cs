@@ -50,6 +50,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         bool AnnotationsShowInfos { get; set; }
         IList<string> TestRunnerExtensions { get; }
         NamespaceHierarchy NamespaceHierarchy { get; set; }
+        bool RecursiveExecutionLog { get; set; }
 
         void Cancel();
         void Load();

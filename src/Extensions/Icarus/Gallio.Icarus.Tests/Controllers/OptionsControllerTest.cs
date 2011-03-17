@@ -299,5 +299,15 @@ namespace Gallio.Icarus.Tests.Controllers
             optionsController.MinLogSeverity = LogSeverity.Debug;
             Assert.AreEqual(LogSeverity.Debug, optionsController.MinLogSeverity);
         }
+
+        [Test]
+        public void RecursiveExecutionLog_Test()
+        {
+            SetUpOptionsController(new Settings());
+
+            Assert.IsTrue(optionsController.RecursiveExecutionLog);
+            optionsController.RecursiveExecutionLog = false;
+            Assert.IsFalse(optionsController.RecursiveExecutionLog);
+        }
     }
 }
