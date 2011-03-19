@@ -28,7 +28,7 @@ namespace Gallio.UI.ProgressMonitoring
         private readonly ITaskQueue taskQueue;
         private readonly IEventAggregator eventAggregator;
         private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
-        private readonly IDictionary<string, ThreadTask> currentWorkerTasks;
+        private readonly LockBox<IDictionary<string, ThreadTask>> currentWorkerTasks;
 
         ///<summary>
         /// Ctor.
@@ -42,13 +42,13 @@ namespace Gallio.UI.ProgressMonitoring
             this.taskQueue = taskQueue;
             this.eventAggregator = eventAggregator;
             this.unhandledExceptionPolicy = unhandledExceptionPolicy;
-            currentWorkerTasks = new Dictionary<string, ThreadTask>();
+            currentWorkerTasks = new LockBox<IDictionary<string, ThreadTask>>(new Dictionary<string, ThreadTask>());
         }
 
         /// <inheritdoc />
         public void RunTask(string queueId)
         {
-            if (currentWorkerTasks.ContainsKey(queueId))
+            if (currentWorkerTasks.Read(tasks => tasks.ContainsKey(queueId)))
                 return;
 
             var command = taskQueue.GetNextTask(queueId);
@@ -68,7 +68,7 @@ namespace Gallio.UI.ProgressMonitoring
                 command.Execute(progressMonitor);
             });
 
-            currentWorkerTasks.Add(queueId, workerTask);
+            currentWorkerTasks.Write(tasks => tasks.Add(queueId, workerTask));
 
             workerTask.Terminated += delegate
             {
@@ -85,10 +85,7 @@ namespace Gallio.UI.ProgressMonitoring
                 ProcessFailure(workerTask.Result.Exception, queueId);
             }
 
-            lock (this)
-            {
-                currentWorkerTasks.Remove(queueId);
-            }
+            currentWorkerTasks.Write(tasks => tasks.Remove(queueId));
 
             eventAggregator.Send(this, new TaskCompleted(queueId));
 
