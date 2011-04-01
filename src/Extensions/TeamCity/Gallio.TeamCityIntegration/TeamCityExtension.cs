@@ -103,7 +103,7 @@ namespace Gallio.TeamCityIntegration
                 BeginStep(step, () =>
                 {
                     string name = step.Name;
-                    if (name.Length != 0)
+                    if (step.FullName.Length != 0 && name.Length != 0)
                     {
                         if (step.IsTestCase)
                         {
@@ -125,7 +125,7 @@ namespace Gallio.TeamCityIntegration
                 EndStep(step, () =>
                 {
                     string name = step.Name;
-                    if (name.Length != 0)
+                    if (step.FullName.Length != 0 && name.Length != 0)
                     {
                         if (step.IsTestCase)
                         {

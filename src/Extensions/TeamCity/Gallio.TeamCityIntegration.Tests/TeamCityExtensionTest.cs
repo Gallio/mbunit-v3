@@ -142,7 +142,7 @@ namespace Gallio.TeamCityIntegration.Tests
                 new TestData("id", "testName", "testFullName"),
                 new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "id") { IsPrimary = false, IsTestCase = true })));
 
-            Assert.AreEqual("##teamcity[testStarted name='stepFullName' captureStandardOutput=\'false\' flowId='flow']\n", log.ToString());
+            Assert.AreEqual("##teamcity[testStarted name='stepName' captureStandardOutput=\'false\' flowId='flow']\n", log.ToString());
         }
 
         [Test]
@@ -153,7 +153,7 @@ namespace Gallio.TeamCityIntegration.Tests
                 new TestData("id", "testName", "testFullName"),
                 new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "id") { IsPrimary = true, IsTestCase = false })));
 
-            Assert.AreEqual("##teamcity[testSuiteStarted name='stepFullName' flowId='flow']\n", log.ToString());
+            Assert.AreEqual("##teamcity[testSuiteStarted name='stepName' flowId='flow']\n", log.ToString());
         }
 
         [Test]
@@ -164,7 +164,7 @@ namespace Gallio.TeamCityIntegration.Tests
                 new TestData("id", "testName", "testFullName"),
                 new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "id") { IsPrimary = true, IsTestCase = true })));
 
-            Assert.AreEqual("##teamcity[testStarted name='stepFullName' captureStandardOutput=\'false\' flowId='flow']\n", log.ToString());
+            Assert.AreEqual("##teamcity[testStarted name='stepName' captureStandardOutput=\'false\' flowId='flow']\n", log.ToString());
         }
 
         [Test]
@@ -206,7 +206,7 @@ namespace Gallio.TeamCityIntegration.Tests
 
             dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(report, testData, testStepRun));
 
-            Assert.AreEqual("##teamcity[testSuiteFinished name='stepFullName' flowId='flow']\n", log.ToString());
+            Assert.AreEqual("##teamcity[testSuiteFinished name='stepName' flowId='flow']\n", log.ToString());
         }
 
         [Test]
@@ -224,9 +224,9 @@ namespace Gallio.TeamCityIntegration.Tests
 
             dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(report, testData, testStepRun));
 
-            Assert.AreEqual("##teamcity[testStdOut name='stepFullName' out='output|n|ninput|n|ntrace|n|nlog' flowId='flow']\n"
-                + "##teamcity[testStdErr name='stepFullName' out='error|n|nwarning|n|nfailure' flowId='flow']\n"
-                + "##teamcity[testFinished name='stepFullName' duration='300' flowId='flow']\n", log.ToString());
+            Assert.AreEqual("##teamcity[testStdOut name='stepName' out='output|n|ninput|n|ntrace|n|nlog' flowId='flow']\n"
+                + "##teamcity[testStdErr name='stepName' out='error|n|nwarning|n|nfailure' flowId='flow']\n"
+                + "##teamcity[testFinished name='stepName' duration='300' flowId='flow']\n", log.ToString());
         }
 
         [Test]
@@ -244,10 +244,10 @@ namespace Gallio.TeamCityIntegration.Tests
 
             dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(report, testData, testStepRun));
 
-            Assert.AreEqual("##teamcity[testStdOut name='stepFullName' out='output|n|ninput|n|ntrace|n|nlog' flowId='flow']\n"
-                + "##teamcity[testStdErr name='stepFullName' out='error|n|nwarning' flowId='flow']\n"
-                + "##teamcity[testFailed name='stepFullName' message='myError' details='failure' flowId='flow']\n"
-                + "##teamcity[testFinished name='stepFullName' duration='300' flowId='flow']\n", log.ToString());
+            Assert.AreEqual("##teamcity[testStdOut name='stepName' out='output|n|ninput|n|ntrace|n|nlog' flowId='flow']\n"
+                + "##teamcity[testStdErr name='stepName' out='error|n|nwarning' flowId='flow']\n"
+                + "##teamcity[testFailed name='stepName' message='myError' details='failure' flowId='flow']\n"
+                + "##teamcity[testFinished name='stepName' duration='300' flowId='flow']\n", log.ToString());
         }
 
         [Test]
@@ -265,10 +265,10 @@ namespace Gallio.TeamCityIntegration.Tests
 
             dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(report, testData, testStepRun));
 
-            Assert.AreEqual("##teamcity[testStdOut name='stepFullName' out='output|n|ninput|n|ntrace|n|nlog' flowId='flow']\n"
-                + "##teamcity[testStdErr name='stepFullName' out='error|n|nfailure' flowId='flow']\n"
-                + "##teamcity[testIgnored name='stepFullName' message='warning' flowId='flow']\n"
-                + "##teamcity[testFinished name='stepFullName' duration='300' flowId='flow']\n", log.ToString());
+            Assert.AreEqual("##teamcity[testStdOut name='stepName' out='output|n|ninput|n|ntrace|n|nlog' flowId='flow']\n"
+                + "##teamcity[testStdErr name='stepName' out='error|n|nfailure' flowId='flow']\n"
+                + "##teamcity[testIgnored name='stepName' message='warning' flowId='flow']\n"
+                + "##teamcity[testFinished name='stepName' duration='300' flowId='flow']\n", log.ToString());
         }
 
         [Test]
@@ -305,18 +305,18 @@ namespace Gallio.TeamCityIntegration.Tests
             Assert.AreEqual(
                 "##teamcity[testSuiteStarted name='root' flowId='flow']\n" +
                 "##teamcity[testSuiteStarted name='childA' flowId='flow']\n" +
-                "##teamcity[testSuiteStarted name='childA/grandChildA1' flowId='flow']\n" +
-                "##teamcity[testSuiteFinished name='childA/grandChildA1' flowId='flow']\n" +
-                "##teamcity[testSuiteStarted name='childA/grandChildA2' flowId='flow']\n" +
-                "##teamcity[testSuiteFinished name='childA/grandChildA2' flowId='flow']\n" +
+                "##teamcity[testSuiteStarted name='grandChildA1' flowId='flow']\n" +
+                "##teamcity[testSuiteFinished name='grandChildA1' flowId='flow']\n" +
+                "##teamcity[testSuiteStarted name='grandChildA2' flowId='flow']\n" +
+                "##teamcity[testSuiteFinished name='grandChildA2' flowId='flow']\n" +
                 "##teamcity[testSuiteFinished name='childA' flowId='flow']\n" +
                 "##teamcity[testSuiteStarted name='childB' flowId='flow']\n" +
-                "##teamcity[testSuiteStarted name='childB/grandChildB1' flowId='flow']\n" +
-                "##teamcity[testSuiteFinished name='childB/grandChildB1' flowId='flow']\n" +
-                "##teamcity[testSuiteStarted name='childB/grandChildB2' flowId='flow']\n" +
-                "##teamcity[testSuiteFinished name='childB/grandChildB2' flowId='flow']\n" +
-                "##teamcity[testSuiteStarted name='childB/grandChildB3' flowId='flow']\n" +
-                "##teamcity[testSuiteFinished name='childB/grandChildB3' flowId='flow']\n" +
+                "##teamcity[testSuiteStarted name='grandChildB1' flowId='flow']\n" +
+                "##teamcity[testSuiteFinished name='grandChildB1' flowId='flow']\n" +
+                "##teamcity[testSuiteStarted name='grandChildB2' flowId='flow']\n" +
+                "##teamcity[testSuiteFinished name='grandChildB2' flowId='flow']\n" +
+                "##teamcity[testSuiteStarted name='grandChildB3' flowId='flow']\n" +
+                "##teamcity[testSuiteFinished name='grandChildB3' flowId='flow']\n" +
                 "##teamcity[testSuiteFinished name='childB' flowId='flow']\n" +
                 "##teamcity[testSuiteFinished name='root' flowId='flow']\n",
                 log.ToString());
