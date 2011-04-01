@@ -68,6 +68,7 @@
     <Compile Include="Framework\MirrorTest.cs" />
     <Compile Include="Framework\MirrorExceptionTest.cs" />
     <Compile Include="Framework\RetryTest.cs" />
+    <Compile Include="Framework\SharedDataSetTest.cs" />
     <Compile Include="Integration\ConfigurationFileTest.cs" />
     <Compile Include="Framework\RepeatTest.cs" />
     <Compile Include="Framework\ExplicitTest.cs" />

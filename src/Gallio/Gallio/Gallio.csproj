@@ -314,6 +314,7 @@
     <Compile Include="Framework\CustomComparers.cs" />
     <Compile Include="Framework\Pattern\ExtensionPointPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\FixtureMemberInvokerTargets.cs" />
+    <Compile Include="Framework\Data\TestParameterDataBinding.cs" />
     <Compile Include="Framework\Pattern\PatternTestFrameworkExtensionProvider.cs" />
     <Compile Include="Framework\Pattern\PatternTestExplorer.cs" />
     <Compile Include="Framework\Pattern\PatternTestModel.cs" />

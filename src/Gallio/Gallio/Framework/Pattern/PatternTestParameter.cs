@@ -103,7 +103,7 @@ namespace Gallio.Framework.Pattern
 
         private IDataBinder GetImplicitBinder()
         {
-            DataBinding binding = new DataBinding(dataContext.ResolveImplicitDataBindingIndex(), Name);
+            DataBinding binding = new TestParameterDataBinding(dataContext.ResolveImplicitDataBindingIndex(), Name, this);
             return new ScalarDataBinder(binding, "");
         }
     }
