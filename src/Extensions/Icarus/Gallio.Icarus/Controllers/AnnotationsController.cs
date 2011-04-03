@@ -19,7 +19,6 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
 using Gallio.Model;
 using Gallio.Model.Schema;
-using Gallio.Runner.Reports.Schema;
 using Gallio.UI.Events;
 
 namespace Gallio.Icarus.Controllers
@@ -29,62 +28,46 @@ namespace Gallio.Icarus.Controllers
     {
         private readonly ITestController testController;
         private readonly IOptionsController optionsController;
-        private readonly List<AnnotationData> annotationsList = new List<AnnotationData>();
-        private readonly BindingList<AnnotationData> annotations;
+        private List<AnnotationData> annotations = new List<AnnotationData>();
         private bool showErrors, showWarnings, showInfos;
-        private int errors, warnings, infos;
 
-        public BindingList<AnnotationData> Annotations
+        public IEnumerable<AnnotationData> Annotations
         {
-            get { return annotations; }
-        }
-
-        public bool ShowErrors
-        {
-            get { return showErrors; }
-            set
+            get
             {
-                showErrors = value;
-                optionsController.AnnotationsShowErrors = value;
-                UpdateList();
-            }
-        }
-
-        public bool ShowWarnings
-        {
-            get { return showWarnings; }
-            set
-            {
-                showWarnings = value;
-                optionsController.AnnotationsShowWarnings = value;
-                UpdateList();
-            }
-        }
-
-        public bool ShowInfos
-        {
-            get { return showInfos; }
-            set
-            {
-                showInfos = value;
-                optionsController.AnnotationsShowInfos = value;
-                UpdateList();
+                foreach (var annotation in annotations)
+                {
+                    if (!FilterAnnotation(annotation))
+                        yield return annotation;
+                }
             }
         }
 
         public string ErrorsText
         {
-            get { return (errors == 1) ? string.Format("{0} Error", errors) : string.Format("{0} Errors", errors); }
+            get
+            {
+                var errors = Count(AnnotationType.Error);
+                return (errors == 1) ? string.Format("{0} Error", errors) : string.Format("{0} Errors", errors);
+            }
         }
 
         public string WarningsText
         {
-            get { return (warnings == 1) ? string.Format("{0} Warning", warnings) : string.Format("{0} Warnings", warnings); }
+            get
+            {
+                var warnings = Count(AnnotationType.Warning);
+                return (warnings == 1) ? string.Format("{0} Warning", warnings) : string.Format("{0} Warnings", warnings);
+            }
         }
 
         public string InfoText
         {
-            get { return (infos == 1) ? string.Format("{0} Info", infos) : string.Format("{0} Infos", infos); }
+            get
+            {
+                var infos = Count(AnnotationType.Info);
+                return (infos == 1) ? string.Format("{0} Info", infos) : string.Format("{0} Infos", infos);
+            }
         }
 
         public AnnotationsController(ITestController testController, IOptionsController optionsController)
@@ -95,48 +78,62 @@ namespace Gallio.Icarus.Controllers
             showErrors = optionsController.AnnotationsShowErrors;
             showWarnings = optionsController.AnnotationsShowWarnings;
             showInfos = optionsController.AnnotationsShowInfos;
+        }
 
-            annotations = new BindingList<AnnotationData>(annotationsList);
+        public void ShowErrors(bool value)
+        {
+            showErrors = value;
+            optionsController.AnnotationsShowErrors = value;
+            UpdateList();
+        }
+
+        public void ShowWarnings(bool value)
+        {
+            showWarnings = value;
+            optionsController.AnnotationsShowWarnings = value;
+            UpdateList();
+        }
+
+        public void ShowInfos(bool value)
+        {
+            showInfos = value;
+            optionsController.AnnotationsShowInfos = value;
+            UpdateList();
         }
 
         private void UpdateList()
         {
             annotations.Clear();
-            errors = warnings = infos = 0;
-            testController.ReadReport(GetAnnotations);
-        }
-
-        private void GetAnnotations(Report report)
-        {
-            foreach (var annotationData in report.TestModel.Annotations)
-            {
-                UpdateStatistics(annotationData);
-            }
+            testController.ReadReport(r => annotations = r.TestModel.Annotations);
+            OnPropertyChanged(new PropertyChangedEventArgs("Annotations"));
             OnPropertyChanged(new PropertyChangedEventArgs("ErrorsText"));
             OnPropertyChanged(new PropertyChangedEventArgs("WarningsText"));
             OnPropertyChanged(new PropertyChangedEventArgs("InfoText"));
         }
 
-        private void UpdateStatistics(AnnotationData annotationData)
+        private bool FilterAnnotation(AnnotationData annotationData)
         {
             switch (annotationData.Type)
             {
                 case AnnotationType.Error:
-                    if (showErrors)
-                        annotations.Add(annotationData);
-                    errors++;
-                    break;
+                    return !showErrors;
                 case AnnotationType.Warning:
-                    if (showWarnings)
-                        annotations.Add(annotationData);
-                    warnings++;
-                    break;
+                    return !showWarnings;
                 case AnnotationType.Info:
-                    if (showInfos)
-                        annotations.Add(annotationData);
-                    infos++;
-                    break;
+                    return !showInfos;
             }
+            return false;
+        }
+
+        private int Count(AnnotationType annotationType)
+        {
+            var count = 0;
+            foreach (var annotation in annotations)
+            {
+                if (annotation.Type == annotationType)
+                    count++;
+            }
+            return count;
         }
 
         public void Handle(ExploreFinished @event)

@@ -13,19 +13,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using System.ComponentModel;
 using Gallio.Model.Schema;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {
-    public interface IAnnotationsController
+    public interface IAnnotationsController : INotifyPropertyChanged
     {
-        BindingList<AnnotationData> Annotations { get; }
-        bool ShowErrors { get; set; }
-        bool ShowWarnings { get; set; }
-        bool ShowInfos { get; set; }
+        IEnumerable<AnnotationData> Annotations { get; }
         string ErrorsText { get; }
         string WarningsText { get; }
         string InfoText { get; }
+
+        void ShowErrors(bool value);
+        void ShowWarnings(bool value);
+        void ShowInfos(bool value);
     }
 }

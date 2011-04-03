@@ -34,18 +34,19 @@ namespace Gallio.Icarus
             
             InitializeComponent();
 
-            annotationsController.Annotations.ListChanged += (sender, e) => BeginInvoke((MethodInvoker) PopulateListView);
+            annotationsController.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "Annotations")
+                    PopulateListView();
+            };
 
-            showErrorsToolStripButton.DataBindings.Add("Checked", annotationsController, "ShowErrors", false, 
-                DataSourceUpdateMode.OnPropertyChanged);
+            showErrorsToolStripButton.Click += (s, e) => annotationsController.ShowErrors(showErrorsToolStripButton.Checked);
             showErrorsToolStripButton.DataBindings.Add("Text", annotationsController, "ErrorsText");
 
-            showWarningsToolStripButton.DataBindings.Add("Checked", annotationsController, "ShowWarnings", false, 
-                DataSourceUpdateMode.OnPropertyChanged);
+            showWarningsToolStripButton.Click += (s, e) => annotationsController.ShowWarnings(showWarningsToolStripButton.Checked);
             showWarningsToolStripButton.DataBindings.Add("Text", annotationsController, "WarningsText");
 
-            showInfoToolStripButton.DataBindings.Add("Checked", annotationsController, "ShowInfos", false, 
-                DataSourceUpdateMode.OnPropertyChanged);
+            showInfoToolStripButton.Click += (s, e) => annotationsController.ShowInfos(showInfoToolStripButton.Checked);
             showInfoToolStripButton.DataBindings.Add("Text", annotationsController, "InfoText");
         }
 
@@ -53,7 +54,7 @@ namespace Gallio.Icarus
         {
             annotationsListView.Items.Clear();
 
-            foreach (AnnotationData annotationData in annotationsController.Annotations)
+            foreach (var annotationData in annotationsController.Annotations)
             {
                 switch (annotationData.Type)
                 {

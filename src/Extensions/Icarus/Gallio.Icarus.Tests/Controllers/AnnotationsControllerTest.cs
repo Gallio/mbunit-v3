@@ -47,12 +47,8 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             SetupAnnotationData(AnnotationType.Error);
             
-            annotationsController.Handle(new ExploreFinished());
-            
-            // Assert
-            Assert.IsFalse(annotationsController.ShowErrors);
-            Assert.Count(0, annotationsController.Annotations);
-            annotationsController.ShowErrors = true;
+            annotationsController.ShowErrors(true);
+
             Assert.Count(1, annotationsController.Annotations);
             Assert.AreEqual("1 Error", annotationsController.ErrorsText);
         }
@@ -62,11 +58,8 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             SetupAnnotationData(AnnotationType.Warning);
 
-            annotationsController.Handle(new ExploreFinished());
+            annotationsController.ShowWarnings(true);
 
-            Assert.IsFalse(annotationsController.ShowWarnings);
-            Assert.Count(0, annotationsController.Annotations);
-            annotationsController.ShowWarnings = true;
             Assert.Count(1, annotationsController.Annotations);
             Assert.AreEqual("1 Warning", annotationsController.WarningsText);
         }
@@ -76,11 +69,8 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             SetupAnnotationData(AnnotationType.Info);
 
-            annotationsController.Handle(new ExploreFinished());
+            annotationsController.ShowInfos(true);
 
-            Assert.IsFalse(annotationsController.ShowInfos);
-            Assert.Count(0, annotationsController.Annotations);
-            annotationsController.ShowInfos = true;
             Assert.Count(1, annotationsController.Annotations);
             Assert.AreEqual("1 Info", annotationsController.InfoText);
         }
@@ -90,13 +80,17 @@ namespace Gallio.Icarus.Tests.Controllers
             var testModelData = new TestModelData();
             testModelData.Annotations.Add(new AnnotationData(annotationType, CodeLocation.Unknown, 
                 new CodeReference(), "message", "details"));
+
             var report = new Report
             {
                 TestModel = testModelData
             };
 
-            testController.Stub(x => x.ReadReport(null)).IgnoreArguments().Do((Action<ReadAction<Report>>) 
-                (action => action(report)));
+            testController
+                .Stub(x => x.ReadReport(null))
+                .IgnoreArguments()
+                .Repeat.Any()
+                .Do((Action<ReadAction<Report>>)(action => action(report)));
         }
     }
 }
