@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gallio", "Gallio", "{00CE3107-C47F-4D2B-986B-763181832B51}"
@@ -228,11 +228,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Copy", "Extensions\C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Copy.Tests", "Extensions\Copy\Gallio.Copy.Tests\Gallio.Copy.Tests.csproj", "{27D9A0F2-8E7E-45D4-8664-00D23ECBBB90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter25", "Extensions\NUnit\Gallio.NUnitAdapter\Gallio.NUnitAdapter25.csproj", "{8C2F707D-A342-434B-92CD-0AAD5112C7FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter253", "Extensions\NUnit\Gallio.NUnitAdapter\Gallio.NUnitAdapter253.csproj", "{8C2F707D-A342-434B-92CD-0AAD5112C7FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter25.TestResources", "Extensions\NUnit\Gallio.NUnitAdapter.TestResources\Gallio.NUnitAdapter25.TestResources.csproj", "{7B5AABA5-3349-4D21-8813-D0796EA6E625}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter253.TestResources", "Extensions\NUnit\Gallio.NUnitAdapter.TestResources\Gallio.NUnitAdapter253.TestResources.csproj", "{7B5AABA5-3349-4D21-8813-D0796EA6E625}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter25.Tests", "Extensions\NUnit\Gallio.NUnitAdapter.Tests\Gallio.NUnitAdapter25.Tests.csproj", "{5CCF0411-EDE6-4A26-8996-B4E7A358E9E9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter253.Tests", "Extensions\NUnit\Gallio.NUnitAdapter.Tests\Gallio.NUnitAdapter253.Tests.csproj", "{5CCF0411-EDE6-4A26-8996-B4E7A358E9E9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Ambience.UI", "Extensions\Ambience\Gallio.Ambience.UI\Gallio.Ambience.UI.csproj", "{198C5EA8-B6F2-4EBE-8581-09BD1BD66D60}"
 EndProject
