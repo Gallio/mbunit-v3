@@ -171,6 +171,7 @@
     <Compile Include="Common\Xml\Paths\IXmlPathTest.cs" />
     <Compile Include="Framework\Assertions\AssertionHelperTest.cs" />
     <Compile Include="Framework\CaptureTest.cs" />
+    <Compile Include="Framework\CompositePatternAttributeTest.cs" />
     <Compile Include="Framework\CustomEqualityComparersTest.cs" />
     <Compile Include="Framework\CustomComparersTest.cs" />
     <Compile Include="Framework\Data\Generation\SequentialInt32GeneratorTest.cs" />

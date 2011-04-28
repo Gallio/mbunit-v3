@@ -312,6 +312,7 @@
     <Compile Include="Framework\IComparisonSemantics.cs" />
     <Compile Include="Framework\CustomEqualityComparers.cs" />
     <Compile Include="Framework\CustomComparers.cs" />
+    <Compile Include="Framework\Pattern\CompositePatternAttribute.cs" />
     <Compile Include="Framework\Pattern\ExtensionPointPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\FixtureMemberInvokerTargets.cs" />
     <Compile Include="Framework\Data\TestParameterDataBinding.cs" />
