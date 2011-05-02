@@ -2,46 +2,47 @@
   <Import Project="$(RootDir)\bin\Module.targets" />
   
   <ItemGroup>
-    <CSharpProject Include="Gallio.XunitAdapter\Gallio.XunitAdapter$(ProjectVariant).csproj" />
-
-    <CSharpProject Include="Gallio.XunitAdapter.TestResources\Gallio.XunitAdapter.TestResources$(ProjectVariant).csproj" />
-    <CSharpProject Include="Gallio.XunitAdapter.Tests\Gallio.XunitAdapter.Tests$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.XunitAdapter\Gallio.XunitAdapterLatest$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.XunitAdapter.TestResources\Gallio.XunitAdapterLatest.TestResources$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.XunitAdapter.Tests\Gallio.XunitAdapterLatest.Tests$(ProjectVariant).csproj" />
     
-    <AssemblyFile Include="Gallio.XunitAdapter\bin\Gallio.XunitAdapter.dll">
-      <ImagePath>bin\Xunit</ImagePath>
+    <AssemblyFile Include="Gallio.XunitAdapter\bin\Gallio.XunitAdapterLatest.dll">
+      <ImagePath>bin\Xunit\Latest</ImagePath>
     </AssemblyFile>
-    <PdbFile Include="Gallio.XunitAdapter\bin\Gallio.XunitAdapter.pdb">
-		<ImagePath>bin\Xunit</ImagePath>
+    <PdbFile Include="Gallio.XunitAdapter\bin\Gallio.XunitAdapterLatest.pdb">
+		<ImagePath>bin\Xunit\Latest</ImagePath>
     </PdbFile>
-    <PluginFile Include="Gallio.XunitAdapter\Gallio.XunitAdapter.plugin">
-      <ImagePath>bin\Xunit</ImagePath>
+    <PluginFile Include="Gallio.XunitAdapter\Gallio.XunitAdapterLatest.plugin">
+      <ImagePath>bin\Xunit\Latest</ImagePath>
     </PluginFile>
     <File Include="Gallio.XunitAdapter\xunit.dll.tdnet">
-      <ImagePath>bin\Xunit</ImagePath>
+      <ImagePath>bin\Xunit\Latest</ImagePath>
     </File>
     <File Include="Gallio.XunitAdapter\Readme.txt">
-      <ImagePath>bin\Xunit</ImagePath>
+      <ImagePath>bin\Xunit\Latest</ImagePath>
     </File>    
     <File Include="Gallio.XunitAdapter\Resources\xUnit.ico">
-      <ImagePath>bin\Xunit\Resources</ImagePath>
+      <ImagePath>bin\Xunit\Latest\Resources</ImagePath>
     </File>
     
-    <File Include="libs\EULA.txt">
-      <ImagePath>bin\Xunit</ImagePath>
+    <File Include="libs\Latest\EULA.txt">
+      <ImagePath>bin\Xunit\Latest</ImagePath>
     </File>
-    <File Include="libs\xunit.dll">
-      <ImagePath>bin\Xunit</ImagePath>
+    <File Include="libs\Latest\xunit.dll">
+      <ImagePath>bin\Xunit\Latest</ImagePath>
     </File>
-    <File Include="libs\xunit.xml">
-      <ImagePath>bin\Xunit</ImagePath>
+    <File Include="libs\Latest\xunit.xml">
+      <ImagePath>bin\Xunit\Latest</ImagePath>
     </File>
-    <File Include="libs\xunit.extensions.dll">
-      <ImagePath>bin\Xunit</ImagePath>
+    <File Include="libs\Latest\xunit.extensions.dll">
+      <ImagePath>bin\Xunit\Latest</ImagePath>
     </File>
-    <File Include="libs\xunit.extensions.xml">
-      <ImagePath>bin\Xunit</ImagePath>
+    <File Include="libs\Latest\xunit.extensions.xml">
+      <ImagePath>bin\Xunit\Latest</ImagePath>
     </File>
     
-    <TestAssembly Include="Gallio.XunitAdapter.Tests\bin\Gallio.XunitAdapter.Tests.dll" />
-  </ItemGroup>
+    <TestAssembly Include="Gallio.XunitAdapter.Tests\bin\Latest\Gallio.XunitAdapterLatest.Tests.dll" />
+
+    <Feature Include="FEATURE_XUNIT_ADAPTER_LATEST" />
+    </ItemGroup>
 </Project>
