@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.XunitAdapter.Tests</RootNamespace>
-    <AssemblyName>Gallio.XunitAdapter.Tests</AssemblyName>
+    <AssemblyName>Gallio.XunitAdapter161.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -31,25 +31,25 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <OutputPath>bin\v1.6.1\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;XUNIT161</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.XunitAdapter.Tests.xml</DocumentationFile>
+    <DocumentationFile>bin\Gallio.XunitAdapter161.Tests.xml</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <OutputPath>bin\v1.6.1\</OutputPath>
+    <DefineConstants>TRACE;XUNIT161</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.XunitAdapter.Tests.xml</DocumentationFile>
+    <DocumentationFile>bin\Gallio.XunitAdapter161.Tests.xml</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
@@ -61,7 +61,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="xunit, Version=1.6.1.1521, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\xunit.dll</HintPath>
+      <HintPath>..\libs\v1.6.1\xunit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -92,13 +92,13 @@
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
       <Name>MbUnit.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.XunitAdapter.TestResources\Gallio.XunitAdapter.TestResources.vs2010.csproj">
+    <ProjectReference Include="..\Gallio.XunitAdapter.TestResources\Gallio.XunitAdapter161.TestResources.vs2010.csproj">
       <Project>{70015C50-93E8-4D17-86B0-69F030911C98}</Project>
-      <Name>Gallio.XunitAdapter.TestResources.vs2010</Name>
+      <Name>Gallio.XunitAdapter161.TestResources.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.XunitAdapter\Gallio.XunitAdapter.vs2010.csproj">
+    <ProjectReference Include="..\Gallio.XunitAdapter\Gallio.XunitAdapter161.vs2010.csproj">
       <Project>{F2619506-4CA0-4B5B-AAA8-733784C49476}</Project>
-      <Name>Gallio.XunitAdapter.vs2010</Name>
+      <Name>Gallio.XunitAdapter161.vs2010</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

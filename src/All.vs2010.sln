@@ -85,11 +85,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Host.vs2010", "Galli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.TestResources.vs2010", "MbUnit\MbUnit.TestResources\MbUnit.TestResources.vs2010.csproj", "{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.XunitAdapter.vs2010", "Extensions\Xunit\Gallio.XunitAdapter\Gallio.XunitAdapter.vs2010.csproj", "{F2619506-4CA0-4B5B-AAA8-733784C49476}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.XunitAdapter161.TestResources.vs2010", "Extensions\Xunit\Gallio.XunitAdapter.TestResources\Gallio.XunitAdapter161.TestResources.vs2010.csproj", "{70015C50-93E8-4D17-86B0-69F030911C98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.XunitAdapter.Tests.vs2010", "Extensions\Xunit\Gallio.XunitAdapter.Tests\Gallio.XunitAdapter.Tests.vs2010.csproj", "{606ED147-23B2-461B-A5DD-9A6CD998F6AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.XunitAdapterLatest.TestResources.vs2010", "Extensions\Xunit\Gallio.XunitAdapter.TestResources\Gallio.XunitAdapterLatest.TestResources.vs2010.csproj", "{2EFB4281-D968-40FB-946A-C6E45BE3BBB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.XunitAdapter.TestResources.vs2010", "Extensions\Xunit\Gallio.XunitAdapter.TestResources\Gallio.XunitAdapter.TestResources.vs2010.csproj", "{70015C50-93E8-4D17-86B0-69F030911C98}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.XunitAdapter161.vs2010", "Extensions\Xunit\Gallio.XunitAdapter\Gallio.XunitAdapter161.vs2010.csproj", "{F2619506-4CA0-4B5B-AAA8-733784C49476}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.XunitAdapterLatest.vs2010", "Extensions\Xunit\Gallio.XunitAdapter\Gallio.XunitAdapterLatest.vs2010.csproj", "{A97CD77E-D3E0-4941-8AB7-D5D6F3D67898}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.XunitAdapter161.Tests.vs2010", "Extensions\Xunit\Gallio.XunitAdapter.Tests\Gallio.XunitAdapter161.Tests.vs2010.csproj", "{606ED147-23B2-461B-A5DD-9A6CD998F6AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.XunitAdapterLatest.Tests.vs2010", "Extensions\Xunit\Gallio.XunitAdapter.Tests\Gallio.XunitAdapterLatest.Tests.vs2010.csproj", "{177BF324-C60A-47AB-9AF4-32449F412F28}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MbUnit2Adapter.vs2010", "Extensions\MbUnit2\Gallio.MbUnit2Adapter\Gallio.MbUnit2Adapter.vs2010.csproj", "{0393BF1B-3E61-4AF9-B0E3-B9E77C60C67A}"
 EndProject

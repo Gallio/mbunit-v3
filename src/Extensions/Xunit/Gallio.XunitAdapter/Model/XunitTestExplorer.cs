@@ -33,7 +33,14 @@ namespace Gallio.XunitAdapter.Model
     /// </summary>
     internal class XunitTestExplorer : TestExplorer
     {
-        internal const string AssemblyKind = "xUnit Assembly";
+#if XUNIT161
+        internal const string AssemblyKind = "xUnit v1.6.1 Assembly";
+#elif XUNITLATEST
+        internal const string AssemblyKind = "xUnit v1.7+ Assembly";
+#else
+#error "Unrecognized xUnit framework version."
+#endif
+
         private const string XunitAssemblyDisplayName = @"xunit";
 
         private readonly Dictionary<IAssemblyInfo, Test> assemblyTests;

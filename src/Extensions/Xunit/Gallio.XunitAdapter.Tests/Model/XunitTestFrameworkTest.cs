@@ -32,7 +32,6 @@ namespace Gallio.XunitAdapter.Tests.Model
 {
     [TestFixture]
     [TestsOn(typeof(XunitTestFramework))]
-    [Author("Jeff", "jeff@ingenio.com")]
     public class XunitTestFrameworkTest : BaseTestFrameworkTest<SimpleTest>
     {
         protected override ComponentHandle<ITestFramework, TestFrameworkTraits> TestFrameworkHandle
@@ -40,7 +39,13 @@ namespace Gallio.XunitAdapter.Tests.Model
             get
             {
                 return (ComponentHandle<ITestFramework, TestFrameworkTraits>)
-                    RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("XunitAdapter.TestFramework");
+#if XUNIT161
+                    RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("XunitAdapter161.TestFramework");
+#elif XUNITLATEST
+                    RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("XunitAdapterLatest.TestFramework");
+#else
+#error "Unrecognized xUnit framework version."
+#endif
             }
         }
 
