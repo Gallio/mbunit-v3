@@ -130,12 +130,14 @@ namespace MbUnit.Framework
                 throw new ArgumentNullException("declaringCodeElement");
             if (tests == null)
                 throw new ArgumentNullException("tests");
-            if (GenericCollectionUtils.Exists(tests, test => test == null))
-                throw new ArgumentNullException("tests", "Test enumeration should not contain null.");
 
             TestOutcome combinedOutcome = TestOutcome.Passed;
             foreach (Test test in tests)
+            {
+                if (test == null)
+                    throw new ArgumentNullException("tests", "Test enumeration should not contain null.");
                 combinedOutcome = combinedOutcome.CombineWith(test.RunDynamicTest(declaringCodeElement, setUp, tearDown));
+            }
 
             return combinedOutcome;
         }
