@@ -6,10 +6,10 @@
     <CSharpProject Include="Gallio.XunitAdapter.TestResources\Gallio.XunitAdapterLatest.TestResources$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.XunitAdapter.Tests\Gallio.XunitAdapterLatest.Tests$(ProjectVariant).csproj" />
     
-    <AssemblyFile Include="Gallio.XunitAdapter\bin\Gallio.XunitAdapterLatest.dll">
+    <AssemblyFile Include="Gallio.XunitAdapter\bin\Latest\Gallio.XunitAdapterLatest.dll">
       <ImagePath>bin\Xunit\Latest</ImagePath>
     </AssemblyFile>
-    <PdbFile Include="Gallio.XunitAdapter\bin\Gallio.XunitAdapterLatest.pdb">
+    <PdbFile Include="Gallio.XunitAdapter\bin\Latest\Gallio.XunitAdapterLatest.pdb">
 		<ImagePath>bin\Xunit\Latest</ImagePath>
     </PdbFile>
     <PluginFile Include="Gallio.XunitAdapter\Gallio.XunitAdapterLatest.plugin">
