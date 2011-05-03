@@ -151,6 +151,9 @@
     <Compile Include="..\Extensions\NUnit\NUnitLatest.wxs">
       <Link>NUnitLatest.wxs</Link>
     </Compile>
+    <Compile Include="..\Extensions\Xunit\Xunit.wxs">
+      <Link>Xunit.wxs</Link>
+    </Compile>
     <Compile Include="..\Extensions\Xunit\Xunit161.wxs">
       <Link>Xunit161.wxs</Link>
     </Compile>
