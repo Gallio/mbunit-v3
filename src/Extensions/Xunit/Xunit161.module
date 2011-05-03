@@ -9,7 +9,7 @@
     <AssemblyFile Include="Gallio.XunitAdapter\bin\v1.6.1\Gallio.XunitAdapter161.dll">
       <ImagePath>bin\Xunit\v1.6.1</ImagePath>
     </AssemblyFile>
-    <PdbFile Include="Gallio.XunitAdapter\bin\Gallio.XunitAdapter161.pdb">
+    <PdbFile Include="Gallio.XunitAdapter\bin\v1.6.1\Gallio.XunitAdapter161.pdb">
 		<ImagePath>bin\Xunit\v1.6.1</ImagePath>
     </PdbFile>
     <PluginFile Include="Gallio.XunitAdapter\Gallio.XunitAdapter161.plugin">
