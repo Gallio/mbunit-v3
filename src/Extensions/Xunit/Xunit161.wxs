@@ -7,21 +7,21 @@
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="XunitAdapter.v161" Name="Xunit">
                 <Component Id="Gallio.XunitAdapter161" Guid="2fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="$(var.Win64Binary)">
-                    <File Name="Gallio.XunitAdapter161.dll" KeyPath="yes" />
-                    <File Name="Gallio.XunitAdapter161.plugin" />
-                    <File Name="Gallio.XunitAdapter161.pdb" />
-                    <File Id="xunit.EULA.txt" Name="EULA.txt" />
-                    <File Id="xunit.Readme.txt" Name="Readme.txt" />
-                    <File Name="xunit.dll" />
-                    <File Name="xunit.dll.tdnet" />
-                    <File Name="xunit.xml" />
-                    <File Name="xunit.extensions.dll" />
-                    <File Name="xunit.extensions.xml" />
+                    <File Id="xUnit.v161.XunitAdapterLatest.dll" Name="Gallio.XunitAdapter161.dll" KeyPath="yes" />
+                    <File Id="xUnit.v161.XunitAdapterLatest.plugin" Name="Gallio.XunitAdapter161.plugin" />
+                    <File Id="xUnit.v161.XunitAdapterLatest.pdb" Name="Gallio.XunitAdapter161.pdb" />
+                    <File Id="xUnit.v161.EULA.txt" Name="EULA.txt" />
+                    <File Id="xUnit.v161.Readme.txt" Name="Readme.txt" />
+                    <File Id="xUnit.v161.xunit.dll" Name="xunit.dll" />
+                    <File Id="xUnit.v161.xunit.dll.tdnet" Name="xunit.dll.tdnet" />
+                    <File Id="xUnit.v161.xunit.xml" Name="xunit.xml" />
+                    <File Id="xUnit.v161.extensions.dll" Name="xunit.extensions.dll" />
+                    <File Id="xUnit.v161.extensions.xml" Name="xunit.extensions.xml" />
                 </Component>
 		
                 <Directory Id="XUnitAdapter161.Resources" Name="Resources">
                     <Component Id="Gallio.XunitAdapter161.Resources" Guid="{4417172C-9A53-413e-B423-7F1B40976083}" Win64="$(var.Win64Binary)">
-                        <File Name="xUnit.ico" KeyPath="yes" />
+                        <File Id="xUnit.Latest.v161.ico" Name="xUnit.ico" KeyPath="yes" />
                     </Component>
                 </Directory>
             </Directory>

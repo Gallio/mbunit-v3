@@ -7,21 +7,21 @@
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="XunitAdapter.Latest" Name="Xunit">
                 <Component Id="Gallio.XunitAdapterLatest" Guid="2fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="$(var.Win64Binary)">
-                    <File Name="Gallio.XunitAdapterLatest.dll" KeyPath="yes" />
-                    <File Name="Gallio.XunitAdapterLatest.plugin" />
-                    <File Name="Gallio.XunitAdapterLatest.pdb" />
-                    <File Id="xunit.EULA.txt" Name="EULA.txt" />
-                    <File Id="xunit.Readme.txt" Name="Readme.txt" />
-                    <File Name="xunit.dll" />
-                    <File Name="xunit.dll.tdnet" />
-                    <File Name="xunit.xml" />
-                    <File Name="xunit.extensions.dll" />
-                    <File Name="xunit.extensions.xml" />
+                    <File Id="xUnit.Latest.XunitAdapterLatest.dll" Name="Gallio.XunitAdapterLatest.dll" KeyPath="yes" />
+                    <File Id="xUnit.Latest.XunitAdapterLatest.plugin" Name="Gallio.XunitAdapterLatest.plugin" />
+                    <File Id="xUnit.Latest.XunitAdapterLatest.pdb" Name="Gallio.XunitAdapterLatest.pdb" />
+                    <File Id="xUnit.Latest.EULA.txt" Name="EULA.txt" />
+                    <File Id="xUnit.Latest.Readme.txt" Name="Readme.txt" />
+                    <File Id="xUnit.Latest.xunit.dll" Name="xunit.dll" />
+                    <File Id="xUnit.Latest.xunit.dll.tdnet" Name="xunit.dll.tdnet" />
+                    <File Id="xUnit.Latest.xunit.xml" Name="xunit.xml" />
+                    <File Id="xUnit.Latest.extensions.dll" Name="xunit.extensions.dll" />
+                    <File Id="xUnit.Latest.extensions.xml" Name="xunit.extensions.xml" />
                 </Component>
 		
                 <Directory Id="XUnitAdapter.Latest.Resources" Name="Resources">
                     <Component Id="Gallio.XunitAdapterLatest.Resources" Guid="{4417172C-9A53-413e-B423-7F1B40976083}" Win64="$(var.Win64Binary)">
-                        <File Name="xUnit.ico" KeyPath="yes" />
+                        <File Id="xUnit.Latest.xUnit.ico" Name="xUnit.ico" KeyPath="yes" />
                     </Component>
                 </Directory>
             </Directory>
