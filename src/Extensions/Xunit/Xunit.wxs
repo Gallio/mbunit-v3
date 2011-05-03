@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\..\Installer\Common.wxi ?>
+
+    <Fragment>
+        <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
+            <Directory Id="Xunit" Name="Xunit" />
+        </DirectoryRef>
+
+        <Feature Id='feat_XunitAdapter' Title='xUnit Adapter' Level='1' AllowAdvertise="no"
+            Description='Installs the xUnit adapters.'>
+<?ifdef FEATURE_XUNIT_ADAPTER_161 ?>
+            <FeatureRef Id="feat_XunitAdapter161"/>
+<?endif?>
+<?ifdef FEATURE_XUNIT_ADAPTER_LATEST ?>
+            <FeatureRef Id="feat_XunitAdapterLatest"/>
+<?endif?>
+        </Feature>
+    </Fragment>
+</Wix>
