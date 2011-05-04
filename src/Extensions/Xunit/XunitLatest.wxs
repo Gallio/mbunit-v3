@@ -4,8 +4,8 @@
     
 <?ifdef FEATURE_XUNIT_ADAPTER_LATEST ?>
     <Fragment>
-        <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Directory Id="XunitAdapter.Latest" Name="Xunit">
+        <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\Xunit">
+            <Directory Id="XunitAdapter.Latest" Name="Latest">
                 <Component Id="Gallio.XunitAdapterLatest" Guid="2fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="$(var.Win64Binary)">
                     <File Id="xUnit.Latest.XunitAdapterLatest.dll" Name="Gallio.XunitAdapterLatest.dll" KeyPath="yes" />
                     <File Id="xUnit.Latest.XunitAdapterLatest.plugin" Name="Gallio.XunitAdapterLatest.plugin" />
