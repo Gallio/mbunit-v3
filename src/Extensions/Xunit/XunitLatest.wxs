@@ -6,7 +6,7 @@
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\Xunit">
             <Directory Id="XunitAdapter.Latest" Name="Latest">
-                <Component Id="Gallio.XunitAdapterLatest" Guid="2fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="$(var.Win64Binary)">
+                <Component Id="Gallio.XunitAdapterLatest" Guid="{8FF76368-A424-4B7E-8047-C274BC156EEA}" Win64="$(var.Win64Binary)">
                     <File Id="xUnit.Latest.XunitAdapterLatest.dll" Name="Gallio.XunitAdapterLatest.dll" KeyPath="yes" />
                     <File Id="xUnit.Latest.XunitAdapterLatest.plugin" Name="Gallio.XunitAdapterLatest.plugin" />
                     <File Id="xUnit.Latest.XunitAdapterLatest.pdb" Name="Gallio.XunitAdapterLatest.pdb" />
@@ -20,7 +20,7 @@
                 </Component>
 		
                 <Directory Id="XUnitAdapter.Latest.Resources" Name="Resources">
-                    <Component Id="Gallio.XunitAdapterLatest.Resources" Guid="{4417172C-9A53-413e-B423-7F1B40976083}" Win64="$(var.Win64Binary)">
+                    <Component Id="Gallio.XunitAdapterLatest.Resources" Guid="{D7245A09-31F0-4B62-B68D-D1F0E1B75FB4}" Win64="$(var.Win64Binary)">
                         <File Id="xUnit.Latest.xUnit.ico" Name="xUnit.ico" KeyPath="yes" />
                     </Component>
                 </Directory>
