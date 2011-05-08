@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\..\Installer\Common.wxi ?>
+    
+<?ifdef FEATURE_XUNIT_ADAPTER_LATEST ?>
+    <Fragment>
+        <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\Xunit">
+            <Directory Id="XunitAdapter.Latest" Name="Latest">
+                <Component Id="Gallio.XunitAdapterLatest" Guid="{8FF76368-A424-4B7E-8047-C274BC156EEA}" Win64="$(var.Win64Binary)">
+                    <File Id="xUnit.Latest.XunitAdapterLatest.dll" Name="Gallio.XunitAdapterLatest.dll" KeyPath="yes" />
+                    <File Id="xUnit.Latest.XunitAdapterLatest.plugin" Name="Gallio.XunitAdapterLatest.plugin" />
+                    <File Id="xUnit.Latest.XunitAdapterLatest.pdb" Name="Gallio.XunitAdapterLatest.pdb" />
+                    <File Id="xUnit.Latest.EULA.txt" Name="EULA.txt" />
+                    <File Id="xUnit.Latest.Readme.txt" Name="Readme.txt" />
+                    <File Id="xUnit.Latest.xunit.dll" Name="xunit.dll" />
+                    <File Id="xUnit.Latest.xunit.dll.tdnet" Name="xunit.dll.tdnet" />
+                    <File Id="xUnit.Latest.xunit.xml" Name="xunit.xml" />
+                    <File Id="xUnit.Latest.extensions.dll" Name="xunit.extensions.dll" />
+                    <File Id="xUnit.Latest.extensions.xml" Name="xunit.extensions.xml" />
+                </Component>
+		
+                <Directory Id="XUnitAdapter.Latest.Resources" Name="Resources">
+                    <Component Id="Gallio.XunitAdapterLatest.Resources" Guid="{D7245A09-31F0-4B62-B68D-D1F0E1B75FB4}" Win64="$(var.Win64Binary)">
+                        <File Id="xUnit.Latest.xUnit.ico" Name="xUnit.ico" KeyPath="yes" />
+                    </Component>
+                </Directory>
+            </Directory>
+        </DirectoryRef>
+
+        <Feature Id='feat_XunitAdapterLatest' Title='Xunit Adapter Latest' Level='1' AllowAdvertise="no"
+            Description='Enables Gallio to run Xunit v1.7+ tests.'>
+            <ComponentRef Id="Gallio.XunitAdapterLatest"/>
+            <ComponentRef Id="Gallio.XunitAdapterLatest.Resources"/>
+        </Feature>
+    </Fragment>
+<?endif?>
+</Wix>

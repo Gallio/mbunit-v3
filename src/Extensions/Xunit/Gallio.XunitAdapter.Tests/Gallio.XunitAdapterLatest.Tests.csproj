@@ -8,31 +8,31 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.XunitAdapter.Tests</RootNamespace>
-    <AssemblyName>Gallio.XunitAdapter.Tests</AssemblyName>
+    <AssemblyName>Gallio.XunitAdapterLatest.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <OutputPath>bin\Latest\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;XUNITLATEST</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.XunitAdapter.Tests.xml</DocumentationFile>
+    <DocumentationFile>bin\Gallio.XunitAdapterLatest.Tests.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <OutputPath>bin\Latest\</OutputPath>
+    <DefineConstants>TRACE;XUNITLATEST</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.XunitAdapter.Tests.xml</DocumentationFile>
+    <DocumentationFile>bin\Gallio.XunitAdapterLatest.Tests.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -41,9 +41,9 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="xunit, Version=1.6.1.1521, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+    <Reference Include="xunit, Version=1.8.0.1545, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\xunit.dll</HintPath>
+      <HintPath>..\libs\Latest\xunit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -74,13 +74,13 @@
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
       <Name>MbUnit %28MbUnit\MbUnit%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.XunitAdapter.TestResources\Gallio.XunitAdapter.TestResources.csproj">
+    <ProjectReference Include="..\Gallio.XunitAdapter.TestResources\Gallio.XunitAdapterLatest.TestResources.csproj">
       <Project>{70015C50-93E8-4D17-86B0-69F030911C98}</Project>
-      <Name>Gallio.XunitAdapter.TestResources</Name>
+      <Name>Gallio.XunitAdapterLatest.TestResources</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.XunitAdapter\Gallio.XunitAdapter.csproj">
+    <ProjectReference Include="..\Gallio.XunitAdapter\Gallio.XunitAdapterLatest.csproj">
       <Project>{F2619506-4CA0-4B5B-AAA8-733784C49476}</Project>
-      <Name>Gallio.XunitAdapter</Name>
+      <Name>Gallio.XunitAdapterLatest</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

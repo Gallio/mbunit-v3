@@ -132,7 +132,10 @@
     <Module Include="$(SourceDir)\Extensions\VisualStudio\VisualStudio100.module">
       <Inherit>true</Inherit>
     </Module>
-    <Module Include="$(SourceDir)\Extensions\Xunit\Xunit.module">
+    <Module Include="$(SourceDir)\Extensions\Xunit\Xunit161.module">
+      <Inherit>true</Inherit>
+    </Module>
+    <Module Include="$(SourceDir)\Extensions\Xunit\XunitLatest.module">
       <Inherit>true</Inherit>
     </Module>
 	

@@ -20,12 +20,19 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Gallio.XunitAdapter.TestResources")]
-[assembly: AssemblyDescription("A sample test assembly for xUnit.net.")]
+#if XUNIT161
+[assembly: AssemblyTitle("Gallio.XunitAdapter161.TestResources")]
+[assembly: AssemblyDescription("A sample test assembly for xUnit.net v1.6.1.")]
+#elif XUNITLATEST
+[assembly: AssemblyTitle("Gallio.XunitAdapterLatest.TestResources")]
+[assembly: AssemblyDescription("A sample test assembly for xUnit.net v1.7+.")]
+#else
+#error "Unrecognized xUnit framework version."
+#endif
 [assembly: AssemblyConfiguration("Test")]
 [assembly: AssemblyCompany("MbUnit Project")]
 [assembly: AssemblyProduct("Gallio")]
-[assembly: AssemblyCopyright("Copyright © 2005-2010 Gallio Project - http://www.gallio.org/")]
+[assembly: AssemblyCopyright("Copyright © 2005-2011 Gallio Project - http://www.gallio.org/")]
 [assembly: AssemblyTrademark("Gallio")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyInformationalVersion("1.2.3.4")]

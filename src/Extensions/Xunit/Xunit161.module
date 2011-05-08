@@ -1,0 +1,48 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(RootDir)\bin\Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.XunitAdapter\Gallio.XunitAdapter161$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.XunitAdapter.TestResources\Gallio.XunitAdapter161.TestResources$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.XunitAdapter.Tests\Gallio.XunitAdapter161.Tests$(ProjectVariant).csproj" />
+    
+    <AssemblyFile Include="Gallio.XunitAdapter\bin\v1.6.1\Gallio.XunitAdapter161.dll">
+      <ImagePath>bin\Xunit\v1.6.1</ImagePath>
+    </AssemblyFile>
+    <PdbFile Include="Gallio.XunitAdapter\bin\Gallio.XunitAdapter161.pdb">
+		<ImagePath>bin\Xunit\v1.6.1</ImagePath>
+    </PdbFile>
+    <PluginFile Include="Gallio.XunitAdapter\Gallio.XunitAdapter161.plugin">
+      <ImagePath>bin\Xunit\v1.6.1</ImagePath>
+    </PluginFile>
+    <File Include="Gallio.XunitAdapter\xunit.dll.tdnet">
+      <ImagePath>bin\Xunit\v1.6.1</ImagePath>
+    </File>
+    <File Include="Gallio.XunitAdapter\Readme.txt">
+      <ImagePath>bin\Xunit\v1.6.1</ImagePath>
+    </File>    
+    <File Include="Gallio.XunitAdapter\Resources\xUnit.ico">
+      <ImagePath>bin\Xunit\v1.6.1\Resources</ImagePath>
+    </File>
+    
+    <File Include="libs\v1.6.1\EULA.txt">
+      <ImagePath>bin\Xunit\v1.6.1</ImagePath>
+    </File>
+    <File Include="libs\v1.6.1\xunit.dll">
+      <ImagePath>bin\Xunit\v1.6.1</ImagePath>
+    </File>
+    <File Include="libs\v1.6.1\xunit.xml">
+      <ImagePath>bin\Xunit\v1.6.1</ImagePath>
+    </File>
+    <File Include="libs\v1.6.1\xunit.extensions.dll">
+      <ImagePath>bin\Xunit\v1.6.1</ImagePath>
+    </File>
+    <File Include="libs\v1.6.1\xunit.extensions.xml">
+      <ImagePath>bin\Xunit\v1.6.1</ImagePath>
+    </File>
+    
+    <TestAssembly Include="Gallio.XunitAdapter.Tests\bin\v1.6.1\Gallio.XunitAdapter161.Tests.dll" />
+
+    <Feature Include="FEATURE_XUNIT_ADAPTER_161" />
+  </ItemGroup>
+</Project>

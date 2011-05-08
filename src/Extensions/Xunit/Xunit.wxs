@@ -1,35 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <?include ..\..\Installer\Common.wxi ?>
-    
+
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Directory Id="XunitAdapter" Name="Xunit">
-                <Component Id="Gallio.XunitAdapter" Guid="2fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="$(var.Win64Binary)">
-                    <File Name="Gallio.XunitAdapter.dll" KeyPath="yes" />
-                    <File Name="Gallio.XunitAdapter.plugin" />
-                    <File Name="Gallio.XunitAdapter.pdb" />
-                    <File Id="xunit.EULA.txt" Name="EULA.txt" />
-                    <File Id="xunit.Readme.txt" Name="Readme.txt" />
-                    <File Name="xunit.dll" />
-                    <File Name="xunit.dll.tdnet" />
-                    <File Name="xunit.xml" />
-                    <File Name="xunit.extensions.dll" />
-                    <File Name="xunit.extensions.xml" />
-                </Component>
-		
-                <Directory Id="XUnitAdapter.Resources" Name="Resources">
-                    <Component Id="Gallio.XunitAdapter.Resources" Guid="{4417172C-9A53-413e-B423-7F1B40976083}" Win64="$(var.Win64Binary)">
-                        <File Name="xUnit.ico" KeyPath="yes" />
-                    </Component>
-                </Directory>
-            </Directory>
+            <Directory Id="Xunit" Name="Xunit" />
         </DirectoryRef>
 
-        <Feature Id='feat_XunitAdapter' Title='Xunit Adapter' Level='1' AllowAdvertise="no"
-            Description='Installs the Xunit plugin.  Enables Gallio to run Xunit tests.'>
-            <ComponentRef Id="Gallio.XunitAdapter"/>
-            <ComponentRef Id="Gallio.XunitAdapter.Resources"/>
+        <Feature Id='feat_XunitAdapter' Title='xUnit Adapter' Level='1' AllowAdvertise="no"
+            Description='Installs the xUnit adapters.'>
+<?ifdef FEATURE_XUNIT_ADAPTER_161 ?>
+            <FeatureRef Id="feat_XunitAdapter161"/>
+<?endif?>
+<?ifdef FEATURE_XUNIT_ADAPTER_LATEST ?>
+            <FeatureRef Id="feat_XunitAdapterLatest"/>
+<?endif?>
         </Feature>
     </Fragment>
 </Wix>

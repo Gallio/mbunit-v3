@@ -1,0 +1,48 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(RootDir)\bin\Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.XunitAdapter\Gallio.XunitAdapterLatest$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.XunitAdapter.TestResources\Gallio.XunitAdapterLatest.TestResources$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.XunitAdapter.Tests\Gallio.XunitAdapterLatest.Tests$(ProjectVariant).csproj" />
+    
+    <AssemblyFile Include="Gallio.XunitAdapter\bin\Gallio.XunitAdapterLatest.dll">
+      <ImagePath>bin\Xunit\Latest</ImagePath>
+    </AssemblyFile>
+    <PdbFile Include="Gallio.XunitAdapter\bin\Gallio.XunitAdapterLatest.pdb">
+		<ImagePath>bin\Xunit\Latest</ImagePath>
+    </PdbFile>
+    <PluginFile Include="Gallio.XunitAdapter\Gallio.XunitAdapterLatest.plugin">
+      <ImagePath>bin\Xunit\Latest</ImagePath>
+    </PluginFile>
+    <File Include="Gallio.XunitAdapter\xunit.dll.tdnet">
+      <ImagePath>bin\Xunit\Latest</ImagePath>
+    </File>
+    <File Include="Gallio.XunitAdapter\Readme.txt">
+      <ImagePath>bin\Xunit\Latest</ImagePath>
+    </File>    
+    <File Include="Gallio.XunitAdapter\Resources\xUnit.ico">
+      <ImagePath>bin\Xunit\Latest\Resources</ImagePath>
+    </File>
+    
+    <File Include="libs\Latest\EULA.txt">
+      <ImagePath>bin\Xunit\Latest</ImagePath>
+    </File>
+    <File Include="libs\Latest\xunit.dll">
+      <ImagePath>bin\Xunit\Latest</ImagePath>
+    </File>
+    <File Include="libs\Latest\xunit.xml">
+      <ImagePath>bin\Xunit\Latest</ImagePath>
+    </File>
+    <File Include="libs\Latest\xunit.extensions.dll">
+      <ImagePath>bin\Xunit\Latest</ImagePath>
+    </File>
+    <File Include="libs\Latest\xunit.extensions.xml">
+      <ImagePath>bin\Xunit\Latest</ImagePath>
+    </File>
+    
+    <TestAssembly Include="Gallio.XunitAdapter.Tests\bin\Latest\Gallio.XunitAdapterLatest.Tests.dll" />
+
+    <Feature Include="FEATURE_XUNIT_ADAPTER_LATEST" />
+    </ItemGroup>
+</Project>

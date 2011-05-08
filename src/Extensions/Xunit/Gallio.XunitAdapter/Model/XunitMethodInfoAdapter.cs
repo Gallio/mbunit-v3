@@ -23,6 +23,7 @@ using IMethodInfo=Gallio.Common.Reflection.IMethodInfo;
 using Reflector=Gallio.Common.Reflection.Reflector;
 using XunitMethodInfo = Xunit.Sdk.IMethodInfo;
 using XunitAttributeInfo = Xunit.Sdk.IAttributeInfo;
+using XunitTypeInfo = Xunit.Sdk.ITypeInfo;
 
 namespace Gallio.XunitAdapter.Model
 {
@@ -70,7 +71,11 @@ namespace Gallio.XunitAdapter.Model
             }
             catch (TargetParameterCountException)
             {
+#if XUNIT161
                 throw new ParamterCountMismatchException();
+#else
+                throw new ParameterCountMismatchException(); // typo fixed in xUnit v1.7
+#endif
             }
             catch (TargetInvocationException exception)
             {
@@ -117,5 +122,12 @@ namespace Gallio.XunitAdapter.Model
         {
             return target.Name;
         }
+
+#if !XUNIT161
+        public XunitTypeInfo Class // Property added in xUnit v1.7
+        {
+            get { return new XunitTypeInfoAdapter(target.ReflectedType); }
+        }
+#endif
     }
 }
