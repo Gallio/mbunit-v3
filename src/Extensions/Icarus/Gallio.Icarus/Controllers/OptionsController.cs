@@ -201,6 +201,12 @@ namespace Gallio.Icarus.Controllers
             set { settings.RecursiveExecutionLog = value; }
         }
 
+        public bool AutoSaveProject
+        {
+          get { return settings.AutoSaveProject; }
+          set { settings.AutoSaveProject = value; }
+        }
+
         public OptionsController(IFileSystem fileSystem, IXmlSerializer xmlSerializer, 
             IUnhandledExceptionPolicy unhandledExceptionPolicy, IEventAggregator eventAggregator)
         {

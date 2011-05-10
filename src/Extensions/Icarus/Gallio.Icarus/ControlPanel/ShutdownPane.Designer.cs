@@ -2,7 +2,7 @@
 
 namespace Gallio.Icarus.ControlPanel
 {
-    internal partial class StartupPane
+    internal partial class ShutdownPane
     {
         /// <summary> 
         /// Required designer variable.
@@ -30,26 +30,26 @@ namespace Gallio.Icarus.ControlPanel
         /// </summary>
         private void InitializeComponent()
         {
-            this.restorePreviousSession = new System.Windows.Forms.CheckBox();
+            this.autoSave = new System.Windows.Forms.CheckBox();
             this.groupBoxGeneral = new System.Windows.Forms.GroupBox();
             this.groupBoxGeneral.SuspendLayout();
             this.SuspendLayout();
             this.Controls.Add(this.groupBoxGeneral);
             // 
-            // restorePreviousSession
+            // autoSave
             // 
-            this.restorePreviousSession.AutoSize = true;
-            this.restorePreviousSession.Location = new System.Drawing.Point(12, 21);
-            this.restorePreviousSession.Name = "restorePreviousSession";
-            this.restorePreviousSession.Size = new System.Drawing.Size(147, 17);
-            this.restorePreviousSession.TabIndex = 0;
-            this.restorePreviousSession.Text = "Restore Previous Session";
-            this.restorePreviousSession.UseVisualStyleBackColor = true;
-            this.restorePreviousSession.CheckedChanged += new System.EventHandler(this.restorePreviousSession_CheckedChanged);
+            this.autoSave.AutoSize = true;
+            this.autoSave.Location = new System.Drawing.Point(12, 21);
+            this.autoSave.Name = "autoSave";
+            this.autoSave.Size = new System.Drawing.Size(147, 17);
+            this.autoSave.TabIndex = 0;
+            this.autoSave.Text = "Auto-Save Project Settings";
+            this.autoSave.UseVisualStyleBackColor = true;
+            this.autoSave.CheckedChanged += new System.EventHandler(this.autoSave_CheckedChanged);
             // 
             // groupBoxGeneral
             // 
-            this.groupBoxGeneral.Controls.Add(this.restorePreviousSession);
+            this.groupBoxGeneral.Controls.Add(this.autoSave);
             this.groupBoxGeneral.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBoxGeneral.Location = new System.Drawing.Point(0, 0);
             this.groupBoxGeneral.Name = "groupBoxGeneral";
@@ -58,10 +58,10 @@ namespace Gallio.Icarus.ControlPanel
             this.groupBoxGeneral.TabStop = false;
             this.groupBoxGeneral.Text = "General";
             // 
-            // StartupOptions
+            // ShutdownOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Name = "StartupOptions";
+            this.Name = "ShutdownOptions";
             this.groupBoxGeneral.ResumeLayout(false);
             this.groupBoxGeneral.PerformLayout();
             this.ResumeLayout(false);
@@ -70,7 +70,7 @@ namespace Gallio.Icarus.ControlPanel
 
         #endregion
 
-        private System.Windows.Forms.CheckBox restorePreviousSession;
+        private System.Windows.Forms.CheckBox autoSave;
         private System.Windows.Forms.GroupBox groupBoxGeneral;
     }
 }

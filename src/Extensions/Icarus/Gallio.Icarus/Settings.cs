@@ -42,6 +42,7 @@ namespace Gallio.Icarus
         private int skippedColor = Color.SlateGray.ToArgb();
         private bool generateReportAfterTestRun = true;
         private bool recursiveExecutionLog = true;
+        private bool _autoSaveProject = false;
         private readonly List<string> extensionSpecifications = new List<string>();
 
         public static readonly string Extension = ".settings";
@@ -177,6 +178,13 @@ namespace Gallio.Icarus
         public bool RecursiveExecutionLog { 
             get { return recursiveExecutionLog; }
             set { recursiveExecutionLog = value; } 
+        }
+
+        [XmlElement("autoSave")]
+        public bool AutoSaveProject
+        {
+          get { return _autoSaveProject; }
+          set { _autoSaveProject = value; }
         }
     }
 }

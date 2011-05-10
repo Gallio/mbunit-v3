@@ -112,6 +112,16 @@
       </traits>
     </component>
 
+    <component componentId="Gallio.Icarus.ControlPanel.ShutdownPaneProvider"
+           serviceId="Gallio.UI.PreferencePaneProvider"
+           componentType="Gallio.Icarus.ControlPanel.ShutdownPaneProvider, Gallio.Icarus">
+      <traits>
+        <path>Icarus/Shutdown</path>
+        <order>250</order>
+        <icon>plugin://Gallio.Icarus/Resources/Gallio.Icarus.ico</icon>
+      </traits>
+    </component>
+
     <component componentId="Gallio.Icarus.ControlPanel.TestExplorerPaneProvider" 
                serviceId="Gallio.UI.PreferencePaneProvider" 
                componentType="Gallio.Icarus.ControlPanel.TestExplorerPaneProvider, Gallio.Icarus">

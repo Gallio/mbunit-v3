@@ -108,6 +108,13 @@
     <Compile Include="Controllers\Interfaces\IExecutionLogController.cs" />
     <Compile Include="Controllers\ProgressEvent.cs" />
     <Compile Include="Controllers\SavingProject.cs" />
+    <Compile Include="ControlPanel\ShutdownPane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\ShutdownPane.Designer.cs">
+      <DependentUpon>ShutdownPane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlPanel\ShutdownPaneProvider.cs" />
     <Compile Include="ControlPanel\ExecutionLogPane.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -471,6 +478,10 @@
     <Compile Include="Paths.cs" />
     <Compile Include="IcarusProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="ControlPanel\ShutdownPane.resx">
+      <DependentUpon>ShutdownPane.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel\ExecutionLogPane.resx">
       <DependentUpon>ExecutionLogPane.cs</DependentUpon>
       <SubType>Designer</SubType>

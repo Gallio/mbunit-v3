@@ -21,28 +21,28 @@ using Gallio.UI.ControlPanel.Preferences;
 
 namespace Gallio.Icarus.ControlPanel
 {
-    internal partial class StartupPane : PreferencePane
+    internal partial class ShutdownPane : PreferencePane
     {
         private readonly IOptionsController optionsController;
 
-        public StartupPane(IOptionsController optionsController)
+        public ShutdownPane(IOptionsController optionsController)
         {
             InitializeComponent();
 
             this.optionsController = optionsController;
 
-            restorePreviousSession.Checked = optionsController.RestorePreviousSettings;
+            autoSave.Checked = optionsController.AutoSaveProject;
         }
 
         public override void ApplyPendingSettingsChanges(IElevationContext elevationContext, IProgressMonitor progressMonitor)
         {
             base.ApplyPendingSettingsChanges(elevationContext, progressMonitor);
 
-            optionsController.RestorePreviousSettings = restorePreviousSession.Checked;
+            optionsController.AutoSaveProject = autoSave.Checked;
             optionsController.Save();
         }
 
-        private void restorePreviousSession_CheckedChanged(object sender, EventArgs e)
+        private void autoSave_CheckedChanged(object sender, EventArgs e)
         {
             PendingSettingsChanges = true;
         }

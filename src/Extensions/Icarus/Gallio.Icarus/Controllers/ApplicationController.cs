@@ -191,7 +191,10 @@ namespace Gallio.Icarus.Controllers
         {
             eventAggregator.Send(this, new ApplicationShutdown());
             optionsController.Save();
-            SaveProject(false);
+            if (optionsController.AutoSaveProject)
+            {
+                SaveProject(false);
+            }
         }
 
         public void Handle(RunStarted @event)

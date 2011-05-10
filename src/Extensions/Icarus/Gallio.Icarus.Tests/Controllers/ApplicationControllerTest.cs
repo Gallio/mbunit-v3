@@ -258,16 +258,30 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
-        public void Shutdown_should_save_options_and_project()
+        public void Shutdown_with_autosave_should_save_options_and_project()
         {
             string projectName = Paths.DefaultProject;
             commandFactory.Stub(cf => cf.CreateSaveProjectCommand(projectName)).Return(command);
+            optionsController.AutoSaveProject = true;
 
             applicationController.Shutdown();
 
             optionsController.AssertWasCalled(oc => oc.Save());
             commandFactory.AssertWasCalled(cf => cf.CreateSaveProjectCommand(projectName));           
 
+        }
+
+        [Test]
+        public void Shutdown_without_autosave_should_save_options_but_not_project()
+        {
+            string projectName = Paths.DefaultProject;
+            commandFactory.Stub(cf => cf.CreateSaveProjectCommand(projectName)).Return(command);
+            optionsController.AutoSaveProject = false;
+
+            applicationController.Shutdown();
+
+            optionsController.AssertWasCalled(oc => oc.Save());
+            commandFactory.AssertWasNotCalled(cf => cf.CreateSaveProjectCommand(projectName));
         }
     }
 }

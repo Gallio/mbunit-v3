@@ -309,5 +309,16 @@ namespace Gallio.Icarus.Tests.Controllers
             optionsController.RecursiveExecutionLog = false;
             Assert.IsFalse(optionsController.RecursiveExecutionLog);
         }
+
+
+        [Test]
+        public void AutoSave_Test()
+        {
+          SetUpOptionsController(new Settings());
+
+          Assert.IsFalse(optionsController.AutoSaveProject);
+          optionsController.AutoSaveProject = true;
+          Assert.IsTrue(optionsController.AutoSaveProject);
+        }
     }
 }
