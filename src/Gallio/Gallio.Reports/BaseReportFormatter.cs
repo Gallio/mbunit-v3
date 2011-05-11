@@ -25,12 +25,15 @@ namespace Gallio.Reports
     /// </summary>
     public abstract class BaseReportFormatter : IReportFormatter
     {
-        private AttachmentContentDisposition defaultAttachmentContentDisposition;
-
         /// <summary>
-        /// Gets the name of the option that how attachments are saved.
+        /// Gets the name of the option that specifies how attachments are saved.
         /// </summary>
         public const string AttachmentContentDispositionOption = @"AttachmentContentDisposition";
+
+        /// <summary>
+        /// Gets the name of the option that specifies the page size of the test report (if applicable)
+        /// </summary>
+        public const string ReportPageSizeOption = @"ReportPageSize";
 
         /// <summary>
         /// Creates a report formatter.
@@ -45,8 +48,8 @@ namespace Gallio.Reports
         /// </summary>
         public AttachmentContentDisposition DefaultAttachmentContentDisposition
         {
-            get { return defaultAttachmentContentDisposition; }
-            set { defaultAttachmentContentDisposition = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -57,6 +60,7 @@ namespace Gallio.Reports
         protected AttachmentContentDisposition GetAttachmentContentDisposition(ReportFormatterOptions options)
         {
             string contentDisposition = options.Properties.GetValue(AttachmentContentDispositionOption);
+            
             if (contentDisposition != null)
             {
                 try
@@ -69,11 +73,22 @@ namespace Gallio.Reports
                 }
             }
 
-            return defaultAttachmentContentDisposition;
+            return DefaultAttachmentContentDisposition;
+        }
+
+        /// <summary>
+        /// Gets the report page size.
+        /// </summary>
+        /// <param name="options">The formatter options.</param>
+        /// <returns>The report page size.</returns>
+        protected int GetReportPageSize(ReportFormatterOptions options)
+        {
+            int value;
+            string field = options.Properties.GetValue(ReportPageSizeOption);
+            return (field != null) && Int32.TryParse(field, out value) ? value : -1;
         }
 
         /// <inheritdoc />
-        public abstract void Format(IReportWriter reportWriter, ReportFormatterOptions formatterOptions,
-            IProgressMonitor progressMonitor);
+        public abstract void Format(IReportWriter reportWriter, ReportFormatterOptions formatterOptions, IProgressMonitor progressMonitor);
     }
 }

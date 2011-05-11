@@ -139,17 +139,23 @@ namespace Gallio.Reports
             VelocityEngine velocityEngine = VelocityEngineFactory.CreateVelocityEngine();
             var helper = new FormatHelper();
             VelocityContext velocityContext = VelocityEngineFactory.CreateVelocityContext(reportWriter, helper);
-            var writer = GetReportWriter(velocityEngine, velocityContext, reportWriter, helper);
+            var writer = GetReportWriter(velocityEngine, velocityContext, reportWriter, helper, options);
             writer.Run();
         }
 
-        private VtlReportWriter GetReportWriter(VelocityEngine velocityEngine, VelocityContext velocityContext, IReportWriter reportWriter, FormatHelper helper)
+        private VtlReportWriter GetReportWriter(VelocityEngine velocityEngine, VelocityContext velocityContext, IReportWriter reportWriter, FormatHelper helper, ReportFormatterOptions options)
         {
-            HtmlReportSplitSettings settings = preferenceManager.HtmlReportSplitSettings;
+            int pageSize = GetReportPageSize(options);
             int testCount = (reportWriter.Report.TestPackageRun == null) ? 0 : reportWriter.Report.TestPackageRun.Statistics.TestCount;
 
-            if (supportSplit && settings.Enabled && testCount > settings.PageSize)
-                return new MultipleFilesVtlReportWriter(velocityEngine, velocityContext, reportWriter, templatePath, contentType, extension, helper, settings.PageSize);
+            if (pageSize < 0)
+            {
+                HtmlReportSplitSettings settings = preferenceManager.HtmlReportSplitSettings;
+                pageSize = settings.Enabled ? settings.PageSize : 0;
+            }
+
+            if (supportSplit && pageSize > 0 && testCount > pageSize)
+                return new MultipleFilesVtlReportWriter(velocityEngine, velocityContext, reportWriter, templatePath, contentType, extension, helper, pageSize);
 
             return new SingleFileVtlReportWriter(velocityEngine, velocityContext, reportWriter, templatePath, contentType, extension, helper);
         }

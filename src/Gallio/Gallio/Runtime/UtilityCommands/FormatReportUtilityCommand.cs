@@ -24,6 +24,7 @@ using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Logging;
+using Gallio.Common.Collections;
 
 namespace Gallio.Runtime.UtilityCommands
 {
@@ -45,7 +46,7 @@ namespace Gallio.Runtime.UtilityCommands
             return Prepare()
                 && LoadReport(inputPath, inputName, out report)
                 && SaveReport(report, reportArchive, Args.ReportType, outputPath, () => 
-                    (Args.ReportNameFormat != null) ? report.FormatReportName(Args.ReportNameFormat) : inputName);
+                    (Args.ReportNameFormat != null) ? report.FormatReportName(Args.ReportNameFormat) : inputName, ParseOptions(Args.ReportFormatterProperties));
         }
 
         private bool Prepare()
@@ -114,6 +115,16 @@ namespace Gallio.Runtime.UtilityCommands
                 LongName = "ReportType",
                 ShortName = "rt")]
             public string ReportType;
+
+            /// <summary>
+            /// Key/Value property for the report formatter.
+            /// </summary>
+            [CommandLineArgument(CommandLineArgumentFlags.Multiple,
+                 Description = "Specifies a property key/value for the report formatters.  eg. \"AttachmentContentDisposition=Absent\"",
+                 LongName = "ReportFormatterProperty",
+                 ShortName = "rfp",
+                 ValueLabel = "key=value")]
+            public string[] ReportFormatterProperties = EmptyArray<string>.Instance;
         }
     }
 }

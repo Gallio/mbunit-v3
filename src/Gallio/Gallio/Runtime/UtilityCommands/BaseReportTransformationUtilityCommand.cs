@@ -24,6 +24,7 @@ using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Logging;
+using Gallio.Common.Text;
 
 namespace Gallio.Runtime.UtilityCommands
 {
@@ -106,8 +107,9 @@ namespace Gallio.Runtime.UtilityCommands
         /// <param name="formatterName"></param>
         /// <param name="outputPath"></param>
         /// <param name="getOutputName"></param>
+        /// <param name="options"></param>
         /// <returns></returns>
-        protected bool SaveReport(Report report, ReportArchive reportArchive, string formatterName, string outputPath, Func<string> getOutputName)
+        protected bool SaveReport(Report report, ReportArchive reportArchive, string formatterName, string outputPath, Func<string> getOutputName, ReportFormatterOptions options)
         {
             return CaptureFileException(() => "The specified output directory is not a valid file path.", () =>
             {
@@ -116,11 +118,28 @@ namespace Gallio.Runtime.UtilityCommands
                 using (IReportContainer outputContainer = factory.MakeForSaving(reportArchive))
                 {
                     IReportWriter reportWriter = reportManager.CreateReportWriter(report, outputContainer);
-                    var options = new ReportFormatterOptions();
                     Context.ProgressMonitorProvider.Run(pm => reportManager.Format(reportWriter, formatterName, options, pm));
                     return true;
                 }
             });
+        }
+
+        /// <summary>
+        /// Parses the key/value array of property strings and build an option bag for the report formatter from them.
+        /// </summary>
+        /// <param name="properties">Key/value array of property strings</param>
+        /// <returns>The report formatter options.</returns>
+        protected static ReportFormatterOptions ParseOptions(string[] properties)
+        {
+            var options = new ReportFormatterOptions();
+
+            foreach (string option in properties)
+            {
+                KeyValuePair<string, string> pair = StringUtils.ParseKeyValuePair(option);
+                options.AddProperty(pair.Key, pair.Value);
+            }
+
+            return options;
         }
 
         /// <summary>

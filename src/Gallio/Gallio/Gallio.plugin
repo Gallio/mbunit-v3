@@ -518,12 +518,13 @@
       <traits>
         <name>FormatReport</name>
         <description>Formats an existing XML test report. The command must be used with the following syntax: 
-		"FormatReport {file} /ReportType:{type} [/ReportNameFormat:{format} /ReportOutput:{dir} /ReportArchive]"
+		"FormatReport {file} /ReportType:{type} [/ReportNameFormat:{format} /ReportOutput:{dir} /ReportArchive /ReportFormatterProperty:{property}]"
 		- {file} is the relative or absolute path of the existing XML test report.
-		- ReportType (short form: /rt) specifies the type of the output report ('txt', 'txt-common', 'txt-condensed', 'html', 'html+xhtml', 'html-condensed', 'xhtml', 'xhtml-condensed', 'ccnet-details', or 'ccnet-details-condensed')
+		- ReportType (short form: /rt) specifies the type of the output report ('txt', 'txt-common', 'txt-condensed', 'html', 'html+xhtml', 'html-condensed', 'xhtml', 'xhtml-condensed'')
 		- ReportNameFormat (short form: /rnf) specifies the format of the output report (optional; if not specified, the same name is kept). The tags '{0}' and '{1}' are replaced respectively by the date and the time of the test run, or by the curent date/time if not applicable.
 		- ReportOutput (short form: /ro) specifies the output directory (optional; if not specified the current directory is used).
-		- ReportArchive (short form: /ra) compresses the output report in a file archive (zip).</description>
+		- ReportArchive (short form: /ra) compresses the output report in a file archive (zip).
+    - ReportFormatterProperty (short form: /rfp) specifies one or several key/value properties to report formatter (optional).</description>
       </traits>
     </component>
 	
@@ -543,12 +544,13 @@
         <name>MergeReports</name>
         <description>
           Merge several XML test reports. The command must be used with the following syntax:
-          "MergeReports {file1}[,{file2},{file3}...] [/ReportNameFormat:{format} /ReportType:{type} /ReportOutput:{dir} /ReportArchive]"
+          "MergeReports {file1}[,{file2},{file3}...] [/ReportNameFormat:{format} /ReportType:{type} /ReportOutput:{dir} /ReportArchive /ReportFormatterProperty:{property}]"
           - {fileN} is the relative or absolute path of the existing XML test reports to be merged together.
           - ReportNameFormat (short form: /rnf) specifies the format of the output report (optional; if not specified, a default name is used). The tags '{0}' and '{1}' are replaced respectively by the date and the time of the test run, or by the curent date/time if not applicable.
           - ReportOutput (short form: /ro) specifies the output directory (optional; if not specified the current directory is used).
-          - ReportType (short form: /rt) specifies the type of the output report ('txt', 'txt-common', 'txt-condensed', 'html', 'html+xhtml', 'html-condensed', 'xhtml', 'xhtml-condensed', 'ccnet-details', or 'ccnet-details-condensed')
-          - ReportArchive (short form: /ra) compresses the output report in a file archive (zip).</description>
+          - ReportType (short form: /rt) specifies the type of the output report ('txt', 'txt-common', 'txt-condensed', 'html', 'html+xhtml', 'html-condensed', 'xhtml', 'xhtml-condensed')
+          - ReportArchive (short form: /ra) compresses the output report in a file archive (zip).
+          - ReportFormatterProperty (short form: /rfp) specifies one or several key/value properties to report formatter (optional).</description>
       </traits>
     </component>
 	

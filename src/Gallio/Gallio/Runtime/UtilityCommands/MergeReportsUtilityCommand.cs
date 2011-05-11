@@ -47,7 +47,7 @@ namespace Gallio.Runtime.UtilityCommands
                 && Load()
                 && Merge()
                 && SaveReport(outputReport, reportArchive, Args.ReportType ?? "Xml", outputPath, () =>
-                    outputReport.FormatReportName(Args.ReportNameFormat ?? "MergedReport-{0}-{1}"));
+                    outputReport.FormatReportName(Args.ReportNameFormat ?? "MergedReport-{0}-{1}"), ParseOptions(Args.ReportFormatterProperties));
         }
 
         private bool Prepare()
@@ -135,6 +135,16 @@ namespace Gallio.Runtime.UtilityCommands
                 LongName = "ReportType",
                 ShortName = "rt")]
             public string ReportType;
+
+            /// <summary>
+            /// Key/Value property for the report formatter.
+            /// </summary>
+            [CommandLineArgument(CommandLineArgumentFlags.Multiple,
+                 Description = "Specifies a property key/value for the report formatters.  eg. \"AttachmentContentDisposition=Absent\"",
+                 LongName = "ReportFormatterProperty",
+                 ShortName = "rfp",
+                 ValueLabel = "key=value")]
+            public string[] ReportFormatterProperties = EmptyArray<string>.Instance;
         }
     }
 }
