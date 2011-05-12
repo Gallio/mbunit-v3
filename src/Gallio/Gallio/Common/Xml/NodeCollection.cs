@@ -145,9 +145,9 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public DiffSet Diff(NodeCollection expected, IXmlPathStrict path, Options options)
+        public DiffSet Diff(NodeCollection expected, IXmlPathStrict path, IXmlPathStrict pathExpected, Options options)
         {
-            return DiffEngineFactory.ForElements(expected, this, path, options).Diff();
+            return DiffEngineFactory.ForElements(expected, this, path, pathExpected, options).Diff();
         }
     }
 }

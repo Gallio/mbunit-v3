@@ -106,7 +106,7 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public abstract DiffSet Diff(INode expected, IXmlPathStrict path, Options options);
+        public abstract DiffSet Diff(INode expected, IXmlPathStrict path, IXmlPathStrict pathExpected, Options options);
 
         /// <inheritdoc />
         public virtual bool AreNamesEqual(string otherName, Options options)

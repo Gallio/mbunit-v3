@@ -63,14 +63,14 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public override DiffSet Diff(INode expected, IXmlPathStrict path, Options options)
+        public override DiffSet Diff(INode expected, IXmlPathStrict path, IXmlPathStrict pathExpected, Options options)
         {
             var fragment = expected as NodeFragment;
 
             if (fragment == null)
                 throw new ArgumentException("Invalid XML fragment", "expected");
-                
-            return Diff(fragment, path, options);
+
+            return Diff(fragment, path, pathExpected, options);
         }
 
         /// <summary>
@@ -82,11 +82,11 @@ namespace Gallio.Common.Xml
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="expected"/> is null.</exception>
         public DiffSet Diff(NodeFragment expected, Options options)
         {
-            return Diff(expected, XmlPathRoot.Strict.Empty, options);
+            return Diff(expected, XmlPathRoot.Strict.Empty, XmlPathRoot.Strict.Empty, options);
         }
 
         /// <inheritdoc />
-        public DiffSet Diff(NodeFragment expected, IXmlPathStrict path, Options options)
+        public DiffSet Diff(NodeFragment expected, IXmlPathStrict path, IXmlPathStrict pathExpected, Options options)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");
@@ -94,8 +94,8 @@ namespace Gallio.Common.Xml
                 throw new ArgumentNullException("path");
 
             return new DiffSetBuilder()
-                .Add(declaration.Diff(expected.Declaration, path.Declaration(), options))
-                .Add(Children.Diff(expected.Children, path, options))
+                .Add(declaration.Diff(expected.Declaration, path.Declaration(), pathExpected.Declaration(), options))
+                .Add(Children.Diff(expected.Children, path, pathExpected, options))
                 .ToDiffSet();
         }
 

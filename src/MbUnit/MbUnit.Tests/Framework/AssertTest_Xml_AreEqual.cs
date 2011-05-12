@@ -154,6 +154,13 @@ namespace MbUnit.Tests.Framework
                     GetTextResource("MbUnit.Tests.Framework.SolarSystemWithErrors.xml"),
                     XmlOptions.Custom.IgnoreElementsOrder, 5
                 };
+
+                yield return new object[] // issue 841
+                { 
+                    "<root><a/><b x='123'/></root>",
+                    "<root><b/></root>",
+                    XmlOptions.Default, 2
+                };
             }
         }
 

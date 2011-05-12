@@ -33,9 +33,10 @@ namespace Gallio.Common.Xml.Diffing
         /// </summary>
         /// <param name="expected">A prototype representing the expected content of the node.</param>
         /// <param name="path">The path of the parent node.</param>
+        /// <param name="pathExpected">The path of the parent node of the expected node.</param>
         /// <param name="options">Comparison options.</param>
         /// <returns>The resulting diff set describing the differences found.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="expected"/> or <paramref name="path"/> is null.</exception>
-        DiffSet Diff(TNode expected, IXmlPathStrict path, Options options);
+        DiffSet Diff(TNode expected, IXmlPathStrict path, IXmlPathStrict pathExpected, Options options);
     }
 }
