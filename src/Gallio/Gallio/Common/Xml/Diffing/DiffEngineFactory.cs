@@ -31,16 +31,17 @@ namespace Gallio.Common.Xml.Diffing
         /// <param name="expected">The expected attributes.</param>
         /// <param name="actual">The actual attributes.</param>
         /// <param name="path">The current path of the parent node.</param>
+        /// <param name="pathExpected">The path of the parent node of the parent collection.</param>
         /// <param name="options">Equality options.</param>
         /// <returns>The resulting diffing engine.</returns>
-        public static IDiffEngine<NodeAttributeCollection> ForAttributes(NodeAttributeCollection expected, NodeAttributeCollection actual, IXmlPathStrict path, Options options)
+        public static IDiffEngine<NodeAttributeCollection> ForAttributes(NodeAttributeCollection expected, NodeAttributeCollection actual, IXmlPathStrict path, IXmlPathStrict pathExpected, Options options)
         {
             if ((options & Options.IgnoreAttributesOrder) != 0)
             {
-                return new DiffEngineForUnorderedAttributes(expected, actual, path, options);
+                return new DiffEngineForUnorderedAttributes(expected, actual, path, pathExpected, options);
             }
-            
-            return new DiffEngineForOrderedItems<NodeAttributeCollection, NodeAttribute>(expected, actual, path, options, OrderedItemType.Attribute);
+
+            return new DiffEngineForOrderedItems<NodeAttributeCollection, NodeAttribute>(expected, actual, path, pathExpected, options, OrderedItemType.Attribute);
         }
 
         /// <summary>
@@ -49,16 +50,17 @@ namespace Gallio.Common.Xml.Diffing
         /// <param name="expected">The expected elements.</param>
         /// <param name="actual">The actual elements.</param>
         /// <param name="path">The current path of the parent node.</param>
+        /// <param name="pathExpected">The path of the parent node of the parent collection.</param>
         /// <param name="options">Equality options.</param>
         /// <returns>The resulting diffing engine.</returns>
-        public static IDiffEngine<NodeCollection> ForElements(NodeCollection expected, NodeCollection actual, IXmlPathStrict path, Options options)
+        public static IDiffEngine<NodeCollection> ForElements(NodeCollection expected, NodeCollection actual, IXmlPathStrict path, IXmlPathStrict pathExpected, Options options)
         {
             if ((options & Options.IgnoreElementsOrder) != 0)
             {
-                return new DiffEngineForUnorderedElements(expected, actual, path, options);
+                return new DiffEngineForUnorderedElements(expected, actual, path, pathExpected, options);
             }
 
-            return new DiffEngineForOrderedItems<NodeCollection, INode>(expected, actual, path, options, OrderedItemType.Element);
+            return new DiffEngineForOrderedItems<NodeCollection, INode>(expected, actual, path, pathExpected, options, OrderedItemType.Element);
         }
     }
 }

@@ -33,6 +33,7 @@ namespace Gallio.Common.Xml.Diffing
         private readonly TCollection expected;
         private readonly TCollection actual;
         private readonly IXmlPathStrict path;
+        private readonly IXmlPathStrict pathExpected;
         private readonly Options options;
         private readonly OrderedItemType itemType;
 
@@ -42,9 +43,10 @@ namespace Gallio.Common.Xml.Diffing
         /// <param name="expected">The expected object.</param>
         /// <param name="actual">The actual object.</param>
         /// <param name="path">The current path of the parent node.</param>
+        /// <param name="pathExpected">The path of the parent node of the expected collection.</param>
         /// <param name="options">Equality options.</param>
         /// <param name="itemType">A type of the diffed items.</param>
-        public DiffEngineForOrderedItems(TCollection expected, TCollection actual, IXmlPathStrict path, Options options, OrderedItemType itemType)
+        public DiffEngineForOrderedItems(TCollection expected, TCollection actual, IXmlPathStrict path, IXmlPathStrict pathExpected, Options options, OrderedItemType itemType)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");
@@ -52,10 +54,13 @@ namespace Gallio.Common.Xml.Diffing
                 throw new ArgumentNullException("actual");
             if (path == null)
                 throw new ArgumentNullException("path");
+            if (pathExpected == null)
+                throw new ArgumentNullException("pathExpected");
 
             this.expected = expected;
             this.actual = actual;
             this.path = path;
+            this.pathExpected = pathExpected;
             this.options = options;
             this.itemType = itemType;
         }
@@ -70,11 +75,11 @@ namespace Gallio.Common.Xml.Diffing
             {
                 if (i >= actual.Count)
                 {
-                    builder.Add(new Diff(itemType.DiffTypeMissing, itemType.ExtendsPath(path, i), DiffTargets.Expected));
+                    builder.Add(new Diff(itemType.DiffTypeMissing, itemType.ExtendsPath(pathExpected, i), DiffTargets.Expected));
                 }
                 else
                 {
-                    DiffSet diffSet = actual[i].Diff(expected[i], path, options);
+                    DiffSet diffSet = actual[i].Diff(expected[i], path, pathExpected, options);
                     builder.Add(diffSet);
 
                     if (!diffSet.IsEmpty && !actual[i].AreNamesEqual(expected[i].Name, options))

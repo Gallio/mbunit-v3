@@ -155,7 +155,7 @@ namespace Gallio.Tests.Common.Xml
         public void Diff_with_null_expected_value_should_throw_exception()
         {
             var collection = NodeAttributeCollection.Empty;
-            collection.Diff(null, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
+            collection.Diff(null, XmlPathRoot.Strict.Empty, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
         }
 
         [Test]
@@ -163,7 +163,15 @@ namespace Gallio.Tests.Common.Xml
         public void Diff_with_null_path_should_throw_exception()
         {
             var collection = NodeAttributeCollection.Empty;
-            collection.Diff(NodeAttributeCollection.Empty, null, XmlOptions.Strict.Value);
+            collection.Diff(NodeAttributeCollection.Empty, null, XmlPathRoot.Strict.Empty, XmlOptions.Strict.Value);
+        }
+
+        [Test]
+        [ExpectedArgumentNullException]
+        public void Diff_with_null_pathExpected_should_throw_exception()
+        {
+            var collection = NodeAttributeCollection.Empty;
+            collection.Diff(NodeAttributeCollection.Empty, XmlPathRoot.Strict.Empty, null, XmlOptions.Strict.Value);
         }
 
         #region Diffing ordered attributes
@@ -173,7 +181,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
             var expected = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
             Assert.IsEmpty(diffSet);
         }
 
@@ -182,7 +190,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeStubCollection("name1", "value1", "name2", "value2");
             var expected = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
             AssertDiff(diffSet, new[] { new Diff(DiffType.MissingAttribute, XmlPathRoot.Strict.Element(0).Attribute(2), DiffTargets.Expected) });
         }
 
@@ -191,7 +199,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeStubCollection("name1", "value1", "name3", "value3");
             var expected = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
             AssertDiff(diffSet, new[] { new Diff(DiffType.UnexpectedAttribute, XmlPathRoot.Strict.Element(0).Attribute(1), DiffTargets.Actual) });
         }
 
@@ -200,7 +208,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
             var expected = MakeStubCollection("name1", "value1", "name2", "value2");
-            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
             AssertDiff(diffSet, new[] { new Diff(DiffType.UnexpectedAttribute, XmlPathRoot.Strict.Element(0).Attribute(2), DiffTargets.Actual) });
         }
 
@@ -209,7 +217,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
             var expected = MakeStubCollection("name1", "value1", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
             AssertDiff(diffSet, new[] { new Diff(DiffType.UnexpectedAttribute, XmlPathRoot.Strict.Element(0).Attribute(1), DiffTargets.Actual) });
         }
 
@@ -218,7 +226,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeStubCollection("name1", "value1", "name2", "ERROR!", "name3", "value3");
             var expected = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
             AssertDiff(diffSet, new[] { new Diff(DiffType.MismatchedAttribute, XmlPathRoot.Strict.Element(0).Attribute(1), DiffTargets.Both) });
         }
 
@@ -227,7 +235,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeStubCollection("name1", "ERROR1!", "name2", "value2", "name3", "ERROR3!");
             var expected = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
             AssertDiff(diffSet, new[] { 
                 new Diff(DiffType.UnexpectedAttribute, XmlPathRoot.Strict.Element(0).Attribute(0), DiffTargets.Both),
                 new Diff(DiffType.UnexpectedAttribute, XmlPathRoot.Strict.Element(0).Attribute(2), DiffTargets.Both) });
@@ -242,7 +250,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeStubCollection("name1", "value1", "name2", "value2", "name3", "value3");
             var expected = MakeStubCollection("name2", "value2", "name3", "value3", "name1", "value1");
-            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), Options.IgnoreAttributesOrder);
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), Options.IgnoreAttributesOrder);
             Assert.IsEmpty(diffSet);
         }
 
@@ -251,7 +259,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeStubCollection("name1", "value1", "name3", "value3");
             var expected = MakeStubCollection("name2", "value2", "name3", "value3", "name1", "value1");
-            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), Options.IgnoreAttributesOrder);
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), Options.IgnoreAttributesOrder);
             AssertDiff(diffSet, new[] { new Diff(DiffType.MissingAttribute, XmlPathRoot.Strict.Element(0).Attribute(0), DiffTargets.Expected) });
         }
 
@@ -260,7 +268,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeStubCollection("name1", "value1", "name3", "value3", "name2", "value2");
             var expected = MakeStubCollection("name2", "value2", "name1", "value1");
-            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), Options.IgnoreAttributesOrder);
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), Options.IgnoreAttributesOrder);
             AssertDiff(diffSet, new[] { new Diff(DiffType.UnexpectedAttribute, XmlPathRoot.Strict.Element(0).Attribute(1), DiffTargets.Actual) });
         }
 
@@ -269,7 +277,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeStubCollection("name1", "value1", "name3", "ERROR!", "name2", "value2");
             var expected = MakeStubCollection("name2", "value2", "name1", "value1", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), Options.IgnoreAttributesOrder);
+            DiffSet diffSet = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), Options.IgnoreAttributesOrder);
             AssertDiff(diffSet, new[] { new Diff(DiffType.MismatchedAttribute, XmlPathRoot.Strict.Element(0).Attribute(1), DiffTargets.Both) });
         }
 

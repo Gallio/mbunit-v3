@@ -28,6 +28,7 @@ namespace Gallio.Common.Xml.Diffing
         private readonly NodeCollection expected;
         private readonly NodeCollection actual;
         private readonly IXmlPathStrict path;
+        private readonly IXmlPathStrict pathExpected;
         private readonly Options options;
 
         /// <summary>
@@ -36,8 +37,9 @@ namespace Gallio.Common.Xml.Diffing
         /// <param name="expected">The expected object.</param>
         /// <param name="actual">The actual object.</param>
         /// <param name="path">The current path of the parent node.</param>
+        /// <param name="pathExpected">The path of the parent node of the expected collection.</param>
         /// <param name="options">Equality options.</param>
-        public DiffEngineForUnorderedElements(NodeCollection expected, NodeCollection actual, IXmlPathStrict path, Options options)
+        public DiffEngineForUnorderedElements(NodeCollection expected, NodeCollection actual, IXmlPathStrict path, IXmlPathStrict pathExpected, Options options)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");
@@ -45,10 +47,13 @@ namespace Gallio.Common.Xml.Diffing
                 throw new ArgumentNullException("actual");
             if (path == null)
                 throw new ArgumentNullException("path");
+            if (pathExpected == null)
+                throw new ArgumentNullException("pathExpected");
 
             this.expected = expected;
             this.actual = actual;
             this.path = path;
+            this.pathExpected = pathExpected;
             this.options = options;
         }
 
@@ -73,7 +78,7 @@ namespace Gallio.Common.Xml.Diffing
             // Find first exact match (= empty diff)
             for (int i = 0; i < source.Count; i++)
             {
-                int j = pool.FindIndex(x => !mask.Contains(x) && source[i].Diff(pool[x], XmlPathRoot.Strict.Empty, options).IsEmpty);
+                int j = pool.FindIndex(x => !mask.Contains(x) && source[i].Diff(pool[x], XmlPathRoot.Strict.Empty, XmlPathRoot.Strict.Empty, options).IsEmpty);
 
                 if (j < 0)
                 {
@@ -92,12 +97,12 @@ namespace Gallio.Common.Xml.Diffing
 
                 if (j < 0)
                 {
-                    builder.Add(new Diff(diffType, path.Element(i), invert ? DiffTargets.Expected : DiffTargets.Actual));
+                    builder.Add(new Diff(diffType, (invert ? pathExpected : path).Element(i), invert ? DiffTargets.Expected : DiffTargets.Actual));
                 }
                 else
                 {
                     int k = invert ? j : i;
-                    DiffSet diffSet = actual[k].Diff(expected[invert ? i : j], path, options);
+                    DiffSet diffSet = actual[k].Diff(expected[invert ? i : j], path, pathExpected, options);
 
                     if (!diffSet.IsEmpty && !notified.Contains(k))
                     {

@@ -120,13 +120,13 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public DiffSet Diff(INode expected, IXmlPathStrict path, Options options)
+        public DiffSet Diff(INode expected, IXmlPathStrict path, IXmlPathStrict pathExpected, Options options)
         {
-            return Diff((NodeAttribute) expected, path, options);
+            return Diff((NodeAttribute)expected, path, pathExpected, options);
         }
 
         /// <inheritdoc />
-        public DiffSet Diff(NodeAttribute expected, IXmlPathStrict path, Options options)
+        public DiffSet Diff(NodeAttribute expected, IXmlPathStrict path, IXmlPathStrict pathExpected, Options options)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");

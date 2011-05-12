@@ -104,7 +104,7 @@ namespace Gallio.Tests.Common.Xml
         public void Diff_with_null_expected_value_should_throw_exception()
         {
             var actual = new NodeAttribute(123, "planet", "Saturn", 456);
-            actual.Diff(null, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            actual.Diff(null, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
         }
 
         [Test]
@@ -113,7 +113,16 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = new NodeAttribute(123, "planet", "Saturn", 456);
             var expected = new NodeAttribute(123, "planet", "Saturn", 456);
-            actual.Diff(expected, null, XmlOptions.Strict.Value);
+            actual.Diff(expected, null, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+        }
+
+        [Test]
+        [ExpectedArgumentNullException]
+        public void Diff_with_null_pathExpected_should_throw_exception()
+        {
+            var actual = new NodeAttribute(123, "planet", "Saturn", 456);
+            var expected = new NodeAttribute(123, "planet", "Saturn", 456);
+            actual.Diff(expected, XmlPathRoot.Strict.Element(0), null, XmlOptions.Strict.Value);
         }
 
         [Test]
@@ -121,7 +130,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = new NodeAttribute(123, "planet", "Saturn", 456);
             var expected = new NodeAttribute(123, "planet", "Saturn", 456);
-            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
             Assert.IsTrue(diff.IsEmpty);
         }
 
@@ -130,7 +139,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = new NodeAttribute(123, "planet", "Saturn", 456);
             var expected = new NodeAttribute(456, "planet", "Saturn", 789);
-            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
             Assert.IsTrue(diff.IsEmpty);
         }
 
@@ -139,7 +148,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = new NodeAttribute(123, "planet", "Saturn", 456);
             var expected = new NodeAttribute(123, "PLANET", "Saturn", 456);
-            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), Options.IgnoreAttributesNameCase);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), Options.IgnoreAttributesNameCase);
             Assert.IsTrue(diff.IsEmpty);
         }
 
@@ -148,7 +157,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = new NodeAttribute(123, "planet", "Saturn", 456);
             var expected = new NodeAttribute(123, "PLANET", "Saturn", 456);
-            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
             AssertDiff(diff, new Diff(DiffType.UnexpectedAttribute, XmlPathRoot.Strict.Element(0).Attribute(123), DiffTargets.Actual));
         }
 
@@ -157,7 +166,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = new NodeAttribute(123, "planet", "Saturn", 456);
             var expected = new NodeAttribute(123, "orb", "Saturn", 456);
-            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
             AssertDiff(diff, new Diff(DiffType.UnexpectedAttribute, XmlPathRoot.Strict.Element(0).Attribute(123), DiffTargets.Actual));
         }
 
@@ -166,7 +175,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = new NodeAttribute(123, "planet", "sAtUrN", 456);
             var expected = new NodeAttribute(123, "planet", "Saturn", 456);
-            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
             AssertDiff(diff, new Diff(DiffType.MismatchedAttribute, XmlPathRoot.Strict.Element(0).Attribute(123), DiffTargets.Both));
         }
 
@@ -175,7 +184,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = new NodeAttribute(123, "planet", "sAtUrN", 456);
             var expected = new NodeAttribute(123, "planet", "Saturn", 456);
-            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), Options.IgnoreAttributesValueCase);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), Options.IgnoreAttributesValueCase);
             Assert.IsTrue(diff.IsEmpty);
         }
 
@@ -184,7 +193,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = new NodeAttribute(123, "planet", "Jupiter", 456);
             var expected = new NodeAttribute(123, "planet", "Saturn", 456);
-            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
+            var diff = actual.Diff(expected, XmlPathRoot.Strict.Element(0), XmlPathRoot.Strict.Element(0), XmlOptions.Strict.Value);
             AssertDiff(diff, new Diff(DiffType.MismatchedAttribute, XmlPathRoot.Strict.Element(0).Attribute(123), DiffTargets.Both));
         }
     }

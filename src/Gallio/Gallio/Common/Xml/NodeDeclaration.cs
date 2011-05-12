@@ -54,20 +54,20 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public override DiffSet Diff(INode expected, IXmlPathStrict path, Options options)
+        public override DiffSet Diff(INode expected, IXmlPathStrict path, IXmlPathStrict pathExpected, Options options)
         {
-            return Diff((NodeDeclaration)expected, path, options);
+            return Diff((NodeDeclaration)expected, path, pathExpected, options);
         }
 
         /// <inheritdoc />
-        public DiffSet Diff(NodeDeclaration expected, IXmlPathStrict path, Options options)
+        public DiffSet Diff(NodeDeclaration expected, IXmlPathStrict path, IXmlPathStrict pathExpected, Options options)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");
             if (path == null)
                 throw new ArgumentNullException("path");
-            
-            return attributes.Diff(expected.Attributes, path, options);
+
+            return attributes.Diff(expected.Attributes, path, pathExpected, options);
         }
     }
 }

@@ -29,6 +29,7 @@ namespace Gallio.Common.Xml.Diffing
         private readonly NodeAttributeCollection expected;
         private readonly NodeAttributeCollection actual;
         private readonly IXmlPathStrict path;
+        private readonly IXmlPathStrict pathExpected;
         private readonly Options options;
 
         /// <summary>
@@ -37,8 +38,9 @@ namespace Gallio.Common.Xml.Diffing
         /// <param name="expected">The expected object.</param>
         /// <param name="actual">The actual object.</param>
         /// <param name="path">The current path of the parent node.</param>
+        /// <param name="pathExpected">The path of the parent node of the parent collection.</param>
         /// <param name="options">Equality options.</param>
-        public DiffEngineForUnorderedAttributes(NodeAttributeCollection expected, NodeAttributeCollection actual, IXmlPathStrict path, Options options)
+        public DiffEngineForUnorderedAttributes(NodeAttributeCollection expected, NodeAttributeCollection actual, IXmlPathStrict path, IXmlPathStrict pathExpected, Options options)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");
@@ -46,10 +48,13 @@ namespace Gallio.Common.Xml.Diffing
                 throw new ArgumentNullException("actual");
             if (path == null)
                 throw new ArgumentNullException("path");
+            if (pathExpected == null)
+                throw new ArgumentNullException("pathExpected");
 
             this.expected = expected;
             this.actual = actual;
             this.path = path;
+            this.pathExpected = pathExpected;
             this.options = options;
         }
 
@@ -77,12 +82,12 @@ namespace Gallio.Common.Xml.Diffing
                 if (j < 0)
                 {
                     var targets = invert ? DiffTargets.Expected : DiffTargets.Actual;
-                    builder.Add(new Diff(diffType, path.Attribute(i), targets));
+                    builder.Add(new Diff(diffType, (invert ? pathExpected : path).Attribute(i), targets));
                 }
                 else
                 {
                     int k = invert ? j : i;
-                    DiffSet diffSet = actual[k].Diff(expected[invert ? i : j], path, options);
+                    DiffSet diffSet = actual[k].Diff(expected[invert ? i : j], path, pathExpected, options);
 
                     if (!diffSet.IsEmpty && !notified.Contains(k))
                     {
@@ -99,7 +104,7 @@ namespace Gallio.Common.Xml.Diffing
 
         private int Find(NodeAttributeCollection source, NodeAttribute attribute, IList<int> mask)
         {
-            int index = source.FindIndex(i => !mask.Contains(i) && attribute.Diff(source[i], XmlPathStrictElement.Root.Element(0), options).IsEmpty);
+            int index = source.FindIndex(i => !mask.Contains(i) && attribute.Diff(source[i], XmlPathStrictElement.Root.Element(0), XmlPathStrictElement.Root.Element(0), options).IsEmpty);
 
             if (index < 0)
             {

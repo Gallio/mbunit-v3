@@ -59,12 +59,12 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public override DiffSet Diff(INode expected, IXmlPathStrict path, Options options)
+        public override DiffSet Diff(INode expected, IXmlPathStrict path, IXmlPathStrict pathExpected, Options options)
         {
             var expectedContent = expected as NodeContent;
 
             if (expectedContent != null)
-                return Diff(expectedContent, path, options);
+                return Diff(expectedContent, path, pathExpected, options);
 
             return new DiffSetBuilder()
                 .Add(new Diff(DiffType.UnexpectedContent, path.Element(Index), DiffTargets.Actual))
@@ -72,7 +72,7 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public DiffSet Diff(NodeContent expected, IXmlPathStrict path, Options options)
+        public DiffSet Diff(NodeContent expected, IXmlPathStrict path, IXmlPathStrict pathExpected, Options options)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");

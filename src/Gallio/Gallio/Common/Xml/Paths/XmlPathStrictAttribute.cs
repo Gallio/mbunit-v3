@@ -57,7 +57,7 @@ namespace Gallio.Common.Xml.Paths
                 throw new ArgumentNullException("parent");
 
             var element = parent as NodeElement;
-            
+
             if (element != null)
                 return element.Attributes[Index];
 
