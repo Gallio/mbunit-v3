@@ -132,6 +132,8 @@ namespace Gallio.Common.Xml
                 throw new ArgumentNullException("expected");
             if (path == null)
                 throw new ArgumentNullException("path");
+            if (pathExpected == null)
+                throw new ArgumentNullException("pathExpected");
 
             var builder = new DiffSetBuilder();
 
