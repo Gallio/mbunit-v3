@@ -78,6 +78,8 @@ namespace Gallio.Common.Xml
                 throw new ArgumentNullException("expected");
             if (path == null)
                 throw new ArgumentNullException("path");
+            if (pathExpected == null)
+                throw new ArgumentNullException("pathExpected");
 
             if (((options & Options.IgnoreComments) != 0) || Text.Equals(expected.Text))
             {
