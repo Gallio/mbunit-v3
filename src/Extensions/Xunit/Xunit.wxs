@@ -4,7 +4,7 @@
 
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Directory Id="Xunit" Name="Xunit" />
+            <Directory Id="xUnit" Name="xUnit" />
         </DirectoryRef>
 
         <Feature Id='feat_XunitAdapter' Title='xUnit Adapter' Level='1' AllowAdvertise="no"
