@@ -112,6 +112,12 @@
       <Link>Common\Reflection\Impl\UnresolvedType.cs</Link>
     </Compile>
     <Compile Include="Common\Reflection\Impl\UnresolvedCustomAttributeData.cs" />
+    <Compile Include="Framework\Data\DataObjects\DynamicObject.cs" />
+    <Compile Include="Framework\Data\DataObjects\MultipleListEnumerable.cs" />
+    <Compile Include="Framework\Data\DataObjects\XmlDataObject.cs" />
+    <Compile Include="Framework\Data\DataObjects\XmlDataObjectBuilder.cs" />
+    <Compile Include="Framework\Data\DataObjects\XmlDataObjectFactory.cs" />
+    <Compile Include="Framework\Data\DataObjects\XmlDataObjectUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -127,9 +133,7 @@
   <ItemGroup>
     <Content Include="Gallio40.plugin" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Framework\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
       <Visible>False</Visible>

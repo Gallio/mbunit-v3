@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TestUrls>
+  <Url TestGroup="1" Name="A">http://www.google.com</Url>
+  <Url TestGroup="1" Name="B">http://www.go.com</Url>
+  <Url TestGroup="1" Name="C">http://www.bing.com</Url>
+  <Url TestGroup="1" Name="D">http://www.msn.com</Url>
+  <Url TestGroup="2" Name="E">http://www.yahoo.com</Url>
+</TestUrls>
