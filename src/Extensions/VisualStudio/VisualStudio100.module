@@ -17,6 +17,16 @@
     <CSharpProject Include="Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip100.Proxy$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Tip.Tests\Gallio.VisualStudio.Tip100.Tests$(ProjectVariant).csproj" />
 
+    <AssemblyFile Include="Gallio.VisualStudio.Shell.Common\bin\Gallio.VisualStudio.Shell.dll">
+      <ImagePath>bin\VisualStudio</ImagePath>
+    </AssemblyFile>
+    <PdbFile Include="Gallio.VisualStudio.Shell.Common\bin\Gallio.VisualStudio.Shell.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
+    <PluginFile Include="Gallio.VisualStudio.Shell.Common\Gallio.VisualStudio.Shell.plugin">
+      <ImagePath>bin\VisualStudio</ImagePath>
+    </PluginFile>
+
     <AssemblyFile Include="Gallio.VisualStudio.Shell\bin\v10.0\Gallio.VisualStudio.Shell100.dll">
       <ImagePath>bin\VisualStudio\v10.0</ImagePath>
     </AssemblyFile>
