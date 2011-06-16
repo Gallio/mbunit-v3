@@ -42,6 +42,7 @@ namespace Gallio.Model
         private readonly List<ComponentHandle<ITestFramework, TestFrameworkTraits>> testFrameworkHandlesWithoutFallback;
         private readonly ComponentHandle<ITestFramework, TestFrameworkTraits> fallbackTestFrameworkHandle;
         private readonly IFileTypeManager fileTypeManager;
+        private readonly ILogger logger;
 
         /// <summary>
         /// Creates a test framework manager.
@@ -49,11 +50,9 @@ namespace Gallio.Model
         /// <param name="testFrameworkHandles">The test framework handles.</param>
         /// <param name="fallbackTestFrameworkHandle">The fallback test framework handle.</param>
         /// <param name="fileTypeManager">The file type manager.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testFrameworkHandles"/>,
-        /// <paramref name="fallbackTestFrameworkHandle"/> or <paramref name="fileTypeManager "/>is null.</exception>
-        public DefaultTestFrameworkManager(ComponentHandle<ITestFramework, TestFrameworkTraits>[] testFrameworkHandles,
-            ComponentHandle<ITestFramework, TestFrameworkTraits> fallbackTestFrameworkHandle,
-            IFileTypeManager fileTypeManager)
+        /// <param name="logger">The logger.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testFrameworkHandles"/>, <paramref name="fallbackTestFrameworkHandle"/> or <paramref name="fileTypeManager "/> or <paramref name="logger"/>is null.</exception>
+        public DefaultTestFrameworkManager(ComponentHandle<ITestFramework, TestFrameworkTraits>[] testFrameworkHandles, ComponentHandle<ITestFramework, TestFrameworkTraits> fallbackTestFrameworkHandle, IFileTypeManager fileTypeManager, ILogger logger)
         {
             if (testFrameworkHandles == null || Array.IndexOf(testFrameworkHandles, null) >= 0)
                 throw new ArgumentNullException("testFrameworkHandles");
@@ -61,10 +60,13 @@ namespace Gallio.Model
                 throw new ArgumentNullException("fallbackTestFrameworkHandle");
             if (fileTypeManager == null)
                 throw new ArgumentNullException("fileTypeManager");
+            if (logger == null)
+                throw new ArgumentNullException("logger");
 
             this.testFrameworkHandles = testFrameworkHandles;
             this.fallbackTestFrameworkHandle = fallbackTestFrameworkHandle;
             this.fileTypeManager = fileTypeManager;
+            this.logger = logger;
 
             testFrameworkHandlesWithoutFallback = new List<ComponentHandle<ITestFramework, TestFrameworkTraits>>(testFrameworkHandles.Length);
             foreach (var testFrameworkHandle in testFrameworkHandles)
@@ -231,13 +233,13 @@ namespace Gallio.Model
                             partitions.Add(selection, file);
                     }
                 }
-                catch (IOException)
+                catch (IOException exception)
                 {
-                    // Ignore the file.
+                    logger.Log(LogSeverity.Error, string.Format("Skipping file '{0}' due to IO error.", file.FullName), exception);
                 }
-                catch (UnauthorizedAccessException)
+                catch (UnauthorizedAccessException exception)
                 {
-                    // Ignore the file.
+                    logger.Log(LogSeverity.Error, string.Format("Skipping file '{0}' due to security error", file.FullName), exception);
                 }
             }
 
