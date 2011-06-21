@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Dynamic;
 using System.Collections.Generic;
+using System.Linq;
 using Gallio.Framework;
 using Gallio.Framework.Data.DataObjects;
 using MbUnit.Core;
 using MbUnit.Framework;
 
-namespace MbUnit.Tests
+namespace MbUnit.Framework.Tests
 {
     [TestFixture]
     [TestsOn(typeof(XmlDataObjectAttribute))]
@@ -26,9 +27,19 @@ namespace MbUnit.Tests
             TestLog.WriteLine("TestStep.ID = " + TestStep.ID);
             TestLog.WriteLine("TestStep.Description = " + TestStep.Description);
 
+            Assert.AreEqual<string>("2", TestStep.ID);
+            Assert.AreEqual<string>("1st Smoke Test", TestStep.Description);
+            
             // Here's how to access the inner text of an Element - use ".Value" dynamic property
             TestLog.WriteLine("TestStep.Customer.Name.Value = " + TestStep.Customer.Name.Value);
             TestLog.WriteLine("TestStep.Customer.Zip.Value = " + TestStep.Customer.Zip.Value);
+
+            // Do some verification with the data
+            Assert.AreEqual<string>("John Jacobs", TestStep.Customer.Name.Value);
+            Assert.AreEqual<string>("Chicago", TestStep.Customer.City.Value);
+            Assert.AreEqual<string>("IL", TestStep.Customer.State.Value);
+            Assert.AreEqual<string>("60641", TestStep.Customer.Zip.Value);
+
 
             // Here's how to check to see if a certain Element or Attribute exists or not
             Assert.IsNotNull(TestStep.Description);
@@ -40,6 +51,17 @@ namespace MbUnit.Tests
             TestLog.WriteLine("TestStep.Orders.Product[0].ID = " + TestStep.Orders.Product[0].ID);
             TestLog.WriteLine("TestStep.Orders.Product[1].ID = " + TestStep.Orders.Product[1].ID);
             TestLog.WriteLine("TestStep.Orders.Product[2].ID = " + TestStep.Orders.Product[2].ID);
+
+            // Add it up!
+            int QuantityTotal = 0;
+            foreach (dynamic Product in ProductList)
+            {
+                QuantityTotal += Int32.Parse(Product.Quantity);
+            }
+            Assert.AreEqual<int>(6, QuantityTotal);
+
+            // Better yet, use a LINQ extension method!
+            Assert.AreEqual<int>(6, ProductList.Sum<dynamic>(Product => Int32.Parse(Product.Quantity)));
 
             // The XmlDataObject.IsOne() static method detects if there's only one Element returns by a dynamic accessor
             Assert.IsTrue(XmlDataObject.IsOne(TestStep.Customer));
@@ -63,10 +85,14 @@ namespace MbUnit.Tests
             // Whether there is one or many Product Element, this enables us to treat them as Lists
             var ProductList = XmlDataObject.AsList(Order.Product);
 
-            foreach (var Product in ProductList)
+            int QuantityTotal = 0;
+            foreach (dynamic Product in ProductList)
             {
-                TestLog.WriteLine(Product.ID + " " + Product.Quantity);
+                QuantityTotal += Int32.Parse(Product.Quantity);
             }
+
+            // All the test data in TestData3.xml has Product Quantities totalling to "6"
+            Assert.AreEqual<int>(6, QuantityTotal);
         }
 
         /// <summary>
@@ -84,6 +110,12 @@ namespace MbUnit.Tests
             TestLog.WriteLine("TestStep.Customer.City.Value = " + TestStep.Customer.City.Value);
             TestLog.WriteLine("TestStep.Customer.State.Value = " + TestStep.Customer.State.Value);
             TestLog.WriteLine("TestStep.Customer.Zip.Value = " + TestStep.Customer.Zip.Value);
+
+            // Verification
+            Assert.AreEqual<string>("Erin Everest", TestStep.Customer.Name.Value);
+            Assert.AreEqual<string>("Alameda", TestStep.Customer.City.Value);
+            Assert.AreEqual<string>("CA", TestStep.Customer.State.Value);
+            Assert.AreEqual<string>("94501", TestStep.Customer.Zip.Value);
         }
 
         /// <summary>

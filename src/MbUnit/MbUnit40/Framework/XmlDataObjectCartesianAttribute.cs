@@ -106,12 +106,25 @@ namespace MbUnit.Framework
         /// CLS-compliant constructor for four-file combination
         /// </summary>
         public XmlDataObjectCartesianAttribute(
-                string FilePath1, string XPath1, string FilePath2, string XPath2, string FilePath3, string XPath3, string FilePath4, string XPath4)
+                string FilePath1, string XPath1, string FilePath2, string XPath2, string FilePath3, string XPath3, 
+                string FilePath4, string XPath4)
         {
-            this.FileAndXPathCouplets = new object[] { FilePath1, XPath1, FilePath2, XPath2, FilePath3, XPath3, FilePath4, XPath4 };
+            this.FileAndXPathCouplets = new object[] { 
+                    FilePath1, XPath1, FilePath2, XPath2, FilePath3, XPath3, FilePath4, XPath4 };
             this.columnCount = 4;
         }
 
+        /// <summary>
+        /// CLS-compliant constructor for four-file combination
+        /// </summary>
+        public XmlDataObjectCartesianAttribute(
+                string FilePath1, string XPath1, string FilePath2, string XPath2, string FilePath3, string XPath3, 
+                string FilePath4, string XPath4, string FilePath5, string XPath5)
+        {
+            this.FileAndXPathCouplets = new object[] { 
+                    FilePath1, XPath1, FilePath2, XPath2, FilePath3, XPath3, FilePath4, XPath4, FilePath5, XPath5 };
+            this.columnCount = 5;
+        }
 
 
         /// <inheritdoc />
