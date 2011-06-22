@@ -94,7 +94,7 @@
  #elseif ($a.ContentDisposition == "Inline")
   #if ($a.ContentType.StartsWith("image/"))
     <div id="$id" class="logStreamEmbed">
-      <img class="embeddedImage" src="data:$a.ContentType;base64,$a.GetText()" alt="Attachment: $a.Name" />
+      <img class="embeddedImage" src="data:$a.ContentType;base64,$a.SerializedContents" alt="Attachment: $a.Name" />
     </div>
   #elseif ($a.ContentType.StartsWith("text/html") || $a.ContentType.StartsWith("text/xhtml"))
     <div id="$id" class="logStreamEmbed" title="$a.Name">
