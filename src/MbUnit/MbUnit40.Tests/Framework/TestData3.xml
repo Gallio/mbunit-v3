@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <TestData>
   <TestCase ID="560">
-    <TestStep ID="2" Description="Smoke Test">
-      <Customer>
+    <TestStep ID="2" Description="1st Smoke Test">
+      <Customer ID="1001">
         <Name>John Jacobs</Name>
         <City>Chicago</City>
         <State>IL</State>
         <Zip>60641</Zip>
       </Customer>
-      <Orders>
+      <Orders TotalQuantity="6">
         <Product ID="87" Quantity="3" />
         <Product ID="83" Quantity="2" />
         <Product ID="12" Quantity="1" />
@@ -21,7 +21,7 @@
   </TestCase>
   <TestCase ID="562">
     <TestStep ID="8" Description="2nd Smoke Test">
-      <Customer>
+      <Customer ID="1002">
         <Name>Bill Bailey</Name>
         <City>Chicago</City>
         <State>IL</State>
@@ -29,7 +29,7 @@
       </Customer>
       <Orders>
         <Product ID="83" Quantity="2" />
-        <Product ID="12" Quantity="1" />
+        <Product ID="12" Quantity="4" />
       </Orders>
       <Search>
         <Topic>Deep Sea Diving</Topic>
@@ -39,14 +39,14 @@
   </TestCase>
   <TestCase ID="563">
     <TestStep ID="7" Description="Single Order Customer">
-      <Customer>
+      <Customer ID="1003">
         <Name>Erin Everest</Name>
         <City>Alameda</City>
         <State>CA</State>
         <Zip>94501</Zip>
       </Customer>
       <Orders>
-        <Product ID="87" Quantity="5" />
+        <Product ID="87" Quantity="6" />
       </Orders>
       <Search>
         <Topic>Motorcycle Parts</Topic>

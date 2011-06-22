@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <LoginCredentials>
-  <Credentials ID="Admin">
+  <Credentials ID="Admin" SecurityCode="9">
     <UserName>Admin</UserName>
     <Password>Password</Password>
   </Credentials>
-  <Credentials ID="User">
+  <Credentials ID="User" SecurityCode="27">
     <UserName>User123</UserName>
     <Password>Password</Password>
   </Credentials>

@@ -2,8 +2,13 @@
 using System.Dynamic;
 using System.Collections.Generic;
 using System.Linq;
+using Gallio.Model.Schema;
+using Gallio.Common.Reflection;
+using Gallio.Common.Markup;
 using Gallio.Framework;
 using Gallio.Framework.Data.DataObjects;
+using Gallio.Runner.Reports.Schema;
+using Gallio.Tests;
 using MbUnit.Core;
 using MbUnit.Framework;
 
@@ -11,14 +16,69 @@ namespace MbUnit.Framework.Tests
 {
     [TestFixture]
     [TestsOn(typeof(XmlDataObjectAttribute))]
-    public class XmlDataObjectTests
+    [RunSample(typeof(XmlDataObjectWithTestData1File))]
+    [RunSample(typeof(XmlDataObjectWithTestData3File))]
+    public class XmlDataObjectTests : BaseTestWithSampleRunner
     {
-        // START HERE: this prime example shows how to access data using the dynamic XmlDataObject attribute.
+        [Test]
+        public void VerifyTestOnTestData1File()
+        {
+            TestStepRun run = Runner.GetPrimaryTestStepRun(
+                    CodeReference.CreateFromMember(typeof(XmlDataObjectWithTestData1File).GetMethod("Test")));
+
+            Assert.AreElementsEqual(new[] {
+                     "ID = 'Admin', UserName = 'Admin', Password = 'Password'",
+                     "ID = 'User', UserName = 'User123', Password = 'Password'" },
+              run.Children.Select(x => x.TestLog.GetStream(MarkupStreamNames.Default).ToString()),
+             (x, y) => y.Contains(x));
+        }
+
+        [Test]
+        public void VerifyTestOnTestData3File()
+        {
+            TestStepRun run = Runner.GetPrimaryTestStepRun(
+                    CodeReference.CreateFromMember(typeof(XmlDataObjectWithTestData3File).GetMethod("Test")));
+
+            Assert.AreElementsEqual(new[] {
+                     "CustomerName = 'John Jacobs', CustomerCity = 'Chicago', CustomerState = 'IL', CustomerZip = '60641'",
+                     "CustomerName = 'Bill Bailey', CustomerCity = 'Chicago', CustomerState = 'IL', CustomerZip = '60652'",
+                     "CustomerName = 'Erin Everest', CustomerCity = 'Alameda', CustomerState = 'CA', CustomerZip = '94501'"
+              },
+              run.Children.Select(x => x.TestLog.GetStream(MarkupStreamNames.Default).ToString()),
+             (x, y) => y.Contains(x));
+        }
+
+        [TestFixture, Explicit]
+        internal class XmlDataObjectWithTestData1File
+        {
+            [Test, XmlDataObject("//LoginCredentials/Credentials", ResourcePath = "MbUnit40.Tests.Framework.TestData1.xml")]
+            public void Test(dynamic credentials)
+            {
+                TestLog.WriteLine("ID = '{0}', UserName = '{1}', Password = '{2}'",
+                                    credentials.ID, credentials.UserName.Value, credentials.Password.Value);
+            }
+        }
+
+        [TestFixture, Explicit]
+        internal class XmlDataObjectWithTestData3File
+        {
+            [Test, XmlDataObject("//TestData/TestCase/TestStep", FilePath = @"..\Framework\TestData3.xml")]
+            public void Test(dynamic teststep)
+            {
+                TestLog.WriteLine("CustomerName = '{0}', CustomerCity = '{1}', CustomerState = '{2}', CustomerZip = '{3}'",
+                            teststep.Customer.Name.Value, teststep.Customer.City.Value,
+                            teststep.Customer.State.Value, teststep.Customer.Zip.Value);
+            }
+        }
+
+
+        #region Sample Code
+        // These aren't really tests as much as example of how to access data using the dynamic XmlDataObject attribute.
         // Notice how you can specify specific XPaths into your XDocument.  The FilePath specifies where the Xml file 
         // is located relative to the binary
         [Test]
         [XmlDataObject("//TestData/TestCase/TestStep[@ID='2']", FilePath=@"..\Framework\TestData3.xml")]
-        public void TestUsingXmlData(dynamic TestStep)
+        public void UsingXmlDataSample(dynamic TestStep)
         {
             // Prints the entire object graph to the test log
             TestLog.WriteLine(((XmlDataObject)TestStep).ToString(-1));
@@ -80,7 +140,7 @@ namespace MbUnit.Framework.Tests
         // XmlDataObject.AsList() static method
         [Test]
         [XmlDataObject("//TestData/TestCase/TestStep/Orders", FilePath = @"..\Framework\TestData3.xml")]
-        public void HandlingMultipleSameNameElementsPolymorphically(dynamic Order)
+        public void HandlingMultipleSameNameElementsPolymorphicallySample(dynamic Order)
         {
             // Whether there is one or many Product Element, this enables us to treat them as Lists
             var ProductList = XmlDataObject.AsList(Order.Product);
@@ -100,7 +160,7 @@ namespace MbUnit.Framework.Tests
         /// </summary>
         [Test]
         [XmlDataObject("//TestCase[@ID='563']/TestStep[@ID='7']", ResourcePath = "MbUnit40.Tests.Framework.TestData3.xml")]
-        public void ResourceFileTest(dynamic TestStep)
+        public void ResourceFileSample(dynamic TestStep)
         {
             // Prints the entire object graph to the test log
             TestLog.WriteLine(((XmlDataObject)TestStep).ToString(-1));
@@ -117,25 +177,7 @@ namespace MbUnit.Framework.Tests
             Assert.AreEqual<string>("CA", TestStep.Customer.State.Value);
             Assert.AreEqual<string>("94501", TestStep.Customer.Zip.Value);
         }
-
-        /// <summary>
-        /// This is useful utility for finding the way that Resource Files are represented in the Assembly manifest
-        /// </summary>
-        [Test]
-        public void ResourcesFile()
-        {
-            System.Reflection.Assembly thisExe;
-            thisExe = System.Reflection.Assembly.GetExecutingAssembly();
-            string[] resources = thisExe.GetManifestResourceNames();
-            string list = "";
-
-            // Build the string of resources.
-            foreach (string resource in resources)
-            {
-                list += resource + "\r\n";
-                TestLog.WriteLine(resource);
-            }
-        }
+        #endregion
     }
 }
 
