@@ -1,11 +1,11 @@
 MbUnit Samples
 ==============
 
-This directory contains MbUnit samples.
+This directory contains links to MbUnit sample code projects.
 
 How to use:
 
-1. Extract the desired sample to a directory of your choice.
+1. Download and unzip the desired sample to a directory of your choice.
 
 2. Open the sample solution in Visual Studio.  Some samples may
    include solutions and project files for multiple versions of

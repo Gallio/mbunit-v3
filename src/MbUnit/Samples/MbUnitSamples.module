@@ -2,26 +2,20 @@
   <Import Project="$(RootDir)\bin\Module.targets" />
 
   <ItemGroup>
-    <CSharpProject Include="Unit Testing\MbUnit.Samples\MbUnit.Samples$(ProjectVariantExplicit).csproj" />
-
-    <CSharpProject Include="Web Testing with WatiN\MbUnit.Samples.WebTestingWithWatiN\MbUnit.Samples.WebTestingWithWatiN$(ProjectVariantExplicit).csproj" />
-
-    <CSharpProject Include="GUI Testing with White\MbUnit.Samples.GUITestingWithWhite\MbUnit.Samples.GUITestingWithWhite$(ProjectVariantExplicit).csproj" />
-
     <File Include="Readme.txt">
       <ImagePath>samples\MbUnit</ImagePath>
     </File>
 
-    <ExportArchive Include="Unit Testing">
-      <ImagePath>samples\MbUnit\Unit Testing.zip</ImagePath>
-    </ExportArchive>
+    <File Include="Unit Testing with MbUnit.url">
+      <ImagePath>samples\MbUnit</ImagePath>
+    </File>
     
-    <ExportArchive Include="Web Testing with WatiN">
-      <ImagePath>samples\MbUnit\Web Testing with WatiN.zip</ImagePath>
-    </ExportArchive>
+    <File Include="Web Testing with MbUnit and WatiN.url">
+      <ImagePath>samples\MbUnit</ImagePath>
+    </File>
     
-    <ExportArchive Include="GUI Testing with White">
-      <ImagePath>samples\MbUnit\GUI Testing with White.zip</ImagePath>
-    </ExportArchive>
+    <File Include="GUI Testing with MbUnit and White.url">
+      <ImagePath>samples\MbUnit</ImagePath>
+    </File>
   </ItemGroup>
 </Project>

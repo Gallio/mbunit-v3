@@ -10,16 +10,16 @@
                     <File Id="MbUnit.Samples.Readme.txt" Name="Readme.txt" KeyPath="yes" />
                 </Component>
 
-                <Component Id="MbUnit.Samples.UnitTesting" Guid="{FD430940-F292-47d6-957F-E0A8D3E20FAD}" Win64="$(var.Win64Binary)">
-                    <File Id="MbUnit.Samples.UnitTesting.zip" Name="Unit Testing.zip" KeyPath="yes" />
+                <Component Id="MbUnit.Samples.UnitTestingWithMbUnit" Guid="{FD430940-F292-47d6-957F-E0A8D3E20FAD}" Win64="$(var.Win64Binary)">
+                    <File Id="MbUnit.Samples.UnitTestingWithMbUnit.url" Name="Unit Testing With MbUnit.url" KeyPath="yes" />
                 </Component>
 
-                <Component Id="MbUnit.Samples.WebTestingWithWatiN" Guid="{FAE3E883-1007-4cf6-8106-8ED3F97D070E}" Win64="$(var.Win64Binary)">
-                    <File Id="MbUnit.Samples.WebTestingWithWatiN.zip" Name="Web Testing with WatiN.zip" KeyPath="yes" />
+                <Component Id="MbUnit.Samples.WebTestingWithMbUnitAndWatiN" Guid="{FAE3E883-1007-4cf6-8106-8ED3F97D070E}" Win64="$(var.Win64Binary)">
+                    <File Id="MbUnit.Samples.WebTestingWithMbUnitAndWatiN.url" Name="Web Testing with MbUnit and WatiN.url" KeyPath="yes" />
                 </Component>
 
-                <Component Id="MbUnit.Samples.GUITestingWithWhite" Guid="{7F850761-AD5A-405b-BEBD-3D547727E682}" Win64="$(var.Win64Binary)">
-                    <File Id="MbUnit.Samples.GUITestingWithWhite.zip" Name="GUI Testing with White.zip" KeyPath="yes" />
+                <Component Id="MbUnit.Samples.GUITestingWithMbUnitAndWhite" Guid="{7F850761-AD5A-405b-BEBD-3D547727E682}" Win64="$(var.Win64Binary)">
+                    <File Id="MbUnit.Samples.GUITestingWithMbUnitAndWhite.url" Name="GUI Testing with MbUnit and White.url" KeyPath="yes" />
                 </Component>
             </Directory>
         </DirectoryRef>
@@ -31,8 +31,12 @@
                 <RegistryKey Action="none" Root="HKCU" Key="Software\Gallio.org\Gallio\$(var.MajorVersion).$(var.MinorVersion)">
                     <RegistryValue Type="string" Value="[INSTALLDIR]" KeyPath="yes" />
                 </RegistryKey>
-                <Shortcut Id="MbUnit.Samples.lnk" Name="MbUnit Samples" Target="[MbUnit.Samples]" Directory="SamplesMenuFolder" WorkingDirectory="binFolder" Advertise="no" Show="normal" />
-                <RemoveFile Id="MbUnit.Samples.lnk" On="uninstall" Name="[MbUnit.Samples.lnk]" />
+                <File Id="MbUnit.Samples.UnitTestingWithMbUnit.url.shortcut" Source="$(var.GallioTargetDir)\samples\MbUnit\Unit Testing With MbUnit.url" KeyPath="no"/>
+                <File Id="MbUnit.Samples.WebTestingWithMbUnitAndWatiN.url.shortcut" Source="$(var.GallioTargetDir)\samples\MbUnit\Web Testing with MbUnit and WatiN.url" KeyPath="no"/>
+                <File Id="MbUnit.Samples.GUITestingWithMbUnitAndWhite.url.shortcut" Source="$(var.GallioTargetDir)\samples\MbUnit\GUI Testing with MbUnit and White.url" KeyPath="no"/>
+                <RemoveFile Id="MbUnit.UnitTestingWithMbUnit.url.shortcut" On="uninstall" Name="[MbUnit.Samples.UnitTestingWithMbUnit.url.shortcut]" />
+                <RemoveFile Id="MbUnit.WebTestingWithMbUnitAndWatiN.url.shortcut" On="uninstall" Name="[MbUnit.Samples.WebTestingWithMbUnitAndWatiN.url.shortcut]" />
+                <RemoveFile Id="MbUnit.GUITestingWithMbUnitAndWhite.url.shortcut" On="uninstall" Name="[MbUnit.Samples.GUITestingWithMbUnitAndWhite.url.shortcut]" />
                 <RemoveFolder Id="SamplesMenuFolder" On="uninstall" />
             </Component>
         </DirectoryRef>
@@ -40,9 +44,9 @@
         <Feature Id="feat_MbUnit3.Samples" Title="MbUnit Samples" Level="1" AllowAdvertise="no"
                  Description="Installs MbUnit code samples.">
             <ComponentRef Id="MbUnit.Samples.Readme" />
-            <ComponentRef Id="MbUnit.Samples.UnitTesting" />
-            <ComponentRef Id="MbUnit.Samples.WebTestingWithWatiN" />
-            <ComponentRef Id="MbUnit.Samples.GUITestingWithWhite" />
+            <ComponentRef Id="MbUnit.Samples.UnitTestingWithMbUnit" />
+            <ComponentRef Id="MbUnit.Samples.WebTestingWithMbUnitAndWatiN" />
+            <ComponentRef Id="MbUnit.Samples.GUITestingWithMbUnitAndWhite" />
             <ComponentRef Id="MbUnit.Samples.MenuShortcut"/>
         </Feature>
     </Fragment>
