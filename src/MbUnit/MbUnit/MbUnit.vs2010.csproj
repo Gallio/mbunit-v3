@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Framework\ContractVerifiers\Core\NotEnoughHashesException.cs" />
     <Compile Include="Framework\Assert.HasAttribute.cs" />
+    <Compile Include="Framework\ExpectedInvalidOperationExceptionAttribute.cs" />
     <Compile Include="Framework\RandomGenerationDataAttribute.cs" />
     <Compile Include="Framework\DisableAttribute.cs" />
     <Compile Include="Framework\AnnotationAttribute.cs" />
