@@ -147,7 +147,7 @@
     <ProjectVariantExplicit>.vs2008</ProjectVariantExplicit>
     <ProjectVariantExplicit Condition="'$(DotNetFrameworkVersion)'=='4.0'">.vs2010</ProjectVariantExplicit>
     
-    <TestRunnerType Condition="'$(TestRunnerType)'=='' and '$(SkipCoverage)'=='true'">IsolatedProcess</TestRunnerType>
+    <TestRunnerType Condition="'$(TestRunnerType)'=='' and '$(SkipCodeCoverage)'=='true'">IsolatedProcess</TestRunnerType>
     <TestRunnerType Condition="'$(TestRunnerType)'==''">NCover3</TestRunnerType>
     <TestReportTypes>Xml;Html-Condensed</TestReportTypes>
   </PropertyGroup>
@@ -725,7 +725,7 @@
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Gallio>
 
-    <NCoverReporting Condition="'$(SkipTestCoverage)'!='true' and Exists('$(_TestCoverageFile)')"
+    <NCoverReporting Condition="'$(SkipCodeCoverage)'!='true' and Exists('$(_TestCoverageFile)')"
                      CoverageDataPaths="$(_TestCoverageFile)"
                      OutputPath="$(ModuleReportDir)\CoverageReport.xml"
                      ProjectName="Gallio"
