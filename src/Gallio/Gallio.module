@@ -160,12 +160,12 @@
     
     <Feature Include="FEATURE_GALLIO40" />
     
-    <TestAssembly Include="Gallio40.Tests\bin\Gallio40.Tests.dll" />
+    <TestAssembly Include="Gallio40.Tests\bin\Gallio40.dll" />
   </ItemGroup>
   
   <Target 
     Name="BeforeImage" 
-    DependsOnTargets="GallioReportsImage_ILMerge;GallioImage_ILMerge;GallioImage_NoILMerge" />
+    DependsOnTargets="GallioReportsImage_ILMerge;GallioImage_ILMerge;Gallio40Image_ILMerge;GallioImage_NoILMerge" />
 
   <ItemGroup>
     <GallioReportsMergeDependency Include="Gallio.Reports\bin\NVelocity.dll" />
@@ -196,6 +196,10 @@
     <GallioMergeDependency Include="Gallio\bin\Microsoft.Cci.PeReader.dll" />
     <GallioMergeDependency Include="Gallio\bin\Microsoft.Cci.SourceModel.dll" />
   </ItemGroup>
+  
+  <ItemGroup>
+  	<Gallio40MergeDependency Include="Gallio40\bin\GenericParsing.dll" />
+  </ItemGroup>
 
   <Target 
     Name="GallioImage_ILMerge"
@@ -216,9 +220,22 @@
       BuildAssemblyPath="$(ModuleTempDir)" 
       References="" 
       KeyFile="..\Key.snk" />
-      
   </Target>
 
+  <Target 
+    Name="Gallio40Image_ILMerge"
+    Condition="'$(NoILMerge)'!='true'"
+    Inputs="Gallio\bin\Gallio40.dll;@(Gallio40MergeDependency)"
+    Outputs="$(ModuleTempDir)\Gallio40.dll">
+
+    <Message 
+      Text="Running ILMerge on Gallio40.dll..."
+      Importance="High" />
+
+    <Exec 
+      Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio40\bin\Gallio40.dll&quot; @(Gallio40MergeDependency->'&quot;%(Identity)&quot;', ' ') /internalize &quot;/out:$(ModuleTempDir)\Gallio40.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot; /lib:&quot;C:\Windows\Microsoft.NET\Framework\v4.0.30319&quot;" />		
+  </Target>
+  
   <Target 
     Name="GallioImage_NoILMerge"
     Condition="'$(NoILMerge)'=='true'">

@@ -58,6 +58,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GenericParsing">
+      <HintPath>..\libs\GenericParsing.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -113,7 +116,10 @@
     </Compile>
     <Compile Include="Common\Reflection\Impl\UnresolvedCustomAttributeData.cs" />
     <Compile Include="Framework\Data\DataObjects\DynamicObject.cs" />
+    <Compile Include="Framework\Data\DataObjects\ExcelToDataTableBuilder.cs" />
+    <Compile Include="Framework\Data\DataObjects\FlatFileToDataTableBuilder.cs" />
     <Compile Include="Framework\Data\DataObjects\MultipleListEnumerable.cs" />
+    <Compile Include="Framework\Data\DataObjects\TabularDataObjectFactory.cs" />
     <Compile Include="Framework\Data\DataObjects\XmlDataObject.cs" />
     <Compile Include="Framework\Data\DataObjects\XmlDataObjectBuilder.cs" />
     <Compile Include="Framework\Data\DataObjects\XmlDataObjectFactory.cs" />
