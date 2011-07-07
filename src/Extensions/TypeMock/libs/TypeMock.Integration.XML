@@ -4,10 +4,13 @@
         <name>TypeMock.Integration</name>
     </assembly>
     <members>
-        <member name="T:TypeMock.Integration.IntegrationNotInstalledException">
+        <member name="T:TypeMock.Integration.IntegrationLicenseException">
             <summary>
-            IntegrationNotInstalledException is thrown when Typemock Isolator installation directory can not be found
+            IntegrationLicenseException is thrown when trying to use Typemock Isolator feature without a proper license installed on the machine
             </summary>
+            <example>
+            The machine has a community license and and the application is trying to link with coverage tool.
+            </example>
         </member>
         <member name="T:TypeMock.Integration.IntegrationException">
             <summary>
@@ -39,27 +42,60 @@
             <param name="info">The SerializationInfo that holds the serialized object data about the exception being thrown.</param>
             <param name="context">The StreamingContext that contains contextual information about the source or destination.</param>
         </member>
-        <member name="M:TypeMock.Integration.IntegrationNotInstalledException.#ctor(System.String)">
+        <member name="M:TypeMock.Integration.IntegrationLicenseException.#ctor(System.String)">
             <summary>
-            IntegrationNotInstalledException is thrown when Typemock Isolator installation directory can not be found
+            IntegrationLicenseException is thrown when trying to use Typemock Isolator feature without a proper license installed on the machine
             </summary>
             <param name="message">Reason of exception</param>
         </member>
-        <member name="M:TypeMock.Integration.IntegrationNotInstalledException.#ctor">
+        <member name="M:TypeMock.Integration.IntegrationLicenseException.#ctor">
             <summary>
-            IntegrationNotInstalledException is thrown when Typemock Isolator installation directory can not be found
+            IntegrationLicenseException is thrown when trying to use Typemock Isolator feature without a proper license installed on the machine
             </summary>
         </member>
-        <member name="M:TypeMock.Integration.IntegrationNotInstalledException.#ctor(System.String,System.Exception)">
+        <member name="M:TypeMock.Integration.IntegrationLicenseException.#ctor(System.String,System.Exception)">
             <summary>
-            IntegrationNotInstalledException is thrown when Typemock Isolator installation directory can not be found
+            IntegrationLicenseException is thrown when trying to use Typemock Isolator feature without a proper license installed on the machine
             </summary>
             <param name="message">Reason of exception</param>
             <param name="innerException">Inner Exception</param>
         </member>
-        <member name="M:TypeMock.Integration.IntegrationNotInstalledException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+        <member name="M:TypeMock.Integration.IntegrationLicenseException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
             <summary>
-            Initializes a new instance of the IntegrationNotInstalledException class with serialized data.
+            Initializes a new instance of the IntegrationLicenseException class with serialized data.
+            </summary>
+            <param name="info">The SerializationInfo that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The StreamingContext that contains contextual information about the source or destination.</param>
+        </member>
+        <member name="T:TypeMock.Integration.IntegrationMissingFileException">
+            <summary>
+            IntegrationMissingFileException is thrown when using the Auto Deploy feature and one of the files needed by Typemock Isolator is missing
+            </summary>
+            <example>
+            The Auto Deploy directory is missing TypeMock.dll file
+            </example>
+        </member>
+        <member name="M:TypeMock.Integration.IntegrationMissingFileException.#ctor(System.String)">
+            <summary>
+            IntegrationMissingFileException is thrown when using the Auto Deploy feature and one of the files needed by Typemock Isolator is missing
+            </summary>
+            <param name="message">Reason of exception</param>
+        </member>
+        <member name="M:TypeMock.Integration.IntegrationMissingFileException.#ctor">
+            <summary>
+            IntegrationMissingFileException is thrown when using the Auto Deploy feature and one of the files needed by Typemock Isolator is missing
+            </summary>
+        </member>
+        <member name="M:TypeMock.Integration.IntegrationMissingFileException.#ctor(System.String,System.Exception)">
+            <summary>
+            IntegrationMissingFileException is thrown when using the Auto Deploy feature and one of the files needed by Typemock Isolator is missing
+            </summary>
+            <param name="message">Reason of exception</param>
+            <param name="innerException">Inner Exception</param>
+        </member>
+        <member name="M:TypeMock.Integration.IntegrationMissingFileException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the IntegrationMissingFileException class with serialized data.
             </summary>
             <param name="info">The SerializationInfo that holds the serialized object data about the exception being thrown.</param>
             <param name="context">The StreamingContext that contains contextual information about the source or destination.</param>
@@ -76,8 +112,7 @@
             This assembly does not require other Typemock Isolator assemblies and can be deployed separately</para>
             <example>
             Example of using the Auto deploy feature of Typemock Isolator with TypeMock.Integration API
-            <code>
-            // C#
+            <code lang="cs">
             public void DoAutoDeploy(string path)
             {
                 if(!Service.HasLicenseForAutodeploy())
@@ -101,8 +136,7 @@
             <para>
             <example>
             Example of using Service.InstallFrom
-            <code>        
-             // C#
+            <code lang="cs">        
              public void DoAutoDeploy(string path)
              {
                  if(! Service.HasLicenseForAutodeploy())
@@ -127,8 +161,7 @@
             <para>
             <example>
             Example of using Service.HasLicenseToLink
-            <code>
-             // C#
+            <code lang="cs">
             public void RunTest(string profilerName)
             {
                 if (!Service.HasLicenseToLink())
@@ -152,8 +185,7 @@
             <para>
             <example>
             Example of using Service.HasLicenseForAutodeploy
-            <code>        
-             // C#
+            <code lang="cs">        
             public void DoAutoDeploy(string path)
             {
                 if(! Service.HasLicenseForAutodeploy())
@@ -180,8 +212,7 @@
             <para>
             <example>
             Example of using Service.GetCoverageTools
-            <code>        
-             // C#
+            <code lang="cs">        
             Console.WriteLine("Available profilers on this machine:");
             foreach (string profiler in Service.GetCoverageTools(true))
             {
@@ -201,8 +232,7 @@
             <para>        
             <example>
             Example using Service.InstallDirectory
-            <code>
-            // C#
+            <code lang="cs">
             public void PrintTypeMockInstallationPath()
             {
                 Console.WriteLine("TypeMock installed at:");
@@ -222,8 +252,7 @@
             <para>
             <example>
             Example of using Service.IsInstalled
-            <code>
-             // C#
+            <code lang="cs">
             static void Main(string[] args)
             {
                 if(! Service.IsInstalled)
@@ -373,111 +402,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="T:TypeMock.Integration.IntegrationMissingFileException">
-            <summary>
-            IntegrationMissingFileException is thrown when using the Auto Deploy feature and one of the files needed by Typemock Isolator is missing
-            </summary>
-            <example>
-            The Auto Deploy directory is missing TypeMock.dll file
-            </example>
-        </member>
-        <member name="M:TypeMock.Integration.IntegrationMissingFileException.#ctor(System.String)">
-            <summary>
-            IntegrationMissingFileException is thrown when using the Auto Deploy feature and one of the files needed by Typemock Isolator is missing
-            </summary>
-            <param name="message">Reason of exception</param>
-        </member>
-        <member name="M:TypeMock.Integration.IntegrationMissingFileException.#ctor">
-            <summary>
-            IntegrationMissingFileException is thrown when using the Auto Deploy feature and one of the files needed by Typemock Isolator is missing
-            </summary>
-        </member>
-        <member name="M:TypeMock.Integration.IntegrationMissingFileException.#ctor(System.String,System.Exception)">
-            <summary>
-            IntegrationMissingFileException is thrown when using the Auto Deploy feature and one of the files needed by Typemock Isolator is missing
-            </summary>
-            <param name="message">Reason of exception</param>
-            <param name="innerException">Inner Exception</param>
-        </member>
-        <member name="M:TypeMock.Integration.IntegrationMissingFileException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            Initializes a new instance of the IntegrationMissingFileException class with serialized data.
-            </summary>
-            <param name="info">The SerializationInfo that holds the serialized object data about the exception being thrown.</param>
-            <param name="context">The StreamingContext that contains contextual information about the source or destination.</param>
-        </member>
-        <member name="M:TypeMock.Integration.AutoDeploy.CreateTypemockKey">
-            <summary>
-            gets typemock key from registry - 32/64 bit
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:TypeMock.Integration.IntegrationLinkingException">
-            <summary>
-            IntegrationLinkingException is thrown when there is problem in linking coverage tool with Typemock Isolator
-            </summary>
-            <example>
-            When trying to link with coverage tool that is not installed on the machine
-            </example>
-        </member>
-        <member name="M:TypeMock.Integration.IntegrationLinkingException.#ctor(System.String)">
-            <summary>
-            IntegrationLinkingException is thrown when there is problem in linking coverage tool with Typemock Isolator
-            </summary>
-            <param name="message">Reason of exception</param>
-        </member>
-        <member name="M:TypeMock.Integration.IntegrationLinkingException.#ctor">
-            <summary>
-            IntegrationLinkingException is thrown when there is problem in linking coverage tool with Typemock Isolator
-            </summary>
-        </member>
-        <member name="M:TypeMock.Integration.IntegrationLinkingException.#ctor(System.String,System.Exception)">
-            <summary>
-            IntegrationLinkingException is thrown when there is problem in linking coverage tool with TypeMock
-            </summary>
-            <param name="message">Reason of exception</param>
-            <param name="innerException">Inner Exception</param>
-        </member>
-        <member name="M:TypeMock.Integration.IntegrationLinkingException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            Initializes a new instance of the IntegrationLinkingException class with serialized data.
-            </summary>
-            <param name="info">The SerializationInfo that holds the serialized object data about the exception being thrown.</param>
-            <param name="context">The StreamingContext that contains contextual information about the source or destination.</param>
-        </member>
-        <member name="T:TypeMock.Integration.IntegrationLicenseException">
-            <summary>
-            IntegrationLicenseException is thrown when trying to use Typemock Isolator feature without a proper license installed on the machine
-            </summary>
-            <example>
-            The machine has a community license and and the application is trying to link with coverage tool.
-            </example>
-        </member>
-        <member name="M:TypeMock.Integration.IntegrationLicenseException.#ctor(System.String)">
-            <summary>
-            IntegrationLicenseException is thrown when trying to use Typemock Isolator feature without a proper license installed on the machine
-            </summary>
-            <param name="message">Reason of exception</param>
-        </member>
-        <member name="M:TypeMock.Integration.IntegrationLicenseException.#ctor">
-            <summary>
-            IntegrationLicenseException is thrown when trying to use Typemock Isolator feature without a proper license installed on the machine
-            </summary>
-        </member>
-        <member name="M:TypeMock.Integration.IntegrationLicenseException.#ctor(System.String,System.Exception)">
-            <summary>
-            IntegrationLicenseException is thrown when trying to use Typemock Isolator feature without a proper license installed on the machine
-            </summary>
-            <param name="message">Reason of exception</param>
-            <param name="innerException">Inner Exception</param>
-        </member>
-        <member name="M:TypeMock.Integration.IntegrationLicenseException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            Initializes a new instance of the IntegrationLicenseException class with serialized data.
-            </summary>
-            <param name="info">The SerializationInfo that holds the serialized object data about the exception being thrown.</param>
-            <param name="context">The StreamingContext that contains contextual information about the source or destination.</param>
-        </member>
         <member name="T:TypeMock.LicenseType">
             <summary>
             Enterprise: perpetual fully featured
@@ -487,21 +411,15 @@
             Extended: fully featured 14 day usage-timebombed
             </summary>
         </member>
-        <member name="T:TypeMock.Core">
-            <summary>
-            Summary description for Core.
-            </summary>
-        </member>
         <member name="M:TypeMock.Core.GetPathForSystemFiles">
             <summary>
             returns path for system files for 32/64 bit machines
             </summary>
         </member>
-        <member name="M:TypeMock.Core.GetTypemockKey(System.Boolean)">
+        <member name="M:TypeMock.Core.IsInstallingMajorVersion">
             <summary>
-            gets typemock key from registry - 32/64 bit
+            In Isolator: Major version is .NET Version [Major].[Minor]
             </summary>
-            <returns></returns>
         </member>
         <member name="T:TypeMock.Integration.TypeMockProcess">
             <summary>
@@ -515,8 +433,7 @@
             the process starts running</note>
             <example>
             Example using TypeMockProcess
-            <code>
-            // C#
+            <code lang="cs">
             public void RunTest()
             {
                 ProcessStartInfo info = new ProcessStartInfo(UnitTestRunner, UnitTestRunnerParams); 
@@ -543,8 +460,7 @@
             <para>
             <example>
             Example of using TypeMockProcess.TypeMockProcess(ProcessStartInfo info)
-            <code>
-            // C#
+            <code lang="cs">
             public void RunTest()
             {
                 ProcessStartInfo info = new ProcessStartInfo(UnitTestRunner, UnitTestRunnerParams);
@@ -566,8 +482,7 @@
             <example>
             Example of using TypeMockProcess.TypeMockProcess(ProcessStartInfo info)
             The process will be run in un-blocking mode
-            <code>
-            // C#
+            <code lang="cs">
             public void RunTest()
             {
                 ProcessStartInfo info = new ProcessStartInfo(UnitTestRunner, UnitTestRunnerParams);
@@ -589,8 +504,7 @@
             <para>
             <example>
             Example of using TypeMockProcess.TypeMockProcess(ProcessStartInfo info, string profilerName)
-            <code>
-            // C#
+            <code lang="cs">
             public void RunTest()
             {
                 ProcessStartInfo info = new ProcessStartInfo(UnitTestRunner, UnitTestRunnerParams);
@@ -610,8 +524,7 @@
             <para>
             <example>
             Example of using TypeMockProcess.Start()
-            <code>
-            // C#
+            <code lang="cs">
             public void RunTest()
             {
                 ProcessStartInfo info = new ProcessStartInfo(UnitTestRunner, UnitTestRunnerParams);
@@ -636,8 +549,7 @@
             <para>
             <example>
             Example of using TypeMockProcess.Start(ProcessStartInfo info)
-            <code>
-            // C#
+            <code lang="cs">
             public void RunTest()
             {
                 ProcessStartInfo info = new ProcessStartInfo(UnitTestRunner, UnitTestRunnerParams);        
@@ -661,8 +573,7 @@
             <para>
             <example>
             Example of using TypeMockProcess.Start(ProcessStartInfo info, string profilerName)
-            <code>
-            // C#
+            <code lang="cs">
             public void RunTest(string profilerName)
             {
                 ProcessStartInfo info = new ProcessStartInfo(UnitTestRunner, UnitTestRunnerParams);        
@@ -725,8 +636,7 @@
             <para>
             <example>
             Example of using TypeMockProcess.DisableTypeMockOnProcess()
-            <code>
-            // C#
+            <code lang="cs">
             public void RunTest()
             {            
                 //set the process to run and its command line arguments
@@ -755,8 +665,7 @@
             <para>
             <example>
             Example of using TypeMockProcess.DisableTypeMockOnProcess(Process proc)
-            <code>
-            // C#
+            <code lang="cs">
             public void RunTest()
             {            
                 //create process
@@ -814,8 +723,7 @@
             <para>
             <example>
             Example of using TypeMockProcess.PrepareTypeMockProcess(Process process)
-            <code>     
-            // C#   
+            <code lang="cs">     
             public void Run(Process process)
             {
                 if(! TypeMockProcess.IsEnabled(process))
@@ -837,8 +745,7 @@
             <para>
             <example>
             Example of using TypeMockProcess.UnlinkWithCovarage()
-            <code>
-            // C#
+            <code lang="cs">
             public void RunTestLinked(string profilerName)
             {
                 //First unlink Typemock Isolator with any previous profiler
@@ -866,8 +773,7 @@
             <para>
             <example>
             Example of using TypeMockProcess.IsEnabled()
-            <code>        
-            // C#
+            <code lang="cs">        
             public void Run(TypeMockProcess typeMockProcess)
             {
                 if (!typeMockProcess.IsEnabled())
@@ -891,8 +797,7 @@
             <para>
             <example>
             Example of using TypeMockProcess.IsEnabled(Process proc)
-            <code>   
-            // C#     
+            <code lang="cs">   
             public void Run(Process process)
             {
                 if(! TypeMockProcess.IsEnabled(process))
@@ -911,6 +816,69 @@
             Note: Dispose is already implemented by Process base class
             </summary>
             <param name="disposing">true when called from user code. false when called by runtime from Finalize method</param>
+        </member>
+        <member name="T:TypeMock.Integration.IntegrationNotInstalledException">
+            <summary>
+            IntegrationNotInstalledException is thrown when Typemock Isolator installation directory can not be found
+            </summary>
+        </member>
+        <member name="M:TypeMock.Integration.IntegrationNotInstalledException.#ctor(System.String)">
+            <summary>
+            IntegrationNotInstalledException is thrown when Typemock Isolator installation directory can not be found
+            </summary>
+            <param name="message">Reason of exception</param>
+        </member>
+        <member name="M:TypeMock.Integration.IntegrationNotInstalledException.#ctor">
+            <summary>
+            IntegrationNotInstalledException is thrown when Typemock Isolator installation directory can not be found
+            </summary>
+        </member>
+        <member name="M:TypeMock.Integration.IntegrationNotInstalledException.#ctor(System.String,System.Exception)">
+            <summary>
+            IntegrationNotInstalledException is thrown when Typemock Isolator installation directory can not be found
+            </summary>
+            <param name="message">Reason of exception</param>
+            <param name="innerException">Inner Exception</param>
+        </member>
+        <member name="M:TypeMock.Integration.IntegrationNotInstalledException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the IntegrationNotInstalledException class with serialized data.
+            </summary>
+            <param name="info">The SerializationInfo that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The StreamingContext that contains contextual information about the source or destination.</param>
+        </member>
+        <member name="T:TypeMock.Integration.IntegrationLinkingException">
+            <summary>
+            IntegrationLinkingException is thrown when there is problem in linking coverage tool with Typemock Isolator
+            </summary>
+            <example>
+            When trying to link with coverage tool that is not installed on the machine
+            </example>
+        </member>
+        <member name="M:TypeMock.Integration.IntegrationLinkingException.#ctor(System.String)">
+            <summary>
+            IntegrationLinkingException is thrown when there is problem in linking coverage tool with Typemock Isolator
+            </summary>
+            <param name="message">Reason of exception</param>
+        </member>
+        <member name="M:TypeMock.Integration.IntegrationLinkingException.#ctor">
+            <summary>
+            IntegrationLinkingException is thrown when there is problem in linking coverage tool with Typemock Isolator
+            </summary>
+        </member>
+        <member name="M:TypeMock.Integration.IntegrationLinkingException.#ctor(System.String,System.Exception)">
+            <summary>
+            IntegrationLinkingException is thrown when there is problem in linking coverage tool with TypeMock
+            </summary>
+            <param name="message">Reason of exception</param>
+            <param name="innerException">Inner Exception</param>
+        </member>
+        <member name="M:TypeMock.Integration.IntegrationLinkingException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the IntegrationLinkingException class with serialized data.
+            </summary>
+            <param name="info">The SerializationInfo that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The StreamingContext that contains contextual information about the source or destination.</param>
         </member>
     </members>
 </doc>
