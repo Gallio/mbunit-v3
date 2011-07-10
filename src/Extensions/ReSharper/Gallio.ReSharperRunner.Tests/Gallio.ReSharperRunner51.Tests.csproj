@@ -301,7 +301,7 @@
     </ProjectReference>
     <ProjectReference Include="..\Gallio.ReSharperRunner\Gallio.ReSharperRunner51.csproj">
       <Project>{E836E643-5FB8-4446-8B25-B577E822F0D1}</Project>
-      <Name>Gallio.ReSharperRunner50</Name>
+      <Name>Gallio.ReSharperRunner51</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
