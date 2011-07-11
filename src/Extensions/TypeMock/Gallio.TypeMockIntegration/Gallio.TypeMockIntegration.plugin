@@ -25,7 +25,7 @@
               codeBase="Gallio.TypeMockIntegration.dll"
               qualifyPartialName="true" />
 
-    <assembly fullName="TypeMock.Integration, Version=6.0.10.0, Culture=neutral, PublicKeyToken=null"
+    <assembly fullName="TypeMock.Integration, Version=6.0.10.0, Culture=neutral, PublicKeyToken=3dae460033b8d8e2"
               codeBase="TypeMock.Integration.dll" />
   </assemblies>
 
