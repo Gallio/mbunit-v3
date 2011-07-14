@@ -199,6 +199,7 @@
   
   <ItemGroup>
   	<Gallio40MergeDependency Include="Gallio40\bin\GenericParsing.dll" />
+    <Gallio40MergeDependency Include="Gallio40\bin\ICSharpCode.SharpZipLib.dll" />
   </ItemGroup>
 
   <Target 
@@ -252,6 +253,10 @@
       SourceFiles="@(GallioMergeDependency)"
       DestinationImagePath="$(ModuleImageDir)\bin" />
       
+    <Copy 
+      SourceFiles="@(Gallio40MergeDependency)"
+      DestinationImagePath="$(ModuleImageDir)\bin" />
+	  
     <Copy 
       SourceFiles="@(GallioReportsMergeDependency)"
       DestinationImagePath="$(ModuleImageDir)\bin" />

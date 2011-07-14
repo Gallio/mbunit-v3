@@ -90,6 +90,11 @@ namespace Gallio.BuildTools.SGen
             try
             {
                 var program = new Program();
+                program.BuildAssemblyName = "Gallio40.dll";
+                program.BuildAssemblyPath = @"C:\Users\Aleks\Desktop\Dev4\mb-unit\v3\build\modules\Gallio\temp";
+                program.KeyFile = @"C:\Users\Aleks\Desktop\Dev4\mb-unit\v3\src\Key.snk";
+                //program.References.Add();
+                
                 if (!program.ParseArguments(args))
                 {
                     Console.WriteLine(

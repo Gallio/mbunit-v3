@@ -28,13 +28,8 @@ namespace Gallio.Framework.Data.DataObjects
     /// </summary>
     public class ExcelToDataTableBuilder
     {
-        // Contains the ole db driver for interpretting XLS files
-        private const string ConnectionStringTemplate =
-            "Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=Excel 12.0";
-
-        // Save this in case there are compatibility issues
-        //private const string ConnectionStringTemplate2 = 
-        // "Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};Extended Properties=Excel 8.0;";
+        private const string ConnectionStringTemplate = 
+                "Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};Extended Properties=Excel 8.0;";
 
         // OleDb excel worksheet query text
         private const string SelectWorksheetQueryTemplate = "SELECT * FROM [{0}$]";
@@ -45,26 +40,35 @@ namespace Gallio.Framework.Data.DataObjects
         /// </summary>
         public static DataTable Build(string FilePath, string WorksheetName)
         {
-            // If anything goes wrong, "using" will force disposal of the connection to the file
-            using (OleDbConnection conn = BuildExcelConnection(FilePath))
+            if (Path.GetExtension(FilePath) == ".xls")
             {
-                // "Connect" to the XLS file
-                conn.Open();
-                
-                // Get a DataAdapter to the query
-                string ExcelQuery = String.Format(SelectWorksheetQueryTemplate, WorksheetName);
-                OleDbDataAdapter Adapter = new OleDbDataAdapter(ExcelQuery, conn);
+                // If anything goes wrong, "using" will force disposal of the connection to the file
+                using (OleDbConnection conn = BuildExcelConnection(FilePath))
+                {
+                    // "Connect" to the XLS file
+                    conn.Open();
 
-                // Populate DataTable using DataAdapter
-                DataTable dataTable = new DataTable();
-                Adapter.Fill(dataTable);
+                    // Get a DataAdapter to the query
+                    string ExcelQuery = String.Format(SelectWorksheetQueryTemplate, WorksheetName);
+                    OleDbDataAdapter Adapter = new OleDbDataAdapter(ExcelQuery, conn);
 
-                // Close the connection
-                conn.Close();
+                    // Populate DataTable using DataAdapter
+                    DataTable dataTable = new DataTable();
+                    Adapter.Fill(dataTable);
 
-                // Finished
-                return dataTable;
+                    // Close the connection
+                    conn.Close();
+
+                    // Finished
+                    return dataTable;
+                }
             }
+            if (Path.GetExtension(FilePath) == ".xlsx")
+            {
+                return OpenXmlExcelToDataTableBuilder.Build(FilePath, WorksheetName);
+            }
+
+            throw new ArgumentException("Invalid file extension specified on Excel data file:" + FilePath);
         }
 
         /// <summary>

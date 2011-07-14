@@ -58,11 +58,32 @@ namespace Gallio.Framework.Data.DataObjects
     public class XmlDataObjectBuilder
     {
         /// <summary>
+        /// Returns XmlDataObject containing dynamic representation of Xml document starting
+        /// with Document's root node
+        /// </summary>
+        public static dynamic EmitDataObject(string FilePath)
+        {
+            return EmitDataObject(XDocument.Load(FilePath));
+        }
+
+        /// <summary>
+        /// Returns XmlDataObject containing dynamic representation of Xml document starting
+        /// with Document's root node
+        /// </summary>
+        public static dynamic EmitDataObject(XDocument Document)
+        {
+            return EmitDataObject(Document.Root);
+        }
+
+        /// <summary>
         /// Translates the Element and all of its children into a tree structure
         /// using nested instances of XmlDataObject's.
         /// </summary>
         public static dynamic EmitDataObject(XElement Element)
         {
+            // Remove all of the namespaces - overwrite local reference to original Element
+            Element = XmlDataObjectBuilder.RemoveAllNamespaces(Element);
+
             // Initialize the return value
             XmlDataObject DataObject = new XmlDataObject(Element.Name.ToString());
 
@@ -120,6 +141,29 @@ namespace Gallio.Framework.Data.DataObjects
                 ListOfNames.Add(ChildElement.Name.ToString());
 
             return ListOfNames;
+        }
+
+
+        /// <summary>
+        /// Returns a copy of the original xmlDocument with all the namespaces stripped-off
+        /// </summary>
+        public static XDocument RemoveAllNamespaces(XDocument xdocument)
+        {
+            return new XDocument(RemoveAllNamespaces(xdocument.Root));
+        }
+
+        private static XElement RemoveAllNamespaces(XElement element)
+        {
+            XElement outputelement = new XElement(element.Name.LocalName);
+            outputelement.Value = element.Value;
+
+            foreach (XAttribute attribute in element.Attributes())
+                outputelement.SetAttributeValue(attribute.Name.LocalName, attribute.Value);
+
+            foreach (XElement childelement in element.Elements())
+                outputelement.Add(RemoveAllNamespaces(childelement));
+
+            return outputelement;
         }
     }
 }

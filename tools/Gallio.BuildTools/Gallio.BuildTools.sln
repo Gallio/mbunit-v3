@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.BuildTools.Tasks", "Gallio.BuildTools.Tasks\Gallio.BuildTools.Tasks.csproj", "{C0089B19-59A5-485D-9F83-5E40ACBF0AD5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.BuildTools.SGen", "Gallio.BuildTools.SGen\Gallio.BuildTools.SGen.csproj", "{D5AAAB67-D51F-4F6C-A0B5-074A5CC9E7E1}"

@@ -59,7 +59,7 @@ namespace MbUnit.Framework.Tests
         public void LoadXlsFile()
         {
             List<string> dataoutput = EmitDynamicToDataTableToListOfStringsVanillaTest(
-                ExcelToDataTableBuilder.Build(@"..\Framework\TestXlsData.xlsx", "Worksheet1"));
+                ExcelToDataTableBuilder.Build(@"..\Framework\Data\DataObjects\TestXlsData.xlsx", "Worksheet1"));
 
             Assert.AreElementsEqual(TestDataSet1, dataoutput);
         }
@@ -68,7 +68,7 @@ namespace MbUnit.Framework.Tests
         public void LoadXlsFileOldSchool()
         {
             List<string> dataoutput = EmitDynamicToDataTableToListOfStringsVanillaTest(
-                ExcelToDataTableBuilder.Build(@"..\Framework\TestXlsData.xls", "Worksheet1"));
+                ExcelToDataTableBuilder.Build(@"..\Framework\Data\DataObjects\TestXlsData.xls", "Worksheet1"));
 
             Assert.AreElementsEqual(TestDataSet1, dataoutput);
         }
@@ -77,7 +77,7 @@ namespace MbUnit.Framework.Tests
         public void LoadCsvFile()
         {
             List<string> dataoutput = EmitDynamicToDataTableToListOfStringsVanillaTest(
-                FlatFileToDataTableBuilder.BuildFromCsvFile(@"..\Framework\TestXlsData.csv"));
+                FlatFileToDataTableBuilder.BuildFromCsvFile(@"..\Framework\Data\DataObjects\TestXlsData.csv"));
 
             Assert.AreElementsEqual(TestDataSet1, dataoutput);
         }
@@ -86,7 +86,7 @@ namespace MbUnit.Framework.Tests
         public void LoadTabDelimitedFile()
         {
             List<string> dataoutput = EmitDynamicToDataTableToListOfStringsVanillaTest(
-                FlatFileToDataTableBuilder.BuildFromTabFile(@"..\Framework\TestXlsData.txt"));
+                FlatFileToDataTableBuilder.BuildFromTabFile(@"..\Framework\Data\DataObjects\TestXlsData.txt"));
 
             Assert.AreElementsEqual(TestDataSet1, dataoutput);
         }
@@ -96,7 +96,7 @@ namespace MbUnit.Framework.Tests
         [Test]
         public void LoadCsvFileWithQuotes()
         {
-            DataTable dataTable = FlatFileToDataTableBuilder.BuildFromCsvFile(@"..\Framework\TestFileWithQuotes.csv");
+            DataTable dataTable = FlatFileToDataTableBuilder.BuildFromCsvFile(@"..\Framework\Data\DataObjects\TestFileWithQuotes.csv");
 
             List<string> dataoutput = new List<string>();
             foreach (dynamic output in
@@ -116,7 +116,7 @@ namespace MbUnit.Framework.Tests
         [Test]
         public void LoadCsvFileWithCommas()
         {
-            DataTable dataTable = FlatFileToDataTableBuilder.BuildFromCsvFile(@"..\Framework\TestFileWithCommas.csv");
+            DataTable dataTable = FlatFileToDataTableBuilder.BuildFromCsvFile(@"..\Framework\Data\DataObjects\TestFileWithCommas.csv");
 
             List<string> dataoutput = new List<string>();
             foreach (dynamic output in
@@ -136,18 +136,26 @@ namespace MbUnit.Framework.Tests
 
         #region Tabular Data with Filtering
         [Test]
-        public void LoadFilesWithFiltering()
+        public void LoadFilesWithFilteringXlsx()
         {
             TestLog.WriteLine("\n\nXLS file\n========");
-            DataTable dataTable1 = ExcelToDataTableBuilder.Build(@"..\Framework\TestXlsData.xlsx", "Worksheet1");
+            DataTable dataTable1 = ExcelToDataTableBuilder.Build(@"..\Framework\Data\DataObjects\TestXlsData.xlsx", "Worksheet1");
             TestingHelper(dataTable1);
+        }
 
+        [Test]
+        public void LoadFilesWithFilteringCsv()
+        {
             TestLog.WriteLine("\n\nCSV file\n========");
-            DataTable dataTable2 = FlatFileToDataTableBuilder.BuildFromCsvFile(@"..\Framework\TestXlsData.csv");
+            DataTable dataTable2 = FlatFileToDataTableBuilder.BuildFromCsvFile(@"..\Framework\Data\DataObjects\TestXlsData.csv");
             TestingHelper(dataTable2);
+        }
 
+        [Test]
+        public void LoadFilesWithFilteringTxt()
+        {
             TestLog.WriteLine("\n\nTXT file\n========");
-            DataTable dataTable3 = FlatFileToDataTableBuilder.BuildFromTabFile(@"..\Framework\TestXlsData.txt");
+            DataTable dataTable3 = FlatFileToDataTableBuilder.BuildFromTabFile(@"..\Framework\Data\DataObjects\TestXlsData.txt");
             TestingHelper(dataTable3);
         }
 

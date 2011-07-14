@@ -33,7 +33,7 @@ namespace MbUnit.Framework.Tests
         /// are translated into dynamically accessed properties.
         /// </summary>
         [Test]
-        [FlatFileDataObject(@"..\Framework\HeaderNames.csv", TabularDataFileType.CsvFile)]
+        [FlatFileDataObject(@"..\Framework\Data\DataObjects\HeaderNames.csv", TabularDataFileType.CsvFile)]
         public void SpreadsheetHeaderNamesInXLS(dynamic sample)
         {
             // Demonstrates access of properties using the DLR
@@ -83,7 +83,7 @@ namespace MbUnit.Framework.Tests
 
             foreach (KeyValuePair<string, string> current in PropertyNameMap)
             {
-                string TranslatedValue = DynamicObject.XmlNodeNameToCSharpSafe(current.Key);
+                string TranslatedValue = DynamicObject.MemberNameToCSharpSafe(current.Key);
 
                 TestLog.WriteLine("Input Property Name: '" + current.Key + "'");
                 TestLog.WriteLine("Expected Translated Name: '" + current.Value + "'");

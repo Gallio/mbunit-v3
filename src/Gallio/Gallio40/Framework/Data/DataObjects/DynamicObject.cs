@@ -129,7 +129,7 @@ namespace Gallio.Framework.Data.DataObjects
         private void TrySetMemberWorker(string name, object value)
         {
             // Replacing invalid characters
-            name = XmlNodeNameToCSharpSafe(name);
+            name = MemberNameToCSharpSafe(name);
 
             // Check to see if the value exists in the storage
             if (storage.Exists(x => x.Key == name))
@@ -138,9 +138,9 @@ namespace Gallio.Framework.Data.DataObjects
         }
 
         /// <summary>
-        /// Translates Xml node names to CSharp-safe names, so that they can be accessed dynamically
+        /// Translates member names to CSharp-safe names, so they can validly be accessed dynamically
         /// </summary>
-        public static string XmlNodeNameToCSharpSafe(string name)
+        public static string MemberNameToCSharpSafe(string name)
         {
             // Exception-worthy cases
             if (name == null)
