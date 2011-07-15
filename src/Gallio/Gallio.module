@@ -148,7 +148,7 @@
       <ImagePath>bin</ImagePath>
     </File>
     
-    <AssemblyFile Include="Gallio40\bin\Gallio40.dll">
+    <AssemblyFile Include="$(ModuleTempDir)\Gallio40.dll">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
     <PdbFile Include="Gallio40\bin\Gallio40.pdb">
@@ -160,7 +160,7 @@
     
     <Feature Include="FEATURE_GALLIO40" />
     
-    <TestAssembly Include="Gallio40.Tests\bin\Gallio40.dll" />
+    <TestAssembly Include="Gallio40.Tests\bin\Gallio40.Tests.dll" />
   </ItemGroup>
   
   <Target 
