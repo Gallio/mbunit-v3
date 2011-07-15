@@ -85,14 +85,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Reflection\Impl\UnresolvedCodeElementFactoryTest.cs" />
-    <Compile Include="Framework\Data\DataObjects\TabularDataHeaderNameTranslationTests.cs">
-      <SubType>
-      </SubType>
-    </Compile>
-    <Compile Include="Framework\Data\DataObjects\TabularFactoryDataTests.cs">
-      <SubType>
-      </SubType>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Framework\Data\DataObjects\HeaderNames.csv" />
     <None Include="Framework\Data\DataObjects\TestFileWithCommas.csv" />

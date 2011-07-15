@@ -79,8 +79,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Framework\XmlDataObjectCartesianTests.cs" />
-    <Compile Include="Framework\XmlDataObjectTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="MbUnit40.Tests.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
