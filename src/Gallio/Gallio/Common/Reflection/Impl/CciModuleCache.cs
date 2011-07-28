@@ -55,6 +55,7 @@ namespace Gallio.Common.Reflection.Impl
         /// </summary>
         /// <param name="methodToken">The searched metadata token.</param>
         /// <returns>The resulting code location, or an unknown location if the method was not found.</returns>
+        [CLSCompliant(false)]
         public CodeLocation GetMethodLocation(uint methodToken)
         {
             CodeLocation result;
