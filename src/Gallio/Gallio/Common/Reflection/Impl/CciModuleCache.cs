@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
+ // Copyright 2005-2010 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +27,7 @@ namespace Gallio.Common.Reflection.Impl
     /// <summary>
     /// Data structure that maps every method in a CCI <see cref="IModule"/> with its <see cref="CodeLocation"/>
     /// </summary>
-    internal class CciModuleCache
+    public class CciModuleCache
     {
         private readonly IFileSystem fileSystem;
         private readonly string assemblyPath;
