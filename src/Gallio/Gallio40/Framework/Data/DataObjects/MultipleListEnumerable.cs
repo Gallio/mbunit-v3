@@ -23,7 +23,7 @@ using System.Text;
 namespace Gallio.Framework.Data.DataObjects
 {
     /// <summary>
-    /// Abstracts the 
+    /// Abstracts Cartesian product List building.
     /// </summary>
     public class MultipleListEnumerable
     {

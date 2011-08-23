@@ -148,7 +148,7 @@
       <ImagePath>bin</ImagePath>
     </File>
     
-    <AssemblyFile Include="$(ModuleTempDir)\Gallio40.dll">
+    <AssemblyFile Include="Gallio40\bin\Gallio40.dll">
       <ImagePath>bin</ImagePath>
     </AssemblyFile>
     <PdbFile Include="Gallio40\bin\Gallio40.pdb">
@@ -165,7 +165,7 @@
   
   <Target 
     Name="BeforeImage" 
-    DependsOnTargets="GallioReportsImage_ILMerge;GallioImage_ILMerge;Gallio40Image_ILMerge;GallioImage_NoILMerge" />
+    DependsOnTargets="GallioReportsImage_ILMerge;GallioImage_ILMerge;GallioImage_NoILMerge" />
 
   <ItemGroup>
     <GallioReportsMergeDependency Include="Gallio.Reports\bin\NVelocity.dll" />
@@ -196,11 +196,6 @@
     <GallioMergeDependency Include="Gallio\bin\Microsoft.Cci.PeReader.dll" />
     <GallioMergeDependency Include="Gallio\bin\Microsoft.Cci.SourceModel.dll" />
   </ItemGroup>
-  
-  <ItemGroup>
-  	<Gallio40MergeDependency Include="Gallio40\bin\GenericParsing.dll" />
-    <Gallio40MergeDependency Include="Gallio40\bin\ICSharpCode.SharpZipLib.dll" />
-  </ItemGroup>
 
   <Target 
     Name="GallioImage_ILMerge"
@@ -221,22 +216,9 @@
       BuildAssemblyPath="$(ModuleTempDir)" 
       References="" 
       KeyFile="..\Key.snk" />
+      
   </Target>
 
-  <Target 
-    Name="Gallio40Image_ILMerge"
-    Condition="'$(NoILMerge)'!='true'"
-    Inputs="Gallio\bin\Gallio40.dll;@(Gallio40MergeDependency)"
-    Outputs="$(ModuleTempDir)\Gallio40.dll">
-
-    <Message 
-      Text="Running ILMerge on Gallio40.dll..."
-      Importance="High" />
-
-    <Exec 
-      Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio40\bin\Gallio40.dll&quot; @(Gallio40MergeDependency->'&quot;%(Identity)&quot;', ' ') /internalize &quot;/out:$(ModuleTempDir)\Gallio40.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot; /lib:&quot;C:\Windows\Microsoft.NET\Framework\v4.0.30319&quot;" />		
-  </Target>
-  
   <Target 
     Name="GallioImage_NoILMerge"
     Condition="'$(NoILMerge)'=='true'">
@@ -248,15 +230,15 @@
     <Copy 
       SourceFiles="Gallio\bin\Gallio.dll;Gallio\bin\Gallio.pdb;Gallio\bin\Gallio.XmlSerializers.dll"
       DestinationImagePath="$(ModuleTempDir)" />
-    
+
+    <Copy 
+      SourceFiles="Gallio40\bin\Gallio40.dll;Gallio40\bin\Gallio40.pdb;Gallio40\bin\Gallio40.XmlSerializers.dll"
+      DestinationImagePath="$(ModuleTempDir)" />
+	  
     <Copy 
       SourceFiles="@(GallioMergeDependency)"
       DestinationImagePath="$(ModuleImageDir)\bin" />
       
-    <Copy 
-      SourceFiles="@(Gallio40MergeDependency)"
-      DestinationImagePath="$(ModuleImageDir)\bin" />
-	  
     <Copy 
       SourceFiles="@(GallioReportsMergeDependency)"
       DestinationImagePath="$(ModuleImageDir)\bin" />
