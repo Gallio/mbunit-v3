@@ -31,7 +31,6 @@ using MbUnit.Framework;
 namespace MbUnit.Framework.Tests
 {
     [TestFixture]
-    [TestsOn(typeof(ExcelToDataTableBuilder))]
     [TestsOn(typeof(FlatFileToDataTableBuilder))]
     public class TabularFactoryDataTests : BaseTestWithSampleRunner
     {
@@ -53,24 +52,6 @@ namespace MbUnit.Framework.Tests
                                             output.Name, output.Address, output.City));
             }
             return dataoutput;
-        }
-
-        [Test]
-        public void LoadXlsFile()
-        {
-            List<string> dataoutput = EmitDynamicToDataTableToListOfStringsVanillaTest(
-                ExcelToDataTableBuilder.Build(@"..\Framework\Data\DataObjects\TestXlsData.xlsx", "Worksheet1"));
-
-            Assert.AreElementsEqual(TestDataSet1, dataoutput);
-        }
-
-        [Test]
-        public void LoadXlsFileOldSchool()
-        {
-            List<string> dataoutput = EmitDynamicToDataTableToListOfStringsVanillaTest(
-                ExcelToDataTableBuilder.Build(@"..\Framework\Data\DataObjects\TestXlsData.xls", "Worksheet1"));
-
-            Assert.AreElementsEqual(TestDataSet1, dataoutput);
         }
 
         [Test]
@@ -135,14 +116,6 @@ namespace MbUnit.Framework.Tests
         #endregion
 
         #region Tabular Data with Filtering
-        [Test]
-        public void LoadFilesWithFilteringXlsx()
-        {
-            TestLog.WriteLine("\n\nXLS file\n========");
-            DataTable dataTable1 = ExcelToDataTableBuilder.Build(@"..\Framework\Data\DataObjects\TestXlsData.xlsx", "Worksheet1");
-            TestingHelper(dataTable1);
-        }
-
         [Test]
         public void LoadFilesWithFilteringCsv()
         {

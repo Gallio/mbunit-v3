@@ -75,6 +75,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\FileType.cs" />
+    <Compile Include="Framework\FlatFileDataObjectAttribute.cs" />
+    <Compile Include="Framework\TabularDataAttributeBase.cs" />
     <Compile Include="Framework\XmlDataObjectAttribute.cs" />
     <Compile Include="Framework\XmlDataObjectCartesianAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

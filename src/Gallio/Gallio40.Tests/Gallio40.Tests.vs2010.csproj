@@ -85,7 +85,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Reflection\Impl\UnresolvedCodeElementFactoryTest.cs" />
+    <Compile Include="Framework\Data\DataObjects\TabularDataHeaderNameTranslationTests.cs" />
+    <Compile Include="Framework\Data\DataObjects\TabularFactoryDataTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Framework\Data\DataObjects\HeaderNames.csv" />
+    <None Include="Framework\Data\DataObjects\TestFileWithCommas.csv" />
+    <None Include="Framework\Data\DataObjects\TestFileWithQuotes.csv" />
+    <None Include="Framework\Data\DataObjects\TestXlsData.csv" />
     <None Include="Gallio40.Tests.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -142,8 +148,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Framework\Data\" />
+    <Content Include="Framework\Data\DataObjects\TestXlsData.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

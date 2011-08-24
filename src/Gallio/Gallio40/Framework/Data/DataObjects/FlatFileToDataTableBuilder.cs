@@ -16,7 +16,7 @@
 using System;
 using System.Data;
 using System.Text;
-using GenericParsing;
+using Gallio.GenericParsing;
 
 namespace Gallio.Framework.Data.DataObjects
 {

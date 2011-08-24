@@ -157,7 +157,10 @@
     <PluginFile Include="Gallio40\Gallio40.plugin">
       <ImagePath>bin</ImagePath>
     </PluginFile>
-    
+	<AssemblyFile Include="libs\Gallio.GenericParsing.dll">
+      <ImagePath>bin</ImagePath>
+    </AssemblyFile>
+	
     <Feature Include="FEATURE_GALLIO40" />
     
     <TestAssembly Include="Gallio40.Tests\bin\Gallio40.Tests.dll" />

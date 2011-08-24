@@ -58,12 +58,8 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GenericParsing">
-      <HintPath>..\libs\GenericParsing.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.5.452, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\ICSharpCode.SharpZipLib.dll</HintPath>
+    <Reference Include="Gallio.GenericParsing">
+      <HintPath>..\libs\Gallio.GenericParsing.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -120,7 +116,9 @@
     </Compile>
     <Compile Include="Common\Reflection\Impl\UnresolvedCustomAttributeData.cs" />
     <Compile Include="Framework\Data\DataObjects\DynamicObject.cs" />
+    <Compile Include="Framework\Data\DataObjects\FlatFileToDataTableBuilder.cs" />
     <Compile Include="Framework\Data\DataObjects\MultipleListEnumerable.cs" />
+    <Compile Include="Framework\Data\DataObjects\TabularDataObjectFactory.cs" />
     <Compile Include="Framework\Data\DataObjects\XmlDataObject.cs" />
     <Compile Include="Framework\Data\DataObjects\XmlDataObjectBuilder.cs" />
     <Compile Include="Framework\Data\DataObjects\XmlDataObjectFactory.cs" />
