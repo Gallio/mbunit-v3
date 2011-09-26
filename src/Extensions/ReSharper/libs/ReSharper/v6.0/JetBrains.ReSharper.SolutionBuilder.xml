@@ -114,12 +114,6 @@
             The implementation should be internal-only.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompiler.Dispose">
-            <summary>
-            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-            </summary>
-            <filterpriority>2</filterpriority>
-        </member>
         <member name="P:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompiler.Instance">
             <summary>
             Gets the per-solution cached builder.
@@ -293,7 +287,7 @@
             Note: every time you call this method, a NEW cache is created, whose lifetime is as long as <paramref name="session"/>'s.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionEx.CreateProjectFullPathCache2(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession)">
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionEx.CreateProjectFullPathCache2(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession,JetBrains.DataFlow.Lifetime)">
             <summary>
             Creates a cache for getting the build setting project by its full path.
             The cache is live, ie when new projects are added to the session, they also get into the cache.
@@ -570,11 +564,12 @@
             <para>The Project Model contains a number of projects that would not map to any real projects in Visual Studio, but rather to solution folders and various other stuff.</para>
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolutionBuilder.InitImplementations">
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolutionBuilder.InitImplementations(JetBrains.DataFlow.Lifetime)">
             <summary>
             List of impls => active.
             Active impls coming and going.
             </summary>
+            <param name="lifetime"></param>
         </member>
         <member name="M:JetBrains.ReSharper.SolutionBuilder.SolutionBuilder.Abort">
             <summary>
@@ -596,20 +591,9 @@
             <param name="projectsToBuild">The projects that must be included in the build (others might be included as needed), or an empty array to build the whole solution.</param>
             <returns>The new session on which the build could be started and the progress could be tracked.</returns>
         </member>
-        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolutionBuilder.System#IDisposable#Dispose">
-            <summary>
-            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-            </summary>
-            <filterpriority>2</filterpriority>
-        </member>
         <member name="P:JetBrains.ReSharper.SolutionBuilder.SolutionBuilder.RunningSession">
             <summary>
             Gets the build session being currently run by the solution builder. <c>Null</c> if idle.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.SolutionBuilder.SolutionBuilderEx.GetSolutionBuilder(JetBrains.ProjectModel.ISolution)">
-            <summary>
-            Gets the solution builder for a solution.
             </summary>
         </member>
     </members>

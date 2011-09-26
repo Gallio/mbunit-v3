@@ -4,67 +4,23 @@
         <name>JetBrains.ReSharper.Features.Finding</name>
     </assembly>
     <members>
+        <member name="T:JetBrains.ReSharper.Features.Finding.NavigateFromHere.RequestContextSearchProviderBase`3">
+            <summary>
+            Base provider that works on context searches which are based on SearchRequest.  
+            </summary>
+            <typeparam name="TContextSearch">context search engine that takes dataContext and returns a collection of candidates and + special delegate to be applied to them</typeparam>
+            <typeparam name="TDescriptor">descriptor to present the results</typeparam>
+            <typeparam name="TSearchRequest">request taken from the context search to be used by descriptor</typeparam>
+        </member>
         <member name="M:JetBrains.ReSharper.Features.Finding.FindDeclarations.GotoDeclarationHyperlink.GetRangeFromDeclaration">
              This code is modified copy from GotoDeclarationAction.GetCandidates
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Finding.Search.SearchActionBase`2.ExecuteContext(JetBrains.ActionManagement.IDataContext,JetBrains.ReSharper.Feature.Services.Search.SearchRequestExecutor{`0})">
-            <summary>When implemented in derived type, creates search request and calls SearchRequestExecutor</summary>
-            <param name="dataContext">Data context passed to action</param>
-            <param name="executeWithRequest">Delegate to call with SearchRequest</param>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Finding.Search.SearchActionBase`2.Update(JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
-            <remarks>At first, check special finder and if not, at second, check other specific conditions</remarks>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Finding.Search.SearchActionBase`2.GetSpecialFinderSearchDomain(JetBrains.ReSharper.Feature.Services.Search.ISpecialElementFinder,System.Object,JetBrains.ActionManagement.IDataContext)">
-            <summary>
-            Get search domain for given special finder
-            </summary>
-            <returns>Return null to cancel search</returns>
-        </member>
-        <member name="T:JetBrains.ReSharper.Features.Finding.GoTo.GotoByNameSwitchByShortcuts">
-            <summary>
-            Teaches goto by name menu switching to different goto-by-name modes on corresponding action shortcuts.
-            </summary>
-        </member>
-        <!-- Badly formed XML comment ignored for member "F:JetBrains.ReSharper.Features.Finding.GoTo.GotoByNameSwitchByShortcuts.InheritedSearchTextSelection" -->
-        <member name="F:JetBrains.ReSharper.Features.Finding.GoTo.GotoByNameSwitchByShortcuts.InheritedSearchTextString">
-            <summary>
-            When a new menu is opened in place of an old one, it inherits the search text. This is the value (<c>Null</c> if none).
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Finding.GoTo.GotoByNameSwitchByShortcuts.MonitorKeyboardForActionShortcuts(JetBrains.DataFlow.Lifetime,JetBrains.UI.PopupMenu.Impl.JetPopupMenuView,JetBrains.ActionManagement.IActionManager,JetBrains.Threading.IThreading)">
-            <summary>
-            Supports switching to other views of the GotoByName family.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Finding.GoTo.GotoByNameSwitchByShortcuts.RestoreInheritedTextWhenOpening(JetBrains.DataFlow.Lifetime,JetBrains.UI.PopupMenu.Impl.JetPopupMenuView,JetBrains.Threading.IThreading)">
-            <summary>
-            If reopening another menu by shortcut, restore text that used to be there before pressing a shortcut.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Finding.GoToMember.GotoFileMemberController.ExecuteItem(JetBrains.UI.PopupMenu.Impl.JetPopupMenuItem)">
-            <summary>
-            Called when an item is to be executed.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Finding.GoToMember.GotoFileMemberController.UpdateItems(System.String,System.Func{System.Collections.Generic.IEnumerable{JetBrains.UI.PopupMenu.Impl.JetPopupMenuItem},JetBrains.UI.GotoByName.GotoByNameController.AddItemsBehavior,System.Boolean})">
-            <summary>
-            When the items get dirty, this function is called on the secondary thread.
-            </summary>
-            <param name="filterString">The filtering string against which the items list should be produced.</param>
-            <param name="itemsConsumer">A function you can use to add items to the output collection in a thread-safe manner. The function checks for the items limit and returns whether more items can be added.</param>
-        </member>
-        <member name="T:JetBrains.ReSharper.Features.Finding.GoToDeclaredElement.GotoDeclaredElementAction">
-            <summary>
-            Base class for Goto actions on top of <see cref="T:JetBrains.ReSharper.Features.Common.GoToByName.GotoDeclaredElementController"/>.
-            </summary>
         </member>
         <member name="M:JetBrains.ReSharper.Features.Finding.GoToDeclaredElement.GotoDeclaredElementAction.EnableShowInFindResults(JetBrains.ReSharper.Features.Common.GoToByName.GotoDeclaredElementController)">
             <summary>
             Recalculates the complete list of items and shows them in FindResults.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Finding.GoToSymbol.GotoSymbolAction.EnableShowInFindResults(JetBrains.ReSharper.Features.Common.GoToByName.GotoCacheElementController{JetBrains.ReSharper.Psi.IDeclaredElement})">
+        <member name="M:JetBrains.ReSharper.Features.Finding.GoToSymbol.GotoSymbolAction.EnableShowInFindResults(JetBrains.ReSharper.Features.Common.GoToByName.GotoSymbolController)">
             <summary>
             Executes when the Plus Button is clicked, or when the last menu item is executed.
             </summary>

@@ -4,6 +4,40 @@
         <name>JetBrains.ReSharper.Psi</name>
     </assembly>
     <members>
+        <member name="T:JetBrains.ReSharper.Psi.ExpectedTypes.IsEnumerableConstraint">
+            <summary>
+            Accepts only types which can be enumerated
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.ExpectedTypes.IExpectedTypeConstraint">
+            <summary>
+            Represents an expectation constraint
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.ExpectedTypes.IExpectedTypeConstraint.Accepts(JetBrains.ReSharper.Psi.IType)">
+            <summary>
+            Checks if a type matches the constraint
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.ExpectedTypes.IExpectedTypeConstraint.GetDefaultType">
+            <summary>
+            Gets some default appropriate type
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.ExpectedTypes.IExpectedTypeConstraint.GetDefaultTypes">
+            <summary>
+            Gets some default appropriate types
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.ExpectedTypes.IExpectedTypeConstraint.GetTypesEffectively">
+            <summary>
+            Gets array of expected types if can be performed effeciently 
+            </summary>
+            <returns>
+              null  if ineffective
+              array of types if fast
+            </returns>
+        </member>
         <member name="T:JetBrains.ReSharper.Psi.ITypePointer">
             <summary>
             Interface for obtaining a type from some place
@@ -57,7 +91,7 @@
             Checks if there are declarations of this element in given <paramref name="sourceFile"/>
             </summary>
         </member>
-        <member name="P:JetBrains.ReSharper.Psi.IDeclaredElement.Language">
+        <member name="P:JetBrains.ReSharper.Psi.IDeclaredElement.PresentationLanguage">
             <summary>
             Get the language on which this element is declared
             </summary>
@@ -141,6 +175,12 @@
             Implements a valuation of type parameters
             </summary>
         </member>
+        <member name="T:JetBrains.ReSharper.Psi.ExtensionsAPI.ReferenceContextCodecFactory">
+            <summary>
+            Base class for custom context codec factory.
+            Every custom factory should be used only in 'using' statement shell
+            </summary>
+        </member>
         <member name="T:JetBrains.ReSharper.Psi.ExtensionsAPI.IDomainSpecificSearcherFactory">
             <summary>
             Language service or some technology service should implement the searcher factory to allow the finder look into files with specific language or related
@@ -193,12 +233,6 @@
             Since generation of documents must be pure (due to interuptability of commit operation) all destructive actions should be done here.
             </summary>
         </member>
-        <member name="T:JetBrains.ReSharper.Psi.ExtensionsAPI.ReferenceContextCodecFactory">
-            <summary>
-            Base class for custom context codec factory.
-            Every custom factory should be used only in 'using' statement shell
-            </summary>
-        </member>
         <member name="M:JetBrains.ReSharper.Psi.ExtensionsAPI.ReferenceIdentitySaver.ClosureRemap(JetBrains.ReSharper.Psi.Resolve.IReference)">
             <summary>
             Do chain remap
@@ -208,12 +242,6 @@
             <summary>
             User can set previous identity saver, so all events will be propagated to it
             </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve2.Impl.ICascadingCache.Recall(System.Object,JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve2.Impl.ICalculationProcess@)">
-            <summary>
-            Returns cached value for key, or FORGET if recalculation is required
-            </summary>
-            <returns></returns>
         </member>
         <member name="T:JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve.Filters.UseLocalVariableBeforeDeclarationFilterBase">
             <summary>
@@ -230,7 +258,7 @@
             Get references which should be visited by resolver, and which are syntax-dependednt (not semantic)
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Tree.ITreeNode.GetContainingElement``1(System.Boolean)">
+        <member name="M:JetBrains.ReSharper.Psi.Tree.ITreeNode.GetContainingNode``1(System.Boolean)">
             <param name="returnThis">Whether to include the starting element.</param>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.Tree.ITreeNode.Contains(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
@@ -404,6 +432,104 @@
             Override this method if your reference has muiltiple names
             </summary>
         </member>
+        <member name="M:JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.ICompositeElement.FindChildByRole(System.Int16)">
+            <summary>
+            Search for the child with given role
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter.FormatFile(JetBrains.ReSharper.Psi.Tree.IFile,JetBrains.ReSharper.Psi.CodeStyle.CodeStyleSettings,JetBrains.ReSharper.Psi.CodeStyle.CodeFormatProfile,JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+            Format the whole file
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter.Format(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.CodeStyle.CodeStyleSettings,JetBrains.ReSharper.Psi.CodeStyle.CodeFormatProfile,JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+            Format the given subtree
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter.Format(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.CodeStyle.CodeStyleSettings,JetBrains.ReSharper.Psi.CodeStyle.CodeFormatProfile,JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+            Format the given range in the tree. The bounding nodes are random, not siblings
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter.Format(JetBrains.ProjectModel.ISolution,JetBrains.DocumentModel.DocumentRange,JetBrains.ReSharper.Psi.CodeStyle.CodeStyleSettings,JetBrains.ReSharper.Psi.CodeStyle.CodeFormatProfile,System.Boolean,System.Boolean,JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+            Format the given range in document
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter.Format(JetBrains.ReSharper.Psi.Tree.IFile,JetBrains.ReSharper.Psi.TreeTextRange,JetBrains.ReSharper.Psi.CodeStyle.CodeStyleSettings,JetBrains.ReSharper.Psi.CodeStyle.CodeFormatProfile,JetBrains.ReSharper.Psi.CodeStyle.OuterSpaceFormatType,JetBrains.ReSharper.Psi.CodeStyle.OuterSpaceFormatType,JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+            Format the given range in PSI file
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter.FormatInsertedNodes(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode,System.Boolean)">
+            <summary>
+            Format code during WritePSI action
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter.FormatInsertedRange(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.ITreeRange)">
+            <summary>
+            Format code during WritePSI action
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter.FormatReplacedNode(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Format code during WritePSI action
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter.FormatDeletedNodes(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Format code during WritePSI action
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Impl.CodeStyle.ICodeFormatterImpl.GetMinimalSeparator(JetBrains.ReSharper.Psi.Tree.ITokenNode,JetBrains.ReSharper.Psi.Tree.ITokenNode)">
+            <summary>
+            Create the necessary separator between two given tokens (for example. space between identifiers)
+            If there is no necessity for separator, then return <c>null</c>
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Impl.CodeStyle.ICodeFormatterImpl.CanModifyInsideNodeRange(JetBrains.ReSharper.Psi.Impl.CodeStyle.CodeFormattingContext,JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Returns whether formatter can modify space between two elements.
+            Currently it is prohibited if either element is fully or partially included from another document.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Impl.CodeStyle.ICodeFormatterImpl.CanModifyNode(JetBrains.ReSharper.Psi.Impl.CodeStyle.CodeFormattingContext,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Returns whether formatter can modify element.
+            Currently it is prohibited if element is fully or partially included from another document.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Impl.CodeStyle.IndentCacheBase.GetLineIndent(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Get the indentation of the line which contains given node
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Impl.CodeStyle.IndentCacheBase.GetNodeIndent(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Get the exact indentation of the given node
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.IPsiModule.GetReferences">
+            <returns>All referenced modules with aliases</returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.IPsiModule.DisplayName">
+            <summary>
+            Module name to display in UI
+            For regular modules the same as Name
+            Primary for web modules useful
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.IPsiModule.ContainingProjectModule">
+            <summary>
+            IAssembly or IProject for which this PsiModule is created as either primary or secondary, null for empty project module
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.IPsiModule.SourceFiles">
+            <summary>
+            Source files for this module
+            </summary>
+        </member>
         <member name="T:JetBrains.ReSharper.Psi.ExtensionsAPI.IReferenceContextCodec">
             <summary>
             Part of the PSI write interface. 
@@ -467,22 +593,22 @@
             Name of implemented member
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.Psi.ControlFlow2.Impl.CommonLanguageControlFlowGrafInspector`3.myAccessToModifiedClosure">
+        <member name="F:JetBrains.ReSharper.Psi.ControlFlow.Impl.CommonLanguageControlFlowGrafInspector`3.myAccessToModifiedClosure">
             <summary>
             Write access to variables outside anonymous method, when the variable is read inside anonymous method
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.Psi.ControlFlow2.Impl.CommonLanguageControlFlowGrafInspector`3.myFinalVariables">
+        <member name="F:JetBrains.ReSharper.Psi.ControlFlow.Impl.CommonLanguageControlFlowGrafInspector`3.myFinalVariables">
             <summary>
             if dictionary value is <c>true</c>, then variable is supposed to be final variable, I.e. assigned/initialized only once
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.Psi.ControlFlow2.Impl.ControlFlowVariableAccessState.ACCESSED_AS_ENUMERABLE">
+        <member name="F:JetBrains.ReSharper.Psi.ControlFlow.Impl.ControlFlowVariableAccessState.ACCESSED_AS_ENUMERABLE">
             <summary>
             For language-specific analysis "possible twice enumeration"
             </summary>
         </member>
-        <member name="T:JetBrains.ReSharper.Psi.ControlFlow2.Impl.ControlFlowVariableStateCollection">
+        <member name="T:JetBrains.ReSharper.Psi.ControlFlow.Impl.ControlFlowVariableStateCollection">
             <summary>
             immutable
             </summary>
@@ -499,7 +625,12 @@
         </member>
         <member name="M:JetBrains.ReSharper.Psi.IPsiSourceFileProperties.GetDefines">
             <summary>
-            Preprocessor directives for this file
+            Preprocessor directives for this file (joint with defined in module)
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.IPsiSourceFileProperties.GetCustomProperties``1">
+            <summary>
+            Get the properties specific for language or technology
             </summary>
         </member>
         <member name="P:JetBrains.ReSharper.Psi.IPsiSourceFileProperties.ShouldBuildPsi">
@@ -524,41 +655,6 @@
             Indicates that file is out of user scope. For example, external source. No analysis and modification could be done on this file
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.IPsiModule.GetReferences">
-            <returns>All referenced modules with aliases</returns>
-        </member>
-        <member name="P:JetBrains.ReSharper.Psi.IPsiModule.DisplayName">
-            <summary>
-            Module name to display in UI
-            For regular modules the same as Name
-            Primary for web modules useful
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Psi.IPsiModule.ContainingProjectModule">
-            <summary>
-            IAssembly or IProject for which this PsiModule is created as either primary or secondary, null for empty project module
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Psi.IPsiModule.SourceFiles">
-            <summary>
-            Source files for this module
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Psi.IPsiModuleFactory.ProjectHandlers">
-            <summary>
-            Get currently registerd project providers
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Psi.IPsiModuleFactory.NonProjectModules">
-            <summary>
-            Get current modules which aren't connected to a particular project
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Psi.IPsiModuleFactory.ChangeProvider">
-            <summary>
-            Get ther change providert for this factory, if any
-            </summary>
-        </member>
         <member name="T:JetBrains.ReSharper.Psi.IPsiProjectFile">
             <summary>
             PSI source file whic corresponds to some <see cref="T:JetBrains.ReSharper.Psi.IPsiSourceFile"/>
@@ -568,6 +664,165 @@
             <summary>
             Abstraction layer between PSI and project model. Incorporates source file, item of the <see cref="T:JetBrains.ReSharper.Psi.IPsiModule"/>
             </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.IPsiSourceFile.Properties">
+            <summary>
+            Get file properties
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.IPsiSourceFile.PsiStorage">
+            <summary>
+            Storage for PSI-specific stuff. 
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.IPsiSourceFile.InMemoryModificationStamp">
+            <summary>
+            Timestamp if unsaved in-memory modified document. <c>null</c> if document is not modified in memory
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.IPsiSourceFile.LastWriteTime">
+            <summary>
+            UTC Timestamp of persistent document
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.IGeneratedRangeMap.Add(JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Generated},JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Original})">
+            <summary>
+             Adds new generated pair
+            </summary>
+            <param name="generatedRange">TextRange in generated code</param>
+            <param name="originalRange">Source range, if originalRange == ElementTange{T}.Invalid, the range is secondary</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.IGeneratedRangeMap.Add(JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Generated},JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Original},JetBrains.ReSharper.Psi.Impl.Shared.MappedRangeType,System.Boolean,System.Boolean)">
+            <summary>
+             Adds new generated pair
+            </summary>
+            <param name="generatedRange">TextRange in generated code</param>
+            <param name="originalRange">Source range, if originalRange == ElementTange{T}.Invalid, the range is secondary</param>
+            <param name="rangeType">Range type, should be some static-like instance</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.IGeneratedRangeMap.AddOrMerge(JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Generated},JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Original},JetBrains.ReSharper.Psi.Impl.Shared.MappedRangeType,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+             Adds new generated pair if it doesn't intersects with other ranges, or merge it with existing ranges. Range properties must be static!
+            </summary>
+            <param name="generatedRange">TextRange in generated code</param>
+            <param name="originalRange">Source range, if originalRange == ElementTange{T}.Invalid, the range is secondary</param>
+            <param name="rangeType">Range type, should be some static-like instance</param>
+            <param name="greedyOnLeft"></param>
+            <param name="greedyOnRight"></param>
+            <param name="mapIsOrdered">You sure that map is ordered</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.IGeneratedRangeMap.AppendWithShiftToGenerated(JetBrains.ReSharper.Psi.Impl.Shared.IGeneratedRangeMap,System.Int32,System.Boolean)">
+            <summary>
+            Used while code generation only
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.IGeneratedRangeMap.AppendWithShiftToOriginal(JetBrains.ReSharper.Psi.Impl.Shared.IGeneratedRangeMap,JetBrains.ReSharper.Psi.TreeOffset)">
+            <summary>
+            Used during code decompilation (generated => original)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:JetBrains.ReSharper.Psi.Impl.Shared.IGeneratedRangeMap.GetCoveringRangeExceptZeroLengthAtBounds(JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Original})" -->
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.GeneratedRangeMapTree.Add(JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Generated},JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Original})">
+            <summary>
+             Adds new generated pair
+            </summary>
+            <param name="generatedRange">TextRange in generated code</param>
+            <param name="originalRange">Source range, if originalRange == ElementTange{T}.Invalid, the range is secondary</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.GeneratedRangeMapTree.Add(JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Generated},JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Original},JetBrains.ReSharper.Psi.Impl.Shared.MappedRangeType,System.Boolean,System.Boolean)">
+            <summary>
+             Adds new generated pair
+            </summary>
+            <param name="generatedRange">TextRange in generated code</param>
+            <param name="originalRange">Source range, if originalRange == ElementTange{T}.Invalid, the range is secondary</param>
+            <param name="rangeType">Range type, should be some static-like instance</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.GeneratedRangeMapTree.AddOrMerge(JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Generated},JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Original},JetBrains.ReSharper.Psi.Impl.Shared.MappedRangeType,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+             Adds new generated pair if it doesn't intersects with other ranges, or merge it with existing ranges. Range properties must be static!
+            </summary>
+            <param name="generatedRange">TextRange in generated code</param>
+            <param name="originalRange">Source range, if originalRange == ElementTange{T}.Invalid, the range is secondary</param>
+            <param name="rangeType">Range type, should be some static-like instance</param>
+            <param name="greedyOnLeft"></param>
+            <param name="greedyOnRight"></param>
+            <param name="mapIsOrdered">You sure that map is ordered</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.GeneratedRangeMapTree.AppendWithShiftToGenerated(JetBrains.ReSharper.Psi.Impl.Shared.IGeneratedRangeMap,System.Int32,System.Boolean)">
+            <summary>
+            Used while code generation only
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.GeneratedRangeMapTree.AppendWithShiftToOriginal(JetBrains.ReSharper.Psi.Impl.Shared.IGeneratedRangeMap,JetBrains.ReSharper.Psi.TreeOffset)">
+            <summary>
+            Used during code decompilation (generated => original)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:JetBrains.ReSharper.Psi.Impl.Shared.GeneratedRangeMapTree.GetCoveringRangeExceptZeroLengthAtBounds(JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Original})" -->
+        <member name="T:JetBrains.ReSharper.Psi.IProjectPsiModuleProvider">
+            <summary>
+            Provides PSI module interface for specific project
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.IProjectPsiModuleHandler.GetAllModules">
+            <summary>
+            Get all modules for the project
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.IProjectPsiModuleHandler.GetPsiModulesToReference">
+            <summary>
+            Psi modules, that are referenced if a module (project or assembly) is referenced. Normally, the result contains
+            primary module only but sometimes there might appear secondary modules either. I.e. global resources in web application.
+            </summary>    
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.IProjectPsiModuleHandler.GetPsiSourceFilesFor(JetBrains.ProjectModel.IProjectFile)">
+            <summary>
+            Get the PSI module for given project file
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.IProjectPsiModuleHandler.OnProjectPropertiesChanged(JetBrains.ReSharper.Psi.PsiModuleChangeBuilder)">
+            <summary>
+            Process changes of properties on underlying project, and return list of modified modules
+            </summary>
+            <param name="changeBuilder"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.IProjectPsiModuleHandler.OnProjectFileChanged(JetBrains.ProjectModel.IProjectFile,JetBrains.Util.FileSystemPath,JetBrains.ReSharper.Psi.PsiModuleChange.ChangeType,JetBrains.ReSharper.Psi.PsiModuleChangeBuilder)">
+            <summary>
+            Process changes for specific project file and return list of corresponding source file changes
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.IProjectPsiModuleHandler.ChangeProvider">
+            <summary>
+            Handler could fire any additional changes
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.IProjectPsiModuleHandler.PrimaryModule">
+            <summary>
+            Module which reflects project output assembly
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.IPsiSourceFileStorage">
+            <summary>
+            Per-<see cref="T:JetBrains.ReSharper.Psi.IPsiSourceFile"/> storage for PSI specific data.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.PsiSourceFileStorage">
+            <summary>
+            Default implementation of <see cref="T:JetBrains.ReSharper.Psi.IPsiSourceFileStorage"/>
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Resolve.Managed.ICascadingCache.Recall(System.Object,JetBrains.ReSharper.Psi.Impl.Resolve.Managed.ICalculationProcess@)">
+            <summary>
+            Returns cached value for key, or FORGET if recalculation is required
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.Impl.Resolve.Managed.CascadingCache.myData">
+            <summary>
+            Data in this level of cache
+            </summary>
+            - No value for key means "look upstream if there is upstream, otherwise recalculate" 
+            - Other value is calculated value
         </member>
         <member name="T:JetBrains.ReSharper.Psi.IDeclaredType">
             <summary>
@@ -688,7 +943,7 @@
             </summary>
             <returns>ITypeElement corresponding to this type or null if the type cannot be resolved.</returns>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.IDeclaredType.GetCLRName">
+        <member name="M:JetBrains.ReSharper.Psi.IDeclaredType.GetClrName">
             <summary>
             CLR name of the type
             </summary>
@@ -699,24 +954,9 @@
             Assembly name of the assembly where this type is defined, or null if unspecified
             </summary>
         </member>
-        <member name="T:JetBrains.ReSharper.Psi.IVBPsiSourceFileProperties">
+        <member name="T:JetBrains.ReSharper.Psi.ICustomPsiSourceFileProperties">
             <summary>
-            PSI source file propertis for VisualBasic
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.IVBPsiSourceFileProperties.ProjectStrictOff">
-            <summary>
-            Is option strict OFF for specific project file
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.IVBPsiSourceFileProperties.ProjectExplicitOff">
-            <summary>
-            Is option explicit OFF for specific project file
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.IVBPsiSourceFileProperties.ProjectInferOff">
-            <summary>
-            Is option infer OFF for specific project file
+            Marker interface for all additional PSI source file properties
             </summary>
         </member>
         <member name="F:JetBrains.ReSharper.Psi.KnownLanguage.ANY">
@@ -724,7 +964,7 @@
             Specifies special language ID for services, which has semantic "for any language"
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Caches.ISymbolCache.GetForwardedToAssemblies(JetBrains.ReSharper.Psi.IPsiModule,System.String)">
+        <member name="M:JetBrains.ReSharper.Psi.Caches.ISymbolCache.GetForwardedToAssemblies(JetBrains.Metadata.Utils.AssemblyNameInfo,JetBrains.ReSharper.Psi.IClrTypeName)">
             <summary>
             Enumerate assemblies to which type with given CLR name and module was forwarded
             </summary>
@@ -786,52 +1026,6 @@
             Format the whole file
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter.FormatFile(JetBrains.ReSharper.Psi.Tree.IFile,JetBrains.ReSharper.Psi.CodeStyle.CodeStyleSettings,JetBrains.ReSharper.Psi.CodeStyle.CodeFormatProfile,JetBrains.Application.Progress.IProgressIndicator)">
-            <summary>
-            Format the whole file
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter.Format(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.CodeStyle.CodeStyleSettings,JetBrains.ReSharper.Psi.CodeStyle.CodeFormatProfile,JetBrains.Application.Progress.IProgressIndicator)">
-            <summary>
-            Format the given subtree
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter.Format(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.CodeStyle.CodeStyleSettings,JetBrains.ReSharper.Psi.CodeStyle.CodeFormatProfile,JetBrains.Application.Progress.IProgressIndicator)">
-            <summary>
-            Format the given range in the tree. The bounding nodes are random, not siblings
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter.Format(JetBrains.ProjectModel.ISolution,JetBrains.DocumentModel.DocumentRange,JetBrains.ReSharper.Psi.CodeStyle.CodeStyleSettings,JetBrains.ReSharper.Psi.CodeStyle.CodeFormatProfile,System.Boolean,System.Boolean,JetBrains.Application.Progress.IProgressIndicator)">
-            <summary>
-            Format the given range in document
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter.FormatInsertedNodes(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode,System.Boolean)">
-            <summary>
-            Format code during WritePSI action
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter.FormatInsertedRange(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.ITreeRange)">
-            <summary>
-            Format code during WritePSI action
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter.FormatReplacedNode(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
-            <summary>
-            Format code during WritePSI action
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter.FormatDeletedNodes(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
-            <summary>
-            Format code during WritePSI action
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter.GetMinimalSeparator(JetBrains.ReSharper.Psi.Tree.ITokenNode,JetBrains.ReSharper.Psi.Tree.ITokenNode)">
-            <summary>
-            Create the necessary separator between two given tokens (for example. space between identifiers)
-            If there is no necessity for separator, then return <c>null</c>
-            </summary>
-        </member>
         <member name="T:JetBrains.ReSharper.Psi.ExpectedTypes.ExpectedType">
             <summary>
             Represents an expectation based on expression context
@@ -847,9 +1041,20 @@
             Check that forwarded type assembly is referenced
             </summary>
         </member>
+        <member name="T:JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve.Filters.ForwardedTypeCompletionFilter">
+            <summary>
+            Check that forwarded type assembly is referenced
+            If both forwarded to and forwarded from types are in list, then only "forwarded from" should survive
+            </summary>
+        </member>
         <member name="T:JetBrains.ReSharper.Psi.GeneratedCode.GeneratedUtils">
             <summary>
             Checks if file or code region was generated by custom tool (uses R# user settings)
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.GeneratedCode.GeneratedUtils.ourCachedRegexes">
+            <summary>
+            Since generated files mask is rarely changed, caching it to static is reasonable
             </summary>
         </member>
         <member name="T:JetBrains.ReSharper.Psi.DeclaredElementPresenterMarking">
@@ -982,41 +1187,12 @@
             </list>
             </summary>
         </member>
-        <member name="T:JetBrains.ReSharper.Psi.ExpectedTypes.IExpectedTypeConstraint">
-            <summary>
-            Represents an expectation constraint
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.ExpectedTypes.IExpectedTypeConstraint.Accepts(JetBrains.ReSharper.Psi.IType)">
-            <summary>
-            Checks if a type matches the constraint
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.ExpectedTypes.IExpectedTypeConstraint.GetDefaultType">
-            <summary>
-            Gets some default appropriate type
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.ExpectedTypes.IExpectedTypeConstraint.GetDefaultTypes">
-            <summary>
-            Gets some default appropriate types
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.ExpectedTypes.IExpectedTypeConstraint.GetTypesEffectively">
-            <summary>
-            Gets array of expected types if can be performed effeciently 
-            </summary>
-            <returns>
-              null  if ineffective
-              array of types if fast
-            </returns>
-        </member>
         <member name="T:JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.CompositeElementExtensions">
             <summary>
             Extensions for <see cref="T:JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.CompositeElement"/>
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.CompositeElementExtensions.GetChildByRole(JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.CompositeElement,System.Int16)">
+        <member name="M:JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.CompositeElementExtensions.GetChildByRole(JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.ICompositeElement,System.Int16)">
             <summary>
             NotNull version of <see cref="M:JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.CompositeElement.FindChildByRole(System.Int16)"/>
             </summary>
@@ -1049,7 +1225,7 @@
             Creates and registers secondary document.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.IGeneratedDocumentsManager.GetSecondaryPsiLanguageTypes(JetBrains.ReSharper.Psi.IPsiSourceFile)">
+        <member name="M:JetBrains.ReSharper.Psi.IGeneratedDocumentsManager.GetSecondaryPsiLanguageTypes(JetBrains.ProjectModel.ProjectFileType)">
             <summary>
             Returns all possible secondary languages of the project file
             </summary>
@@ -1069,6 +1245,11 @@
             Enumerables services for source file
             </summary>
         </member>
+        <member name="M:JetBrains.ReSharper.Psi.IGeneratedDocumentsManager.AreGeneratedFilesValid(JetBrains.ReSharper.Psi.IPsiSourceFile)">
+            <summary>
+            Checks that generated files are not corrupted
+            </summary>
+        </member>
         <member name="M:JetBrains.ReSharper.Psi.Caches.ICache.SyncUpdate">
             <summary>
             Synchronously update caches.
@@ -1086,19 +1267,20 @@
             For every assembly, stores set of types' namespaces forwarded to it
             </summary>
         </member>
+        <member name="T:JetBrains.ReSharper.Psi.Impl.Caches2.SymbolCache.StaticInheritorsIndex">
+            <summary>
+            Inheritors index implementation which is build once
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Impl.Caches2.SymbolCache.DynamicInheritorsIndex">
+            <summary>
+            Inheritors index implementation which could be incrementally updated.
+            Multithreaded access is guarded by read-write lock
+            </summary>
+        </member>
         <member name="T:JetBrains.ReSharper.Psi.Impl.CodeStyle.CodeFormatterBase">
             <summary>
-            Base implementation of <see cref="T:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter"/>
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.Impl.CodeStyle.IndentCacheBase.GetLineIndent(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
-            <summary>
-            Get the indentation of the line which contains given node
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.Impl.CodeStyle.IndentCacheBase.GetNodeIndent(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
-            <summary>
-            Get the exact indentation of the given node
+            Base implementation of <see cref="T:JetBrains.ReSharper.Psi.CodeStyle.ICodeFormatter"/> and of <see cref="T:JetBrains.ReSharper.Psi.Impl.CodeStyle.ICodeFormatterImpl"/>
             </summary>
         </member>
         <member name="T:JetBrains.ReSharper.Psi.IPsiIconManagerExtension">
@@ -1158,41 +1340,9 @@
             Primary assembly name for which this cache was created
             </summary>
         </member>
-        <member name="T:JetBrains.ReSharper.Psi.Impl.DefaultPsiModuleProviderFactory">
+        <member name="T:JetBrains.ReSharper.Psi.Impl.DefaultPsiModuleProvider">
             <summary>
             PSI module provider for regular projects
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.IProjectPsiModuleHandler.GetAllModules">
-            <summary>
-            Get all modules for the project
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.IProjectPsiModuleHandler.GetPsiModulesToReference">
-            <summary>
-            Psi modules, that are referenced if a module (project or assembly) is referenced. Normally, the result contains
-            primary module only but sometimes there might appear secondary modules either. I.e. global resources in web application.
-            </summary>    
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.IProjectPsiModuleHandler.GetPsiSourceFilesFor(JetBrains.ProjectModel.IProjectFile)">
-            <summary>
-            Get the PSI module for given project file
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.IProjectPsiModuleHandler.OnProjectPropertiesChanged(JetBrains.ReSharper.Psi.PsiModuleChangeBuilder)">
-            <summary>
-            Process changes of properties on underlying project, and return list of modified modules
-            </summary>
-            <param name="changeBuilder"></param>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.IProjectPsiModuleHandler.OnProjectFileChanged(JetBrains.ProjectModel.IProjectFile,JetBrains.Util.FileSystemPath,JetBrains.ReSharper.Psi.PsiModuleChange.ChangeType,JetBrains.ReSharper.Psi.PsiModuleChangeBuilder)">
-            <summary>
-            Process changes for specific project file and return list of corresponding source file changes
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Psi.IProjectPsiModuleHandler.PrimaryModule">
-            <summary>
-            Module which reflects project output assembly
             </summary>
         </member>
         <member name="T:JetBrains.ReSharper.Psi.Impl.IResolveIsolationScope">
@@ -1213,10 +1363,9 @@
             <returns>Old output assembly</returns>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.Impl.OutputAssembliesCache.GetAssemblyByProject(JetBrains.ProjectModel.IProject)">
-            <returns>Assembly if it is specified for project and there's no other project with the same 
-            output assembly</returns>
+            <returns>Assembly if it is specified for project and there's no other project with the same output assembly</returns>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Impl.OutputAssembliesCache.GetProjectByAssembly(JetBrains.ProjectModel.IAssembly)">
+        <member name="M:JetBrains.ReSharper.Psi.Impl.OutputAssembliesCache.GetProjectByAssembly(JetBrains.ProjectModel.Model2.Assemblies.Interfaces.IAssembly)">
             <returns>Project if it is the only project with output assembly equal to the assembly in question</returns>
         </member>
         <member name="T:JetBrains.ReSharper.Psi.Resolve.IReferenceProvider">
@@ -1254,7 +1403,7 @@
             retrurn XAML
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.IProjectFileLanguageService.CreateLexer(JetBrains.Text.IBuffer,JetBrains.ReSharper.Psi.IPsiSourceFile,JetBrains.ReSharper.Psi.PsiManager)">
+        <member name="M:JetBrains.ReSharper.Psi.IProjectFileLanguageService.GetMixedLexerFactory(JetBrains.Text.IBuffer,JetBrains.ReSharper.Psi.IPsiSourceFile,JetBrains.ReSharper.Psi.PsiManager)">
             <summary>
             Creates lexer, that corresponds to source file text (NOT generated!) 
             </summary>
@@ -1278,7 +1427,7 @@
             Referencer with lower priority executes first
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Naming.INamingLanguageService.ExpandAndShortenKeywords(System.Collections.Generic.IEnumerable{JetBrains.ReSharper.Psi.Naming.NameRoot})">
+        <member name="M:JetBrains.ReSharper.Psi.Naming.Interfaces.INamingLanguageService.ExpandAndShortenKeywords(System.Collections.Generic.IEnumerable{JetBrains.ReSharper.Psi.Naming.Impl.NameRoot})">
             <summary>
             Populates inbound collection with language specific keywords abbreviations and lowers priority.
             
@@ -1287,12 +1436,12 @@
               Outbound: i (Essential), int (Inane)
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Naming.INamingLanguageService.ConvertNameToUnmangledSafe(System.String)">
+        <member name="M:JetBrains.ReSharper.Psi.Naming.Interfaces.INamingLanguageService.ConvertNameToUnmangledSafe(System.String)">
             <summary>
             Creates valid identifier and mangles name if necessary
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.Psi.Naming.ScopeKind.LocalSelfScoped">
+        <member name="F:JetBrains.ReSharper.Psi.Naming.Impl.ScopeKind.LocalSelfScoped">
             <summary>
             Lambda parameters, Range variables
             </summary>
@@ -1322,6 +1471,13 @@
             Checks if given type equals to predefined string, bool, sbyte, byte, short, ushort, int, uint, long, ulong, decimal, double, float, char
             </summary>
         </member>
+        <member name="M:JetBrains.ReSharper.Psi.Resolve.IAccessContext.GetStaticness">
+            <summary>
+            Determines whether static members are accessible in this context.
+            Staticness should be consistent with qualifier kind of access context.
+            All qualifier 
+            </summary>
+        </member>
         <member name="T:JetBrains.ReSharper.Psi.Resolve.FileFilters.IsProjectFileFilter">
             <summary>
             Match file by project file type (exactly, without inheritance)
@@ -1332,6 +1488,23 @@
         </member>
         <member name="M:JetBrains.ReSharper.Psi.ExtensionsAPI.IDomainSpecificSearcher.ProcessElement``1(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Search.IFindResultConsumer{``0})">
             <returns>True if further search is not needed</returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Search.FindResult.MasterResult">
+            <summary>
+            For original (i.e. first-class) result, this is <c>null</c>.
+            For related search, this points to original result.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Search.FindResultAssemblyAttribute.Index">
+            <summary>
+            returns -1 if not initialized
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Search.SearchDomainVisitor">
+            <summary>
+            The visitor does not traverse PSI tree, all methods are just different entry points called _once_ for domain element.
+            If you need to process subnodes call recursive element processor manually in both VisitPsiSourceFile and VisitElement.
+            </summary>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.TreeTextRange`1.FromLength(JetBrains.ReSharper.Psi.TreeOffset,System.Int32)">
             <summary>
@@ -1353,7 +1526,7 @@
             Gets the <see cref="P:JetBrains.ReSharper.Psi.TreeTextRange`1.StartOffset"/> or <see cref="P:JetBrains.ReSharper.Psi.TreeTextRange`1.EndOffset"/>, whichever is greater. Use for consistent processing of potentially non-normalized ranges.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.TreeTextRange`1.ContainedIn(JetBrains.ReSharper.Psi.TreeTextRange{`0})">
+        <member name="M:JetBrains.ReSharper.Psi.TreeTextRange`1.ContainedIn(JetBrains.ReSharper.Psi.TreeTextRange{`0},System.Boolean)">
             <summary>
             Gets whether this range is a subset of the <paramref name="treeRange"/>.
             </summary>
@@ -1363,7 +1536,7 @@
             Gets whether this range is a proper subset of the <paramref name="treeRange"/>.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.TreeTextRange`1.Contains(JetBrains.ReSharper.Psi.TreeOffset)">
+        <member name="M:JetBrains.ReSharper.Psi.TreeTextRange`1.Contains(JetBrains.ReSharper.Psi.TreeOffset,System.Boolean)">
             <summary>
             Determines whether the offset falls within the range, start and end offsets included.
             </summary>
@@ -1404,6 +1577,43 @@
             Gets whether this range is normalized, which means that its <see cref="P:JetBrains.ReSharper.Psi.TreeTextRange`1.Length"/> is nonnegative.
             </summary>
         </member>
+        <member name="M:JetBrains.ReSharper.Psi.IClrTypeName.GetPersistent">
+            <summary>
+            Since few implementation relies on internal data, <see cref="T:JetBrains.ReSharper.Psi.IClrTypeName"/> is valid only during single ReadLock session.
+            This returns independent implementation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Util.ExpressionUtil.IsPure(JetBrains.ReSharper.Psi.Tree.IExpression)">
+            <summary>
+            Check if expression calls only to pure methods, and has no side effects
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Util.ExpressionUtil.IsPure(JetBrains.ReSharper.Psi.Tree.IExpression,System.Func{JetBrains.ReSharper.Psi.Tree.IExpression,System.Boolean})">
+            <summary>
+            Check if expression calls only to pure methods, and has no side effects.
+            Custom check predicate allows to filter-out write to locals.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Util.ObsoleteUtil.IsReferencingObsoleteEntity(JetBrains.ReSharper.Psi.Resolve.IReference)">
+            <summary>
+             Check if reference resolves to obsolete entity. Note: Usage of obsolete references from obsolete method is not obsolete!
+            </summary>
+            <param name="reference"></param>
+            <returns><c>null</c> if reference is not obsolete. Returns <c>true</c> in first pair member if should treat as error, and obsolete message in second component </returns>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Util.TreeTextRangeTree`2">
+            <summary>
+            Works only with range lists where ranges cannot strictly intersect with each other and that are normalized
+            </summary>
+            <typeparam name="TKind"></typeparam>
+            <typeparam name="TData"></typeparam>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.XmlIndex.XmlIndexableBase.DoUpdateIndex">
+            <summary>
+            Returns <c>true</c> if index was updated
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:JetBrains.ReSharper.Psi.Impl.IMiscFilesProjectPsiModuleProvider.GetModules">
             <summary>
             Get provided modules
@@ -1433,6 +1643,11 @@
         <member name="M:JetBrains.ReSharper.Psi.Impl.Search.SearcherBase.ProcessLibraryFile``1(JetBrains.ReSharper.Psi.Caches.IPsiAssemblyFile,JetBrains.ReSharper.Psi.Search.IFindResultConsumer{``0})">
             <returns>True if further search is not needed</returns>
         </member>
+        <member name="T:JetBrains.ReSharper.Psi.Impl.Search.MethodUsageInfo">
+            <summary>
+            Data class ...
+            </summary>
+        </member>
         <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.GeneratedRangeMap.Add(JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Generated},JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Original})">
             <summary>
              Adds new generated pair
@@ -1440,28 +1655,39 @@
             <param name="generatedRange">TextRange in generated code</param>
             <param name="originalRange">Source range, if originalRange == ElementTange{T}.Invalid, the range is secondary</param>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.GeneratedRangeMap.AddOrMerge(JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Generated},JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Original})">
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.GeneratedRangeMap.Add(JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Generated},JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Original},JetBrains.ReSharper.Psi.Impl.Shared.MappedRangeType,System.Boolean,System.Boolean)">
             <summary>
-             Adds new generated pair if it doesn't intersects with other ranges, or merge it with existing ranges
+             Adds new generated pair
             </summary>
             <param name="generatedRange">TextRange in generated code</param>
             <param name="originalRange">Source range, if originalRange == ElementTange{T}.Invalid, the range is secondary</param>
+            <param name="rangeType">Range type, should be some static-like instance</param>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.GeneratedRangeMap.Append(JetBrains.ReSharper.Psi.Impl.Shared.GeneratedRangeMap,System.Int32)">
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.GeneratedRangeMap.AddOrMerge(JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Generated},JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Original},JetBrains.ReSharper.Psi.Impl.Shared.MappedRangeType,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+             Adds new generated pair if it doesn't intersects with other ranges, or merge it with existing ranges. Range properties must be static!
+            </summary>
+            <param name="generatedRange">TextRange in generated code</param>
+            <param name="originalRange">Source range, if originalRange == ElementTange{T}.Invalid, the range is secondary</param>
+            <param name="rangeType">Range type, should be some static-like instance</param>
+            <param name="greedyOnLeft"></param>
+            <param name="greedyOnRight"></param>
+            <param name="mapIsOrdered">You sure that map is ordered</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.GeneratedRangeMap.AppendWithShiftToGenerated(JetBrains.ReSharper.Psi.Impl.Shared.IGeneratedRangeMap,System.Int32,System.Boolean)">
             <summary>
             Used while code generation only
             </summary>
         </member>
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.GeneratedRangeMap.AppendWithShiftToOriginal(JetBrains.ReSharper.Psi.Impl.Shared.IGeneratedRangeMap,JetBrains.ReSharper.Psi.TreeOffset)">
+            <summary>
+            Used during code decompilation (generated => original)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:JetBrains.ReSharper.Psi.Impl.Shared.GeneratedRangeMap.GetCoveringRangeExceptZeroLengthAtBounds(JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Original})" -->
         <member name="T:JetBrains.ReSharper.Psi.Impl.PsiManagerImpl.ISecondaryRangeTranslator">
             <summary>
             Translates ranges from the secondary IFile to the ranges in the original IFile.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.Resolve.IAccessContext.GetStaticness">
-            <summary>
-            Determines whether static members are accessible in this context.
-            Staticness should be consistent with qualifier kind of access context.
-            All qualifier 
             </summary>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.CompositeElement.FindChildByRole(System.Int16)">
@@ -1487,6 +1713,32 @@
         <member name="M:JetBrains.ReSharper.Psi.PsiModuleReferenceExtensions.HasGlobalExternAlias(JetBrains.ReSharper.Psi.IPsiModuleReference)">
             <summary>
             Checks if alias list got by <see cref="!:PsiModuleManager.GetModuleReference"/> denotes for global alias
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.IPsiModuleFactory.Modules">
+            <summary>
+            Get current modules which aren't connected to a particular project
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.IPsiModuleFactory.ChangeProvider">
+            <summary>
+            Get the change provided for this factory, if any
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.IProjectPsiModuleProviderFilter">
+            <summary>
+            Possibly aggregate existing handler.
+            This interface should be implemented by a component
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.IPsiModuleDecorator">
+            <summary>
+            Decorator for PSI module properties. Returned by <see cref="M:JetBrains.ReSharper.Psi.IProjectPsiModuleProviderFilter.OverrideHandler(JetBrains.DataFlow.Lifetime,JetBrains.ProjectModel.IProject,JetBrains.ReSharper.Psi.IProjectPsiModuleHandler)"/>
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.DelegatingProjectPsiModuleHandler">
+            <summary>
+            Base class for delegating handlers. Primary used in filters
             </summary>
         </member>
         <member name="T:JetBrains.ReSharper.Psi.ExtensionsAPI.ICrossProjectAnonymousTypeImpl">
@@ -1520,7 +1772,7 @@
         </member>
         <member name="T:JetBrains.ReSharper.Psi.NameStyle">
             <summary>
-            Indicates how the entity name shold be presented
+            Indicates how the entity name should be presented
             <list type="table">
             <listheader><term>Enum member name</term><description>Description or example</description></listheader>
             <item><term>NONE</term><description>Do not show name (default value)</description></item>
@@ -1570,12 +1822,6 @@
             Store token buffer for incremental reparse
             </summary>
         </member>
-        <member name="P:JetBrains.ReSharper.Psi.Search.FindResult.MasterResult">
-            <summary>
-            For original (i.e. first-class) result, this is <c>null</c>.
-            For related search, this points to original result.
-            </summary>
-        </member>
         <member name="P:JetBrains.ReSharper.Psi.Search.FindResultOverridableMember.QuasiBasisElement">
             <summary>
             Type element which was used as basis for quasi-implemetation
@@ -1619,7 +1865,7 @@
         <member name="M:JetBrains.ReSharper.Psi.TreeTextRange.ContainsCharIndex(JetBrains.ReSharper.Psi.TreeOffset)">
             <summary>
             <para>Checks whether the character at the <paramref name="charindex">given index</paramref> falls within this range.</para>
-            <para>Unlike <see cref="!:Contains(int)"/>, the right offset is not included, because the range ends before the character with such an index.</para>
+            <para>Unlike <see cref="M:JetBrains.ReSharper.Psi.TreeTextRange.Contains(JetBrains.ReSharper.Psi.TreeOffset)"/>, the right offset is not included, because the range ends before the character with such an index.</para>
             </summary>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.TreeTextRange.IsValid">
@@ -1733,6 +1979,26 @@
             Get value regardless of timastamp
             </summary>
         </member>
+        <member name="F:JetBrains.ReSharper.Psi.Caches.DeclarationCacheLibraryScope.NONE">
+            <summary>
+            Do not include libraries
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.Caches.DeclarationCacheLibraryScope.REFERENCED">
+            <summary>
+            Only libraries directly referenced from source projects
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.Caches.DeclarationCacheLibraryScope.TRANSITIVE">
+            <summary>
+            Libraries referenced from source projects and their transitive closure
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.Caches.DeclarationCacheLibraryScope.FULL">
+            <summary>
+            All libraries in code model
+            </summary>
+        </member>
         <member name="M:JetBrains.ReSharper.Psi.Caches.CacheManager.WaitForCaches(System.String,System.String)">
             <summary>
             Syncroniously wait until caches are ready, with a popup progress window.
@@ -1742,7 +2008,7 @@
             <param name="sCancelButtonContent">Title of the Cancel button.</param>
             <returns><c>True</c> if the caches are ready, <c>False</c> if user-cancelled.</returns>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Caches.CacheManager.GetDeclarationsCache(System.Boolean,System.Boolean)">
+        <member name="M:JetBrains.ReSharper.Psi.Caches.CacheManager.GetDeclarationsCache(JetBrains.ReSharper.Psi.Caches.DeclarationCacheLibraryScope,System.Boolean)">
             <summary>
             Get the accessor for CLR declared elements in solution scope
             </summary>
@@ -1762,6 +2028,11 @@
             Indicates if the async cache updater is idle right now
             </summary>
         </member>
+        <member name="P:JetBrains.ReSharper.Psi.Caches.CacheManager.HasDirtyFiles">
+            <summary>
+            Check if cache contains dirty files due to document or PSI changes. This do not affect async cache update due to external changes (<see cref="P:JetBrains.ReSharper.Psi.Caches.CacheManager.IsIdle"/>)
+            </summary>
+        </member>
         <member name="T:JetBrains.ReSharper.Psi.Impl.Caches2.SymbolCache.IDeclarationsScope">
             <summary>
             Repsents scope of declarations cache.
@@ -1776,7 +2047,7 @@
             <example>See <see cref="T:JetBrains.ReSharper.Psi.Caches.IDeclarationsCache"/> for example of use.</example>
             </summary>
             <seealso cref="T:JetBrains.ReSharper.Psi.Caches.IDeclarationsCache"/>
-            <seealso cref="M:JetBrains.ReSharper.Psi.Caches.CacheManager.GetDeclarationsCache(System.Boolean,System.Boolean)"/>
+            <seealso cref="M:JetBrains.ReSharper.Psi.Caches.CacheManager.GetDeclarationsCache(JetBrains.ReSharper.Psi.Caches.DeclarationCacheLibraryScope,System.Boolean)"/>
             <seealso cref="M:JetBrains.ReSharper.Psi.Caches.CacheManager.GetDeclarationsCache(JetBrains.ReSharper.Psi.IPsiModule,System.Boolean,System.Boolean)"/>
         </member>
         <member name="T:JetBrains.ReSharper.Psi.Caches.IDeclarationsCache">
@@ -1805,6 +2076,13 @@
             }
             </code>
             </example>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Caches.IDeclarationsCache.Contains(JetBrains.ReSharper.Psi.ITypeElement)">
+            <summary>
+            Checks if given typeElement is accepted by the scope of the cache
+            </summary>
+            <param name="typeElement"></param>
+            <returns></returns>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.Caches.IDeclarationsCache.GetElementsAtQualifiedName(System.String)">
             <summary>
@@ -1974,13 +2252,13 @@
             Returns random file at specified path
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.ExpectedTypes.CollectionTypeUtil.ElementTypeByCollectionType(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.Resolve.IAccessContext)">
+        <member name="M:JetBrains.ReSharper.Psi.Util.CollectionTypeUtil.ElementTypeByCollectionType(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.Resolve.IAccessContext)">
             <summary>
             Returns element type if collectionType is a _collection_type_ (described in specification, 15.8.4)
             otherwise, returns null
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.ExpectedTypes.CollectionTypeUtil.GetTypeContainingEnumerable(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+        <member name="M:JetBrains.ReSharper.Psi.Util.CollectionTypeUtil.GetTypeContainingEnumerable(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
             <summary>
             Get the topmost type which contains corresponding 'GetEnumerator' by given type of collection
             </summary>
@@ -2016,14 +2294,19 @@
             if it matches at least one of nested constraints)
             </summary>
         </member>
-        <member name="T:JetBrains.ReSharper.Psi.CSharp.ExpectedTypes.ReferenceTypeConstraint">
+        <member name="T:JetBrains.ReSharper.Psi.ExpectedTypes.ReferenceTypeConstraint">
             <summary>
             Constraint which accepts only reference types
             </summary>
         </member>
-        <member name="T:JetBrains.ReSharper.Psi.CSharp.ExpectedTypes.SuperTypeConstraint">
+        <member name="T:JetBrains.ReSharper.Psi.ExpectedTypes.SuperTypeConstraint">
             <summary>
             Constraint which accepts only super types of  a given type
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.ITypeElement.GetClrName">
+            <summary>
+            Get the CLR name of type element.
             </summary>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.ITypeElement.GetSuperTypes">
@@ -2039,11 +2322,6 @@
         <member name="M:JetBrains.ReSharper.Psi.ITypeElement.GetContainingNamespace">
             <summary>
             Namespace containing this type
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Psi.ITypeElement.CLRName">
-            <summary>
-            Get the CLR name of type element.
             </summary>
         </member>
         <member name="P:JetBrains.ReSharper.Psi.ITypeElement.NestedTypes">
@@ -2177,12 +2455,10 @@
             Map from declared elements in original subtree into declaration in clone subtree
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve2.Impl.CascadingCache.myData">
+        <member name="M:JetBrains.ReSharper.Psi.ExtensionsAPI.ReferenceContextCodec.FindDependentReferences(JetBrains.ReSharper.Psi.Resolve.IReference)">
             <summary>
-            Data in this level of cache
+            Get references which should be fake-binded along with the given one
             </summary>
-            - No value for key means "look upstream if there is upstream, otherwise recalculate" 
-            - Other value is calculated value
         </member>
         <member name="T:JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve.Filters.LocalModuleNamesFilter">
             <summary>
@@ -2251,7 +2527,7 @@
             A cache thread work item, implemented by a delegate.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Caches.Job.Do(JetBrains.Application.Progress.IProgressIndicator)">
+        <member name="M:JetBrains.ReSharper.Psi.Caches.Job.Do(JetBrains.Application.Progress.IProgressIndicator,System.Boolean)">
             <summary>
             Runs the task. The <paramref name="progress"/> should be used only if the task requires additional progress display (like smooth execution progress or more text messages). Normally, for short-time tasks, the executing engine will handle the progress.
             </summary>
@@ -2268,7 +2544,7 @@
             The group ID is displayed as the cache notifier main text (the only text of the status-bar cache notifier).
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Impl.Caches2.DelegateJob.#ctor(JetBrains.Util.Runnable,System.String)">
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Caches2.DelegateJob.#ctor(System.Action,System.String)">
             <summary>
             Ctor.
             </summary>
@@ -2330,6 +2606,11 @@
         <member name="P:JetBrains.ReSharper.Psi.Tree.IFile.ModificationCounter">
             <summary>
             Starting from 0, each time the subtree is modified this counter increases
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Impl.Caches2.TypeMembersBucket.UpdateCachesInProgress">
+            <summary>
+            Indicates that massive bulk oparetion is in progress
             </summary>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.IDeclaredElementPresenter.Format(JetBrains.ReSharper.Psi.DeclaredElementPresenterStyle,JetBrains.ReSharper.Psi.IDeclaredElement,JetBrains.ReSharper.Psi.Resolve.ISubstitution,JetBrains.ReSharper.Psi.DeclaredElementPresenterMarking@)">
@@ -2395,28 +2676,28 @@
         <member name="M:JetBrains.ReSharper.Psi.Naming.Elements.INamedElementsManager.GetAllElementKinds(JetBrains.ReSharper.Psi.PsiLanguageType)">
             <param name="language">'null' for language neutral element kinds</param>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Naming.Elements.NamedElementsBagAttribute.#ctor(System.String)">
+        <member name="M:JetBrains.ReSharper.Psi.Naming.Elements.NamedElementsBagAttribute.#ctor(System.Type)">
             <param name="languageType">'null' for cross language elements</param>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.Naming.Elements.NamedElementsManager.GetAllElementKinds(JetBrains.ReSharper.Psi.PsiLanguageType)">
             <param name="language">'null' for language neutral element kinds</param>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Naming.Extentions.NameChangeUtil.GetSuggestedName(JetBrains.ReSharper.Psi.Naming.NameRoot,JetBrains.ReSharper.Psi.Naming.NameRoot,JetBrains.ReSharper.Psi.Naming.NameRoot)">
+        <member name="M:JetBrains.ReSharper.Psi.Naming.Extentions.NameChangeUtil.GetSuggestedName(JetBrains.ReSharper.Psi.Naming.Impl.NameRoot,JetBrains.ReSharper.Psi.Naming.Impl.NameRoot,JetBrains.ReSharper.Psi.Naming.Impl.NameRoot)">
             <summary>
             
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.Psi.Naming.NameWord.ourSkipTailInfix">
+        <member name="F:JetBrains.ReSharper.Psi.Naming.Impl.NameWord.ourSkipTailInfix">
             <summary>
             ElementOfPointer -> Pointer
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.Psi.Naming.NameWord.ourPredefinedPrefixes">
+        <member name="F:JetBrains.ReSharper.Psi.Naming.Impl.NameWord.ourPredefinedPrefixes">
             <summary>
             GetPointer -> Pointer
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.Psi.Naming.NameWord.ourCollectionSuffixes">
+        <member name="F:JetBrains.ReSharper.Psi.Naming.Impl.NameWord.ourCollectionSuffixes">
             <summary>
             ElementList -> Element
             </summary>
@@ -2501,7 +2782,7 @@
             Returns symbol table for code completion
             </summary>
         </member>
-        <member name="T:JetBrains.ReSharper.Psi.Resolve.TypeEquationsSolver">
+        <member name="T:JetBrains.ReSharper.Psi.Resolve.TypeInference.TypeEquationsSolver">
             <summary>
             Depends on language specific implementation of the interface ITypeInferenceBoundsSolver
             </summary>
@@ -2519,7 +2800,7 @@
             https://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=281842
             </remarks>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Util.CLRTypeConversionUtil.VariantConvertible(JetBrains.ReSharper.Psi.IDeclaredType,JetBrains.ReSharper.Psi.IDeclaredType,System.Func{JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.IType,System.Boolean})">
+        <member name="M:JetBrains.ReSharper.Psi.Util.CLRTypeConversionUtil.VariantConvertible(JetBrains.ReSharper.Psi.ITypeElement,JetBrains.ReSharper.Psi.Resolve.ISubstitution,JetBrains.ReSharper.Psi.Resolve.ISubstitution,System.Func{JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.IType,System.Boolean})">
             <summary>
             A type T{A1, …, An} is variance-convertible to a type T{B1, …, Bn} if T is either an interface or a delegate type declared with the variant type parameters T{X1, …, Xn}, and for each variant type parameter Xi one of the following holds:
             •  Xi is covariant and an implicit reference or identity conversion exists from Ai to Bi
@@ -2527,7 +2808,7 @@
             •  Xi is invariant and an identity conversion exists from Ai to Bi
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Util.CLRTypeConversionUtil.MostEncompassedType(JetBrains.ReSharper.Psi.IType[])">
+        <member name="M:JetBrains.ReSharper.Psi.Util.CLRTypeConversionUtil.MostEncompassedType(System.Collections.Generic.IList{JetBrains.ReSharper.Psi.IType})">
             <summary>
             Select the single type in the collection, which is implictly convertible to all others
             </summary>
@@ -2591,7 +2872,7 @@
             enumerates this node and all it's children
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.ControlFlow2.Impl.ControlFlowGraf.FixUp">
+        <member name="M:JetBrains.ReSharper.Psi.ControlFlow.Impl.ControlFlowGraf.FixUp">
             <summary>
             Fixup graf into canonical representation. 
             Prepare reachable sequence for inspection and analyze reacability of elements
@@ -2652,6 +2933,11 @@
         <member name="T:JetBrains.ReSharper.Psi.Impl.Search.ConstructorSpecialReferenceSearcher">
             <summary>
             Search for ":this()", ":base()" references....
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.IProjectFileCustomPsiPropertiesProvider.GetCustomProperties``1(JetBrains.ProjectModel.IProjectFile,JetBrains.ReSharper.Psi.IPsiSourceFile)">
+            <summary>
+            Get custom PSI properties for specific project file type
             </summary>
         </member>
         <member name="T:JetBrains.ReSharper.Psi.PsiIconExtension">
@@ -2996,7 +3282,7 @@
             All possible languages of documents generated by this service.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.ExtensionsAPI.IGeneratedDocumentService.CanHandle(JetBrains.ReSharper.Psi.IPsiSourceFile)">
+        <member name="M:JetBrains.ReSharper.Psi.ExtensionsAPI.IGeneratedDocumentService.CanHandle(JetBrains.ProjectModel.ProjectFileType)">
             <summary>
             Additional checks, whether the file is handled by this service.
             </summary>
@@ -3008,7 +3294,7 @@
         </member>
         <member name="M:JetBrains.ReSharper.Psi.ExtensionsAPI.IGeneratedDocumentService.ExecuteSecondaryDocumentCommitWork(JetBrains.ReSharper.Psi.Impl.PsiManagerImpl.PrimaryFileModificationInfo,JetBrains.ReSharper.Psi.Impl.PsiManagerImpl.CachedPsiFile,JetBrains.ReSharper.Psi.TreeTextRange,System.String)">
             <summary>
-            Process of generated document commit (in the case of primary document incremental reparse) can be overridden in this method.
+            The process of generated document commit (in the case of primary document incremental reparse) can be overridden in this method.
             Returns null if full regeneration is required.
             This method is not allowed to do destructive changes due to interuptability!
             </summary>
@@ -3019,7 +3305,7 @@
             If method returns false current transaction fails.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.ExtensionsAPI.IGeneratedDocumentService.ProcessChangeFromPrimaryToGenerated(JetBrains.DocumentModel.DocumentChange,JetBrains.ReSharper.Psi.Impl.PsiManagerImpl.ISecondaryRangeTranslator,JetBrains.ReSharper.Psi.Tree.IFile,JetBrains.ReSharper.Psi.ExtensionsAPI.IPsiTransactionAction)">
+        <member name="M:JetBrains.ReSharper.Psi.ExtensionsAPI.IGeneratedDocumentService.ProcessChangeFromPrimaryToGenerated(JetBrains.ReSharper.Psi.TreeTextRange,System.String,System.String,JetBrains.ReSharper.Psi.Impl.PsiManagerImpl.ISecondaryRangeTranslator,JetBrains.ReSharper.Psi.Tree.IFile,JetBrains.ReSharper.Psi.ExtensionsAPI.IPsiTransactionAction)">
             <summary>
              Called from transaction manager when primary document is chaged
             </summary>
@@ -3032,6 +3318,11 @@
         <member name="M:JetBrains.ReSharper.Psi.ExtensionsAPI.IGeneratedDocumentService.CreateSecondaryLexingService(JetBrains.ReSharper.Psi.Parsing.MixedLexer,JetBrains.ReSharper.Psi.IPsiSourceFile)">
             <summary>
             Creates provider of primary document composite lexer.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.ExtensionsAPI.IGeneratedDocumentService.CheckValid(JetBrains.ReSharper.Psi.Tree.IFile)">
+            <summary>
+            Checks that generated file is not corrupted
             </summary>
         </member>
         <member name="T:JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve.MultipleFilterSymbolTable">
@@ -3244,7 +3535,7 @@
             </summary>
             <returns>Status of attempt to modify involved documents, or null if hadler returned false</returns>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.PsiManager.CreateCustomlyHandledModificationCookie">
+        <member name="M:JetBrains.ReSharper.Psi.PsiManager.CreateCustomCookie``1(``0)">
             <summary>
             After creation of the customly modification cookie and until its disposal 
             processing of changes from original to generated files (for example, from ASP to code behind C# filed and back) and vice versa are changed:
@@ -3368,8 +3659,8 @@
             </summary>
         </member>
         <member name="T:JetBrains.ReSharper.Psi.ITypeConversionRule">
-            <summary>
-            This interafce should be provided by language service. See <see cref="T:JetBrains.ReSharper.Psi.LanguageService"/>
+            <summary>  
+            This interafce should be provided by corresponding language dependent tree node.
             </summary>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.Parsing.ArrayOfTokens.FindTokenAt(System.Int32)">
@@ -3404,6 +3695,14 @@
             <param name="lexer"></param>
             <returns></returns>
         </member>
+        <member name="M:JetBrains.ReSharper.Psi.Parsing.LexerUtil.AdvanceWhile``1(``0,System.Func{JetBrains.ReSharper.Psi.Parsing.TokenNodeType,System.Boolean})">
+            <summary>
+            Advance lexer while predicate true.
+            </summary>
+            <param name="lexer"></param>
+            <param name="predicate"></param>
+            <returns>Position of first node after advancing (can be end of buffer)</returns>
+        </member>
         <member name="M:JetBrains.ReSharper.Psi.Parsing.TokenBuffer.ReScan(JetBrains.Util.TextRange,JetBrains.ReSharper.Psi.Parsing.ILexerFactory,JetBrains.Text.BufferRange)">
             <summary>
             Rescans the buffer incrementally and returns new instance of token buffer
@@ -3419,27 +3718,27 @@
             For optimization and fixing some problems
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.PredefinedType.IsPredefinedNumeric(System.String)">
+        <member name="M:JetBrains.ReSharper.Psi.PredefinedType.IsPredefinedNumeric(JetBrains.ReSharper.Psi.IClrTypeName)">
             <summary>
             Checks if given type equals to predefined sbyte, byte, short, ushort, int, uint, long, ulong, decimal, double, float, char
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.PredefinedType.IsPredefinedIntegral(System.String)">
+        <member name="M:JetBrains.ReSharper.Psi.PredefinedType.IsPredefinedIntegral(JetBrains.ReSharper.Psi.IClrTypeName)">
             <summary>
             Checks if given type equals to predefined sbyte, byte, short, ushort, int, uint, long, ulong, char or string
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.PredefinedType.IsPredefinedIntegralNumeric(System.String)">
+        <member name="M:JetBrains.ReSharper.Psi.PredefinedType.IsPredefinedIntegralNumeric(JetBrains.ReSharper.Psi.IClrTypeName)">
             <summary>
             Checks if given type equals to predefined sbyte, byte, short, ushort, int, uint, long, ulong
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.PredefinedType.IsSimplePredefined(System.String)">
+        <member name="M:JetBrains.ReSharper.Psi.PredefinedType.IsSimplePredefined(JetBrains.ReSharper.Psi.IClrTypeName)">
             <summary>
             Checks if given type equals to predefined string, bool, sbyte, byte, short, ushort, int, uint, long, ulong, decimal, double, float, char
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.PredefinedType.IsSimplePredefinedClrName(System.String)">
+        <member name="M:JetBrains.ReSharper.Psi.PredefinedType.IsSimplePredefinedClrName(JetBrains.ReSharper.Psi.IClrTypeName)">
             <summary>
             Checks if given type equals to predefined string, bool, sbyte, byte, short, ushort, int, uint, long, ulong, decimal, double, float, char
             </summary>
@@ -3536,12 +3835,12 @@
             Complete symbol table - all necessary infos should be there
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Resolve.TypeInferenceUtil.ValidatePartialInferenceResultAgainstConstraints(JetBrains.ReSharper.Psi.Resolve.ISubstitution)">
+        <member name="M:JetBrains.ReSharper.Psi.Resolve.TypeInference.TypeInferenceUtil.ValidatePartialInferenceResultAgainstConstraints(JetBrains.ReSharper.Psi.Resolve.ISubstitution)">
             <summary>
             Validation of partial inference result for purposes of extension method symbol table filtering
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Resolve.TypeInferenceUtil.InferTypes(JetBrains.ReSharper.Psi.PsiLanguageType,JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.IType,System.Collections.Generic.ICollection{JetBrains.ReSharper.Psi.ITypeParameter},JetBrains.ReSharper.Psi.ITypeConversionRule)">
+        <member name="M:JetBrains.ReSharper.Psi.Resolve.TypeInference.TypeInferenceUtil.InferTypes(JetBrains.ReSharper.Psi.PsiLanguageType,JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.IType,System.Collections.Generic.ICollection{JetBrains.ReSharper.Psi.ITypeParameter},JetBrains.ReSharper.Psi.ITypeConversionRule)">
             <summary>
             Depends on language specific implementation of the interface ITypeInferenceBoundsSolver
             </summary>
@@ -3614,13 +3913,13 @@
             Instance of InvocableSignature that can be used as null value
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.InvocableSignature.#ctor(JetBrains.ReSharper.Psi.IParametersOwner,JetBrains.ReSharper.Psi.Resolve.ISubstitution,JetBrains.ReSharper.Psi.ParameterKindCompareType)">
+        <member name="M:JetBrains.ReSharper.Psi.InvocableSignature.#ctor(JetBrains.ReSharper.Psi.IParametersOwner,JetBrains.ReSharper.Psi.Resolve.ISubstitution,JetBrains.ReSharper.Psi.ISignatureComparer)">
             <summary>
             Creates signature by an IInvocable. It's better to use <see cref="M:JetBrains.ReSharper.Psi.IParametersOwner.GetSignature(JetBrains.ReSharper.Psi.Resolve.ISubstitution)"/>.
             </summary>
             <param name="parametersOwner">Invocable to create signature for</param>
             <param name="substitution"></param>
-            <param name="parameterKindCompareType"></param>
+            <param name="defaultComparer">Specify default signature comparer. If <c>null</c> is given, then use strict comparer (as it is in CLR)</param>
             <seealso cref="M:JetBrains.ReSharper.Psi.IParametersOwner.GetSignature(JetBrains.ReSharper.Psi.Resolve.ISubstitution)"/>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.InvocableSignature.GetParameterType(System.Int32)">
@@ -3644,15 +3943,13 @@
             </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "P:JetBrains.ReSharper.Psi.InvocableSignature.EqualitySubstitution" -->
-        <member name="F:JetBrains.ReSharper.Psi.ParameterKindCompareType.STRICT">
+        <member name="M:JetBrains.ReSharper.Psi.LanguageService.GetTokenContentsText(System.String,JetBrains.ReSharper.Psi.Parsing.TokenNodeType)">
             <summary>
-            Strict parameter kind comparing, i.e. value, out and ref are all different
+            Used by todo manager to extract contents from tokens, e.g. remove slashes from comments. Refactor to ITodoContentsService
             </summary>
-        </member>
-        <member name="F:JetBrains.ReSharper.Psi.ParameterKindCompareType.VB_LIKE">
-            <summary>
-            Visual-Basic parameter kind comparing, where 'out' and 'ref' kinds are the same
-            </summary>
+            <param name="tokenText"></param>
+            <param name="tokenType"></param>
+            <returns></returns>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.LanguageService.IsTypeMemberVisible(JetBrains.ReSharper.Psi.ITypeMember)">
             <summary>
@@ -3717,11 +4014,6 @@
             Some files were modified as a result of the attempt to make them writable
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.Psi.TransactionResultEnum.ENSURE_WRITABLE_HAS_HIDDEN_FILES">
-            <summary>
-            There are hidden file, that cannot be modified, since they are generated by external build provider
-            </summary>
-        </member>
         <member name="M:JetBrains.ReSharper.Psi.TypeFactory.CreateTypeWithDynamicSubsitution(JetBrains.ReSharper.Psi.ITypeElement,JetBrains.ReSharper.Psi.IPsiModule)">
             <summary>
             Creates declared type from given type element with dynamic substitution, i.e. where any type parameter corresponds to dynamic type
@@ -3775,7 +4067,7 @@
             Check if type is value non-nullable type
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Util.TypesUtil.MostEncompassedType(System.Collections.Generic.IEnumerable{JetBrains.ReSharper.Psi.IType},JetBrains.ReSharper.Psi.ITypeConversionRule)">
+        <member name="M:JetBrains.ReSharper.Psi.Util.TypesUtil.MostEncompassedType``1(System.Collections.Generic.ICollection{``0},JetBrains.ReSharper.Psi.ITypeConversionRule)">
             <summary>
             Select the single type in the collection, which is implictly convertible to all others
             </summary>

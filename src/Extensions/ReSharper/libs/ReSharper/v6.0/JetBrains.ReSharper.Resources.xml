@@ -1526,19 +1526,11 @@
             ¨Running and Debugging Unit Tests〃 help topic ID. Use with <see cref="!:UIApplicationShell.ShowProductHelp"/>.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.ReSharperLicenseSupport.ReSharperLicenseRegistryInstaller.InstallStatic(JetBrains.Application.Install.Installer)">
+        <member name="M:JetBrains.ReSharper.ReSharperLicenseSupport.ReSharperLicenseRegistryInstaller.JetBrains#Application#Install#IStaticInstaller#InstallStatic(JetBrains.Application.Install.Installer)">
             <summary>
             Called once on the object during the registration process.
             </summary>
             <param name="installer">The installer object that provides the installation data.</param>
-            <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
-        </member>
-        <member name="M:JetBrains.ReSharper.ReSharperLicenseSupport.ReSharperLicenseRegistryInstaller.InstallInstance(JetBrains.Application.Install.Installer,System.Object)">
-            <summary>
-            Called for each of the attributes of the requested type encountered in the known assemblies.
-            </summary>
-            <param name="installer">The installer object that provides the installation data.</param>
-            <param name="attributeInstance">Instance of the attribute to process.</param>
             <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
         </member>
         <member name="T:JetBrains.ReSharper.ReSharperApplicationDescriptor">
@@ -1619,40 +1611,6 @@
         <member name="F:JetBrains.ReSharper.GlobalSettings.Key.UseVsIcons">
             <summary>
             Tells whether to use the Visual Studio icons (<c>True</c>) or IntelliJ IDEA icons (<c>False</c>) throughout the product.
-            </summary>
-        </member>
-        <member name="F:JetBrains.ReSharper.GlobalSettings.Key.RefactoringWizardFormLocationX">
-            <summary>
-            Stores the location of the refactoring wizard form's top-center relatively to the center of the application main window.
-            // TODO: support storing Point types.
-            </summary>
-        </member>
-        <member name="F:JetBrains.ReSharper.GlobalSettings.Key.RefactoringWizardFormLocationY">
-            <summary>
-            Stores the location of the refactoring wizard form's top-center relatively to the center of the application main window.
-            // TODO: support storing Point types.
-            </summary>
-        </member>
-        <member name="F:JetBrains.ReSharper.GlobalSettings.Key.UseVarForIntroduceVariableRefactoringEvident">
-            <summary>
-            This setting stores if "var" has been selected for the type template field 
-            of the introduce variable refactoring to satisfy user preferences in the
-            next call of refactoring. 
-            This setting works when type of expression is evident.
-            </summary>
-        </member>
-        <member name="F:JetBrains.ReSharper.GlobalSettings.Key.UseVarForIntroduceVariableRefactoring">
-            <summary>
-            This setting stores if "var" has been selected for the type template field 
-            of the introduce variable refactoring to satisfy user preferences in the
-            next call of refactoring. 
-            This setting works when type of expression is not evident.
-            </summary>
-        </member>
-        <member name="F:JetBrains.ReSharper.GlobalSettings.Key.SearchInCommentsAndStrings">
-            <summary>
-            Directs whether to search for references textually in comments, string literals, and such.
-            Gives the initial option value for refactoring pages.
             </summary>
         </member>
         <member name="M:JetBrains.ReSharper.ReSharperEditions.IsCSharpEditionIncluded(JetBrains.Application.Env.RunsProducts.ProductConfigurations,JetBrains.Application.IApplicationDescriptor)">
@@ -1825,46 +1783,6 @@
             <summary>
             Gets the dispatcher attached to the <see cref="P:JetBrains.Application.Shell.PrimaryThread">UI thread</see>.
             Can be used for marshalling or async queueing of the tasks.  
-            </summary>
-        </member>
-        <member name="P:JetBrains.Application.Shell.UserSettingsLocalDir">
-            <summary>
-            Gets the full path to the computer-local per-user folder that stores the product settings.
-            This folder should be used for storing large or easily-re-generated files, like type index caches.
-            </summary>
-        </member>
-        <member name="P:JetBrains.Application.Shell.UserSettingsRoamingDir">
-            <summary>
-            Gets the full path to the network-roaming per-user folder that stores the product settings.
-            This folder should be used for storing small and non-re-generatable files only.
-            </summary>
-        </member>
-        <member name="P:JetBrains.Application.Shell.UserSettingsXmlPath">
-            <summary>
-            Full path to the User Settings (<see cref="F:JetBrains.Application.Configuration.XmlExternalizationScope.UserSettings"/>) XML file we save.
-            Overridden in some of the DotTrace subproducts.
-            </summary>
-        </member>
-        <member name="P:JetBrains.Application.Shell.WorkspaceXmlPath">
-            <summary>
-            Full path to the Workspace Settings (<see cref="F:JetBrains.Application.Configuration.XmlExternalizationScope.WorkspaceSettings"/>) XML file we save.
-            Overridden in some of the DotTrace subproducts.
-            </summary>
-        </member>
-        <member name="P:JetBrains.Application.Shell.UserSettingsRoamingLegacyDirs">
-            <summary>
-            Gets the list of legacy user-settings dirs (coming from previous product version), actually found on the local system, sorted in descending priority order.
-            The second part of the tuple is the product version of the legacy settings file.
-            </summary>
-        </member>
-        <member name="P:JetBrains.Application.Shell.ProductRegistryKey">
-            <summary>
-            Gets the path to the product's Registry key.
-            </summary>
-        </member>
-        <member name="P:JetBrains.Application.Shell.InstallDir">
-            <summary>
-            Gets the directory in which the product assemblies are located.
             </summary>
         </member>
         <member name="T:JetBrains.Application.WriteLockCookie">

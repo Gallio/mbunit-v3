@@ -32,9 +32,17 @@
             the contents of this method with the code editor.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.UnitTestExplorer.VSIDETaskRunnerUtil.GetDevenvInstallDir">
+        <member name="T:JetBrains.ReSharper.UnitTestExplorer.UnitTestStatusPanelWPF">
             <summary>
-            Gets the DEVENV installation folder.
+            Interaction logic for UnitTestStatusPanelWPF.xaml
+            </summary>
+            <summary>
+            UnitTestStatusPanelWPF
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.UnitTestExplorer.UnitTestStatusPanelWPF.InitializeComponent">
+            <summary>
+            InitializeComponent
             </summary>
         </member>
         <member name="F:JetBrains.ReSharper.UnitTestExplorer.UnitTestProvidersCollectionEdit.Caption">

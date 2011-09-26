@@ -193,7 +193,13 @@
             Indicates implicit assignment to a member
             </summary>
         </member>
-        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.Instantiated">
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature">
+            <summary>
+            Indicates implicit instantiation of a type with fixed constructor signature.
+            That means any unused constructor parameters won't be reported as such.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature">
             <summary>
             Indicates implicit instantiation of a type
             </summary>
@@ -233,7 +239,8 @@
         </member>
         <member name="T:JetBrains.Annotations.LinqTunnelAttribute">
             <summary>
-            Indicates that method is *pure* linq method, with postponed enumeration
+            Indicates that method is *pure* linq method, with postponed enumeration.
+            C# iterator methods (yield ...) are always LinqTunnel
             </summary>
         </member>
     </members>

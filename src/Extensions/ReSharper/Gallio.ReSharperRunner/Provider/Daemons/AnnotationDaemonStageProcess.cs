@@ -36,12 +36,12 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
 {
     internal class AnnotationDaemonStageProcess : IDaemonStageProcess
     {
-        private readonly IDaemonProcess process;
-
-        public AnnotationDaemonStageProcess(IDaemonProcess process)
+    	public AnnotationDaemonStageProcess(IDaemonProcess process)
         {
-            this.process = process;
+            DaemonProcess = process;
         }
+
+    	public IDaemonProcess DaemonProcess { get; private set; }
 
 #if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
         public DaemonStageProcessResult Execute()
@@ -61,22 +61,31 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
 
         private HighlightingInfo[] GetHighlightings()
         {
-            IProjectFile projectFile = process.ProjectFile;
-            if (! projectFile.IsValid)
-                return EmptyArray<HighlightingInfo>.Instance;
+#if RESHARPER_60
+        	var projectFile = DaemonProcess.SourceFile.ToProjectFile();
+			if (projectFile == null || !projectFile.IsValid())
+#else
+            IProjectFile projectFile = DaemonProcess.ProjectFile;
+			if (! projectFile.IsValid)
+#endif
+				return EmptyArray<HighlightingInfo>.Instance;
 
-            ProjectFileState state = ProjectFileState.GetFileState(projectFile);
+            var state = ProjectFileState.GetFileState(projectFile);
             if (state == null)
                 return EmptyArray<HighlightingInfo>.Instance;
 
-            List<HighlightingInfo> highlightings = new List<HighlightingInfo>();
+            var highlightings = new List<HighlightingInfo>();
 
             foreach (AnnotationState annotation in state.Annotations)
             {
                 IDeclaredElement declaredElement = annotation.GetDeclaredElement();
                 if (declaredElement != null && declaredElement.IsValid())
                 {
-                    foreach (IDeclaration declaration in declaredElement.GetDeclarationsIn(projectFile))
+#if RESHARPER_60
+					foreach (IDeclaration declaration in declaredElement.GetDeclarationsIn(DaemonProcess.SourceFile))
+#else
+					foreach (IDeclaration declaration in declaredElement.GetDeclarationsIn(projectFile))
+#endif
                     {
                         if (declaration.IsValid())
                         {
@@ -87,8 +96,13 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
                             if (range.IsValid())
 #endif
                             {
-                                highlightings.Add(new HighlightingInfo(range,
-                                    AnnotationHighlighting.CreateHighlighting(annotation)));
+                            	var annotationHighlighting = AnnotationHighlighting.CreateHighlighting(annotation);
+#if RESHARPER_60
+                            	var highlightingInfo = new HighlightingInfo(range, annotationHighlighting, null, null);
+#else
+								var highlightingInfo = new HighlightingInfo(range, annotationHighlighting);
+#endif
+								highlightings.Add(highlightingInfo);
                             }
                         }
                     }

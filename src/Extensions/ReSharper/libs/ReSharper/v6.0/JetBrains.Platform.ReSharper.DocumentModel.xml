@@ -574,6 +574,11 @@
             Provider for tool-tips appearing when the mouse cursor hovers over the area covered by a range marker
             </summary>
         </member>
+        <member name="M:JetBrains.DocumentModel.RangeMarkerExtentions.CreateRangeMarkerWithMappingToDocument(JetBrains.DocumentModel.DocumentRange)">
+            <summary>
+            Specific implementation for markup range markers.
+            </summary>
+        </member>
         <member name="F:JetBrains.DocumentModel.RangeMarkersManager.RangeMarkerKey">
             <summary>
             This key is used to store range markers collection in document or project file...

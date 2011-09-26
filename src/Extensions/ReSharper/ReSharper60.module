@@ -1,0 +1,33 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(RootDir)\bin\Module.targets" />
+
+  <ItemGroup>
+    <CSharpProject Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner60$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner60.Tests$(ProjectVariant).csproj" />
+
+    <PluginFile Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner60.plugin">
+      <ImagePath>bin\ReSharper\v6.0</ImagePath>
+    </PluginFile>
+    <AssemblyFile Include="Gallio.ReSharperRunner\bin\v6.0\Gallio.ReSharperRunner60.dll">
+      <ImagePath>bin\ReSharper\v6.0</ImagePath>
+    </AssemblyFile>
+    <PdbFile Include="Gallio.ReSharperRunner\bin\v6.0\Gallio.ReSharperRunner60.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
+
+    <File Include="Gallio.ReSharperRunner\Resources\resharper.ico">
+      <ImagePath>bin\ReSharper\v6.0\Resources</ImagePath>
+    </File>
+	
+	<File Include="Gallio.ReSharperRunner\MbUnit.xml">
+      <ImagePath>bin\ReSharper\v6.0</ImagePath>
+    </File>
+
+	<!--
+    <TestAssembly Include="Gallio.ReSharperRunner.Tests\bin\v6.0\Gallio.ReSharperRunner60.Tests.dll" />
+	-->
+
+    <Feature Include="FEATURE_RESHARPER_RUNNER" />
+    <Feature Include="FEATURE_RESHARPER_RUNNER_60" />
+  </ItemGroup>
+</Project>

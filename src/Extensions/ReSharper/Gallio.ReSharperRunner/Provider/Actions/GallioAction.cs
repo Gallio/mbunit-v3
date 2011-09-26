@@ -20,6 +20,9 @@ using JetBrains.ActionManagement;
 
 #if RESHARPER_31
 using JetBrains.ReSharper.TreeModelBrowser;
+#elif RESHARPER_60
+using JetBrains.Application.DataContext;
+using JetBrains.IDE.TreeBrowser;
 #else
 using JetBrains.IDE.TreeBrowser;
 #endif

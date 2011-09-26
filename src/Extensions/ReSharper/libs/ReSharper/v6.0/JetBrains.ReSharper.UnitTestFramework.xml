@@ -4,6 +4,32 @@
         <name>JetBrains.ReSharper.UnitTestFramework</name>
     </assembly>
     <members>
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestFileExplorer.ExploreFile(JetBrains.ReSharper.Psi.Tree.IFile,JetBrains.ReSharper.UnitTestFramework.UnitTestElementLocationConsumer,JetBrains.Application.CheckForInterrupt)">
+            <summary>
+            Explores given PSI file
+            </summary>
+            <param name="psiFile"></param>
+            <param name="consumer"></param>
+            <param name="interrupted"></param>
+        </member>
+        <member name="P:JetBrains.ReSharper.UnitTestFramework.IUnitTestFileExplorer.Provider">
+            <summary>
+            Related Unit Test Provider
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestMetadataExplorer.ExploreAssembly(JetBrains.ProjectModel.IProject,JetBrains.Metadata.Reader.API.IMetadataAssembly,JetBrains.ReSharper.UnitTestFramework.UnitTestElementConsumer)">
+            <summary>
+            Explore given assembly
+            </summary>
+            <param name="project"></param>
+            <param name="assembly"></param>
+            <param name="consumer"></param>
+        </member>
+        <member name="P:JetBrains.ReSharper.UnitTestFramework.IUnitTestMetadataExplorer.Provider">
+            <summary>
+            Related Unit Test Provider
+            </summary>
+        </member>
         <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestLaunch.TaskStarting(JetBrains.ReSharper.TaskRunnerFramework.RemoteTask)">
             <summary>
             Notifies about test start
@@ -16,33 +42,17 @@
             Could have constructor with parameter ISolution or default constructor.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestProvider.ExploreExternal(JetBrains.ReSharper.TaskRunnerFramework.UnitTesting.UnitTestElementConsumer)">
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestProvider.ExploreExternal(JetBrains.ReSharper.UnitTestFramework.UnitTestElementConsumer)">
             <summary>
             Explores the "world", i.e. retrieves tests not associated with current solution
             </summary>
             <param name="consumer"></param>
         </member>
-        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestProvider.ExploreSolution(JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.TaskRunnerFramework.UnitTesting.UnitTestElementConsumer)">
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestProvider.ExploreSolution(JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.UnitTestFramework.UnitTestElementConsumer)">
             <summary>
             Explores given solution, but not containing projects
             </summary>
             <param name="solution"></param>
-            <param name="consumer"></param>
-        </member>
-        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestProvider.ExploreFile(JetBrains.ReSharper.Psi.Tree.IFile,JetBrains.ReSharper.UnitTestFramework.UnitTestElementLocationConsumer,JetBrains.Application.CheckForInterrupt)">
-            <summary>
-            Explores given PSI file
-            </summary>
-            <param name="psiFile"></param>
-            <param name="consumer"></param>
-            <param name="interrupted"></param>
-        </member>
-        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestProvider.ExploreAssembly(JetBrains.Metadata.Reader.API.IMetadataAssembly,JetBrains.ProjectModel.IProject,JetBrains.ReSharper.TaskRunnerFramework.UnitTesting.UnitTestElementConsumer)">
-            <summary>
-            Explores given assembly
-            </summary>
-            <param name="assembly"></param>
-            <param name="project"></param>
             <param name="consumer"></param>
         </member>
         <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestProvider.IsElementOfKind(JetBrains.ReSharper.Psi.IDeclaredElement,JetBrains.ReSharper.UnitTestFramework.UnitTestElementKind)">
@@ -53,7 +63,7 @@
             <param name="elementKind"></param>
             <returns></returns>
         </member>
-        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestProvider.IsElementOfKind(JetBrains.ReSharper.TaskRunnerFramework.UnitTesting.IUnitTestElement,JetBrains.ReSharper.UnitTestFramework.UnitTestElementKind)">
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestProvider.IsElementOfKind(JetBrains.ReSharper.UnitTestFramework.IUnitTestElement,JetBrains.ReSharper.UnitTestFramework.UnitTestElementKind)">
             <summary>
             Replaces IsUnitTestElement, IsUnitTest, IsUnitTestContainer and IsUnitTestStuff methods with single one
             </summary>
@@ -61,12 +71,35 @@
             <param name="elementKind"></param>
             <returns></returns>
         </member>
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestProvider.IsSupported(JetBrains.ReSharper.UnitTestFramework.IHostProvider)">
+            <summary>
+            Returns true, if given host provider could run tests
+            </summary>
+            <param name="hostProvider"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestProvider.GetTaskRunnerInfo">
+            <summary>
+            Gets instance of <see cref="T:JetBrains.ReSharper.TaskRunnerFramework.RemoteTaskRunnerInfo"/> 
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:JetBrains.ReSharper.UnitTestFramework.IUnitTestProvider.Icon">
             <summary>
             Provider icon to display on Options page, <c>null</c> for default icon
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestPresenter.Present(JetBrains.ReSharper.UnitTestFramework.IUnitTestViewElement,JetBrains.CommonControls.IPresentableItem,JetBrains.TreeModels.TreeModelNode,JetBrains.UI.TreeView.PresentationState)">
+        <member name="P:JetBrains.ReSharper.UnitTestFramework.IUnitTestProvider.ID">
+            <summary>
+            ID of provider
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.UnitTestFramework.IUnitTestProvider.Name">
+            <summary>
+            Provider's name
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestPresenter.Present(JetBrains.ReSharper.UnitTestFramework.IUnitTestElement,JetBrains.CommonControls.IPresentableItem,JetBrains.TreeModels.TreeModelNode,JetBrains.UI.TreeView.PresentationState)">
             <summary>
             Present unit test
             </summary>
@@ -75,10 +108,118 @@
             <param name="node"></param>
             <param name="state"></param>
         </member>
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestElement.GetProject">
+            <summary>
+            Gets project in which element in located. <value>null</value> if none.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestElement.GetPresentation">
+            <summary>
+            Gets presentation string for element.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestElement.GetNamespace">
+            <summary>
+            Gets namespaces for element. If element doesn't have namespace, return empty namespace.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestElement.GetDisposition">
+            <summary>
+            Gets disposition of test element.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestElement.GetDeclaredElement">
+            <summary>
+            Gets IDeclaredElement for element. If there is no, returns <value>null</value>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestElement.GetProjectFiles">
+            <summary>
+            Gets IProjectFile for element. If there is no, returns <value>null</value>.
+            Should be as fast as possible, used from Unit Test Explorer in UI thread.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestElement.GetTaskSequence(System.Collections.Generic.IEnumerable{JetBrains.ReSharper.UnitTestFramework.IUnitTestElement})">
+            <summary>
+            Gets task information for <see cref="T:JetBrains.ReSharper.TaskRunnerFramework.RemoteTaskRunner"/> from element
+            </summary>
+            <param name="explicitElements">Elements that are explicitly selected to be run</param>
+            <returns>Sequence of tasks to be executed to run this element</returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.UnitTestFramework.IUnitTestElement.Kind">
+            <summary>
+            Short string describing element kind (test, container, etc.)
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.UnitTestFramework.IUnitTestElement.Categories">
+            <summary>
+            Gets list of categories for element. Use <see cref="M:JetBrains.ReSharper.UnitTestFramework.UnitTestElementCategory.Create(System.Collections.Generic.IEnumerable{System.String})"/> to get categories from strings.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.UnitTestFramework.IUnitTestElement.Id">
+            <summary>
+            Unique id.
+            It should be possible to find Unit Test Element by string from third-party services.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.UnitTestFramework.IUnitTestElement.Provider">
+            <summary>
+            Provider.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.UnitTestFramework.IUnitTestElement.Parent">
+            <summary>
+            Element's parent element.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.UnitTestFramework.IUnitTestElement.Children">
+            <summary>
+            Element's children elements.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.UnitTestFramework.IUnitTestElement.ShortName">
+            <summary>
+            Element short name, shouldn't be used for presentation.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.UnitTestFramework.IUnitTestElement.State">
+            <summary>
+            Element state.
+            </summary>
+        </member>
         <member name="T:JetBrains.ReSharper.UnitTestFramework.UnitTestElementComparer">
             <summary>
             Compares UnitTestElement in given type order, then by ShortName.
             </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.UnitTestElements.GetElementsRecursive(System.Collections.Generic.IEnumerable{JetBrains.ReSharper.UnitTestFramework.IUnitTestElement})">
+            <summary>
+            Adds all children for leaf elements
+            </summary>
+            <param name="elements"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.UnitTestManager.GetElementsById(System.String)">
+            <summary>
+            Returns elements by id
+            </summary>
+            <remarks>It's better to use overload with IProject, if you have any, due to performance reasons</remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.UnitTestManager.AddUnitTestElement(JetBrains.ReSharper.UnitTestFramework.IUnitTestElement,JetBrains.ProjectModel.IProject,System.Boolean)">
+            <summary>
+            Adds new Unit Test Element to the system
+            </summary>
+            <param name="unitTestElement"></param>
+            <param name="project"></param>
+            <param name="fireEvent"></param>
         </member>
         <member name="P:JetBrains.ReSharper.UnitTestFramework.UnitTestManager.EnableDebugInternal">
             <summary>
@@ -90,6 +231,19 @@
             Enables switching tree implementations in internal mode 
             </summary>
             
+        </member>
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestRun.GetElementByRemoteTaskId(System.String)">
+            <summary>
+            Returns IUnitTestElement corresponding to given RemoteTask id.
+            Returns null if RemoteTask is unknown or doesn't have associated task id.
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.UnitTestFramework.IUnitTestRun.GetTaskIdsToElements">
+            <summary>
+            Returns map from RemoteTask id to IUnitTestElement for all tasks/elements in run
+            </summary>
         </member>
     </members>
 </doc>

@@ -33,6 +33,8 @@ using JetBrains.ReSharper.Features.Common.TreePsiBrowser;
 using JetBrains.ReSharper.UnitTestFramework;
 using JetBrains.ReSharper.UnitTestFramework.UI;
 #endif
+#if RESHARPER_60
+#endif
 
 namespace Gallio.ReSharperRunner.Provider
 {
@@ -50,8 +52,23 @@ namespace Gallio.ReSharperRunner.Provider
 
             item.RichText = value.TestName;
 
-            if (value.IsExplicit)
-                item.RichText.SetForeColor(SystemColors.GrayText);
+#if RESHARPER_60
+            if (value.Explicit)
+				item.RichText.SetForeColor(SystemColors.GrayText);
+
+			var typeImage = UnitTestIconManager.GetStandardImage(UnitTestElementImage.Test);
+			var stateImage = UnitTestIconManager.GetStateImage(state);
+			if (stateImage != null)
+			{
+				item.Images.Add(stateImage);
+			}
+			else if (typeImage != null)
+			{
+				item.Images.Add(typeImage);
+			}
+#else
+			if (value.IsExplicit)
+				item.RichText.SetForeColor(SystemColors.GrayText);
 
             Image image = UnitTestManager.GetStateImage(state);
 
@@ -63,6 +80,7 @@ namespace Gallio.ReSharperRunner.Provider
 
             if (! value.IsTestCase)
                 AppendOccurencesCount(item, modelNode, "test");
-        }
+#endif
+		}
     }
 }

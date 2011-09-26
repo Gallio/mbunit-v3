@@ -4,9 +4,10 @@
         <name>JetBrains.ReSharper.Daemon</name>
     </assembly>
     <members>
-        <member name="M:JetBrains.ReSharper.Daemon.DaemonUtil.HasNecessarySeverity(JetBrains.ReSharper.Daemon.Severity,System.Collections.Generic.IEnumerable{System.Type})">
+        <member name="M:JetBrains.ReSharper.Daemon.DaemonUtil.GetHighlightingRange(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
             <summary>
-            Check if any of the given highlighting list has severity equals or higher than <paramref name="severity"/>
+            Translates tree node range into document. Returns valid range if there if treerange *covers* single document range, 
+            and this is the difference from <see cref="M:JetBrains.ReSharper.Psi.Tree.TreeNodeExtensions.GetDocumentRange(JetBrains.ReSharper.Psi.Tree.ITreeNode)"/>
             </summary>
         </member>
         <member name="T:JetBrains.ReSharper.Daemon.Stages.IgnoreWarningsRegionsInfo">
@@ -14,17 +15,19 @@
             Info about regions where to ignore warnings or errors
             </summary>
         </member>
+        <member name="T:JetBrains.ReSharper.Daemon.Stages.IgnoreWarningsRegionsInfo.CompilerWarningPreprocessor">
+            <summary>
+            language-dependent preprocessor of highlighting with specified compiler ID.
+            Return (null,null) in out parameters to use default severity anf attribute.
+            </summary>
+            <returns><c>true</c> if warning should be added to markup, <c>false</c> if warning should be skipped</returns>
+        </member>
         <member name="T:JetBrains.ReSharper.Daemon.Stages.GlobalFileStructureCollectorStage">
             <summary>
             Marker stage to order all of file structure collector stages. All of them must precede this one.
             </summary>
         </member>
         <member name="T:JetBrains.ReSharper.Daemon.UsageChecking.IHierarchyAnalysisStageProcess">
-            <summary>
-            Methods of this interface are Invoked only when FullRehighlightingRequired is true
-            </summary>
-        </member>
-        <member name="T:JetBrains.ReSharper.Daemon.UsageChecking.IFileMembersStageProcess">
             <summary>
             Methods of this interface are Invoked only when FullRehighlightingRequired is true
             </summary>
@@ -62,7 +65,7 @@
             the contents of this method with the code editor.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Daemon.Impl.DaemonProcessBase.HighlightingOverlapResolver.Compare(JetBrains.ReSharper.Daemon.HighlightingInfo,JetBrains.ReSharper.Daemon.HighlightingInfo)">
+        <member name="M:JetBrains.ReSharper.Daemon.Impl.DaemonProcessBase.HighlightingOverlapResolver.Compare(JetBrains.ReSharper.Daemon.HighlightingInfo,JetBrains.ReSharper.Daemon.HighlightingInfo,JetBrains.ReSharper.Daemon.HighlightingSettingsManager)">
             <summary>
             Compare highlightings.
             </summary>

@@ -19,7 +19,9 @@ using JetBrains.ReSharper.Daemon;
 
 namespace Gallio.ReSharperRunner.Provider.Daemons
 {
-#if ! RESHARPER_31
+#if RESHARPER_60
+	[StaticSeverityHighlighting(Severity.WARNING, "Gallio")]
+#elif ! RESHARPER_31
     [StaticSeverityHighlighting(Severity.ERROR)]
 #endif
     internal sealed class ErrorAnnotationHighlighting : AnnotationHighlighting

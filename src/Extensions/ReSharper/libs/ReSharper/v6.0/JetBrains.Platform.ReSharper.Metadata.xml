@@ -859,6 +859,11 @@
             See Paritition I, 10.3.2.
             </summary>
         </member>
+        <member name="T:JetBrains.Metadata.Reader.Impl.CombiningAssemblyResolver">
+            <summary>
+            Compound resolver. Tries to resolve the assembly thru all of the given resolvers, in order of appearance.
+            </summary>
+        </member>
         <member name="T:JetBrains.Metadata.Reader.API.IMetadataCustomAttributePropertyInitialization">
             <summary>
             Entity which stores data about initialized property of a custom attribute
@@ -887,6 +892,12 @@
         <member name="P:JetBrains.Metadata.Reader.API.IMetadataCustomAttributeFieldInitialization.Value">
             <summary>
             Gets value the field is initialized with
+            </summary>
+        </member>
+        <member name="T:JetBrains.Metadata.Reader.Impl.FailAssemblyResolver">
+            <summary>
+            Logs assembly resolution failures.
+            If adding to <see cref="T:JetBrains.Metadata.Reader.Impl.CombiningAssemblyResolver"/>, must be the last one.
             </summary>
         </member>
         <member name="T:JetBrains.Metadata.Reader.API.IMetadataTypeInfo">
@@ -1687,12 +1698,7 @@
             for loader lifetime. It's a bad idea to hold loader for your product lifetime.
             </summary>
         </member>
-        <member name="M:JetBrains.Metadata.Reader.API.MetadataLoader.LoadFrom(JetBrains.Util.FileSystemPath,System.Func{JetBrains.Metadata.Utils.AssemblyNameInfo,System.Boolean})">
-            <summary>
-            Load assembly from the specified file
-            </summary>
-        </member>
-        <member name="M:JetBrains.Metadata.Reader.API.MetadataLoader.Load(JetBrains.Metadata.Utils.AssemblyNameInfo,System.Func{JetBrains.Metadata.Utils.AssemblyNameInfo,System.Boolean})">
+        <member name="M:JetBrains.Metadata.Reader.API.MetadataLoader.TryLoad(JetBrains.Metadata.Utils.AssemblyNameInfo,System.Func{JetBrains.Metadata.Utils.AssemblyNameInfo,System.Boolean})">
             <summary>
             Load assembly with the specified name
             </summary>
@@ -2205,7 +2211,7 @@
             The list of appdomains we've been installed onto.
             </summary>
         </member>
-        <member name="M:JetBrains.Metadata.Utils.AssemblyResolver.#ctor(System.Collections.Generic.IEnumerable{System.String},System.Func{JetBrains.Metadata.Utils.AssemblyNameInfo,System.Boolean})">
+        <member name="M:JetBrains.Metadata.Utils.AssemblyResolver.#ctor(System.Collections.Generic.IEnumerable{JetBrains.Util.FileSystemPath},System.Func{JetBrains.Metadata.Utils.AssemblyNameInfo,System.Boolean})">
             <summary>
             Creates the instance. Call <see cref="M:JetBrains.Metadata.Utils.AssemblyResolver.Install(System.AppDomain)"/> to attach, don't forget to call <see cref="M:JetBrains.Metadata.Utils.AssemblyResolver.Uninstall(System.AppDomain)"/> or <see cref="M:JetBrains.Metadata.Utils.AssemblyResolver.Dispose"/> to detach on shutdown.
             </summary>
@@ -2232,6 +2238,18 @@
             Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
             </summary>
             <filterpriority>2</filterpriority>
+        </member>
+        <member name="T:JetBrains.Metadata.Utils.PE.Directories.PEDirectoryBase">
+            <summary>
+            Base class for PE directory
+            </summary>
+        </member>
+        <member name="M:JetBrains.Metadata.Utils.PE.Directories.PEDirectoryBase.Read(JetBrains.Metadata.Utils.IBinaryReader,System.Int32)">
+            <summary>
+            Read directory
+            </summary>
+            <param name="rdr">reader</param>
+            <param name="size">Size of directory</param>
         </member>
         <member name="T:JetBrains.Metadata.Utils.Pdb.PdbHeader">
             <summary>
@@ -2466,18 +2484,6 @@
             <summary>
             Debug information headers in PE FILE.
             </summary>
-        </member>
-        <member name="T:JetBrains.Metadata.Utils.PE.Directories.PEDirectoryBase">
-            <summary>
-            Base class for PE directory
-            </summary>
-        </member>
-        <member name="M:JetBrains.Metadata.Utils.PE.Directories.PEDirectoryBase.Read(JetBrains.Metadata.Utils.IBinaryReader,System.Int32)">
-            <summary>
-            Read directory
-            </summary>
-            <param name="rdr">reader</param>
-            <param name="size">Size of directory</param>
         </member>
         <member name="M:JetBrains.Metadata.Utils.PE.Directories.DebugDirectory.Read(JetBrains.Metadata.Utils.IBinaryReader,System.Int32)">
             <summary>

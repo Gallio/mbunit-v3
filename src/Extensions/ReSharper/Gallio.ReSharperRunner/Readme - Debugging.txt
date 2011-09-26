@@ -23,8 +23,6 @@
 
 4. Load a suitable solution for testing such as the MbUnit.Samples.sln.
 
-5. ReSharper runs tests using an external test runner process. Unfortunately
-   that hinders debugging, the only solution I've found is to add a Debugger.Break()
-   statement.
+5. ReSharper runs tests using an external test runner process. 
 
 6. Continue as usual.

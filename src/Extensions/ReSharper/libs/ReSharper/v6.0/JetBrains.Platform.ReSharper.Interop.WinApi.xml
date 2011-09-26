@@ -299,6 +299,34 @@
             <param name="ppsp"></param>
             <returns></returns>
         </member>
+        <member name="T:JetBrains.Interop.WinApi.IpHlpApiDll">
+            <summary>
+            User32.dll functions.
+            Must be 64bit-safe.
+            </summary>
+            <remarks>
+            IMPORTANT! Rules for authoring the class (v1.1):
+            (1) All the function declarations MUST be 64-bit aware.
+            (2) When copypasting from older declarations, you MUST check against the MSDN help or header declaration, 
+               and you MUST ensure that each parameter has a proper size.
+            (3) Call the Wide version of the functions (UCS-2-LE) unless there's a strong reason for calling the ANSI version 
+               (such a reason MUST be indicated in XmlDoc). <c>CharSet = CharSet.Unicode</c>.
+            (4) ExactSpelling MUST be TRUE. Add the "…W" suffix wherever needed.
+            (5) SetLastError SHOULD be considered individually for each function. Setting it to <c>True</c> allows to report the errors,
+               but slows down the execution of critical members.
+            (6) These properties MUST be explicitly set on DllImport attributes of EACH import: 
+               CharSet, PreserveSig, SetLastError, ExactSpelling.
+            (7) CLR names MUST be used for types instead of C# ones, eg "Int32" not "int" and "Int64" not "long".
+               This greately improves the understanding of the parameter sizes.
+            (8) Sign of the types MUST be favored, eg "DWORD" is "UInt32" not "Int32".
+            (9) Unsafe pointer types should be used for explicit and implicit pointers rather than IntPtr. 
+               This way we outline the unsafety of the native calls, and also make it more clear for the 64bit transition.
+               Eg "HANDLE" is "void*". If the rule forces you to mark some assembly as unsafe, it's an indication a managed utility
+               incapsulating the call and the handle should be provided in one of the already-unsafe assemblies.
+            (A) Same rules must apply to members of the structures.
+            (B) All of the structures MUST have the [StructLayout(LayoutKind.Sequential)], [NoReorder] attributes, as appropriate.
+            </remarks>
+        </member>
         <member name="T:JetBrains.Interop.WinApi.PsApiDll">
             <summary>
             Kernel32.dll functions.
@@ -2307,7 +2335,7 @@
             <param name="puLen">[out] When this method returns, contains a pointer to the size of the requested data pointed to by lplpBuffer: for version information values, the length in TCHARs of the string stored at lplpBuffer; for translation array values, the size in bytes of the array stored at lplpBuffer; and for root block, the size in bytes of the structure.</param>
             <returns>If the specified version-information structure exists, and version information is available, the return value is nonzero. If the address of the length buffer is zero, no value is available for the specified version-information name. If the specified name does not exist or the specified resource is not valid, the return value is zero.</returns>
         </member>
-        <member name="M:JetBrains.Interop.WinApi.VersionDll.Helpers.GetFileVersionInfo(System.IO.FileInfo)">
+        <member name="M:JetBrains.Interop.WinApi.VersionDll.Helpers.GetFileVersionInfo(System.String)">
             <summary>
             Gets the WinAPI file version of a native file.
             </summary>

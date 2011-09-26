@@ -4,7 +4,7 @@
         <name>JetBrains.ReSharper.Psi.CSharp</name>
     </assembly>
     <members>
-        <member name="M:JetBrains.ReSharper.Psi.CSharp.CodeStyle.CSharpFormatterHelper.OptimizeRefsSafe(JetBrains.ReSharper.Psi.Tree.IFile,JetBrains.DocumentManagers.RangeMarker,JetBrains.Application.Progress.IProgressIndicator)">
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.CodeStyle.CSharpFormatterHelper.OptimizeRefsSafe(JetBrains.ReSharper.Psi.Tree.IFile,JetBrains.DocumentModel.IRangeMarker,JetBrains.Application.Progress.IProgressIndicator)">
             <summary>
             Optimize references without modifying 'usings'. i.e. remove redundant qualifiers
             </summary>
@@ -24,11 +24,6 @@
             <param name="settings"></param>
             <returns><c>null</c> if default indentation should be used, or string which will be used as an indent</returns>
         </member>
-        <member name="T:JetBrains.ReSharper.Psi.CSharp.ExpectedTypes.IsEnumerableConstraint">
-            <summary>
-            Accepts only types which can be enumerated
-            </summary>
-        </member>
         <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.CodeStyle.CSharpCodeFormatter.FormatDeletedNodes(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
             <summary>
             Format code during WritePSI action
@@ -44,27 +39,27 @@
             Set to <c>null</c> to use default patterns
             </summary>
         </member>
-        <member name="T:JetBrains.ReSharper.Psi.ControlFlow2.CSharp.CSharpPassThroughFinallyRibInfo">
+        <member name="T:JetBrains.ReSharper.Psi.ControlFlow.CSharp.CSharpPassThroughFinallyRibInfo">
             <summary>
             Attached to rib which exits from 'finally' block
             </summary>
         </member>
-        <member name="P:JetBrains.ReSharper.Psi.ControlFlow2.CSharp.CSharpPassThroughFinallyRibInfo.TryStatement">
+        <member name="P:JetBrains.ReSharper.Psi.ControlFlow.CSharp.CSharpPassThroughFinallyRibInfo.TryStatement">
             <summary>
             'try' statement itself
             </summary>
         </member>
-        <member name="P:JetBrains.ReSharper.Psi.ControlFlow2.CSharp.CSharpPassThroughFinallyRibInfo.ExitFromFinallyRib">
+        <member name="P:JetBrains.ReSharper.Psi.ControlFlow.CSharp.CSharpPassThroughFinallyRibInfo.ExitFromFinallyRib">
             <summary>
             That rib which exits from 'try' block
             </summary>
         </member>
-        <member name="T:JetBrains.ReSharper.Psi.ControlFlow2.CSharp.CSharpExitFromFinallyRibInfo">
+        <member name="T:JetBrains.ReSharper.Psi.ControlFlow.CSharp.CSharpExitFromFinallyRibInfo">
             <summary>
             Attached to rib which exits from 'finally' block
             </summary>
         </member>
-        <member name="P:JetBrains.ReSharper.Psi.ControlFlow2.CSharp.CSharpExitFromFinallyRibInfo.PassThroughFinally">
+        <member name="P:JetBrains.ReSharper.Psi.ControlFlow.CSharp.CSharpExitFromFinallyRibInfo.PassThroughFinally">
             <summary>
             That rib which exits from 'try' block
             </summary>
@@ -108,29 +103,14 @@
         <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.CodeStyle.MemberReordering.MemberReorderingProcess.ApplyGrouping(System.Collections.Generic.IList{JetBrains.ReSharper.Psi.CSharp.Tree.IClassMemberDeclaration},System.Boolean)">
             <returns>Entry ranges</returns>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowGrafInspector.PatchContextBySpecialMethodCall(JetBrains.ReSharper.Psi.CSharp.Tree.IInvocationExpression,JetBrains.ReSharper.Psi.ControlFlow2.IControlFlowElement,JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowContext)">
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowGrafInspector.PatchContextBySpecialMethodCall(JetBrains.ReSharper.Psi.CSharp.Tree.IInvocationExpression,JetBrains.ReSharper.Psi.ControlFlow.IControlFlowElement,JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowContext)">
             <summary>
             Try to recognize invocation of special methods, and patch context accordingly
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowGrafInspector.IsCheckOfCodeInvariant(JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression)">
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowGrafInspector.IsSubjectToNullnessCheck(JetBrains.ReSharper.Psi.ControlFlow.IControlFlowRib)">
             <summary>
-            Check if this expression is precondition, i.e. somehig like
-            <code>
-            Logger.Assert(nonNullableEntity != null, "The condition (nonNullableEntity != null) is false.");
-            -or-
-            if (nonNullableEntity == null)
-                throw Exception();
-            -or-
-            if (nonNullableEntity == null)
-            Logger.LogError();
-            </code>
-            At the beginning of the method
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowGrafInspector.IsSubjectToNullnessCheck(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.ControlFlow2.IControlFlowRib)">
-            <summary>
-            Check if possible NRE should be checked if jump to <paramref name="target"/> by <paramref name="rib"/>
+            Check if possible NRE should be checked if jump by <paramref name="rib"/>
             </summary>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowGrafInspector.FindInfoByExpression(JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression)">
@@ -200,12 +180,12 @@
             Get the index of the given type, or -1 if type is not registered
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.VariableIndex.GetHistoryCheckPoint(JetBrains.ReSharper.Psi.ControlFlow2.IControlFlowElement)">
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.VariableIndex.GetHistoryCheckPoint(JetBrains.ReSharper.Psi.ControlFlow.IControlFlowElement)">
             <summary>
             Check if history check point is assotiated with given element, and returns it
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.VariableIndex.GetInvalidatedHistoryCheckPoints(JetBrains.ReSharper.Psi.ControlFlow2.IControlFlowElement,JetBrains.ReSharper.Psi.ControlFlow2.IControlFlowElement)">
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.VariableIndex.GetInvalidatedHistoryCheckPoints(JetBrains.ReSharper.Psi.ControlFlow.IControlFlowElement,JetBrains.ReSharper.Psi.ControlFlow.IControlFlowElement)">
             <summary>
             Enumerate history check points which runs out of scope when control flow moves from <paramref name="from"/> to <paramref name="to"/>
             </summary>
@@ -250,6 +230,18 @@
             Reference to component name in WinForm generated code
             </summary>
         </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.CustomHandlers.ICSharpCustomModificationHandler.HandleAddStatementsRange(JetBrains.ReSharper.Psi.IPsiServices,System.Func{JetBrains.ReSharper.Psi.CSharp.ICSharpStatementsRange},JetBrains.ReSharper.Psi.CSharp.Tree.IBlock,JetBrains.ReSharper.Psi.Tree.ITreeNode,System.Boolean,System.Boolean)">
+            <summary>
+            Translates changes in generated code-behind file to original file (Razor, ASP, etc).
+            </summary>
+            <param name="psiServices"></param>
+            <param name="addAction"></param>
+            <param name="block"></param>
+            <param name="anchor"></param>
+            <param name="before"></param>
+            <param name="strict">If true, HTML whitespace statements on bounds are not included. Use for single added statement to be returned.</param>
+            <returns></returns>
+        </member>
         <member name="F:JetBrains.ReSharper.Psi.CSharp.Impl.DeclaredElement.CSharpOverridableMember`1.myRetrievingInheritedXMLDoc">
             <summary>
             Anti-recursion in retrieving XML docs
@@ -265,7 +257,7 @@
             Offset of the reference start from the comment
             </summary>
         </member>
-        <member name="T:JetBrains.ReSharper.Psi.CSharp.Impl.Resolve.EnumInitializerFilter">
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.Impl.Resolve.Filters.EnumInitializerFilter">
             <summary>
             Preferes enum member in enum initializer
             </summary>
@@ -385,7 +377,7 @@
         <member name="M:JetBrains.ReSharper.Psi.CSharp.Parsing.CSharpParser.parseInitializerAux(JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.CompositeNodeType,JetBrains.ReSharper.Psi.CSharp.Parsing.CSharpParser.InitializerElementParseFunction,JetBrains.ReSharper.Psi.CSharp.Parsing.CSharpParser.ErrorHandle)">
             <summary>Special variant of parsing routine allowing parsing optional comma</summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.CSharp.Parsing.CSharpParser.parseAttributeList(JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.TreeElement)">
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Parsing.CSharpParser.parseAttributeList">
             <summary>Special variant of parsing routine allowing parsing optional comma</summary>
         </member>
         <member name="F:JetBrains.ReSharper.Psi.CSharp.Parsing.ParserNodeTypeSets.DECISION_CHAR_FOR_TYPE_ARGUMENT_LIST">
@@ -440,6 +432,11 @@
             <param name="sections">Plain array of sections</param>
             <returns>Groups of attribute sectinos with the same target</returns>
         </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.ControlFlowWeakVariableInfo.QualifierEqualityComparer.IsEligble(JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression)">
+            <summary>
+            Check if given expression is eligible for comparison
+            </summary>
+        </member>
         <member name="T:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.ControlFlowHistoryCheckPointInfo">
             <summary>
             Denotes to expression state at specified point
@@ -465,11 +462,6 @@
             The set af possible memory states at this point
             Is <c>null</c> if the number of states greater than threshold, 
             and thus the cyclomatic complexity of the code is too large
-            </summary>
-        </member>
-        <member name="F:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowContext.myLinqTunnel">
-            <summary>
-            Tunnelled closures in LINQ
             </summary>
         </member>
         <member name="P:JetBrains.ReSharper.Psi.CSharp.Impl.ControlFlow.CSharpControlFlowContext.RecursiveAtAllPaths">
@@ -699,7 +691,7 @@
             This function handles language-defined aliases
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.CSharpOperatorUtil.GetCustomImplicitOperator(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.ITypeConversionRule,JetBrains.ReSharper.Psi.IPsiModule)">
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.CSharpOperatorUtil.GetCustomImplicitOperatorImpl(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.ITypeConversionRule,JetBrains.ReSharper.Psi.IPsiModule)">
             <summary>
             Find custom implicit operator according to paragraph 6.4.3
             </summary>
@@ -721,26 +713,55 @@
             </list>
             </returns>
         </member>
-        <member name="T:JetBrains.ReSharper.Psi.CSharp.Util.ExpressionUtil">
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.CSharpTypeUtil.CanDeclareVolatileFieldWith(JetBrains.ReSharper.Psi.IType)">
+            <summary>
+            C# specs "10.5.3 Volatile fields"
+            • A reference-type.
+            • The type byte, sbyte, short, ushort, int, uint, char, float, bool, System.IntPtr, or System.UIntPtr.
+            • An enum-type having an enum base type of byte, sbyte, short, ushort, int, or uint.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.Util.CSharpExpressionUtil">
             <summary>
             Utility class for working with expressions
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.ExpressionUtil.IsCondition(JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression,JetBrains.ReSharper.Psi.IOperator@)">
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.CSharpExpressionUtil.IsCondition(JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression,JetBrains.ReSharper.Psi.IOperator@)">
             <summary>
             Check if the expression could be used as boolean condition, i.e. imlicitly convertible
             to <c>bool</c>, or contains <c>true</c>/<c>false</c> operators. According to C# specs draft 4, <c>bool?</c> is no more counted as condition.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.ExpressionUtil.NeedToParenthesize(JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression,JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression)">
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.CSharpExpressionUtil.NeedToParenthesize(JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression,JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression)">
             <summary>
             Check if this expression should be enclosed in parentheses if it will be replaced by 'newExpression'
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.CSharpExpressionUtil.IsCheckOfCodeInvariant(JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression)">
+            <summary>
+            Check if this expression is precondition, i.e. somehig like
+            <code>
+            Logger.Assert(nonNullableEntity != null, "The condition (nonNullableEntity != null) is false.");
+            -or-
+            if (nonNullableEntity == null)
+                throw Exception();
+            -or-
+            if (nonNullableEntity == null)
+            Logger.LogError();
+            </code>
+            At the beginning of the method
             </summary>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.InvocationExpressionUtil.IsSkippedByCompiler(JetBrains.ReSharper.Psi.CSharp.Tree.IInvocationExpression,JetBrains.ReSharper.Psi.Resolve.Managed.IResolveContext)">
             <summary>
             Returns <c>true</c> if this invocation is skipped by compiler, becaouse of partial methos without implementation, or conditianal method
             </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.IsExpressionUtil.CompileTimeResult(JetBrains.ReSharper.Psi.IExpressionType,JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.CSharp.Impl.ICSharpTypeConversionRule)">
+            <summary>
+            According to C# specs 7.10.10
+            </summary>
+            <returns>null if expres</returns>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.CSharp.Resolve.OverloadResolution.BetterFunctionMemberSelector.IsBetterFunctionMember(JetBrains.ReSharper.Psi.CSharp.Resolve.OverloadResolution.ApplicableCandidate,JetBrains.ReSharper.Psi.CSharp.Resolve.OverloadResolution.ApplicableCandidate)">
             <summary>

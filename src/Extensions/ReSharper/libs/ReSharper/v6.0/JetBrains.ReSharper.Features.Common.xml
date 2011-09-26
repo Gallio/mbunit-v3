@@ -9,12 +9,7 @@
             Describes model which is built on demand
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.CodePreview.CodePanel.#ctor(JetBrains.ReSharper.Daemon.Daemon)">
-            <summary>
-            For design-time only
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.CodePreview.CodePanel.#ctor(JetBrains.ProjectModel.ISolution,JetBrains.UI.WindowManagement.WindowFrame,JetBrains.Application.IShellLocks,JetBrains.Threading.IThreading,JetBrains.Application.ChangeManager,JetBrains.ReSharper.Psi.AsyncCommitService,JetBrains.ReSharper.Psi.Services.CachingLexerService,JetBrains.ReSharper.Daemon.Daemon,JetBrains.UI.StatusBar.IStatusBar)">
+        <member name="M:JetBrains.ReSharper.Features.Common.CodePreview.CodePanel.#ctor(JetBrains.ProjectModel.ISolution,JetBrains.UI.WindowManagement.WindowFrame,JetBrains.Application.IShellLocks,JetBrains.Threading.IThreading,JetBrains.Application.ChangeManager,JetBrains.ReSharper.Psi.AsyncCommitService,JetBrains.ReSharper.Psi.Services.CachingLexerService,JetBrains.ReSharper.Daemon.Daemon,JetBrains.UI.StatusBar.IStatusBar,JetBrains.ActionManagement.IActionManager)">
             <summary>
             Use this constructor
             </summary>
@@ -66,164 +61,121 @@
             Fired when contents of code panel begin to display new code.
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.Features.Common.GoToByName.GotoCacheElementController`1.myCacheToMatcher">
-            <summary>
-            Caches the model created on caches, use the <see cref="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoCacheElementController`1.GetCacheElementModel(JetBrains.ReSharper.Features.Common.GoToByName.LibrariesFlag)"/> function for getting the lazy-inited items from the cache.
-            </summary>
-        </member>
-        <member name="F:JetBrains.ReSharper.Features.Common.GoToByName.GotoCacheElementController`1.ItemsPassFilter">
-            <summary>
-            A filter that specifies which items should be let into the output list.
-            NOTE: in most cases, you should use <see cref="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoCacheElementController`1.RestrictItemsPassFilter(System.Func{`0,System.Boolean})"/>, so that to avoid interfering with the internal filtering.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoCacheElementController`1.GetCacheElementModel(JetBrains.ReSharper.Features.Common.GoToByName.LibrariesFlag)">
-            <summary>
-            Gets an either libs or no-libs model, lazy-initializing it as needed.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoCacheElementController`1.RestrictItemsPassFilter(System.Func{`0,System.Boolean})">
-            <summary>
-            ANDs the given condition with the existing <see cref="F:JetBrains.ReSharper.Features.Common.GoToByName.GotoCacheElementController`1.ItemsPassFilter"/>.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoCacheElementController`1.UpdateItems(System.String,System.Func{System.Collections.Generic.IEnumerable{JetBrains.UI.PopupMenu.Impl.JetPopupMenuItem},JetBrains.UI.GotoByName.GotoByNameController.AddItemsBehavior,System.Boolean})">
-            <summary>
-            When the items get dirty (<see cref="F:JetBrains.UI.GotoByName.GotoByNameController.ItemsGottenDirty"/>), this function is called on the secondary thread.
-            </summary>
-            <param name="filterString">The filtering string against which the items list should be produced.</param>
-            <param name="itemsConsumer">A function you can use to add items to the output collection in a thread-safe manner. The function checks for the items limit and returns whether more items can be added.</param>
-        </member>
-        <member name="P:JetBrains.ReSharper.Features.Common.GoToByName.GotoCacheElementController`1.LibrariesFlagAutoSwitch">
-            <summary>
-            Gets or sets whether when a solution-only search fails a solution-and-libraries search is performed automatically.
-            <c>True</c> by default.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoCacheElementController`1.ICacheElementMatcher.GetElements(JetBrains.Text.IdentifierMatcher,System.Func{`0,System.Boolean},System.Int32,JetBrains.Application.CheckForInterrupt,System.Action)">
-             <summary>
-             Gets the cache elements for the given filter.
-             </summary>
-            <param name="matcher">
-              Matcher for the names.
-            </param>
-            <param name="filter">
-              Further filters the list of results.
-            </param>
-            <param name="limit">
-              Maximum number of items to return, or
-              <c>0</c>
-              if unlimited.
-            </param>
-            <param name="funcIsCancelled">
-              A function to check periodically to abort the lengthy process.
-            </param>
-            <param name="itemProcessed"></param>
-            <returns>The list of collected elements.</returns>
-        </member>
         <member name="T:JetBrains.ReSharper.Features.Common.GoToByName.GotoDeclaredElementController">
             <summary>
             Controls the <see cref="T:JetBrains.UI.GotoByName.GotoByNameModel"/> for various <see cref="T:JetBrains.ReSharper.Psi.IDeclaredElement"/>-based items.
             See the <c>Create…</c> methods for individual model types.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoDeclaredElementController.#ctor(JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.Psi.IPsiModule,JetBrains.ReSharper.Features.Common.GoToByName.LibrariesFlag,System.String)">
+        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.Controllers.GotoControllerBase`2.GetOccurencesToPresent(System.String,System.Collections.Generic.List{JetBrains.Util.Pair{JetBrains.ReSharper.Feature.Services.Search.IOccurence,JetBrains.ReSharper.Feature.Services.Goto.MatchingInfo}},System.Int32)">
             <summary>
-            Inits the instance.
+            Gets top scored items which match input string. Uses <see cref="T:JetBrains.ReSharper.Feature.Services.Goto.IOccurenceNavigationProvider"/>s for obtaining matched occurences.
+            Uses <see cref="T:JetBrains.ReSharper.Feature.Services.Goto.ChainedProviders.IChainedSearchProvider"/> to perform combo search (if enabled) 
             </summary>
-            <param name="solution">Base ctor param.</param>
-            <param name="project">Base ctor param.</param>
-            <param name="librariesFlag">Base ctor param.</param>
-            <param name="sDeclaredElementKindDisplayName"><c>"namespace"</c> or <c>"type"</c> or whatever human-readable declared element kind string.</param>
+            <param name="filterString">input string</param>
+            <param name="pairsToPresent">pairs to be presented or dropped in a tool window</param>
+            <param name="itemsCount">number of top scored items to present. -1 means no limit</param>
+            <returns></returns>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoDeclaredElementController.CreateGotoNamespaceController(JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.Features.Common.GoToByName.LibrariesFlag)">
+        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.Controllers.GotoControllerBase`2.RestrictItemsPassFilterForOccurence(System.Func{JetBrains.ReSharper.Feature.Services.Search.IOccurence,System.Boolean})">
             <summary>
-            Controller of the <see cref="T:JetBrains.UI.GotoByName.GotoByNameModel"/> for namespaces.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoDeclaredElementController.CreateGotoNamespaceModel(JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.Features.Common.GoToByName.LibrariesFlag)">
-            <summary>
-            <see cref="T:JetBrains.UI.GotoByName.GotoByNameModel"/> for namespaces.
+            ANDs the given condition with the existing <see cref="F:JetBrains.ReSharper.Features.Common.GoToByName.Controllers.GotoControllerBase`2.ItemsPassFilter"/>.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoDeclaredElementController.CreateGotoTypeController(JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.Features.Common.GoToByName.LibrariesFlag)">
-            <summary>
-            Controller of the <see cref="T:JetBrains.UI.GotoByName.GotoByNameModel"/> for types (classes, structs, etc).
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoDeclaredElementController.CreateGotoTypeModel(JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.Features.Common.GoToByName.LibrariesFlag)">
-            <summary>
-            <see cref="T:JetBrains.UI.GotoByName.GotoByNameModel"/> for types (classes, structs, etc).
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoDeclaredElementController.ExecuteItem(JetBrains.UI.PopupMenu.Impl.JetPopupMenuItem)">
-            <summary>
-            Called when an item is to be executed.
-            </summary>
-        </member>
-        <member name="T:JetBrains.ReSharper.Features.Common.GoToByName.GotoDeclaredElementController.Matcher">
-            <summary>
-            Fetches the cache elements against a matcher.
-            </summary>
-        </member>
-        <member name="F:JetBrains.ReSharper.Features.Common.GoToByName.GotoFileController.ItemsPassFilter">
+        <member name="F:JetBrains.ReSharper.Features.Common.GoToByName.Controllers.GotoControllerBase`2.ItemsPassFilter">
             <summary>
             A filter that specifies which items should be let into the output list.
-            NOTE: in most cases, you should use <see cref="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoFileController.RestrictItemsPassFilter(System.Func{JetBrains.ProjectModel.IProjectItem,System.Boolean})"/>, so that to avoid interfering with the internal filtering.
+            NOTE: in most cases, you should use <see cref="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoDeclaredElementController.RestrictItemsPassFilter(System.Func{JetBrains.ReSharper.Psi.IDeclaredElement,System.Boolean})"/>, so that to avoid interfering with the internal filtering.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoFileController.RestrictItemsPassFilter(System.Func{JetBrains.ProjectModel.IProjectItem,System.Boolean})">
-            <summary>
-            ANDs the given condition with the existing <see cref="F:JetBrains.ReSharper.Features.Common.GoToByName.GotoFileController.ItemsPassFilter"/>.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoFileController.DefaultFilter(JetBrains.ProjectModel.IProjectItem)">
-            <summary>
-            The default filter for the <see cref="F:JetBrains.ReSharper.Features.Common.GoToByName.GotoFileController.ItemsPassFilter"/>.
-            Filtering according "Include folder flag"
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoFileController.ExecuteItem(JetBrains.UI.PopupMenu.Impl.JetPopupMenuItem)">
-            <summary>
-            Called when an item is to be executed.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoFileController.UpdateItems(System.String,System.Func{System.Collections.Generic.IEnumerable{JetBrains.UI.PopupMenu.Impl.JetPopupMenuItem},JetBrains.UI.GotoByName.GotoByNameController.AddItemsBehavior,System.Boolean})">
+        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.Controllers.GotoControllerBase`2.UpdateItems(System.String,System.Func{System.Collections.Generic.IEnumerable{JetBrains.UI.PopupMenu.Impl.JetPopupMenuItem},JetBrains.UI.GotoByName.GotoByNameController.AddItemsBehavior,System.Boolean})">
             <summary>
             When the items get dirty (<see cref="F:JetBrains.UI.GotoByName.GotoByNameController.ItemsGottenDirty"/>), this function is called on the secondary thread.
             </summary>
             <param name="filterString">The filtering string against which the items list should be produced.</param>
             <param name="itemsConsumer">A function you can use to add items to the output collection in a thread-safe manner. The function checks for the items limit and returns whether more items can be added.</param>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoSymbolController.ExecuteItem(JetBrains.UI.PopupMenu.Impl.JetPopupMenuItem)">
+        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.Controllers.GotoControllerBase`2.ExecuteItem(JetBrains.UI.PopupMenu.Impl.JetPopupMenuItem)">
             <summary>
             Called when an item is to be executed.
             </summary>
         </member>
-        <member name="T:JetBrains.ReSharper.Features.Common.GoToByName.DeclaredElementMenuItemFormatter">
+        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.Controllers.GotoControllerBase`2.GetOccurencesOutOfMatchingInfos(System.Func{JetBrains.ReSharper.Feature.Services.Search.IOccurence,System.Boolean},System.Int32,System.Collections.Generic.ICollection{JetBrains.Util.Pair{JetBrains.ReSharper.Feature.Services.Search.IOccurence,JetBrains.ReSharper.Feature.Services.Goto.MatchingInfo}},System.Boolean,System.Collections.Generic.IEnumerable{JetBrains.ReSharper.Features.Common.GoToByName.Controllers.GotoControllerBase{`0,`1}.FullNavigationItemData},JetBrains.Application.CheckForInterrupt)">
             <summary>
-            Formats a declared element into a menu item descriptor, suitable for the GotoByName-style lists.
+            Get occurences out of primary providers. Used for common(non-chained) search.
+            </summary>
+            <param name="filter"></param>
+            <param name="count"></param>
+            <param name="occurenceMatchingInfoPairs"></param>
+            <param name="isSearchingInLibs"></param>
+            <param name="pairsToDescribe"></param>
+            <param name="checkCancelled"></param>
+            <returns></returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Common.GoToByName.Controllers.GotoControllerBase`2.LibrariesFlagAutoSwitch">
+            <summary>
+            Gets or sets whether when a solution-only search fails a solution-and-libraries search is performed automatically.
+            <c>True</c> by default.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.DeclaredElementMenuItemFormatter.Format(JetBrains.ReSharper.Psi.IDeclaredElement,System.Collections.Generic.IEnumerable{System.Int32})">
+        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoDeclaredElementController.#ctor(JetBrains.DataFlow.Lifetime,JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.Feature.Services.Search.LibrariesFlag,System.String,JetBrains.Application.IShellLocks)">
             <summary>
-            Formats a declared element into a menu item descriptor, suitable for the GotoByName-style lists.
+            Inits the instance.
+            </summary>
+            <param name="lifetime"></param>
+            <param name="solution">Base ctor param.</param>
+            <param name="project">Base ctor param.</param>
+            <param name="librariesFlag">Base ctor param.</param>
+            <param name="sDeclaredElementKindDisplayName"><c>"namespace"</c> or <c>"type"</c> or whatever human-readable declared element kind string.</param>
+            <param name="locks"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoDeclaredElementController.CreateGotoNamespaceController(JetBrains.DataFlow.Lifetime,JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.Feature.Services.Search.LibrariesFlag,JetBrains.Application.IShellLocks)">
+            <summary>
+            Controller of the <see cref="T:JetBrains.UI.GotoByName.GotoByNameModel"/> for namespaces.
             </summary>
         </member>
-        <member name="T:JetBrains.ReSharper.Features.Common.GoToByName.LibrariesFlag">
+        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoDeclaredElementController.CreateGotoTypeController(JetBrains.DataFlow.Lifetime,JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.Feature.Services.Search.LibrariesFlag,JetBrains.Application.IShellLocks)">
             <summary>
-            Defines whether the libraries should be included or not when searching for items.
+            Controller of the <see cref="T:JetBrains.UI.GotoByName.GotoByNameModel"/> for types (classes, structs, etc).
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.Occurences.IOccurenceProvider.MakeOccurence(JetBrains.ReSharper.Psi.Search.FindResult)">
+        <member name="M:JetBrains.ReSharper.Features.Common.GoToByName.GotoDeclaredElementController.CreateGotoTypeModel(JetBrains.DataFlow.Lifetime,JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.Feature.Services.Search.LibrariesFlag,JetBrains.Application.IShellLocks)">
             <summary>
-            Makes occurence from find result. Return null if find result is incompatible with provider
+            <see cref="T:JetBrains.UI.GotoByName.GotoByNameModel"/> for types (classes, structs, etc).
             </summary>
         </member>
         <member name="P:JetBrains.ReSharper.Features.Common.Occurences.OccurenceBrowserSettings.AutoExpandResults">
             <summary>
             Whether the search results tree and such should be expanded by default.
             </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Common.Occurences.OccurencePresentationManager.MergePresentationOptions(JetBrains.ReSharper.Feature.Services.Occurences.OccurencePresentationOptions,JetBrains.ReSharper.Feature.Services.Occurences.OccurencePresentationOptions)">
+            <summary>
+            Merges two specific occurence and feature options into single one. 
+            If any of feature option field is not default - use this feature's option field.
+            </summary>
+            <param name="occurenceSpecificOptions">occurence's options (might be initialized while constructing an occurence)</param>
+            <param name="featureOptions">presentation options provided by feature</param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Common.Occurences.OccurenceUtil.ShowMenuContext(JetBrains.Application.DataContext.IDataContext,JetBrains.ReSharper.Features.Common.Occurences.OccurenceBrowserDescriptor,System.Nullable{JetBrains.ReSharper.Feature.Services.Occurences.OccurencePresentationOptions},System.Boolean)">
+            <summary>
+            shows a context popup menu filled with menu items. Each menu item presents corresponding occurence.
+            </summary>
+            <param name="context"></param>
+            <param name="descriptor"></param>
+            <param name="options"></param>
+            <param name="skipMenuIfSingleEnabled"></param>
+            <param name="host"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Common.Occurences.OccurenceUtil.ShowMenuNonContext(JetBrains.ReSharper.Features.Common.Occurences.OccurenceBrowserDescriptor,System.Boolean,System.Collections.Generic.List{JetBrains.ReSharper.Feature.Services.Search.IOccurence},JetBrains.ReSharper.Feature.Services.Navigation.NavigationOptions,JetBrains.ReSharper.Feature.Services.Occurences.OccurencePresentationOptions)">
+            <summary>
+            shows descriptor without any context information.
+            </summary>
+            <param name="descriptor"></param>
+            <param name="skipMenuIfSingleEnabled"></param>
+            <param name="items"></param>
+            <param name="options"></param>
         </member>
         <member name="T:JetBrains.ReSharper.Features.Common.Options.CodeStyleSharingPage">
             <summary>
@@ -242,16 +194,6 @@
             Binded in <see cref="M:JetBrains.ReSharper.Features.Common.Options.CodeStyleSharingPage.InitControls"/>.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.Options.CodeStyleSharingPage.Dispose(System.Boolean)">
-            <summary> 
-            Clean up any resources being used.
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Features.Common.Options.CodeStyleSharingPage.AnySolution">
-            <summary>
-            Get any solution for code formatting preview purposes
-            </summary>
-        </member>
         <!-- Badly formed XML comment ignored for member "P:JetBrains.ReSharper.Features.Common.Options.CodeStyleSharingPage.CodeStyleSettings" -->
         <member name="T:JetBrains.ReSharper.Features.Common.Options.CommonLanguagePage">
             <summary>
@@ -261,35 +203,6 @@
         <member name="T:JetBrains.ReSharper.Features.Common.Options.LanguagesPage">
             <summary>
             Root options page for the global per-language options.
-            </summary>
-        </member>
-        <member name="T:JetBrains.ReSharper.Features.Common.Options.Languages.AspxPage">
-            <summary>
-            Root options page for the ASP.NET language options.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.Options.Languages.AspxPage.OnOk">
-            <summary>
-            Invoked when OK button in the options dialog is pressed.
-            If the page returns <c>false</c>, the the options dialog won't be closed, and focus will be put into this page.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.Options.Languages.AspxPage.ValidatePage">
-            <summary>
-            Check if the settings on the page are consistent, and page could be closed.
-            </summary>
-            <returns><c>true</c> if page data is consistent.</returns>
-        </member>
-        <member name="P:JetBrains.ReSharper.Features.Common.Options.Languages.AspxPage.Control">
-            <summary>
-            Control to be shown as page.
-            May be <c>Null</c> if the page does not have any UI.
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Features.Common.Options.Languages.AspxPage.Id">
-            <summary>
-            Gets the ID of this option page.
-            <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> or <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsManager"/> out of it.
             </summary>
         </member>
         <member name="T:JetBrains.ReSharper.Features.Common.Options.Languages.BuildScriptsPage">
@@ -345,35 +258,6 @@
             </summary>
         </member>
         <member name="P:JetBrains.ReSharper.Features.Common.Options.Languages.CsharpPage.Id">
-            <summary>
-            Gets the ID of this option page.
-            <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> or <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsManager"/> out of it.
-            </summary>
-        </member>
-        <member name="T:JetBrains.ReSharper.Features.Common.Options.Languages.JavaScriptPage">
-            <summary>
-            Root options page for the C# language options.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.Options.Languages.JavaScriptPage.OnOk">
-            <summary>
-            Invoked when OK button in the options dialog is pressed.
-            If the page returns <c>false</c>, the the options dialog won't be closed, and focus will be put into this page.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.Options.Languages.JavaScriptPage.ValidatePage">
-            <summary>
-            Check if the settings on the page are consistent, and page could be closed.
-            </summary>
-            <returns><c>true</c> if page data is consistent.</returns>
-        </member>
-        <member name="P:JetBrains.ReSharper.Features.Common.Options.Languages.JavaScriptPage.Control">
-            <summary>
-            Control to be shown as page.
-            May be <c>Null</c> if the page does not have any UI.
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Features.Common.Options.Languages.JavaScriptPage.Id">
             <summary>
             Gets the ID of this option page.
             <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> or <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsManager"/> out of it.
@@ -591,13 +475,6 @@
             • User executes an item in the picker tree drop-down and some text is applied to the editbox.
             Normally, selects the new text and sets focus to the editbox.
             </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.UI.CompletionPickerEdit.Dispose(System.Boolean)">
-            <summary>
-            Releases the unmanaged resources used by the <see cref="T:System.Windows.Forms.Control"></see> and its child controls and optionally releases the managed resources.
-            </summary>
-            
-            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources. </param>
         </member>
         <member name="M:JetBrains.ReSharper.Features.Common.UI.CompletionPickerEdit.OnLayout(System.Windows.Forms.LayoutEventArgs)">
             <summary>
@@ -834,11 +711,6 @@
             Rip FQ Name from a declared element, in the specified language, suitable for use by the picker owner.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.UI.DeclaredElementChooser.CreateCompletionController">
-            <summary>
-            Creates the chooser-specific completion controller.
-            </summary>
-        </member>
         <member name="M:JetBrains.ReSharper.Features.Common.UI.DeclaredElementChooser.GetDeclarationsCache">
             <summary>
             Gets the declarations cache for the current models (on solution, either libs or no-libs).
@@ -857,10 +729,11 @@
             <param name="element"><c>Null</c> for the root.</param>
             <param name="cache">Declarations cache</param>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.UI.DeclaredElementChooser.InitCompletion">
+        <member name="M:JetBrains.ReSharper.Features.Common.UI.DeclaredElementChooser.InitCompletion(System.Func{JetBrains.ReSharper.Features.Common.GoToByName.GotoDeclaredElementController})">
             <summary>
             Inits the plain completion support.
             </summary>
+            <param name="FCreateCompletionController"></param>
         </member>
         <member name="M:JetBrains.ReSharper.Features.Common.UI.DeclaredElementChooser.InitPicker">
             <summary>
@@ -916,12 +789,12 @@
             Inits the tree drop-down support.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.UI.FileChooser.CreateCompletionController">
+        <member name="M:JetBrains.ReSharper.Features.Common.UI.FileChooser.CreateCompletionController(JetBrains.DataFlow.Lifetime,JetBrains.Application.IShellLocks)">
             <summary>
             Creates the chooser-specific completion controller.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.UI.FileChooser.InitCompletion">
+        <member name="M:JetBrains.ReSharper.Features.Common.UI.FileChooser.InitCompletion(JetBrains.DataFlow.Lifetime,JetBrains.Application.IShellLocks)">
             <summary>
             Inits the plain completion support.
             </summary>
@@ -941,7 +814,7 @@
             Customizes the <see cref="T:JetBrains.ReSharper.Features.Common.UI.CompletionPickerEdit"/> for choosing namespaces.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.UI.NamespaceChooser.CreateSettings(JetBrains.ProjectModel.ISolution,JetBrains.ProjectModel.IProject,JetBrains.ReSharper.Features.Common.GoToByName.LibrariesFlag,JetBrains.ReSharper.Psi.PsiLanguageType)">
+        <member name="M:JetBrains.ReSharper.Features.Common.UI.NamespaceChooser.CreateSettings(JetBrains.DataFlow.Lifetime,JetBrains.ProjectModel.ISolution,JetBrains.ProjectModel.IProject,JetBrains.ReSharper.Feature.Services.Search.LibrariesFlag,JetBrains.ReSharper.Psi.PsiLanguageType,JetBrains.Application.IShellLocks)">
             <summary>
             Creates settings for supplying into the <see cref="T:JetBrains.ReSharper.Features.Common.UI.CompletionPickerEdit"/>.
             </summary>
@@ -951,7 +824,7 @@
             Tries to look up a declared element for its FQ Name in the current <see cref="P:JetBrains.ReSharper.Features.Common.UI.DeclaredElementChooser.Language"/>.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.UI.NamespaceChooser.CreateCompletionController">
+        <member name="M:JetBrains.ReSharper.Features.Common.UI.NamespaceChooser.CreateCompletionController(JetBrains.DataFlow.Lifetime,JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.Feature.Services.Search.LibrariesFlag,JetBrains.Application.IShellLocks)">
             <summary>
             Creates the chooser-specific completion controller.
             </summary>
@@ -961,7 +834,7 @@
             Customizes the <see cref="T:JetBrains.ReSharper.Features.Common.UI.CompletionPickerEdit"/> for choosing types.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.UI.TypeChooser.CreateSettings(JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.Features.Common.GoToByName.LibrariesFlag,JetBrains.ReSharper.Psi.PsiLanguageType)">
+        <member name="M:JetBrains.ReSharper.Features.Common.UI.TypeChooser.CreateSettings(JetBrains.DataFlow.Lifetime,JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.Feature.Services.Search.LibrariesFlag,JetBrains.ReSharper.Psi.PsiLanguageType,JetBrains.Application.IShellLocks)">
             <summary>
             Creates settings for supplying into the <see cref="T:JetBrains.ReSharper.Features.Common.UI.CompletionPickerEdit"/>.
             </summary>
@@ -971,10 +844,14 @@
             Tries to look up a declared element for its FQ Name in the current <see cref="P:JetBrains.ReSharper.Features.Common.UI.DeclaredElementChooser.Language"/>.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Common.UI.TypeChooser.CreateCompletionController">
+        <member name="M:JetBrains.ReSharper.Features.Common.UI.TypeChooser.CreateCompletionController(JetBrains.DataFlow.Lifetime,JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.Feature.Services.Search.LibrariesFlag,JetBrains.Application.IShellLocks)">
             <summary>
             Creates the chooser-specific completion controller.
             </summary>
+            <param name="lifetime"></param>
+            <param name="solution"></param>
+            <param name="librariesFlag"></param>
+            <param name="locks"></param>
         </member>
     </members>
 </doc>

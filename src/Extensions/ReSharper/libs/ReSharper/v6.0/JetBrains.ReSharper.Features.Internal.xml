@@ -4,14 +4,14 @@
         <name>JetBrains.ReSharper.Features.Internal</name>
     </assembly>
     <members>
-        <member name="M:JetBrains.ReSharper.Features.Internal.ContextActions.ExportContextActionsListAction.Execute(JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.DelegateExecute)">
+        <member name="M:JetBrains.ReSharper.Features.Internal.ContextActions.ExportContextActionsListAction.Execute(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.DelegateExecute)">
             <summary>
             Executes action. Called after Update, that set ActionPresentation.Enabled to true.
             </summary>
             <param name="context">DataContext</param>
             <param name="nextExecute">delegate to call</param>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Internal.ContextActions.ExportContextActionsListAction.Update(JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
+        <member name="M:JetBrains.ReSharper.Features.Internal.ContextActions.ExportContextActionsListAction.Update(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
             <summary>
             Updates action visual presentation. If presentation.Enabled is set to false, Execute
             will not be called.
@@ -20,14 +20,14 @@
             <param name="presentation">presentation to update</param>
             <param name="nextUpdate">delegate to call</param>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Internal.ContextActions.TryProjectTransactionAction.Execute(JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.DelegateExecute)">
+        <member name="M:JetBrains.ReSharper.Features.Internal.ContextActions.TryProjectTransactionAction.Execute(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.DelegateExecute)">
             <summary>
             Executes action. Called after Update, that set ActionPresentation.Enabled to true.
             </summary>
             <param name="context">DataContext</param>
             <param name="nextExecute">delegate to call</param>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Internal.ContextActions.TryProjectTransactionAction.Update(JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
+        <member name="M:JetBrains.ReSharper.Features.Internal.ContextActions.TryProjectTransactionAction.Update(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
             <summary>
             Updates action visual presentation. If presentation.Enabled is set to false, Execute
             will not be called.
@@ -35,53 +35,6 @@
             <param name="context">DataContext</param>
             <param name="presentation">presentation to update</param>
             <param name="nextUpdate">delegate to call</param>
-        </member>
-        <member name="T:JetBrains.ReSharper.Features.Internal.ControlFlowViewer.ControlFlowControl">
-            <summary>
-            Interaction logic for ControlFlowControl.xaml
-            </summary>
-            <summary>
-            ControlFlowControl
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Internal.ControlFlowViewer.ControlFlowControl.InitializeComponent">
-            <summary>
-            InitializeComponent
-            </summary>
-        </member>
-        <member name="F:JetBrains.ReSharper.Features.Internal.ControlFlowViewer.ControlFlowVisualizerForm.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Internal.ControlFlowViewer.ControlFlowVisualizerForm.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Internal.ControlFlowViewer.ControlFlowVisualizerForm.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="F:JetBrains.ReSharper.Features.Internal.IndustrialLogics.EventViewer.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Internal.IndustrialLogics.EventViewer.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Internal.IndustrialLogics.EventViewer.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
         </member>
         <member name="F:JetBrains.ReSharper.Features.Internal.PsiViewer.PsiViewerForm.components">
             <summary>
@@ -135,29 +88,6 @@
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
             </summary>
-        </member>
-        <member name="F:JetBrains.ReSharper.Features.Internal.GotoTypeMember.GotoTypeMemberController.ItemsPassFilter">
-            <summary>
-            A filter that specifies which items should be let into the output list.
-            NOTE: in most cases, you should use <see cref="M:JetBrains.ReSharper.Features.Internal.GotoTypeMember.GotoTypeMemberController.RestrictItemsPassFilter(System.Func{JetBrains.ProjectModel.IProjectItem,System.Boolean})"/>, so that to avoid interfering with the internal filtering.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Internal.GotoTypeMember.GotoTypeMemberController.RestrictItemsPassFilter(System.Func{JetBrains.ProjectModel.IProjectItem,System.Boolean})">
-            <summary>
-            ANDs the given condition with the existing <see cref="F:JetBrains.ReSharper.Features.Internal.GotoTypeMember.GotoTypeMemberController.ItemsPassFilter"/>.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Internal.GotoTypeMember.GotoTypeMemberController.ExecuteItem(JetBrains.UI.PopupMenu.Impl.JetPopupMenuItem)">
-            <summary>
-            Called when an item is to be executed.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Internal.GotoTypeMember.GotoTypeMemberController.UpdateItems(System.String,System.Func{System.Collections.Generic.IEnumerable{JetBrains.UI.PopupMenu.Impl.JetPopupMenuItem},JetBrains.UI.GotoByName.GotoByNameController.AddItemsBehavior,System.Boolean})">
-            <summary>
-            When the items get dirty (<see cref="F:JetBrains.UI.GotoByName.GotoByNameController.ItemsGottenDirty"/>), this function is called on the secondary thread.
-            </summary>
-            <param name="filterString">The filtering string against which the items list should be produced.</param>
-            <param name="itemsConsumer">A function you can use to add items to the output collection in a thread-safe manner. The function checks for the items limit and returns whether more items can be added.</param>
         </member>
         <member name="T:JetBrains.ReSharper.Features.Internal.PluginDownloader.UI.MagicManagerWindow">
             <summary>

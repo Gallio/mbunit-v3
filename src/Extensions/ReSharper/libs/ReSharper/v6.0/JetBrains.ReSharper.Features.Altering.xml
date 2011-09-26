@@ -4,6 +4,22 @@
         <name>JetBrains.ReSharper.Features.Altering</name>
     </assembly>
     <members>
+        <member name="T:JetBrains.ReSharper.Features.Altering.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Altering.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Altering.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
         <member name="T:JetBrains.ReSharper.Features.Altering.CodeCleanup.CodeCleanupFilesCollector">
             <summary>
             Support for action on multiple files selected from Solution Explorer

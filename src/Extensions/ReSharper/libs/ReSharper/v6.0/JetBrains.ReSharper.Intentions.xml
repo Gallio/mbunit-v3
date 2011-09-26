@@ -265,6 +265,12 @@
             </returns>
             <filterpriority>2</filterpriority>
         </member>
+        <member name="T:JetBrains.ReSharper.Intentions.Explanatory.CodeInspectionWikiProvider">
+            <summary>
+            Provides bulb items that offer to explain why ReSharper is
+            issuing a particular warning or suggestion.
+            </summary>
+        </member>
         <member name="P:JetBrains.ReSharper.Intentions.ContextActions.SurroundWithQuotesActionBase.Text">
             <summary>
             Gets the text.
@@ -282,22 +288,22 @@
             A page with the list of enablable context actions.
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.Intentions.Options.ContextActionsPageBase.HtmlCueBannerNoDescriptionAvailable">
+        <member name="F:JetBrains.ReSharper.Intentions.Options.ContextActionsPageBase.ourHtmlCueBannerNoDescriptionAvailable">
             <summary>
             The “no description” cue banner to show instead of the description text when there is none.
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.Intentions.Options.ContextActionsPageBase.HtmlCueBannerNoSelection">
+        <member name="F:JetBrains.ReSharper.Intentions.Options.ContextActionsPageBase.ourHtmlCueBannerNoSelection">
             <summary>
             The “no selection” cue banner to occupy the empty space under the list when nothing is selected.
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.Intentions.Options.ContextActionsPageBase.HtmlPreviewResourceName">
+        <member name="F:JetBrains.ReSharper.Intentions.Options.ContextActionsPageBase.ourHtmlPreviewResourceName">
             <summary>
             The HTML resource with the preview area template.
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.Intentions.Options.ContextActionsPageBase.SelectedItem">
+        <member name="F:JetBrains.ReSharper.Intentions.Options.ContextActionsPageBase.mySelectedItem">
             <summary>
             The selected context actions in the context actions tree.
             </summary>
@@ -313,11 +319,6 @@
             </summary>
             
             <param name="msg">The Windows <see cref="T:System.Windows.Forms.Message"></see> to process. </param>
-        </member>
-        <member name="P:JetBrains.ReSharper.Intentions.Options.ContextActionsPageBase.ActionsGroupName">
-            <summary>
-            Gets the name of the group of actions that should be displayed in this view.
-            </summary>
         </member>
         <member name="P:JetBrains.ReSharper.Intentions.Options.ContextActionsPageBase.Id">
             <summary>

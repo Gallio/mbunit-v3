@@ -9,6 +9,11 @@
             Dummy task to indicate that exception was unhandled in appdomain
             </summary>
         </member>
+        <member name="P:JetBrains.ReSharper.TaskRunnerFramework.RemoteTask.IsMeaningfulTask">
+            <summary>
+            Must return <value>true</value>, if the task is meaningful, e. g. it has related IUnitTestElement
+            </summary>
+        </member>
         <member name="F:JetBrains.ReSharper.TaskRunnerFramework.AssemblyLoader.myRegistrations">
             <summary>
             Don't add directly, use <see cref="M:JetBrains.ReSharper.TaskRunnerFramework.AssemblyLoader.RegisterAssembly(System.String,System.String)"/> overloads.
@@ -87,34 +92,9 @@
             Internal option to debug TaskRunner
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.TaskRunnerFramework.UnitTesting.IUnitTestElement.GetTaskSequence(System.Collections.Generic.IEnumerable{JetBrains.ReSharper.TaskRunnerFramework.UnitTesting.IUnitTestElement})">
+        <member name="P:JetBrains.ReSharper.TaskRunnerFramework.TaskExecutorConfiguration.RunnerPaths">
             <summary>
-            Gets task information for <see cref="T:JetBrains.ReSharper.TaskRunnerFramework.RemoteTaskRunner"/> from element
-            </summary>
-            <param name="explicitElements">Elements that are explicitly selected to be run</param>
-            <returns>Sequence of tasks to be executed to run this element</returns>
-        </member>
-        <member name="M:JetBrains.ReSharper.TaskRunnerFramework.UnitTesting.IUnitTestRunnerProvider.ExploreAssembly(System.String,JetBrains.ReSharper.TaskRunnerFramework.UnitTesting.UnitTestElementConsumer)">
-            <summary>
-            Explores given assembly
-            </summary>
-            <param name="assemblyLocation"></param>
-            <param name="consumer"></param>
-        </member>
-        <member name="M:JetBrains.ReSharper.TaskRunnerFramework.UnitTesting.IUnitTestRunnerProvider.GetTaskRunnerInfo">
-            <summary>
-            Gets instance of <see cref="T:JetBrains.ReSharper.TaskRunnerFramework.RemoteTaskRunnerInfo"/> 
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="P:JetBrains.ReSharper.TaskRunnerFramework.UnitTesting.IUnitTestRunnerProvider.ID">
-            <summary>
-            ID of provider
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.TaskRunnerFramework.UnitTesting.IUnitTestRunnerProvider.Name">
-            <summary>
-            Provider's name
+            Folders with UnitTestProviders (for 3rd party plugins)
             </summary>
         </member>
     </members>

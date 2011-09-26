@@ -26,6 +26,8 @@ using JetBrains.Shell.VSIntegration;
 using JetBrains.VSIntegration.Shell;
 #elif RESHARPER_45
 using JetBrains.VSIntegration.Application;
+#elif RESHARPER_60
+using JetBrains.Application.DataContext;
 #else
 using JetBrains.ReSharper.UnitTestFramework;
 using JetBrains.VsIntegration.Application;
@@ -63,12 +65,14 @@ namespace Gallio.ReSharperRunner.Provider.Actions
         {
 #if ! RESHARPER_50_OR_NEWER
             VSShell.Instance.ApplicationObject.ItemOperations.Navigate(url.ToString(), vsNavigateOptions.vsNavigateOptionsDefault);
+#elif RESHARPER_60
+        	throw new InvalidOperationException("Need to find out how to access the Shell.");
 #else
             VSShell.Instance.ServiceProvider.Dte().ItemOperations.Navigate(url.ToString(), vsNavigateOptions.vsNavigateOptionsDefault);
 #endif
         }
 
-#if RESHARPER_50_OR_NEWER
+#if RESHARPER_50_OR_NEWER && !RESHARPER_60
         private static readonly Dictionary<string, string> LastRunIdCache = new Dictionary<string, string>();
 #endif
         private static string GetSessionId(IDataContext context)
@@ -77,7 +81,7 @@ namespace Gallio.ReSharperRunner.Provider.Actions
             if (session == null)
                 return null;
 
-#if ! RESHARPER_50_OR_NEWER
+#if ! RESHARPER_50_OR_NEWER || RESHARPER_60
             return session.ID;
 #else
             // HACK: Get the last RunId for correlation instead of the SessionId because the SessionId is

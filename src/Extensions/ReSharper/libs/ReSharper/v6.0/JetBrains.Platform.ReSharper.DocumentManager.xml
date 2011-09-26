@@ -218,7 +218,7 @@
             Indicates whether the range marker is greedy to right
             </summary>
         </member>
-        <member name="M:JetBrains.DocumentManagers.RangeMarker.NotifyDocumentChanged(JetBrains.DocumentModel.DocumentChange,System.Int32)">
+        <member name="M:JetBrains.DocumentManagers.RangeMarker.NotifyDocumentChanged(JetBrains.DocumentModel.DocumentChange,System.Int32,JetBrains.ProjectModel.IProjectFile)">
             <summary>
             Notifies a range marker about document change
             </summary>

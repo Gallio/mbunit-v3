@@ -4,14 +4,31 @@
         <name>JetBrains.ReSharper.VS</name>
     </assembly>
     <members>
-        <member name="M:JetBrains.ReSharper.VS.Actions.ShowOfflineHelpAction.JetBrains#ActionManagement#IActionHandler#Execute(JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.DelegateExecute)">
+        <member name="F:JetBrains.ReSharper.VS.Actions.AdvertiseSubmitFeedbackForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.Actions.AdvertiseSubmitFeedbackForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.Actions.AdvertiseSubmitFeedbackForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.Actions.ShowOfflineHelpAction.JetBrains#ActionManagement#IActionHandler#Execute(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.DelegateExecute)">
             <summary>
             Executes action. Called after Update, that set ActionPresentation.Enabled to true.
             </summary>
             <param name="context">DataContext</param>
             <param name="nextExecute">delegate to call</param>
         </member>
-        <member name="M:JetBrains.ReSharper.VS.Actions.ShowOfflineHelpAction.JetBrains#ActionManagement#IActionHandler#Update(JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
+        <member name="M:JetBrains.ReSharper.VS.Actions.ShowOfflineHelpAction.JetBrains#ActionManagement#IActionHandler#Update(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
             <summary>
             Updates action visual presentation. If presentation.Enabled is set to false, Execute
             will not be called.
@@ -20,18 +37,18 @@
             <param name="presentation">presentation to update</param>
             <param name="nextUpdate">delegate to call</param>
         </member>
-        <member name="F:JetBrains.ReSharper.VS.src.ActivityTracking.ProductUsageFeedbackForm.components">
+        <member name="F:JetBrains.ReSharper.VS.ActivityTracking.ProductUsageFeedbackForm.components">
             <summary>
             Required designer variable.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.VS.src.ActivityTracking.ProductUsageFeedbackForm.Dispose(System.Boolean)">
+        <member name="M:JetBrains.ReSharper.VS.ActivityTracking.ProductUsageFeedbackForm.Dispose(System.Boolean)">
             <summary>
             Clean up any resources being used.
             </summary>
             <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         </member>
-        <member name="M:JetBrains.ReSharper.VS.src.ActivityTracking.ProductUsageFeedbackForm.InitializeComponent">
+        <member name="M:JetBrains.ReSharper.VS.ActivityTracking.ProductUsageFeedbackForm.InitializeComponent">
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
@@ -150,7 +167,7 @@
             Instructs the debugger to detach from all the debuggee processes.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostApi.GetInstance(System.UInt32)">
+        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostApi.GetInstance(System.UInt32,System.String)">
             <summary>
             Gets the API to the debugger host running in the given process.
             </summary>
@@ -170,12 +187,12 @@
             Client for controlling the debugger in another process with <see cref="T:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer"/> running in that process.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostClient.AttachDebugger(System.Diagnostics.Process,System.Diagnostics.Process)">
+        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostClient.AttachDebugger(System.Diagnostics.Process,System.Diagnostics.Process,System.String)">
             <summary>
             Instructs the remote (or local) <see cref="T:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer"/> in the <paramref name="debugger"/> process to attach to the <paramref name="debuggee"/> process.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostClient.DetachAll(System.Diagnostics.Process)">
+        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostClient.DetachAll(System.Diagnostics.Process,System.String)">
             <summary>
             Instructs the remote (or local) <see cref="T:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer"/> in the <paramref name="debugger"/> process to detach from all the debuggee processes.
             </summary>
@@ -186,12 +203,12 @@
             Advertises an <see cref="T:JetBrains.ReSharper.Features.Internal.Debugger.IDebuggerHostApi"/> / <see cref="T:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostApi"/> instance to the Running Objects Table.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer.GetInstance(System.UInt32)">
+        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer.GetInstance(System.UInt32,System.String)">
             <summary>
             Gets the API to the debugger host running in the given process.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer.GetInstanceDynamic(System.UInt32)">
+        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer.GetInstanceDynamic(System.UInt32,System.String)">
             <summary>
             Gets the API to the debugger host running in the given process as a late-bound <see cref="T:System.Object"/>.
             </summary>
@@ -206,26 +223,52 @@
             Instructs the debugger to detach from all the debuggee processes.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer.InitRot">
+        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer.InitRot(JetBrains.DataFlow.Lifetime,JetBrains.Application.IApplicationDescriptor)">
             <summary>
             Register/Revoke the Running Objects Table entry.
             </summary>
+            <param name="lifetime"></param>
+            <param name="product"></param>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer.System#IDisposable#Dispose">
+        <member name="F:JetBrains.ReSharper.VS.FormatProperties.VsSettingOverrideBase`1.mySavedValue">
             <summary>
-            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            Value that was set before we overrode it.
             </summary>
-            <filterpriority>2</filterpriority>
+        </member>
+        <member name="F:JetBrains.ReSharper.VS.FormatProperties.VsSettingOverrideBase`1.myPropertyIsOverridden">
+            <summary>
+            True if property is temporary overridden 
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.FormatProperties.VsSettingOverrideAutocompletionBase`1.EnableVsAutoListMembers(System.Boolean,System.Guid)">
+            <summary>
+            Returns old value of the property
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.FormatProperties.VsSettingOverrideParameterInfoBase`1.EnableVsParameterInfo(System.Boolean,System.Guid)">
+            <summary>
+            Returns old value of the property
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.VS.MSTest.MSTestAccessorReferenceProvider.MyProjectHandlerHandler">
+            <summary>
+            For every '.accessor' file add and reference corresponding DLLs
+            </summary>
         </member>
         <member name="T:JetBrains.ReSharper.Features.Environment.Options.VisualStudioIntegrationPage">
             <summary>
             The environment options page.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Environment.Options.VisualStudioIntegrationPage.#ctor">
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.VisualStudioIntegrationPage.#ctor(JetBrains.DataFlow.Lifetime,JetBrains.UI.CommonControls.Fonts.FontsManager,JetBrains.Application.Configuration.GlobalSettingsTable,JetBrains.Application.IApplicationDescriptor,JetBrains.UI.Application.Progress.UITaskExecutor,JetBrains.ActionManagement.IShortcutManager)">
             <summary>
             Inits the base, sets the PID that will be given out thru <see cref="P:JetBrains.UI.Options.IOptionsPage.Id"/>.
             </summary>
+            <param name="lifetime"></param>
+            <param name="globalSettingsTable"></param>
+            <param name="product"></param>
+            <param name="uiTaskExecutor"></param>
+            <param name="shortcutManager"></param>
         </member>
         <member name="T:JetBrains.ReSharper.VS.SolutionBuilder.VsSolutionBuilder">
             <summary>

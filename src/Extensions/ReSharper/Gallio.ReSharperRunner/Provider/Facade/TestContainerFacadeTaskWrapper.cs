@@ -19,7 +19,7 @@ using JetBrains.ReSharper.TaskRunnerFramework;
 
 namespace Gallio.ReSharperRunner.Provider.Facade
 {
-#if RESHARPER_51_OR_NEWER
+#if RESHARPER_51
     [Serializable]
     public class TestContainerFacadeTaskWrapper : FacadeTaskWrapper, ITestContainerRemoteTask
     {

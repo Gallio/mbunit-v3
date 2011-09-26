@@ -41,7 +41,7 @@
             <param name="expression"></param>
             <returns></returns>
         </member>
-        <member name="M:JetBrains.ReSharper.Daemon.CSharp.Stages.AnonymousMethodProblemAnalyzer.ShouldHighlightAnonymousMethodConversionProblem(JetBrains.ReSharper.Psi.CSharp.IAnonymousFunctionType,JetBrains.ReSharper.Psi.IType)">
+        <member name="M:JetBrains.ReSharper.Daemon.CSharp.Stages.AnonymousMethodProblemAnalyzer.ShouldHighlightAnonymousMethodConversionProblem(JetBrains.ReSharper.Psi.CSharp.IAnonymousFunctionType,JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.CSharp.Impl.ICSharpTypeConversionRule)">
             <summary>
             Highlight errors when anonymous method couldn't be assigned to target type, 
             except for return type mismatch - it will be highlighted
@@ -180,6 +180,11 @@
         <member name="M:JetBrains.ReSharper.Daemon.CSharp.Stages.UnsafeContextCheckingStageProcess.GetTypeToCheckForUnsafe(JetBrains.ReSharper.Psi.Tree.IExpression)">
             <summary>
             just optimizations, since asking type of every expression is too expensive
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Daemon.CSharp.Stages.UnsafeContextCheckingStageProcess.IsFixedExpression(JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpExpression)">
+            <summary>
+            Heuristic. Not found in specs what it means
             </summary>
         </member>
         <member name="M:JetBrains.ReSharper.Daemon.CSharp.Stages.UnsafeContextCheckingStageProcess.CheckIsUnmanagedType(JetBrains.ReSharper.Psi.IType,System.Collections.Generic.JetHashSet{JetBrains.ReSharper.Psi.IStruct})">

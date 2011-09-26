@@ -2,26 +2,17 @@
 
 set ReSharperDir=C:\Program Files\JetBrains\ReSharper\v6.0\Bin
 
-xcopy "%ReSharperDir%\JetBrains.Annotations.dll" /y
-xcopy "%ReSharperDir%\JetBrains.Annotations.xml" /y
-xcopy "%ReSharperDir%\JetBrains.Platform.CommonServices.dll" /y
-xcopy "%ReSharperDir%\JetBrains.Platform.CommonServices.xml" /y
-xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.AbstractTreeBuilder.dll" /y
-xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.AbstractTreeBuilder.xml" /y
-xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.ActionManagement.dll" /y
-xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.ActionManagement.xml" /y
-xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.ActivityTracking.dll" /y
-xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.ActivityTracking.xml" /y
-xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.DocumentManager.dll" /y
-xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.DocumentManager.xml" /y
-xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.DocumentModel.dll" /y
-xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.DocumentModel.xml" /y
-xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.IDE.dll" /y
-xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.IDE.xml" /y
-xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.Interop.WinApi.dll" /y
-xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.Interop.WinApi.xml" /y
-xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.Metadata.dll" /y
-xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.Metadata.xml" /y
+xcopy "%ReSharperDir%\JetBrains.Annotations.*" /y
+xcopy "%ReSharperDir%\JetBrains.Platform.CommonServices.*" /y
+xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.AbstractTreeBuilder.*" /y
+xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.ActionManagement.*" /y
+xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.ActivityTracking.*" /y
+xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.ComponentModel.*" /y
+xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.DocumentManager.*" /y
+xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.DocumentModel.*" /y
+xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.IDE.*" /y
+xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.Interop.WinApi.*" /y
+xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.Metadata.*" /y
 xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.ProjectModel.dll" /y
 xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.ProjectModel.xml" /y
 xcopy "%ReSharperDir%\JetBrains.Platform.ReSharper.Satellite.exe" /y

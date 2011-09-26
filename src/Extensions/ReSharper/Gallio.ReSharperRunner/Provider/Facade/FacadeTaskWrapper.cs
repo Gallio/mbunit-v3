@@ -69,6 +69,13 @@ namespace Gallio.ReSharperRunner.Provider.Facade
             return base.GetHashCode() ^ facadeTask.GetHashCode();
         }
 
+#if RESHARPER_60
+        public override bool IsMeaningfulTask
+        {
+            get { return true; }
+        }
+#endif
+
         public override void SaveXml(XmlElement element)
         {
             element.SetAttribute("runnerID", RunnerID);

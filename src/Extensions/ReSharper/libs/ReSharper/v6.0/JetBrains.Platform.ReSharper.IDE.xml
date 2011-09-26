@@ -47,159 +47,9 @@
             Creates a text control specifically sited in a Persistable View.
             </summary>
         </member>
-        <member name="T:JetBrains.IDE.TextControlAnchoringRect">
-            <summary>
-            Represents an anchor in the text editor.
-            </summary>
-        </member>
-        <member name="F:JetBrains.IDE.TextControlAnchoringRect.myRange">
-            <summary>
-            The range we track in the document. <c>Null</c> only until it's initialized by the constructor.
-            </summary>
-        </member>
-        <member name="F:JetBrains.IDE.TextControlAnchoringRect.myRangeMarker">
-            <summary>
-            A marker for the <see cref="F:JetBrains.IDE.TextControlAnchoringRect.myRange"/> range.
-            </summary>
-        </member>
-        <member name="F:JetBrains.IDE.TextControlAnchoringRect.mySink">
-            <summary>
-            The event sink that listens to the text control events without holding a strong reference upon the anchor.
-            <c>Null</c> after disposal.
-            </summary>
-        </member>
-        <member name="F:JetBrains.IDE.TextControlAnchoringRect.myTextControl">
-            <summary>
-            The text control to which the anchor is attached.
-            </summary>
-        </member>
-        <member name="M:JetBrains.IDE.TextControlAnchoringRect.#ctor(JetBrains.TextControl.ITextControl,System.Int32,JetBrains.Application.IShellLocks,JetBrains.Threading.IThreading)">
-            <summary>
-            Anchors to the given range on the given text control.
-            </summary>
-        </member>
-        <member name="M:JetBrains.IDE.TextControlAnchoringRect.#ctor(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange,JetBrains.Application.IShellLocks,JetBrains.Threading.IThreading)">
-            <summary>
-            Anchors to the given range on the given text control.
-            </summary>
-        </member>
-        <member name="M:JetBrains.IDE.TextControlAnchoringRect.CreateBeginningOfLine(JetBrains.TextControl.ITextControl,System.Int32,JetBrains.Application.IShellLocks,JetBrains.Threading.IThreading)">
-            <summary>
-            Creates an anchoring rectangle on the character at the beginning of the line.
-            </summary>
-            <param name="textcontrol">The text control.</param>
-            <param name="offset">An offset in the text control. The beginning of the line containing this offset at the moment of the call will be tracked.</param>
-            <param name="locks"></param>
-            <param name="invocator"></param>
-        </member>
-        <member name="M:JetBrains.IDE.TextControlAnchoringRect.CreateFromCaretStatic(JetBrains.TextControl.ITextControl,JetBrains.Application.IShellLocks,JetBrains.Threading.IThreading)">
-            <summary>
-            Creates an anchoring rectangle that anchors to the place where the caret was at the instant of the call.
-            “Static” means the anchor would update to accomodate for changes in the document, but won't track caret movement.
-            </summary>
-        </member>
-        <member name="M:JetBrains.IDE.TextControlAnchoringRect.CreateFromSelectionStatic(JetBrains.TextControl.ITextControl,JetBrains.Application.IShellLocks,JetBrains.Threading.IThreading)">
-            <summary>
-            Creates an anchoring rectangle that anchors to the place where the selection margin was at the instant of the call.
-            “Static” means the anchor would update to accomodate for changes in the document, but won't track selection changes.
-            </summary>
-        </member>
-        <member name="M:JetBrains.IDE.TextControlAnchoringRect.UpdateAnchorGuarded">
-            <summary>
-            Needs a read lock for manipulating the document, called from <see cref="M:JetBrains.IDE.TextControlAnchoringRect.UpdateAnchor"/> in a guarded context.
-            </summary>
-        </member>
-        <member name="M:JetBrains.IDE.TextControlAnchoringRect.Dispose">
-            <summary>
-            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-            </summary>
-            <filterpriority>2</filterpriority>
-        </member>
-        <member name="M:JetBrains.IDE.TextControlAnchoringRect.UpdateAnchor">
-            <summary>
-            Updates the anchoring rectangle as it gets dirty.
-            </summary>
-        </member>
-        <member name="P:JetBrains.IDE.TextControlAnchoringRect.Range">
-            <summary>
-            Gets or sets the range whose rectangle is tracked.
-            </summary>
-        </member>
-        <member name="P:JetBrains.IDE.TextControlAnchoringRect.TextControl">
-            <summary>
-            Gets the text control to which the range belongs.
-            </summary>
-        </member>
-        <member name="T:JetBrains.IDE.TextControlAnchoringRect.TextControlEventSink">
-            <summary>
-            A class that listens to the <see cref="T:JetBrains.TextControl.ITextControl"/> events without holding the <see cref="T:JetBrains.IDE.TextControlAnchoringRect"/> tight.
-            </summary>
-        </member>
-        <member name="F:JetBrains.IDE.TextControlAnchoringRect.TextControlEventSink.myOwner">
-            <summary>
-            The anchor object to be notified of the events.
-            <c>Null</c> after the object is disposed of.
-            </summary>
-        </member>
-        <member name="F:JetBrains.IDE.TextControlAnchoringRect.TextControlEventSink.myTextControl">
-            <summary>
-            <see cref="P:JetBrains.IDE.TextControlAnchoringRect.TextControlEventSink.TextControl"/>.
-            </summary>
-        </member>
-        <member name="M:JetBrains.IDE.TextControlAnchoringRect.TextControlEventSink.#ctor(JetBrains.IDE.TextControlAnchoringRect)">
-            <summary>
-            Creates the event sink.
-            It takes the text control from the anchor and attaches to its events.
-            </summary>
-            <param name="anchor"></param>
-        </member>
-        <member name="M:JetBrains.IDE.TextControlAnchoringRect.TextControlEventSink.OwnerUpdateAnchor">
-            <summary>
-            Causes the owning anchor to update.
-            </summary>
-        </member>
-        <member name="M:JetBrains.IDE.TextControlAnchoringRect.TextControlEventSink.DetachFromOwner">
-            <summary>
-            On disposal, detaches from the owner and cleans it up.
-            </summary>
-        </member>
-        <member name="M:JetBrains.IDE.TextControlAnchoringRect.TextControlEventSink.TrackTextControlWindowPos(System.Windows.Forms.IWin32Window)">
-            <summary>
-            Starts tracking the text control window position, returns a cleanup token.
-            </summary>
-        </member>
-        <member name="M:JetBrains.IDE.TextControlAnchoringRect.TextControlEventSink.Dispose">
-            <summary>
-            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-            </summary>
-            <filterpriority>2</filterpriority>
-        </member>
-        <member name="P:JetBrains.IDE.TextControlAnchoringRect.TextControlEventSink.Owner">
-            <summary>
-            Gets the anchor object to be notified of the events.
-            <c>Null</c> if not avail.
-            </summary>
-        </member>
-        <member name="P:JetBrains.IDE.TextControlAnchoringRect.TextControlEventSink.TextControl">
-            <summary>
-            Gets the text control whose events we're sinking.
-            <c>Null</c> when the object is disposed of.
-            </summary>
-        </member>
-        <member name="T:JetBrains.IDE.TextControlManagerActivityTrackerWithNames">
-            <summary>
-            Knows about the project files and can trace text control file names.
-            </summary>
-        </member>
-        <member name="M:JetBrains.IDE.TextControlManagerActivityTrackerWithNames.LogNewFocusedTextControl(JetBrains.TextControl.ITextControl,JetBrains.Application.IShellLocks,JetBrains.ActivityTracking.IActivityTracker)">
-            <summary>
-            Focused text control has changed.
-            </summary>
-        </member>
-        <member name="T:JetBrains.IDE.TextControlPopupWindowContext">
-            <summary>
-            Implementaion of <see cref="T:JetBrains.UI.PopupWindowManager.IPopupWindowContext"/> for <see cref="T:JetBrains.TextControl.ITextControl"/>.
-            </summary>
+        <member name="M:JetBrains.IDE.TreeBrowser.WPF.TreeModelPresentableViewWPF.ReentrancyGuardExecuteOrQueueOrMerge(System.String,System.Action{System.Boolean})">
+            <param name="action">action to execute , boolean flag is true for immidiate execution</param>
+            <returns><c>True</c> if executed immediately, <c>False</c> if queued (<see cref="M:JetBrains.Threading.ReentrancyGuard.TryExecute(System.String,System.Action)"/>-compatible behavior).</returns>
         </member>
         <member name="F:JetBrains.IDE.TreeBrowser.TextExportDialog.components">
             <summary>
@@ -250,6 +100,11 @@
             Create a control for the preview area.
             </summary>
             <param name="framePreview">Window frame of the preview area that reflects the preview area visibility, as well as visibility of the tree model browser itself (if hosted in a visibility-aware frame, like a [tabbed] tool window).</param>
+        </member>
+        <member name="T:JetBrains.IDE.TreeBrowser.UIOptions">
+             <summary>
+            Internal options intended to be shared between dotPeek/rShsarper. (dotPeek can not use intertnal assembly)
+             </summary>
         </member>
         <member name="T:JetBrains.IDE.UI.Options.OptionsPageViewFactorySolution">
             <summary>

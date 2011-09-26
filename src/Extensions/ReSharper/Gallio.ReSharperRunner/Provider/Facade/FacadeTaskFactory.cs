@@ -18,14 +18,14 @@ using JetBrains.ReSharper.TaskRunnerFramework;
 
 namespace Gallio.ReSharperRunner.Provider.Facade
 {
-    public class FacadeTaskFactory
+    public static class FacadeTaskFactory
     {
-        public RemoteTask CreateRootTask()
+        public static RemoteTask CreateRootTask()
         {
             return new FacadeTaskWrapper(GallioTestRunTask.Instance);
         }
 
-        public RemoteTask CreateAssemblyTaskFrom(GallioTestElement element)
+        public static RemoteTask CreateAssemblyTaskFrom(GallioTestElement element)
         {
 #if RESHARPER_50_OR_NEWER
             var assemblyTask = new GallioTestAssemblyTask(element.GetAssemblyLocation(), 
@@ -35,14 +35,14 @@ namespace Gallio.ReSharperRunner.Provider.Facade
                 element.GetTypeClrName(), "");
 #endif
 
-#if RESHARPER_51_OR_NEWER
+#if RESHARPER_51
             return new TestContainerFacadeTaskWrapper(assemblyTask);
 #else
             return new FacadeTaskWrapper(assemblyTask);
 #endif
         }
 
-        public RemoteTask CreateExplicitTestTaskFrom(GallioTestElement element)
+        public static RemoteTask CreateExplicitTestTaskFrom(GallioTestElement element)
         {
 #if RESHARPER_50_OR_NEWER
             var explicitTask = new GallioTestExplicitTask(element.TestId, element.GetTypeClrName(), 
@@ -53,7 +53,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
             return CreateTestTask(element, explicitTask);
         }
 
-        public RemoteTask CreateTestTaskFrom(GallioTestElement element)
+        public static RemoteTask CreateTestTaskFrom(GallioTestElement element)
         {
 #if RESHARPER_50_OR_NEWER
             var testItemTask = new GallioTestItemTask(element.TestId, element.GetTypeClrName(),
@@ -66,7 +66,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
 
         private static RemoteTask CreateTestTask(GallioTestElement element, FacadeTask facadeTask)
         {
-#if RESHARPER_51_OR_NEWER
+#if RESHARPER_51
             if (element.IsTestCase)
             {
                 return new UnitTestFacadeTaskWrapper(facadeTask);

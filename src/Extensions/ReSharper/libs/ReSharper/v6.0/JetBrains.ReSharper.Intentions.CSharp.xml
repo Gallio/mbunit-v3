@@ -377,5 +377,12 @@
               Serializes the expression
             </summary>
         </member>
+        <member name="M:JetBrains.ReSharper.Intentions.CSharp.Util.PsiUtil.FindLoopWhereHeaderContains(JetBrains.ReSharper.Psi.CSharp.Tree.ICSharpTreeNode)">
+            <summary>
+            Checks whether expression is directly or indirectly (lambda) embeded inside loop header.   
+            </summary>
+            <param name="expression"></param>
+            <returns>Returns loop that contains expression in its header</returns>
+        </member>
     </members>
 </doc>

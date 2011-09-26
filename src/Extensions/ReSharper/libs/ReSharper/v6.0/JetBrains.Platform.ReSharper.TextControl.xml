@@ -224,30 +224,26 @@
             <summary>
             Clears the selection, making the selection range empty and located at the caret location.
             </summary>
-            <param name="bCollapseToStart">
-            <para>If <c>True</c>, collapses to selection anchor (<see cref="P:JetBrains.TextControl.ITextControlSelection.Range"/>.<see cref="F:JetBrains.TextControl.Coords.TextControlPosRange.Start"/>).</para>
-            <para>If <c>False</c>, collapses to selection end (<see cref="P:JetBrains.TextControl.ITextControlSelection.Range"/>.<see cref="F:JetBrains.TextControl.Coords.TextControlPosRange.End"/>).</para>
+            <param name="bCollapseToAnchor">
+            <para>If <c>True</c>, collapses to selection anchor point (<see cref="P:JetBrains.TextControl.ITextControlSelection.Ranges"/>).</para>
+            <para>If <c>False</c>, collapses to selection active point (<see cref="P:JetBrains.TextControl.ITextControlSelection.Ranges"/>).</para>
             </param>
         </member>
-        <member name="M:JetBrains.TextControl.ITextControlSelection.SetRange(JetBrains.TextControl.Coords.TextControlPosRange)">
+        <member name="M:JetBrains.TextControl.ITextControlSelection.SetRanges(JetBrains.TextControl.Coords.TextControlPosRange[])">
             <summary>
             <para>Attempts to set the text control selection to the given range.</para>
-            <para>The <see cref="F:JetBrains.TextControl.Coords.TextControlPosRange.Start"/> denotes the anchor end of the selection (the fixed point of shit+arrowkeys selection).</para>
+            <para>The <see cref="F:JetBrains.TextControl.Coords.TextControlPosRange.Start"/> denotes the anchor end of the selection (the fixed point of shift+arrowkeys selection).</para>
             <para>The <see cref="F:JetBrains.TextControl.Coords.TextControlPosRange.End"/> is the active end of the selection, ie the caret location.</para>
             </summary>
         </member>
-        <member name="P:JetBrains.TextControl.ITextControlSelection.DocRange">
+        <member name="P:JetBrains.TextControl.ITextControlSelection.Ranges">
             <summary>
-            <para>Gets the <see cref="P:JetBrains.TextControl.ITextControlSelection.Range"/> converted into document coordinates. This range is <see cref="M:JetBrains.Util.TextRange.Normalized">normalized</see>.</para>
-            <para>This range loses the virtual space information. If such is required, you should take the <see cref="P:JetBrains.TextControl.ITextControlSelection.Range"/> ends and use their appropriate presentations.</para>
-            </summary>
-        </member>
-        <member name="P:JetBrains.TextControl.ITextControlSelection.Range">
-            <summary>
-            <para>Gets the selection range.</para>
-            <para>The <see cref="F:JetBrains.TextControl.Coords.TextControlPosRange.Start"/> denotes the anchor end of the selection (the fixed point of shit+arrowkeys selection).</para>
-            <para>The <see cref="F:JetBrains.TextControl.Coords.TextControlPosRange.End"/> is the active end of the selection, ie the caret location.</para>
-            <para>Note that the <see cref="F:JetBrains.TextControl.Coords.TextControlPosRange.Start"/> and <see cref="F:JetBrains.TextControl.Coords.TextControlPosRange.End"/> are not guaranteed to be ordered, ie the end offset might go before the start offset (eg if we're shift+arrow selecting right-to-left); in this case you might use <see cref="M:JetBrains.TextControl.Coords.TextControlPosRange.ToDocRangeNormalized"/> and similar methods to normalize the range.</para>
+            <para>Gets the selection ranges. There is guaranteed to be at least one selection range.</para>
+            <para>If there is no selection, this is a single zero-length range at the caret position.</para>
+            <para>If a single continuous range is selected ("stream selection" in VS), there is a single range whose <see cref="F:JetBrains.TextControl.Coords.TextControlPosRange.Start"/> is the anchor end of the selection and <see cref="F:JetBrains.TextControl.Coords.TextControlPosRange.End"/> is its active end.</para>
+            <para>If the selection is not continuous (e.g. "box selection" in VS), there is a set of continuous selection ranges, without any particular order, but the first range in the array begins in the anchor point, and the last range in the array ends in the active point.</para>
+            <para>In short, this is the non-empty array of continuous selection ranges where <c>First().Start</c> denotes the anchor end of the selection (the fixed point of shift+arrowkeys selection), and <c>Last().End</c> is the active end of the selection, ie the caret location.</para>
+            <para>Note that neither ranges nor range ends are ordered against document offsets.</para>
             </summary>
         </member>
         <member name="P:JetBrains.TextControl.ITextControlSelection.TextControl">
@@ -257,11 +253,16 @@
         </member>
         <member name="E:JetBrains.TextControl.ITextControlSelection.SelectionChanged">
             <summary>
-            <para>Fires when <see cref="P:JetBrains.TextControl.ITextControlSelection.Range"/> changes. Using <see cref="P:JetBrains.TextControl.ITextControlSelection.Range"/> directly is preferrable.</para>
+            <para>Fires when <see cref="P:JetBrains.TextControl.ITextControlSelection.Ranges"/> changes. Using <see cref="P:JetBrains.TextControl.ITextControlSelection.Ranges"/> directly is preferrable.</para>
             <para>The sender of this event is the <see cref="P:JetBrains.TextControl.ITextControlSelection.TextControl"/>.</para>
             </summary>
         </member>
-        <member name="P:JetBrains.TextControl.BaseImpl.TextControlSelectionBase.Range">
+        <member name="M:JetBrains.TextControl.BaseImpl.TextControlSelectionBase.GetAnchorToActiveSpanForContinuousSelection(JetBrains.TextControl.Coords.TextControlPosRange[])">
+            <summary>
+            In case the text control does not support applying continuous selection, calculates the minimum spanning range and arranges its ends so that the first point is the anchor and the second is the active one. The anchor and active are determined from the given ranges in the same way as on <see cref="P:JetBrains.TextControl.ITextControlSelection.Ranges"/>.
+            </summary>
+        </member>
+        <member name="P:JetBrains.TextControl.BaseImpl.TextControlSelectionBase.Ranges">
             <summary>
             <para>Gets the selection range.</para>
             <para>The <see cref="F:JetBrains.TextControl.Coords.TextControlPosRange.Start"/> is the anchor end of the selection (ie the end with the caret position).</para>
@@ -271,12 +272,6 @@
         <member name="P:JetBrains.TextControl.BaseImpl.TextControlSelectionBase.TextControl">
             <summary>
             Gets the owning text control.
-            </summary>
-        </member>
-        <member name="P:JetBrains.TextControl.BaseImpl.TextControlSelectionBase.JetBrains#TextControl#ITextControlSelection#DocRange">
-            <summary>
-            <para>Gets the <see cref="P:JetBrains.TextControl.ITextControlSelection.Range"/> converted into document coordinates. This range is <see cref="M:JetBrains.Util.TextRange.Normalized">normalized</see>.</para>
-            <para>This range loses the virtual space information, for which you should use other conversions of the <see cref="P:JetBrains.TextControl.ITextControlSelection.Range"/>.</para>
             </summary>
         </member>
         <member name="T:JetBrains.TextControl.BaseImpl.TextControlWindowBase">
@@ -289,12 +284,13 @@
             Provides various UI framework-related information about the <see cref="T:JetBrains.TextControl.ITextControl">text control</see>.
             </summary>
         </member>
-        <member name="M:JetBrains.TextControl.ITextControlWindow.CreateViewportAnchor">
+        <member name="M:JetBrains.TextControl.ITextControlWindow.CreateViewportAnchor(JetBrains.DataFlow.Lifetime)">
             <summary>
             Creates an anchoring rectangle for the viewport of the text control.
             You must dispose of the value after use.
             Supposedly, creating a new anchor is cheap after you ask it for the first time on this text control. Calling this function for learning the viewport screen coordinates is OK.
             </summary>
+            <param name="lifetime"></param>
         </member>
         <member name="M:JetBrains.TextControl.ITextControlWindow.Focus">
             <summary>
@@ -391,10 +387,11 @@
             <para>Formally, it's a bool state that raises some time after the control gets visible, and keeps for some small time after it gets hidden. These delays guarantee that (1) short switches back and forth when eg creating from usage in another text control do not affect the picture and (2) after the fresh new text control is opened for the first time the first positioning is done with layout “unknown”.</para>
             </summary>
         </member>
-        <member name="M:JetBrains.TextControl.BaseImpl.TextControlWindowBase.CreateViewportAnchorCore">
+        <member name="M:JetBrains.TextControl.BaseImpl.TextControlWindowBase.CreateViewportAnchorCore(JetBrains.DataFlow.Lifetime)">
             <summary>
             Should create the anchoring rect core object. Do not use caching, the impl already does it instead of calling the method directly.
             </summary>
+            <param name="lifetime"></param>
         </member>
         <member name="M:JetBrains.TextControl.BaseImpl.TextControlWindowBase.FocusCore">
             <summary>
@@ -415,12 +412,13 @@
             </returns>
             <filterpriority>2</filterpriority>
         </member>
-        <member name="M:JetBrains.TextControl.BaseImpl.TextControlWindowBase.JetBrains#TextControl#ITextControlWindow#CreateViewportAnchor">
+        <member name="M:JetBrains.TextControl.BaseImpl.TextControlWindowBase.JetBrains#TextControl#ITextControlWindow#CreateViewportAnchor(JetBrains.DataFlow.Lifetime)">
             <summary>
             Creates an anchoring rectangle for the viewport of the text control.
             You must dispose of the value after use.
             Supposedly, creating a new anchor is cheap after you ask it for the first time on this text control. Calling this function for learning the viewport screen coordinates is OK.
             </summary>
+            <param name="lifetime"></param>
         </member>
         <member name="M:JetBrains.TextControl.BaseImpl.TextControlWindowBase.JetBrains#TextControl#ITextControlWindow#Focus">
             <summary>
@@ -1114,16 +1112,14 @@
             <param name="frame">Frame hosting the text control.</param>
             <param name="graphicsprovider">Optional provider for graphics text control. If not specified, the default provider, as given out by <see cref="T:JetBrains.TextControl.StandaloneTextControlSwitchingGraphicsProvider"/>, will be used.</param>
         </member>
-        <member name="M:JetBrains.TextControl.CreateWinFormsTextControlParams.#ctor(JetBrains.DocumentModel.IDocument,JetBrains.UI.WindowManagement.WindowFrame)">
-            <summary>
-            Makes params.
-            </summary>
-            <param name="document">The document for which the text control should be created.</param>
-            <param name="frame">Frame hosting the text control.</param>
-        </member>
-        <member name="M:JetBrains.TextControl.CreateWinFormsTextControlParams.#ctor(JetBrains.DocumentModel.IDocument)">
+        <member name="M:JetBrains.TextControl.CreateWinFormsTextControlParams.#ctor(JetBrains.DocumentModel.IDocument,JetBrains.TextControl.DefaultTextControlSchemeManager)">
             <summary>
             Creates the text control for the document, using the default scheme and highlighting.
+            </summary>
+        </member>
+        <member name="E:JetBrains.TextControl.Data.IRangeableContainer`1.RemovedOnDocumentChange">
+            <summary>
+            Fired when invalidated item is automatically removed from container due to document change
             </summary>
         </member>
         <member name="M:JetBrains.TextControl.Data.RangeableContainer`2.EnsureUpdated">
@@ -1253,7 +1249,7 @@
             <para>That's why document line-column positions (<see cref="T:JetBrains.DocumentModel.DocumentCoords"/>) do not always agree to the text control line-column positions (<see cref="T:JetBrains.TextControl.TextControlLineColumn"/>). Currently, these coordinates have different CLR types and are not so easily mixed together.</para>
             </summary>
         </member>
-        <member name="P:JetBrains.TextControl.ITextControl.Disposables">
+        <member name="P:JetBrains.TextControl.ITextControl.Lifetime">
             <summary>
             Gets the Disposables collection that controls the text control lifetime.
             </summary>
@@ -1356,7 +1352,7 @@
             <para>That's why document line-column positions (<see cref="T:JetBrains.DocumentModel.DocumentCoords"/>) do not always agree to the text control line-column positions (<see cref="T:JetBrains.TextControl.TextControlLineColumn"/>). Currently, these coordinates have different CLR types and are not so easily mixed together.</para>
             </summary>
         </member>
-        <member name="P:JetBrains.TextControl.EditBoxTextControl.EditBoxTextControl.JetBrains#TextControl#ITextControl#Disposables">
+        <member name="P:JetBrains.TextControl.EditBoxTextControl.EditBoxTextControl.Lifetime">
             <summary>
             Gets the Disposables collection that controls the text control lifetime.
             </summary>
@@ -1411,10 +1407,11 @@
             </para>
             </summary>
         </member>
-        <member name="M:JetBrains.TextControl.EditBoxTextControl.EditBoxTextControlWindow.CreateViewportAnchorCore">
+        <member name="M:JetBrains.TextControl.EditBoxTextControl.EditBoxTextControlWindow.CreateViewportAnchorCore(JetBrains.DataFlow.Lifetime)">
             <summary>
             Should create the anchoring rect core object. Do not use caching, the impl already does it instead of calling the method directly.
             </summary>
+            <param name="lifetime"></param>
         </member>
         <member name="M:JetBrains.TextControl.EditBoxTextControl.EditBoxTextControlWindow.FocusCore">
             <summary>
@@ -1637,13 +1634,6 @@
             <para>Tracks the list of <see cref="P:JetBrains.TextControl.ITextControlManager.TextControls">text controls</see> currently visible on screen. There is no specific order on the text visible controls. This collection is live.</para>
             </summary>
         </member>
-        <member name="M:JetBrains.TextControl.ITextControlSelectionEx.GetSelectionText(JetBrains.TextControl.ITextControlSelection)">
-            <summary>
-            Gets the document text for the selected range.
-            </summary>
-            <param name="sel"></param>
-            <returns></returns>
-        </member>
         <member name="M:JetBrains.TextControl.ITextControlSelectionEx.HasSelection(JetBrains.TextControl.ITextControlSelection)">
             <summary>
             Tells whether the selection is non-empty.
@@ -1655,9 +1645,130 @@
             Sets selection to a range given in the document coordinates.
             </summary>
         </member>
+        <member name="M:JetBrains.TextControl.ITextControlSelectionEx.RandomRange(JetBrains.TextControl.ITextControlSelection)">
+            <summary>
+            With stream selection, returns the selected range. With box selection, the result is undefined. Do not use. Replace with other methods when seen (IsDisjoint, UnionOfDocRanges, OneDocRangeWithCaret).
+            </summary>
+        </member>
+        <member name="M:JetBrains.TextControl.ITextControlSelectionEx.IsDisjoint(JetBrains.TextControl.ITextControlSelection)">
+            <summary>
+            Gets whether selection cannot be represented as a single continuous range, but is instead a set of disjoint ranges. This is a case with box ("vertical") selection in VS.
+            </summary>
+        </member>
+        <member name="M:JetBrains.TextControl.ITextControlSelectionEx.UnionOfDocRanges(JetBrains.TextControl.ITextControlSelection)">
+            <summary>
+            <para>Gets a document range spanning all of the selected characters.</para>
+            <para>The range is normalized (start offset is smaller than end offset).</para>
+            <para>If there is no selection, returns a zero-length range positioned at caret.</para>
+            <para>If there is single selected character range, returns it normalized (caret might be at either end).</para>
+            <para>If there are multiple disjoint selected ranges, returns the minimum spanning range. Caret might be at either end or inside the range.</para>
+            </summary>
+            <remarks>Use in features such as Comment Line where only the lines participating in the selection are important.</remarks>
+        </member>
+        <member name="M:JetBrains.TextControl.ITextControlSelectionEx.OneDocRangeWithCaret(JetBrains.TextControl.ITextControlSelection)">
+            <summary>
+            <para>For a possibly-disjoint selection, gets one of its ranges that contains the caret.</para>
+            <para>The range is normalized (start offset is smaller than end offset).</para>
+            <para>If there is no selection, returns a zero-length range positioned at caret.</para>
+            <para>If there is single selected character range, returns it normalized (caret might be at either end).</para>
+            <para>If there are multiple disjoint selected ranges, one of them such as that the caret is inside that range (at one of the ends, I guess, but won't bet on that).</para>
+            </summary>
+            <remarks>Box selection should be supported directly in most features. While this isn't the case yet, some features interested in just the selected range around caret could use this range.</remarks>
+        </member>
+        <member name="M:JetBrains.TextControl.ITextControlSelectionEx.GetActivePoint(JetBrains.TextControl.ITextControlSelection)">
+            <summary>
+            <para>Selection has an active and an anchor end. Active end is where you have the caret. Anchor end is the end that does not move when you do shift-selection.</para>
+            </summary>
+        </member>
+        <member name="M:JetBrains.TextControl.ITextControlSelectionEx.GetAnchorPoint(JetBrains.TextControl.ITextControlSelection)">
+            <summary>
+            <para>Selection has an active and an anchor end. Active end is where you have the caret. Anchor end is the end that does not move when you do shift-selection.</para>
+            </summary>
+        </member>
+        <member name="M:JetBrains.TextControl.ITextControlSelectionEx.GetSelectedText(JetBrains.TextControl.ITextControlSelection)">
+            <summary>
+            Returns the selected text. The list is always non-null, but might be empty if there's no selection.
+            </summary>
+        </member>
         <member name="M:JetBrains.TextControl.ITextControlWindowEx.ShowOrFocus(JetBrains.TextControl.ITextControlWindow,System.Boolean)">
             <summary>
             Switches between <see cref="M:JetBrains.TextControl.ITextControlWindow.Show"/> and <see cref="M:JetBrains.TextControl.ITextControlWindow.Focus"/> with a boolean param.
+            </summary>
+        </member>
+        <member name="T:JetBrains.IDE.TextControlAnchoringRect">
+            <summary>
+            Represents an anchor in the text editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.IDE.TextControlAnchoringRect.myRange">
+            <summary>
+            The range we track in the document. <c>Null</c> only until it's initialized by the constructor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.IDE.TextControlAnchoringRect.myRangeMarker">
+            <summary>
+            A marker for the <see cref="F:JetBrains.IDE.TextControlAnchoringRect.myRange"/> range.
+            </summary>
+        </member>
+        <member name="F:JetBrains.IDE.TextControlAnchoringRect.myTextControl">
+            <summary>
+            The text control to which the anchor is attached.
+            </summary>
+        </member>
+        <member name="M:JetBrains.IDE.TextControlAnchoringRect.#ctor(JetBrains.DataFlow.Lifetime,JetBrains.TextControl.ITextControl,System.Int32,JetBrains.Application.IShellLocks)">
+            <summary>
+            Anchors to the given range on the given text control.
+            </summary>
+        </member>
+        <member name="M:JetBrains.IDE.TextControlAnchoringRect.#ctor(JetBrains.DataFlow.Lifetime,JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange,JetBrains.Application.IShellLocks)">
+            <summary>
+            Anchors to the given range on the given text control.
+            </summary>
+        </member>
+        <member name="M:JetBrains.IDE.TextControlAnchoringRect.CreateBeginningOfLine(JetBrains.DataFlow.Lifetime,JetBrains.TextControl.ITextControl,System.Int32,JetBrains.Application.IShellLocks)">
+            <summary>
+            Creates an anchoring rectangle on the character at the beginning of the line.
+            </summary>
+            <param name="lifetime"></param>
+            <param name="textcontrol">The text control.</param>
+            <param name="offset">An offset in the text control. The beginning of the line containing this offset at the moment of the call will be tracked.</param>
+            <param name="locks"></param>
+        </member>
+        <member name="M:JetBrains.IDE.TextControlAnchoringRect.CreateFromCaretStatic(JetBrains.DataFlow.Lifetime,JetBrains.TextControl.ITextControl,JetBrains.Application.IShellLocks)">
+            <summary>
+            Creates an anchoring rectangle that anchors to the place where the caret was at the instant of the call.
+            “Static” means the anchor would update to accomodate for changes in the document, but won't track caret movement.
+            </summary>
+        </member>
+        <member name="M:JetBrains.IDE.TextControlAnchoringRect.CreateFromSelectionStatic(JetBrains.DataFlow.Lifetime,JetBrains.TextControl.ITextControl,JetBrains.Application.IShellLocks)">
+            <summary>
+            Creates an anchoring rectangle that anchors to the place where the selection margin was at the instant of the call.
+            “Static” means the anchor would update to accomodate for changes in the document, but won't track selection changes.
+            </summary>
+        </member>
+        <member name="M:JetBrains.IDE.TextControlAnchoringRect.UpdateAnchorGuarded">
+            <summary>
+            Needs a read lock for manipulating the document, called from <see cref="M:JetBrains.IDE.TextControlAnchoringRect.UpdateAnchor"/> in a guarded context.
+            </summary>
+        </member>
+        <member name="M:JetBrains.IDE.TextControlAnchoringRect.UpdateAnchor">
+            <summary>
+            Updates the anchoring rectangle as it gets dirty.
+            </summary>
+        </member>
+        <member name="P:JetBrains.IDE.TextControlAnchoringRect.Range">
+            <summary>
+            Gets or sets the range whose rectangle is tracked.
+            </summary>
+        </member>
+        <member name="P:JetBrains.IDE.TextControlAnchoringRect.TextControl">
+            <summary>
+            Gets the text control to which the range belongs.
+            </summary>
+        </member>
+        <member name="T:JetBrains.IDE.TextControlPopupWindowContext">
+            <summary>
+            Implementaion of <see cref="T:JetBrains.UI.PopupWindowManager.IPopupWindowContext"/> for <see cref="T:JetBrains.TextControl.ITextControl"/>.
             </summary>
         </member>
         <member name="T:JetBrains.TextControl.ShellComponentsEx">
@@ -1671,6 +1782,17 @@
             Represents zero-based column indices in the text control view.
             This does not correspond directly to the document lines and columns because of the collapsed regions and other view transformations.
             </summary>
+        </member>
+        <member name="M:JetBrains.TextControl.TextControlExtensions.ShowAtCaret(JetBrains.UI.Tooltips.ITooltipManager,JetBrains.DataFlow.Lifetime,System.String,JetBrains.TextControl.ITextControl,JetBrains.Application.IShellLocks,JetBrains.ActionManagement.IActionManager)">
+            <summary>
+            Shows a tooltip at the text control caret location.
+            </summary>
+            <param name="thіs"></param>
+            <param name="lifetime"></param>
+            <param name="text"></param>
+            <param name="textcontrol"></param>
+            <param name="locks"></param>
+            <param name="actionman"></param>
         </member>
         <member name="T:JetBrains.TextControl.TextControlLine">
             <summary>
@@ -1906,7 +2028,7 @@
             Provides access to the text control coordinate conversion, which makes it possible to represent a point on the text control or in the document in a unified way.
             </summary>
         </member>
-        <member name="P:JetBrains.TextControl.Impl.TextControlImpl.JetBrains#TextControl#ITextControl#Disposables">
+        <member name="P:JetBrains.TextControl.Impl.TextControlImpl.JetBrains#TextControl#ITextControl#Lifetime">
             <summary>
             Gets the Disposables collection that controls the text control lifetime.
             </summary>
@@ -1916,10 +2038,11 @@
             Emulats text control focus in tests.
             </summary>
         </member>
-        <member name="M:JetBrains.TextControl.Impl.WindowModelImpl.CreateViewportAnchorCore">
+        <member name="M:JetBrains.TextControl.Impl.WindowModelImpl.CreateViewportAnchorCore(JetBrains.DataFlow.Lifetime)">
             <summary>
             Should create the anchoring rect core object. Do not use caching, the impl already does it instead of calling the method directly.
             </summary>
+            <param name="lifetime"></param>
         </member>
         <member name="T:JetBrains.TextControl.Markup.IDocumentMarkupManager">
             <summary>
@@ -1931,24 +2054,21 @@
             Adds highlighter with attributes from HighlighterAttributeRegistry
             </summary>
         </member>
+        <member name="M:JetBrains.TextControl.Markup.IDocumentMarkup.BatchChangeCookie">
+            <summary>
+            Indicates that inside this disposable massive markup model change is expected. 
+            Changed event will be fired upon cookie dispose
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:JetBrains.TextControl.Markup.IDocumentMarkup.Document">
             <summary>
             Gets the document highlighted by this markup.
             </summary>
         </member>
-        <member name="E:JetBrains.TextControl.Markup.IDocumentMarkup.HighlighterAdded">
+        <member name="E:JetBrains.TextControl.Markup.IDocumentMarkup.Changed">
             <summary>
-            Fired when highlighter is added.
-            </summary>
-        </member>
-        <member name="E:JetBrains.TextControl.Markup.IDocumentMarkup.HighlighterModified">
-            <summary>
-            Fired when highlighter's user data is modified. <see cref="P:JetBrains.TextControl.Markup.IHighlighter.UserData"/>
-            </summary>
-        </member>
-        <member name="E:JetBrains.TextControl.Markup.IDocumentMarkup.HighlighterRemoved">
-            <summary>
-            Fired when highlighter is <b>explicitly</b> removed.
+            Fired when highlighter set is modified
             </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "T:JetBrains.TextControl.Markup.Impl.DocumentMarkupManagerBase" -->
@@ -2027,7 +2147,7 @@
             Aggregate. Manages adding/removing typing handlers and executing typing on them.
             </summary>
         </member>
-        <member name="M:JetBrains.TextControl.TextControlManager.#ctor(JetBrains.TextControl.TextControlCreator,JetBrains.TextControl.Impl.TextControlTypingHandlers,JetBrains.TextControl.Impl.TextControlProperties,JetBrains.TextControl.RunningTextControls,JetBrains.TextControl.Impl.TextControlManagerDerivativesLegacy)">
+        <member name="M:JetBrains.TextControl.TextControlManager.#ctor(JetBrains.TextControl.TextControlCreator,JetBrains.TextControl.Impl.TextControlTypingHandlers,JetBrains.TextControl.Impl.TextControlProperties,JetBrains.TextControl.RunningTextControls,JetBrains.TextControl.Impl.TextControlManagerDerivativesLegacy,JetBrains.TextControl.DefaultTextControlSchemeManager)">
             <summary>
             Initializes a new instance of the <see cref="T:System.Object"/> class.
             </summary>
@@ -2104,16 +2224,6 @@
         <member name="P:JetBrains.TextControl.TextControlManager.VisibleTextControls">
             <summary>
             <para>Tracks the list of <see cref="P:JetBrains.TextControl.TextControlManager.TextControls">text controls</see> currently visible on screen. There is no specific order on the text visible controls. This collection is live.</para>
-            </summary>
-        </member>
-        <member name="T:JetBrains.TextControl.Impl.TextControlManagerActivityTracker">
-            <summary>
-            Logs activity for <see cref="T:JetBrains.TextControl.TextControlManager"/>-handled things.
-            </summary>
-        </member>
-        <member name="M:JetBrains.TextControl.Impl.TextControlManagerActivityTracker.LogNewFocusedTextControl(JetBrains.TextControl.ITextControl,JetBrains.Application.IShellLocks,JetBrains.ActivityTracking.IActivityTracker)">
-            <summary>
-            Focused text control has changed.
             </summary>
         </member>
         <member name="T:JetBrains.TextControl.Impl.TextControlProperties">

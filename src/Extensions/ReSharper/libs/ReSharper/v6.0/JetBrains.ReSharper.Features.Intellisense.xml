@@ -283,12 +283,13 @@
             Control can be disposed instead of controller.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Intellisense.QuickDoc.StandAlone.QuickDocController.#ctor(JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.Psi.PsiLanguageType)">
+        <member name="M:JetBrains.ReSharper.Features.Intellisense.QuickDoc.StandAlone.QuickDocController.#ctor(JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.Psi.PsiLanguageType,JetBrains.ReSharper.Features.Intellisense.QuickDoc.QuickDocManager)">
             <summary>
             Creates controller
             </summary>
             <param name="solution">Solution</param>
             <param name="language">Default language to render</param>
+            <param name="quickDocManager"></param>
         </member>
         <member name="M:JetBrains.ReSharper.Features.Intellisense.QuickDoc.StandAlone.QuickDocController.OpenInEditor">
             <summary>

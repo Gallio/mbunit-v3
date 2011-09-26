@@ -53,9 +53,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner45.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner50.Tests", "Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner50.Tests.csproj", "{CFC4B4EC-4E57-461A-B6CB-33F8C0DF9238}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner51.vs2010", "Gallio.ReSharperRunner\Gallio.ReSharperRunner51.csproj", "{E836E643-5FB8-4446-8B25-B577E822F0D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner51", "Gallio.ReSharperRunner\Gallio.ReSharperRunner51.csproj", "{E836E643-5FB8-4446-8B25-B577E822F0D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner51.Tests.vs2010", "Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner51.Tests.csproj", "{A268C6C4-5B94-49DF-9AC0-FE9F65112A25}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner51.Tests", "Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner51.Tests.csproj", "{A268C6C4-5B94-49DF-9AC0-FE9F65112A25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner60", "Gallio.ReSharperRunner\Gallio.ReSharperRunner60.csproj", "{379A50C0-E3BC-4CD1-97FA-9967C279AA64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -163,6 +165,10 @@ Global
 		{A268C6C4-5B94-49DF-9AC0-FE9F65112A25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A268C6C4-5B94-49DF-9AC0-FE9F65112A25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A268C6C4-5B94-49DF-9AC0-FE9F65112A25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{379A50C0-E3BC-4CD1-97FA-9967C279AA64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{379A50C0-E3BC-4CD1-97FA-9967C279AA64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{379A50C0-E3BC-4CD1-97FA-9967C279AA64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{379A50C0-E3BC-4CD1-97FA-9967C279AA64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -193,5 +199,6 @@ Global
 		{CFC4B4EC-4E57-461A-B6CB-33F8C0DF9238} = {7388C03C-D1A4-432B-B6FA-364F8143D382}
 		{E836E643-5FB8-4446-8B25-B577E822F0D1} = {7388C03C-D1A4-432B-B6FA-364F8143D382}
 		{A268C6C4-5B94-49DF-9AC0-FE9F65112A25} = {7388C03C-D1A4-432B-B6FA-364F8143D382}
+		{379A50C0-E3BC-4CD1-97FA-9967C279AA64} = {7388C03C-D1A4-432B-B6FA-364F8143D382}
 	EndGlobalSection
 EndGlobal

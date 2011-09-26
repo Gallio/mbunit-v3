@@ -4,10 +4,12 @@
         <name>JetBrains.ReSharper.Features.Environment</name>
     </assembly>
     <members>
-        <member name="M:JetBrains.ReSharper.OptionPages.CodeStyle.Impl.CodeStylePageWithPreview`1.CreateCodeStylePreview">
+        <member name="M:JetBrains.ReSharper.OptionPages.CodeStyle.Impl.CodeStylePageWithPreview`1.CreateCodeStylePreview(JetBrains.TextControl.Markup.IDocumentMarkupManager,JetBrains.ProjectModel.ISolution)">
             <summary>
              Create preview box
             </summary>
+            <param name="documentMarkupManager"></param>
+            <param name="solution"></param>
         </member>
         <member name="M:JetBrains.ReSharper.OptionPages.CodeStyle.Impl.CodeStylePageWithPreview`1.GetSettingsValue(JetBrains.ReSharper.Psi.CodeStyle.CodeStyleSettings)">
             <summary>
@@ -79,17 +81,10 @@
             </summary>
             <param name="settings"></param>
         </member>
-        <member name="P:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.JavaScript.Pages.JavaScriptFormatterLineBreaksPage.Id">
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.VB.Pages.VBAnalysisPage.UseReSharperAnalysis">
             <summary>
-            Gets the ID of this option page.
-            <see cref="T:JetBrains.UI.Options.OptionsManager"/> or <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> could be used to retrieve
-            the <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> out of it.
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.JavaScript.Pages.JavaScriptCodeStylePage.Id">
-            <summary>
-            Gets the ID of this option page.
-            <see cref="T:JetBrains.UI.Options.OptionsManager"/> or <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> out of it.
+            Mirrors the <see cref="F:JetBrains.ReSharper.Feature.Services.Options.UseReSharperIntelliSense.Property"/> property, reflects the current in-options value.
+            Binded in <see cref="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.VB.Pages.VBAnalysisPage.InitControls"/>.
             </summary>
         </member>
         <member name="T:JetBrains.ReSharper.Features.Environment.Options.Inspections.CodeInspectionPage">
@@ -145,12 +140,6 @@
             The HTML resource with the preview area template.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Inspections.InspectionSeverityPage.InitControls">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
-        </member>
         <member name="M:JetBrains.ReSharper.Features.Environment.Options.Inspections.InspectionSeverityPage.Dispose(System.Boolean)">
             <summary>
             Clean up any resources being used.
@@ -160,6 +149,19 @@
             <summary>
             Gets the ID of this option page.
             <see cref="T:JetBrains.UI.Options.OptionsManager"/> or <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> out of it.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Environment.Options.Inspections.InspectionSeverityView">
+            <summary>
+            Interaction logic for Window1.xaml
+            </summary>
+            <summary>
+            InspectionSeverityView
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Inspections.InspectionSeverityView.InitializeComponent">
+            <summary>
+            InitializeComponent
             </summary>
         </member>
         <member name="F:JetBrains.ReSharper.Features.Environment.Options.Inspections.SkipItemsForm.components">
@@ -219,14 +221,9 @@
             List of bindings to from-target-apply on OK.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.CSharp.CsharpNamespaceImportsPage.FillSettingsBag(JetBrains.UI.Options.IOptionsDialog)">
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.CSharp.CsharpNamespaceImportsPage.FillSettingsBag(JetBrains.DataFlow.Lifetime,JetBrains.UI.Options.IOptionsDialog)">
             <summary>
             Prepares a settings bag for the language-neutral settings presenter.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.CSharp.CsharpNamespaceImportsPage.Dispose(System.Boolean)">
-            <summary> 
-            Clean up any resources being used.
             </summary>
         </member>
         <member name="P:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.CSharp.CsharpNamespaceImportsPage.Id">
@@ -299,17 +296,18 @@
             A setting from per-language import settings.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.NamespaceImportsPageBase.CreateView(JetBrains.UI.Options.IOptionsDialog,JetBrains.DataFlow.PropertyBag,System.Windows.Forms.TableLayoutPanel,JetBrains.DataFlow.Lifetime)">
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.NamespaceImportsPageBase.CreateView(JetBrains.DataFlow.PropertyBag,System.Windows.Forms.TableLayoutPanel,JetBrains.DataFlow.Lifetime,JetBrains.ReSharper.Psi.PsiIconManager)">
             <summary>
             Creates a view for imports page. Extracts the language-neutral part.
             </summary>
-            <param name="optionsDialog">Options dialog instance</param>
+            <param name="psiIconManager"></param>
             <param name="settings">Bag with settings to be edited.</param>
             <param name="grid">The grid to work in.</param>
-            <param name="Disposables">Destruction queue.</param>
+            <param name="lifetime">Destruction queue.</param>
+            <param name="solution"></param>
             <returns>The list of bindings to copy-from-target on OK.</returns>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.NamespaceImportsPageBase.InitView_ImportsOptimization(JetBrains.UI.Options.IOptionsDialog,JetBrains.DataFlow.PropertyBag,System.Windows.Forms.TableLayoutPanel,System.Windows.Forms.Control,System.Action{JetBrains.DataFlow.IPropertyBinding})">
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.NamespaceImportsPageBase.InitView_ImportsOptimization(JetBrains.ReSharper.Psi.PsiIconManager,JetBrains.DataFlow.PropertyBag,System.Windows.Forms.TableLayoutPanel,System.Windows.Forms.Control,System.Action{JetBrains.DataFlow.IPropertyBinding})">
             <summary>
             Creates a section.
             </summary>
@@ -337,14 +335,9 @@
             List of bindings to from-target-apply on OK.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.VB.VbnetNamespaceImportsPage.FillSettingsBag(JetBrains.UI.Options.IOptionsDialog)">
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.VB.VbnetNamespaceImportsPage.FillSettingsBag(JetBrains.DataFlow.Lifetime,JetBrains.UI.Options.IOptionsDialog)">
             <summary>
             Prepares a settings bag for the language-neutral settings presenter.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.VB.VbnetNamespaceImportsPage.Dispose(System.Boolean)">
-            <summary> 
-            Clean up any resources being used.
             </summary>
         </member>
         <member name="P:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.VB.VbnetNamespaceImportsPage.Id">
@@ -375,18 +368,18 @@
             the contents of this method with the code editor.
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.Features.Environment.Options.Naming.Web.CustomNamingOptionsPage.components">
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.Naming.CustomNamingOptionsPage.components">
             <summary> 
             Required designer variable.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Naming.Web.CustomNamingOptionsPage.Dispose(System.Boolean)">
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Naming.CustomNamingOptionsPage.Dispose(System.Boolean)">
             <summary> 
             Clean up any resources being used.
             </summary>
             <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Naming.Web.CustomNamingOptionsPage.InitializeComponent">
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Naming.CustomNamingOptionsPage.InitializeComponent">
             <summary> 
             Required method for Designer support - do not modify 
             the contents of this method with the code editor.
@@ -548,10 +541,11 @@
             </summary>
             <filterpriority>2</filterpriority>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.GetTooltip(System.Drawing.Point)">
+        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.GetTooltip(JetBrains.DataFlow.Lifetime,System.Drawing.Point)">
             <summary>
             Called by tooltip manager, if the tooltip is to be displayed
             </summary>
+            <param name="lifetime"></param>
             <param name="point">Point in control's coordinates</param>
             <returns><see cref="T:JetBrains.UI.Tooltips.ITooltipInfo"/>, or <c>Null</c> if no tooltip should be displayed.</returns>
         </member>
@@ -626,12 +620,6 @@
             <summary>
             Something has been clicked — turn modal.
             </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierPopup.Dispose(System.Boolean)">
-            <summary>
-            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-            </summary>
-            <filterpriority>2</filterpriority>
         </member>
         <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierPopup.OnPaint(System.Windows.Forms.PaintEventArgs)">
             <summary>
@@ -746,22 +734,15 @@
             </summary>
             <returns><c>True</c> if the caches are ready, <c>False</c> if user-cancelled.</returns>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Environment.RecentFiles.RecentFilesManager.ShowRecentFiles">
-            <summary>
-            Displays a popup menu list of the recent files.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Environment.RecentFiles.RecentFilesManager.ShowRecentEdits">
+        <member name="M:JetBrains.ReSharper.Features.Environment.RecentFiles.RecentFilesCommands.ShowRecentEdits">
             <summary>
             Displays a popup menu list of the recent edits.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Environment.RecentFiles.RecentFilesManager.Navigate(JetBrains.ReSharper.Features.Environment.RecentFiles.FileLocationInfo,JetBrains.UI.PopupWindowManager.IPopupWindowContext)">
+        <member name="M:JetBrains.ReSharper.Features.Environment.RecentFiles.RecentFilesCommands.ShowRecentFiles">
             <summary>
-            Opens the specified file and navigates to the position in it.
+            Displays a popup menu list of the recent files.
             </summary>
-            <param name="location">The recent file.</param>
-            <param name="context">Popup window context to notify about the action, may be <c>Null</c> if N/A.</param>
         </member>
         <member name="F:JetBrains.ReSharper.Features.Environment.Tips.TipsForm.components">
             <summary>

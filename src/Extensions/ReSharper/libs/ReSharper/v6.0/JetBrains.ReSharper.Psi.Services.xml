@@ -48,6 +48,31 @@
             Rehash should be called after any PSI change
             </summary>
         </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.PsiDataRules.DeclaredElementFromDocument(JetBrains.Application.DataContext.IDataContext)">
+            <summary>
+            See <see cref="T:JetBrains.Application.DataContext.DataRule`1"/> ctor for tuple semantic comments.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.Services.DataConstants.DECLARED_ELEMENT">
+            <summary>
+            For getting data ONLY.
+            You MUST NOT create data rules for this constant. You MUST always use <see cref="F:JetBrains.ReSharper.Psi.Services.DataConstants.DECLARED_ELEMENTS"/> instead when supplying data.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.DataConstantsEx.ToDeclaredElementsDataConstant(JetBrains.ReSharper.Psi.IDeclaredElement)">
+            <summary>
+            Returns the declared element as the declared elements data constant: a list of one non-Null item, or Null.
+            Prevents getting collections with null elements inside.
+            In other words, makes it valid for the data rule.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.DataConstantsEx.ToDeclaredElementsDataConstant(System.Collections.Generic.IList{JetBrains.ReSharper.Psi.IDeclaredElement})">
+            <summary>
+            Makes sure the declared elements collection does not contain Null items and is non-empty.
+            Filters out Nulls, returns Null instead of empty collections.
+            In other words, makes it valid for the data rule.
+            </summary>
+        </member>
         <member name="M:JetBrains.ReSharper.Psi.Services.ILanguageReferenceSelector.GetBaseConstructor(JetBrains.ReSharper.Psi.IConstructor)">
             <summary>
             Get the base constructor call from given constructor
@@ -72,6 +97,13 @@
             <summary>
             For WordIndex lookup. Only words specific for this element, not for children or siblings.
             </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.StructuralSearch.IStructuralSearchPattern.Check(JetBrains.ProjectModel.ISolution)">
+            <summary>
+            Returns empty string if pattern is correct
+            </summary>
+            <param name="solution"></param>
+            <returns></returns>
         </member>
         <member name="F:JetBrains.ReSharper.Psi.Services.StructuralSearch.StructuralSearchPatternParams.IgnoreEmptyStatements">
             <summary>

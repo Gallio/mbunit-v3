@@ -26,6 +26,7 @@ using JetBrains.ReSharper.Editor;
 using ReSharperDocumentRange = JetBrains.ReSharper.Editor.DocumentRange;
 #else
 using JetBrains.DocumentModel;
+using ConstantValue = Gallio.Common.Reflection.ConstantValue;
 using ReSharperDocumentRange = JetBrains.DocumentModel.DocumentRange;
 #endif
 
@@ -133,7 +134,11 @@ namespace Gallio.ReSharperRunner.Reflection
             if (isValid)
                 return CodeLocation.Unknown;
 
-            var projectFile = decl[0].GetProjectFile();
+#if RESHARPER_60
+            var projectFile = decl[0].GetSourceFile().ToProjectFile();
+#else
+			var projectFile = decl[0].GetProjectFile();
+#endif
             if (projectFile == null)
                 return CodeLocation.Unknown;
 

@@ -23,6 +23,8 @@ using JetBrains.UI;
 
 #if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
 using JetBrains.UI.Shell.PluginSupport;
+#elif RESHARPER_60
+using JetBrains.Application.PluginSupport;
 #else
 using JetBrains.UI.Application.PluginSupport;
 #endif

@@ -436,6 +436,66 @@
               Looks up a localized string similar to Specify name.
             </summary>
         </member>
+        <member name="T:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage">
+            <summary>
+            Represents custom UI page of refactoring workflow
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.Commit(JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+            Commits page
+            </summary>
+            <returns>Next pa ge if any</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.Initialize(JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+            Initializes page. Called before each show of the page which is caused by "Continue" button.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.RefreshContents(JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+            Refreshes internal page pointers. Returns <c>false</c> if refresh is unsuccessfull and refactoring should be canceled.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.ContinueEnabled">
+            <summary>
+            Gets flag indicating whether the Continue button is enabled.
+            This is ANDed with parent statuses, that include {not running workflow execution} and {validation passes}.
+            This means that you don't have to check the validator. If it's the only thing you can think of — just return <c>True</c>.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.Description">
+            <summary>
+            Gets page description
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.Title">
+            <summary>
+            Gets page title
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.View">
+            <summary>
+            Gets the page view that is inserted into the refactoring view.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Refactorings.ChangeSignature.Impl.DefaultParameterValuePage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.ChangeSignature.Impl.DefaultParameterValuePage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Refactorings.ChangeSignature.Impl.DefaultParameterValuePage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
         <member name="T:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringWorkflowProvider">
             <summary>
             Provides yet another refactoring for the given action (Ex: 'Move to outer scope' adds functionality to the Move action. )
@@ -491,49 +551,6 @@
         <member name="T:JetBrains.ReSharper.Refactorings.IWorkflowExec">
             <summary>
             Grouping interface for language specific helper of refactoring workflow.
-            </summary>
-        </member>
-        <member name="T:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage">
-            <summary>
-            Represents custom UI page of refactoring workflow
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.Commit(JetBrains.Application.Progress.IProgressIndicator)">
-            <summary>
-            Commits page
-            </summary>
-            <returns>Next pa ge if any</returns>
-        </member>
-        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.Initialize(JetBrains.Application.Progress.IProgressIndicator)">
-            <summary>
-            Initializes page. Called before each show of the page which is caused by "Continue" button.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.RefreshContents(JetBrains.Application.Progress.IProgressIndicator)">
-            <summary>
-            Refreshes internal page pointers. Returns <c>false</c> if refresh is unsuccessfull and refactoring should be canceled.
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.ContinueEnabled">
-            <summary>
-            Gets flag indicating whether the Continue button is enabled.
-            This is ANDed with parent statuses, that include {not running workflow execution} and {validation passes}.
-            This means that you don't have to check the validator. If it's the only thing you can think of — just return <c>True</c>.
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.Description">
-            <summary>
-            Gets page description
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.Title">
-            <summary>
-            Gets page title
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Refactorings.Workflow.IRefactoringPage.View">
-            <summary>
-            Gets the page view that is inserted into the refactoring view.
             </summary>
         </member>
         <member name="F:JetBrains.ReSharper.Refactorings.Move.AdjustNamespaces.Impl.AdjustNamespacesPage.components">
@@ -734,7 +751,7 @@
             Base class for refactoring services (utility code that can be reused outside of refactorings)
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Refactorings.Rename.RenameRefactoringService.ExcuteRename(JetBrains.ActionManagement.IDataContext)">
+        <member name="M:JetBrains.ReSharper.Refactorings.Rename.RenameRefactoringService.ExcuteRename(JetBrains.Application.DataContext.IDataContext)">
             <summary>
             Execute rename with provided atomic renames...
             </summary>
@@ -1252,14 +1269,14 @@
             Inits with a functor that produces the refactoring workflow.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.RefactoringAction.Execute(JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.DelegateExecute)">
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.RefactoringAction.Execute(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.DelegateExecute)">
             <summary>
             Executes action. Called after Update, that set ActionPresentation.Enabled to true.
             </summary>
             <param name="context">DataContext</param>
             <param name="nextExecute">delegate to call</param>
         </member>
-        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.RefactoringAction.Update(JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.RefactoringAction.Update(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
             <summary>
             Updates action visual presentation. If presentation.Enabled is set to false, Execute
             will not be called.
@@ -1492,13 +1509,13 @@
              Executes refactoring
              </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.RefactoringWorkflow.Initialize(JetBrains.ActionManagement.IDataContext)">
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.RefactoringWorkflow.Initialize(JetBrains.Application.DataContext.IDataContext)">
             <summary>
              Initializes workflow with specified data context
              
              </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.RefactoringWorkflow.IsAvailable(JetBrains.ActionManagement.IDataContext)">
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.RefactoringWorkflow.IsAvailable(JetBrains.Application.DataContext.IDataContext)">
             <summary>
              Checks if the refactoring is available in given data context
              </summary>
@@ -1623,7 +1640,7 @@
             While a task executor is in use, displays its instance.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.CreateTaskExecutor_AttachUi(JetBrains.Application.Progress.IProgressIndicatorModel,JetBrains.DataFlow.Lifetime)">
+        <member name="M:JetBrains.ReSharper.Refactorings.WorkflowW.RefactoringWizardForm.CreateTaskExecutor_AttachUi(JetBrains.DataFlow.Lifetime,JetBrains.Application.Progress.IProgressIndicatorModel)">
             <summary>
             When a task executor is created, binds its status to the dialog UI.
             </summary>
@@ -1776,27 +1793,7 @@
             Workflow for the rename refactoring
             </summary>
         </member>
-        <member name="T:JetBrains.ReSharper.Refactorings.Util.ProjectModificationUtil">
-            <summary>
-            Utility class for project modifications needed by refactorings (e.g. adding a file to project)
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Refactorings.Util.ProjectModificationUtil.ConfirmUseExistingFileInRefactoring(JetBrains.Util.FileSystemPath)">
-            <summary>
-            The default confirmation function for the <see cref="M:JetBrains.ReSharper.Refactorings.Util.ProjectModificationUtil.CreateFileNearby(JetBrains.ProjectModel.IProjectFile,System.String,System.Func{JetBrains.Util.FileSystemPath,System.Boolean})"/> func.
-            Shows a message box, silently confirms in tests.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Refactorings.Util.ProjectModificationUtil.CreateFileNearby(JetBrains.ProjectModel.IProjectFile,System.String,System.Func{JetBrains.Util.FileSystemPath,System.Boolean})">
-            <summary>
-            <c>Null</c> when reusing an existing file.
-            </summary>
-            <param name="projectFile">Near whom?</param>
-            <param name="newFileName">With what name?</param>
-            <param name="onConfirmUseExisting">If a file already exists, confirms that it should be reused (<c>True</c> retval).</param>
-            <returns>(1) The file nearby. (2) Whether a new file was created for that.</returns>
-        </member>
-        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.RefactoringWorkflowUtil.AcquireContext_TypeDeclaration(JetBrains.ActionManagement.IDataContext,JetBrains.DataFlow.IPropertyBag)">
+        <member name="M:JetBrains.ReSharper.Refactorings.Workflow.RefactoringWorkflowUtil.AcquireContext_TypeDeclaration(JetBrains.Application.DataContext.IDataContext,JetBrains.DataFlow.IPropertyBag)">
             <summary>
             Tries to locate some type declaration to run on.
             Returns whether one was found.

@@ -25,7 +25,7 @@
             Calculates completion range for the specified reference
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.KeywordCompletionUtil.Suggest(JetBrains.ReSharper.Psi.Tree.ITreeNode,System.Int32,System.String)">
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.KeywordCompletionUtil.Suggest(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode,System.Int32,System.String)">
             <summary>
             Suggest the keyword which could be placed insted of the given tree node
             </summary>
@@ -63,6 +63,11 @@
         <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Rules.MethodGroupOrLambdaExpectedRule">
             <summary>
             Rule for completing methods in delegate creation expressions
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Rules.MethodGroupOrLambdaExpectedRuleForLambdaParameterName">
+            <summary>
+            Rule for completing methods in delegate creation expressions for second parameter (x, y|)
             </summary>
         </member>
         <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Rules.IndexersRule">
@@ -171,33 +176,33 @@
             Gets type display name 
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLambdaLookupItem.Shrink">
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.SmartCompletion.CreateLambdaLookupItem.Shrink">
             <summary>
             Shrinks lookup item presentation
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLambdaLookupItem.Unshrink">
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.SmartCompletion.CreateLambdaLookupItem.Unshrink">
             <summary>
             Restores unshrinked lookup item presentation
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLambdaLookupItem.Accept(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange,JetBrains.ReSharper.Feature.Services.Lookup.LookupItemInsertType,JetBrains.ReSharper.Feature.Services.Lookup.Suffix,JetBrains.ProjectModel.ISolution,System.Boolean)">
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.SmartCompletion.CreateLambdaLookupItem.Accept(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange,JetBrains.ReSharper.Feature.Services.Lookup.LookupItemInsertType,JetBrains.ReSharper.Feature.Services.Lookup.Suffix,JetBrains.ProjectModel.ISolution,System.Boolean)">
             <summary>
             Completes the item at the specified range.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLambdaLookupItem.GetVisualReplaceRange(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange)" -->
-        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLambdaLookupItem.Image">
+        <!-- Badly formed XML comment ignored for member "M:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.SmartCompletion.CreateLambdaLookupItem.GetVisualReplaceRange(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange)" -->
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.SmartCompletion.CreateLambdaLookupItem.Image">
             <summary>
             Gets lookup item image
             </summary>
         </member>
-        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLambdaLookupItem.DisplayName">
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.SmartCompletion.CreateLambdaLookupItem.DisplayName">
             <summary>
             Gets lookup item display name
             </summary>
         </member>
-        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.CreateLambdaLookupItem.DisplayTypeName">
+        <member name="P:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.SmartCompletion.CreateLambdaLookupItem.DisplayTypeName">
             <summary>
             Gets type display name 
             </summary>

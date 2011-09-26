@@ -53,7 +53,7 @@ namespace Gallio.ReSharperRunner.Provider
         private Memoizer<string> shortNameMemoizer;
 #endif
 
-        private GallioTestElement(IUnitTestProvider provider, GallioTestElement parent, string testId, string testName, string kind, bool isTestCase,
+    	protected GallioTestElement(IUnitTestProvider provider, GallioTestElement parent, string testId, string testName, string kind, bool isTestCase,
             IProject project, IDeclaredElementResolver declaredElementResolver, string assemblyPath, string typeName, string namespaceName)
             : base(provider, parent)
         {

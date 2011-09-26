@@ -108,11 +108,12 @@
             </summary>
             <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         </member>
-        <member name="M:JetBrains.VsIntegration.ActionManagement.VsConflictingShortcutForm.InitializeComponent">
+        <member name="M:JetBrains.VsIntegration.ActionManagement.VsConflictingShortcutForm.InitializeComponent(JetBrains.Application.IApplicationDescriptor)">
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
             </summary>
+            <param name="applicationDescriptor"></param>
         </member>
         <member name="F:JetBrains.VsIntegration.ActionManagement.ShortcutsSchemeForm.components">
             <summary>
@@ -129,6 +130,14 @@
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.ActionManagement.VsActionLoader.ProcessInsert(System.Xml.XmlElement,JetBrains.ActionManagement.ActionsXmlInfo)">
+            <summary>
+            Handles the <c>insert</c> statement in ActionsXml.
+            Loads the nested actions and mounts them into the target group.
+            Handles inserting into VS command groups, other cases are handled by base impl.
+            Appolicable to runtime-created commands, CTO actions are ignored.
             </summary>
         </member>
         <member name="F:JetBrains.VsIntegration.ActionManagement.VsActionManager.OurInsertedCaptionPrefix">
@@ -253,14 +262,6 @@
         <member name="M:JetBrains.VsIntegration.ActionManagement.VsActionManager.GetActionIndex(JetBrains.ActionManagement.IActionGroup,JetBrains.ActionManagement.IActionBase)">
             <summary>
             We have to override this one, as we use two methods for referencing VS UI elements here: 1) By caption and 2) By GUID and ID of the respective command.
-            </summary>
-        </member>
-        <member name="M:JetBrains.VsIntegration.ActionManagement.VsActionManager.ProcessInsert(System.Xml.XmlElement,JetBrains.ActionManagement.ActionManager.ActionsXmlInfo)">
-            <summary>
-            Handles the <c>insert</c> statement in ActionsXml.
-            Loads the nested actions and mounts them into the target group.
-            Handles inserting into VS command groups, other cases are handled by base impl.
-            Appolicable to runtime-created commands, CTO actions are ignored.
             </summary>
         </member>
         <member name="P:JetBrains.VsIntegration.ActionManagement.VsActionManager.LastActionToExecute">
@@ -431,16 +432,10 @@
             Also handles dynamic product commands because they wouldn't be routed to the package, even though they have its command set guid.
             </summary>
         </member>
-        <member name="M:JetBrains.VsIntegration.ActionManagement.VsActionManagerPriorityCommandTarget.#ctor(JetBrains.VsIntegration.ActionManagement.VsActionManager,Microsoft.VisualStudio.Shell.Interop.IVsRegisterPriorityCommandTarget)">
+        <member name="M:JetBrains.VsIntegration.ActionManagement.VsActionManagerPriorityCommandTarget.#ctor(JetBrains.DataFlow.Lifetime,JetBrains.VsIntegration.ActionManagement.VsActionManager,Microsoft.VisualStudio.Shell.Interop.IVsRegisterPriorityCommandTarget)">
             <summary>
             Initializes a new instance of the <see cref="T:System.Object"/> class.
             </summary>
-        </member>
-        <member name="M:JetBrains.VsIntegration.ActionManagement.VsActionManagerPriorityCommandTarget.System#IDisposable#Dispose">
-            <summary>
-            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-            </summary>
-            <filterpriority>2</filterpriority>
         </member>
         <member name="M:JetBrains.VsIntegration.ActionManagement.VsActionManagerPriorityCommandTarget.Microsoft#VisualStudio#OLE#Interop#IOleCommandTarget#Exec(System.Guid@,System.UInt32,System.UInt32,System.IntPtr,System.IntPtr)">
             <summary/>
@@ -458,18 +453,41 @@
             Implements methods from addin's <see cref="T:EnvDTE.IDTCommandTarget"/>.
             </summary>
         </member>
-        <member name="M:JetBrains.VsIntegration.ActionManagement.VsAddInActionManagerDtCommandTarget.TryGetActionIdForVsCommandName(System.String,EnvDTE.DTE)">
+        <member name="M:JetBrains.VsIntegration.ActionManagement.VsAddInActionManagerDtCommandTarget.TryGetActionIdForVsCommandName(System.String,EnvDTE.DTE,JetBrains.VsIntegration.ActionManagement.VsActionManager)">
             <summary>
             Note: this method is not to be used with a Package.
             </summary>
             <param name="vsCommandName"></param>
             <param name="dte"></param>
+            <param name="vsActionManager"></param>
             <returns></returns>
         </member>
-        <member name="M:JetBrains.VsIntegration.ActionManagement.VsCommandActivityTracking.#ctor(JetBrains.VsIntegration.ActionManagement.VsActionManager,JetBrains.ActivityTracking.IActivityTracker,JetBrains.Util.EventBus.IEventBus,EnvDTE.DTE,Microsoft.VisualStudio.Shell.Interop.IVsCmdNameMapping,JetBrains.DataFlow.Lifetime)">
+        <member name="M:JetBrains.VsIntegration.ActionManagement.VsCommand.Equals(JetBrains.VsIntegration.ActionManagement.VsCommand)">
             <summary>
-            Initializes a new instance of the <see cref="T:System.Object"/> class.
+            Indicates whether the current object is equal to another object of the same type.
             </summary>
+            <returns>
+            true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
+            </returns>
+            <param name="other">An object to compare with this object.</param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.ActionManagement.VsCommand.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
+            </summary>
+            <returns>
+            true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.
+            </returns>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>. </param><exception cref="T:System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception><filterpriority>2</filterpriority>
+        </member>
+        <member name="M:JetBrains.VsIntegration.ActionManagement.VsCommand.GetHashCode">
+            <summary>
+            Serves as a hash function for a particular type. 
+            </summary>
+            <returns>
+            A hash code for the current <see cref="T:System.Object"/>.
+            </returns>
+            <filterpriority>2</filterpriority>
         </member>
         <member name="T:JetBrains.VsIntegration.ActionManagement.VsActionManagerMnemonicHelper">
             <summary>
@@ -487,7 +505,7 @@
             Note that the name could have the prefix of the main menu the command were added to, with a dot, and a prefix of the package name with an underscore, as we augment the command names.
             </summary>
         </member>
-        <member name="M:JetBrains.VsIntegration.ActionManagement.VsCommandActionManager.MakeVsAppIdForDynamicCommand(JetBrains.ActionManagement.IUpdatableAction)">
+        <member name="M:JetBrains.VsIntegration.ActionManagement.VsCommandActionManager.MakeVsAppIdForDynamicCommand(JetBrains.ActionManagement.IUpdatableAction,JetBrains.VsIntegration.ActionManagement.VsActionManager)">
             <summary>
             Makes a full name (AppID) of a VS command. Valid for dynamic commands only (static commands get their AppID prefix based on the main menu they take part in, which is pretty much random, especially if the command sits in multiple main menu items). For statics, must get a <see cref="T:EnvDTE.Command"/> and ask for its name.
             </summary>
@@ -520,12 +538,12 @@
             Manipulates VS commands and command bars.
             </summary>
         </member>
-        <member name="M:JetBrains.VsIntegration.ActionManagement.VsCommandHelpers.EnumDescendantCommandBars(Microsoft.VisualStudio.CommandBars.CommandBar,JetBrains.Util.Tests.CompoundException)">
+        <member name="M:JetBrains.VsIntegration.ActionManagement.VsCommandHelpers.EnumDescendantCommandBars(Microsoft.VisualStudio.CommandBars.CommandBar,JetBrains.Util.CompoundException)">
             <summary>
             BFS-enums descendant command bars of a command bar. Includes the starting command bar itself as the first item.
             </summary>
         </member>
-        <member name="M:JetBrains.VsIntegration.ActionManagement.VsCommandHelpers.EnumDescendantControls(Microsoft.VisualStudio.CommandBars.CommandBar,JetBrains.Util.Tests.CompoundException)">
+        <member name="M:JetBrains.VsIntegration.ActionManagement.VsCommandHelpers.EnumDescendantControls(Microsoft.VisualStudio.CommandBars.CommandBar,JetBrains.Util.CompoundException)">
             <summary>
             Does BFS on descendant controls and command bars of a command bar.
             Each returned item is the descandant control plus an array of its parents, top to bottom.
@@ -543,13 +561,31 @@
             Avoid using automation objects whenever possible, prefer early-bound COM interfaces when available.
             </summary>
         </member>
+        <member name="M:JetBrains.VsIntegration.ActionManagement.VsCommandHelpers.TryGetVsCommandAutomationObject(System.ComponentModel.Design.CommandID,EnvDTE.DTE)">
+            <summary>
+            Gets the VS Automation (DTE) object by the ID of a command.
+            Avoid using automation objects whenever possible, prefer early-bound COM interfaces when available.
+            </summary>
+        </member>
         <member name="M:JetBrains.VsIntegration.ActionManagement.VsCommandHelpers.VsCommandIDToVsCommandName(System.ComponentModel.Design.CommandID,Microsoft.VisualStudio.Shell.Interop.IVsCmdNameMapping)">
             <summary>
             Translates the AppID — GUID:ID mapping for VS commands.
             Does not query Registry, like DTE Commands object would do for names.
             </summary>
         </member>
+        <member name="M:JetBrains.VsIntegration.ActionManagement.VsCommandHelpers.TryMapVsCommandIDToVsCommandName(System.ComponentModel.Design.CommandID,Microsoft.VisualStudio.Shell.Interop.IVsCmdNameMapping)">
+            <summary>
+            Translates the AppID — GUID:ID mapping for VS commands.
+            Does not query Registry, like DTE Commands object would do for names.
+            </summary>
+        </member>
         <member name="M:JetBrains.VsIntegration.ActionManagement.VsCommandHelpers.VsCommandNameToVsCommandID(System.String,Microsoft.VisualStudio.Shell.Interop.IVsCmdNameMapping)">
+            <summary>
+            Translates the AppID — GUID:ID mapping for VS commands.
+            Does not query Registry, like DTE Commands object would do for names.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.ActionManagement.VsCommandHelpers.TryMapVsCommandNameToVsCommandID(System.String,Microsoft.VisualStudio.Shell.Interop.IVsCmdNameMapping)">
             <summary>
             Translates the AppID — GUID:ID mapping for VS commands.
             Does not query Registry, like DTE Commands object would do for names.
@@ -658,37 +694,148 @@
             Whether this is an executable action that starts a dynamic group.
             </summary>
         </member>
-        <member name="M:JetBrains.VsIntegration.ActionManagement.VsShortcutsManager.VsShortcut.ToString">
+        <member name="M:JetBrains.VsIntegration.ActionManagement.VsShortcut.ToString">
             <summary>
             ToString must provide a human-readable string for the shortcut.
             </summary>
         </member>
-        <member name="M:JetBrains.VsIntegration.ActionManagement.VsShortcutsManager.VsCommand.Equals(JetBrains.VsIntegration.ActionManagement.VsShortcutsManager.VsCommand)">
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.Hwnd(System.Windows.Automation.AutomationElement)">
             <summary>
-            Indicates whether the current object is equal to another object of the same type.
+            Gets the HWND of an UIA.
+            Throws if the latter is not a window.
             </summary>
-            <returns>
-            true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
-            </returns>
-            <param name="other">An object to compare with this object.</param>
         </member>
-        <member name="M:JetBrains.VsIntegration.ActionManagement.VsShortcutsManager.VsCommand.Equals(System.Object)">
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.Render(System.Windows.Automation.Condition)">
             <summary>
-            Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
+            Renders the textual representation of the condition.
             </summary>
-            <returns>
-            true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.
-            </returns>
-            <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>. </param><exception cref="T:System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception><filterpriority>2</filterpriority>
         </member>
-        <member name="M:JetBrains.VsIntegration.ActionManagement.VsShortcutsManager.VsCommand.GetHashCode">
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.Search(System.Windows.Automation.AutomationElement,System.Windows.Automation.TreeScope)">
             <summary>
-            Serves as a hash function for a particular type. 
+            A fluent search API on automation elements.
+            Supports searching in both HWND-based and virtual UIA trees.
             </summary>
-            <returns>
-            A hash code for the current <see cref="T:System.Object"/>.
-            </returns>
-            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.SearchHwnd(System.Windows.Automation.AutomationElement,System.Windows.Automation.TreeScope)">
+            <summary>
+            A fluent search API on automation elements.
+            Supports searching HWND automation elements only, but does this with less chances of a deadlock.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.ToggleInto(System.Windows.Automation.AutomationElement,System.Windows.Automation.ToggleState)">
+            <summary>
+            Toggle pattern: toggles until the desired result is achieved.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.ValueGet(System.Windows.Automation.AutomationElement)">
+            <summary>
+            Value pattern: gets the value.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.ValueSet(System.Windows.Automation.AutomationElement,System.String)">
+            <summary>
+            Value pattern: sets the value.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.WhereEnabled(JetBrains.VsIntegration.Automation.AutomationElementEx.AutomationElementSearch)">
+            <summary>
+            Property-specific overload for the <see cref="M:JetBrains.VsIntegration.Automation.AutomationElementEx.AutomationElementSearch.Where(System.Windows.Automation.AutomationProperty,System.Object)"/> method.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.WhereAutomationIdIs(JetBrains.VsIntegration.Automation.AutomationElementEx.AutomationElementSearch,System.String)">
+            <summary>
+            Property-specific overload for the <see cref="M:JetBrains.VsIntegration.Automation.AutomationElementEx.AutomationElementSearch.Where(System.Windows.Automation.AutomationProperty,System.Object)"/> method.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.WhereControlTypeIs(JetBrains.VsIntegration.Automation.AutomationElementEx.AutomationElementSearch,System.Windows.Automation.ControlType)">
+            <summary>
+            Property-specific overload for the <see cref="M:JetBrains.VsIntegration.Automation.AutomationElementEx.AutomationElementSearch.Where(System.Windows.Automation.AutomationProperty,System.Object)"/> method.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.WhereNameIs(JetBrains.VsIntegration.Automation.AutomationElementEx.AutomationElementSearch,System.String)">
+            <summary>
+            Property-specific overload for the <see cref="M:JetBrains.VsIntegration.Automation.AutomationElementEx.AutomationElementSearch.Where(System.Windows.Automation.AutomationProperty,System.Object)"/> method.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.AutomationElementSearch.All">
+            <summary>
+            Gets all of the results
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.AutomationElementSearch.First">
+            <summary>
+            Gets the first search result.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.AutomationElementSearch.FirstOrDefault">
+            <summary>
+            Gets the first search result, or <c>Null</c>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.AutomationElementSearch.Single(System.String)">
+            <summary>
+            Gets the one and only search result.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.AutomationElementSearch.Union(System.Windows.Automation.AutomationProperty,System.Object)">
+            <summary>
+            Fluent. Adds an OR condition to the search.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.AutomationElementSearch.Where(System.Windows.Automation.AutomationProperty,System.Object)">
+            <summary>
+            Fluent. Adds an AND condition to the search.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.AutomationElementSearch.ExecRequest(System.Func{System.Windows.Automation.AutomationElement})">
+            <summary>
+            A stub for switching into calling for <see cref="!:Automation.ExecFreeThreaded"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.AutomationElementSearch.FindAllCore">
+            <summary>
+            Switching implementation: by UIA or HWND.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.AutomationElementSearch.FindFirstOrDefaultCore">
+            <summary>
+            Switching implementation: by UIA or HWND.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.AutomationElementSearch.GetConditionForSearch">
+            <summary>
+            Gets the condition to be used for running UIA searches.
+            Specifically handles the case with no condition.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Automation.AutomationElementEx.AutomationElementSearch.SearchHwndCore">
+            <summary>
+            HWND-based search, universal impl.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Automation.AutomationProperties">
+            <summary>
+            Exposes automation properties.
+            Because of the class name, R# Smart Completion can suggest them where applicable.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Automation.AutomationProperties.AutomationId">
+            <summary>Property ID: AutomationId - An identifier for an element that is unique within its containing element.</summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Automation.AutomationProperties.ClassName">
+            <summary>Property ID: ClassName - name of underlying class - implementation dependant, but useful for test</summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Automation.AutomationProperties.ControlType">
+            <summary>Property ID: The ControlType of this Element</summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Automation.AutomationProperties.Name">
+            <summary>Property ID: name of this instance of control</summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Automation.AutomationProperties.NativeWindowHandle">
+            <summary>Property ID: NativeWindowHandle - Window Handle, if the underlying control is a Window</summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Automation.AutomationProperties.IsEnabled">
+            <summary>Property ID: Enabled</summary>
         </member>
         <member name="T:JetBrains.VsIntegration.CodeEditorEmbedding.CodeEditorUserControl">
             <summary>
@@ -927,7 +1074,7 @@
             <para>That's why document line-column positions (<see cref="T:JetBrains.DocumentModel.DocumentCoords"/>) do not always agree to the text control line-column positions (<see cref="T:JetBrains.TextControl.TextControlLineColumn"/>). Currently, these coordinates have different CLR types and are not so easily mixed together.</para>
             </summary>
         </member>
-        <member name="P:JetBrains.VsIntegration.CodeEditorEmbedding.VsCodeEditorControl.JetBrains#TextControl#ITextControl#Disposables">
+        <member name="P:JetBrains.VsIntegration.CodeEditorEmbedding.VsCodeEditorControl.JetBrains#TextControl#ITextControl#Lifetime">
             <summary>
             Gets the Disposables collection that controls the text control lifetime.
             </summary>
@@ -1351,7 +1498,7 @@
             Tries to poke into the frame to cause it open the text control if not yet open (needed for xaml aspx 'n shit).
             </summary>
         </member>
-        <member name="M:JetBrains.VsIntegration.EditorManager.VsEditorManager.CreateTextControlForFile_OnException(System.Exception,System.String)">
+        <member name="M:JetBrains.VsIntegration.EditorManager.VsEditorManager.CreateTextControlForFile_OnException(System.Exception,JetBrains.Util.FileSystemPath)">
             <summary>
             Exception handling when opening text controls for documents in VS (shared between a number of functions).
             Need to show some of the errors as message boxes (eg IO exceptions).
@@ -1370,10 +1517,11 @@
             </summary>
             <remarks>For common settings not owned by a component, provides a single place to define the string name of the setting and the default value, which guarantees they agree in all usages across the solution.</remarks>
         </member>
-        <member name="P:JetBrains.VsIntegration.GlobalSettings.HideVsMenuItems">
+        <member name="M:JetBrains.VsIntegration.GlobalSettings.HideVsMenuItems(JetBrains.Application.Configuration.GlobalSettingsTable)">
             <summary>
             Whether to hide VS menu items for the actions we replace with a better implementation, but do not override explicitly.
             </summary>
+            <param name="globalSettingsTable"></param>
         </member>
         <member name="T:JetBrains.VsIntegration.IDE.VsOnIdle">
             <summary>
@@ -1464,25 +1612,12 @@
             <param name="attributeInstance">Instance of the attribute to process.</param>
             <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
         </member>
-        <member name="M:JetBrains.VsIntegration.Install.CommandLineInstallerVs.InstallStatic(JetBrains.Application.Install.Installer)">
-            <summary>
-            Called once on the object during the registration process.
-            </summary>
-            <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
-        </member>
         <member name="T:JetBrains.VsIntegration.Install.InstallDirInstallerVs">
             <summary>
             Writes the InstallDir to the Registry. Works for VS shells.
             </summary>
         </member>
-        <member name="M:JetBrains.VsIntegration.Install.InstallDirInstallerVs.InstallInstance(JetBrains.Application.Install.Installer,System.Object)">
-            <summary>
-            Called for each of the attributes of the requested type encountered in the known assemblies.
-            </summary>
-            <param name="attributeInstance">Instance of the attribute to process.</param>
-            <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
-        </member>
-        <member name="M:JetBrains.VsIntegration.Install.InstallDirInstallerVs.InstallStatic(JetBrains.Application.Install.Installer)">
+        <member name="M:JetBrains.VsIntegration.Install.InstallDirInstallerVs.JetBrains#Application#Install#IStaticInstaller#InstallStatic(JetBrains.Application.Install.Installer)">
             <summary>
             Called once on the object during the registration process.
             </summary>
@@ -1675,12 +1810,6 @@
             </summary>
             <param name="installer">Ctx.</param>
             <param name="attributeInstance">Instance of the attribute to process.</param>
-            <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
-        </member>
-        <member name="M:JetBrains.VsIntegration.Install.PackageRegistryInstaller.InstallStatic(JetBrains.Application.Install.Installer)">
-            <summary>
-            Called once on the object during the registration process.
-            </summary>
             <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
         </member>
         <member name="T:JetBrains.VsIntegration.Install.RegisterPackageAttribute">
@@ -2765,7 +2894,7 @@
         <member name="P:JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextBuffer.JetDocument">
             <summary>
             <para>Gets our <see cref="T:JetBrains.DocumentModel.IDocument"/> object attached to the given Visual Studio text buffer.</para>
-            <para>Note that the object from our model corresponding to the Visual Studio model object is not guaranteed to exist at the moment of your call (eg you're calling from MEF and our Shell is not running yet/already). In this case the returned non-<c>Null</c> property has a <c>Null</c> value, and you should listen to the changes to its value (eg with <see cref="M:JetBrains.DataFlow.IPropertyEx.ForEachValue_NotNull``1(JetBrains.DataFlow.IProperty{``0},JetBrains.DataFlow.Lifetime,System.Action{JetBrains.DataFlow.Lifetime,``0})"/>).</para>
+            <para>Note that the object from our model corresponding to the Visual Studio model object is not guaranteed to exist at the moment of your call (eg you're calling from MEF and our Shell is not running yet/already). In this case the returned non-<c>Null</c> property has a <c>Null</c> value, and you should listen to the changes to its value (eg with <see cref="M:JetBrains.DataFlow.IPropertyEx.ForEachValue_NotNull``1(JetBrains.DataFlow.IProperty{``0},JetBrains.DataFlow.Lifetime,System.Action{JetBrains.DataFlow.Lifetime,``0},System.Boolean)"/>).</para>
             <para>This technique allows to combine lifetimes of MEF and Shell entities: whether you look into this property before jet model object is created or when it's already available, your handler will be called when jet model object is ready.</para>
             </summary>
         </member>
@@ -2900,11 +3029,6 @@
             <para>You can bind to the lifetime of this property to make sure you're operating in a live environment.</para>
             </summary>
         </member>
-        <member name="M:JetBrains.VsIntegration.Package.VsPackage.PushActionHandlers(JetBrains.VsIntegration.Package.VsPackageSdkStub.QueryStatusHandler,JetBrains.VsIntegration.Package.VsPackageSdkStub.ExecHandler)">
-            <summary>
-            Injects into handling the package actions.
-            </summary>
-        </member>
         <member name="M:JetBrains.VsIntegration.Package.VsPackage.Init_ExceptionReporter_NoAppDescriptor">
             <summary>
             Show any exceptions to the user.
@@ -2954,10 +3078,11 @@
             Eg actions that enable/disable that shell.
             </summary>
         </member>
-        <member name="M:JetBrains.VsIntegration.Package.VsPackage.GetPropertyPage_CreateAvalonPage(Microsoft.VisualStudio.Shell.Interop.VSPROPSHEETPAGE*,System.Func{JetBrains.DataFlow.Lifetime,System.Windows.Media.Visual})">
+        <member name="M:JetBrains.VsIntegration.Package.VsPackage.GetPropertyPage_CreateAvalonPage(JetBrains.DataFlow.Lifetime,Microsoft.VisualStudio.Shell.Interop.VSPROPSHEETPAGE*,System.Func{JetBrains.DataFlow.Lifetime,System.Windows.Media.Visual})">
             <summary>
             Fills in the VS property page request structure at <paramref name="pPage"/> with a HWND host for the <paramref name="FCreateContent"/>-emitted content, and disposes of the HWND host when the property page gets released. The content functor is given the lifetime of the page.
             </summary>
+            <param name="disposables"></param>
             <param name="pPage"></param>
             <param name="FCreateContent"></param>
         </member>
@@ -3585,7 +3710,7 @@
         <member name="T:JetBrains.VsIntegration.ProjectModel.VsExtenderInstaller">
             <summary>
             Registers and unregisters the highlighters.
-            Due to the <see cref="T:JetBrains.Application.Install.InstallAttributesAttribute"/>, it's invoked for each <see cref="T:JetBrains.VsIntegration.ProjectModel.VSRegisterExtenderAttribute"/>.
+            Due to the <see cref="T:JetBrains.Application.Install.AssemblyAttributeInstallerAttribute"/>, it's invoked for each <see cref="T:JetBrains.VsIntegration.ProjectModel.VSRegisterExtenderAttribute"/>.
             </summary>
         </member>
         <member name="M:JetBrains.VsIntegration.ProjectModel.VsExtenderInstaller.InstallInstance(JetBrains.Application.Install.Installer,System.Object)">
@@ -3593,12 +3718,6 @@
             Called for each of the attributes of the requested type encountered in the known assemblies.
             </summary>
             <param name="attributeInstance">Instance of the attribute to process.</param>
-            <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
-        </member>
-        <member name="M:JetBrains.VsIntegration.ProjectModel.VsExtenderInstaller.InstallStatic(JetBrains.Application.Install.Installer)">
-            <summary>
-            Called once on the object during the registration process.
-            </summary>
             <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
         </member>
         <member name="M:JetBrains.VsIntegration.ProjectModel.VSProjectUtil.GetFirstChild(JetBrains.VsIntegration.ProjectModel.VsHierarchyItem)">
@@ -3640,7 +3759,7 @@
         <member name="T:JetBrains.VsIntegration.ProjectModel.VsRegisterObjectInstaller">
             <summary>
             Registers and unregisters the highlighters.
-            Due to the <see cref="T:JetBrains.Application.Install.InstallAttributesAttribute"/>, it's invoked for each <see cref="T:JetBrains.VsIntegration.ProjectModel.VSRegisterObjectAttribute"/>.
+            Due to the <see cref="T:JetBrains.Application.Install.AssemblyAttributeInstallerAttribute"/>, it's invoked for each <see cref="T:JetBrains.VsIntegration.ProjectModel.VSRegisterObjectAttribute"/>.
             </summary>
         </member>
         <member name="M:JetBrains.VsIntegration.ProjectModel.VsRegisterObjectInstaller.InstallInstance(JetBrains.Application.Install.Installer,System.Object)">
@@ -3648,12 +3767,6 @@
             Called for each of the attributes of the requested type encountered in the known assemblies.
             </summary>
             <param name="attributeInstance">Instance of the attribute to process.</param>
-            <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
-        </member>
-        <member name="M:JetBrains.VsIntegration.ProjectModel.VsRegisterObjectInstaller.InstallStatic(JetBrains.Application.Install.Installer)">
-            <summary>
-            Called once on the object during the registration process.
-            </summary>
             <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
         </member>
         <member name="T:JetBrains.VsIntegration.Extension.DteEx">
@@ -3722,117 +3835,6 @@
             <param name="interfaceGuid">Interface to query the gotten instance for.</param>
             <returns>The instance, or <c>Null</c> in case of a failure.</returns>
         </member>
-        <member name="T:JetBrains.VsIntegration.Application.IVsServiceProviderEx">
-            <summary>
-            VS-specific extensions to the OLE <see cref="T:Microsoft.VisualStudio.OLE.Interop.IServiceProvider"/> interface.
-            </summary>
-        </member>
-        <member name="M:JetBrains.VsIntegration.Application.IVsServiceProviderEx.IOleCommandTarget(Microsoft.VisualStudio.OLE.Interop.IServiceProvider)">
-            <summary>
-            Gets the main Ole Command Target of the Visual Studio Shell.
-            </summary>
-        </member>
-        <member name="T:JetBrains.VsIntegration.Application.JetVisualStudioHost">
-            <summary>
-            Represents the VS host that can load our products.
-            </summary>
-        </member>
-        <member name="M:JetBrains.VsIntegration.Application.JetVisualStudioHost.GetOrCreateHost(Microsoft.VisualStudio.OLE.Interop.IServiceProvider)">
-            <summary>
-            The first product to be loaded in VS creates the host, the others just get it.
-            </summary>
-        </member>
-        <member name="T:JetBrains.VsIntegration.Application.VSOneTimeInitializationManager">
-            <summary>
-            Adatps the one-time-init manager to VS by properly queueing the one-time-init and checking if VS is ready.
-            </summary>
-        </member>
-        <member name="M:JetBrains.VsIntegration.Application.VSOneTimeInitializationManager.OnCheckFailed(System.Exception)">
-            <summary>
-            Invoked when one-time-init fails to read/write the Regsitry. Should report to the user in an app-dependent manner.
-            </summary>
-        </member>
-        <member name="P:JetBrains.VsIntegration.Application.VSOneTimeInitializationManager.IsOneTimeInitAllowed">
-            <summary>
-            Gets whether the one-time-init is allowed to run at the moment, eg the main window has already been created.
-            </summary>
-        </member>
-        <member name="T:JetBrains.VsIntegration.Application.VSOneTimeInitializationManager.OneTimeInitRegistryInstaller">
-            <summary>
-            Resets the one-time-init in the Registry on installation and re-registration.
-            </summary>
-        </member>
-        <member name="M:JetBrains.VsIntegration.Application.VSOneTimeInitializationManager.OneTimeInitRegistryInstaller.InstallInstance(JetBrains.Application.Install.Installer,System.Object)">
-            <summary>
-            Called for each of the attributes of the requested type encountered in the known assemblies.
-            </summary>
-            <param name="attributeInstance">Instance of the attribute to process.</param>
-            <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
-        </member>
-        <member name="M:JetBrains.VsIntegration.Application.VSOneTimeInitializationManager.OneTimeInitRegistryInstaller.InstallStatic(JetBrains.Application.Install.Installer)">
-            <summary>
-            Called once on the object during the registration process.
-            </summary>
-            <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
-        </member>
-        <member name="T:JetBrains.VsIntegration.Application.ShellComponentsEx">
-            <summary>
-            <see cref="T:JetBrains.Application.ShellComponents"/> in this assembly.
-            </summary>
-        </member>
-        <member name="M:JetBrains.VsIntegration.Application.ShellComponentsEx.VsSelection(JetBrains.Application.ShellComponents)">
-            <summary>
-            Exposes the <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsMonitorSelection">Visual Studio Shell Selection</see>, including <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsSelectionEvents">its events</see>.
-            </summary>
-        </member>
-        <member name="M:JetBrains.VsIntegration.Application.ShellComponentsEx.VsShims(JetBrains.Application.ShellComponents)">
-            <summary>
-            Provides access to shim components that wrap access to Visual Studio.
-            </summary>
-        </member>
-        <member name="T:JetBrains.VsIntegration.Application.ShellComponentsVsShims">
-            <summary>
-            Provides access to shim components that wrap access to Visual Studio.
-            </summary>
-        </member>
-        <member name="M:JetBrains.VsIntegration.Application.ShellComponentsVsShims.VsRunningDocumentTableEvents">
-            <summary>
-            The centralized sink for the <see cref="T:JetBrains.VsIntegration.Interop.Shim.Shell.IVsRunningDocumentTable">VS Running Document Table</see> events.
-            </summary>
-        </member>
-        <member name="M:JetBrains.VsIntegration.Application.ShellComponentsVsShims.VsTextManagerEvents">
-            <summary>
-            The centralized sink for the <see cref="T:Microsoft.VisualStudio.TextManager.Interop.IVsTextManager">VS Text Manager</see> events.
-            </summary>
-        </member>
-        <member name="M:JetBrains.VsIntegration.Application.VsAnyProductSettingsLocation.GetProductSettingsSuffix_VsShell(System.String,System.Version,System.String)">
-            <summary>
-            USE NON-STATIC VERSION WHENEVER POSSIBLE.
-            Gets the suffix that forms the <see cref="!:VSShell.ProductRegistryKey"/>, <see cref="!:VSShell.UserSettingsRoamingDir"/>, and <see cref="!:VSShell.UserSettingsLocalDir"/>.
-            The template must not include location-specific parts (ie “Software” for registry or “AppData” for folder), as they should be concatenated by consumers.
-            There should be no leading or trailing slashes.
-            </summary>
-        </member>
-        <member name="T:JetBrains.VsIntegration.Application.VsHostCommandLine">
-            <summary>
-            Exposes the full command line of the VS host, with all the keys from all the products.
-            </summary>
-        </member>
-        <member name="M:JetBrains.VsIntegration.Application.VsHostCommandLine.#ctor(Microsoft.VisualStudio.Shell.Interop.IVsAppCommandLine,System.String)">
-            <summary>
-            Creates the cmdline.
-            </summary>
-            <param name="vsAppCommandLine">VS object.</param>
-            <param name="sVsHiveRootSuffix">If VS is running in non-default hive, defines the root suffix of that hive. Keys with such a suffix will be recognized and stripped off the suffix. Keys belonging to the default hive will always be recognized. In the default hive, use an empty string.</param>
-        </member>
-        <member name="M:JetBrains.VsIntegration.Application.VsHostCommandLine.GetCommandLineArgName(System.String,System.String,System.String)">
-            <summary>
-            Forms the complete Visual Studio command line argument name, such as you should enter in the DEVENV command line.
-            </summary>
-            <param name="sArgName">Command line arg name.</param>
-            <param name="sProductName">Product name (prefixes the arg).</param>
-            <param name="sVsRootSuffix">Root suffix (suffixes the arg, if non-empty).</param>
-        </member>
         <member name="T:JetBrains.VsIntegration.Application.IVsEnvironmentInformation">
             <summary>
             Provides info on the VS environment.
@@ -3887,6 +3889,102 @@
             Gets the version of the Visual Studio we're running under, the full 4-component thing. Example: “9.0.30729.1”.
             </summary>
         </member>
+        <member name="T:JetBrains.VsIntegration.Application.IVsServiceProviderEx">
+            <summary>
+            VS-specific extensions to the OLE <see cref="T:Microsoft.VisualStudio.OLE.Interop.IServiceProvider"/> interface.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Application.IVsServiceProviderEx.IOleCommandTarget(Microsoft.VisualStudio.OLE.Interop.IServiceProvider)">
+            <summary>
+            Gets the main Ole Command Target of the Visual Studio Shell.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Application.JetVisualStudioHost">
+            <summary>
+            Represents the VS host that can load our products.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Application.JetVisualStudioHost.GetOrCreateHost(Microsoft.VisualStudio.OLE.Interop.IServiceProvider)">
+            <summary>
+            The first product to be loaded in VS creates the host, the others just get it.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Application.VSOneTimeInitializationManager">
+            <summary>
+            Adatps the one-time-init manager to VS by properly queueing the one-time-init and checking if VS is ready.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Application.VSOneTimeInitializationManager.OnCheckFailed(System.Exception)">
+            <summary>
+            Invoked when one-time-init fails to read/write the Regsitry. Should report to the user in an app-dependent manner.
+            </summary>
+        </member>
+        <member name="P:JetBrains.VsIntegration.Application.VSOneTimeInitializationManager.IsOneTimeInitAllowed">
+            <summary>
+            Gets whether the one-time-init is allowed to run at the moment, eg the main window has already been created.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Application.VSOneTimeInitializationManager.OneTimeInitRegistryInstaller">
+            <summary>
+            Resets the one-time-init in the Registry on installation and re-registration.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Application.VSOneTimeInitializationManager.OneTimeInitRegistryInstaller.JetBrains#Application#Install#IStaticInstaller#InstallStatic(JetBrains.Application.Install.Installer)">
+            <summary>
+            Called once on the object during the registration process.
+            </summary>
+            <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Application.ShellComponentsEx">
+            <summary>
+            <see cref="T:JetBrains.Application.ShellComponents"/> in this assembly.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Application.ShellComponentsEx.VsSelection(JetBrains.Application.ShellComponents)">
+            <summary>
+            Exposes the <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsMonitorSelection">Visual Studio Shell Selection</see>, including <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsSelectionEvents">its events</see>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Application.ShellComponentsEx.VsShims(JetBrains.Application.ShellComponents)">
+            <summary>
+            Provides access to shim components that wrap access to Visual Studio.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Application.ShellComponentsVsShims">
+            <summary>
+            Provides access to shim components that wrap access to Visual Studio.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Application.ShellComponentsVsShims.VsRunningDocumentTableEvents">
+            <summary>
+            The centralized sink for the <see cref="T:JetBrains.VsIntegration.Interop.Shim.Shell.IVsRunningDocumentTable">VS Running Document Table</see> events.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Application.ShellComponentsVsShims.VsTextManagerEvents">
+            <summary>
+            The centralized sink for the <see cref="T:Microsoft.VisualStudio.TextManager.Interop.IVsTextManager">VS Text Manager</see> events.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Application.VsHostCommandLine">
+            <summary>
+            Exposes the full command line of the VS host, with all the keys from all the products.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Application.VsHostCommandLine.#ctor(Microsoft.VisualStudio.Shell.Interop.IVsAppCommandLine,System.String)">
+            <summary>
+            Creates the cmdline.
+            </summary>
+            <param name="vsAppCommandLine">VS object.</param>
+            <param name="sVsHiveRootSuffix">If VS is running in non-default hive, defines the root suffix of that hive. Keys with such a suffix will be recognized and stripped off the suffix. Keys belonging to the default hive will always be recognized. In the default hive, use an empty string.</param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Application.VsHostCommandLine.GetCommandLineArgName(System.String,System.String,System.String)">
+            <summary>
+            Forms the complete Visual Studio command line argument name, such as you should enter in the DEVENV command line.
+            </summary>
+            <param name="sArgName">Command line arg name.</param>
+            <param name="sProductName">Product name (prefixes the arg).</param>
+            <param name="sVsRootSuffix">Root suffix (suffixes the arg, if non-empty).</param>
+        </member>
         <member name="M:JetBrains.VsIntegration.Application.VsEnvironmentInformation.GetVsInstallDirFromRegistry">
             <summary>
             Reads the Registry Hive of the currently running Visual Studio instance to read its InstallDir.
@@ -3931,6 +4029,24 @@
             Currently, <c>"Software\\Microsoft\\VisualStudio"</c>.
             </summary>
         </member>
+        <member name="M:JetBrains.VsIntegration.Application.VsEnvironmentInformation.Discovery.GetVsInstallDirFromRegistry(System.String)">
+            <summary>
+            Reads the Registry Hive at the supplied Registry path to read the InstallDir.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Application.VsEnvironmentInformationEmulated">
+            <summary>
+            Main implementation of <see cref="T:JetBrains.VsIntegration.Application.IVsEnvironmentInformation"/> is <see cref="T:JetBrains.VsIntegration.Application.VsEnvironmentInformation"/> which relies on information from a live Visual Studio instance to function.
+            If you'd like to emulate this behavior outside Visual Studio (e.g. to get vs-version-specific product settings location), create an instance of this object on explicitly-supplied parameters.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Application.VsEnvironmentInformationEmulated.#ctor(System.Version,System.String)">
+            <summary>
+            Supplies manual info about VS environment.
+            </summary>
+            <param name="versionVs">VS version. Two first components are important, the rest is only for special applications (in most cases OK to have zeroes in there).</param>
+            <param name="sRootSuffix">VS root suffix, <c>NULL</c> or <c>""</c> for the default hive.</param>
+        </member>
         <member name="T:JetBrains.VsIntegration.Application.VsNonZombiedProductCanBeStarted">
             <summary>
             <para>Exposes the VS Service Provider, but only at times when its VS Shell is not in the zombied state. Otherwise, <c>Null</c>.</para>
@@ -3958,9 +4074,58 @@
             Exposes "components" in the VS Service Provider to our component model.
             </summary>
         </member>
-        <member name="F:JetBrains.VsIntegration.Application.VsServiceProviderComponentContainer.myMapServiceGuids">
+        <member name="M:JetBrains.VsIntegration.Application.VsServiceProviderComponentContainer.RegisterCommonVsServices(JetBrains.VsIntegration.Application.VsServiceProviderComponentContainer.VsServiceMap)">
             <summary>
-            Most objects are published by GUIDs of their interfaces, but some require a different GUID.
+            Registers VS services allowed in all VS versions.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Application.VsServiceProviderComponentContainer.VsServiceMap.myFRegisterRervice">
+            <summary>
+            Impl for <see cref="M:JetBrains.VsIntegration.Application.VsServiceProviderComponentContainer.VsServiceMap.QueryService``1"/> (cached delegate).
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Application.VsServiceProviderComponentContainer.VsServiceMap.QueryService``1">
+            <summary>
+            Initiates adding a record for allowed service queries. Pass the class whose GUID gives out the SSID to query for.
+            Fluent-call <see cref="M:JetBrains.VsIntegration.Application.VsServiceProviderComponentContainer.VsServiceMap.QueryServiceProxy.As``1"/> to register interface types for which this service should be queried. 
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Application.VsServiceProviderComponentContainer.VsServiceMap.RegisterService(System.Type,System.Type)">
+            <summary>
+            Impl for <see cref="M:JetBrains.VsIntegration.Application.VsServiceProviderComponentContainer.VsServiceMap.QueryService``1"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Application.VsServiceProviderComponentContainer.VsServiceMap.Ban``1(System.String)">
+            <summary>
+            Bans the interface from being imported. Throws an exception upon resolve.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Application.VsServiceProviderComponentContainer.VsServiceMap.Wrapper``1(System.Func{``0},JetBrains.VsIntegration.Application.VsServiceProviderComponentContainer.VsServiceMap.LazyOptions)">
+            <summary>
+            Registers a custom VS interface wrapper. In this case the <typeparamref name="TInterface"/> is not actually a VS interface, but is logically related.
+            Adds an assertion for the primary thread to your function.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Application.VsServiceProviderComponentContainer.VsServiceMap.QueryServiceProxy">
+            <summary>
+            Impl for <see cref="M:JetBrains.VsIntegration.Application.VsServiceProviderComponentContainer.VsServiceMap.QueryService``1"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Application.VsServiceProviderComponentContainer.VsServiceMap.QueryServiceProxy.As``1">
+            <summary>
+            Adds an interface for which (when imported into the component) the service should be queried.
+            Fluent.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Application.VsServiceProviderComponentContainer.VsServiceMap.QueryServiceProxy.LazyOnly">
+            <summary>
+            Restricts importing this interface as Lazy{Interface} kind only, to defer creating Visual Studio entities serving these components.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Application.VsServiceProviderComponentContainer.VsServiceMap.DeferredComponentDescriptorWithLazyFlag.IsLazyOnly">
+            <summary>
+            When <c>True</c>, this descriptor can only be returned out of the container when wrapped into <see cref="T:JetBrains.Application.Components.ComponentContainer.LazyDescriptor`1"/>.
+            This helps to ensure VS services are not instantiated forcibly at startup.
             </summary>
         </member>
         <member name="T:JetBrains.VsIntegration.Application.RawVsServiceProvider">
@@ -3968,25 +4133,34 @@
             Means for getting the raw VS Service Provider if <see cref="T:JetBrains.VsIntegration.Application.VsServiceProviderComponentContainer"/> cannot satisfy your needs by the means of injection.
             </summary>
         </member>
-        <member name="P:JetBrains.VsIntegration.Application.PlatformObsoleteVsServiceProvider.ServiceProvider">
+        <member name="T:JetBrains.VsIntegration.Application.IExposeVsServices">
             <summary>
-            <para>Provides access to the Visual Studio Service Provider, which is mostly like what <c>Shell.Instance</c> is to platform-based products, or what <c>DTE</c> is to addins.</para>
-            <para>This service provider identifies the Application identity of Visual Studio and provides access to services and singleton components.</para>
-            <para>The preferred use is to call <see cref="T:JetBrains.VsIntegration.Application.IVsServiceProviderEx"/> methods for getting the required interface thru a helper method. See example for details.</para>
+            Helps <see cref="T:JetBrains.VsIntegration.Application.VsServiceProviderComponentContainer"/> with exposing VS services it does not know about (eg VS10-specific).
             </summary>
-            <example>
-            Use the <see cref="T:JetBrains.VsIntegration.Application.IVsServiceProviderEx"/> methods to get a smart wrapper object:
-            <code>IVsShell shell = ServiceProvider.IVsShell();</code>
-            Use the <see cref="T:JetBrains.VsIntegration.Application.IVsServiceProviderEx"/> methods to get a raw COM interface of a Visual Studio service:
-            <code>IVsDebugger2 debugger = ServiceProvider.IVsDebugger2();</code>
-            Use the <see cref="T:JetBrains.VsIntegration.Application.IServiceProviderEx"/> methods to get interfaces that do not yet have shortcuts at <see cref="T:JetBrains.VsIntegration.Application.IVsServiceProviderEx"/>. Note that it's preferrable to use <c>SSID</c>s wherever possible, because even though it usually is the same as <c>IID</c> and you can use the single-type-parameter overload, sometimes that's not the case and the call might fail, especially for interfaces whose names end in a number.
-            <code>IVsActivityLog log = sp.GetService&lt;SVsActivityLog, IVsActivityLog&gt;();</code>
-            </example>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Application.VsUIHostCommandDispatcher">
+            <summary>
+            Wraps and exposes the VS global command target object to make sure it could be imported reliably (otherwise might get some other <see cref="T:Microsoft.VisualStudio.OLE.Interop.IOleCommandTarget"/> on a local component in a nearby container, because this interface is implemented by various classes in our product).
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Application.VsUIHostCommandDispatcher.Raw">
+            <summary>
+            Raw VS global command target.
+            </summary>
         </member>
         <member name="T:JetBrains.VsIntegration.Application.VsVersion">
             <summary>
             Defines versions of the known Visual Studio editions.
             </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Template.VsTemplateManager.AddFromTemplate(JetBrains.ProjectModel.IProjectFolder,JetBrains.Util.FileSystemPath,System.String,System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Cope template to temporary folder, replace/add custom parameters and execute template
+            </summary>
+            <param name="folder"></param>
+            <param name="templatePath"></param>
+            <param name="name"></param>
+            <param name="customParameters"></param>
         </member>
         <member name="F:JetBrains.VsIntegration.TextControl.VsEditorCommands.ECMD_TYPECHAR">
             <summary>
@@ -4019,7 +4193,7 @@
             <param name="vsDocumentManagerSynchronization"></param>
             <param name="defaultTextControlSchemeManager"></param>
         </member>
-        <member name="F:JetBrains.VsIntegration.TextControl.VsTextControlCommon.Disposables">
+        <member name="F:JetBrains.VsIntegration.TextControl.VsTextControlCommon.Lifetime">
             <summary>
             Guarded disposal of the text control.
             </summary>
@@ -4163,7 +4337,7 @@
             Provides various UI framework-related information about the <see cref="T:JetBrains.TextControl.ITextControl">text control</see>.
             </summary>
         </member>
-        <member name="P:JetBrains.VsIntegration.TextControl.VsTextControlCommon.JetBrains#TextControl#ITextControl#Disposables">
+        <member name="P:JetBrains.VsIntegration.TextControl.VsTextControlCommon.JetBrains#TextControl#ITextControl#Lifetime">
             <summary>
             Gets the Disposables collection that controls the text control lifetime.
             </summary>
@@ -4341,22 +4515,8 @@
         <member name="T:JetBrains.VsIntegration.WindowManagement.VSToolWindowInstaller">
             <summary>
             Registers and unregisters the tool windows.
-            Due to the <see cref="T:JetBrains.Application.Install.InstallAttributesAttribute"/>, it's invoked for each <see cref="T:JetBrains.WindowManagement.ToolWindowDescriptorAttribute"/>.
+            Due to the <see cref="T:JetBrains.Application.Install.AssemblyAttributeInstallerAttribute"/>, it's invoked for each <see cref="T:JetBrains.UI.ToolWindowManagement.ToolWindowDescriptorAttribute"/>.
             </summary>
-        </member>
-        <member name="M:JetBrains.VsIntegration.WindowManagement.VSToolWindowInstaller.InstallInstance(JetBrains.Application.Install.Installer,System.Object)">
-            <summary>
-            Called for each of the attributes of the requested type encountered in the known assemblies.
-            </summary>
-            <param name="installer">The installer object that provides the installation data.</param>
-            <param name="attributeInstance">Instance of the attribute to process.</param>
-            <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
-        </member>
-        <member name="M:JetBrains.VsIntegration.WindowManagement.VSToolWindowInstaller.InstallStatic(JetBrains.Application.Install.Installer)">
-            <summary>
-            Called once on the object during the registration process.
-            </summary>
-            <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
         </member>
         <member name="T:JetBrains.VsIntegration.WindowManagement.VsWindowFrameManager">
             <summary>

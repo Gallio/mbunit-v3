@@ -17,6 +17,7 @@ using System;
 using Gallio.Loader;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Daemon;
+using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.UnitTestExplorer;
 
 namespace Gallio.ReSharperRunner.Provider.Daemons
@@ -25,7 +26,7 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
     /// This daemon stage adds support for displaying annotations produced by
     /// the test exploration process.
     /// </summary>
-    [DaemonStage(StagesBefore=new Type[] { typeof(UnitTestDaemonStage)})]
+    [DaemonStage(StagesBefore=new [] { typeof(UnitTestDaemonStage)})]
     public class AnnotationDaemonStage : IDaemonStage
     {
         static AnnotationDaemonStage()
@@ -42,9 +43,21 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
             return new AnnotationDaemonStageProcess(process);
         }
 
-        public ErrorStripeRequest NeedsErrorStripe(IProjectFile projectFile)
+#if RESHARPER_60
+    	public ErrorStripeRequest NeedsErrorStripe(IPsiSourceFile sourceFile)
+    	{
+    		return GetErrorStripe();
+    	}
+#endif
+
+    	public ErrorStripeRequest NeedsErrorStripe(IProjectFile projectFile)
         {
-            return ErrorStripeRequest.STRIPE_AND_ERRORS;
+			return GetErrorStripe();
         }
+
+    	private static ErrorStripeRequest GetErrorStripe()
+    	{
+    		return ErrorStripeRequest.STRIPE_AND_ERRORS;
+    	}
     }
 }

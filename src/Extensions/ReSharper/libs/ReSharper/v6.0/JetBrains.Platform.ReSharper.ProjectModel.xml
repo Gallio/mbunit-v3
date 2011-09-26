@@ -14,28 +14,96 @@
             Looks for the solution settings from the previous version of R#.
             </summary>
         </member>
+        <member name="M:JetBrains.ProjectModel.DataContext.DataContextsEx.ToProjectModelElementsDataConstant(JetBrains.ProjectModel.IProjectModelElement)">
+            <summary>
+            Returns the project model element as the project model elements data constant: a list of one non-Null item, or Null.
+            Prevents getting collections with null elements inside.
+            In other words, makes it valid for the data rule.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ProjectModel.DataContext.DataContextsEx.ToProjectModelElementsDataConstant(JetBrains.ProjectModel.IProjectModelElement[])">
+            <summary>
+            Makes sure the project model elements collection does not contain Null items and is non-empty.
+            Filters out Nulls, returns Null instead of empty collections.
+            In other words, makes it valid for the data rule.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ProjectModel.ProjectFileType.Extensions">
+            <summary>
+            Do not use directly. Use IProjectFileExtensions.GetExtensions instead.
+            </summary>
+        </member>
         <member name="F:JetBrains.ProjectModel.KnownProjectFileType.Name">
             <summary>
             Specifies special ID for services, which has semantic "for any project file type"
             </summary>
         </member>
-        <member name="M:JetBrains.ProjectModel.model2.Transaction.IEnsureWritableHandler.IsWritable(JetBrains.ProjectModel.ISolution)">
+        <member name="M:JetBrains.ProjectModel.IFileExtensionMapping.GetExtensions(JetBrains.ProjectModel.ProjectFileType)">
+            <summary>
+            Do not use directly. Use IProjectFileExtensions.GetExtensions instead.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ProjectModel.IBuildSettings">
+            <summary>
+            Common build settings for all projects
+            </summary>
+        </member>
+        <member name="M:JetBrains.ProjectModel.impl.NetPlatformsProvider.LookForWindowsSdk">
+            <summary>
+            Tries to find Windows SDK v6 or higher and returns the path to its Bin folder, or <c>Null</c> if not found.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ProjectModel.model2.Assemblies.Interfaces.IAssemblyFactory.AddRef(JetBrains.ProjectModel.AssemblyReferenceResolveResult,System.String,JetBrains.ProjectModel.PlatformID)">
+            <summary>
+            Adds assembly to assembly collection
+            </summary>
+            <param name="resolveResult"></param>
+            <param name="holderId">Caller ID</param>
+            <param name="platformID">Specific platform id or null to autodetect</param>
+        </member>
+        <member name="M:JetBrains.ProjectModel.Model2.Assemblies.Impl.Job.Do(JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+            Runs the task. The <paramref name="progress"/> should be used only if the task requires additional progress display (like smooth execution progress or more text messages). Normally, for short-time tasks, the executing engine will handle the progress.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ProjectModel.Model2.Assemblies.Impl.Job.Description">
+            <summary>
+            The individual description of the job. Not included into the status bar cache notifier.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ProjectModel.IProjectModelElement">
+            <summary>
+            Handy root interface for all object of ProjectModel
+            </summary>
+        </member>
+        <member name="M:JetBrains.ProjectModel.IProjectModelElement.GetProperty(JetBrains.Util.Key)">
+            <summary>
+            Retrieves the value of a property given the property's name
+            </summary>
+        </member>
+        <member name="M:JetBrains.ProjectModel.IProjectModelElement.IsValid">
+            <summary>
+            Returns true if the project item is a member of a project hierarchy
+            Otherwise (e.g. the item or an its ancestor has been deleted), returns false
+            </summary>
+        </member>
+        <member name="M:JetBrains.ProjectModel.Model2.Transaction.IEnsureWritableHandler.IsWritable(JetBrains.ProjectModel.ISolution)">
             <summary>
             Indicates that the structure of the solution, the properties of the solution and the properties of the solution items
             can be modifed
             </summary>
         </member>
-        <member name="M:JetBrains.ProjectModel.model2.Transaction.IEnsureWritableHandler.IsWritable(JetBrains.ProjectModel.IProject)">
+        <member name="M:JetBrains.ProjectModel.Model2.Transaction.IEnsureWritableHandler.IsWritable(JetBrains.ProjectModel.IProject)">
             <summary>
             Indicates whether the structure of the project or properties of its items can be modified
             </summary>
         </member>
-        <member name="M:JetBrains.ProjectModel.model2.Transaction.IEnsureWritableHandler.IsWritable(JetBrains.ProjectModel.IProjectFile)">
+        <member name="M:JetBrains.ProjectModel.Model2.Transaction.IEnsureWritableHandler.IsWritable(JetBrains.ProjectModel.IProjectFile)">
             <summary>
             Checks if the persistent version of the file is writable
             </summary>
         </member>
-        <member name="E:JetBrains.ProjectModel.model2.Transaction.IEnsureWritableHandler.MakingWritable">
+        <member name="E:JetBrains.ProjectModel.Model2.Transaction.IEnsureWritableHandler.MakingWritable">
             <summary>
             Raised when files are needed to make writable. The handlers of this event must ensure that the documents are
             really writable.
@@ -82,6 +150,27 @@
             Removes project item.
             </summary>
         </member>
+        <member name="M:JetBrains.ProjectModel.IProjectModelEditor.AddModuleReference(JetBrains.ProjectModel.IProject,JetBrains.ProjectModel.IModule)">
+            <summary>
+            Makes the project reference the specified module
+            </summary>
+        </member>
+        <member name="M:JetBrains.ProjectModel.IProjectModelEditor.AddAssemblyReference(JetBrains.ProjectModel.IProject,JetBrains.Util.FileSystemPath)">
+            <summary>
+            Adds the specified library to the project's references
+            </summary>
+        </member>
+        <member name="M:JetBrains.ProjectModel.IProjectModelEditor.RemoveModuleReference(JetBrains.ProjectModel.IProjectToModuleReference)">
+            <summary>
+            Removes the specified assembly or project from project's references
+            </summary>
+            <param name="referenceToRemove"></param>
+        </member>
+        <member name="F:JetBrains.ProjectModel.Impl.SolutionInstanceBase.MyStatusBarIndicator.ShouldBeVisible">
+            <summary>
+            Gets or sets whether the indicator should be visible. Shows or hides the indicator with a delay, to avoid flickering.
+            </summary>
+        </member>
         <member name="M:JetBrains.ProjectModel.ISolutionExplorer.ShowInSolutionExplorer(JetBrains.ProjectModel.IProjectItem,System.Boolean)">
             <summary>
             Shows the Solution Explorer and sets selection to <paramref name="projectItem"/>, if defined.
@@ -89,11 +178,6 @@
             <param name="projectItem">A valid project item to select in Solution Explorer, or <c>Null</c> to just activate the Solution Explorer window (if <paramref name="activate"/>).</param>
             <param name="activate">Whether to activate the Solution Explorer window.</param>
             <returns>Success flag.</returns>
-        </member>
-        <member name="T:JetBrains.ProjectModel.IBuildSettings">
-            <summary>
-            Common build settings for all projects
-            </summary>
         </member>
         <member name="P:JetBrains.ProjectModel.IProjectConfiguration.Project">
             <summary>
@@ -120,17 +204,7 @@
             Runs the change thru <see cref="T:JetBrains.ProjectModel.RecursiveProjectModelChangeDeltaVisitor"/>, and for each of its <see cref="M:JetBrains.ProjectModel.RecursiveProjectModelChangeDeltaVisitor.VisitItemDelta(JetBrains.ProjectModel.ProjectItemChange)"/>, calls the given functor.
             </summary>
         </member>
-        <member name="T:JetBrains.ProjectModel.IProjectModelElement">
-            <summary>
-            Handy root interface for all object of ProjectModel
-            </summary>
-        </member>
-        <member name="M:JetBrains.ProjectModel.IProjectModelElement.GetProperty(JetBrains.Util.Key)">
-            <summary>
-            Retrieves the value of a property given the property's name
-            </summary>
-        </member>
-        <member name="P:JetBrains.ProjectModel.IAssemblyFileData.LastWriteTime">
+        <member name="P:JetBrains.ProjectModel.Model2.Assemblies.Interfaces.IAssemblyFileData.LastWriteTimeUtc">
             <summary>
             Time of last modification of the corresponding file on the file system.
             Note that this value is cached and is updated only when the synchronization with the file system is performed.
@@ -140,17 +214,28 @@
         </member>
         <member name="T:JetBrains.ProjectModel.IModule">
             <summary>
-            Common interface for <see cref="T:JetBrains.ProjectModel.IProject"/> and <see cref="T:JetBrains.ProjectModel.IAssembly"/>
+            Common interface for <see cref="T:JetBrains.ProjectModel.IProject"/> and <see cref="T:JetBrains.ProjectModel.Model2.Assemblies.Interfaces.IAssembly"/>
             </summary>
         </member>
         <member name="P:JetBrains.ProjectModel.IModule.PlatformID">
             <summary>
-            The platform to which the module is targeted
+            The platform to which the module is targeted. For real project is never null.
             </summary>
         </member>
-        <member name="M:JetBrains.ProjectModel.Impl.AssemblyCollection.RemoveAssemblyFile(JetBrains.ProjectModel.IAssemblyFile)">
+        <member name="T:JetBrains.ProjectModel.src.Settings.ExposeSettingsStorageProvidersFromChildContainersToParentContainer">
             <summary>
-            Returns true if assembly is disposed
+            What we'd like to do is collect providers from all of the solution/project containers from a shell-level class, but currently it wouldn't work this way.
+            So the shell-level class collects this provider, and solution/project level classes push themselves into it.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ProjectModel.src.Settings.HierarchySettings">
+            <summary>
+            <para>Project Model settings root.</para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.ProjectModel.src.Settings.BuildSettings">
+            <summary>
+            <para>Project Model :: Build.</para>
             </summary>
         </member>
         <member name="P:JetBrains.ProjectModel.PlatformManager.GacPath">
@@ -158,14 +243,9 @@
             Path to GAC. Test Shell uses GAC from Platform\test\assemblies\GAC*
             </summary>
         </member>
-        <member name="P:JetBrains.ProjectModel.PlatformManager.GacPath40">
+        <member name="P:JetBrains.ProjectModel.PlatformManager.Gac40Path">
             <summary>
             Path to GAC 4.0. Test Shell uses GAC from Platform\test\assemblies\GAC*
-            </summary>
-        </member>
-        <member name="M:JetBrains.ProjectModel.impl.PlatformManagerImpl.LookForWindowsSdk">
-            <summary>
-            Tries to find Windows SDK v6 or higher and returns the path to its Bin folder, or <c>Null</c> if not found.
             </summary>
         </member>
         <member name="T:JetBrains.ProjectModel.Impl.ProjectFileModificationCookie">
@@ -191,6 +271,13 @@
             </summary>
             <returns>Presentable location for project model element or null if unhandled by this presenter</returns>
         </member>
+        <member name="M:JetBrains.ProjectModel.Model2.References.AssemblyReferenceTarget.#ctor(JetBrains.Metadata.Utils.AssemblyNameInfo,JetBrains.Util.FileSystemPath)">
+            <summary>
+            Project model reference target
+            </summary>
+            <param name="assemblyName">Target assembly name</param>
+            <param name="hintLocation">Hint location. Should be null for assembly-to-assembly reference</param>
+        </member>
         <member name="T:JetBrains.ProjectModel.ProjectModelIcons">
             <summary>
             Collection of standard icons
@@ -206,7 +293,7 @@
             Returns the root directory of all include patterns
             </summary>
         </member>
-        <member name="P:JetBrains.ProjectModel.IAssembly.IsMissing">
+        <member name="P:JetBrains.ProjectModel.Model2.Assemblies.Interfaces.IAssembly.IsMissing">
             <summary>
             Indicates that the persistent version of the assembly is not found
             </summary>
@@ -228,12 +315,6 @@
             but does not survive after renaming or moving the element.
             </summary>
         </member>
-        <member name="M:JetBrains.ProjectModel.IProjectElement.IsValid">
-            <summary>
-            Returns true if the project item is a member of a project hierarchy
-            Otherwise (e.g. the item or an its ancestor has been deleted), returns false
-            </summary>
-        </member>
         <member name="F:JetBrains.ProjectModel.Impl.ExternalChangeProcessor.MyStatusBarIndicator.ShouldBeVisible">
             <summary>
             Gets or sets whether the indicator should be visible. Shows or hides the indicator with a delay, to avoid flickering.
@@ -249,7 +330,7 @@
             Returns name of the output assembly of a referenced project if is able to fetch. Null otherwise
             </summary>
         </member>
-        <member name="T:JetBrains.ProjectModel.Impl.Assembly">
+        <member name="T:JetBrains.ProjectModel.Model2.Assemblies.Impl.Assembly">
             <summary>
             Represents loaded resolved assembly reference.
             </summary>
@@ -338,7 +419,7 @@
             Timestamp corresponding to the last external modification
             </summary>
         </member>
-        <member name="P:JetBrains.ProjectModel.IProjectFile.LastWriteTime">
+        <member name="P:JetBrains.ProjectModel.IProjectFile.LastWriteTimeUtc">
             <summary>
             Time of last modification of the corresponding file on the file system.
             Note that this value is cached and is updated only when the synchronization with the file system is performed.
@@ -419,45 +500,6 @@
             For projects use ProjectReferenceExtension.GetReferencedName
             </remarks>
         </member>
-        <member name="M:JetBrains.ProjectModel.IProject.AddModuleReference(JetBrains.ProjectModel.IModule)">
-            <summary>
-            Makes the project reference the specified module
-            </summary>
-        </member>
-        <member name="M:JetBrains.ProjectModel.IProject.AddAssemblyReference(JetBrains.Metadata.Utils.AssemblyNameInfo,JetBrains.Util.FileSystemPath,System.Boolean)">
-            <summary>
-            Adds assembly with the specified name to the project's references
-            location indicates assembly location. Null or empty id unknown
-            </summary>
-        </member>
-        <member name="M:JetBrains.ProjectModel.IProject.AddAssemblyReference(System.String)">
-            <summary>
-            Adds the specified library to the project's references
-            </summary>
-        </member>
-        <member name="M:JetBrains.ProjectModel.IProject.AddProjectReference(JetBrains.ProjectModel.IProject)">
-            <summary>
-            Adds the specified project to the project's references
-            </summary>
-        </member>
-        <member name="M:JetBrains.ProjectModel.IProject.RemoveModuleReference(JetBrains.ProjectModel.IProjectToModuleReference)">
-            <summary>
-            Removes the specified library from project's references
-            </summary>
-            <param name="reference"></param>
-        </member>
-        <member name="M:JetBrains.ProjectModel.IProject.RemoveProjectReference(JetBrains.ProjectModel.IProject)">
-            <summary>
-            Removes the specified project from project's references. Does nothing if the project does not reference the specified project
-            </summary>
-            <param name="project"></param>
-        </member>
-        <member name="M:JetBrains.ProjectModel.IProject.ResolveModuleReferences">
-            <summary>
-            Forces resolve of module references. 
-            </summary>
-            <remarks>Should be invoked after changes that might affect reference resolution (e.g. ReferencePathProperty)</remarks>
-        </member>
         <member name="P:JetBrains.ProjectModel.IProject.DefaultLanguage">
             <summary>
             Language type of sources of the project
@@ -483,20 +525,27 @@
             Indicates if the solution was opened
             </summary>
         </member>
-        <member name="P:JetBrains.ProjectModel.ISolution.IsValid">
-            <summary>
-            Returns if the solution is among the solutions in the SolutionManager
-            </summary>
-        </member>
-        <member name="M:JetBrains.ProjectModel.Impl.SolutionBase.SolutionSettingsPath(JetBrains.ProjectModel.ISolution,JetBrains.Application.Configuration.XmlExternalizationScope)">
+        <member name="M:JetBrains.ProjectModel.Impl.SolutionBase.SolutionSettingsLegacyPath(JetBrains.ProjectModel.ISolution,JetBrains.Application.Configuration.XmlExternalizationScope,JetBrains.Application.IApplicationDescriptor)">
             <summary>
             Gets the full path for the solution settings file, which includes the product version now.
             </summary>
         </member>
-        <member name="M:JetBrains.ProjectModel.Impl.SolutionBase.GetSolutionOrProjectSettingsFileSuffix(JetBrains.Application.Configuration.XmlExternalizationScope)">
+        <member name="M:JetBrains.ProjectModel.Impl.SolutionBase.GetSolutionSettingsStoragePath(JetBrains.DataFlow.Lifetime,JetBrains.ProjectModel.ISolution,JetBrains.Application.Configuration.XmlExternalizationScope)">
+            <summary>
+            Gets the full path for the solution settings storage file.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ProjectModel.Impl.SolutionBase.GetSolutionOrProjectLegacySettingsFileSuffix(JetBrains.Application.Configuration.XmlExternalizationScope,JetBrains.Application.IApplicationDescriptor)">
             <summary>
             Suffix for the solution settings file (the trailing extensions), scope-dependent, leading dot included.
             Usually, <c>".resharper.user"</c> and <c>".resharper"</c>
+            </summary>
+            <remarks>This is the legacy (pre-settings-storage) file.</remarks>
+        </member>
+        <member name="M:JetBrains.ProjectModel.Impl.SolutionBase.GetSolutionOrProjectSettingsStorageFileSuffix(JetBrains.Application.Configuration.XmlExternalizationScope)">
+            <summary>
+            Suffix for the solution/project settings storage file (the trailing extensions), scope-dependent, leading dot included.
+            Usually, <c>".DotSettings.user"</c> and <c>".DotSettings"</c>
             </summary>
         </member>
         <member name="M:JetBrains.ProjectModel.Impl.SolutionManagerBase.HandleIsTemporary(JetBrains.ProjectModel.ISolution)">
@@ -556,12 +605,6 @@
             <summary>
             Provides a reference-counter based mechanism for keeping non-project items
             </summary> 
-        </member>
-        <member name="T:JetBrains.ProjectModel.TestModuleReferenceResolveManager">
-            <summary>
-            Global component that manages resolution of assembly references, i.e. mapping between assembly references 
-            and assembly files in the file system
-            </summary>
         </member>
     </members>
 </doc>

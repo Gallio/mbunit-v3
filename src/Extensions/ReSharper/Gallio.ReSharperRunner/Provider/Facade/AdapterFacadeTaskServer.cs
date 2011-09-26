@@ -95,11 +95,12 @@ namespace Gallio.ReSharperRunner.Provider.Facade
                 try 
                 {
                     // TODO: Should ask for a better way of doing this.
-                    object taskRunnerProxy = server.WithoutProxy;
 #if RESHARPER_31
+                    object taskRunnerProxy = server.WithoutProxy;
                     PropertyInfo property = taskRunnerProxy.GetType().GetProperty("SessionId");
                     return (string)property.GetValue(taskRunnerProxy, null);
 #elif RESHARPER_40 || RESHARPER_41 || RESHARPER_45
+                    object taskRunnerProxy = server.WithoutProxy;
                     return ((TaskRunnerProxy) taskRunnerProxy).SessionId;
 #elif RESHARPER_50
                     // taskRunnerProxy is a ClientControllerServerWrapper that wraps a
@@ -110,12 +111,17 @@ namespace Gallio.ReSharperRunner.Provider.Facade
                     IRemoteTaskServer realTaskRunnerProxy = threadProxyTaskServer.WithoutProxy;
                     FieldInfo myRunIdField = realTaskRunnerProxy.GetType().GetField("myRunId", BindingFlags.NonPublic | BindingFlags.Instance);
                     return (string)myRunIdField.GetValue(realTaskRunnerProxy);
-#else
+#elif RESHARPER_51
                     var myServerField = server.GetType().GetField("myServer", BindingFlags.NonPublic | BindingFlags.Instance);
                     var remoteTaskServer = (ThreadProxyTaskServer)myServerField.GetValue(server);
                     var realTaskRunnerProxy = remoteTaskServer.WithoutProxy;
                     var myRunIdField = realTaskRunnerProxy.GetType().GetField("myRunId", BindingFlags.NonPublic | BindingFlags.Instance);
                     return (string)myRunIdField.GetValue(realTaskRunnerProxy);
+#else
+                    var myServerField = server.GetType().GetField("myServer", BindingFlags.NonPublic | BindingFlags.Instance);
+                    var remoteTaskServer = (TaskRunnerProxy)myServerField.GetValue(server);
+                    var myRunIdField = remoteTaskServer.GetType().GetField("myRunId", BindingFlags.NonPublic | BindingFlags.Instance);
+                    return (string)myRunIdField.GetValue(remoteTaskServer);
 #endif
                 }
                 catch (Exception ex)

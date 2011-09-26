@@ -41,22 +41,22 @@
             the contents of this method with the code editor.
             </summary>
         </member>
-        <member name="T:JetBrains.ReSharper.LiveTemplates.FieldsSelectionDialog">
+        <member name="T:JetBrains.ReSharper.LiveTemplates.UI.FieldsSelectionDialog">
             <summary>
             Summary description for FieldsSelectionDialog.
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.LiveTemplates.FieldsSelectionDialog.components">
+        <member name="F:JetBrains.ReSharper.LiveTemplates.UI.FieldsSelectionDialog.components">
             <summary>
             Required designer variable.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.LiveTemplates.FieldsSelectionDialog.Dispose(System.Boolean)">
+        <member name="M:JetBrains.ReSharper.LiveTemplates.UI.FieldsSelectionDialog.Dispose(System.Boolean)">
             <summary>
             Clean up any resources being used.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.LiveTemplates.FieldsSelectionDialog.InitializeComponent">
+        <member name="M:JetBrains.ReSharper.LiveTemplates.UI.FieldsSelectionDialog.InitializeComponent">
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
@@ -190,44 +190,12 @@
             the contents of this method with the code editor.
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.LiveTemplates.TemplateTextEditor.components">
+        <member name="F:JetBrains.ReSharper.LiveTemplates.UI.TemplateTextEditor.myKeywordColor">
             <summary>
             Required designer variable.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.LiveTemplates.TemplateTextEditor.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.LiveTemplates.TemplateTextEditor.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.TypeBrowserControl.Dispose(System.Boolean)">
-            <summary> 
-            Clean up any resources being used.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.TypeBrowserControl.InitializeComponent">
-            <summary> 
-            Required method for Designer support - do not modify 
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="F:JetBrains.ReSharper.LiveTemplates.TypeEntryForm.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.LiveTemplates.TypeEntryForm.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.LiveTemplates.TypeEntryForm.InitializeComponent">
+        <member name="M:JetBrains.ReSharper.LiveTemplates.UI.TemplateTextEditor.InitializeComponent">
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.

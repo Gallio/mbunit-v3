@@ -19,15 +19,7 @@
             Makes the <c>ExceptionVisualizer</c> DLL class deploy to Visual Studio on install.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Browsing.StackTrace.ExceptionVisualizerInstaller.JetBrains#Application#Install#IInstallAttributes#InstallInstance(JetBrains.Application.Install.Installer,System.Object)">
-            <summary>
-            Called for each of the attributes of the requested type encountered in the known assemblies.
-            </summary>
-            <param name="installer">The installer object that provides the installation data.</param>
-            <param name="attributeInstance">Instance of the attribute to process.</param>
-            <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Browsing.StackTrace.ExceptionVisualizerInstaller.JetBrains#Application#Install#IInstallAttributes#InstallStatic(JetBrains.Application.Install.Installer)">
+        <member name="M:JetBrains.ReSharper.Features.Browsing.StackTrace.ExceptionVisualizerInstaller.JetBrains#Application#Install#IStaticInstaller#InstallStatic(JetBrains.Application.Install.Installer)">
             <summary>
             Called once on the object during the registration process.
             </summary>

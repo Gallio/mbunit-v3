@@ -25,19 +25,28 @@
              Gets an action group by its unique ID. Fails if there is no such action ID or it is not an action group.
              </summary>
         </member>
-        <member name="M:JetBrains.ActionManagement.IActionManager.ExecuteActionUnsafe(JetBrains.ActionManagement.IExecutableAction)">
+        <member name="M:JetBrains.ActionManagement.IActionManager.ExecuteActionUnsafe(JetBrains.ActionManagement.IExecutableAction,JetBrains.Application.DataContext.IDataContext)">
             <summary>
-             Call the method if and only if you're absolutely sure the action is available. Better call <see cref="M:JetBrains.ActionManagement.IActionManager.ExecuteActionIfAvailable(JetBrains.ActionManagement.IExecutableAction)" /> instead.
-             </summary>
+             Call the method if and only if you're absolutely sure the action is available. Better call <see cref="M:JetBrains.ActionManagement.IActionManager.ExecuteActionIfAvailable(JetBrains.ActionManagement.IExecutableAction)"/> instead. 
+            </summary>
+            <param name="dataContext">(Optional) If not present - action manager creates data context using  <see cref="!:ActionManagerDataContext.CreateDataContextOnActiveControl"/></param>
         </member>
-        <member name="M:JetBrains.ActionManagement.IActionManager.ExecuteActionIfAvailable(JetBrains.ActionManagement.IExecutableAction)">
-            <summary><para>Calls <see cref="M:JetBrains.ActionManagement.IActionManager.UpdateAction(JetBrains.ActionManagement.IUpdatableAction)"/> on the action and, if the action is available, executes it.</para><para>It's an error if the action does not exist or is not executable.</para><para>It's not an error if the action is unavailable (<c>False</c> is returned in such a case).</para></summary><param name="action">Action to execute.</param><returns>Whether the action was available (= was executed).</returns>
+        <member name="M:JetBrains.ActionManagement.IActionManager.ExecuteActionIfAvailable(JetBrains.ActionManagement.IExecutableAction,JetBrains.Application.DataContext.IDataContext)">
+            <summary><para>Calls <see cref="!:IActionManager.UpdateAction(JetBrains.ActionManagement.IUpdatableAction)"/> on the action and, if the action is available, executes it.</para><para>It's an error if the action does not exist or is not executable.</para><para>It's not an error if the action is unavailable (<c>False</c> is returned in such a case).</para></summary><param name="action">Action to execute.</param><param name="dataContext">(Optional) If not present - action manager creates data context using  <see cref="!:ActionManagerDataContext.CreateDataContextOnActiveControl"/></param><returns>Whether the action was available (= was executed).</returns>
         </member>
         <member name="M:JetBrains.ActionManagement.IActionManager.ExecuteShortcut(System.Windows.Forms.Keys,System.Boolean)">
             <summary>
              Attempts to execute the keyboard shortcut.
              Composite keyboard shortcuts, eg “Ctrl+K,F”, should be executed twice, once for each of the components.
              </summary><param name="shortcut">The keyboard shortcut to execute. May be a part of a composite shortcut.</param><param name="bIncludeHostActions">In a standalone configuration, has no meaning. In an embedded configurations, includes the host actions in the search list together with own actions managed by the action-manager.</param><returns>Whether the action has been executed.</returns>
+        </member>
+        <member name="M:JetBrains.ActionManagement.IActionManager.UpdateAction(JetBrains.ActionManagement.IUpdatableAction,JetBrains.Application.DataContext.IDataContext)">
+            <summary>
+            
+            </summary>
+            <param name="action"></param>
+            <param name="dataContext">(Optional) If not present - action manager creates data context using  <see cref="!:ActionManagerDataContext.CreateDataContextOnActiveControl"/></param>
+            <returns></returns>
         </member>
         <member name="M:JetBrains.ActionManagement.IActionManager.GetLocationInMainMenu(JetBrains.ActionManagement.IExecutableAction)">
             <summary><para>Looks up the action in the main menu. If found, returns the step-by-step path to the action, including the name of the command that represents the action.</para><para>If not found, returns <c>""</c>.</para></summary>
@@ -110,7 +119,7 @@
             Action which presentation can be updated.
             </summary>    
         </member>
-        <member name="M:JetBrains.ActionManagement.IActionHandler.Update(JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
+        <member name="M:JetBrains.ActionManagement.IActionHandler.Update(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
             <summary>
             Updates action visual presentation. If presentation.Enabled is set to false, Execute
             will not be called.
@@ -119,7 +128,7 @@
             <param name="presentation">presentation to update</param>
             <param name="nextUpdate">delegate to call</param>
         </member>
-        <member name="M:JetBrains.ActionManagement.IActionHandler.Execute(JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.DelegateExecute)">
+        <member name="M:JetBrains.ActionManagement.IActionHandler.Execute(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.DelegateExecute)">
             <summary>
             Executes action. Called after Update, that set ActionPresentation.Enabled to true.
             </summary>
@@ -149,62 +158,6 @@
             presentation of surrounding actions.
             </summary>
         </member>
-        <member name="T:JetBrains.ActionManagement.IFindDataProviders">
-            <summary>
-            An entity to look for an <see cref="T:JetBrains.ActionManagement.IDataProvider"/> based on the current cursor position or current UI control.
-            </summary>
-            <seealso cref="T:JetBrains.ActionManagement.ExportFindDataProviderAttribute"/>.
-        </member>
-        <member name="M:JetBrains.ActionManagement.IFindDataProviders.FindActiveDataProviders">
-            <summary>
-            Gets the data provider for the control that currently has user input focus.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ActionManagement.IFindDataProviders.FindDataProvidersAtPoint(System.Windows.Point)">
-            <summary>
-            Gets the data provider for the control that is located at the given screen point.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ActionManagement.IFindDataProviders.FindDataProvidersInControl(JetBrains.UI.CrossFramework.EitherControl)">
-            <summary>
-            Gets the data provider for the given control.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ActionManagement.ActionManagerDataContext.GetDefaultDataProviders">
-            <summary>
-            Gets the data providers that are always registered with the action manager.
-            If we're getting the global context, they're the only ones to work.
-            If we're getting a per-control or per-point context, those will be added to the list.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:JetBrains.ActionManagement.ActionManagerDataContext.CreateDataContextOnActiveControl">
-            <summary>
-            Gets the data context for executing the actions in the control that currently has user input focus.
-            You must dispose of the return value.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ActionManagement.ActionManagerDataContext.CreateDataContextOnProviders(System.Collections.Generic.IEnumerable{JetBrains.ActionManagement.IDataProvider})">
-            <summary>
-            Gets the data context for executing the actions based on the given data providers.
-            Note that the focused control is not used for collecting data providers in this overload.
-            This method is different from creating a <see cref="T:JetBrains.ActionManagement.DataContext"/> explicitly on these providers because <see cref="M:JetBrains.ActionManagement.ActionManagerDataContext.AddDataRule``1(JetBrains.ActionManagement.DataConstant{``0},System.Func{JetBrains.ActionManagement.IDataContext,``0})">registered data rules</see> are added to the data provdiers pool (with a lower priority than <see cref="!:providers"/>).
-            You must dispose of the return value.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ActionManagement.ActionManagerDataContext.CreateDataContextAtScreenPoint(System.Windows.Point)">
-            <summary>
-            Gets the data context for executing the actions in the given screen location.
-            Basically, this is <see cref="M:JetBrains.ActionManagement.ActionManagerDataContext.CreateDataContextOnControl(JetBrains.UI.CrossFramework.EitherControl)">the context for the UI control</see> at the given screen location.
-            You must dispose of the return value.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ActionManagement.ActionManagerDataContext.CreateDataContextOnControl(JetBrains.UI.CrossFramework.EitherControl)">
-            <summary>
-            Gets the data context for executing actions within the given control.
-            You must dispose of the return value.
-            </summary>
-        </member>
         <member name="T:JetBrains.ActionManagement.ActionManagerEx">
             <summary>
             Extensions for <see cref="T:JetBrains.ActionManagement.IActionManager"/>.
@@ -212,7 +165,7 @@
         </member>
         <member name="M:JetBrains.ActionManagement.ActionManagerEx.ExecuteAction(JetBrains.ActionManagement.IActionManager,System.String)">
             <summary>
-            <para>Calls <see cref="M:JetBrains.ActionManagement.IActionManager.UpdateAction(JetBrains.ActionManagement.IUpdatableAction)"/> on the action and, if the action is available, executes it.</para>
+            <para>Calls <see cref="!:IActionManager.UpdateAction(JetBrains.ActionManagement.IUpdatableAction)"/> on the action and, if the action is available, executes it.</para>
             <para>It's an error if the action does not exist or is not executable or is not available at the moment.</para>
             </summary>
             <param name="actionman">This.</param>
@@ -220,7 +173,7 @@
         </member>
         <member name="M:JetBrains.ActionManagement.ActionManagerEx.ExecuteActionIfAvailable(JetBrains.ActionManagement.IActionManager,System.String)">
             <summary>
-            <para>Calls <see cref="M:JetBrains.ActionManagement.IActionManager.UpdateAction(JetBrains.ActionManagement.IUpdatableAction)"/> on the action and, if the action is available, executes it.</para>
+            <para>Calls <see cref="!:IActionManager.UpdateAction(JetBrains.ActionManagement.IUpdatableAction)"/> on the action and, if the action is available, executes it.</para>
             <para>It's an error if the action does not exist or is not executable.</para>
             <para>It's not an error if the action is unavailable (<c>False</c> is returned in such a case).</para>
             </summary>
@@ -233,120 +186,14 @@
             Call the method if and only if you're absolutely sure the action is available. Better call <see cref="M:JetBrains.ActionManagement.ActionManagerEx.ExecuteActionIfAvailable(JetBrains.ActionManagement.IActionManager,System.String)"/> instead.
             </summary>
         </member>
-        <member name="T:JetBrains.ActionManagement.IDataConstant">
+        <member name="M:JetBrains.ActionManagement.IShortcutManager.AddShortcut(JetBrains.ActionManagement.ShortcutScheme,JetBrains.ActionManagement.IExecutableAction,System.String,JetBrains.ActionManagement.ActionShortcut)">
             <summary>
-            Type of data, returned by IDataContextProvider
-            </summary>
-        </member>
-        <member name="P:JetBrains.ActionManagement.IDataConstant.Id">
-            <summary>
-            Gets the unique ID of this data constant instance.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ActionManagement.DataConstant`1.ToString">
-            <summary>
-            Returns a <see cref="T:System.String"></see> that represents the current <see cref="T:System.Object"></see>.
-            </summary>
             
-            <returns>
-            A <see cref="T:System.String"></see> that represents the current <see cref="T:System.Object"></see>.
-            </returns>
-            <filterpriority>2</filterpriority>
-        </member>
-        <member name="T:JetBrains.ActionManagement.DataContext">
-            <summary>
-            The only implementation of IDataContext.
             </summary>
         </member>
-        <member name="T:JetBrains.ActionManagement.IDataContext">
+        <member name="M:JetBrains.ActionManagement.IShortcutManager.GetShortcutsWithScopes(JetBrains.ActionManagement.IExecutableAction)">
             <summary>
-            The context, passed to Action.
-            Must be used immediately ONLY, within the same <see cref="T:JetBrains.Threading.ReentrancyGuard"/> execution session.
-            If you're deferring the execution, extract these parameters and store in your own structures.
-            </summary>
-        </member>
-        <member name="F:JetBrains.ActionManagement.DataContext.myDataConstantsInUse">
-            <summary>
-            Recursion prevention.
-            </summary>
-        </member>
-        <member name="F:JetBrains.ActionManagement.DataContext.Dispatcher">
-            <summary>
-            Thread affinity.
-            </summary>
-        </member>
-        <member name="F:JetBrains.ActionManagement.DataContext.DataConstants.DATA_PROVIDERS">
-            <summary>
-            Gets the data providers known to the context, ordered by priority in decreasing order.
-            Could be coming from: explicitly set value, focused control, control under cursor.
-            </summary>
-        </member>
-        <member name="F:JetBrains.ActionManagement.DataContext.DataConstants.ScreenPoint">
-            <summary>
-            A point, in screen coordinates.
-            Available if the context has been created from a screen point: <see cref="M:JetBrains.ActionManagement.ActionManagerDataContext.CreateDataContextAtScreenPoint(System.Windows.Point)"/> (or if published by some data provider).
-            </summary>
-        </member>
-        <member name="T:JetBrains.ActionManagement.IDataProvider">
-            <summary>
-            Populates <see cref="T:JetBrains.ActionManagement.DataContext"/> with data constants.
-            </summary>
-        </member>
-        <member name="T:JetBrains.ActionManagement.SimpleDataProvider">
-            <summary>
-            Data provider based on explicitly assigned constant values and simple data rules.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ActionManagement.SimpleDataProvider.Add``1(JetBrains.ActionManagement.DataConstant{``0},``0)">
-            <summary>
-            Adds a new data constant. You cannot add more than one static value for the same constant, and you cannot have a static value and a data rule at the same time.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ActionManagement.SimpleDataProvider.Add``1(JetBrains.ActionManagement.DataConstant{``0},``0,JetBrains.DataFlow.Lifetime)">
-            <summary>
-            Adds a new data constant. You cannot add more than one static value for the same constant, and you cannot have a static value and a data rule at the same time.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ActionManagement.SimpleDataProvider.Add``1(JetBrains.ActionManagement.DataConstant{``0},System.Func{JetBrains.ActionManagement.IDataContext,``0},JetBrains.DataFlow.Lifetime)">
-            <summary>
-            Adds a new data rule. You cannot have a static value and a data rule for the same constant at the same time.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ActionManagement.SimpleDataProvider.Add``1(JetBrains.ActionManagement.DataConstant{``0},System.Func{``0},JetBrains.DataFlow.Lifetime)">
-            <summary>
-            Adds a new data rule. You cannot have a static value and a data rule for the same constant at the same time.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ActionManagement.SimpleDataProvider.AddUntyped(JetBrains.ActionManagement.IDataConstant,System.Func{JetBrains.ActionManagement.IDataContext,System.Object},JetBrains.DataFlow.Lifetime)">
-            <summary>
-            Adds a new data rule. You cannot have a static value and a data rule for the same constant at the same time.
-            Internally, all rules are untyped, but the <see cref="M:JetBrains.ActionManagement.SimpleDataProvider.Add``1(JetBrains.ActionManagement.DataConstant{``0},``0)"/> method helps validating the return value type at design time.
-            </summary>
-        </member>
-        <member name="T:JetBrains.ActionManagement.ExportFindDataProviderAttribute">
-            <summary>
-            Attribute for <see cref="T:JetBrains.ActionManagement.IFindDataProviders"/> impls.
-            </summary>
-        </member>
-        <member name="F:JetBrains.ActionManagement.ExportFindDataProviderAttribute.Priority">
-            <summary>
-            The higher the priority, the sooner the finder is asked (and can promote its own result in precedence of the others).
-            </summary>
-        </member>
-        <member name="M:JetBrains.ActionManagement.IDataContextEx.ToPropertyBag(JetBrains.ActionManagement.IDataContext,JetBrains.ActionManagement.IDataConstant[])">
-            <summary>
-            Creates a new property bag with a snapshot of this data context.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ActionManagement.IDataContextEx.ToPropertyId(JetBrains.ActionManagement.IDataConstant)">
-            <summary>
-            Creates a property ID identified by a data constant.
-            We convert it to a generic <see cref="T:JetBrains.ActionManagement.DataConstant`1"/> type, and then instantiate <see cref="T:JetBrains.ActionManagement.DataConstantPropertyId`1"/> for the same <c>T</c>.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ActionManagement.IDataContextEx.ToPropertyId``1(JetBrains.ActionManagement.DataConstant{``0})">
-            <summary>
-            Creates a property ID identified by a data constant.
+            Returns list of shortcuts bound to specified action in selected scheme
             </summary>
         </member>
         <member name="T:JetBrains.ActionManagement.ShellComponentsEx">
