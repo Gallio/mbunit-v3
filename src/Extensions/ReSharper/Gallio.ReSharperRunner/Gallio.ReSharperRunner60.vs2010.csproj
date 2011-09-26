@@ -18,8 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\v6.0\</OutputPath>
     <DefineConstants>TRACE;DEBUG;RESHARPER_60;RESHARPER_31_OR_NEWER;RESHARPER_40_OR_NEWER;RESHARPER_41_OR_NEWER;RESHARPER_45_OR_NEWER;RESHARPER_50_OR_NEWER;RESHARPER_51_OR_NEWER</DefineConstants>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>bin\v6.0\Gallio.ReSharperRunner60.xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>1591,1685</NoWarn>
     <DebugType>full</DebugType>
@@ -84,7 +83,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\ReSharper\v6.0\JetBrains.Platform.ReSharper.ProjectModel.dll</HintPath>
     </Reference>
-    <Reference Include="JetBrains.Platform.ReSharper.Shell, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+    <Reference Include="JetBrains.Platform.ReSharper.Shell, Version=6.0.2102.59, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\ReSharper\v6.0\JetBrains.Platform.ReSharper.Shell.dll</HintPath>
     </Reference>
