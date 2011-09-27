@@ -30,6 +30,9 @@ namespace Gallio.UI.ProgressMonitoring
         {
             set 
             {
+                if (ProgressBar == null)
+                    return;
+
                 if (value == 0) 
                 {
                     Maximum = 0;
@@ -55,6 +58,9 @@ namespace Gallio.UI.ProgressMonitoring
         {
             set 
             {
+                if (ProgressBar == null)
+                    return;
+
                 Value =  Convert.ToInt32(value);
             }
         }
