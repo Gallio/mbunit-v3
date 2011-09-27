@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Xml;
 using Gallio.Common;
 using Gallio.Common.Collections;
 using Gallio.Common.Messaging;
@@ -81,13 +80,6 @@ namespace Gallio.ReSharperRunner.Provider
             shim = new Shim(this);
         }
 
-#if RESHARPER_60
-        public GallioTestProvider(ISolution solution) : this()
-        {
-            this.solution = solution;
-        }
-#endif
-
         public void ExploreExternal(UnitTestElementConsumer consumer)
         {
             shim.ExploreExternal(consumer);
@@ -121,27 +113,27 @@ namespace Gallio.ReSharperRunner.Provider
             return shim.IsUnitTestStuff(element);
         }
 #endif
+
+#if RESHARPER_50_OR_NEWER
         public bool IsElementOfKind(IDeclaredElement element, UnitTestElementKind kind)
         {
             return shim.IsElementOfKind(element, kind);
         }
 
-#if RESHARPER_50_OR_NEWER && !RESHARPER_60
         public bool IsElementOfKind(UnitTestElement element, UnitTestElementKind kind)
         {
             return shim.IsElementOfKind(element, kind);
         }
 #endif
 
-        public RemoteTaskRunnerInfo GetTaskRunnerInfo()
-        {
-            return shim.GetTaskRunnerInfo();
-        }
-
-#if !RESHARPER_60
         public void Present(UnitTestElement element, IPresentableItem item, TreeModelNode node, PresentationState state)
         {
             shim.Present(element, item, node, state);
+        }
+
+        public RemoteTaskRunnerInfo GetTaskRunnerInfo()
+        {
+            return shim.GetTaskRunnerInfo();
         }
 
         public string Serialize(UnitTestElement element)
@@ -163,7 +155,7 @@ namespace Gallio.ReSharperRunner.Provider
         {
             return shim.CompareUnitTestElements(x, y);
         }
-#endif
+
         public void ProfferConfiguration(TaskExecutorConfiguration configuration, UnitTestSession session)
         {
             shim.ProfferConfiguration(configuration, session);
@@ -184,43 +176,10 @@ namespace Gallio.ReSharperRunner.Provider
         {
             get { return shim.Name; }
         }
-#endif
-#if RESHARPER_45_OR_NEWER && !RESHARPER_60
+
         public ProviderCustomOptionsControl GetCustomOptionsControl(ISolution solution)
         {
             return shim.GetCustomOptionsControl(solution);
-        }
-#endif
-
-#if RESHARPER_60
-        public ISolution Solution
-        {
-            get { return solution; }
-        }
-
-        public bool IsElementOfKind(IUnitTestElement element, UnitTestElementKind elementKind)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsSupported(IHostProvider hostProvider)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int CompareUnitTestElements(IUnitTestElement x, IUnitTestElement y)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SerializeElement(XmlElement parent, IUnitTestElement element)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IUnitTestElement DeserializeElement(XmlElement parent, IUnitTestElement parentElement)
-        {
-            throw new NotImplementedException();
         }
 #endif
 
@@ -236,6 +195,7 @@ namespace Gallio.ReSharperRunner.Provider
             private readonly GallioTestPresenter presenter;
             private readonly ITestFrameworkManager testFrameworkManager;
             private readonly ILogger logger;
+            private readonly FacadeTaskFactory facadeTaskFactory;
 
             /// <summary>
             /// Initializes the provider.
@@ -246,6 +206,7 @@ namespace Gallio.ReSharperRunner.Provider
 
                 testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
                 presenter = new GallioTestPresenter();
+                facadeTaskFactory = new FacadeTaskFactory();
                 logger = new FacadeLoggerWrapper(new AdapterFacadeLogger());
 
                 RuntimeAccessor.Instance.AddLogListener(logger);
@@ -272,15 +233,11 @@ namespace Gallio.ReSharperRunner.Provider
                 if (consumer == null)
                     throw new ArgumentNullException("consumer");
 
-#if ! RESHARPER_31 && ! RESHARPER_40 && ! RESHARPER_41 && ! RESHARPER_60
+#if ! RESHARPER_31 && ! RESHARPER_40 && ! RESHARPER_41
                 using (ReadLockCookie.Create())
 #endif
                 {
-#if ! RESHARPER_60
                     if (!solution.IsValid)
-#else
-                    if (!solution.IsValid())
-#endif
                         return;
 
                     // Nothing to do currently.
@@ -300,15 +257,13 @@ namespace Gallio.ReSharperRunner.Provider
                 if (consumer == null)
                     throw new ArgumentNullException("consumer");
 
-#if ! RESHARPER_31 && ! RESHARPER_40 && ! RESHARPER_41 && ! RESHARPER_60
+#if ! RESHARPER_31 && ! RESHARPER_40 && ! RESHARPER_41
                 using (ReadLockCookie.Create())
 #endif
                 {
-#if ! RESHARPER_60
                     if (!project.IsValid)
-#else
-                    if (!project.IsValid())
-#endif
+                        return;
+
                     try
                     {
                         MetadataReflectionPolicy reflectionPolicy = new MetadataReflectionPolicy(assembly, project);
@@ -338,7 +293,7 @@ namespace Gallio.ReSharperRunner.Provider
                 if (consumer == null)
                     throw new ArgumentNullException("consumer");
 
-#if ! RESHARPER_31 && ! RESHARPER_40 && ! RESHARPER_41 && !RESHARPER_60
+#if ! RESHARPER_31 && ! RESHARPER_40 && ! RESHARPER_41
                 using (ReadLockCookie.Create())
 #endif
                 {
@@ -347,12 +302,7 @@ namespace Gallio.ReSharperRunner.Provider
 
                     try
                     {
-#if !RESHARPER_60
-                        var psiManager = psiFile.GetManager();
-#else
-                        var psiManager = psiFile.GetManager();
-#endif
-                        PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(psiManager);
+                        PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(psiFile.GetManager());
                         ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer, psiFile);
 
                         var codeElements = new List<ICodeElementInfo>();
@@ -589,7 +539,7 @@ namespace Gallio.ReSharperRunner.Provider
                 List<UnitTestTask> tasks = new List<UnitTestTask>();
 
                 // Add the run task.  Must always be first.
-                tasks.Add(new UnitTestTask(null, FacadeTaskFactory.CreateRootTask()));
+                tasks.Add(new UnitTestTask(null, facadeTaskFactory.CreateRootTask()));
 
                 // Add the test case branch.
                 AddTestTasksFromRootToLeaf(tasks, topElement);
@@ -598,19 +548,19 @@ namespace Gallio.ReSharperRunner.Provider
                 // arbitrary elements.  We don't care about the structure of the task tree beyond this depth.
 
                 // Add the assembly location.
-                tasks.Add(new UnitTestTask(null, FacadeTaskFactory.CreateAssemblyTaskFrom(topElement)));
+                tasks.Add(new UnitTestTask(null, facadeTaskFactory.CreateAssemblyTaskFrom(topElement)));
 
                 if (explicitElements.Count != 0)
                 {
                     // Add explicit element markers.
                     foreach (GallioTestElement explicitElement in explicitElements)
-                        tasks.Add(new UnitTestTask(null, FacadeTaskFactory.CreateExplicitTestTaskFrom(explicitElement)));
+                        tasks.Add(new UnitTestTask(null, facadeTaskFactory.CreateExplicitTestTaskFrom(explicitElement)));
                 }
                 else
                 {
                     // No explicit elements but we must have at least one to filter by, so we consider
                     // the top test explicitly selected.
-                    tasks.Add(new UnitTestTask(null, FacadeTaskFactory.CreateExplicitTestTaskFrom(topElement)));
+                    tasks.Add(new UnitTestTask(null, facadeTaskFactory.CreateExplicitTestTaskFrom(topElement)));
                 }
 
                 return tasks;
@@ -622,7 +572,7 @@ namespace Gallio.ReSharperRunner.Provider
                 if (parentElement != null)
                     AddTestTasksFromRootToLeaf(tasks, parentElement);
 
-                tasks.Add(new UnitTestTask(element, FacadeTaskFactory.CreateTestTaskFrom(element)));
+                tasks.Add(new UnitTestTask(element, facadeTaskFactory.CreateTestTaskFrom(element)));
             }
 
             /// <summary>
