@@ -48,18 +48,21 @@ namespace Gallio.UI.ProgressMonitoring
         /// <inheritdoc />
         public void RunTask(string queueId)
         {
-            if (currentWorkerTasks.Read(tasks => tasks.ContainsKey(queueId)))
-                return;
+            currentWorkerTasks.Write(tasks =>
+            {
+                if (tasks.ContainsKey(queueId))
+                    return;
 
-            var command = taskQueue.GetNextTask(queueId);
+                var command = taskQueue.GetNextTask(queueId);
 
-            if (command == null)
-                return;
+                if (command == null)
+                    return;
 
-            BeginNextTask(queueId, command);
+                BeginNextTask(queueId, command, tasks);
+            });
         }
 
-        private void BeginNextTask(string queueId, ICommand command)
+        private void BeginNextTask(string queueId, ICommand command, IDictionary<string, ThreadTask> tasks)
         {
             var workerTask = new ThreadTask(queueId, () =>
             {
@@ -68,7 +71,7 @@ namespace Gallio.UI.ProgressMonitoring
                 command.Execute(progressMonitor);
             });
 
-            currentWorkerTasks.Write(tasks => tasks.Add(queueId, workerTask));
+            tasks.Add(queueId, workerTask);
 
             workerTask.Terminated += delegate
             {
