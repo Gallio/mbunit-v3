@@ -16,16 +16,49 @@
 using System.Windows.Forms;
 using Gallio.Icarus.TestResults;
 using MbUnit.Framework;
+using NHamcrest.Core;
 
 namespace Gallio.Icarus.Tests.TestResults
 {
     [TestsOn(typeof(TestStepComparer)), Category("TestResults")]
     public class TestStepComparerTest
     {
+        private TestStepComparer comparer;
+
+        [SetUp]
+        public void SetUp()
+        {
+            comparer = new TestStepComparer();
+        }
+
+        [Test]
+        public void Equal_if_left_and_right_are_null()
+        {
+            var result = comparer.Compare(null, null);
+
+            Assert.That(result, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void Less_if_left_is_null()
+        {
+            var result = comparer.Compare(null, new ListViewItem());
+
+            Assert.That(result, Is.EqualTo(-1));
+        }
+
+        [Test]
+        public void More_if_right_is_null()
+        {
+            var result = comparer.Compare(new ListViewItem(), null);
+
+            Assert.That(result, Is.EqualTo(1));
+        }
+
         [Test]
         public void Comparing_durations_should_be_correct()
         {
-            var comparer = new TestStepComparer { SortColumn = 2 };
+            comparer.SortColumn = 2;
             var left = new ListViewItem("Left");
             const double durationLeft = 1.0;
             left.SubItems.AddRange(new[] { "", durationLeft.ToString() });
@@ -41,11 +74,8 @@ namespace Gallio.Icarus.Tests.TestResults
         [Test]
         public void Comparing_durations_should_be_correct_when_sorted_desc()
         {
-            var comparer = new TestStepComparer
-            {
-                SortColumn = 2,
-                SortOrder = Icarus.Models.SortOrder.Descending
-            };
+            comparer.SortColumn = 2;
+            comparer.SortOrder = Icarus.Models.SortOrder.Descending;
             var left = new ListViewItem();
             const double durationLeft = 1.0;
             left.SubItems.AddRange(new[] { "", durationLeft.ToString() });
@@ -61,7 +91,7 @@ namespace Gallio.Icarus.Tests.TestResults
         [Test]
         public void Comparing_assertions_should_be_correct()
         {
-            var comparer = new TestStepComparer { SortColumn = 3 };
+            comparer.SortColumn = 3;
             const int assertionsLeft = 4;
             const int assertionsRight = 12;
             var left = new ListViewItem();
@@ -77,11 +107,8 @@ namespace Gallio.Icarus.Tests.TestResults
         [Test]
         public void Comparing_assertions_should_be_correct_when_sorted_desc()
         {
-            var comparer = new TestStepComparer 
-            {
-                SortColumn = 3, 
-                SortOrder = Icarus.Models.SortOrder.Descending
-            };
+            comparer.SortColumn = 3;
+            comparer.SortOrder = Icarus.Models.SortOrder.Descending;
             const int assertionsLeft = 4;
             const int assertionsRight = 12;
             var left = new ListViewItem();
@@ -97,7 +124,7 @@ namespace Gallio.Icarus.Tests.TestResults
         [Test]
         public void Comparing_text_should_be_correct()
         {
-            var comparer = new TestStepComparer { SortColumn = 0 };
+            comparer.SortColumn = 0;
             const string textLeft = "aaa";
             const string textRight = "zzz";
             var left = new ListViewItem(textLeft);
@@ -111,11 +138,8 @@ namespace Gallio.Icarus.Tests.TestResults
         [Test]
         public void Comparing_text_should_be_correct_when_sorted_desc()
         {
-            var comparer = new TestStepComparer
-            {
-                SortColumn = 0,
-                SortOrder = Icarus.Models.SortOrder.Descending
-            };
+            comparer.SortColumn = 0;
+            comparer.SortOrder = Icarus.Models.SortOrder.Descending;
             const string textLeft = "aaa";
             const string textRight = "zzz";
             var left = new ListViewItem(textLeft);

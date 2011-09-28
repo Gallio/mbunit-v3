@@ -36,6 +36,15 @@ namespace Gallio.Icarus.TestResults
 
         public int Compare(ListViewItem x, ListViewItem y)
         {
+            if (x == null & y == null)
+                return 0;
+
+            if (x == null)
+                return -1;
+
+            if (y == null)
+                return 1;
+
             var leftText = x.SubItems[SortColumn].Text;
             var rightText = y.SubItems[SortColumn].Text;
 
