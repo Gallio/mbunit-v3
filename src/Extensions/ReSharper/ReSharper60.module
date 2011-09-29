@@ -3,7 +3,6 @@
 
   <ItemGroup>
     <CSharpProject Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner60$(ProjectVariant).csproj" />
-    <CSharpProject Include="Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner60.Tests$(ProjectVariant).csproj" />
 
     <PluginFile Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner60.plugin">
       <ImagePath>bin\ReSharper\v6.0</ImagePath>
