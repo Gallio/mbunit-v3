@@ -95,12 +95,11 @@ namespace Gallio.ReSharperRunner.Provider.Facade
                 try 
                 {
                     // TODO: Should ask for a better way of doing this.
-#if RESHARPER_31
                     object taskRunnerProxy = server.WithoutProxy;
+#if RESHARPER_31                    
                     PropertyInfo property = taskRunnerProxy.GetType().GetProperty("SessionId");
                     return (string)property.GetValue(taskRunnerProxy, null);
 #elif RESHARPER_40 || RESHARPER_41 || RESHARPER_45
-                    object taskRunnerProxy = server.WithoutProxy;
                     return ((TaskRunnerProxy) taskRunnerProxy).SessionId;
 #elif RESHARPER_50
                     // taskRunnerProxy is a ClientControllerServerWrapper that wraps a
