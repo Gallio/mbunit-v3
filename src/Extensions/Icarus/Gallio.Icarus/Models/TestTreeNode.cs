@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
@@ -29,6 +30,7 @@ namespace Gallio.Icarus.Models
         private TestStatus? testStatus;
         private readonly List<TestStepRun> testStepRuns = new List<TestStepRun>();
         private bool isFiltered;
+        private IComparer comparer = new AlphanumComparatorFast(); 
 
         public virtual string Id { get; private set; }
 
@@ -198,7 +200,7 @@ namespace Gallio.Icarus.Models
 
         public int CompareTo(TestTreeNode other)
         {
-            return Text.CompareTo(other.Text);
+            return comparer.Compare(Text, other.Text);
         }
     }
 }

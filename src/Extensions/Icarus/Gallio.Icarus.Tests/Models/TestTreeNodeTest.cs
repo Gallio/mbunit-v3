@@ -13,10 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using System.Windows.Forms;
 using Gallio.Icarus.Models;
 using Gallio.Model;
 using MbUnit.Framework;
+using NHamcrest.Core;
 
 namespace Gallio.Icarus.Tests.Models
 {
@@ -67,6 +69,23 @@ namespace Gallio.Icarus.Tests.Models
             node.IsFiltered = false;
 
             Assert.AreEqual(CheckState.Checked, node.CheckState);
+        }
+
+        [Test]
+        public void Alphanumeric_comparison()
+        {
+            var node1 = new TestTreeNode("id", "AAA");
+            var node2 = new TestTreeNode("id", "10A");
+            var node3 = new TestTreeNode("id", "1AA");
+            var node4 = new TestTreeNode("id", "ABC");
+            var list = new List<TestTreeNode> { node4, node2, node3, node1 };
+
+            list.Sort();
+
+            Assert.That(list[0], Is.EqualTo(node3));
+            Assert.That(list[1], Is.EqualTo(node2));
+            Assert.That(list[2], Is.EqualTo(node1));
+            Assert.That(list[3], Is.EqualTo(node4));
         }
     }
 }
