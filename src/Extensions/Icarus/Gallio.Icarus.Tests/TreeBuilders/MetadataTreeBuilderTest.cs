@@ -18,6 +18,8 @@ using Gallio.Icarus.Tests.Utilities;
 using Gallio.Icarus.TreeBuilders;
 using Gallio.Model.Schema;
 using MbUnit.Framework;
+using NHamcrest;
+using NHamcrest.Core;
 
 namespace Gallio.Icarus.Tests.TreeBuilders
 {
@@ -25,6 +27,7 @@ namespace Gallio.Icarus.Tests.TreeBuilders
     {
         private TestModelData testModelData;
         private MetadataTreeBuilder metadataTreeBuilder;
+        private const string Metadata = "Metadata";
 
         [SetUp]
         public void Establish_context()
@@ -32,30 +35,36 @@ namespace Gallio.Icarus.Tests.TreeBuilders
             metadataTreeBuilder = new MetadataTreeBuilder();
 
             testModelData = new TestModelData();
-            var assembly = new TestData("assembly", "assembly", "assembly");
+            var assembly = CreateTestData("assembly");
             testModelData.RootTest.Children.Add(assembly);
-            var fixture1 = new TestData("fixture1", "fixture1", "fixture1");
-            var fixture2 = new TestData("fixture2", "fixture2", "fixture2");
+            var fixture1 = CreateTestData("fixture1");
+            var fixture2 = CreateTestData("fixture2");
             assembly.Children.AddRange(new[] { fixture1, fixture2 });
-            var test1 = new TestData("test1", "test1", "test1");
-            var test2 = new TestData("test2", "test2", "test2");
+            var test1 = CreateTestData("test1");
+            var test2 = CreateTestData("test2");
             fixture1.Children.AddRange(new[] { test1, test2 });
-            var test3 = new TestData("test3", "test3", "test3");
-            test3.Metadata.Add("Metadata", "metadata");
+            var test3 = CreateTestData("test3");
+            test3.Metadata.Add(Metadata, "metadata");
+            test3.Metadata.Add(Metadata, "metadata2");
             fixture2.Children.Add(test3);
-            var fixture3 = new TestData("fixture3", "fixture3", "fixture3");
-            fixture3.Metadata.Add("Metadata", "metadata");
+            var fixture3 = CreateTestData("fixture3");
+            fixture3.Metadata.Add(Metadata, "metadata");
             assembly.Children.Add(fixture3);
-            var test4 = new TestData("test4", "test4", "test4");
-            test4.Metadata.Add("Metadata", "metadata");
+            var test4 = CreateTestData("test4");
+            test4.Metadata.Add(Metadata, "metadata");
             fixture3.Children.Add(test4);
+        }
+
+        private static TestData CreateTestData(string name)
+        {
+            return new TestData(name, name, name);
         }
 
         [Test, Author("Graham")]
         public void Test1_should_be_under_Fixture1()
         {
             var node = metadataTreeBuilder.BuildTree(MockProgressMonitor.Instance, testModelData,
-                new TreeBuilderOptions { TreeViewCategory = "Metadata" });
+                new TreeBuilderOptions { TreeViewCategory = Metadata });
 
             var test1 = node.Find("test1", true)[0];
             var parent = (TestTreeNode)test1.Parent;
@@ -66,7 +75,7 @@ namespace Gallio.Icarus.Tests.TreeBuilders
         public void Test2_should_be_under_Fixture1()
         {
             var node = metadataTreeBuilder.BuildTree(MockProgressMonitor.Instance, testModelData,
-                new TreeBuilderOptions { TreeViewCategory = "Metadata" });
+                new TreeBuilderOptions { TreeViewCategory = Metadata });
 
             var test2 = node.Find("test2", true)[0];
             var parent = (TestTreeNode)test2.Parent;
@@ -74,36 +83,38 @@ namespace Gallio.Icarus.Tests.TreeBuilders
         }
 
         [Test]
-        public void Test3_should_be_under_the_metadata_node()
+        public void Test3_should_be_under_two_metadata_nodes()
         {
             var node = metadataTreeBuilder.BuildTree(MockProgressMonitor.Instance, testModelData, 
-                new TreeBuilderOptions { TreeViewCategory = "Metadata" });
+                new TreeBuilderOptions { TreeViewCategory = Metadata });
 
-            var test3 = node.Find("test3", true)[0];
-            var metadataNode = (TestTreeNode)test3.Parent;
-            Assert.AreEqual("Metadata", metadataNode.TestKind);
+            var test3s = node.Find("test3", true);
+
+            Assert.That(test3s.Count, Is.EqualTo(2));
+            Assert.That(test3s, new IsCollectionContaining<TestTreeNode>(new CustomMatcher<TestTreeNode>("metadata node", ttn => ttn.Parent.Text == "metadata")));
+            Assert.That(test3s, new IsCollectionContaining<TestTreeNode>(new CustomMatcher<TestTreeNode>("metadata node", ttn => ttn.Parent.Text == "metadata2")));
         }
 
         [Test]
         public void Fixture3_should_be_under_the_metadata_node()
         {
             var node = metadataTreeBuilder.BuildTree(MockProgressMonitor.Instance, testModelData,
-                new TreeBuilderOptions { TreeViewCategory = "Metadata" });
+                new TreeBuilderOptions { TreeViewCategory = Metadata });
 
             var fixture3 = node.Find("fixture3", true)[0];
             var metadataNode = (TestTreeNode)fixture3.Parent;
-            Assert.AreEqual("Metadata", metadataNode.TestKind);
+            Assert.AreEqual(Metadata, metadataNode.TestKind);
         }
 
         [Test]
         public void Test4_should_be_under_Fixture3()
         {
             var node = metadataTreeBuilder.BuildTree(MockProgressMonitor.Instance, testModelData,
-                new TreeBuilderOptions { TreeViewCategory = "Metadata" });
+                new TreeBuilderOptions { TreeViewCategory = Metadata });
 
             var test4 = node.Find("test4", true)[0];
             var metadataNode = (TestTreeNode)test4.Parent;
-            Assert.AreEqual("Metadata", metadataNode.TestKind);
+            Assert.AreEqual(Metadata, metadataNode.TestKind);
         }
     }
 }

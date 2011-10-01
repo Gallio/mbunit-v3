@@ -71,6 +71,7 @@ namespace Gallio.Icarus.TreeBuilders
                 {
                     var metadataNode = FindOrAddMetadataNode(metadataType, rootNode, metadata);
                     metadataNode.Nodes.Add(testDataNode);
+                    testDataNode = new TestDataNode(testData); // can't re-use node
                 }
             }
             else if (parentNode != null)
