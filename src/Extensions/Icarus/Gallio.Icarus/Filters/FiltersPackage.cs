@@ -1,7 +1,5 @@
 ﻿using Gallio.Icarus.Commands;
-using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Properties;
 using Gallio.Icarus.WindowManager;
 using Gallio.UI.Menus;
 
