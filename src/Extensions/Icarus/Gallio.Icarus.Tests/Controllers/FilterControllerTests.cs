@@ -1,5 +1,6 @@
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers;
+using Gallio.Icarus.Filters;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects.Schema;
 using Gallio.UI.ProgressMonitoring;

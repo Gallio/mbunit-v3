@@ -18,7 +18,7 @@ using Gallio.Model.Filters;
 using Gallio.Runner.Projects.Schema;
 using Gallio.UI.ProgressMonitoring;
 
-namespace Gallio.Icarus.Controllers
+namespace Gallio.Icarus.Filters
 {
     public class FilterController : IFilterController
     {
