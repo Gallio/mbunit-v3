@@ -129,6 +129,13 @@
     <Compile Include="ExecutionLogWindow.Designer.cs">
       <DependentUpon>ExecutionLogWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Filters\FiltersPackage.cs" />
+    <Compile Include="Filters\FiltersWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Filters\FiltersWindow.Designer.cs">
+      <DependentUpon>FiltersWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\AlphanumComparatorFast.cs" />
     <Compile Include="ProjectProperties\Controller.cs" />
     <Compile Include="ProjectProperties\IController.cs" />
@@ -457,12 +464,6 @@
     <Compile Include="RuntimeLogWindow.Designer.cs">
       <DependentUpon>RuntimeLogWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="FiltersWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FiltersWindow.Designer.cs">
-      <DependentUpon>FiltersWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="DockWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -487,13 +488,12 @@
       <DependentUpon>ExecutionLogPane.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="FiltersWindow.resx">
-      <DependentUpon>FiltersWindow.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="DockWindow.resx">
       <DependentUpon>DockWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Filters\FiltersWindow.resx">
+      <DependentUpon>FiltersWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <SubType>Designer</SubType>
@@ -682,6 +682,7 @@
     <Content Include="Resources\tick.png" />
     <None Include="Resources\XmlFile.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

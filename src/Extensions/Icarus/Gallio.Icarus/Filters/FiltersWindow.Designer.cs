@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Gallio.Icarus
+namespace Gallio.Icarus.Filters
 {
     partial class FiltersWindow
     {
@@ -115,7 +115,6 @@ namespace Gallio.Icarus
             this.Controls.Add(this.removeFilterButton);
             this.Controls.Add(this.filtersListBox);
             this.Name = "FiltersWindow";
-            this.TabText = "Test Filters";
             this.Text = "Test Filters";
             this.ResumeLayout(false);
             this.PerformLayout();

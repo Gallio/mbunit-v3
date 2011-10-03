@@ -17,7 +17,7 @@ using Gallio.Runner.Projects.Schema;
 
 namespace Gallio.Icarus.Controllers
 {
-    interface IFilterController
+    public interface IFilterController
     {
         void ApplyFilter(string filter);
         void DeleteFilter(FilterInfo filterInfo);

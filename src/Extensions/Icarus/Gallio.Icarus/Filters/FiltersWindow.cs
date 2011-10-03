@@ -14,14 +14,15 @@
 // limitations under the License.
 
 using System;
+using System.Windows.Forms;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runner.Projects.Schema;
 using Gallio.UI.ErrorReporting;
 
-namespace Gallio.Icarus
+namespace Gallio.Icarus.Filters
 {
-    internal partial class FiltersWindow : DockWindow
+    internal partial class FiltersWindow : UserControl
     {
         private readonly IFilterController filterController;
 

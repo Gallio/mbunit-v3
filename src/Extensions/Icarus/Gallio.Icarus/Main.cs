@@ -24,6 +24,7 @@ using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Filters;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.ProgressMonitoring;
 using Gallio.Icarus.Projects;
@@ -202,8 +203,6 @@ namespace Gallio.Icarus
                 return projectExplorer;
             if (persistString == typeof(TestResults.TestResults).ToString())
                 return testResults;
-            if (persistString == typeof(FiltersWindow).ToString())
-                return filtersWindow;
             if (persistString == typeof(ExecutionLogWindow).ToString())
                 return executionLogWindow;
             if (persistString == typeof(RuntimeLogWindow).ToString())
@@ -285,7 +284,6 @@ namespace Gallio.Icarus
             projectExplorer.Show(dockPanel, DockState.DockLeft);
             testExplorer.Show(dockPanel, DockState.DockLeft);
             annotationsWindow.Show(dockPanel, DockState.DockBottom);
-            filtersWindow.DockPanel = dockPanel;
         }
 
         private void fileExit_Click(object sender, EventArgs e)
@@ -487,9 +485,6 @@ namespace Gallio.Icarus
                         break;
                     case "runtimeLogToolStripMenuItem":
                         runtimeLogWindow.Show(dockPanel);
-                        break;
-                    case "testFiltersToolStripMenuItem":
-                        filtersWindow.Show(dockPanel);
                         break;
                     case "executionLogToolStripMenuItem":
                         executionLogWindow.Show(dockPanel);
