@@ -31,7 +31,7 @@ namespace Gallio.Icarus.Filters
         {
             windowManager.Register(WindowId, () =>
             {
-                var view = new FiltersWindow(filterController, projectController);
+                var view = new FiltersView(filterController, projectController);
                 const string caption = "Filters";
                 windowManager.Add(WindowId, view, caption);
             });

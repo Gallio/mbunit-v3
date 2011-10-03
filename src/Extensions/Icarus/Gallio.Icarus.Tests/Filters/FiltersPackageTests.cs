@@ -53,7 +53,7 @@ namespace Gallio.Icarus.Tests.Filters
         {
             filtersPackage.Load();
 
-            windowManager.AssertWasCalled(wm => wm.Add(Arg.Is(FiltersPackage.WindowId), Arg<FiltersWindow>.Is.Anything, Arg.Is("Filters")));
+            windowManager.AssertWasCalled(wm => wm.Add(Arg.Is(FiltersPackage.WindowId), Arg<FiltersView>.Is.Anything, Arg.Is("Filters")));
         }
 
         [Test]

@@ -129,13 +129,15 @@
     <Compile Include="ExecutionLogWindow.Designer.cs">
       <DependentUpon>ExecutionLogWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Filters\FilterController.cs" />
     <Compile Include="Filters\FiltersPackage.cs" />
-    <Compile Include="Filters\FiltersWindow.cs">
+    <Compile Include="Filters\FiltersView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Filters\FiltersWindow.Designer.cs">
-      <DependentUpon>FiltersWindow.cs</DependentUpon>
+    <Compile Include="Filters\FiltersView.Designer.cs">
+      <DependentUpon>FiltersView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Filters\IFilterController.cs" />
     <Compile Include="Models\AlphanumComparatorFast.cs" />
     <Compile Include="ProjectProperties\Controller.cs" />
     <Compile Include="ProjectProperties\IController.cs" />
@@ -209,10 +211,8 @@
     <Compile Include="Controllers\EventArgs\FileChangedEventArgs.cs" />
     <Compile Include="Controllers\EventArgs\ExecutionLogUpdatedEventArgs.cs" />
     <Compile Include="Controllers\EventArgs\ShowSourceCodeEventArgs.cs" />
-    <Compile Include="Controllers\FilterController.cs" />
     <Compile Include="Controllers\IAboutController.cs" />
     <Compile Include="Controllers\IApplicationController.cs" />
-    <Compile Include="Controllers\IFilterController.cs" />
     <Compile Include="Controllers\Interfaces\IAnnotationsController.cs" />
     <Compile Include="Controllers\Interfaces\IReportController.cs" />
     <Compile Include="Controllers\Interfaces\ISourceCodeController.cs" />
@@ -492,8 +492,8 @@
       <DependentUpon>DockWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Filters\FiltersWindow.resx">
-      <DependentUpon>FiltersWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Filters\FiltersView.resx">
+      <DependentUpon>FiltersView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <SubType>Designer</SubType>

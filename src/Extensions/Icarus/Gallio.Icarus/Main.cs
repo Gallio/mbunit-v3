@@ -56,7 +56,7 @@ namespace Gallio.Icarus
         private readonly ProjectExplorer projectExplorer;
         private readonly TestResults.TestResults testResults;
         private readonly RuntimeLogWindow runtimeLogWindow;
-        private readonly FiltersWindow filtersWindow;
+        private readonly FiltersView filtersView;
         private readonly ExecutionLogWindow executionLogWindow;
         private readonly AnnotationsWindow annotationsWindow;
 
@@ -121,7 +121,7 @@ namespace Gallio.Icarus
                 commandFactory, windowManager);
             testResults = new TestResults.TestResults(testResultsController, optionsController, testTreeModel, testStatistics);
             runtimeLogWindow = new RuntimeLogWindow(runtimeLogController);
-            filtersWindow = new FiltersWindow(filterController, projectController);
+            filtersView = new FiltersView(filterController, projectController);
             executionLogWindow = new ExecutionLogWindow(executionLogController, optionsController);
             annotationsWindow = new AnnotationsWindow(annotationsController, sourceCodeController);
 

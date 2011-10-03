@@ -15,7 +15,7 @@
 
 namespace Gallio.Icarus.Filters
 {
-    partial class FiltersWindow
+    partial class FiltersView
     {
         /// <summary>
         /// Required designer variable.
@@ -114,7 +114,7 @@ namespace Gallio.Icarus.Filters
             this.Controls.Add(this.applyFilterButton);
             this.Controls.Add(this.removeFilterButton);
             this.Controls.Add(this.filtersListBox);
-            this.Name = "FiltersWindow";
+            this.Name = "FiltersView";
             this.Text = "Test Filters";
             this.ResumeLayout(false);
             this.PerformLayout();

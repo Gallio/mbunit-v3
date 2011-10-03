@@ -22,11 +22,11 @@ using Gallio.UI.ErrorReporting;
 
 namespace Gallio.Icarus.Filters
 {
-    internal partial class FiltersWindow : UserControl
+    internal partial class FiltersView : UserControl
     {
         private readonly IFilterController filterController;
 
-        public FiltersWindow(IFilterController filterController, IProjectController projectController)
+        public FiltersView(IFilterController filterController, IProjectController projectController)
         {
             this.filterController = filterController;
 
