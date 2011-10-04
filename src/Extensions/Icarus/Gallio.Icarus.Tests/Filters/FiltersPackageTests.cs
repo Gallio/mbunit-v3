@@ -35,7 +35,7 @@ namespace Gallio.Icarus.Tests.Filters
             filterController = MockRepository.GenerateStub<IFilterController>();
 
             projectController = MockRepository.GenerateStub<IProjectController>();
-            projectController.Stub(pc => pc.TestFilters).Return(new Observable<IList<FilterInfo>>());
+            projectController.Stub(pc => pc.TestFilters).Return(new Observable<IList<FilterInfo>>(new List<FilterInfo>()));
 
             filtersPackage = new FiltersPackage(windowManager, filterController, projectController);
         }
@@ -53,7 +53,7 @@ namespace Gallio.Icarus.Tests.Filters
         {
             filtersPackage.Load();
 
-            windowManager.AssertWasCalled(wm => wm.Add(Arg.Is(FiltersPackage.WindowId), Arg<FiltersView>.Is.Anything, Arg.Is("Filters")));
+            windowManager.AssertWasCalled(wm => wm.Add(Arg.Is(FiltersPackage.WindowId), Arg<FiltersView>.Is.Anything, Arg.Is("Test Filters")));
         }
 
         [Test]
