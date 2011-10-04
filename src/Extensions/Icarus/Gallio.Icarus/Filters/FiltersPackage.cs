@@ -11,8 +11,9 @@ namespace Gallio.Icarus.Filters
         private readonly IFilterController filterController;
         private readonly IProjectController projectController;
         public const string WindowId = "Gallio.Icarus.Filters";
+    	private const string TEST_FILTERS = "Test Filters";
 
-        public FiltersPackage(IWindowManager windowManager, IFilterController filterController, IProjectController projectController)
+    	public FiltersPackage(IWindowManager windowManager, IFilterController filterController, IProjectController projectController)
         {
             this.windowManager = windowManager;
             this.filterController = filterController;
@@ -30,7 +31,7 @@ namespace Gallio.Icarus.Filters
             windowManager.Register(WindowId, () =>
             {
                 var view = new FiltersView(filterController, projectController);
-                const string caption = "Filters";
+                const string caption = TEST_FILTERS;
                 windowManager.Add(WindowId, view, caption);
             });
         }
@@ -40,7 +41,7 @@ namespace Gallio.Icarus.Filters
             windowManager.MenuManager.Add("View", () => new MenuCommand
             {
                 Command = new DelegateCommand(pm => windowManager.Show(WindowId)),
-                Text = "Test Filters",
+                Text = TEST_FILTERS,
                 //Shortcut = "Ctrl + T"
             });
         }
