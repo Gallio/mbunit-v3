@@ -32,15 +32,20 @@ namespace Gallio.Icarus.Filters
             InitializeComponent();
 
             filtersListBox.DisplayMember = "FilterName";
-            projectController.TestFilters.PropertyChanged += (s, e) =>
-            {
-                filtersListBox.Items.Clear();
-                foreach (var testFilter in projectController.TestFilters.Value)
-                    filtersListBox.Items.Add(testFilter);
-            };
+            projectController.TestFilters.PropertyChanged += (s, e) => LoadFilters(projectController);
+        	LoadFilters(projectController);
         }
 
-        private void filtersListBox_SelectedIndexChanged(object sender, EventArgs e)
+    	private void LoadFilters(IProjectController projectController)
+    	{
+    		filtersListBox.Items.Clear();
+    		foreach (var testFilter in projectController.TestFilters.Value)
+    		{
+    			filtersListBox.Items.Add(testFilter);
+    		}
+    	}
+
+    	private void filtersListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             removeFilterButton.Enabled = applyFilterButton.Enabled = (filtersListBox.SelectedItems.Count > 0);
         }
