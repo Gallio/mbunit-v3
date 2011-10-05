@@ -223,7 +223,11 @@ namespace Gallio.Reports.Vtl
 
             foreach (TestStepRun run in parent.Run.Children)
             {
-                var node = new TestStepRunNode(run, parent, index++);
+                var node = new TestStepRunNode(run, parent, index);
+
+                if (node.Run.Children.Count == 0)
+                    index++;
+
                 node.Children.AddRange(GetChildren(node, ref index));
                 list.Add(node);
             }
@@ -290,11 +294,10 @@ namespace Gallio.Reports.Vtl
         {
             if (index == 0)
                 return false;
-
             if (pageIndex == 0)
                 return true;
 
-            int start = (pageIndex - 1) * pageSize;
+            int start = 1 + (pageIndex - 1) * pageSize;
             return (index >= start) && (index < start + pageSize);
         }
     }
