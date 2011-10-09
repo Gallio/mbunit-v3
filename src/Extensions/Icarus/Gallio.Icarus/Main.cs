@@ -102,7 +102,6 @@ namespace Gallio.Icarus
             var runtimeLogController = RuntimeAccessor.ServiceLocator.Resolve<IRuntimeLogController>();
             var executionLogController = RuntimeAccessor.ServiceLocator.Resolve<IExecutionLogController>();
             var annotationsController = RuntimeAccessor.ServiceLocator.Resolve<IAnnotationsController>();
-            var filterController = RuntimeAccessor.ServiceLocator.Resolve<IFilterController>();
 
             var sourceCodeController = RuntimeAccessor.ServiceLocator.Resolve<ISourceCodeController>();
             testTreeModel = RuntimeAccessor.ServiceLocator.Resolve<ITestTreeModel>();
