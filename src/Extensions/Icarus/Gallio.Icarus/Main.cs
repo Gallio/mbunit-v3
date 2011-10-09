@@ -273,8 +273,8 @@ namespace Gallio.Icarus
             runtimeLogWindow.Show(dockPanel, DockState.DockBottom);
             projectExplorer.Show(dockPanel, DockState.DockLeft);
             testExplorer.Show(dockPanel, DockState.DockLeft);
-            //annotationsWindow.Show(dockPanel, DockState.DockBottom);
-            // TODO: add defaults to window manager
+
+            windowManager.ShowDefaults();
         }
 
         private void fileExit_Click(object sender, EventArgs e)
