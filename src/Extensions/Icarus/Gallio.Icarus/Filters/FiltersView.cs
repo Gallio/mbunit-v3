@@ -90,6 +90,5 @@ namespace Gallio.Icarus.Filters
             var filterInfo = (FilterInfo)filtersListBox.SelectedItem;
             filterController.ApplyFilter(filterInfo.FilterExpr);
         }
-
     }
 }
