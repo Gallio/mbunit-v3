@@ -15,7 +15,7 @@
 
 using Gallio.UI.Controls;
 
-namespace Gallio.Icarus
+namespace Gallio.Icarus.Annotations
 {
     partial class AnnotationsWindow
     {
@@ -195,7 +195,6 @@ namespace Gallio.Icarus
             this.ClientSize = new System.Drawing.Size(409, 273);
             this.Controls.Add(this.toolStripContainer1);
             this.Name = "AnnotationsWindow";
-            this.TabText = "Annotations";
             this.Text = "Annotations";
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);
             this.toolStripContainer1.TopToolStripPanel.ResumeLayout(false);

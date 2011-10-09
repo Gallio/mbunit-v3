@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Common.Concurrency;
+using Gallio.Icarus.Annotations;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;

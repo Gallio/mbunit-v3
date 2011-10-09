@@ -15,13 +15,14 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
 using Gallio.Model;
 using Gallio.Model.Schema;
 using Gallio.UI.Events;
 
-namespace Gallio.Icarus.Controllers
+namespace Gallio.Icarus.Annotations
 {
     internal class AnnotationsController : NotifyController, IAnnotationsController, 
         Handles<ExploreFinished>

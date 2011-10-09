@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Gallio.Model.Schema;
 
-namespace Gallio.Icarus.Controllers.Interfaces
+namespace Gallio.Icarus.Annotations
 {
     public interface IAnnotationsController : INotifyPropertyChanged
     {

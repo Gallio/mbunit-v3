@@ -87,8 +87,9 @@
     <Compile Include="AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Annotations\AnnotationsPackage.cs" />
     <Compile Include="Annotations\AnnotationsWindow.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Annotations\AnnotationsWindow.Designer.cs">
       <DependentUpon>AnnotationsWindow.cs</DependentUpon>

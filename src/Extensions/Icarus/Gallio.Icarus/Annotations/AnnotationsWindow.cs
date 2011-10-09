@@ -19,9 +19,9 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Schema;
 
-namespace Gallio.Icarus
+namespace Gallio.Icarus.Annotations
 {
-    internal partial class AnnotationsWindow : DockWindow
+    internal partial class AnnotationsWindow : UserControl
     {
         private readonly IAnnotationsController annotationsController;
         private readonly ISourceCodeController sourceCodeController;

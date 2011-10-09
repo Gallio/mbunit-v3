@@ -56,7 +56,6 @@ namespace Gallio.Icarus
         private readonly TestResults.TestResults testResults;
         private readonly RuntimeLogWindow runtimeLogWindow;
         private readonly ExecutionLogWindow executionLogWindow;
-        private readonly AnnotationsWindow annotationsWindow;
 
         private readonly ITestTreeModel testTreeModel;
         private readonly ITestStatistics testStatistics;
@@ -100,9 +99,7 @@ namespace Gallio.Icarus
             var testResultsController = RuntimeAccessor.ServiceLocator.Resolve<ITestResultsController>();
             var runtimeLogController = RuntimeAccessor.ServiceLocator.Resolve<IRuntimeLogController>();
             var executionLogController = RuntimeAccessor.ServiceLocator.Resolve<IExecutionLogController>();
-            var annotationsController = RuntimeAccessor.ServiceLocator.Resolve<IAnnotationsController>();
 
-            var sourceCodeController = RuntimeAccessor.ServiceLocator.Resolve<ISourceCodeController>();
             testTreeModel = RuntimeAccessor.ServiceLocator.Resolve<ITestTreeModel>();
             testStatistics = RuntimeAccessor.ServiceLocator.Resolve<ITestStatistics>();
 
@@ -119,7 +116,6 @@ namespace Gallio.Icarus
             testResults = new TestResults.TestResults(testResultsController, optionsController, testTreeModel, testStatistics);
             runtimeLogWindow = new RuntimeLogWindow(runtimeLogController);
             executionLogWindow = new ExecutionLogWindow(executionLogController, optionsController);
-            annotationsWindow = new AnnotationsWindow(annotationsController, sourceCodeController);
 
             // moved this below the service locator calls as the optionsController was being used _before_ it was initialised :(
             // TODO: remove as many dependencies from the shell as possible
@@ -203,8 +199,6 @@ namespace Gallio.Icarus
                 return executionLogWindow;
             if (persistString == typeof(RuntimeLogWindow).ToString())
                 return runtimeLogWindow;
-            if (persistString == typeof(AnnotationsWindow).ToString())
-                return annotationsWindow;
 
             return windowManager.Get(persistString);
         }
@@ -279,7 +273,8 @@ namespace Gallio.Icarus
             runtimeLogWindow.Show(dockPanel, DockState.DockBottom);
             projectExplorer.Show(dockPanel, DockState.DockLeft);
             testExplorer.Show(dockPanel, DockState.DockLeft);
-            annotationsWindow.Show(dockPanel, DockState.DockBottom);
+            //annotationsWindow.Show(dockPanel, DockState.DockBottom);
+            // TODO: add defaults to window manager
         }
 
         private void fileExit_Click(object sender, EventArgs e)
@@ -484,9 +479,6 @@ namespace Gallio.Icarus
                         break;
                     case "executionLogToolStripMenuItem":
                         executionLogWindow.Show(dockPanel);
-                        break;
-                    case "annotationsToolStripMenuItem":
-                        annotationsWindow.Show(dockPanel);
                         break;
                 }
             });
