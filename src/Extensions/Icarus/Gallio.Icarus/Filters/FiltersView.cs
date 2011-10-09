@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runner.Projects.Schema;
@@ -32,11 +33,20 @@ namespace Gallio.Icarus.Filters
             InitializeComponent();
 
             filtersListBox.DisplayMember = "FilterName";
-            projectController.TestFilters.PropertyChanged += (s, e) => LoadFilters(projectController);
-        	LoadFilters(projectController);
+
+            WireUpHandler(projectController);
+
+            LoadFilters(projectController);
         }
 
-    	private void LoadFilters(IProjectController projectController)
+        private void WireUpHandler(IProjectController projectController)
+        {
+            PropertyChangedEventHandler handler = (s, e) => LoadFilters(projectController);
+            projectController.TestFilters.PropertyChanged += handler;
+            Disposed += (s, e) => projectController.TestFilters.PropertyChanged -= handler;
+        }
+
+        private void LoadFilters(IProjectController projectController)
     	{
     		filtersListBox.Items.Clear();
     		foreach (var testFilter in projectController.TestFilters.Value)
@@ -80,5 +90,6 @@ namespace Gallio.Icarus.Filters
             var filterInfo = (FilterInfo)filtersListBox.SelectedItem;
             filterController.ApplyFilter(filterInfo.FilterExpr);
         }
+
     }
 }
