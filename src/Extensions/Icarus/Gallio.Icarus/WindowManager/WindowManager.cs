@@ -27,6 +27,7 @@ namespace Gallio.Icarus.WindowManager
     {
         private readonly Dictionary<string, Window> windows = new Dictionary<string, Window>();
         private readonly Dictionary<string, Action> hooks = new Dictionary<string, Action>();
+        private readonly Dictionary<string, Location> defaults = new Dictionary<string, Location>();
         private DockPanel dockPanel;
 
         public IMenuManager MenuManager { get; private set; }
@@ -61,6 +62,14 @@ namespace Gallio.Icarus.WindowManager
         {
             if (windows.ContainsKey(identifier))
                 windows.Remove(identifier);
+        }
+
+        public void ShowDefaults()
+        {
+            foreach (var identifier in defaults.Keys)
+            {
+                Show(identifier, defaults[identifier]);
+            }
         }
 
         public Window Get(string identifier)
@@ -125,6 +134,12 @@ namespace Gallio.Icarus.WindowManager
                 throw new Exception("Identifier is not unique");
 
             hooks.Add(identifier, action);
+        }
+
+        public void Register(string identifier, Action action, Location defaultLocation)
+        {
+            defaults.Add(identifier, defaultLocation);
+            Register(identifier, action);
         }
 
         internal void SetDockPanel(DockPanel panel)

@@ -150,6 +150,7 @@
     </Compile>
     <Compile Include="Utilities\TestTaskManager.cs" />
     <Compile Include="WindowManager\MenuManagerTests.cs" />
+    <Compile Include="WindowManager\WindowManagerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.csproj">
