@@ -24,8 +24,8 @@ namespace Gallio.Icarus.Tests.Annotations
         public void SetUp()
         {
             windowManager = MockRepository.GenerateStub<IWindowManager>();
-            windowManager.Stub(wm => wm.Register(Arg<string>.Is.Anything, Arg<Action>.Is.Anything))
-                .Do((Action<string, Action>)((i, a) => a()));
+            windowManager.Stub(wm => wm.Register(Arg<string>.Is.Anything, Arg<Action>.Is.Anything, Arg<Location>.Is.Anything))
+                .Do((Action<string, Action, Location>)((i, a, l) => a()));
 
             menuManager = MockRepository.GenerateStub<IMenuManager>();
             windowManager.Stub(wm => wm.MenuManager).Return(menuManager);
@@ -42,7 +42,7 @@ namespace Gallio.Icarus.Tests.Annotations
         {
             annotationsPackage.Load();
 
-            windowManager.AssertWasCalled(wm => wm.Register(Arg.Is(AnnotationsPackage.WindowId), Arg<Action>.Is.Anything));
+            windowManager.AssertWasCalled(wm => wm.Register(Arg.Is(AnnotationsPackage.WindowId), Arg<Action>.Is.Anything, Arg<Location>.Is.Anything));
         }
 
         [Test]
@@ -52,6 +52,14 @@ namespace Gallio.Icarus.Tests.Annotations
 
             windowManager.AssertWasCalled(wm => wm.Add(Arg.Is(AnnotationsPackage.WindowId), Arg<AnnotationsWindow>.Is.Anything, 
                 Arg.Is(Resources.AnnotationsPackage_Annotations)));
+        }
+
+        [Test]
+        public void Load_registers_window_with_correct_default_location()
+        {
+            annotationsPackage.Load();
+
+            windowManager.AssertWasCalled(wm => wm.Register(Arg<string>.Is.Anything, Arg<Action>.Is.Anything, Arg.Is(Location.Bottom)));
         }
 
         [Test]

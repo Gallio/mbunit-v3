@@ -33,7 +33,7 @@ namespace Gallio.Icarus.Annotations
             {
                 var view = new AnnotationsWindow(annotationsController, sourceCodeController);
                 windowManager.Add(WindowId, view, Resources.AnnotationsPackage_Annotations);
-            });
+            }, Location.Bottom);
         }
 
         private void AddMenuItem()
