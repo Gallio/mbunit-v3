@@ -87,6 +87,12 @@
     <Compile Include="AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Annotations\AnnotationsWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Annotations\AnnotationsWindow.Designer.cs">
+      <DependentUpon>AnnotationsWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Commands\AddFilesCommand.cs" />
     <Compile Include="Commands\ApplyFilterCommand.cs" />
     <Compile Include="Commands\CommandFactory.cs" />
@@ -204,7 +210,7 @@
     <Compile Include="Commands\ShowReportCommand.cs" />
     <Compile Include="Commands\ViewSourceCodeCommand.cs" />
     <Compile Include="Controllers\AboutController.cs" />
-    <Compile Include="Controllers\AnnotationsController.cs" />
+    <Compile Include="Annotations\AnnotationsController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="ApplicationShutdown.cs" />
     <Compile Include="Controllers\EventArgs\FileChangedEventArgs.cs" />
@@ -212,7 +218,7 @@
     <Compile Include="Controllers\EventArgs\ShowSourceCodeEventArgs.cs" />
     <Compile Include="Controllers\IAboutController.cs" />
     <Compile Include="Controllers\IApplicationController.cs" />
-    <Compile Include="Controllers\Interfaces\IAnnotationsController.cs" />
+    <Compile Include="Annotations\IAnnotationsController.cs" />
     <Compile Include="Controllers\Interfaces\IReportController.cs" />
     <Compile Include="Controllers\Interfaces\ISourceCodeController.cs" />
     <Compile Include="Controllers\Interfaces\ITestResultsController.cs" />
@@ -383,12 +389,6 @@
     <Compile Include="Controls\TestTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="AnnotationsWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AnnotationsWindow.Designer.cs">
-      <DependentUpon>AnnotationsWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controllers\EventArgs\RuntimeLogEventArgs.cs" />
     <Compile Include="Controllers\Interfaces\IOptionsController.cs" />
     <Compile Include="Controllers\Interfaces\IProjectController.cs" />
@@ -479,6 +479,9 @@
     <Compile Include="Paths.cs" />
     <Compile Include="IcarusProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Annotations\AnnotationsWindow.resx">
+      <DependentUpon>AnnotationsWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel\ShutdownPane.resx">
       <DependentUpon>ShutdownPane.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -552,10 +555,6 @@
   <ItemGroup>
     <EmbeddedResource Include="AboutDialog.resx">
       <DependentUpon>AboutDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="AnnotationsWindow.resx">
-      <DependentUpon>AnnotationsWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel\TestRunnerFactoryPane.resx">
@@ -681,6 +680,7 @@
     <Content Include="Resources\tick.png" />
     <None Include="Resources\XmlFile.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
