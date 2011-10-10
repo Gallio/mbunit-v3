@@ -33,7 +33,7 @@
 				
 				<Directory Id="JetBrains.ReSharper.V60.VS9.ExternalAnnotationsDir" Name="ExternalAnnotations">
 					<Directory Id="JetBrains.Resharper.V60.VS9.MbUnitDir" Name="MbUnit">
-                        <Component Id="MbUnit.V60.VS9.xml" Guid="{E6E3E73E-C60A-46fb-B315-13B33D0C82FE}" Win64="no">
+                        <Component Id="MbUnit.V60.VS9.xml" Guid="{3EE0E09C-C33A-4A77-8F24-A24630B77EC6}" Win64="no">
                             <File Id="MbUnit.V60.VS9.xml" Source="$(var.GallioTargetDir)\bin\ReSharper\v6.0\MbUnit.xml" KeyPath="yes" />
                         </Component>					
 					</Directory>
@@ -41,12 +41,12 @@
 				
 				<Directory Id="JetBrains.ReSharper.V60.VS9.PluginsDir" Name="Plugins">
                     <Directory Id="JetBrains.Resharper.V60.VS9.GallioDir" Name="Gallio">
-                        <Component Id="Gallio.ReSharperRunner.V60.VS9.dll" Guid="{F32F20BD-69A1-49cb-9448-46588122032A}" Win64="no">
+                        <Component Id="Gallio.ReSharperRunner.V60.VS9.dll" Guid="{7CAE9C0D-64F1-405E-BC9E-D46956354A7C}" Win64="no">
                             <File Id="Gallio.ReSharperRunner.V60.VS9.dll" Source="$(var.GallioTargetDir)\bin\ReSharper\v6.0\Gallio.ReSharperRunner60.dll" KeyPath="yes" />
                         </Component>
 						
 						<Directory Id="Gallio.ReSharperRunner.V60.VS9.Resources" Name="Resources">
-							<Component Id="Gallio.ReSharperRunner.V60.VS9.Icon" Guid="{DE95F2FC-2269-4f53-B316-788A979816A9}" Win64="$(var.Win64Binary)">
+							<Component Id="Gallio.ReSharperRunner.V60.VS9.Icon" Guid="{3FF3ADBF-F7CA-491D-9059-D6FECEB28B1A}" Win64="$(var.Win64Binary)">
 								<File Id="ReSharper_V60_VS90_Icon" Source="$(var.GallioTargetDir)\bin\ReSharper\v6.0\Resources\resharper.ico" KeyPath="yes" />
 							</Component>
 						</Directory>
@@ -58,7 +58,7 @@
 				
 				<Directory Id="JetBrains.ReSharper.V60.VS10.ExternalAnnotationsDir" Name="ExternalAnnotations">
 					<Directory Id="JetBrains.Resharper.V60.VS10.MbUnitDir" Name="MbUnit">
-                        <Component Id="MbUnit.V60.VS10.xml" Guid="{DE1A9B51-8B42-4739-B089-BC7FA497BECF}" Win64="no">
+                        <Component Id="MbUnit.V60.VS10.xml" Guid="{19F86F6A-2747-4E52-9442-5C55752D2B17}" Win64="no">
                             <File Id="MbUnit.V60.VS10.xml" Source="$(var.GallioTargetDir)\bin\ReSharper\v6.0\MbUnit.xml" KeyPath="yes" />
                         </Component>					
 					</Directory>
@@ -66,12 +66,12 @@
                 
 				<Directory Id="JetBrains.ReSharper.V60.VS10.PluginsDir" Name="Plugins">
                     <Directory Id="JetBrains.Resharper.V60.VS10.GallioDir" Name="Gallio">
-                        <Component Id="Gallio.ReSharperRunner.V60.VS10.dll" Guid="{388491BF-2934-4e3c-B8B5-E5BF44CA3BB5}" Win64="no">
+                        <Component Id="Gallio.ReSharperRunner.V60.VS10.dll" Guid="{BDFB9BA5-D5E1-4533-BBA5-630E20DDF3A7}" Win64="no">
                             <File Id="Gallio.ReSharperRunner.V60.VS10.dll" Source="$(var.GallioTargetDir)\bin\ReSharper\v6.0\Gallio.ReSharperRunner60.dll" KeyPath="yes" />
                         </Component>
 						
 						<Directory Id="Gallio.ReSharperRunner.V60.VS10.Resources" Name="Resources">
-							<Component Id="Gallio.ReSharperRunner.V60.VS10.Icon" Guid="{92090B6B-539C-4cf1-BD6F-47D4F3F409CA}" Win64="$(var.Win64Binary)">
+							<Component Id="Gallio.ReSharperRunner.V60.VS10.Icon" Guid="{6D5F2EAC-0F22-48ED-83B7-555F805B2832}" Win64="$(var.Win64Binary)">
 								<File Id="ReSharper_V60_VS100_Icon" Source="$(var.GallioTargetDir)\bin\ReSharper\v6.0\Resources\resharper.ico" KeyPath="yes" />
 							</Component>
 						</Directory>
