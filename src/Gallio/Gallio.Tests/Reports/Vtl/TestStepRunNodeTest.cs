@@ -206,8 +206,9 @@ namespace Gallio.Tests.Reports.Vtl
         [Row(0, 1, false)]
         [Row(123, 1, true)]
         [Row(999, 1, true)]
-        [Row(1000, 1, false)]
-        [Row(1000, 2, true)]
+        [Row(1000, 1, true)]
+        [Row(1000, 2, false)]
+        [Row(1001, 2, true)]
         [Row(3500, 4, true)]
         [Row(3500, 5, false)]
         public void IsVisibleInPage(int index, int pageIndex, bool expectedVisible)
