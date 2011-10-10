@@ -110,8 +110,6 @@
     <Compile Include="Commands\OpenReportCommand.cs" />
     <Compile Include="Commands\RefreshTestTreeCommand.cs" />
     <Compile Include="Commands\ReloadCommand.cs" />
-    <Compile Include="Controllers\ExecutionLogController.cs" />
-    <Compile Include="Controllers\Interfaces\IExecutionLogController.cs" />
     <Compile Include="Controllers\ProgressEvent.cs" />
     <Compile Include="Controllers\SavingProject.cs" />
     <Compile Include="ControlPanel\ShutdownPane.cs">
@@ -129,12 +127,12 @@
     </Compile>
     <Compile Include="ControlPanel\ExecutionLogPaneProvider.cs" />
     <Compile Include="Events\OptionsChanged.cs" />
-    <Compile Include="ExecutionLogWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExecutionLogWindow.Designer.cs">
+    <Compile Include="ExecutionLog\ExecutionLogController.cs" />
+    <Compile Include="ExecutionLog\ExecutionLogWindow.cs" />
+    <Compile Include="ExecutionLog\ExecutionLogWindow.Designer.cs">
       <DependentUpon>ExecutionLogWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="ExecutionLog\IExecutionLogController.cs" />
     <Compile Include="Filters\FilterController.cs" />
     <Compile Include="Filters\FiltersPackage.cs" />
     <Compile Include="Filters\FiltersView.cs">
@@ -495,6 +493,9 @@
       <DependentUpon>DockWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="ExecutionLog\ExecutionLogWindow.resx">
+      <DependentUpon>ExecutionLogWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Filters\FiltersView.resx">
       <DependentUpon>FiltersView.cs</DependentUpon>
     </EmbeddedResource>
@@ -589,9 +590,6 @@
     <EmbeddedResource Include="ControlPanel\TreeViewCategoryPane.resx">
       <DependentUpon>TreeViewCategoryPane.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ExecutionLogWindow.resx">
-      <DependentUpon>ExecutionLogWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ProjectProperties\View.resx">
       <DependentUpon>View.cs</DependentUpon>
