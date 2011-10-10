@@ -128,7 +128,10 @@
     <Compile Include="ControlPanel\ExecutionLogPaneProvider.cs" />
     <Compile Include="Events\OptionsChanged.cs" />
     <Compile Include="ExecutionLog\ExecutionLogController.cs" />
-    <Compile Include="ExecutionLog\ExecutionLogWindow.cs" />
+    <Compile Include="ExecutionLog\ExecutionLogPackage.cs" />
+    <Compile Include="ExecutionLog\ExecutionLogWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="ExecutionLog\ExecutionLogWindow.Designer.cs">
       <DependentUpon>ExecutionLogWindow.cs</DependentUpon>
     </Compile>

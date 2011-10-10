@@ -124,6 +124,9 @@ namespace Gallio.Icarus.WindowManager
 
                 case Location.Top:
                     return DockState.DockTop;
+
+                case Location.Centre:
+                    return DockState.Document;
             }
             return DockState.Unknown;
         }

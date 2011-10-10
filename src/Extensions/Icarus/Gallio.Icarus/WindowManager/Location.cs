@@ -20,6 +20,7 @@ namespace Gallio.Icarus.WindowManager
         Bottom,
         Top,
         Left,
-        Right
+        Right,
+        Centre
     }
 }

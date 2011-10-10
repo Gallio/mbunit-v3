@@ -19,6 +19,7 @@ using Gallio.Common.Concurrency;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
+using Gallio.Icarus.ExecutionLog;
 using Gallio.Icarus.Models;
 using Gallio.Common.Markup;
 using Gallio.Model.Schema;

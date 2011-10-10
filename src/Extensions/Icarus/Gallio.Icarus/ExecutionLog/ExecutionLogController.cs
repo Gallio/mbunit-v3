@@ -27,7 +27,7 @@ using Gallio.Runner.Reports.Schema;
 using Gallio.UI.Events;
 using Gallio.UI.ProgressMonitoring;
 
-namespace Gallio.Icarus.Controllers
+namespace Gallio.Icarus.ExecutionLog
 {
     internal class ExecutionLogController : IExecutionLogController, Handles<RunStarted>, 
         Handles<TestSelectionChanged>, Handles<TestStepFinished>

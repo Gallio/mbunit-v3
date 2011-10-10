@@ -55,7 +55,6 @@ namespace Gallio.Icarus
         private readonly ProjectExplorer projectExplorer;
         private readonly TestResults.TestResults testResults;
         private readonly RuntimeLogWindow runtimeLogWindow;
-        private readonly ExecutionLogWindow executionLogWindow;
 
         private readonly ITestTreeModel testTreeModel;
         private readonly ITestStatistics testStatistics;
@@ -98,7 +97,6 @@ namespace Gallio.Icarus
             reportController = RuntimeAccessor.ServiceLocator.Resolve<IReportController>();
             var testResultsController = RuntimeAccessor.ServiceLocator.Resolve<ITestResultsController>();
             var runtimeLogController = RuntimeAccessor.ServiceLocator.Resolve<IRuntimeLogController>();
-            var executionLogController = RuntimeAccessor.ServiceLocator.Resolve<IExecutionLogController>();
 
             testTreeModel = RuntimeAccessor.ServiceLocator.Resolve<ITestTreeModel>();
             testStatistics = RuntimeAccessor.ServiceLocator.Resolve<ITestStatistics>();
@@ -115,7 +113,6 @@ namespace Gallio.Icarus
                 commandFactory, windowManager);
             testResults = new TestResults.TestResults(testResultsController, optionsController, testTreeModel, testStatistics);
             runtimeLogWindow = new RuntimeLogWindow(runtimeLogController);
-            executionLogWindow = new ExecutionLogWindow(executionLogController, optionsController);
 
             // moved this below the service locator calls as the optionsController was being used _before_ it was initialised :(
             // TODO: remove as many dependencies from the shell as possible
@@ -195,8 +192,6 @@ namespace Gallio.Icarus
                 return projectExplorer;
             if (persistString == typeof(TestResults.TestResults).ToString())
                 return testResults;
-            if (persistString == typeof(ExecutionLogWindow).ToString())
-                return executionLogWindow;
             if (persistString == typeof(RuntimeLogWindow).ToString())
                 return runtimeLogWindow;
 
@@ -269,7 +264,6 @@ namespace Gallio.Icarus
             // looked at than regular tabs.
             // -- Jeff.
             testResults.Show(dockPanel, DockState.Document);
-            executionLogWindow.Show(dockPanel, DockState.Document);
             runtimeLogWindow.Show(dockPanel, DockState.DockBottom);
             projectExplorer.Show(dockPanel, DockState.DockLeft);
             testExplorer.Show(dockPanel, DockState.DockLeft);
@@ -476,9 +470,6 @@ namespace Gallio.Icarus
                         break;
                     case "runtimeLogToolStripMenuItem":
                         runtimeLogWindow.Show(dockPanel);
-                        break;
-                    case "executionLogToolStripMenuItem":
-                        executionLogWindow.Show(dockPanel);
                         break;
                 }
             });

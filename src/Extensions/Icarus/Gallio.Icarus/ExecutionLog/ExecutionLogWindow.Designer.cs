@@ -15,7 +15,7 @@
 
 using Gallio.UI.Reports;
 
-namespace Gallio.Icarus
+namespace Gallio.Icarus.ExecutionLog
 {
     partial class ExecutionLogWindow
     {
@@ -85,9 +85,6 @@ namespace Gallio.Icarus
             this.ClientSize = new System.Drawing.Size(292, 273);
             this.Controls.Add(this.toolStripContainer1);
             this.Name = "ExecutionLogWindow";
-            this.ShowIcon = false;
-            this.ShowInTaskbar = false;
-            this.TabText = "Execution Log";
             this.Text = "Execution Log";
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);
             this.toolStripContainer1.ContentPanel.PerformLayout();

@@ -273,4 +273,7 @@
   <data name="AnnotationsPackage_Annotations">
     <value xml:space="preserve">Annotations</value>
   </data>
+  <data name="ExecutionLogPackage_Execution_Log">
+    <value xml:space="preserve">Execution Log</value>
+  </data>
 </root>

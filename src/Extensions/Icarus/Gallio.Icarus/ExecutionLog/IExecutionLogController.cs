@@ -17,7 +17,7 @@ using System;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Model.Schema;
 
-namespace Gallio.Icarus.Controllers.Interfaces
+namespace Gallio.Icarus.ExecutionLog
 {
     public interface IExecutionLogController
     {

@@ -109,6 +109,7 @@
     <Compile Include="Controls\TestTreeViewTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ExecutionLog\ExecutionLogPackageTests.cs" />
     <Compile Include="Filters\FiltersPackageTests.cs" />
     <Compile Include="Models\TestStatusFilteredTreeModelTest.cs" />
     <Compile Include="Models\FilteredTreeModelTest.cs" />

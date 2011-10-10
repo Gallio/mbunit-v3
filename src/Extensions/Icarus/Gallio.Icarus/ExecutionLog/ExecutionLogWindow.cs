@@ -13,23 +13,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Windows.Forms;
+using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 
-namespace Gallio.Icarus
+namespace Gallio.Icarus.ExecutionLog
 {
-    internal partial class ExecutionLogWindow : DockWindow
+    internal partial class ExecutionLogWindow : UserControl
     {
         public ExecutionLogWindow(IExecutionLogController executionLogController, IOptionsController optionsController)
         {
             InitializeComponent();
 
-            executionLogController.ExecutionLogUpdated += (sender, e) =>
-            {
-                if (!IsHidden)
-                    reportViewer.Show(e.TestStepRuns, optionsController.RecursiveExecutionLog);
-            };
+            EventHandler<ExecutionLogUpdatedEventArgs> onExecutionLogUpdated = (s, e) => reportViewer.Show(e.TestStepRuns, optionsController.RecursiveExecutionLog);
+            executionLogController.ExecutionLogUpdated += onExecutionLogUpdated;
+            Disposed += (s, e) => executionLogController.ExecutionLogUpdated -= onExecutionLogUpdated;
 
-            executionLogController.ExecutionLogReset += (sender, e) => reportViewer.Clear();
+            EventHandler<EventArgs> onExecutionLogReset = (s, e) => reportViewer.Clear();
+            executionLogController.ExecutionLogReset += onExecutionLogReset;
+            Disposed += (s, e) => executionLogController.ExecutionLogReset -= onExecutionLogReset;
         }
     }
 }

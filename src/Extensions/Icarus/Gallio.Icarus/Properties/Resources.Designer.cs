@@ -182,6 +182,15 @@ namespace Gallio.Icarus.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Execution Log.
+        /// </summary>
+        internal static string ExecutionLogPackage_Execution_Log {
+            get {
+                return ResourceManager.GetString("ExecutionLogPackage_Execution_Log", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Bitmap File {
             get {
                 object obj = ResourceManager.GetObject("File", resourceCulture);
