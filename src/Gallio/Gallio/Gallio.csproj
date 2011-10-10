@@ -113,7 +113,10 @@
     <Compile Include="Common\Mathematics\ChiSquareTest.cs" />
     <Compile Include="Common\Mathematics\Gamma.cs" />
     <Compile Include="Common\Mathematics\NamespaceDoc.cs" />
+    <Compile Include="Common\Messaging\BinaryMessageFormatter.cs" />
+    <Compile Include="Common\Messaging\FramedMessage.cs" />
     <Compile Include="Common\Messaging\IMessageExchangeLink.cs" />
+    <Compile Include="Common\Messaging\IMessageFormatter.cs" />
     <Compile Include="Common\Messaging\MessageConsumer.cs" />
     <Compile Include="Common\Messaging\NamespaceDoc.cs" />
     <Compile Include="Common\Caching\DiskCacheException.cs" />
@@ -185,6 +188,8 @@
     <Compile Include="Common\Media\Video.cs" />
     <Compile Include="Common\Media\ScreenGrabber.cs" />
     <Compile Include="Common\Messaging\MessageExchange.cs" />
+    <Compile Include="Common\Messaging\AsyncTcpListenerMessageSink.cs" />
+    <Compile Include="Common\Messaging\AsyncTcpServerMessageSink.cs" />
     <Compile Include="Common\Messaging\Topic.cs" />
     <Compile Include="Common\Messaging\TopicPattern.cs" />
     <Compile Include="Common\NamespaceDoc.cs" />
