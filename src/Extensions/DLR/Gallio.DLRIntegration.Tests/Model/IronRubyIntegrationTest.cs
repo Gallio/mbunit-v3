@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using Gallio.Common.Diagnostics;
 using Gallio.Common.Messaging;
+using Gallio.Common.Messaging.MessageSinks;
 using Gallio.DLRIntegration.Model;
 using Gallio.Model;
 using Gallio.Model.Isolation;

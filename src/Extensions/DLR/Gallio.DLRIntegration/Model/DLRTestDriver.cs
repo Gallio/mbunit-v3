@@ -23,6 +23,7 @@ using Gallio.Common.Collections;
 using Gallio.Common.Concurrency;
 using Gallio.Common.IO;
 using Gallio.Common.Messaging;
+using Gallio.Common.Messaging.MessageSinks;
 using Gallio.Common.Reflection;
 using Gallio.Model;
 using Gallio.Model.Isolation;
