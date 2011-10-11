@@ -113,10 +113,10 @@
     <Compile Include="Common\Media\ScreenGrabberTest.cs" />
     <Compile Include="Common\Media\FlashScreenVideoParametersTest.cs" />
     <Compile Include="Common\Media\FlashScreenVideoTest.cs" />
-    <Compile Include="Common\Messaging\BinaryMessageFormatterTests.cs" />
-    <Compile Include="Common\Messaging\QueuedMessageSinkTest.cs" />
-    <Compile Include="Common\Messaging\MessageExchangeTest.cs" />
-    <Compile Include="Common\Messaging\MessageConsumerTest.cs" />
+    <Compile Include="Common\Messaging\MessageFormatters\BinaryMessageFormatterTests.cs" />
+    <Compile Include="Common\Messaging\MessageSinks\MessageConsumerTest.cs" />
+    <Compile Include="Common\Messaging\MessageSinks\MessageExchangeTest.cs" />
+    <Compile Include="Common\Messaging\MessageSinks\QueuedMessageSinkTest.cs" />
     <Compile Include="Common\Messaging\TopicPatternTest.cs" />
     <Compile Include="Common\Messaging\TopicTest.cs" />
     <Compile Include="Common\MockableConditionContext.cs" />
