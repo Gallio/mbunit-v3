@@ -37,6 +37,11 @@ namespace Gallio.Model.Isolation
         /// </remarks>
         bool RequiresSingleThreadedExecution { get; }
 
+		/// <summary>
+		/// Any extra parameters for test isolation.
+		/// </summary>
+    	TestIsolationOptions TestIsolationOptions { get; }
+
         /// <summary>
         /// Begins a batch of isolated tasks.
         /// </summary>

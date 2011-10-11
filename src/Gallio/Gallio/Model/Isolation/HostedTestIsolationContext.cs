@@ -15,7 +15,6 @@
 
 using System;
 using System.Threading;
-using Gallio.Common.Collections;
 using Gallio.Common.Policies;
 using Gallio.Common.Remoting;
 using Gallio.Runtime;
@@ -30,7 +29,6 @@ namespace Gallio.Model.Isolation
     public class HostedTestIsolationContext : BaseTestIsolationContext
     {
         private readonly IHostFactory hostFactory;
-        private readonly TestIsolationOptions testIsolationOptions;
         private readonly ILogger logger;
 
         private delegate object RunIsolatedTaskDelegate(object[] args);
@@ -54,7 +52,7 @@ namespace Gallio.Model.Isolation
                 throw new ArgumentNullException("logger");
 
             this.hostFactory = hostFactory;
-            this.testIsolationOptions = testIsolationOptions;
+            TestIsolationOptions = testIsolationOptions;
             this.logger = logger;
         }
 
@@ -64,14 +62,6 @@ namespace Gallio.Model.Isolation
         public IHostFactory HostFactory
         {
             get { return hostFactory; }
-        }
-
-        /// <summary>
-        /// Gets the test isolation options.
-        /// </summary>
-        public TestIsolationOptions TestIsolationOptions
-        {
-            get { return testIsolationOptions; }
         }
 
         /// <summary>
@@ -86,7 +76,7 @@ namespace Gallio.Model.Isolation
         sealed protected override object RunIsolatedTaskImpl<TIsolatedTask>(HostSetup hostSetup, StatusReporter statusReporter, object[] args)
         {
             hostSetup = hostSetup.Copy();
-            foreach (var pair in testIsolationOptions.Properties)
+            foreach (var pair in TestIsolationOptions.Properties)
                 if (! hostSetup.Properties.ContainsKey(pair.Key))
                     hostSetup.AddProperty(pair.Key, pair.Value);
 

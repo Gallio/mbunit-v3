@@ -38,6 +38,11 @@ namespace Gallio.Model.Isolation
             get { return false; }
         }
 
+    	/// <summary>
+    	/// Gets the test isolation options.
+    	/// </summary>
+		public TestIsolationOptions TestIsolationOptions { get; set; }
+
         /// <inheritdoc />
         public IDisposable BeginBatch(StatusReporter statusReporter)
         {
