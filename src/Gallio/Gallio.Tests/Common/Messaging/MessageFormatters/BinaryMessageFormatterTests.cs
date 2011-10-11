@@ -1,10 +1,9 @@
-﻿using Gallio.Common.Messaging;
-using Gallio.Common.Messaging.MessageFormatters;
+﻿using Gallio.Common.Messaging.MessageFormatters;
 using Gallio.Model.Messages.Exploration;
 using MbUnit.Framework;
 using NHamcrest.Core;
 
-namespace Gallio.Tests.Common.Messaging
+namespace Gallio.Tests.Common.Messaging.MessageFormatters
 {
 	public class BinaryMessageFormatterTests
 	{
