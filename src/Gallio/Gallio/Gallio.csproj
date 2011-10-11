@@ -113,12 +113,19 @@
     <Compile Include="Common\Mathematics\ChiSquareTest.cs" />
     <Compile Include="Common\Mathematics\Gamma.cs" />
     <Compile Include="Common\Mathematics\NamespaceDoc.cs" />
-    <Compile Include="Common\Messaging\BinaryMessageFormatter.cs" />
-    <Compile Include="Common\Messaging\FramedMessage.cs" />
     <Compile Include="Common\Messaging\IMessageExchangeLink.cs" />
-    <Compile Include="Common\Messaging\IMessageFormatter.cs" />
-    <Compile Include="Common\Messaging\MessageConsumer.cs" />
-    <Compile Include="Common\Messaging\MessageSinkFactory.cs" />
+    <Compile Include="Common\Messaging\MessageFormatters\BinaryMessageFormatter.cs" />
+    <Compile Include="Common\Messaging\MessageFormatters\IMessageFormatter.cs" />
+    <Compile Include="Common\Messaging\MessageSinks\IMessageSink.cs" />
+    <Compile Include="Common\Messaging\MessageSinks\MessageConsumer.cs" />
+    <Compile Include="Common\Messaging\MessageSinks\MessageExchange.cs" />
+    <Compile Include="Common\Messaging\MessageSinks\NullMessageSink.cs" />
+    <Compile Include="Common\Messaging\MessageSinks\QueuedMessageSink.cs" />
+    <Compile Include="Common\Messaging\MessageSinks\RemoteMessageSink.cs" />
+    <Compile Include="Common\Messaging\MessageSinks\Tcp\AsyncTcpListenerMessageSink.cs" />
+    <Compile Include="Common\Messaging\MessageSinks\Tcp\AsyncTcpServerMessageSink.cs" />
+    <Compile Include="Common\Messaging\MessageSinks\Tcp\FramedMessage.cs" />
+    <Compile Include="Common\Messaging\MessageSinks\Tcp\MessageSinkFactory.cs" />
     <Compile Include="Common\Messaging\NamespaceDoc.cs" />
     <Compile Include="Common\Caching\DiskCacheException.cs" />
     <Compile Include="Common\Caching\IDiskCache.cs" />
@@ -188,9 +195,6 @@
     <Compile Include="Common\Media\VideoFrame.cs" />
     <Compile Include="Common\Media\Video.cs" />
     <Compile Include="Common\Media\ScreenGrabber.cs" />
-    <Compile Include="Common\Messaging\MessageExchange.cs" />
-    <Compile Include="Common\Messaging\AsyncTcpListenerMessageSink.cs" />
-    <Compile Include="Common\Messaging\AsyncTcpServerMessageSink.cs" />
     <Compile Include="Common\Messaging\Topic.cs" />
     <Compile Include="Common\Messaging\TopicPattern.cs" />
     <Compile Include="Common\NamespaceDoc.cs" />
@@ -829,12 +833,6 @@
     <Compile Include="Runtime\Logging\TextLogger.cs" />
     <Compile Include="Runtime\Logging\Verbosity.cs" />
     <Compile Include="Common\Platform\ProcessType.cs" />
-    <Compile Include="Common\Messaging\NullMessageSink.cs" />
-    <Compile Include="Common\Messaging\QueuedMessageSink.cs" />
-    <Compile Include="Common\Messaging\RemoteMessageSink.cs" />
-    <Compile Include="Common\Messaging\IMessageSink.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Common\Messaging\Message.cs" />
     <Compile Include="Common\Messaging\MessagingException.cs" />
     <Compile Include="Model\Messages\Logging\LogEntrySubmittedMessage.cs" />
