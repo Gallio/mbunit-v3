@@ -16,7 +16,7 @@
 using System;
 using Gallio.Common.Validation;
 
-namespace Gallio.Common.Messaging
+namespace Gallio.Common.Messaging.MessageSinks
 {
     /// <summary>
     /// A message consumer provides a simple pattern for handling messages based on their type.

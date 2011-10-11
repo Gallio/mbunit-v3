@@ -1,4 +1,4 @@
-﻿namespace Gallio.Common.Messaging
+﻿namespace Gallio.Common.Messaging.MessageFormatters
 {
 	/// <summary>
 	/// Serialise or deserialise a message for the wire.

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common.Messaging.MessageSinks;
 using Gallio.Model.Messages.Exploration;
 using Gallio.Common.Messaging;
 using Gallio.Model.Schema;

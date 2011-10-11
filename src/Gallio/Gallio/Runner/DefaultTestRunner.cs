@@ -20,6 +20,7 @@ using System.Threading;
 using Gallio.Common.Collections;
 using Gallio.Common.Concurrency;
 using Gallio.Common.Messaging;
+using Gallio.Common.Messaging.MessageSinks;
 using Gallio.Common.Normalization;
 using Gallio.Common.Policies;
 using Gallio.Model;

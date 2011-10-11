@@ -21,6 +21,7 @@ using System.Reflection;
 using System.Threading;
 using Gallio.Common;
 using Gallio.Common.Concurrency;
+using Gallio.Common.Messaging.MessageSinks;
 using Gallio.Common.Reflection;
 using Gallio.Model.Commands;
 using Gallio.Model.Contexts;

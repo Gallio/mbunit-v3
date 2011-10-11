@@ -17,8 +17,9 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using Gallio.Common.Messaging.MessageFormatters;
 
-namespace Gallio.Common.Messaging
+namespace Gallio.Common.Messaging.MessageSinks.Tcp
 {
 	/// <summary>
 	/// Wraps a <see cref="IMessageSink"/> so that messages can be sent remotely.

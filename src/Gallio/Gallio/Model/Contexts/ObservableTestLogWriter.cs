@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Common.Markup;
+using Gallio.Common.Messaging.MessageSinks;
 using Gallio.Model.Messages.Execution;
 using Gallio.Common.Messaging;
 

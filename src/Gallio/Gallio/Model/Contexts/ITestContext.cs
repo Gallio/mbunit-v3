@@ -16,6 +16,7 @@
 using System;
 using Gallio.Common.Collections;
 using Gallio.Common.Markup;
+using Gallio.Common.Messaging.MessageSinks;
 using Gallio.Model.Tree;
 using Gallio.Common.Messaging;
 

@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 
-namespace Gallio.Common.Messaging
+namespace Gallio.Common.Messaging.MessageSinks.Tcp
 {
 	/// <summary>
 	/// Wraps a Message, and adds the message length before when writing to a socket.

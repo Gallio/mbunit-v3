@@ -19,6 +19,8 @@ using System.IO;
 using System.Reflection;
 using System.Xml;
 using Gallio.Common.Collections;
+using Gallio.Common.Messaging.MessageSinks;
+using Gallio.Common.Messaging.MessageSinks.Tcp;
 using Gallio.Common.Reflection;
 using Gallio.Model.Isolation;
 using Gallio.Runtime;

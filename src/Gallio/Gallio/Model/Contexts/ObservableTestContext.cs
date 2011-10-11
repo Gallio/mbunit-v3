@@ -17,6 +17,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using Gallio.Common.Collections;
+using Gallio.Common.Messaging.MessageSinks;
 using Gallio.Common.Policies;
 using Gallio.Common.Markup;
 using Gallio.Model.Messages;

@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Gallio.Common.Diagnostics;
+using Gallio.Common.Messaging.MessageSinks;
 using Gallio.Model.Isolation.Messages;
 using Gallio.Common.Messaging;
 using Gallio.Common.Remoting;

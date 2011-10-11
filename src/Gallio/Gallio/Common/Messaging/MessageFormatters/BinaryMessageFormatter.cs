@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace Gallio.Common.Messaging
+namespace Gallio.Common.Messaging.MessageFormatters
 {
 	///<summary>
 	/// IMessageFormatter impl using the .net BinaryFormatter.

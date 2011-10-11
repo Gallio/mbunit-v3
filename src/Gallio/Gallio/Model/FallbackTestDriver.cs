@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using Gallio.Common.Markup;
 using Gallio.Common.Messaging;
+using Gallio.Common.Messaging.MessageSinks;
 using Gallio.Common.Reflection;
 using Gallio.Model.Isolation;
 using Gallio.Model.Messages;

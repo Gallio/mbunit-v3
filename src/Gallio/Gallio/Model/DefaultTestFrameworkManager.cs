@@ -21,6 +21,7 @@ using System.Reflection;
 using Gallio.Common;
 using Gallio.Common.Collections;
 using Gallio.Common.Messaging;
+using Gallio.Common.Messaging.MessageSinks;
 using Gallio.Common.Reflection;
 using Gallio.Model.Isolation;
 using Gallio.Runtime.Extensibility;
@@ -416,7 +417,7 @@ namespace Gallio.Model
                 return combinedTestParts ?? EmptyArray<TestPart>.Instance;
             }
 
-            protected override void DescribeImpl(IReflectionPolicy reflectionPolicy, IList<ICodeElementInfo> codeElements, TestExplorationOptions testExplorationOptions, Common.Messaging.IMessageSink messageSink, Gallio.Runtime.ProgressMonitoring.IProgressMonitor progressMonitor)
+            protected override void DescribeImpl(IReflectionPolicy reflectionPolicy, IList<ICodeElementInfo> codeElements, TestExplorationOptions testExplorationOptions, IMessageSink messageSink, Gallio.Runtime.ProgressMonitoring.IProgressMonitor progressMonitor)
             {
                 using (progressMonitor.BeginTask("Describing tests.", 1))
                 {

@@ -1,7 +1,8 @@
 ﻿using System;
+using Gallio.Common.Messaging.MessageFormatters;
 using Gallio.Model.Isolation;
 
-namespace Gallio.Common.Messaging
+namespace Gallio.Common.Messaging.MessageSinks.Tcp
 {
 	/// <summary>
 	/// Message sink factory.

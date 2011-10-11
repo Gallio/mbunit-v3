@@ -16,8 +16,9 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+using Gallio.Common.Messaging.MessageFormatters;
 
-namespace Gallio.Common.Messaging
+namespace Gallio.Common.Messaging.MessageSinks.Tcp
 {
 	/// <summary>
 	/// Async TCP based message sink.

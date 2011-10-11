@@ -15,6 +15,7 @@
 
 using System.Runtime.CompilerServices;
 using Gallio.Common.Messaging;
+using Gallio.Common.Messaging.MessageSinks;
 
 namespace Gallio.Model.Contexts
 {

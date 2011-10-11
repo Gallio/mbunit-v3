@@ -14,10 +14,8 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Gallio.Common.Messaging
+namespace Gallio.Common.Messaging.MessageSinks
 {
     /// <summary>
     /// A null message sink discards all messages sent to it.

@@ -14,11 +14,9 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Gallio.Common.Validation;
 
-namespace Gallio.Common.Messaging
+namespace Gallio.Common.Messaging.MessageSinks
 {
     /// <summary>
     /// Publishes messages directly to a subscriber.

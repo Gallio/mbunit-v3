@@ -20,7 +20,7 @@ using System.Threading;
 using Gallio.Common.Remoting;
 using Gallio.Common.Validation;
 
-namespace Gallio.Common.Messaging
+namespace Gallio.Common.Messaging.MessageSinks
 {
     /// <summary>
     /// A message exchange mediates interactions between a server and a client.

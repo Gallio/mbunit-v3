@@ -15,13 +15,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using Gallio.Common;
 using Gallio.Common.Policies;
-using Gallio.Common.Remoting;
 
-namespace Gallio.Common.Messaging
+namespace Gallio.Common.Messaging.MessageSinks
 {
     /// <summary>
     /// Wraps a <see cref="IMessageSink"/> and queues messages so that messages are
