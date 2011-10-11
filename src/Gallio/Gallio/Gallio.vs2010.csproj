@@ -136,6 +136,7 @@
     <Compile Include="Common\Messaging\IMessageExchangeLink.cs" />
     <Compile Include="Common\Messaging\IMessageFormatter.cs" />
     <Compile Include="Common\Messaging\MessageConsumer.cs" />
+    <Compile Include="Common\Messaging\MessageSinkFactory.cs" />
     <Compile Include="Common\Messaging\NamespaceDoc.cs" />
     <Compile Include="Common\Caching\DiskCacheException.cs" />
     <Compile Include="Common\Caching\IDiskCache.cs" />

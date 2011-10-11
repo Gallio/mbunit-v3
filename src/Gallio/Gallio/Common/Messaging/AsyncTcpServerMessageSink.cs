@@ -26,18 +26,19 @@ namespace Gallio.Common.Messaging
 	{
 		private readonly IMessageFormatter messageFormatter;
 		private readonly Socket socket;
-		private const int port = 56351;
+		private const int defaultPort = 56351;
 
 		///<summary>
 		/// Async TCP based message sink.
 		///</summary>
 		///<param name="messageFormatter">The formatter to use.</param>
-		public AsyncTcpServerMessageSink(IMessageFormatter messageFormatter)
+		///<param name="port">The port to use.</param>
+		public AsyncTcpServerMessageSink(IMessageFormatter messageFormatter, int? port)
 		{
 			this.messageFormatter = messageFormatter;
 
 			var serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			var endPoint = new IPEndPoint(IPAddress.Loopback, port);
+			var endPoint = new IPEndPoint(IPAddress.Loopback, port ?? defaultPort);
 			serverSocket.Bind(endPoint);
 			serverSocket.Listen((int)SocketOptionName.MaxConnections);
 			socket = serverSocket.Accept();

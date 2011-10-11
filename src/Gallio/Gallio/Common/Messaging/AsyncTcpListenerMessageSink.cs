@@ -24,24 +24,24 @@ namespace Gallio.Common.Messaging
 	/// Wraps a <see cref="IMessageSink"/> so that messages can be sent remotely.
 	/// </summary>
 	[Serializable]
-	public class AsyncTcpListenerMessageSink : IDisposable
+	public class AsyncTcpListenerMessageSink : IMessageSink, IDisposable
 	{
 		private readonly IMessageSink messageSink;
 		private readonly IMessageFormatter messageFormatter;
 		private bool listening = true;
 		private readonly Socket socket;
 		private readonly IPEndPoint endPoint;
-		private const int port = 56351;
+		private const int defaultPort = 56351;
 
 		///<summary>
 		///</summary>
-		public AsyncTcpListenerMessageSink(IMessageSink messageSink, IMessageFormatter messageFormatter)
+		public AsyncTcpListenerMessageSink(IMessageSink messageSink, IMessageFormatter messageFormatter, int? port)
 		{
 			this.messageSink = messageSink;
 			this.messageFormatter = messageFormatter;
 
 			socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			endPoint = new IPEndPoint(IPAddress.Loopback, port);
+			endPoint = new IPEndPoint(IPAddress.Loopback, port ?? defaultPort);
 			socket.BeginConnect(endPoint, Connected, socket);
 		}
 
@@ -136,7 +136,7 @@ namespace Gallio.Common.Messaging
 			if (state.BytesReceived == state.MessageSize)
 			{
 				var message = messageFormatter.Deserialise(state.Buffer);
-				messageSink.Publish(message);
+				Publish(message);
 				Listen();
 			} 
 			else
@@ -154,6 +154,12 @@ namespace Gallio.Common.Messaging
 		public void Dispose()
 		{
 			listening = false;
+		}
+
+		/// <inheritdoc />
+		public void Publish(Message message)
+		{
+			messageSink.Publish(message);
 		}
 
 		private class State
