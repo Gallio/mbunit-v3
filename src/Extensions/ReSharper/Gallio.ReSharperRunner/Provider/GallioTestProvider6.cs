@@ -19,6 +19,7 @@ using System.Drawing;
 using System.Xml;
 using Gallio.Common.Collections;
 using Gallio.Common.Messaging;
+using Gallio.Common.Messaging.MessageSinks;
 using Gallio.Loader;
 using Gallio.Model;
 using Gallio.Common.Reflection;
