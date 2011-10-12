@@ -20,6 +20,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using Gallio.Common.Messaging;
+using Gallio.Common.Messaging.MessageSinks;
 using Gallio.Common.Reflection;
 using Gallio.MbUnitCppAdapter.Model.Tasks;
 using Gallio.MbUnitCppAdapter.Model.Bridge;

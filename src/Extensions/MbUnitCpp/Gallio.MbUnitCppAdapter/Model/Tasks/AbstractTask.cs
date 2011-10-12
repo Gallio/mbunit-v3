@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Gallio.Common.Messaging;
+using Gallio.Common.Messaging.MessageSinks;
 using Gallio.MbUnitCppAdapter.Model.Bridge;
 using Gallio.Model;
 using Gallio.Model.Isolation;
