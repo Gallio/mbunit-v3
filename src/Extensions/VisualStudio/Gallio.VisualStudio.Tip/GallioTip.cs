@@ -18,6 +18,7 @@ using System.Collections;
 using System.IO;
 using Gallio.Common.Collections;
 using Gallio.Common.Messaging;
+using Gallio.Common.Messaging.MessageSinks;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
 using Gallio.Model.Messages.Exploration;
