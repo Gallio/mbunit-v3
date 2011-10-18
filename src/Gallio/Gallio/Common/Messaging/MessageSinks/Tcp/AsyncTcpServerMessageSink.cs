@@ -52,10 +52,7 @@ namespace Gallio.Common.Messaging.MessageSinks.Tcp
 				throw new ArgumentNullException("message");
 
 			if (!socket.Connected)
-			{
-				// TODO: queue messages perhaps?
-				return;
-			}
+				throw new InvalidOperationException("Not connected to the test runner.");
 
 			message.Validate();
 
