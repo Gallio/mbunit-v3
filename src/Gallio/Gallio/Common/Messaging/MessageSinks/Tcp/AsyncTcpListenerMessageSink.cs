@@ -55,7 +55,7 @@ namespace Gallio.Common.Messaging.MessageSinks.Tcp
 			}
 			catch (SocketException ex)
 			{
-				if (ex.ErrorCode == 10061) // WSAECONNREFUSED: server not ready yet
+				if (ex.ErrorCode == SocketErrorCodes.WSAECONNREFUSED) // server not ready yet
 				{
 					Thread.Sleep(100);
 					socket.BeginConnect(endPoint, Connected, socket);

@@ -126,6 +126,7 @@
     <Compile Include="Common\Messaging\MessageSinks\Tcp\AsyncTcpListenerMessageSink.cs" />
     <Compile Include="Common\Messaging\MessageSinks\Tcp\AsyncTcpServerMessageSink.cs" />
     <Compile Include="Common\Messaging\MessageSinks\Tcp\FramedMessage.cs" />
+    <Compile Include="Common\Messaging\MessageSinks\Tcp\SocketErrorCodes.cs" />
     <Compile Include="Common\Messaging\NamespaceDoc.cs" />
     <Compile Include="Common\Caching\DiskCacheException.cs" />
     <Compile Include="Common\Caching\IDiskCache.cs" />
