@@ -81,11 +81,7 @@ namespace Gallio.Common.Messaging.MessageSinks.Tcp
 		{
 			var count = socket.EndReceive(asyncResult);
 			
-			var state = asyncResult.AsyncState as State;
-
-			if (state == null)
-				return;
-
+			var state = (State)asyncResult.AsyncState;
 			state.BytesReceived += count;
 
 			ReadBuffer(state);
