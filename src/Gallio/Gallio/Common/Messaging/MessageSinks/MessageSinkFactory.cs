@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Gallio.Common.Messaging.MessageFormatters;
 using Gallio.Common.Messaging.MessageSinks.Tcp;
 using Gallio.Model.Isolation;
@@ -39,7 +40,9 @@ namespace Gallio.Common.Messaging.MessageSinks
 
 				throw new ArgumentException(string.Format("{0} is not a valid value for MessageSink", messageSinkToUse));
 			}
-			return false;
+			// HACK: this code gets executed both in and out of proc :(
+			// it won't be necessary once all communication is via messaging
+			return Process.GetCurrentProcess().ProcessName == "Gallio.Host";
 		}
 
 		private static IMessageFormatter GetMessageFormatter(TestIsolationOptions testIsolationOptions)
