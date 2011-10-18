@@ -15,8 +15,14 @@
 
 namespace Gallio.Common.Messaging.MessageSinks.Tcp
 {
+	/// <summary>
+	/// Socket error codes - http://msdn.microsoft.com/en-us/library/windows/desktop/ms740668(v=vs.85).aspx
+	/// </summary>
 	public static class SocketErrorCodes
 	{
+		/// <summary>
+		/// Connection refused.
+		/// </summary>
 		public const int WSAECONNREFUSED = 10061;
 	}
 }
