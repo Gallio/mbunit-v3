@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Net.Sockets;
 
 namespace Gallio.Common.Messaging.MessageSinks.Tcp
@@ -22,27 +21,22 @@ namespace Gallio.Common.Messaging.MessageSinks.Tcp
 			var bytes = new byte[messageDataLengthBytes.Length + messageData.Length];
 			Buffer.BlockCopy(messageDataLengthBytes, 0, bytes, 0, messageDataLengthBytes.Length);
 			Buffer.BlockCopy(messageData, 0, bytes, messageDataLengthBytes.Length, messageData.Length);
-			socket.Send(bytes);
+			socket.BeginSend(bytes, 0, bytes.Length, SocketFlags.None, OnWrite, new	State(socket));
 		}
 
 		private static void OnWrite(IAsyncResult asyncResult)
 		{
-			var state = asyncResult.AsyncState as State;
-
-			if (state == null)
-				return;
-
-			state.Stream.EndWrite(asyncResult);
-			state.Stream.Flush();
+			var state = (State)asyncResult.AsyncState;
+			state.Socket.EndSend(asyncResult);
 		}
 
 		private class State
 		{
-			public Stream Stream { get; private set; }
+			public Socket Socket { get; private set; }
 
-			public State(Stream stream)
+			public State(Socket socket)
 			{
-				Stream = stream;
+				Socket = socket;
 			}
 		}
 	}
