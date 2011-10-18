@@ -107,17 +107,24 @@ namespace Gallio.Common.Messaging.MessageSinks.Tcp
 				return;
 			}
 
-			if (state.BytesReceived != 4)
-				throw new ProtocolViolationException("The host sent an invalid message size.");
-				
-			state.MessageSize = BitConverter.ToInt32(state.Buffer, 0);
+			const int messageSizeSize = 4; // int as byte[]
 
-			ValidateMessageSize(state);
+			if (state.BytesReceived == messageSizeSize)
+			{
+				state.MessageSize = BitConverter.ToInt32(state.Buffer, 0);
 
-			state.Buffer = new byte[state.MessageSize];
-			state.BytesReceived = 0;
+				ValidateMessageSize(state);
 
-			BeginReceive(state, 0, state.Buffer.Length - state.BytesReceived);
+				state.Buffer = new byte[state.MessageSize];
+				state.BytesReceived = 0;
+
+				BeginReceive(state, 0, state.MessageSize);
+			}
+			else
+			{
+				// handle underflow
+				BeginReceive(state, state.BytesReceived, messageSizeSize - state.BytesReceived);
+			}
 		}
 
 		private static void ValidateMessageSize(State state)
@@ -139,6 +146,7 @@ namespace Gallio.Common.Messaging.MessageSinks.Tcp
 			} 
 			else
 			{
+				// handle underflow
 				if (state.BytesReceived == 0)
 					throw new ProtocolViolationException("The host closed the connection before the entire message was received");
 
