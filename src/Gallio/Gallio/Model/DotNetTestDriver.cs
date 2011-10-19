@@ -20,13 +20,11 @@ using System.Reflection;
 using System.Xml;
 using Gallio.Common.Collections;
 using Gallio.Common.Messaging.MessageSinks;
-using Gallio.Common.Messaging.MessageSinks.Tcp;
 using Gallio.Common.Reflection;
 using Gallio.Model.Isolation;
 using Gallio.Runtime;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Loader;
-using Gallio.Common.Messaging;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Model
@@ -160,25 +158,16 @@ namespace Gallio.Model
                     if (progressMonitor.IsCanceled)
                         return;
 
-                	messageSink = MessageSinkFactory.GetRunnerMessageSink(testIsolationContext.TestIsolationOptions, messageSink);
-
-                	try
-                	{
-                		ExploreOrRunAssembly(testIsolationContext, testPackage, testExplorationOptions, testExecutionOptions, new RemoteMessageSink(messageSink), 
-							progressMonitor.CreateSubProgressMonitor(1), taskName, file);
-                	}
-                	finally
-                	{
-						var disposable = messageSink as IDisposable;
-						if (disposable != null)
-							disposable.Dispose();
-                	}
+                    RemoteMessageSink remoteMessageSink = new RemoteMessageSink(messageSink);
+                    ExploreOrRunAssembly(testIsolationContext, testPackage, testExplorationOptions, testExecutionOptions,
+                        remoteMessageSink, progressMonitor.CreateSubProgressMonitor(1), taskName, file);
                 }
             }
         }
 
-    	private void ExploreOrRunAssembly(ITestIsolationContext testIsolationContext, TestPackage testPackage, TestExplorationOptions testExplorationOptions,
-            TestExecutionOptions testExecutionOptions, RemoteMessageSink remoteMessageSink, IProgressMonitor progressMonitor, string taskName, FileInfo file)
+        private void ExploreOrRunAssembly(ITestIsolationContext testIsolationContext, TestPackage testPackage, TestExplorationOptions testExplorationOptions,
+            TestExecutionOptions testExecutionOptions, RemoteMessageSink remoteMessageSink, IProgressMonitor progressMonitor, string taskName,
+            FileInfo file)
         {
             using (progressMonitor.BeginTask(taskName, 100))
             {
@@ -200,23 +189,15 @@ namespace Gallio.Model
 
                     HostSetup hostSetup = CreateHostSetup(testPackage, assemblyPath, assemblyMetadata);
 
-                    using (var remoteProgressMonitor = new RemoteProgressMonitor(progressMonitor.CreateSubProgressMonitor(97)))
+                    using (var remoteProgressMonitor = new RemoteProgressMonitor(
+                        progressMonitor.CreateSubProgressMonitor(97)))
                     {
-                    	var args = new object[]
-                    	{
-                    		driverType, 
-							driverArguments, 
-							assemblyPath, 
-							testExplorationOptions, 
-							testExecutionOptions, 
-							remoteMessageSink, 
-							remoteProgressMonitor,
-							testIsolationContext.TestIsolationOptions
-                    	};
-                    	testIsolationContext.RunIsolatedTask<ExploreOrRunTask>(hostSetup, progressMonitor.SetStatus, args);
+                        testIsolationContext.RunIsolatedTask<ExploreOrRunTask>(hostSetup,
+                            (statusMessage) => progressMonitor.SetStatus(statusMessage),
+                            new object[] { driverType, driverArguments, assemblyPath, testExplorationOptions, testExecutionOptions, remoteMessageSink, remoteProgressMonitor });
                     }
 
-                	// Record one final work unit after the isolated task has been fully cleaned up.
+                    // Record one final work unit after the isolated task has been fully cleaned up.
                     progressMonitor.SetStatus("");
                     progressMonitor.Worked(1);
                 }
@@ -312,36 +293,35 @@ namespace Gallio.Model
         {
             protected override object RunImpl(object[] args)
             {
-                ExploreOrRun((Type)args[0], (object[])args[1], (string)args[2], (TestExplorationOptions)args[3], (TestExecutionOptions)args[4], 
-					(TestIsolationOptions)args[7], (IMessageSink)args[5], (IProgressMonitor)args[6]);
-				return null;
+                ExploreOrRun(
+                    (Type)args[0],
+                    (object[])args[1],
+                    (string)args[2],
+                    (TestExplorationOptions)args[3],
+                    (TestExecutionOptions)args[4],
+                    (IMessageSink)args[5],
+                    (IProgressMonitor)args[6]);
+                return null;
             }
 
-            private void ExploreOrRun(Type driverType, object[] driverArguments, string assemblyPath, TestExplorationOptions testExplorationOptions, TestExecutionOptions testExecutionOptions, 
-				TestIsolationOptions testIsolationOptions, IMessageSink messageSink, IProgressMonitor progressMonitor)
+            private void ExploreOrRun(Type driverType, object[] driverArguments,
+                string assemblyPath, TestExplorationOptions testExplorationOptions, TestExecutionOptions testExecutionOptions,
+                IMessageSink messageSink, IProgressMonitor progressMonitor)
             {
-                var assembly = LoadAssembly(assemblyPath);
+                Assembly assembly = LoadAssembly(assemblyPath);
 
-            	messageSink = MessageSinkFactory.GetHostMessageSink(testIsolationOptions, messageSink);
+                using (var queuedMessageSink = new QueuedMessageSink(messageSink))
+                {
+                    var testDriver = (DotNetTestDriver) Activator.CreateInstance(driverType, driverArguments);
 
-            	try
-            	{
-            		var testDriver = (DotNetTestDriver)Activator.CreateInstance(driverType, driverArguments);
-
-            		if (testExecutionOptions == null)
-            			testDriver.ExploreAssembly(assembly, testExplorationOptions, messageSink, progressMonitor);
-            		else
-            			testDriver.RunAssembly(assembly, testExplorationOptions, testExecutionOptions, messageSink, progressMonitor);
-            	}
-            	finally
-            	{
-            		var disposable = messageSink as IDisposable;
-					if (disposable != null)
-						disposable.Dispose();
-            	}
+                    if (testExecutionOptions == null)
+                        testDriver.ExploreAssembly(assembly, testExplorationOptions, queuedMessageSink, progressMonitor);
+                    else
+                        testDriver.RunAssembly(assembly, testExplorationOptions, testExecutionOptions, queuedMessageSink, progressMonitor);
+                }
             }
 
-        	private static Assembly LoadAssembly(string assemblyPath)
+            private static Assembly LoadAssembly(string assemblyPath)
             {
                 try
                 {
