@@ -163,9 +163,17 @@
     <Compile Include="Projects\ProjectUserOptionsController.cs" />
     <Compile Include="Projects\UserOptionsLoaded.cs" />
     <Compile Include="Projects\UserOptionsSaved.cs" />
+    <Compile Include="RuntimeLog\RuntimeLogResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RuntimeLogResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="RuntimeLog\RuntimeLogPackage.cs" />
     <Compile Include="RuntimeLog\IRuntimeLogController.cs" />
     <Compile Include="RuntimeLog\RuntimeLogController.cs" />
-    <Compile Include="RuntimeLog\RuntimeLogWindow.cs" />
+    <Compile Include="RuntimeLog\RuntimeLogWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="RuntimeLog\RuntimeLogWindow.Designer.cs">
       <DependentUpon>RuntimeLogWindow.cs</DependentUpon>
     </Compile>
@@ -598,6 +606,10 @@
     <EmbeddedResource Include="Projects\ProjectReloadDialog.resx">
       <DependentUpon>ProjectReloadDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RuntimeLog\RuntimeLogResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RuntimeLogResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="RuntimeLog\RuntimeLogWindow.resx">
       <DependentUpon>RuntimeLogWindow.cs</DependentUpon>

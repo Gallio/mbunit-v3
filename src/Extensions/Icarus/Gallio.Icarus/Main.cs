@@ -27,7 +27,6 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.ProgressMonitoring;
 using Gallio.Icarus.Projects;
-using Gallio.Icarus.RuntimeLog;
 using Gallio.Icarus.TestExplorer;
 using Gallio.Icarus.Utilities;
 using Gallio.Icarus.WindowManager;
@@ -55,7 +54,6 @@ namespace Gallio.Icarus
         private readonly TestExplorer.View testExplorer;
         private readonly ProjectExplorer projectExplorer;
         private readonly TestResults.TestResults testResults;
-        private readonly RuntimeLogWindow runtimeLogWindow;
 
         private readonly ITestTreeModel testTreeModel;
         private readonly ITestStatistics testStatistics;
@@ -97,7 +95,6 @@ namespace Gallio.Icarus
             optionsController = RuntimeAccessor.ServiceLocator.Resolve<IOptionsController>();
             reportController = RuntimeAccessor.ServiceLocator.Resolve<IReportController>();
             var testResultsController = RuntimeAccessor.ServiceLocator.Resolve<ITestResultsController>();
-            var runtimeLogController = RuntimeAccessor.ServiceLocator.Resolve<IRuntimeLogController>();
 
             testTreeModel = RuntimeAccessor.ServiceLocator.Resolve<ITestTreeModel>();
             testStatistics = RuntimeAccessor.ServiceLocator.Resolve<ITestStatistics>();
@@ -113,7 +110,6 @@ namespace Gallio.Icarus
             projectExplorer = new ProjectExplorer(projectController, testController, reportController, taskManager, 
                 commandFactory, windowManager);
             testResults = new TestResults.TestResults(testResultsController, optionsController, testTreeModel, testStatistics);
-            runtimeLogWindow = new RuntimeLogWindow(runtimeLogController);
 
             // moved this below the service locator calls as the optionsController was being used _before_ it was initialised :(
             // TODO: remove as many dependencies from the shell as possible
@@ -193,8 +189,6 @@ namespace Gallio.Icarus
                 return projectExplorer;
             if (persistString == typeof(TestResults.TestResults).ToString())
                 return testResults;
-            if (persistString == typeof(RuntimeLogWindow).ToString())
-                return runtimeLogWindow;
 
             return windowManager.Get(persistString);
         }
@@ -265,7 +259,6 @@ namespace Gallio.Icarus
             // looked at than regular tabs.
             // -- Jeff.
             testResults.Show(dockPanel, DockState.Document);
-            runtimeLogWindow.Show(dockPanel, DockState.DockBottom);
             projectExplorer.Show(dockPanel, DockState.DockLeft);
             testExplorer.Show(dockPanel, DockState.DockLeft);
 
@@ -468,9 +461,6 @@ namespace Gallio.Icarus
                         break;
                     case "testExplorerToolStripMenuItem":
                         testExplorer.Show(dockPanel);
-                        break;
-                    case "runtimeLogToolStripMenuItem":
-                        runtimeLogWindow.Show(dockPanel);
                         break;
                 }
             });

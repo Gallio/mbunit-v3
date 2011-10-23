@@ -16,11 +16,13 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Runtime.Logging;
+using Gallio.UI.Common.Synchronization;
 
 namespace Gallio.Icarus.RuntimeLog
 {
-    internal partial class RuntimeLogWindow : DockWindow
+    internal partial class RuntimeLogWindow : UserControl
     {
         public RuntimeLogWindow(IRuntimeLogController runtimeLogController)
         {
@@ -34,11 +36,15 @@ namespace Gallio.Icarus.RuntimeLog
             }
 
             runtimeLogController.LogMessage += runtimeLogController_LogMessage;
+            Disposed += (s, e) => runtimeLogController.LogMessage -= runtimeLogController_LogMessage;
         }
 
-        void runtimeLogController_LogMessage(object sender, Controllers.EventArgs.RuntimeLogEventArgs e)
+        void runtimeLogController_LogMessage(object sender, RuntimeLogEventArgs e)
         {
-            BeginInvoke((MethodInvoker)(() => AppendTextLine(e.Message, e.Color)));
+            SynchronizationContext.Post(delegate
+            {
+                AppendTextLine(e.Message, e.Color);
+            }, this);
         }
 
         private void AppendTextLine(string text, Color color)

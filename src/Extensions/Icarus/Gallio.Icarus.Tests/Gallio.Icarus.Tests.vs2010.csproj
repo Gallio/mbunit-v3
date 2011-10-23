@@ -130,6 +130,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="RuntimeLog\RuntimeLogPackageTests.cs" />
     <Compile Include="RuntimeLog\RuntimeLogControllerTest.cs" />
     <Compile Include="Search\SearchControllerTest.cs" />
     <Compile Include="Services\FilterServiceTest.cs" />
