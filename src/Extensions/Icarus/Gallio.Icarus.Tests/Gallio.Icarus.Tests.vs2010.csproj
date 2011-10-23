@@ -94,7 +94,6 @@
     <Compile Include="Controllers\OptionsControllerTest.cs" />
     <Compile Include="Controllers\ProjectControllerTest.cs" />
     <Compile Include="Controllers\ReportControllerTest.cs" />
-    <Compile Include="Controllers\RuntimeLogControllerTest.cs" />
     <Compile Include="Controllers\SourceCodeControllerTest.cs" />
     <Compile Include="Controllers\TestControllerTest.cs" />
     <Compile Include="Controllers\TestResultsControllerTest.cs" />
@@ -131,6 +130,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="RuntimeLog\RuntimeLogControllerTest.cs" />
     <Compile Include="Search\SearchControllerTest.cs" />
     <Compile Include="Services\FilterServiceTest.cs" />
     <Compile Include="SettingsTest.cs" />
