@@ -18,7 +18,7 @@ using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Logging;
 using Gallio.Runtime.Logging;
 
-namespace Gallio.Icarus.Controllers.Interfaces
+namespace Gallio.Icarus.RuntimeLog
 {
     public interface IRuntimeLogController
     {

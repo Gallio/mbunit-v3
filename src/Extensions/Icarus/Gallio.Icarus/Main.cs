@@ -27,6 +27,7 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.ProgressMonitoring;
 using Gallio.Icarus.Projects;
+using Gallio.Icarus.RuntimeLog;
 using Gallio.Icarus.TestExplorer;
 using Gallio.Icarus.Utilities;
 using Gallio.Icarus.WindowManager;

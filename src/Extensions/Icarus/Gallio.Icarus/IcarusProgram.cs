@@ -24,6 +24,7 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Logging;
 using Gallio.Icarus.Properties;
 using Gallio.Icarus.Runtime;
+using Gallio.Icarus.RuntimeLog;
 using Gallio.Runner;
 using Gallio.Runtime;
 using Gallio.Runtime.ConsoleSupport;

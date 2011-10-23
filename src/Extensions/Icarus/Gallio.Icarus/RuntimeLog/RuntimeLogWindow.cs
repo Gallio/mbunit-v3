@@ -16,10 +16,9 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runtime.Logging;
 
-namespace Gallio.Icarus
+namespace Gallio.Icarus.RuntimeLog
 {
     internal partial class RuntimeLogWindow : DockWindow
     {

@@ -13,19 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Drawing;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Common.Diagnostics;
+using Gallio.Icarus.RuntimeLog;
 using MbUnit.Framework;
 using Gallio.Icarus.Controllers;
 using Gallio.Runtime.Logging;
 using Gallio.Icarus.Controllers.EventArgs;
-using System.Collections.Generic;
 using Rhino.Mocks;
 using Gallio.Icarus.Logging;
 
-namespace Gallio.Icarus.Tests.Controllers
+namespace Gallio.Icarus.Tests.RuntimeLog
 {
     [Category("Controllers"), TestsOn(typeof(RuntimeLogController))]
     internal class RuntimeLogControllerTest

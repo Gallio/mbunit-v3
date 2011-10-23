@@ -19,7 +19,7 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Logging;
 using Gallio.Runtime.Logging;
 
-namespace Gallio.Icarus.Controllers
+namespace Gallio.Icarus.RuntimeLog
 {
     internal class RuntimeLogController : IRuntimeLogController
     {
