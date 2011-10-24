@@ -185,12 +185,14 @@
     <Compile Include="Search\Model.cs" />
     <Compile Include="Specifications\NamespaceSpecification.cs" />
     <Compile Include="Specifications\SpecificationFactory.cs" />
+    <Compile Include="TestResults\ITestResultsController.cs" />
     <Compile Include="TestResults\TestResults.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="TestResults\TestResults.Designer.cs">
       <DependentUpon>TestResults.cs</DependentUpon>
     </Compile>
+    <Compile Include="TestResults\TestResultsController.cs" />
     <Compile Include="TestResults\TestStepComparer.cs" />
     <Compile Include="Controls\NodeTextBox.cs">
       <SubType>Component</SubType>
@@ -237,7 +239,6 @@
     <Compile Include="Annotations\IAnnotationsController.cs" />
     <Compile Include="Controllers\Interfaces\IReportController.cs" />
     <Compile Include="Controllers\Interfaces\ISourceCodeController.cs" />
-    <Compile Include="Controllers\Interfaces\ITestResultsController.cs" />
     <Compile Include="Controllers\IProgressController.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -249,7 +250,6 @@
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\SourceCodeController.cs" />
     <Compile Include="Controllers\TestController.cs" />
-    <Compile Include="Controllers\TestResultsController.cs" />
     <Compile Include="ControlPanel\TestRunnerFactoryPaneProvider.cs" />
     <Compile Include="ControlPanel\TestRunnerFactoryPane.cs">
       <SubType>UserControl</SubType>
