@@ -28,6 +28,7 @@ using Gallio.Icarus.Models;
 using Gallio.Icarus.ProgressMonitoring;
 using Gallio.Icarus.Projects;
 using Gallio.Icarus.TestExplorer;
+using Gallio.Icarus.TestResults;
 using Gallio.Icarus.Utilities;
 using Gallio.Icarus.WindowManager;
 using Gallio.Model;

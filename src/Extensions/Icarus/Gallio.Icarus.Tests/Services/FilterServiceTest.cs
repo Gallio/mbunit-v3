@@ -25,7 +25,7 @@ using Gallio.Model.Schema;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
-namespace Gallio.Icarus.Tests.Services.Services
+namespace Gallio.Icarus.Tests.Services
 {
     [TestsOn(typeof(FilterService))]
     public class FilterServiceTest

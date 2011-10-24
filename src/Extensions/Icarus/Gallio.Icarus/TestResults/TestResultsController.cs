@@ -18,18 +18,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
-using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
-using Gallio.Icarus.TestResults;
 using Gallio.Model;
 using Gallio.Runner.Reports.Schema;
 using Gallio.UI.DataBinding;
 using Gallio.UI.Events;
-using SortOrder=Gallio.Icarus.Models.SortOrder;
+using SortOrder = Gallio.Icarus.Models.SortOrder;
 
-namespace Gallio.Icarus.Controllers
+namespace Gallio.Icarus.TestResults
 {
     public class TestResultsController : ITestResultsController, Handles<RunStarted>, 
         Handles<TestSelectionChanged>, Handles<RunFinished>, Handles<ExploreStarted>, 

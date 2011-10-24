@@ -14,17 +14,17 @@
 // limitations under the License.
 
 using System;
-using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
+using Gallio.Icarus.TestResults;
 using Gallio.Model;
 using Gallio.Model.Schema;
 using Gallio.Runner.Reports.Schema;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
-namespace Gallio.Icarus.Tests.Controllers
+namespace Gallio.Icarus.Tests.TestResults
 {
     [Category("Controllers"), Author("Graham Hay"), TestsOn(typeof(TestResultsController))]
     public class TestResultsControllerTest
