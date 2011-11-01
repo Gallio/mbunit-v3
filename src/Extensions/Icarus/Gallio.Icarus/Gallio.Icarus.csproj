@@ -186,13 +186,19 @@
     <Compile Include="Specifications\NamespaceSpecification.cs" />
     <Compile Include="Specifications\SpecificationFactory.cs" />
     <Compile Include="TestResults\ITestResultsController.cs" />
+    <Compile Include="TestResults\TestResultsPackage.cs" />
     <Compile Include="TestResults\TestResults.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="TestResults\TestResults.Designer.cs">
       <DependentUpon>TestResults.cs</DependentUpon>
     </Compile>
     <Compile Include="TestResults\TestResultsController.cs" />
+    <Compile Include="TestResults\TestResultsResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestResultsResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="TestResults\TestStepComparer.cs" />
     <Compile Include="Controls\NodeTextBox.cs">
       <SubType>Component</SubType>
@@ -622,6 +628,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TestResults\TestResults.resx">
       <DependentUpon>TestResults.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestResults\TestResultsResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TestResultsResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\CodeViewer\CodeViewer.resx">
       <DependentUpon>CodeViewer.cs</DependentUpon>

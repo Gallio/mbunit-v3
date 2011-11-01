@@ -28,7 +28,6 @@ using Gallio.Icarus.Models;
 using Gallio.Icarus.ProgressMonitoring;
 using Gallio.Icarus.Projects;
 using Gallio.Icarus.TestExplorer;
-using Gallio.Icarus.TestResults;
 using Gallio.Icarus.Utilities;
 using Gallio.Icarus.WindowManager;
 using Gallio.Model;
@@ -54,7 +53,6 @@ namespace Gallio.Icarus
         // dock panel windows
         private readonly TestExplorer.View testExplorer;
         private readonly ProjectExplorer projectExplorer;
-        private readonly TestResults.TestResults testResults;
 
         private readonly ITestTreeModel testTreeModel;
         private readonly ITestStatistics testStatistics;
@@ -95,7 +93,6 @@ namespace Gallio.Icarus
             taskManager = RuntimeAccessor.ServiceLocator.Resolve<ITaskManager>();
             optionsController = RuntimeAccessor.ServiceLocator.Resolve<IOptionsController>();
             reportController = RuntimeAccessor.ServiceLocator.Resolve<IReportController>();
-            var testResultsController = RuntimeAccessor.ServiceLocator.Resolve<ITestResultsController>();
 
             testTreeModel = RuntimeAccessor.ServiceLocator.Resolve<ITestTreeModel>();
             testStatistics = RuntimeAccessor.ServiceLocator.Resolve<ITestStatistics>();
@@ -110,7 +107,6 @@ namespace Gallio.Icarus
 
             projectExplorer = new ProjectExplorer(projectController, testController, reportController, taskManager, 
                 commandFactory, windowManager);
-            testResults = new TestResults.TestResults(testResultsController, optionsController, testTreeModel, testStatistics);
 
             // moved this below the service locator calls as the optionsController was being used _before_ it was initialised :(
             // TODO: remove as many dependencies from the shell as possible
@@ -188,8 +184,6 @@ namespace Gallio.Icarus
                 return testExplorer;
             if (persistString == typeof(ProjectExplorer).ToString())
                 return projectExplorer;
-            if (persistString == typeof(TestResults.TestResults).ToString())
-                return testResults;
 
             return windowManager.Get(persistString);
         }
@@ -259,7 +253,6 @@ namespace Gallio.Icarus
             // or in the runtime log.  Auto-hidden panels are less likely to be
             // looked at than regular tabs.
             // -- Jeff.
-            testResults.Show(dockPanel, DockState.Document);
             projectExplorer.Show(dockPanel, DockState.DockLeft);
             testExplorer.Show(dockPanel, DockState.DockLeft);
 
@@ -454,9 +447,6 @@ namespace Gallio.Icarus
             {
                 switch (window)
                 {
-                    case "testResultsToolStripMenuItem":
-                        testResults.Show(dockPanel);
-                        break;
                     case "projectExplorerToolStripMenuItem":
                         projectExplorer.Show(dockPanel);
                         break;

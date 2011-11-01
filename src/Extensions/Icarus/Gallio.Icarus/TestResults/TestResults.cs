@@ -13,49 +13,99 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 
 namespace Gallio.Icarus.TestResults
 {
-    internal partial class TestResults : DockWindow
+    internal partial class TestResults : UserControl
     {
         private readonly ITestResultsController testResultsController;
+        private readonly IOptionsController optionsController;
+        private readonly ITestTreeModel testTreeModel;
+        private readonly ITestStatistics testStatistics;
 
         public TestResults(ITestResultsController testResultsController, IOptionsController optionsController, 
             ITestTreeModel testTreeModel, ITestStatistics testStatistics)
         {
             this.testResultsController = testResultsController;
+            this.optionsController = optionsController;
+            this.testTreeModel = testTreeModel;
+            this.testStatistics = testStatistics;
 
-            InitializeComponent();
+            InitializeComponent();            
+        }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            
+            BindProgressBar();
+            BindTestStatistics();
+            BindTreeModel();
+            BindTestResults();
+        }
+
+        private void BindProgressBar()
+        {
             testProgressStatusBar.DataBindings.Add("Mode", optionsController, "TestStatusBarStyle");
             testProgressStatusBar.DataBindings.Add("PassedColor", optionsController, "PassedColor");
             testProgressStatusBar.DataBindings.Add("FailedColor", optionsController, "FailedColor");
             testProgressStatusBar.DataBindings.Add("InconclusiveColor", optionsController, "InconclusiveColor");
             testProgressStatusBar.DataBindings.Add("SkippedColor", optionsController, "SkippedColor");
+        }
 
-            testStatistics.Passed.PropertyChanged += (s, e) => 
-                testProgressStatusBar.Passed = testStatistics.Passed.Value;
-            testStatistics.Failed.PropertyChanged += (s, e) =>
-                testProgressStatusBar.Failed = testStatistics.Failed.Value;
-            testStatistics.Skipped.PropertyChanged += (s, e) =>
-                testProgressStatusBar.Skipped = testStatistics.Skipped.Value;
-            testStatistics.Inconclusive.PropertyChanged += (s, e) =>
-                testProgressStatusBar.Inconclusive = testStatistics.Inconclusive.Value;
+        private void BindTestStatistics()
+        {
+            PropertyChangedEventHandler passedOnPropertyChanged = (s, e) => testProgressStatusBar.Passed = testStatistics.Passed.Value;
+            PropertyChangedEventHandler failedOnPropertyChanged = (s, e) => testProgressStatusBar.Failed = testStatistics.Failed.Value;
+            PropertyChangedEventHandler skippedOnPropertyChanged = (s, e) => testProgressStatusBar.Skipped = testStatistics.Skipped.Value;
+            PropertyChangedEventHandler inconclusiveOnPropertyChanged = (s, e) => testProgressStatusBar.Inconclusive = testStatistics.Inconclusive.Value;
 
-            testTreeModel.TestCount.PropertyChanged += (s, e) => testProgressStatusBar.Total = testTreeModel.TestCount;
+            testStatistics.Passed.PropertyChanged += passedOnPropertyChanged;
+            testStatistics.Failed.PropertyChanged += failedOnPropertyChanged;
+            testStatistics.Skipped.PropertyChanged += skippedOnPropertyChanged;
+            testStatistics.Inconclusive.PropertyChanged += inconclusiveOnPropertyChanged;
 
-            testResultsController.ElapsedTime.PropertyChanged += (s, e) => 
-                testProgressStatusBar.ElapsedTime = testResultsController.ElapsedTime;
-            
-            testResultsController.ResultsCount.PropertyChanged += (s, e) => 
-                testResultsList.VirtualListSize = testResultsController.ResultsCount;
+            Disposed += (s, e) =>
+            {
+                testStatistics.Passed.PropertyChanged -= passedOnPropertyChanged;
+                testStatistics.Failed.PropertyChanged -= failedOnPropertyChanged;
+                testStatistics.Skipped.PropertyChanged -= skippedOnPropertyChanged;
+                testStatistics.Inconclusive.PropertyChanged -= inconclusiveOnPropertyChanged;
+            };
+        }
+
+        private void BindTreeModel()
+        {
+            PropertyChangedEventHandler testCountOnPropertyChanged = (s, e) => testProgressStatusBar.Total = testTreeModel.TestCount;
+            testTreeModel.TestCount.PropertyChanged += testCountOnPropertyChanged;
+            Disposed += (s, e) => testTreeModel.TestCount.PropertyChanged -= testCountOnPropertyChanged;
+        }
+
+        private void BindTestResults()
+        {
+            PropertyChangedEventHandler elapsedTimeOnPropertyChanged = (s, e) => testProgressStatusBar.ElapsedTime = testResultsController.ElapsedTime;
+            PropertyChangedEventHandler resultsCountOnPropertyChanged = (s, e) => testResultsList.VirtualListSize = testResultsController.ResultsCount;
+            testResultsController.ElapsedTime.PropertyChanged += elapsedTimeOnPropertyChanged;
+            testResultsController.ResultsCount.PropertyChanged += resultsCountOnPropertyChanged;
 
             testResultsList.RetrieveVirtualItem += testResultsList_RetrieveVirtualItem;
             testResultsList.CacheVirtualItems += testResultsList_CacheVirtualItems;
             testResultsList.ColumnClick += testResultsList_ColumnClick;
+
+            Disposed += (s, e) =>
+            {
+                testResultsController.ElapsedTime.PropertyChanged -= elapsedTimeOnPropertyChanged;
+                testResultsController.ResultsCount.PropertyChanged -= resultsCountOnPropertyChanged;
+
+                testResultsList.RetrieveVirtualItem -= testResultsList_RetrieveVirtualItem;
+                testResultsList.CacheVirtualItems -= testResultsList_CacheVirtualItems;
+                testResultsList.ColumnClick -= testResultsList_ColumnClick;
+            };
         }
 
         private void testResultsList_ColumnClick(object sender, ColumnClickEventArgs e)

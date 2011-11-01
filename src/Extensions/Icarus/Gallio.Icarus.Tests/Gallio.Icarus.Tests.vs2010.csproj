@@ -142,6 +142,7 @@
     <Compile Include="Specifications\OrSpecificationTest.cs" />
     <Compile Include="Specifications\SpecificationFactoryTest.cs" />
     <Compile Include="TestExplorer\ControllerTest.cs" />
+    <Compile Include="TestResults\TestResultsPackageTests.cs" />
     <Compile Include="TestResults\TestResultsControllerTest.cs" />
     <Compile Include="TestResults\TestStepComparerTest.cs" />
     <Compile Include="TreeBuilders\NamespaceTreeBuilderTest.cs" />
@@ -153,6 +154,7 @@
     </Compile>
     <Compile Include="Utilities\TestTaskManager.cs" />
     <Compile Include="WindowManager\MenuManagerTests.cs" />
+    <Compile Include="WindowManager\TestWindowManager.cs" />
     <Compile Include="WindowManager\WindowManagerTests.cs" />
   </ItemGroup>
   <ItemGroup>
