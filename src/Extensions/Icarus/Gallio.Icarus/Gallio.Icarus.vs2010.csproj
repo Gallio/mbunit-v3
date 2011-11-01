@@ -75,7 +75,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.5.0.31030, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e, processorArchitecture=MSIL">
@@ -200,6 +200,15 @@
     <Compile Include="Search\Model.cs" />
     <Compile Include="Specifications\NamespaceSpecification.cs" />
     <Compile Include="Specifications\SpecificationFactory.cs" />
+    <Compile Include="TestExplorer\ITestExplorerController.cs" />
+    <Compile Include="TestExplorer\ITestExplorerModel.cs" />
+    <Compile Include="TestExplorer\TestExplorerController.cs" />
+    <Compile Include="TestExplorer\TestExplorerModel.cs" />
+    <Compile Include="TestExplorer\TestExplorerPackage.cs" />
+    <Compile Include="TestExplorer\TestExplorerView.cs" />
+    <Compile Include="TestExplorer\TestExplorerView.Designer.cs">
+      <DependentUpon>TestExplorerView.cs</DependentUpon>
+    </Compile>
     <Compile Include="TestResults\ITestResultsController.cs" />
     <Compile Include="TestResults\TestResultsPackage.cs" />
     <Compile Include="TestResults\TestResults.cs">
@@ -388,20 +397,9 @@
     <Compile Include="Reports\ReportOptions.cs" />
     <Compile Include="Runtime\DefaultConventionScanner.cs" />
     <Compile Include="Specifications\AndSpecification.cs" />
-    <Compile Include="TestExplorer\Controller.cs" />
     <Compile Include="Events\ExploreFinished.cs" />
-    <Compile Include="TestExplorer\IController.cs" />
-    <Compile Include="TestExplorer\IModel.cs" />
-    <Compile Include="TestExplorer\Model.cs" />
-    <Compile Include="TestExplorer\Package.cs" />
     <Compile Include="Events\TestSelectionChanged.cs" />
     <Compile Include="Events\TreeViewCategoryChanged.cs" />
-    <Compile Include="TestExplorer\View.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TestExplorer\View.Designer.cs">
-      <DependentUpon>View.cs</DependentUpon>
-    </Compile>
     <Compile Include="TreeBuilders\ITreeBuilder.cs" />
     <Compile Include="TreeBuilders\MetadataTreeBuilder.cs" />
     <Compile Include="TreeBuilders\NamespaceHierarchy.cs" />
@@ -639,8 +637,8 @@
     <EmbeddedResource Include="Search\View.resx">
       <DependentUpon>View.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TestExplorer\View.resx">
-      <DependentUpon>View.cs</DependentUpon>
+    <EmbeddedResource Include="TestExplorer\TestExplorerView.resx">
+      <DependentUpon>TestExplorerView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TestResults\TestResults.resx">
       <DependentUpon>TestResults.cs</DependentUpon>
