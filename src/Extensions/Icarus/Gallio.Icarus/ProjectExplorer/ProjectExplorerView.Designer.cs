@@ -13,9 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Gallio.Icarus
+namespace Gallio.Icarus.ProjectExplorer
 {
-    partial class ProjectExplorer
+    partial class ProjectExplorerView
     {
         /// <summary>
         /// Required designer variable.
@@ -44,7 +44,7 @@ namespace Gallio.Icarus
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProjectExplorer));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProjectExplorerView));
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.projectTree = new Gallio.Icarus.Controls.ProjectTreeView();
             this.filesNodeMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -183,9 +183,7 @@ namespace Gallio.Icarus
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(281, 273);
             this.Controls.Add(this.toolStripContainer1);
-            this.Name = "ProjectExplorer";
-            this.TabText = "Project Explorer";
-            this.Text = "Project Explorer";
+            this.Name = "ProjectExplorerView";
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);
             this.toolStripContainer1.TopToolStripPanel.ResumeLayout(false);
             this.toolStripContainer1.TopToolStripPanel.PerformLayout();

@@ -149,10 +149,18 @@
     </Compile>
     <Compile Include="Filters\IFilterController.cs" />
     <Compile Include="Models\AlphanumComparatorFast.cs" />
-    <Compile Include="ProjectExplorer\ProjectExplorerView.cs" />
+    <Compile Include="ProjectExplorer\ProjectExplorerResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ProjectExplorerResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ProjectExplorer\ProjectExplorerView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="ProjectExplorer\ProjectExplorerView.Designer.cs">
       <DependentUpon>ProjectExplorerView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ProjectExplorer\ProjectExplorerPackage.cs" />
     <Compile Include="ProjectProperties\Controller.cs" />
     <Compile Include="ProjectProperties\IController.cs" />
     <Compile Include="ProjectProperties\IModel.cs" />
@@ -519,6 +527,10 @@
       <SubType>Designer</SubType>
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ProjectExplorer\ProjectExplorerResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ProjectExplorerResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="ProjectExplorer\ProjectExplorerView.resx">
       <DependentUpon>ProjectExplorerView.cs</DependentUpon>
     </EmbeddedResource>
@@ -653,6 +665,7 @@
       <DependentUpon>ReloadDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="ProjectExplorer\ProjectExplorerIcon.ico" />
     <Content Include="Resources\arrow_refresh.png" />
     <Content Include="Resources\Assembly.ico" />
     <Content Include="Resources\Assembly.png" />

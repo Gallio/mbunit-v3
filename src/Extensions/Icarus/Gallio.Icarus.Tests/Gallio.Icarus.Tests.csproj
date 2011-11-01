@@ -120,6 +120,7 @@
     <Compile Include="Models\TestTreeNodeTest.cs" />
     <Compile Include="Models\TreeModelDecoratorTest.cs" />
     <Compile Include="ProgressMonitoring\Win7TaskBarTest.cs" />
+    <Compile Include="ProjectExplorer\ProjectExplorerPackageTests.cs" />
     <Compile Include="ProjectProperties\ControllerTest.cs" />
     <Compile Include="Projects\ProjectUserOptionsControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

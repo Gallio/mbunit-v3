@@ -26,35 +26,37 @@ using Gallio.Icarus.Utilities;
 using Gallio.Icarus.WindowManager;
 using Gallio.UI.ProgressMonitoring;
 
-namespace Gallio.Icarus
+namespace Gallio.Icarus.ProjectExplorer
 {
-    internal partial class ProjectExplorer : DockWindow
+    internal partial class ProjectExplorerView : UserControl
     {
-        private readonly IProjectController projectController;
-        private readonly ITestController testController;
         private readonly IReportController reportController;
         private readonly ITaskManager taskManager;
         private readonly ICommandFactory commandFactory;
-        private readonly IWindowManager windowManager;
+    	private readonly IProjectController projectController;
+    	private readonly IWindowManager windowManager;
 
-        public ProjectExplorer(IProjectController projectController, ITestController testController, 
-            IReportController reportController, ITaskManager taskManager, ICommandFactory commandFactory, 
-            IWindowManager windowManager)
+        public ProjectExplorerView(IProjectController projectController, IReportController reportController, 
+			ITaskManager taskManager, ICommandFactory commandFactory, IWindowManager windowManager)
         {
-            this.projectController = projectController;
-            this.windowManager = windowManager;
-            this.testController = testController;
+        	this.projectController = projectController;
+        	this.windowManager = windowManager;
             this.taskManager = taskManager;
             this.commandFactory = commandFactory;
             this.reportController = reportController;
 
             InitializeComponent();
-
-            projectTree.Model = projectController.Model;
-            projectTree.ExpandAll();
-
-            SetupReportMenus();
         }
+
+		protected override void OnLoad(EventArgs e)
+		{
+			projectTree.Model = projectController.Model;
+			projectTree.ExpandAll();
+
+			SetupReportMenus();
+
+			base.OnLoad(e);
+		}
 
         private void SetupReportMenus()
         {

@@ -74,7 +74,6 @@ namespace Gallio.Icarus
             this.fileExit = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.projectExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.projectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -222,7 +221,6 @@ namespace Gallio.Icarus
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.testExplorerToolStripMenuItem,
-            this.projectExplorerToolStripMenuItem,
             this.toolStripSeparator10});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
@@ -234,13 +232,6 @@ namespace Gallio.Icarus
             this.testExplorerToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
             this.testExplorerToolStripMenuItem.Text = "Test Explorer";
             this.testExplorerToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
-            // 
-            // projectExplorerToolStripMenuItem
-            // 
-            this.projectExplorerToolStripMenuItem.Name = "projectExplorerToolStripMenuItem";
-            this.projectExplorerToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.projectExplorerToolStripMenuItem.Text = "Project Explorer";
-            this.projectExplorerToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // toolStripSeparator10
             // 
@@ -709,7 +700,6 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testExplorerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resetToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem projectExplorerToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripMenuItem reportToolStripMenuItem;
