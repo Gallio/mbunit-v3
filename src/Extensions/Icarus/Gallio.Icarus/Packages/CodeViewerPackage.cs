@@ -15,11 +15,11 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
 using Gallio.Common.Reflection;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Views.CodeViewer;
 using Gallio.Icarus.WindowManager;
+using Gallio.UI.Common.Synchronization;
 
 namespace Gallio.Icarus.Packages
 {
@@ -63,18 +63,16 @@ namespace Gallio.Icarus.Packages
 
         private void ActivateWindow(CodeLocation codeLocation, string identifier)
         {
-            windowManager.BeginInvoke((MethodInvoker) delegate
-            {
+			SynchronizationContext.Post(cb => 
+			{
                 var window = windowManager.Get(identifier);
                 var codeViewer = (CodeViewer)window.Content;
 
                 if (codeLocation != CodeLocation.Unknown)
-                {
                     codeViewer.JumpTo(codeLocation.Line, codeLocation.Column);
-                }
 
                 windowManager.Show(identifier);
-            }, new object[0]);
+			}, null);
         }
 
         private void AddWindow(CodeLocation codeLocation, string identifier)
@@ -90,8 +88,8 @@ namespace Gallio.Icarus.Packages
                     ?? "(unknown)";
             }
 
-            windowManager.BeginInvoke((MethodInvoker) (() => CreateWindow(codeLocation, 
-                identifier, caption)), new object[0]);
+            SynchronizationContext.Post(cb => CreateWindow(codeLocation, 
+                identifier, caption), null);
         }
 
         private void CreateWindow(CodeLocation codeLocation, string identifier, 

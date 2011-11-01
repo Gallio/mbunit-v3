@@ -149,25 +149,5 @@ namespace Gallio.Icarus.WindowManager
         {
             dockPanel = panel;
         }
-
-        public IAsyncResult BeginInvoke(Delegate method, object[] args)
-        {
-            return dockPanel.BeginInvoke(method, args);
-        }
-
-        public object EndInvoke(IAsyncResult result)
-        {
-            return dockPanel.EndInvoke(result);
-        }
-
-        public object Invoke(Delegate method, object[] args)
-        {
-            return dockPanel.Invoke(method, args);
-        }
-
-        public bool InvokeRequired
-        {
-            get { return dockPanel.InvokeRequired; }
-        }
     }
 }

@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using Gallio.Common;
@@ -23,7 +22,7 @@ namespace Gallio.Icarus.WindowManager
     /// <summary>
     /// Window manager for application shell.
     /// </summary>
-    public interface IWindowManager : ISynchronizeInvoke
+    public interface IWindowManager
     {
         /// <summary>
         /// The menu manager.
