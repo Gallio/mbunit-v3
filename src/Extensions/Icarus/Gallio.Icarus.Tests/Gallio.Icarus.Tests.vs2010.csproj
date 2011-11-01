@@ -142,7 +142,9 @@
     <Compile Include="Specifications\NamespaceSpecificationTest.cs" />
     <Compile Include="Specifications\OrSpecificationTest.cs" />
     <Compile Include="Specifications\SpecificationFactoryTest.cs" />
-    <Compile Include="TestExplorer\ControllerTest.cs" />
+    <Compile Include="TestExplorer\TestExplorerControllerTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TestExplorer\TestExplorerPackageTests.cs" />
     <Compile Include="TestResults\TestResultsPackageTests.cs" />
     <Compile Include="TestResults\TestResultsControllerTest.cs" />
