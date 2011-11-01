@@ -149,6 +149,12 @@
     </Compile>
     <Compile Include="Filters\IFilterController.cs" />
     <Compile Include="Models\AlphanumComparatorFast.cs" />
+    <Compile Include="ProjectExplorer\ProjectExplorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProjectExplorer\ProjectExplorer.Designer.cs">
+      <DependentUpon>ProjectExplorer.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProjectProperties\Controller.cs" />
     <Compile Include="ProjectProperties\IController.cs" />
     <Compile Include="ProjectProperties\IModel.cs" />
@@ -468,12 +474,6 @@
     <Compile Include="Models\TestTreeModel.cs" />
     <Compile Include="Models\TestTreeNode.cs" />
     <Compile Include="Controllers\OptionsController.cs" />
-    <Compile Include="ProjectExplorer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ProjectExplorer.Designer.cs">
-      <DependentUpon>ProjectExplorer.cs</DependentUpon>
-    </Compile>
     <Compile Include="ReloadDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -520,6 +520,9 @@
     <EmbeddedResource Include="Main.resx">
       <SubType>Designer</SubType>
       <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProjectExplorer\ProjectExplorer.resx">
+      <DependentUpon>ProjectExplorer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -646,10 +649,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Window.resx">
       <DependentUpon>Window.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ProjectExplorer.resx">
-      <DependentUpon>ProjectExplorer.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ReloadDialog.resx">
