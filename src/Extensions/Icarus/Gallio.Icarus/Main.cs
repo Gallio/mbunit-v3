@@ -305,7 +305,7 @@ namespace Gallio.Icarus
 
         private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (var saveProjectDialog = Dialogs.CreateSaveProjectDialog())
+            using (Dialogs.CreateSaveProjectDialog())
             {
                 SaveProject(true);
             }
