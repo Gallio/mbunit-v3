@@ -74,9 +74,7 @@
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Security" />
-    <Reference Include="System.Windows.Forms">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.5.0.31030, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -205,7 +203,14 @@
     <Compile Include="TestExplorer\TestExplorerController.cs" />
     <Compile Include="TestExplorer\TestExplorerModel.cs" />
     <Compile Include="TestExplorer\TestExplorerPackage.cs" />
-    <Compile Include="TestExplorer\TestExplorerView.cs" />
+    <Compile Include="TestExplorer\TestExplorerResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestExplorerResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="TestExplorer\TestExplorerView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="TestExplorer\TestExplorerView.Designer.cs">
       <DependentUpon>TestExplorerView.cs</DependentUpon>
     </Compile>
@@ -584,6 +589,7 @@
     <None Include="Resources\PropertyWindow.ico" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="TestExplorer\TestExplorerIcon.ico" />
     <EmbeddedResource Include="AboutDialog.resx">
       <DependentUpon>AboutDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -636,6 +642,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Search\View.resx">
       <DependentUpon>View.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestExplorer\TestExplorerResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TestExplorerResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="TestExplorer\TestExplorerView.resx">
       <DependentUpon>TestExplorerView.cs</DependentUpon>

@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows.Forms;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
@@ -25,128 +26,188 @@ using SortOrder = Gallio.Icarus.Models.SortOrder;
 
 namespace Gallio.Icarus.TestExplorer
 {
-    internal partial class View : DockWindow
+    internal partial class TestExplorerView : UserControl
     {
-        private readonly IController controller;
-        private readonly IModel model;
+        private readonly ITestExplorerController testExplorerController;
+        private readonly ITestExplorerModel testExplorerModel;
         private bool updateFlag;
 
-        public View(IController controller, IModel model)
+        public TestExplorerView(ITestExplorerController testExplorerController, ITestExplorerModel testExplorerModel)
         {
-            this.controller = controller;
-            this.model = model;
+            this.testExplorerController = testExplorerController;
+            this.testExplorerModel = testExplorerModel;
 
             InitializeComponent();
-
-            SetupColors();
-
-            SetupTreeViewCategories();
-
-            testTree.Model = model.TreeModel;
-
-            controller.RestoreState += (s, e) => RestoreState();
-
-            model.CanEditTree.PropertyChanged += (s, e) => testTree.SetEditEnabled(model.CanEditTree);
-
-            SetupFilters();
-
-            SetupSorting();
-
-            controller.SaveState += (s, e) => SaveState();
         }
 
-        private void SetupSorting()
+    	protected override void OnLoad(EventArgs eventArgs)
+		{
+			SetupColors();
+			SetupTreeViewCategories();
+
+			testTree.Model = testExplorerModel.TreeModel;
+
+    		EventHandler testExplorerControllerOnRestoreState = (s, e) => RestoreState();
+    		testExplorerController.RestoreState += testExplorerControllerOnRestoreState;
+			Disposed += (s, e) => { testExplorerController.RestoreState -= testExplorerControllerOnRestoreState; };
+
+    		PropertyChangedEventHandler canEditTreeOnPropertyChanged = (s, e) => testTree.SetEditEnabled(testExplorerModel.CanEditTree);
+    		testExplorerModel.CanEditTree.PropertyChanged += canEditTreeOnPropertyChanged;
+			Disposed += (s, e) => { testExplorerModel.CanEditTree.PropertyChanged -= canEditTreeOnPropertyChanged; };
+
+			SetupFilters();
+			SetupSorting();
+
+    		EventHandler testExplorerControllerOnSaveState = (s, e) => SaveState();
+    		testExplorerController.SaveState += testExplorerControllerOnSaveState;
+			Disposed += (s, e) => { testExplorerController.SaveState -= testExplorerControllerOnSaveState; };
+
+			base.OnLoad(eventArgs);
+		}
+
+    	private void SetupColors()
+    	{
+    		testTree.SetPassedColor(testExplorerModel.PassedColor);
+    		testTree.SetFailedColor(testExplorerModel.FailedColor);
+    		testTree.SetInconclusiveColor(testExplorerModel.InconclusiveColor);
+    		testTree.SetSkippedColor(testExplorerModel.SkippedColor);
+
+    		PropertyChangedEventHandler passedColorOnPropertyChanged = (s, e) => testTree.SetPassedColor(testExplorerModel.PassedColor);
+    		PropertyChangedEventHandler failedColorOnPropertyChanged = (s, e) => testTree.SetFailedColor(testExplorerModel.FailedColor);
+    		PropertyChangedEventHandler inconclusiveColorOnPropertyChanged = (s, e) => testTree.SetInconclusiveColor(testExplorerModel.InconclusiveColor);
+    		PropertyChangedEventHandler skippedColorOnPropertyChanged = (s, e) => testTree.SetSkippedColor(testExplorerModel.SkippedColor);
+
+    		testExplorerModel.PassedColor.PropertyChanged += passedColorOnPropertyChanged;
+    		testExplorerModel.FailedColor.PropertyChanged += failedColorOnPropertyChanged;
+    		testExplorerModel.InconclusiveColor.PropertyChanged += inconclusiveColorOnPropertyChanged;
+    		testExplorerModel.SkippedColor.PropertyChanged += skippedColorOnPropertyChanged;
+
+    		Disposed += (s, e) =>
+    		            {
+    		            	testExplorerModel.PassedColor.PropertyChanged -= passedColorOnPropertyChanged;
+    		            	testExplorerModel.FailedColor.PropertyChanged -= failedColorOnPropertyChanged;
+    		            	testExplorerModel.InconclusiveColor.PropertyChanged -= inconclusiveColorOnPropertyChanged;
+    		            	testExplorerModel.SkippedColor.PropertyChanged -= skippedColorOnPropertyChanged;
+    		            };
+    	}
+
+    	private void SetupTreeViewCategories()
+    	{
+    		updateFlag = true;
+    		treeViewComboBox.ComboBox.DataSource = testExplorerModel.TreeViewCategories.Value;
+    		updateFlag = false;
+
+    		PropertyChangedEventHandler currentTreeViewCategoryOnPropertyChanged = (s, e) => treeViewComboBox.ComboBox.SelectedItem = testExplorerModel.CurrentTreeViewCategory.Value;
+    		testExplorerModel.CurrentTreeViewCategory.PropertyChanged += currentTreeViewCategoryOnPropertyChanged;
+    		treeViewComboBox.ComboBox.SelectedItem = testExplorerModel.CurrentTreeViewCategory.Value ?? UserOptions.DefaultTreeViewCategory;
+
+    		PropertyChangedEventHandler treeViewCategoriesOnPropertyChanged = (s, e) =>
+			{
+				updateFlag = true;
+				treeViewComboBox.ComboBox.DataSource = testExplorerModel.TreeViewCategories.Value;
+				updateFlag = false;
+			};
+    		testExplorerModel.TreeViewCategories.PropertyChanged += treeViewCategoriesOnPropertyChanged;
+
+    		Disposed += (s, e) =>
+			{
+				testExplorerModel.CurrentTreeViewCategory.PropertyChanged -= currentTreeViewCategoryOnPropertyChanged;
+				testExplorerModel.TreeViewCategories.PropertyChanged -= treeViewCategoriesOnPropertyChanged;
+			};
+    	}
+
+    	private void SetupSorting()
         {
-            sortAscToolStripButton.Click += (s, e) => SortTree(SortOrder.Ascending);
-            sortDescToolStripButton.Click += (s, e) => SortTree(SortOrder.Descending);
+    		EventHandler sortAscToolStripButtonOnClick = (s, e) => SortTree(SortOrder.Ascending);
+    		EventHandler sortDescToolStripButtonOnClick = (s, e) => SortTree(SortOrder.Descending);
+
+    		sortAscToolStripButton.Click += sortAscToolStripButtonOnClick;
+    		sortDescToolStripButton.Click += sortDescToolStripButtonOnClick;
+
+    		Disposed += (s, e) =>
+			{
+				sortAscToolStripButton.Click -= sortAscToolStripButtonOnClick;
+				sortDescToolStripButton.Click -= sortDescToolStripButtonOnClick;
+			};
         }
 
-        private void SetupFilters()
+    	private void SetupFilters()
         {
             SetupPassedFilters();
-
             SetupFailedFilters();
-
             SetupInconclusiveFilters();
         }
 
-        private void SetupInconclusiveFilters()
+    	private void SetupPassedFilters()
+    	{
+    		EventHandler filterPassedTestsToolStripMenuItemOnClick = (s, e) => FilterStatus(TestStatus.Passed);
+    		filterPassedTestsToolStripMenuItem.Click += filterPassedTestsToolStripMenuItemOnClick;
+    		filterPassedTestsToolStripButton.Click += filterPassedTestsToolStripMenuItemOnClick;
+    		
+    		PropertyChangedEventHandler filterPassedOnPropertyChanged = (s, e) =>
+			{
+				filterPassedTestsToolStripMenuItem.Checked = filterPassedTestsToolStripButton.Checked = testExplorerModel.FilterPassed.Value;
+			};
+    		testExplorerModel.FilterPassed.PropertyChanged += filterPassedOnPropertyChanged;
+
+    		Disposed += (s, e) =>
+			{
+				filterPassedTestsToolStripMenuItem.Click -= filterPassedTestsToolStripMenuItemOnClick;
+				filterPassedTestsToolStripButton.Click -= filterPassedTestsToolStripMenuItemOnClick;
+				testExplorerModel.FilterPassed.PropertyChanged -= filterPassedOnPropertyChanged;
+			};
+    	}
+
+    	private void SetupFailedFilters()
+    	{
+    		EventHandler filterFailedTestsToolStripMenuItemOnClick = (s, e) => FilterStatus(TestStatus.Failed);
+    		filterFailedTestsToolStripMenuItem.Click += filterFailedTestsToolStripMenuItemOnClick;
+    		filterFailedTestsToolStripButton.Click += filterFailedTestsToolStripMenuItemOnClick;
+
+    		PropertyChangedEventHandler filterFailedOnPropertyChanged = (s, e) =>
+			{
+				filterFailedTestsToolStripMenuItem.Checked = filterFailedTestsToolStripButton.Checked = testExplorerModel.FilterFailed.Value;
+			};
+    		testExplorerModel.FilterFailed.PropertyChanged += filterFailedOnPropertyChanged;
+
+    		Disposed += (s, e) =>
+			{
+				filterFailedTestsToolStripMenuItem.Click -= filterFailedTestsToolStripMenuItemOnClick;
+				filterFailedTestsToolStripButton.Click -= filterFailedTestsToolStripMenuItemOnClick;
+				testExplorerModel.FilterFailed.PropertyChanged -= filterFailedOnPropertyChanged;
+			};
+    	}
+
+    	private void SetupInconclusiveFilters()
         {
-            filterInconclusiveTestsToolStripMenuItem.Click += (s, e) => FilterStatus(TestStatus.Inconclusive);
-            filterInconclusiveTestsToolStripButton.Click += (s, e) => FilterStatus(TestStatus.Inconclusive);
-            model.FilterInconclusive.PropertyChanged += (s, e) =>
-            {
-                filterInconclusiveTestsToolStripMenuItem.Checked = filterInconclusiveTestsToolStripButton.Checked
-                                                                   = model.FilterInconclusive.Value;
-            };
+    		EventHandler filterInconclusiveTestsToolStripMenuItemOnClick = (s, e) => FilterStatus(TestStatus.Inconclusive);
+    		filterInconclusiveTestsToolStripMenuItem.Click += filterInconclusiveTestsToolStripMenuItemOnClick;
+            filterInconclusiveTestsToolStripButton.Click += filterInconclusiveTestsToolStripMenuItemOnClick;
+
+    		PropertyChangedEventHandler filterInconclusiveOnPropertyChanged = (s, e) =>
+			{
+				filterInconclusiveTestsToolStripMenuItem.Checked = filterInconclusiveTestsToolStripButton.Checked = testExplorerModel.FilterInconclusive.Value;
+			};
+    		testExplorerModel.FilterInconclusive.PropertyChanged += filterInconclusiveOnPropertyChanged;
+
+    		Disposed += (s, e) =>
+			{
+				filterInconclusiveTestsToolStripMenuItem.Click -= filterInconclusiveTestsToolStripMenuItemOnClick;
+				filterInconclusiveTestsToolStripButton.Click -= filterInconclusiveTestsToolStripMenuItemOnClick;
+				testExplorerModel.FilterInconclusive.PropertyChanged -= filterInconclusiveOnPropertyChanged;
+			};
         }
 
-        private void SetupFailedFilters()
+    	private void FilterStatus(TestStatus testStatus)
         {
-            filterFailedTestsToolStripMenuItem.Click += (s, e) => FilterStatus(TestStatus.Failed);
-            filterFailedTestsToolStripButton.Click += (s, e) => FilterStatus(TestStatus.Failed);
-            model.FilterFailed.PropertyChanged += (s, e) =>
-            {
-                filterFailedTestsToolStripMenuItem.Checked = filterFailedTestsToolStripButton.Checked
-                                                             = model.FilterFailed.Value;
-            };
-        }
-
-        private void SetupPassedFilters()
-        {
-            filterPassedTestsToolStripMenuItem.Click += (s, e) => FilterStatus(TestStatus.Passed);
-            filterPassedTestsToolStripButton.Click += (s, e) => FilterStatus(TestStatus.Passed);
-            model.FilterPassed.PropertyChanged += (s, e) =>
-            {
-                filterPassedTestsToolStripMenuItem.Checked = filterPassedTestsToolStripButton.Checked
-                                                             = model.FilterPassed.Value;
-            };
-        }
-
-        private void SetupTreeViewCategories()
-        {
-            updateFlag = true;
-            treeViewComboBox.ComboBox.DataSource = model.TreeViewCategories.Value;
-            updateFlag = false;
-
-            model.CurrentTreeViewCategory.PropertyChanged += (s, e) => 
-                treeViewComboBox.ComboBox.SelectedItem = model.CurrentTreeViewCategory.Value;
-            treeViewComboBox.ComboBox.SelectedItem = model.CurrentTreeViewCategory.Value 
-                ?? UserOptions.DefaultTreeViewCategory;
-
-            model.TreeViewCategories.PropertyChanged += (s, e) =>
-            {
-                updateFlag = true;
-                treeViewComboBox.ComboBox.DataSource = model.TreeViewCategories.Value;
-                updateFlag = false;
-            };
-        }
-
-        private void SetupColors()
-        {
-            testTree.SetPassedColor(model.PassedColor);
-            model.PassedColor.PropertyChanged += (s, e) => testTree.SetPassedColor(model.PassedColor);
-
-            testTree.SetFailedColor(model.FailedColor);
-            model.FailedColor.PropertyChanged += (s, e) => testTree.SetFailedColor(model.FailedColor);
-
-            testTree.SetInconclusiveColor(model.InconclusiveColor);
-            model.InconclusiveColor.PropertyChanged += (s, e) => testTree.SetInconclusiveColor(model.InconclusiveColor);
-
-            testTree.SetSkippedColor(model.SkippedColor);
-            model.SkippedColor.PropertyChanged += (s, e) => testTree.SetSkippedColor(model.SkippedColor);
-        }
-
-        private void FilterStatus(TestStatus testStatus)
-        {
-            controller.FilterStatus(testStatus);
+            testExplorerController.FilterStatus(testStatus);
         }
 
         private void SortTree(SortOrder sortOrder)
         {
             sortAscToolStripButton.Checked = (sortOrder == SortOrder.Ascending);
             sortDescToolStripButton.Checked = (sortOrder == SortOrder.Descending);
-            controller.SortTree(sortOrder);
+            testExplorerController.SortTree(sortOrder);
         }
 
         private void removeFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -158,7 +219,7 @@ namespace Gallio.Icarus.TestExplorer
 
             if (node.FileName != null)
             {
-                controller.RemoveFile(node.FileName);
+                testExplorerController.RemoveFile(node.FileName);
             }
         }
 
@@ -166,7 +227,7 @@ namespace Gallio.Icarus.TestExplorer
         {
             var newValue = (string)treeViewComboBox.SelectedItem;
 
-            if (model.CurrentTreeViewCategory == newValue)
+            if (testExplorerModel.CurrentTreeViewCategory == newValue)
                 return;
 
             // if updateFlag is set, then the index has changed because
@@ -175,12 +236,12 @@ namespace Gallio.Icarus.TestExplorer
                 return;
 
             SaveState();
-            controller.ChangeTreeCategory(newValue, pm => RestoreState());
+            testExplorerController.ChangeTreeCategory(newValue, pm => RestoreState());
         }
 
         private void resetTestsMenuItem_Click(object sender, EventArgs e)
         {
-            controller.ResetTests();
+            testExplorerController.ResetTests();
         }
 
         private void expandAllMenuItem_Click(object sender, EventArgs e)
@@ -205,7 +266,7 @@ namespace Gallio.Icarus.TestExplorer
 
             var node = (TestTreeNode)testTree.SelectedNode.Tag;
 
-            controller.ShowSourceCode(node.Id);
+            testExplorerController.ShowSourceCode(node.Id);
         }
 
         private void expandPassedTestsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -230,13 +291,13 @@ namespace Gallio.Icarus.TestExplorer
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
 
-                controller.AddFiles(openFileDialog.FileNames);
+                testExplorerController.AddFiles(openFileDialog.FileNames);
             }
         }
 
         private void removeAllFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            controller.RemoveAllFiles();
+            testExplorerController.RemoveAllFiles();
         }
 
         private void testTree_SelectionChanged(object sender, EventArgs e)
@@ -263,7 +324,7 @@ namespace Gallio.Icarus.TestExplorer
                 viewSourceCodeToolStripMenuItem.Enabled = false;
             }
 
-            controller.SetTreeSelection(nodes);
+            testExplorerController.SetTreeSelection(nodes);
         }
 
         private static IEnumerable<TestTreeNode> GetSelectedNodes(TestTreeNode testTreeNode)
@@ -284,12 +345,12 @@ namespace Gallio.Icarus.TestExplorer
         private void SaveState()
         {
             var collapsedNodes = testTree.GetCollapsedNodes();
-            controller.SetCollapsedNodes(collapsedNodes);
+            testExplorerController.SetCollapsedNodes(collapsedNodes);
         }
 
         private void RestoreState()
         {
-            testTree.CollapseNodes(model.CollapsedNodes.Value);
+            testTree.CollapseNodes(testExplorerModel.CollapsedNodes.Value);
         }
 
         private void testTree_DoubleClick(object sender, EventArgs e)

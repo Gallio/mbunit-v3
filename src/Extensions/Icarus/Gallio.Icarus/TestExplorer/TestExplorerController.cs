@@ -29,10 +29,10 @@ using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.TestExplorer
 {
-    public class Controller : IController, Handles<SavingProject>, Handles<Reloading>, Handles<RunStarted>,
+    public class TestExplorerController : ITestExplorerController, Handles<SavingProject>, Handles<Reloading>, Handles<RunStarted>,
         Handles<RunFinished>, Handles<ExploreStarted>, Handles<ExploreFinished>, Handles<UserOptionsLoaded>
     {
-        private readonly IModel model;
+        private readonly ITestExplorerModel testExplorerModel;
         private readonly IEventAggregator eventAggregator;
         private readonly IProjectUserOptionsController projectUserOptionsController;
         private readonly ITaskManager taskManager;
@@ -41,23 +41,23 @@ namespace Gallio.Icarus.TestExplorer
         public event EventHandler SaveState;
         public event EventHandler RestoreState;
 
-        public Controller(IModel model, IEventAggregator eventAggregator, IOptionsController optionsController, 
+        public TestExplorerController(ITestExplorerModel testExplorerModel, IEventAggregator eventAggregator, IOptionsController optionsController, 
             IProjectUserOptionsController projectUserOptionsController, ITaskManager taskManager, ICommandFactory commandFactory)
         {
-            this.model = model;
+            this.testExplorerModel = testExplorerModel;
             this.commandFactory = commandFactory;
             this.eventAggregator = eventAggregator;
             this.projectUserOptionsController = projectUserOptionsController;
             this.taskManager = taskManager;
 
-            model.PassedColor.Value = optionsController.PassedColor;
-            model.FailedColor.Value = optionsController.FailedColor;
-            model.SkippedColor.Value = optionsController.SkippedColor;
-            model.InconclusiveColor.Value = optionsController.InconclusiveColor;
+            testExplorerModel.PassedColor.Value = optionsController.PassedColor;
+            testExplorerModel.FailedColor.Value = optionsController.FailedColor;
+            testExplorerModel.SkippedColor.Value = optionsController.SkippedColor;
+            testExplorerModel.InconclusiveColor.Value = optionsController.InconclusiveColor;
 
-            model.TreeViewCategories = optionsController.SelectedTreeViewCategories;
+            testExplorerModel.TreeViewCategories = optionsController.SelectedTreeViewCategories;
 
-            model.CollapsedNodes.Value = new List<string>(projectUserOptionsController.CollapsedNodes);
+            testExplorerModel.CollapsedNodes.Value = new List<string>(projectUserOptionsController.CollapsedNodes);
         }
 
         public void SortTree(SortOrder sortOrder)
@@ -70,15 +70,15 @@ namespace Gallio.Icarus.TestExplorer
             switch (testStatus)
             {
                 case TestStatus.Passed:
-                    model.FilterPassed.Value = !model.FilterPassed;
+                    testExplorerModel.FilterPassed.Value = !testExplorerModel.FilterPassed;
                     break;
 
                 case TestStatus.Failed:
-                    model.FilterFailed.Value = !model.FilterFailed;
+                    testExplorerModel.FilterFailed.Value = !testExplorerModel.FilterFailed;
                     break;
 
                 case TestStatus.Inconclusive:
-                    model.FilterInconclusive.Value = !model.FilterInconclusive;
+                    testExplorerModel.FilterInconclusive.Value = !testExplorerModel.FilterInconclusive;
                     break;
             }
             eventAggregator.Send(this, new FilterTestStatusEvent(testStatus));
@@ -104,7 +104,7 @@ namespace Gallio.Icarus.TestExplorer
 
         public void ChangeTreeCategory(string newCategory, Action<IProgressMonitor> continuation)
         {
-            model.CurrentTreeViewCategory.Value = newCategory;
+            testExplorerModel.CurrentTreeViewCategory.Value = newCategory;
             eventAggregator.Send(this, new TreeViewCategoryChanged(newCategory));
             var command = commandFactory.CreateRefreshTestTreeCommand();
             taskManager.QueueTask(command);
@@ -150,30 +150,30 @@ namespace Gallio.Icarus.TestExplorer
 
         public void Handle(RunStarted @event)
         {
-            model.CanEditTree.Value = false;
+            testExplorerModel.CanEditTree.Value = false;
         }
 
         public void Handle(RunFinished @event)
         {
-            model.CanEditTree.Value = true;
+            testExplorerModel.CanEditTree.Value = true;
         }
 
         public void Handle(ExploreStarted @event)
         {
-            model.CanEditTree.Value = false;
+            testExplorerModel.CanEditTree.Value = false;
         }
 
         public void Handle(ExploreFinished @event)
         {
             EventHandlerPolicy.SafeInvoke(RestoreState, this,
                 EventArgs.Empty);
-            model.CanEditTree.Value = true;
+            testExplorerModel.CanEditTree.Value = true;
         }
 
         public void Handle(UserOptionsLoaded @event)
         {
-            model.CollapsedNodes.Value = new List<string>(projectUserOptionsController.CollapsedNodes);
-            model.CurrentTreeViewCategory.Value = projectUserOptionsController.TreeViewCategory;
+            testExplorerModel.CollapsedNodes.Value = new List<string>(projectUserOptionsController.CollapsedNodes);
+            testExplorerModel.CurrentTreeViewCategory.Value = projectUserOptionsController.TreeViewCategory;
         }
     }
 }

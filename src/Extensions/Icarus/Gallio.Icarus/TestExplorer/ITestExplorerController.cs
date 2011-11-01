@@ -21,7 +21,7 @@ using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.TestExplorer
 {
-    public interface IController
+    public interface ITestExplorerController
     {
         event EventHandler SaveState;
         event EventHandler RestoreState;

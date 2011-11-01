@@ -73,8 +73,6 @@ namespace Gallio.Icarus
             this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.fileExit = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.testExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.projectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeAllFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -219,24 +217,9 @@ namespace Gallio.Icarus
             // 
             // viewToolStripMenuItem
             // 
-            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.testExplorerToolStripMenuItem,
-            this.toolStripSeparator10});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
-            // 
-            // testExplorerToolStripMenuItem
-            // 
-            this.testExplorerToolStripMenuItem.Name = "testExplorerToolStripMenuItem";
-            this.testExplorerToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.testExplorerToolStripMenuItem.Text = "Test Explorer";
-            this.testExplorerToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator10
-            // 
-            this.toolStripSeparator10.Name = "toolStripSeparator10";
-            this.toolStripSeparator10.Size = new System.Drawing.Size(153, 6);
             // 
             // projectToolStripMenuItem
             // 
@@ -698,9 +681,7 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem stopTestsToolStripMenuItem;
         private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem testExplorerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resetToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripMenuItem reportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewAsToolStripMenuItem;

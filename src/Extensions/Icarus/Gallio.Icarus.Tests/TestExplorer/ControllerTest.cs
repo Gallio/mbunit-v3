@@ -30,12 +30,12 @@ using SortOrder=Gallio.Icarus.Models.SortOrder;
 
 namespace Gallio.Icarus.Tests.TestExplorer
 {
-    [TestsOn(typeof(Controller))]
+    [TestsOn(typeof(TestExplorerController))]
     public class ControllerTest
     {
         private IEventAggregator eventAggregator;
-        private Controller controller;
-        private Icarus.TestExplorer.Model model;
+		private TestExplorerController controller;
+		private TestExplorerModel model;
         private ITaskManager taskManager;
         private ICommandFactory commandFactory;
 
@@ -43,14 +43,14 @@ namespace Gallio.Icarus.Tests.TestExplorer
         public void SetUp()
         {
             eventAggregator = MockRepository.GenerateStub<IEventAggregator>();
-            model = new Icarus.TestExplorer.Model(MockRepository.GenerateStub<ISortedTreeModel>());
+            model = new TestExplorerModel(MockRepository.GenerateStub<ISortedTreeModel>());
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             var userOptionsController = MockRepository.GenerateStub<IProjectUserOptionsController>();
             userOptionsController.Stub(uoc => uoc.CollapsedNodes).Return(new string[0]);
             taskManager = MockRepository.GenerateStub<ITaskManager>();
             commandFactory = MockRepository.GenerateStub<ICommandFactory>();
-            
-            controller = new Controller(model, eventAggregator, optionsController, userOptionsController, 
+
+			controller = new TestExplorerController(model, eventAggregator, optionsController, userOptionsController, 
                 taskManager, commandFactory);
         }
 

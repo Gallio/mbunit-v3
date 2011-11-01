@@ -142,6 +142,7 @@
     <Compile Include="Specifications\OrSpecificationTest.cs" />
     <Compile Include="Specifications\SpecificationFactoryTest.cs" />
     <Compile Include="TestExplorer\ControllerTest.cs" />
+    <Compile Include="TestExplorer\TestExplorerPackageTests.cs" />
     <Compile Include="TestResults\TestResultsPackageTests.cs" />
     <Compile Include="TestResults\TestResultsControllerTest.cs" />
     <Compile Include="TestResults\TestStepComparerTest.cs" />

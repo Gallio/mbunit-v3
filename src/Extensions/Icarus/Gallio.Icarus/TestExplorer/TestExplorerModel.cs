@@ -21,7 +21,7 @@ using Gallio.UI.DataBinding;
 
 namespace Gallio.Icarus.TestExplorer
 {
-    public class Model : IModel
+    public class TestExplorerModel : ITestExplorerModel
     {
         public Observable<bool> FilterPassed { get; private set; }
         public Observable<bool> FilterFailed { get; private set; }
@@ -39,7 +39,7 @@ namespace Gallio.Icarus.TestExplorer
         public Observable<IList<string>> CollapsedNodes { get; set; }
         public Observable<bool> CanEditTree { get; private set; }
 
-        public Model(ISortedTreeModel treeModel)
+        public TestExplorerModel(ISortedTreeModel treeModel)
         {
             FilterPassed = new Observable<bool>();
             FilterFailed = new Observable<bool>();

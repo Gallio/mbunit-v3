@@ -27,7 +27,6 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.ProgressMonitoring;
 using Gallio.Icarus.Projects;
-using Gallio.Icarus.TestExplorer;
 using Gallio.Icarus.Utilities;
 using Gallio.Icarus.WindowManager;
 using Gallio.Model;
@@ -48,9 +47,6 @@ namespace Gallio.Icarus
         private readonly IProjectController projectController;
         private readonly IOptionsController optionsController;
         private readonly IWindowManager windowManager;
-
-        // dock panel windows
-        private readonly TestExplorer.View testExplorer;
 
         private readonly ITestTreeModel testTreeModel;
         private readonly ITestStatistics testStatistics;
@@ -93,10 +89,6 @@ namespace Gallio.Icarus
 
             testTreeModel = RuntimeAccessor.ServiceLocator.Resolve<ITestTreeModel>();
             testStatistics = RuntimeAccessor.ServiceLocator.Resolve<ITestStatistics>();
-
-            var testExplorerModel = RuntimeAccessor.ServiceLocator.Resolve<IModel>();
-            var testExplorerController = RuntimeAccessor.ServiceLocator.Resolve<IController>();
-            testExplorer = new TestExplorer.View(testExplorerController, testExplorerModel);
 
             commandFactory = RuntimeAccessor.ServiceLocator.Resolve<ICommandFactory>();
             testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
@@ -173,10 +165,6 @@ namespace Gallio.Icarus
 
         private IDockContent GetContentFromPersistString(string persistString)
         {
-            // TODO: once these have moved to packages this will no longer be req
-            if (persistString == typeof(TestExplorer.View).ToString())
-                return testExplorer;
-
             return windowManager.Get(persistString);
         }
 
@@ -245,8 +233,6 @@ namespace Gallio.Icarus
             // or in the runtime log.  Auto-hidden panels are less likely to be
             // looked at than regular tabs.
             // -- Jeff.
-            testExplorer.Show(dockPanel, DockState.DockLeft);
-
             windowManager.ShowDefaults();
         }
 
@@ -424,25 +410,6 @@ namespace Gallio.Icarus
             {
                 Console.WriteLine(ex.ToString());
             }
-        }
-
-        private void showWindowToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var item = (ToolStripMenuItem)sender;
-            ShowWindow(item.Name);
-        }
-
-        private void ShowWindow(string window)
-        {
-            BeginInvoke((MethodInvoker)delegate
-            {
-                switch (window)
-                {
-                    case "testExplorerToolStripMenuItem":
-                        testExplorer.Show(dockPanel);
-                        break;
-                }
-            });
         }
 
         private void OnFileChanged(object sender, FileChangedEventArgs e)

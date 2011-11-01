@@ -20,7 +20,7 @@ using Gallio.UI.DataBinding;
 
 namespace Gallio.Icarus.TestExplorer
 {
-    public interface IModel
+    public interface ITestExplorerModel
     {
         Observable<bool> FilterPassed { get; }
         Observable<bool> FilterFailed { get; }
