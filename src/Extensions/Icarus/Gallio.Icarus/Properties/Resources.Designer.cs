@@ -70,15 +70,6 @@ namespace Gallio.Icarus.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Annotations.
-        /// </summary>
-        internal static string AnnotationsPackage_Annotations {
-            get {
-                return ResourceManager.GetString("AnnotationsPackage_Annotations", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Gallio Icarus.
         /// </summary>
         internal static string ApplicationName {

@@ -1,7 +1,7 @@
-﻿using Gallio.Common;
+﻿using System.Drawing;
+using Gallio.Common;
 using Gallio.Icarus.Annotations;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Properties;
 using Gallio.Icarus.WindowManager;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Menus;
@@ -51,7 +51,7 @@ namespace Gallio.Icarus.Tests.Annotations
             annotationsPackage.Load();
 
             windowManager.AssertWasCalled(wm => wm.Add(Arg.Is(AnnotationsPackage.WindowId), Arg<AnnotationsWindow>.Is.Anything, 
-                Arg.Is(Resources.AnnotationsPackage_Annotations)));
+                Arg.Is(AnnotationsResources.Annotations), Arg<Icon>.Is.Anything));
         }
 
         [Test]
@@ -80,7 +80,7 @@ namespace Gallio.Icarus.Tests.Annotations
             annotationsPackage.Load();
 
             Assert.That(menuCommand, Is.NotNull());
-            Assert.That(menuCommand.Text, Is.EqualTo(Resources.AnnotationsPackage_Annotations));
+            Assert.That(menuCommand.Text, Is.EqualTo(AnnotationsResources.Annotations));
         }
 
         [Test]

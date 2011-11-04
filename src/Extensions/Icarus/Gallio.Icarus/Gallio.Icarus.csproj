@@ -88,6 +88,11 @@
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Annotations\AnnotationsPackage.cs" />
+    <Compile Include="Annotations\AnnotationsResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AnnotationsResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Annotations\AnnotationsWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -506,6 +511,10 @@
     <Compile Include="Paths.cs" />
     <Compile Include="IcarusProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Annotations\AnnotationsResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AnnotationsResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Annotations\AnnotationsWindow.resx">
       <DependentUpon>AnnotationsWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -674,6 +683,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="ProjectExplorer\ProjectExplorerIcon.ico" />
+    <None Include="Annotations\AnnotationsIcon.ico" />
     <Content Include="Resources\arrow_refresh.png" />
     <Content Include="Resources\Assembly.ico" />
     <Content Include="Resources\Assembly.png" />

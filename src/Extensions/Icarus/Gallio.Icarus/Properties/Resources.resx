@@ -270,10 +270,7 @@
 	<data name="UserOptionsController_Failed_to_load_user_options_">
 		<value xml:space="preserve">Failed to load user options.</value>
 	</data>
-  <data name="AnnotationsPackage_Annotations">
-    <value xml:space="preserve">Annotations</value>
-  </data>
-  <data name="ExecutionLogPackage_Execution_Log">
+	<data name="ExecutionLogPackage_Execution_Log">
     <value xml:space="preserve">Execution Log</value>
   </data>
 </root>
