@@ -15,8 +15,8 @@
 
 using System;
 using System.Windows.Forms;
-using Gallio.Common.Concurrency;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.Common.Synchronization;
 
 namespace Gallio.UI.ProgressMonitoring
 {
@@ -42,7 +42,7 @@ namespace Gallio.UI.ProgressMonitoring
 
         private void OnProgressMonitorOnChanged(object sender, EventArgs e)
         {
-            Sync.Invoke(this, ProgressUpdate);
+			SynchronizationContext.Post(cb => ProgressUpdate(), null);
         }
 
         /// <inheritdoc />
