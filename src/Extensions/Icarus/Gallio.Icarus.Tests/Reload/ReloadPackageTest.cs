@@ -62,13 +62,11 @@ namespace Gallio.Icarus.Tests.Reload
 		public void File_changes_do_not_trigger_a_reload_if_user_does_not_want_to()
 		{
 			reloadPackage.Load();
-			var reloadCommand = MockRepository.GenerateStub<ICommand>();
-			StubReloadCommand(reloadCommand);
 			windowManager.Stub(wm => wm.ShowDialog(Arg<ReloadDialog>.Is.Anything)).Return(DialogResult.Cancel);
 
 			RaiseFileChangedEvent();
 
-			taskManager.AssertWasNotCalled(tm => tm.QueueTask(reloadCommand));
+			taskManager.AssertWasNotCalled(tm => tm.QueueTask(Arg<ICommand>.Is.Anything));
 		}
 
 		private void StubReloadCommand(ICommand reloadCommand)
