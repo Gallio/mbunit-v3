@@ -122,6 +122,7 @@
     <Compile Include="ProgressMonitoring\Win7TaskBarTest.cs" />
     <Compile Include="ProjectExplorer\ProjectExplorerPackageTests.cs" />
     <Compile Include="ProjectProperties\ControllerTest.cs" />
+    <Compile Include="Projects\ProjectReloadPackageTest.cs" />
     <Compile Include="Projects\ProjectUserOptionsControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

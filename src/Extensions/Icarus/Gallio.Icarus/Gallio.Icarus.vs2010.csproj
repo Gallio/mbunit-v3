@@ -172,6 +172,7 @@
       <DependentUpon>View.cs</DependentUpon>
     </Compile>
     <Compile Include="Projects\IProjectUserOptionsController.cs" />
+    <Compile Include="Projects\ProjectReloadPackage.cs" />
     <Compile Include="Projects\UserOptions.cs" />
     <Compile Include="Projects\ProjectUserOptionsController.cs" />
     <Compile Include="Projects\UserOptionsLoaded.cs" />

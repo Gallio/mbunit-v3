@@ -18,16 +18,12 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers;
-using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.ProgressMonitoring;
-using Gallio.Icarus.Projects;
-using Gallio.Icarus.Reload;
 using Gallio.Icarus.Utilities;
 using Gallio.Icarus.WindowManager;
 using Gallio.Model;
@@ -45,7 +41,6 @@ namespace Gallio.Icarus
         private readonly IProgressController progressController;
         private readonly IReportController reportController;
         private readonly ITaskManager taskManager;
-        private readonly IProjectController projectController;
         private readonly IOptionsController optionsController;
         private readonly IWindowManager windowManager;
 
@@ -78,11 +73,6 @@ namespace Gallio.Icarus
                 startTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
             });
             applicationController.TestsFailed += (s, e) => BeginInvoke((MethodInvoker) Activate);
-
-            projectController = RuntimeAccessor.ServiceLocator.Resolve<IProjectController>();
-
-            //projectController.FileChanged += OnFileChanged;
-            projectController.ProjectChanged += OnProjectChanged;
 
             taskManager = RuntimeAccessor.ServiceLocator.Resolve<ITaskManager>();
             optionsController = RuntimeAccessor.ServiceLocator.Resolve<IOptionsController>();
@@ -427,24 +417,6 @@ namespace Gallio.Icarus
         private void addFilesToolStripButton_Click(object sender, EventArgs e)
         {
             AddFiles();
-        }
-
-        private void OnProjectChanged(object sender, ProjectChangedEventArgs e)
-        {
-            BeginInvoke(new MethodInvoker(() => HandleProjectChanged(e.ProjectLocation)));
-        }
-
-        private void HandleProjectChanged(string projectLocation)
-        {
-            var projectName = Path.GetFileNameWithoutExtension(projectLocation);
-            using (var projectReloadDialog = new ProjectReloadDialog(projectName))
-            {
-                if (projectReloadDialog.ShowDialog(this) != DialogResult.OK)
-                    return;
-
-                var command = commandFactory.CreateOpenProjectCommand(projectLocation);
-                taskManager.QueueTask(command);
-            }
         }
 
         private void Main_SizeChanged(object sender, EventArgs e)
