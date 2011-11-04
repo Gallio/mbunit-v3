@@ -20,7 +20,7 @@ namespace Gallio.UI.Common.Synchronization
     ///<summary>
     /// Holder for the current sync context (e.g. the winforms current).
     ///</summary>
-    public class SynchronizationContext
+    public static class SynchronizationContext
     {
         /// <summary>
         /// Wrapper for Send on the shared sync context.
