@@ -25,14 +25,16 @@ namespace Gallio.Icarus.Tests.Utilities
         [DebuggerNonUserCode]
         protected override void Execute(PatternTestInstanceState state)
         {
-            try
+        	System.Threading.SynchronizationContext oldContext = null;
+        	try
             {
-                SynchronizationContext.Current = new TestSynchronizationContext();
+            	oldContext = SynchronizationContext.Current;
+            	SynchronizationContext.Current = new TestSynchronizationContext();
                 state.InvokeTestMethod();
             }
             finally
             {
-                SynchronizationContext.Current = null;
+                SynchronizationContext.Current = oldContext;
             }
         }
     }
