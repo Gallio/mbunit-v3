@@ -32,7 +32,7 @@ namespace Gallio.Icarus.WindowManager
 
         public IMenuManager MenuManager { get; private set; }
 
-        public WindowManager(IMenuManager menuManager)
+    	public WindowManager(IMenuManager menuManager)
         {
             MenuManager = menuManager;
         }
@@ -72,7 +72,12 @@ namespace Gallio.Icarus.WindowManager
             }
         }
 
-        public Window Get(string identifier)
+    	public DialogResult ShowDialog(Form form)
+    	{
+    		return form.ShowDialog(dockPanel);
+    	}
+
+    	public Window Get(string identifier)
         {
             // if we have the window stored, then return it
             if (windows.ContainsKey(identifier))

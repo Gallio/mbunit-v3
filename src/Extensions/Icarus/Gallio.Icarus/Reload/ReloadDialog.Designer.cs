@@ -1,4 +1,4 @@
-﻿namespace Gallio.Icarus
+﻿namespace Gallio.Icarus.Reload
 {
     partial class ReloadDialog
     {

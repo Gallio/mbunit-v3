@@ -29,7 +29,7 @@ namespace Gallio.Icarus.WindowManager
         /// </summary>
         IMenuManager MenuManager { get; }
 
-        /// <summary>
+    	/// <summary>
         /// Adds a new window.
         /// </summary>
         /// <param name="identifier">The unique id of the window.</param>
@@ -93,5 +93,12 @@ namespace Gallio.Icarus.WindowManager
         /// 
         /// </summary>
         void ShowDefaults();
+
+		/// <summary>
+		/// Show a modal dialog.
+		/// </summary>
+		/// <param name="form">The form to display.</param>
+		/// <returns>A dialog result.</returns>
+    	DialogResult ShowDialog(Form form);
     }
 }

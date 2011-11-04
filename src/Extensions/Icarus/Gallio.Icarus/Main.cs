@@ -27,6 +27,7 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.ProgressMonitoring;
 using Gallio.Icarus.Projects;
+using Gallio.Icarus.Reload;
 using Gallio.Icarus.Utilities;
 using Gallio.Icarus.WindowManager;
 using Gallio.Model;
@@ -80,7 +81,7 @@ namespace Gallio.Icarus
 
             projectController = RuntimeAccessor.ServiceLocator.Resolve<IProjectController>();
 
-            projectController.FileChanged += OnFileChanged;
+            //projectController.FileChanged += OnFileChanged;
             projectController.ProjectChanged += OnProjectChanged;
 
             taskManager = RuntimeAccessor.ServiceLocator.Resolve<ITaskManager>();
@@ -178,6 +179,7 @@ namespace Gallio.Icarus
             // setup window manager
             var manager = (WindowManager.WindowManager) windowManager;
             manager.SetDockPanel(dockPanel);
+
             var menuManager = (MenuManager)manager.MenuManager;
             menuManager.SetToolstrip(menuStrip.Items);
 
@@ -410,23 +412,6 @@ namespace Gallio.Icarus
             {
                 Console.WriteLine(ex.ToString());
             }
-        }
-
-        private void OnFileChanged(object sender, FileChangedEventArgs e)
-        {
-            // Do this asynchronously when called from another thread.
-            BeginInvoke(new MethodInvoker(() => HandleFileChanged(e.FileName)));
-        }
-
-        private void HandleFileChanged(string fileName)
-        {
-            if (!optionsController.AlwaysReloadFiles)
-            {
-                var reloadDialog = new ReloadDialog(fileName, optionsController);
-                if (reloadDialog.ShowDialogIfNotVisible(this) != DialogResult.OK)
-                    return;
-            }
-            Reload();
         }
 
         private void startWithDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
