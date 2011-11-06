@@ -53,26 +53,29 @@ namespace Gallio.Icarus
         {
             this.applicationController = applicationController;
 
-            applicationController.RunStarted += (sender, e) => BeginInvoke((MethodInvoker) delegate
+            applicationController.RunStarted += (s, e) => SyncContext.Post(cb => 
             {
                 // enable/disable buttons
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = false;
                 startTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = false;
                 stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = true;
-            });
-            applicationController.RunFinished += (sender, e) => BeginInvoke((MethodInvoker) delegate
+            }, null);
+
+            applicationController.RunFinished += (s, e) => SyncContext.Post(cb => 
             {
                 // enable/disable buttons & menu items appropriately
                 stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
                 startTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
-            });
-            applicationController.ExploreFinished += (sender, e) => BeginInvoke((MethodInvoker) delegate
+            }, null);
+
+            applicationController.ExploreFinished += (sender, e) => SyncContext.Post(cb => 
             {
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
                 startTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
-            });
-            applicationController.TestsFailed += (s, e) => BeginInvoke((MethodInvoker) Activate);
+            }, null);
+
+            applicationController.TestsFailed += (s, e) => SyncContext.Post(cb => Activate(), null);
 
             taskManager = RuntimeAccessor.ServiceLocator.Resolve<ITaskManager>();
             optionsController = RuntimeAccessor.ServiceLocator.Resolve<IOptionsController>();
@@ -162,7 +165,7 @@ namespace Gallio.Icarus
         private void Form_Load(object sender, EventArgs e)
         {
             // provide WindowsFormsSynchronizationContext for cross-thread databinding
-            SynchronizationContext.Current = System.Threading.SynchronizationContext.Current;
+            SyncContext.Current = System.Threading.SynchronizationContext.Current;
 
             Text = applicationController.Title;
 
