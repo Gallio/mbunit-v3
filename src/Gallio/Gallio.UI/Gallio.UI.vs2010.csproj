@@ -70,7 +70,7 @@
   <ItemGroup>
     <Compile Include="Common\Policies\IUnhandledExceptionPolicy.cs" />
     <Compile Include="Common\Policies\UnhandledExceptionPolicy.cs" />
-    <Compile Include="Common\Synchronization\SynchronizationContext.cs" />
+    <Compile Include="Common\Synchronization\SyncContext.cs" />
     <Compile Include="ControlPanel\ControlPanelPresenter.cs" />
     <Compile Include="ControlPanel\ControlPanelTab.cs">
       <SubType>UserControl</SubType>
