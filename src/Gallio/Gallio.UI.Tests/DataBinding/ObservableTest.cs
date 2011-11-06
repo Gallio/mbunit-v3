@@ -71,7 +71,7 @@ namespace Gallio.UI.Tests.DataBinding
             var observable = new Observable<string>();
             bool propertyChangedRaised = false;
             observable.PropertyChanged += (s, e) => propertyChangedRaised = true;
-            SynchronizationContext.Current = new TestSynchronizationContext();
+            SyncContext.Current = new TestSynchronizationContext();
 
             observable.Value = "test";
 

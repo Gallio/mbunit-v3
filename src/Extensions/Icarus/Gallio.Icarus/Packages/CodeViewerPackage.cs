@@ -63,7 +63,7 @@ namespace Gallio.Icarus.Packages
 
         private void ActivateWindow(CodeLocation codeLocation, string identifier)
         {
-			SynchronizationContext.Post(cb => 
+			SyncContext.Post(cb => 
 			{
                 var window = windowManager.Get(identifier);
                 var codeViewer = (CodeViewer)window.Content;
@@ -88,7 +88,7 @@ namespace Gallio.Icarus.Packages
                     ?? "(unknown)";
             }
 
-            SynchronizationContext.Post(cb => CreateWindow(codeLocation, 
+            SyncContext.Post(cb => CreateWindow(codeLocation, 
                 identifier, caption), null);
         }
 

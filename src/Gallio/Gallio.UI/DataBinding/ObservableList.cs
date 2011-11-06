@@ -131,9 +131,9 @@ namespace Gallio.UI.DataBinding
 
             var eventArgs = new PropertyChangedEventArgs(propertyName);
 
-            if (SynchronizationContext.Current != null)
+            if (SyncContext.Current != null)
             {
-                SynchronizationContext.Post(delegate
+                SyncContext.Post(delegate
                 {
                     PropertyChanged(this, eventArgs);
                 }, this);

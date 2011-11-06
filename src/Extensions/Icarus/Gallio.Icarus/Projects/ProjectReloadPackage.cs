@@ -31,7 +31,7 @@ namespace Gallio.Icarus.Projects
 
 		private void HandleProjectChanged(string projectLocation)
 		{
-			SynchronizationContext.Post(cb =>
+			SyncContext.Post(cb =>
 			{
 				var projectName = Path.GetFileNameWithoutExtension(projectLocation);
 				using (var projectReloadDialog = new ProjectReloadDialog(projectName))

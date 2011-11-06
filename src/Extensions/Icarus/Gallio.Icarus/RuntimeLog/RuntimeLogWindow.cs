@@ -41,7 +41,7 @@ namespace Gallio.Icarus.RuntimeLog
 
         void runtimeLogController_LogMessage(object sender, RuntimeLogEventArgs e)
         {
-            SynchronizationContext.Post(delegate
+            SyncContext.Post(delegate
             {
                 AppendTextLine(e.Message, e.Color);
             }, this);

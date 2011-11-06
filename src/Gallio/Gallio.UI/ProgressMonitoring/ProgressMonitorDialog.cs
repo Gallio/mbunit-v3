@@ -42,7 +42,7 @@ namespace Gallio.UI.ProgressMonitoring
 
         private void OnProgressMonitorOnChanged(object sender, EventArgs e)
         {
-			SynchronizationContext.Post(cb => ProgressUpdate(), null);
+			SyncContext.Post(cb => ProgressUpdate(), null);
         }
 
         /// <inheritdoc />

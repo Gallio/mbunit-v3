@@ -58,9 +58,9 @@ namespace Gallio.UI.DataBinding
             {
                 this.value = value;
 
-                if (SynchronizationContext.Current != null)
+                if (SyncContext.Current != null)
                 {
-                    SynchronizationContext.Post(delegate
+                    SyncContext.Post(delegate
                         {
                             OnPropertyChanged();
                         }, this);

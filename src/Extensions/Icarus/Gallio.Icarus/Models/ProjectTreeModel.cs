@@ -94,7 +94,7 @@ namespace Gallio.Icarus.Models
 
         public void NotifyTestProjectChanged()
         {
-            SynchronizationContext.Post(delegate
+            SyncContext.Post(delegate
             {
                 OnStructureChanged(new TreePathEventArgs(new TreePath(projectRoot)));
             }, this);

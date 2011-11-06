@@ -325,7 +325,7 @@ namespace Gallio.Icarus.Controllers
         private void PublishUpdates()
         {
             // need to deal with x-thread databinding
-            SynchronizationContext.Send(delegate
+            SyncContext.Send(delegate
             {
                 updating = true;
 

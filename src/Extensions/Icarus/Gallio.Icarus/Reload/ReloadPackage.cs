@@ -34,7 +34,7 @@ namespace Gallio.Icarus.Reload
 
 		private void FileChanged(string fileName)
 		{
-			SynchronizationContext.Post(cb => 
+			SyncContext.Post(cb => 
 			{
 				if (reloadDialog.Visible)
 					return;

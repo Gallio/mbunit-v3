@@ -20,7 +20,7 @@ namespace Gallio.UI.Common.Synchronization
     ///<summary>
     /// Holder for the current sync context (e.g. the winforms current).
     ///</summary>
-    public static class SynchronizationContext
+    public static class SyncContext
     {
         /// <summary>
         /// Wrapper for Send on the shared sync context.
@@ -52,9 +52,6 @@ namespace Gallio.UI.Common.Synchronization
         /// context (WindowsFormsSynchronizationContext.Current), used for 
         /// cross-thread data binding.
         /// </remarks>
-        public static System.Threading.SynchronizationContext Current
-        {
-            get; set;
-        }
+        public static SynchronizationContext Current { get; set; }
     }
 }

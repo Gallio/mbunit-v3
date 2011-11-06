@@ -27,7 +27,7 @@ namespace Gallio.Icarus.Controllers
             if (PropertyChanged == null)
                 return;
 
-            SynchronizationContext.Send(delegate
+            SyncContext.Send(delegate
             {
                 PropertyChanged(this, e);
             }, this);
