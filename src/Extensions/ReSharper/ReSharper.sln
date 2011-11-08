@@ -59,6 +59,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner51.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner60", "Gallio.ReSharperRunner\Gallio.ReSharperRunner60.csproj", "{379A50C0-E3BC-4CD1-97FA-9967C279AA64}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner61", "Gallio.ReSharperRunner\Gallio.ReSharperRunner61.csproj", "{FB40707C-FE82-426E-9BAB-B852C85061FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

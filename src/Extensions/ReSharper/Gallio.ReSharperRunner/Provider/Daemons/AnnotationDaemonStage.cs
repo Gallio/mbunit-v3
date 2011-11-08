@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Loader;
+using JetBrains.Application.Settings;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Daemon;
 using JetBrains.ReSharper.Psi;
@@ -36,6 +37,8 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
 
 #if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
         public IDaemonStageProcess CreateProcess(IDaemonProcess process)
+#elif RESHARPER_61
+        public IDaemonStageProcess CreateProcess(IDaemonProcess process, IContextBoundSettingsStore settings, DaemonProcessKind processKind)
 #else
         public IDaemonStageProcess CreateProcess(IDaemonProcess process, DaemonProcessKind processKind)
 #endif
@@ -45,10 +48,12 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
 
 #if RESHARPER_60
     	public ErrorStripeRequest NeedsErrorStripe(IPsiSourceFile sourceFile)
+#elif RESHARPER_61
+        public ErrorStripeRequest NeedsErrorStripe(IPsiSourceFile sourceFile, IContextBoundSettingsStore settingsStore)
+#endif
     	{
     		return GetErrorStripe();
     	}
-#endif
 
     	public ErrorStripeRequest NeedsErrorStripe(IProjectFile projectFile)
         {

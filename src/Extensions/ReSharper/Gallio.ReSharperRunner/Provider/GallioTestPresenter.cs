@@ -33,7 +33,7 @@ using JetBrains.ReSharper.Features.Common.TreePsiBrowser;
 using JetBrains.ReSharper.UnitTestFramework;
 using JetBrains.ReSharper.UnitTestFramework.UI;
 #endif
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
 #endif
 
 namespace Gallio.ReSharperRunner.Provider
@@ -52,7 +52,7 @@ namespace Gallio.ReSharperRunner.Provider
 
             item.RichText = value.TestName;
 
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
             if (value.Explicit)
 				item.RichText.SetForeColor(SystemColors.GrayText);
 

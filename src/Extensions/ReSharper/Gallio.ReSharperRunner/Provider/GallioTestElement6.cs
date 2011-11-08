@@ -210,7 +210,11 @@ namespace Gallio.ReSharperRunner.Provider
             return declarationsCache.GetTypeElementByCLRName(typeName);
         }
 
+#if RESHARPER_60
         public IList<UnitTestTask> GetTaskSequence(IEnumerable<IUnitTestElement> explicitElements)
+#elif RESHARPER_61
+        public IList<UnitTestTask> GetTaskSequence(IList<IUnitTestElement> explicitElements)
+#endif
         {
             var tasks = new List<UnitTestTask> { new UnitTestTask(null, FacadeTaskFactory.CreateRootTask()) };
 
@@ -370,14 +374,14 @@ namespace Gallio.ReSharperRunner.Provider
                 return null;
             }
 
-            var testId = parent.GetAttribute("testId");
-            var element = provider.UnitTestManager.GetElementById(project, testId) as GallioTestElement;
-            if (element != null)
-            {
-                element.Parent = parentElement;
-                element.State = UnitTestElementState.Valid;
-                return element;
-            }
+            //var testId = parent.GetAttribute("testId");
+            //var element = provider.UnitTestManager.GetElementById(project, testId) as GallioTestElement;
+            //if (element != null)
+            //{
+            //    element.Parent = parentElement;
+            //    element.State = UnitTestElementState.Valid;
+            //    return element;
+            //}
 
             return null;
         }

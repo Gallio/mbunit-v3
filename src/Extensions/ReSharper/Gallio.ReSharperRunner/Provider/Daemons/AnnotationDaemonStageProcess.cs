@@ -61,7 +61,7 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
 
         private HighlightingInfo[] GetHighlightings()
         {
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
         	var projectFile = DaemonProcess.SourceFile.ToProjectFile();
 			if (projectFile == null || !projectFile.IsValid())
 #else
@@ -81,7 +81,7 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
                 IDeclaredElement declaredElement = annotation.GetDeclaredElement();
                 if (declaredElement != null && declaredElement.IsValid())
                 {
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
 					foreach (IDeclaration declaration in declaredElement.GetDeclarationsIn(DaemonProcess.SourceFile))
 #else
 					foreach (IDeclaration declaration in declaredElement.GetDeclarationsIn(projectFile))
@@ -97,7 +97,7 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
 #endif
                             {
                             	var annotationHighlighting = AnnotationHighlighting.CreateHighlighting(annotation);
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
                             	var highlightingInfo = new HighlightingInfo(range, annotationHighlighting, null, null);
 #else
 								var highlightingInfo = new HighlightingInfo(range, annotationHighlighting);

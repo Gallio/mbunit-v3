@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+    <?include ..\..\Installer\Common.wxi ?>
+    
+<?ifdef FEATURE_RESHARPER_RUNNER_61?>
+    <Fragment>
+        <!-- Locate the R# InstallDir. -->
+        <Property Id="RESHARPER_V61_VS9_INSTALLDIR">
+            <RegistrySearch Id="JetBrainsReSharperRegistryLM.V61.VS9" Type="raw" Win64="no"
+                Root='HKLM' Key="Software\JetBrains\ReSharper\v6.1\vs9.0" Name="InstallDir" />
+            <RegistrySearch Id="JetBrainsReSharperRegistryCU.V61.VS9" Type="raw" Win64="no"
+                Root='HKCU' Key="Software\JetBrains\ReSharper\v6.1\vs9.0" Name="InstallDir" />
+			<RegistrySearch Id="JetBrainsReSharperRegistryLM64.V61.VS9" Type="raw" Win64="yes"
+                Root='HKLM' Key="Software\JetBrains\ReSharper\v6.1\vs9.0" Name="InstallDir" />
+            <RegistrySearch Id="JetBrainsReSharperRegistryCU64.V61.VS9" Type="raw" Win64="yes"
+                Root='HKCU' Key="Software\JetBrains\ReSharper\v6.1\vs9.0" Name="InstallDir" />
+        </Property>
+
+        <Property Id="RESHARPER_V61_VS10_INSTALLDIR"> 
+            <RegistrySearch Id='JetBrainsReSharperRegistryLM.V61.VS10' Type="raw" Win64="no"
+                Root='HKLM' Key='Software\JetBrains\ReSharper\v6.1\vs10.0' Name='InstallDir' />
+            <RegistrySearch Id='JetBrainsReSharperRegistryCU.V61.VS10' Type="raw" Win64="no"
+                Root='HKCU' Key='Software\JetBrains\ReSharper\v6.1\vs10.0' Name='InstallDir' />
+            <RegistrySearch Id='JetBrainsReSharperRegistryLM64.V61.VS10' Type="raw" Win64="yes"
+                Root='HKLM' Key='Software\JetBrains\ReSharper\v6.1\vs10.0' Name='InstallDir' />	
+			<RegistrySearch Id='JetBrainsReSharperRegistryCU64.V61.VS10' Type="raw" Win64="yes"
+                Root='HKCU' Key='Software\JetBrains\ReSharper\v6.1\vs10.0' Name='InstallDir' />
+        </Property>
+
+        <DirectoryRef Id="TARGETDIR">
+            <Directory Id="RESHARPER_V61_VS9_INSTALLDIR" Name="ReSharper_V61_VS90">
+				
+				<Directory Id="JetBrains.ReSharper.V61.VS9.ExternalAnnotationsDir" Name="ExternalAnnotations">
+					<Directory Id="JetBrains.Resharper.V61.VS9.MbUnitDir" Name="MbUnit">
+                        <Component Id="MbUnit.V61.VS9.xml" Guid="{AEB780F5-FB1F-4408-AA76-6BF97C34E177}" Win64="no">
+                            <File Id="MbUnit.V61.VS9.xml" Source="$(var.GallioTargetDir)\bin\ReSharper\v6.1\MbUnit.xml" KeyPath="yes" />
+                        </Component>					
+					</Directory>
+                </Directory>
+				
+				<Directory Id="JetBrains.ReSharper.V61.VS9.PluginsDir" Name="Plugins">
+                    <Directory Id="JetBrains.Resharper.V61.VS9.GallioDir" Name="Gallio">
+                        <Component Id="Gallio.ReSharperRunner.V61.VS9.dll" Guid="{4F02FAAF-5871-45EF-9CDB-234584FB0A2E}" Win64="no">
+                            <File Id="Gallio.ReSharperRunner.V61.VS9.dll" Source="$(var.GallioTargetDir)\bin\ReSharper\v6.1\Gallio.ReSharperRunner61.dll" KeyPath="yes" />
+                        </Component>
+						
+						<Directory Id="Gallio.ReSharperRunner.V61.VS9.Resources" Name="Resources">
+							<Component Id="Gallio.ReSharperRunner.V61.VS9.Icon" Guid="{3BE4D2FC-0A36-45CC-843D-B18E1C37EF04}" Win64="$(var.Win64Binary)">
+								<File Id="ReSharper_V61_VS90_Icon" Source="$(var.GallioTargetDir)\bin\ReSharper\v6.1\Resources\resharper.ico" KeyPath="yes" />
+							</Component>
+						</Directory>
+                    </Directory>
+                </Directory>
+            </Directory>
+    
+            <Directory Id="RESHARPER_V61_VS10_INSTALLDIR" Name="ReSharper_V61_VS100">
+				
+				<Directory Id="JetBrains.ReSharper.V61.VS10.ExternalAnnotationsDir" Name="ExternalAnnotations">
+					<Directory Id="JetBrains.Resharper.V61.VS10.MbUnitDir" Name="MbUnit">
+                        <Component Id="MbUnit.V61.VS10.xml" Guid="{8876B218-3191-4127-922C-45A98A7B8EFC}" Win64="no">
+                            <File Id="MbUnit.V61.VS10.xml" Source="$(var.GallioTargetDir)\bin\ReSharper\v6.1\MbUnit.xml" KeyPath="yes" />
+                        </Component>					
+					</Directory>
+                </Directory>
+                
+				<Directory Id="JetBrains.ReSharper.V61.VS10.PluginsDir" Name="Plugins">
+                    <Directory Id="JetBrains.Resharper.V61.VS10.GallioDir" Name="Gallio">
+                        <Component Id="Gallio.ReSharperRunner.V61.VS10.dll" Guid="{5D19D4D8-7D03-4006-8901-DFFE9956C849}" Win64="no">
+                            <File Id="Gallio.ReSharperRunner.V61.VS10.dll" Source="$(var.GallioTargetDir)\bin\ReSharper\v6.1\Gallio.ReSharperRunner61.dll" KeyPath="yes" />
+                        </Component>
+						
+						<Directory Id="Gallio.ReSharperRunner.V61.VS10.Resources" Name="Resources">
+							<Component Id="Gallio.ReSharperRunner.V61.VS10.Icon" Guid="{3B1085D1-86C9-4A2A-B51F-13B0F6F8F62C}" Win64="$(var.Win64Binary)">
+								<File Id="ReSharper_V61_VS100_Icon" Source="$(var.GallioTargetDir)\bin\ReSharper\v6.1\Resources\resharper.ico" KeyPath="yes" />
+							</Component>
+						</Directory>
+                    </Directory>
+                </Directory>
+				
+            </Directory>  
+			
+        </DirectoryRef>
+
+        <Feature Id="feat_Gallio.ReSharper.V61" Title="ReSharper v6.1 Plug-in" Level="0" AllowAdvertise="no"
+                 Description="Installs the ReSharper v6.1 plug-in.">
+            <Condition Level="1">
+                RESHARPER_V61_VS9_INSTALLDIR or RESHARPER_V61_VS10_INSTALLDIR
+            </Condition>
+
+            <Feature Id="feat_Gallio.ReSharper.V61.VS9" Title="Visual Studio 2008" Level="0" AllowAdvertise="no">
+                <Condition Level="1">RESHARPER_V61_VS9_INSTALLDIR</Condition>
+				<ComponentRef Id="MbUnit.V61.VS9.xml"/>
+                <ComponentRef Id="Gallio.ReSharperRunner.V61.VS9.dll"/>
+				<ComponentRef Id="Gallio.ReSharperRunner.V61.VS9.Icon"/>
+            </Feature>
+
+            <Feature Id="feat_Gallio.ReSharper.V61.VS10" Title="Visual Studio 2010" Level="0" AllowAdvertise="no">
+                <Condition Level="1">RESHARPER_V61_VS10_INSTALLDIR</Condition>
+				<ComponentRef Id="MbUnit.V61.VS10.xml"/>
+                <ComponentRef Id="Gallio.ReSharperRunner.V61.VS10.dll"/>
+				<ComponentRef Id="Gallio.ReSharperRunner.V61.VS10.Icon"/>
+            </Feature> 
+        </Feature>
+    </Fragment>
+<?endif?>
+</Wix>

@@ -134,7 +134,7 @@ namespace Gallio.ReSharperRunner.Reflection
             if (isValid)
                 return CodeLocation.Unknown;
 
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
             var projectFile = decl[0].GetSourceFile().ToProjectFile();
 #else
 			var projectFile = decl[0].GetProjectFile();

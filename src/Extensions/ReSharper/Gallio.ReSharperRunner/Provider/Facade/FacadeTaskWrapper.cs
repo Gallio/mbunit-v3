@@ -69,7 +69,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
             return base.GetHashCode() ^ facadeTask.GetHashCode();
         }
 
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
         public override bool IsMeaningfulTask
         {
             get { return true; }

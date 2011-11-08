@@ -26,7 +26,7 @@ using JetBrains.Shell.VSIntegration;
 using JetBrains.VSIntegration.Shell;
 #elif RESHARPER_45
 using JetBrains.VSIntegration.Application;
-#elif RESHARPER_60
+#elif RESHARPER_60_OR_NEWER
 using JetBrains.Application.DataContext;
 #else
 using JetBrains.ReSharper.UnitTestFramework;

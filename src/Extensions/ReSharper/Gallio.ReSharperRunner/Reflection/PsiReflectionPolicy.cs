@@ -41,7 +41,7 @@ using JetBrains.ProjectModel.Build;
 #if RESHARPER_50_OR_NEWER
 using JetBrains.Metadata.Utils;
 #endif
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
 using JetBrains.ProjectModel.Model2.Assemblies.Interfaces;
 using ConstantValue = Gallio.Common.Reflection.ConstantValue;
 
@@ -263,7 +263,7 @@ namespace Gallio.ReSharperRunner.Reflection
                     if (BuildSettingsManager.HasInstance(project) == false)
                         continue;
 #endif
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
 					IAssemblyFile assemblyFile = project.GetOutputAssemblyFile();
 #else
                     IAssemblyFile assemblyFile = BuildSettingsManager.GetInstance(project).GetOutputAssemblyFile();
@@ -319,7 +319,7 @@ namespace Gallio.ReSharperRunner.Reflection
             IPsiModule psiModule = GetPsiModule(moduleHandle);
             if (psiModule != null)
             {
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
             	var moduleAttributes = cacheManager.GetModuleAttributes(psiModule);
 				if (moduleAttributes == null)
 					yield break;
@@ -357,7 +357,7 @@ namespace Gallio.ReSharperRunner.Reflection
             IProject projectHandle = assembly.Handle as IProject;
             if (projectHandle != null)
             {
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
 				if (projectHandle.IsValid())
 				{
 					var moduleRefs = projectHandle.GetModuleReferences();
@@ -424,7 +424,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 return GetAssemblyFile(projectHandle);
 
             IAssembly assemblyHandle = (IAssembly) moduleHandle;
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
 			var files = assemblyHandle.GetFiles();
 			foreach (var file in files)
 				return file;
@@ -438,7 +438,7 @@ namespace Gallio.ReSharperRunner.Reflection
         // note: result may be null
         private static IAssemblyFile GetAssemblyFile(IProject projectHandle)
         {
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
         	return projectHandle.GetOutputAssemblyFile();
 #else
             return BuildSettingsManager.GetInstance(projectHandle).GetOutputAssemblyFile();
@@ -726,7 +726,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             IOverridableMember overridableMemberHandle = memberHandle as IOverridableMember;
             if (overridableMemberHandle != null && overridableMemberHandle.IsExplicitImplementation)
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
                 return overridableMemberHandle.ExplicitImplementations[0].DeclaringType.GetClrName().FullName.Replace('+', '.') + "." + shortName;
 #else
                 return overridableMemberHandle.ExplicitImplementations[0].DeclaringType.GetCLRName().Replace('+', '.') + "." + shortName;
@@ -958,7 +958,7 @@ namespace Gallio.ReSharperRunner.Reflection
             if (!methodHandle.IsValid())
                 return Common.Collections.EmptyArray<StaticGenericParameterWrapper>.Instance;
 
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
             var typeParameters = methodHandle.GetSignature(methodHandle.IdSubstitution).TypeParameters;
             var parameterHandles = new ITypeParameter[typeParameters.Count];
             for (var i = 0; i < parameterHandles.Length; i++)
@@ -1003,7 +1003,7 @@ namespace Gallio.ReSharperRunner.Reflection
             IParameter parameterHandle = (IParameter)parameter.Handle;
 
             ParameterAttributes flags = 0;
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
 			ReflectorFlagsUtils.AddFlagIfTrue(ref flags, ParameterAttributes.HasDefault, !parameterHandle.GetDefaultValue().IsBadValue);
 #else
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, ParameterAttributes.HasDefault, !parameterHandle.GetDefaultValue().IsBadValue());
@@ -1488,7 +1488,7 @@ namespace Gallio.ReSharperRunner.Reflection
                     throw new ReflectionResolveException(
                         String.Format(
                             "Cannot obtain type element for type '{0}' possibly because its source code is not available.",
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
                             typeHandle.GetClrName()));
 #else
                             typeHandle.GetCLRName()));
@@ -1590,7 +1590,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 if (declaringType == null)
                     break;
 
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
                 parameterIndex += declaringType.TypeParameters.Count;
 #else
                 parameterIndex += declaringType.TypeParameters.Length;
@@ -1604,7 +1604,7 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             ITypeParameter genericParameterHandle = (ITypeParameter)genericParameter.Handle;
 			var typeConstraints = genericParameterHandle.TypeConstraints;
-#if RESHARPER_60        	
+#if RESHARPER_60_OR_NEWER        	
         	return GenericCollectionUtils.ConvertAllToArray<IType, StaticTypeWrapper>(new List<IType>(typeConstraints), MakeType);
 #else
             return GenericCollectionUtils.ConvertAllToArray<IType, StaticTypeWrapper>(typeConstraints, MakeType);

@@ -1,0 +1,28 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(RootDir)\bin\Module.targets" />
+
+  <ItemGroup>
+    <CSharpProject Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner61$(ProjectVariant).csproj" />
+
+    <PluginFile Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner61.plugin">
+      <ImagePath>bin\ReSharper\v6.1</ImagePath>
+    </PluginFile>
+    <AssemblyFile Include="Gallio.ReSharperRunner\bin\v6.1\Gallio.ReSharperRunner61.dll">
+      <ImagePath>bin\ReSharper\v6.1</ImagePath>
+    </AssemblyFile>
+    <PdbFile Include="Gallio.ReSharperRunner\bin\v6.1\Gallio.ReSharperRunner61.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
+
+    <File Include="Gallio.ReSharperRunner\Resources\resharper.ico">
+      <ImagePath>bin\ReSharper\v6.1\Resources</ImagePath>
+    </File>
+	
+	<File Include="Gallio.ReSharperRunner\MbUnit.xml">
+      <ImagePath>bin\ReSharper\v6.1</ImagePath>
+    </File>
+
+    <Feature Include="FEATURE_RESHARPER_RUNNER" />
+    <Feature Include="FEATURE_RESHARPER_RUNNER_61" />
+  </ItemGroup>
+</Project>

@@ -37,7 +37,7 @@ using AssemblyReference=JetBrains.Metadata.Access.AssemblyReference;
 #if RESHARPER_50_OR_NEWER
 using JetBrains.Metadata.Utils;
 #endif
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
 using JetBrains.Util;
 using ConstantValue = Gallio.Common.Reflection.ConstantValue;
 
@@ -132,7 +132,7 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override IAssemblyInfo LoadAssemblyFromImpl(string assemblyFile)
         {
             if (metadataLoader != null)
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
 				return Wrap(metadataLoader.LoadFrom(new FileSystemPath(assemblyFile), DummyLoadReferencePredicate));
 #else
                 return Wrap(metadataLoader.LoadFrom(assemblyFile, DummyLoadReferencePredicate));
@@ -160,7 +160,7 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override string GetAssemblyPath(StaticAssemblyWrapper assembly)
         {
             IMetadataAssembly assemblyHandle = (IMetadataAssembly)assembly.Handle;
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
             return assemblyHandle.Location.FullPath;
 #else
 			return assemblyHandle.Location;
@@ -170,7 +170,7 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override IList<AssemblyName> GetAssemblyReferences(StaticAssemblyWrapper assembly)
         {
             var assemblyHandle = (IMetadataAssembly)assembly.Handle;
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
 			var referencedAssembliesNames = assemblyHandle.ReferencedAssembliesNames;
 			return Array.ConvertAll(referencedAssembliesNames, assemblyNameInfo => new AssemblyName(assemblyNameInfo.FullName));
 #else
@@ -235,7 +235,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
                 if (assembly == null && contextProject != null)
                 {
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
 					var reference = GenericCollectionUtils.Find(contextProject.GetAssemblyReferences(), candidate => 
 						candidate.ReferenceTarget.AssemblyName != null &&
 						candidate.ReferenceTarget.AssemblyName.FullName == assemblyName.FullName);
@@ -302,7 +302,7 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override ConstantValue[] GetAttributeConstructorArguments(StaticAttributeWrapper attribute)
         {
             IMetadataCustomAttribute attributeHandle = (IMetadataCustomAttribute)attribute.Handle;
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
 			return Array.ConvertAll<MetadataAttributeValue, ConstantValue>(attributeHandle.ConstructorArguments, ConvertConstantValue);
 #else
 			return Array.ConvertAll<object, ConstantValue>(attributeHandle.ConstructorArguments, ConvertConstantValue);
@@ -327,7 +327,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 yield return new KeyValuePair<StaticPropertyWrapper, ConstantValue>(Wrap(initialization.Property), ConvertConstantValue(initialization.Value));
         }
 
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
 		private ConstantValue ConvertConstantValue(MetadataAttributeValue value)
 		{
 			return ConvertConstantValue(value.Value, (IMetadataType type) => MakeType(type));
@@ -365,7 +365,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             IMetadataTypeInfo typeHandle = entityHandle as IMetadataTypeInfo;
             if (typeHandle != null)
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
                 return new ClrTypeName(typeHandle.FullyQualifiedName).ShortName;
 #else
                 return new CLRTypeName(typeHandle.FullyQualifiedName).ShortName;
@@ -648,7 +648,7 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override string GetTypeNamespace(StaticDeclaredTypeWrapper type)
         {
             IMetadataTypeInfo typeHandle = (IMetadataTypeInfo)type.Handle;
-#if RESHARPER_60
+#if RESHARPER_60_OR_NEWER
             return new ClrTypeName(typeHandle.FullyQualifiedName).GetNamespaceName();
 #else
             return new CLRTypeName(typeHandle.FullyQualifiedName).NamespaceName;
