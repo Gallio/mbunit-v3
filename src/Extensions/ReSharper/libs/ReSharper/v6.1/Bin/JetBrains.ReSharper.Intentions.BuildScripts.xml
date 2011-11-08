@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Intentions.BuildScripts</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Intentions.BuildScripts.ContextActions.GenerateXSDContextAction.IsAvailableInternal">
+            <summary>
+            Called to check if ContextAction is available.
+            ReadLock is taken
+            Will not be called if PsiManager, ProjectFile of Solution == null
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.BuildScripts.ContextActions.GenerateXSDContextAction.ExecuteInternal(System.Object[])">
+            <summary>
+            Called to apply context action. No locks is taken before call
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.BuildScripts.QuickFixes.LocateAssemblyQuickFix.IsAvailable(JetBrains.Util.IUserDataHolder)">
+            <summary>
+            Check if this action is available at the constructed context.
+            Actions could store precalculated info in <paramref name="cache"/> to share it between different actions
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,253 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.LiveTemplates</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.LiveTemplates.Actions.InsertLiveTemplateAction">
+            <summary>
+            Action for inserting live templates
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.LiveTemplates.ExtendedRichText.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.ExtendedRichText.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.ExtendedRichText.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.LiveTemplates.UI.FieldsSelectionDialog">
+            <summary>
+            Summary description for FieldsSelectionDialog.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.LiveTemplates.UI.FieldsSelectionDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.UI.FieldsSelectionDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.UI.FieldsSelectionDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.ITextEditor.GetText">
+            <summary>
+            Gets editor contents
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.ITextEditor.SetColor(JetBrains.Util.TextRange,System.Drawing.Color)">
+            <summary>
+            Sets color of the specified range of text
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.ITextEditor.SetFlags(JetBrains.Util.TextRange,System.Boolean)">
+            <summary>
+            Sets flags of the specified range of text
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.LiveTemplates.MacroChooserForm">
+            <summary>
+            Summary description for MacroChooserForm.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.LiveTemplates.MacroChooserForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.MacroChooserForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.MacroChooserForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.LiveTemplates.RichTextEditor">
+            <summary>
+            Text editor implementation for rich text
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.RichTextEditor.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.RichTextEditor.GetText">
+            <summary>
+            Gets editor contents
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.RichTextEditor.SetFlags(JetBrains.Util.TextRange,System.Boolean)">
+            <summary>
+            Sets flags of the specified range of text
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.LiveTemplates.StringValueEntryForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.StringValueEntryForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.StringValueEntryForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.LiveTemplates.UI.TemplateChooserDialog">
+            <summary>
+            Summary description for TemplateChooserDialog.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.LiveTemplates.UI.TemplateChooserDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.UI.TemplateChooserDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.UI.TemplateChooserDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.LiveTemplates.UI.TemplateEditor.FieldsViewButtonsControl.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.UI.TemplateEditor.FieldsViewButtonsControl.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.UI.TemplateEditor.FieldsViewButtonsControl.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.LiveTemplates.UI.TemplateEditor.LiveTemplateSettingsControl.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.UI.TemplateEditor.LiveTemplateSettingsControl.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.UI.TemplateEditor.LiveTemplateSettingsControl.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.LiveTemplates.UI.TemplateTextEditor.myKeywordColor">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.UI.TemplateTextEditor.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.LiveTemplates.UI.ToolWindow.TemplatesFilterPanel">
+            <summary>
+            Interaction logic for TemplatesFilterPanel.xaml
+            </summary>
+            <summary>
+            TemplatesFilterPanel
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.UI.ToolWindow.TemplatesFilterPanel.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.LiveTemplates.VariableChooseForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.VariableChooseForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.VariableChooseForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.LiveTemplates.TemplateBuilder.TemplateBuildingData">
+            <summary>
+            Holds information to support the process of building a live template from text
+            </summary>
+        </member>
+        <member name="T:XamlGeneratedNamespace.GeneratedInternalTypeHelper">
+            <summary>
+            GeneratedInternalTypeHelper
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateInstance(System.Type,System.Globalization.CultureInfo)">
+            <summary>
+            CreateInstance
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            GetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.SetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            SetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateDelegate(System.Type,System.Object,System.String)">
+            <summary>
+            CreateDelegate
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.AddEventHandler(System.Reflection.EventInfo,System.Object,System.Delegate)">
+            <summary>
+            AddEventHandler
+            </summary>
+        </member>
+    </members>
+</doc>

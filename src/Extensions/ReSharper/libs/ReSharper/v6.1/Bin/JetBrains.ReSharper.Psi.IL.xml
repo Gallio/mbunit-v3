@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.IL</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Psi.IL.Parsing.ILMissingTokensInserter.Run(JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.TreeElement)">
+            <remarks>
+            This code relies that TokenStart and TokenEnd return -1 when it reaches end of file.
+            </remarks>
+        </member>
+    </members>
+</doc>

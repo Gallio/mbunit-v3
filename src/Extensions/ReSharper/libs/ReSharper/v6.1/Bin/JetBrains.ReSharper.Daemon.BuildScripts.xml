@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Daemon.BuildScripts</name>
+    </assembly>
+    <members>
+        <member name="P:JetBrains.ReSharper.Daemon.BuildScripts.DaemonStage.Highlightings.UnresolvedTaskHighlightingBase.ToolTip">
+            <summary>
+            Tooltip for this highlighting
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Daemon.BuildScripts.DaemonStage.Highlightings.UnresolvedPropertyHighlightingBase.ToolTip">
+            <summary>
+            Tooltip for this highlighting
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Daemon.BuildScripts.DaemonStage.Highlightings.MSBuild.UnresolvedMSBuildItemGroupHighlighting.ToolTip">
+            <summary>
+            Tooltip for this highlighting
+            </summary>
+        </member>
+    </members>
+</doc>

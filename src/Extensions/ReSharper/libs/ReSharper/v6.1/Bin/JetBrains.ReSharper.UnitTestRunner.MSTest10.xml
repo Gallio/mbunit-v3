@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.UnitTestRunner.MSTest10</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.UnitTestRunner.MSTest.ExecutionRunConfiguration">
+            <summary>
+            Wrapper over RunConfiguration (Test Settings)
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Intentions.Xml</name>
+    </assembly>
+    <members>
+        <member name="F:JetBrains.ReSharper.Intentions.Xml.ContextActions.ReplaceAllAttributesForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Xml.ContextActions.ReplaceAllAttributesForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Xml.ContextActions.ReplaceAllAttributesForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Intentions.Xml.Options.XmlContextActionsPage">
+            <summary>
+            Context actions.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.Xml.Options.XmlContextActionsPage.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> or <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsManager"/> out of it.
+            </summary>
+        </member>
+    </members>
+</doc>

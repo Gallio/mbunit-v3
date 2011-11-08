@@ -1,0 +1,1302 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.Platform.ReSharper.VsIntegration.DevTen</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.VsIntegration.DevTen.DocumentModel.VsDocumentDevTen">
+            <summary>
+            Document implementation for DevTen over its <see cref="T:Microsoft.VisualStudio.Text.ITextBuffer"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.DocumentModel.VsDocumentDevTen.myPendingChanges">
+            <summary>
+            Lists the changes awaiting for the <see cref="T:JetBrains.Threading.ReentrancyGuard"/> to be lifted off before they can be applied.
+            The list is kept to know whether there're pendings or not at the moment (ie whether we're up-to-date).
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.DocumentModel.VsDocumentDevTen.Initialize(JetBrains.ProjectModel.IProjectFile)">
+            <summary>
+            Initializes the VS Document for the initial project file.
+            Note that the project file might change thru the document lifetime, so we do not hold it but ask the <see cref="T:JetBrains.DocumentManagers.DocumentManager"/>'s <see cref="M:JetBrains.DocumentManagers.DocumentManager.TryGetProjectFile(JetBrains.DocumentModel.IDocument)"/> for the document
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.DocumentModel.VsDocumentDevTen.ExecutePendingChanges">
+            <summary>
+            Pumps thru <see cref="F:JetBrains.VsIntegration.DevTen.DocumentModel.VsDocumentDevTen.myPendingChanges"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.DocumentModel.VsDocumentDevTen.WithVsBufferWrite(System.Action{Microsoft.VisualStudio.Text.ITextBuffer})">
+            <summary>
+            Asks the doc manager for the Project File for our document and uses its moniker and hitem.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.DocumentModel.VsDocumentDevTen.MakeReadonly(JetBrains.Util.TextRange)">
+            <summary>
+            Locks a document range temporarily to prevent it from being edited. To unlock, dispose of the return value.
+            </summary>
+        </member>
+        <member name="P:JetBrains.VsIntegration.DevTen.DocumentModel.VsDocumentDevTen.Moniker">
+            <summary>
+            Gets the document moniker (an arbitrary string that helps with identifying this document).
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.DocumentModel.VsDocumentManagerDevTen.TryGetMonikerByDocument(JetBrains.VsIntegration.DevTen.DocumentModel.VsDocumentDevTen)">
+            <summary>
+            Resturns the actual moniker for the document, if it still has a valid corresponding project file.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.DocumentModel.VsDocumentOverProjectFileFactoryDevTen.CreateNewDocumentCore(JetBrains.ProjectModel.IProjectFile,JetBrains.DocumentManagers.Transactions.SolutionDocumentTransactionManager)">
+            <summary>
+            Achtung! Creates a new document each time! Don't use but from <see cref="M:JetBrains.DocumentManagers.DocumentManager.GetOrCreateDocument(JetBrains.ProjectModel.IProjectFile)"/>.
+            Implementation does not need to register in the project-file-to-document map.
+            Mind that your document will normally be held on a weak ref.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.Install.MsiExtensionManifestInstaller">
+            <summary>
+            For MSI-based installs of METH-aware products, emits the Extension Manifest to the Bin folder and creates a shortcut to it from the VS InstallDir.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.MsiExtensionManifestInstaller.GetPerMachineExtensionFolderRelPath(JetBrains.Application.IApplicationDescriptor)">
+            <summary>
+            Gets the path to the folder into which the LNK files to R# VSIX Manifest and PkgDef are installed in per-machine installation scenario.
+            The path is relative to the VS installdir, which is what's written into Registry by VS, and it points to the "IDE" folder not the very VS installation root.
+            </summary>
+            <example><c>Extensions\JetBrains\ReSharper\v5.0</c></example>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.MsiExtensionManifestInstaller.GetPerMachineExtensionFolderRelPath_NoVersionNumber(JetBrains.Application.IApplicationDescriptor)">
+            <summary>Much like <see cref="M:JetBrains.VsIntegration.DevTen.Install.MsiExtensionManifestInstaller.GetPerMachineExtensionFolderRelPath(JetBrains.Application.IApplicationDescriptor)"/>, but without the product version number.</summary>
+            <example><c>Extensions\JetBrains\ReSharper</c></example>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.MsiExtensionManifestInstaller.JetBrains#Application#Install#IStaticInstaller#InstallStatic(JetBrains.Application.Install.Installer)">
+            <summary>
+            Called once on the object during the registration process.
+            </summary>
+            <param name="installer">The installer object that provides the installation data.</param>
+            <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter">
+            <summary>
+            Writes the VS PkgDef file from the product <see cref="T:JetBrains.Application.Install.InstallationData.InstallationData"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.IsPackageDefFile">
+            <summary>
+            <see cref="F:JetBrains.Application.Install.InstallationData.InstalledFile.Metadata"/> entry key for files that should be referenced in VSIX Manifest as PackageDef files.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.Install(JetBrains.Application.Install.Installer,System.IO.TextWriter)">
+            <summary>
+            Writes the product VS-specific Registry keys that go under the VS Registry hive into the PkgDef file.
+            </summary>
+            <param name="installer">The installation data. Gives the Registry data to write and the VS Hive to filter down.</param>
+            <param name="writer">The output stream.</param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.Install(JetBrains.Application.Install.InstallationData.InstallationData,System.Version,System.String,System.IO.TextWriter)">
+            <summary>
+            Writes the product VS-specific Registry keys that go under the VS Registry hive into the PkgDef file.
+            </summary>
+            <param name="data">Installation Data, as collected from the <see cref="T:JetBrains.Application.Install.Installer"/>.</param>
+            <param name="vsVersion">Visual Studio version.</param>
+            <param name="sVsRootSuffix">Visual Studio Root Suffix (usually empty when going for the main hive).</param>
+            <param name="writer">The output stream.</param>
+            <returns>Returns what Registry data could not be put into PkgDef.</returns>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.CollectEntries(JetBrains.Application.Install.InstallationData.InstallationData,System.Version,System.String,System.Collections.Generic.IDictionary{System.String,System.Collections.Generic.Dictionary{System.String,System.Object}})">
+            <summary>
+            Collect all non-duplicate Registry entries for writing into pkgdef.
+            Returns what Registry data could not be put into PkgDef.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.CreatePkgDefMacros">
+            <summary>
+            In addition to the externally defined macros, adds PkgDef-specific substitutions to be resolved when reading the PkgDef in Visual Studio.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.FormatForReg(System.Collections.Generic.IDictionary{System.String,System.Collections.Generic.Dictionary{System.String,System.Object}})">
+            <summary>
+            Prepares entries for writing to the Reg file "as is", converting the values to strings and escaping the strings.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.SubstituteMacros(System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.Dictionary{System.String,System.Object}},System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Applies macro substitutions to the entries and prepares them for writing into the REG file.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.WriteReg(System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.Dictionary{System.String,System.String}},System.IO.TextWriter)">
+            <summary>
+            Dumps the strings that are ready for writing.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.PkgDefMacros">
+            <summary>
+            Macros that can be used in the form of <c>$MacroName$</c> within a pkgdef file.
+            Taken from the <c>"PkgDef Management Design.docx"</c> classified document.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.PkgDefMacros.AppDataLocalFolder">
+            <summary>
+            Path to the sub-folder of CSIDL_LOCAL_APPDATA used by this application – based on the user settings root (e.g. “C:\Users\{user}\AppData\Local\VisualStudio\10.0”).
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.PkgDefMacros.AppName">
+            <summary>
+            Name of the Boutique application (not defined for other appids).
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.PkgDefMacros.BaseInstallDir">
+            <summary>
+            Synonym for ShellFolder for backward compatibility.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.PkgDefMacros.CommonFiles">
+            <summary>
+            Path to the common files folder for the application (i.e., value of CSICL_PROGRAM_FILES_COMMON) (e.g., “C:\ProgramData\VisualStudio\10.0”)
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.PkgDefMacros.HivelessRootKey">
+            <summary>
+            Same as RootKey, without the HKEY_CURRENT_USER portion.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.PkgDefMacros.MyDocuments">
+            <summary>
+            Path to the user’s Documents folder (e.g., “C:\Users\{user}\Documents”).
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.PkgDefMacros.PackageFolder">
+            <summary>
+            Folder in which the PkgDef file was found.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.PkgDefMacros.ProgramFiles">
+            <summary>
+            Parent folder for all program installations (e.g., “C:\Program Files”)
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.PkgDefMacros.RootFolder">
+            <summary>
+            Path to the root of the application installation; for Visual Studio and the Express SKUs, this is the same as ShellFolder; for Boutique applications (Isolated shell) this is a different folder, specific to the application. In the latter case, the value is read from HKEY_LOCAL_MACHINE\{registry root}\RootFolder.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.PkgDefMacros.RootKey">
+            <summary>
+            Parent key for all Configuration values (e.g. “HKEY_CURRENT_USER\Software\Microsoft\VisualStudio\10.0_Config”).
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.PkgDefMacros.ShellFolder">
+            <summary>
+            Path to the root of the Visual Studio shell installation; read from HKEY_LOCAL_MACHINE\{registry root}\InstallDir; for Portable SKUs, this is computed by removing the last two levels of the path to the executable or by applying the rule specified by RelativeRootFolderPath.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.PkgDefMacros.System">
+            <summary>
+            Windows\System32 directory.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Install.PackageDefWriter.PkgDefMacros.WinDir">
+            <summary>
+            Windows installation directory
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.Install.RegistryToPackageDefConverter">
+            <summary>
+            When emitting for Dev10, turns VS-related Registry installation data into a Package Def file.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.RegistryToPackageDefConverter.GetPackageDefFilePath(JetBrains.Application.Install.Installer)">
+            <summary>
+            Full path to the emitted file.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.VsixHelper.AdjustExtensionToRunPerUser(JetBrains.Util.FileSystemPath,JetBrains.Application.IApplicationDescriptor,System.Version,System.String)">
+            <summary>
+            A per-machine extension is enabled by default, but a per-user must be augmented.
+            This includes both modifying the extension manifest and telling extman it's enabled.
+            </summary>
+            <param name="pathManifest">Path to the extension manifest file. Use <see cref="M:JetBrains.VsIntegration.DevTen.Install.VsixHelper.FindExtensionManifest(JetBrains.Util.FileSystemPath)"/> if you got just a folder.</param>
+            <param name="descriptor">Env.</param>
+            <param name="versionVs">Env.</param>
+            <param name="sVsRootSuffix">Env.</param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.VsixHelper.FindExtensionManifest(JetBrains.Util.FileSystemPath)">
+            <summary>
+            In the extension folder, looks for the manifest. Or a shell link to the manifest, in which case it's resolved to the target.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.VsixHelper.GetExtensionsInHive(JetBrains.Util.FileSystemPath,System.Boolean,JetBrains.Application.IApplicationDescriptor,System.Version,System.String)">
+            <summary>
+            Looks for any extensions of a different version in the same hive.
+            </summary>
+            <param name="pathVsInstallDir">If per-machine extensions are to be found (they're present in all hives), path to VS InstallDir.</param>
+            <param name="bExcludeOwnVersion">Whether to exclude extensions of the same versions of our own (one of them is our own, but we do not know which one).</param>
+            <param name="descriptor">AppDesc.</param>
+            <param name="versionVs">VS version (for appdata folder paths).</param>
+            <param name="sVsRootSuffix">VS root suffix (for appdata folder paths).</param>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.Install.VsixManifestWriter">
+            <summary>
+            Produces a VSIX Manifest XML File for the product.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.VsixManifestWriter.GetExtensionIdentifier(JetBrains.Application.IApplicationDescriptor)">
+            <summary>
+            Extension identifier (goes to the Identifier field of the Extension, used to identify it eg in VS Ext Man Registry).
+            Pattern: <c>$(CompanyName).$(ProductName)</c>.
+            Example: <c>JetBrains.ReSharper</c>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.VsixManifestWriter.GetExtensionVersionString(JetBrains.Application.IApplicationDescriptor)">
+            <summary>
+            The exact version of the extension, as written into its VSIX manifest.
+            Pattern: <c>$(ProductVersionMajor).$(ProductVersionMinor)</c>.
+            Example: <c>5.5</c>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.VsixManifestWriter.Install(JetBrains.Application.Install.Installer,System.Xml.XmlWriter,System.Uri,System.Uri,System.Uri,System.Uri,System.Boolean)">
+             <summary>
+             Produces a VSIX Manifest XML File for the product.
+             </summary>
+             <param name="installer">Provides the installation context (product info, installation data, etc).</param>
+             <param name="uriPartPreview">Part URI.</param>
+             <param name="writer">Writer for the XML output.</param>
+             <param name="uriPartPkgDef">Path to the PkgDef file that should be referenced in the manifest. Must be relative to the root of the future VSIX container, ie a relative pack part path.</param>
+             <param name="uriPartIcon">Part URI.</param>
+             <param name="uriPartLicense">Part URI.</param>
+            <param name="isMsiMode">Whether we're generating a manifest for the product installed MSI-way, where the manifest is needed for enabling MEF only. <c>False</c> means we're writing the standalone VSIX file.</param>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Install.VsixManifestWriter.Elem._N">
+            <summary>
+            Embeds XML namespace into the element names, to ensure we always use them namespaced.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.Install.VsixWriter">
+            <summary>
+            Writes a VSIX package from the product <see cref="T:JetBrains.Application.Install.InstallationData.InstallationData"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.VsixWriter.Install(JetBrains.Application.Install.Installer,System.IO.Stream,JetBrains.Util.FileSystemPath,JetBrains.VsIntegration.DevTen.Install.VsixWriter.CreateVsixFlags)">
+            <summary>
+            Produces a VSIX package with product binaries, shipped files, and Registry entries in the form of a PkgDef file.
+            </summary>
+            <param name="installer">The installation context.</param>
+            <param name="streamVsixOutput">Output stream for the VSIX package content.</param>
+            <param name="pathProductLicenseFile">Path to the Product License file on the local filesystem.</param>
+            <param name="flags">Additional parameters.</param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.VsixWriter.CreateVsVersionNeutralInstaller(JetBrains.DataFlow.Lifetime,JetBrains.Application.Install.Installer)">
+            <summary>
+            Takes the installer bound to a specific Visual Studio version and creates an installer that collects VS-neutral data.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.VsixWriter.GetMimeType(System.String)">
+            <summary>
+            Gets the MIME type of the file to be added as the package part. Registry lookup by its extension.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.VsixWriter.WriteAssemblySet(System.IO.Packaging.Package,JetBrains.Build.AllAssemblies.AssemblyKind,JetBrains.Application.Install.Installer,JetBrains.VsIntegration.DevTen.Install.VsixWriter.CreateVsixFlags)">
+            <summary>
+            Writes product assemblies / references.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.VsixWriter.WriteFile(JetBrains.Util.FileSystemPath,System.IO.Packaging.Package,System.String,System.String,System.Func{System.String})">
+            <summary>
+            Writes a single file to the package part.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.VsixWriter.WriteFile(JetBrains.Util.FileSystemPath,System.IO.Packaging.Package,System.Uri,System.String,System.Func{System.String})">
+            <summary>
+            Writes a single file to the package part.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.VsixWriter.WriteInstallationDataFiles(System.IO.Packaging.Package,JetBrains.Application.Install.Installer)">
+            <summary>
+            Installation data: Files part, goes to the parts inside the package.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.VsixWriter.WriteInstallationDataRegistry(JetBrains.Application.Install.Installer,System.IO.Packaging.Package)">
+            <summary>
+            Installation data: Registry part, goes to the PkgDef file.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.VsixWriter.WriteProductBinaries(JetBrains.Application.Install.Installer,System.IO.Packaging.Package,JetBrains.VsIntegration.DevTen.Install.VsixWriter.CreateVsixFlags)">
+            <summary>
+            Product binaries, plus the shipped references, as VSIX package parts.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.VsixWriter.WriteProductClipart(JetBrains.Application.Install.Installer,System.IO.Packaging.Package)">
+            <summary>
+            Images for the ext manager.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.VsixWriter.WriteProductLicense(System.IO.Packaging.Package,JetBrains.Util.FileSystemPath)">
+            <summary>
+            Packs the product license into the VSIX at the <see cref="F:JetBrains.VsIntegration.DevTen.Install.VsixWriter.UriPartLicense"/> URI.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Install.VsixWriter.WriteVsixManifest(JetBrains.Application.Install.Installer,System.IO.Packaging.Package)">
+            <summary>
+            VSIX Manifest: XML part with extension description.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Install.VsixWriter.CreateVsixFlags.OptionIncludePdb">
+            <summary>
+            Program database (.pdb) files are added along with the DLLs.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Install.VsixWriter.CreateVsixFlags.OptionIncludeXmlDoc">
+            <summary>
+            XML documentation (.xml) files are added along with the DLLs.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Install.VsixWriter.CreateVsixFlags.OptionRequireStrongName">
+            <summary>
+            Managed product DLLs must have strong names (be signed with a key).
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.IPropertyOwnerEx.GetPropertyByType``1(Microsoft.VisualStudio.Utilities.IPropertyOwner)">
+            <summary>
+            Gets property keyed by Type. Throws if missing.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.IPropertyOwnerEx.GetPropertyByType``1(Microsoft.VisualStudio.Utilities.IPropertyOwner,System.Func{``0})">
+            <summary>
+            Gets property keyed by Type. Creates with <paramref name="FCreateIfMissing"/> if missing.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.IPropertyOwnerEx.TryGetPropertyByType``1(Microsoft.VisualStudio.Utilities.IPropertyOwner)">
+            <summary>
+            Gets property keyed by Type. <c>Null</c> if missing.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.ITextBufferEx.GetIVsTextBuffer(Microsoft.VisualStudio.Text.ITextBuffer,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService)">
+            <summary>
+            Gets the adapter to the legacy interface by the new interface.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.ITextBufferEx.GetTextBuffer(JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextBuffer,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService)">
+            <summary>
+            Gets the new interface by the legacy interface.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.ITextBufferEx.TryGetIVsTextBuffer(Microsoft.VisualStudio.Text.ITextBuffer,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService)">
+            <summary>
+            Tries to get the adapter to the legacy interface by the new interface.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.ITextBufferEx.TryGetPathFromTextDocument(Microsoft.VisualStudio.Text.ITextBuffer)">
+            <summary>
+            Helps with identifying VS buffers.
+            In case the underlying document is file-based, extracts its path.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.ITextBufferEx.TryGetTextBuffer(JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextBuffer,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService)">
+            <summary>
+            Tries to get the new interface by the legacy interface.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.Interop.Extension.IWpfTextViewEx">
+            <summary>
+            Extensions to <see cref="T:Microsoft.VisualStudio.Text.Editor.IWpfTextView"/> and related things (<see cref="T:Microsoft.VisualStudio.Text.Editor.ITextView"/>, <see cref="T:JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextView"/>).
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.IWpfTextViewEx.EnsureOutliningExpanded(Microsoft.VisualStudio.Text.Editor.IWpfTextView,Microsoft.VisualStudio.Text.SnapshotPoint,Microsoft.VisualStudio.Text.Outlining.IOutliningManagerService)">
+            <summary>
+            Makes sure that the text control that supports outlining has the specified position expanded.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.IWpfTextViewEx.EnsureOutliningExpanded(Microsoft.VisualStudio.Text.Editor.IWpfTextView,Microsoft.VisualStudio.Text.SnapshotSpan,Microsoft.VisualStudio.Text.Outlining.IOutliningManagerService)">
+            <summary>
+            Makes sure that the text control that supports outlining has the specified span expanded.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.IWpfTextViewEx.GetITextView(JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextView,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService)">
+            <summary>
+            Gets the managed text view from the adapter class.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.IWpfTextViewEx.GetIVsTextView(Microsoft.VisualStudio.Text.Editor.IWpfTextView,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService)">
+            <summary>
+            Gets the adapter class that exposes the pre-VS-10 interfaces from the text view.
+            DO NOT USE for things that could be achieved thru the modern API!
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.IWpfTextViewEx.GetServiceProvider(Microsoft.VisualStudio.Text.Editor.IWpfTextView,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService)">
+            <summary>
+            Gets the Service Provider of the text view.
+            It wraps the Visual Studio <see cref="T:Microsoft.VisualStudio.OLE.Interop.IServiceProvider"/> object, but exposes it with the System <see cref="T:System.IServiceProvider"/> API.
+            The <see cref="T:Microsoft.VisualStudio.TextManager.Interop.IVsTextView"/>-implementing object is the <c>VsTextViewAdapter</c> who derives from <c>WindowPane</c> who implements the system <see cref="T:System.IServiceProvider"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.IWpfTextViewEx.GetTextViewHost(Microsoft.VisualStudio.Text.Editor.IWpfTextView,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService)">
+            <summary>
+            Gets the WPF host of the given view.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.IWpfTextViewEx.GetTextViewHost(JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextView)">
+            <summary>
+            Gets the WPF host of the given view.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.IWpfTextViewEx.GetWindowFrame(Microsoft.VisualStudio.Text.Editor.IWpfTextView,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService)">
+            <summary>
+            Gets the old-fashioned COM interface for the VS window frame.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.IWpfTextViewEx.GetWindowFrameDevTen(Microsoft.VisualStudio.Text.Editor.IWpfTextView,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService)">
+            <summary>
+            Gets the new window frame object.
+            However, most methods follow the COM convention and cannot be used directly. Instead, you should use the shim returned from <see cref="M:JetBrains.VsIntegration.DevTen.Interop.Extension.IWpfTextViewEx.GetWindowFrame(Microsoft.VisualStudio.Text.Editor.IWpfTextView,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService)"/> for better API and error control.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.IWpfTextViewEx.JetTextControl(Microsoft.VisualStudio.Text.Editor.ITextView)">
+            <summary>
+            <para>Gets our <see cref="T:JetBrains.TextControl.ITextControl"/> object attached to the given Visual Studio text control.</para>
+            <para>Note that the object from our model corresponding to the Visual Studio model object is not guaranteed to exist at the moment of your call (eg you're calling from MEF and our Shell is not running yet/already). In this case the returned non-<c>Null</c> property has a <c>Null</c> value, and you should listen to the changes to its value (eg with <see cref="M:JetBrains.DataFlow.IPropertyEx.ForEachValue_NotNull``1(JetBrains.DataFlow.IProperty{``0},JetBrains.DataFlow.Lifetime,System.Action{JetBrains.DataFlow.Lifetime,``0})"/>).</para>
+            <para>This technique allows to combine lifetimes of MEF and Shell entities: whether you look into this property before jet model object is created or when it's already available, your handler will be called when jet model object is ready.</para>
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.IWpfTextViewEx.TryGetITextView(JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextView,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService)">
+            <summary>
+            Tries to get the managed text view from the adapter class.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.IWpfTextViewEx.TryGetWindowFrame(Microsoft.VisualStudio.Text.Editor.IWpfTextView,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService)">
+            <summary>
+            Gets the old-fashioned COM interface for the VS window frame.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.SnapshotSpanEx.ContainsFullyInclusive(Microsoft.VisualStudio.Text.SnapshotSpan,Microsoft.VisualStudio.Text.SnapshotPoint)">
+            <summary>
+            By default, <see cref="M:Microsoft.VisualStudio.Text.SnapshotSpan.Contains(Microsoft.VisualStudio.Text.SnapshotPoint)"/> wouldn't include the end point.
+            Include both start and end points.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Shim.ConversionDevTen.AsDocLineColumn(Microsoft.VisualStudio.Text.VirtualSnapshotPoint)">
+            <summary>
+            This method does not perform coordinate conversion. You MUST make sure that <paramref name="vpt"/> is already in the text control coordinate space.
+            <para>DO NOT USE this low-level routine unless absolutely sure the surface API will not do.</para>
+            <para>Use <see cref="T:JetBrains.TextControl.ITextControl"/>::<see cref="P:JetBrains.TextControl.ITextControl.Coords"/> and <see cref="T:JetBrains.TextControl.Coords.ITextControlPos"/> methods instead.</para>
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Shim.ConversionDevTen.AsDocOffsetAndVirtual(Microsoft.VisualStudio.Text.VirtualSnapshotPoint)">
+            <summary>
+            This method does not perform coordinate conversion. You MUST make sure that <paramref name="vpt"/> is already in the text control coordinate space.
+            <para>DO NOT USE this low-level routine unless absolutely sure the surface API will not do.</para>
+            <para>Use <see cref="T:JetBrains.TextControl.ITextControl"/>::<see cref="P:JetBrains.TextControl.ITextControl.Coords"/> and <see cref="T:JetBrains.TextControl.Coords.ITextControlPos"/> methods instead.</para>
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Shim.ConversionDevTen.AsTextControlLineColumn(Microsoft.VisualStudio.Text.VirtualSnapshotPoint)">
+            <summary>
+            This method does not perform coordinate conversion. You MUST make sure that <paramref name="vpt"/> is already in the text control coordinate space.
+            <para>DO NOT USE this low-level routine unless absolutely sure the surface API will not do.</para>
+            <para>Use <see cref="T:JetBrains.TextControl.ITextControl"/>::<see cref="P:JetBrains.TextControl.ITextControl.Coords"/> and <see cref="T:JetBrains.TextControl.Coords.ITextControlPos"/> methods instead.</para>
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Shim.ConversionDevTen.MapUpToTop2(Microsoft.VisualStudio.Text.Projection.IBufferGraph,Microsoft.VisualStudio.Text.SnapshotPoint,Microsoft.VisualStudio.Text.PointTrackingMode,Microsoft.VisualStudio.Text.PositionAffinity)">
+            <summary>
+            Maps the point to the topmost buffer of the graph. Emulates <see cref="T:Microsoft.VisualStudio.Text.Projection.IBufferGraph"/>::<c>MapUpToTop</c> function that were present in Beta1 but was gone in between August and September CTPs.
+            </summary>
+            <param name="graph">Buffer graph.</param>
+            <param name="pointNonTop">A point in some buffer in the <see cref="T:Microsoft.VisualStudio.Text.Projection.IBufferGraph"/>.</param>
+            <param name="pointTrackingMode">How <paramref name="pointNonTop"/> is tracked to the current snapshot if necessary.</param><param name="positionAffinity">If the mapping is ambiguous (the position is on a source span seam), determines
+                        whether the mapping should target the position immediately after the preceding
+                        character or immediately before the following character in the top buffer.
+                        This setting has no effect if the mapping is unambiguous.</param>
+            <param name="positionAffinity">The corresponding position in a snapshot of the top buffer, or null if the position does not map to the top buffer using
+                        this graph.</param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Shim.ConversionDevTen.ToDocVsVirtualSnapshotPoint(JetBrains.TextControl.Coords.ITextControlPos)">
+            <summary>
+            Gets a virtual snapshot point in the document coordinate space.
+            <para>DO NOT USE this low-level routine unless absolutely sure the surface API will not do.</para>
+            <para>Use <see cref="T:JetBrains.TextControl.ITextControl"/>::<see cref="P:JetBrains.TextControl.ITextControl.Coords"/> and <see cref="T:JetBrains.TextControl.Coords.ITextControlPos"/> methods instead.</para>
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Shim.ConversionDevTen.ToVsVirtualSnapshotPoint(JetBrains.TextControl.DocOffsetAndVirtual,Microsoft.VisualStudio.Text.Editor.ITextView)">
+            <summary>
+            <para>DO NOT USE this low-level routine unless absolutely sure the surface API will not do.</para>
+            <para>Use <see cref="T:JetBrains.TextControl.ITextControl"/>::<see cref="P:JetBrains.TextControl.ITextControl.Coords"/> and <see cref="T:JetBrains.TextControl.Coords.ITextControlPos"/> methods instead.</para>
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Shim.ConversionDevTen.ToVsVirtualSnapshotPoint(JetBrains.DocumentModel.DocumentCoords,Microsoft.VisualStudio.Text.Editor.ITextView)">
+            <summary>
+            <para>DO NOT USE this low-level routine unless absolutely sure the surface API will not do.</para>
+            <para>Use <see cref="T:JetBrains.TextControl.ITextControl"/>::<see cref="P:JetBrains.TextControl.ITextControl.Coords"/> and <see cref="T:JetBrains.TextControl.Coords.ITextControlPos"/> methods instead.</para>
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Shim.ConversionDevTen.ToVsVirtualSnapshotPoint(JetBrains.TextControl.TextControlLineColumn,Microsoft.VisualStudio.Text.Editor.ITextView)">
+            <summary>
+            <para>DO NOT USE this low-level routine unless absolutely sure the surface API will not do.</para>
+            <para>Use <see cref="T:JetBrains.TextControl.ITextControl"/>::<see cref="P:JetBrains.TextControl.ITextControl.Coords"/> and <see cref="T:JetBrains.TextControl.Coords.ITextControlPos"/> methods instead.</para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.Interop.Shim.MefServiceContainer">
+            <summary>
+            Exposes the VS 10 Service Container.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.Interop.Shim.ShimDynamicApi">
+            <summary>
+            Temporary class while the API is non-stable. Shims the dynamic things.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.Local.JumpVsixFromMachineToPerUser">
+            <summary>
+            In Internal mode, suggests turning a per-machine install into a per-user one.
+            This is needed to have more than one hive: starting with DevTen, per-machine components can only be registered for ALL hives at once.
+            This code takes the product shortcuts installed into <c>Common7\IDE\Extensions</c> and relocates them to <c>%LOCALAPPDATA%\Microsoft\VisualStudio\10.0\Extensions</c>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Local.JumpVsixFromMachineToPerUser.AskCleanupInstallationsByOtherVersions">
+            <summary>
+            Checks if there're any extensions of the same product but different version registered into the same hive.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Local.JumpVsixFromMachineToPerUser.AskJump">
+            <summary>
+            Asks whether to jump. Returns whether a jump was needed (if dialog will be shown, returns before actually doing the jump, and the jump could then be canceled by the user).
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Local.JumpVsixFromMachineToPerUser.CleanupAllPerHiveExtensionsInThisHive">
+            <summary>
+            Before doing a jump, delete all possible per-hive extensions in this hive.
+            More aggressive than <see cref="M:JetBrains.VsIntegration.DevTen.Local.JumpVsixFromMachineToPerUser.AskCleanupInstallationsByOtherVersions"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Local.JumpVsixFromMachineToPerUser.DoIfNotJumping">
+            <summary>
+            Called by <see cref="M:JetBrains.VsIntegration.DevTen.Local.JumpVsixFromMachineToPerUser.AskJump"/> when it's decided (by logics or user) not to jump.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Local.JumpVsixFromMachineToPerUser.DoJumpCore">
+            <summary>
+            Does the jump (after asking in any UI).
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Local.JumpVsixFromMachineToPerUser.DoJumpWithUI">
+            <summary>
+            User chose to jump (or we did it automatically). Error handling in UI.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Markup.VsDocumentMarkupTagger.myMoniker">
+            <summary>
+            N/A unless <see cref="F:JetBrains.TextControl.TextControlManager.OptionTrace"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Markup.VsDocumentMarkupTagger.myName">
+            <summary>
+            N/A unless <see cref="F:JetBrains.TextControl.TextControlManager.OptionTrace"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.Markup.VsDocumentMarkupTaggerProvider.myName">
+            <summary>
+            N/A unless <see cref="F:JetBrains.TextControl.TextControlManager.OptionTrace"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Markup.VsGlyphFactory.Microsoft#VisualStudio#Text#Editor#IGlyphFactory#GenerateGlyph(Microsoft.VisualStudio.Text.Formatting.IWpfTextViewLine,Microsoft.VisualStudio.Text.Editor.IGlyphTag)">
+            <summary>
+            Generates a new glyph visual for the given line.
+            </summary>
+            <param name="line">The line that this glyph will be placed on.</param><param name="tag">Information about the glyph for which the visual is being generated.</param>
+            <returns>
+            The visual element for the given tag.
+            </returns>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Markup.VsHighlightingViewListener.Microsoft#VisualStudio#Text#Editor#IWpfTextViewCreationListener#TextViewCreated(Microsoft.VisualStudio.Text.Editor.IWpfTextView)">
+            <summary>
+            Called when a text view having matchine roles is created over a text data model having a matching content type.
+                        Exporters must specify at least one ContentTypeAttribute and one TextViewRole, and should mark their export using the following attribute:
+                        [Export(typeof(TextViewCreationListener))], along with [ContentType()] and [TextViewRole()].
+            </summary>
+            <param name="textView">The newly created text view.</param>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.ProjectModel.VsEnsureWritableHandlerDevTen">
+            <summary>
+            Attaches to <see cref="T:JetBrains.ProjectModel.Impl.SolutionBase"/> events related to handling making the files writable.
+            Overrides Whidbey-specific behavior.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.Application.IVsServiceProviderEx">
+            <summary>
+            VS-10-specific extensions to the OLE <see cref="T:Microsoft.VisualStudio.OLE.Interop.IServiceProvider"/> interface.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Application.IVsServiceProviderEx.IComponentModel(Microsoft.VisualStudio.OLE.Interop.IServiceProvider)">
+            <summary>
+            Gets the MEF component model root in VS 10.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.Application.MethTest.IMethTestServer">
+            <summary>
+            Detects broken installations.
+            Now R# in DevTen consists of two separate things: VS Package and VS MEF extension. The first is the main one, but the second is required for normal operation. It's possible that one of them would fail. We consider the VS Package failure to load to be uncommon and fatal, whilst MEF would have its quirks from time to time. These situations we would like to explicitly detect and report, otherwise the symptoms could be ambiguous.
+            This is the "server" part: an interface to the component registered with MEF, its presence to be checked by the package when it gets running.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.Application.MethTest.MethTestServer">
+            <summary>
+            Detects broken installations.
+            Now R# in DevTen consists of two separate things: VS Package and VS MEF extension. The first is the main one, but the second is required for normal operation. It's possible that one of them would fail. We consider the VS Package failure to load to be uncommon and fatal, whilst MEF would have its quirks from time to time. These situations we would like to explicitly detect and report, otherwise the symptoms could be ambiguous.
+            This is the "server" part: a component registered with MEF, its presence to be checked by the package when it gets running.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.Application.MethTest.MethTestClient">
+            <summary>
+            Detects broken installations.
+            Now R# in DevTen consists of two separate things: VS Package and VS MEF extension. The first is the main one, but the second is required for normal operation. It's possible that one of them would fail. We consider the VS Package failure to load to be uncommon and fatal, whilst MEF would have its quirks from time to time. These situations we would like to explicitly detect and report, otherwise the symptoms could be ambiguous.
+            This is the "client" part: a VS Package component to check the presence of MEF-registered components some time after startup.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.TextControl.CreateVsTextControlDevTenParams">
+            <summary>
+            Creates text controls over Visual Studio text views.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.CreateVsTextControlDevTenParams.#ctor(JetBrains.VsIntegration.DocumentModel.Whidbey.VsDocumentWhidbey,Microsoft.VisualStudio.Text.Editor.IWpfTextView,JetBrains.UI.WindowManagement.WindowFrame,JetBrains.ProjectModel.ISolution)">
+             <summary>
+             Creates text controls over Visual Studio text views.
+             The text control will be destroyed either when you call <see cref="M:System.IDisposable.Dispose"/> on it or when the text view is unregistered with VS.
+             </summary>
+             <param name="document">
+               
+               The document to be edited by the text control.
+            
+            </param>
+             <param name="textview">
+               
+               The Visual Studio text control we're wrapping.
+            
+            </param>
+             <param name="frame">Text control frame.</param>
+             <param name="solution">Optional. The solution to whom the 
+               
+               <paramref name="document"/>
+               
+                belongs. There are documents and text controls that are not a part of the solution, eg LiveTemplates editor.</param>
+             
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.CreateVsTextControlDevTenParams.#ctor(JetBrains.VsIntegration.DocumentModel.Whidbey.VsDocumentWhidbey,JetBrains.UI.WindowManagement.WindowFrame,Microsoft.VisualStudio.Text.Editor.IWpfTextView)">
+             <summary>
+             Creates text controls over Visual Studio text views.
+             The text control will be destroyed either when you call <see cref="M:System.IDisposable.Dispose"/> on it or when the text view is unregistered with VS.
+             </summary>
+             <param name="document">
+               
+               The document to be edited by the text control.
+            
+            </param>
+             <param name="frame">Text control frame.</param>
+             <param name="textview">
+               
+               The Visual Studio text control we're wrapping.
+            
+            </param>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.TextControl.CreateVsTextControlDevTenParams.Document">
+            <summary>
+            The document to be edited by the text control.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.TextControl.CreateVsTextControlDevTenParams.Solution">
+            <summary>
+            Optional. The solution to whom the <see cref="F:JetBrains.VsIntegration.DevTen.TextControl.CreateVsTextControlDevTenParams.Document"/> belongs. There are documents and text control that are not a part of the solution, eg LiveTemplates editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.TextControl.CreateVsTextControlDevTenParams.VsTextView">
+            <summary>
+            The Visual Studio text control we're wrapping.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.CurrentLine.VsCurrentLineDevTen.#ctor(JetBrains.DataFlow.Lifetime,JetBrains.TextControl.ITextControlManager,JetBrains.Util.Lazy.Lazy{Microsoft.VisualStudio.Text.Classification.IClassificationTypeRegistryService},JetBrains.Util.Lazy.Lazy{Microsoft.VisualStudio.Text.Classification.IClassificationFormatMapService})">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Object"/> class.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlMarginDevTenEx.GetMargin(Microsoft.VisualStudio.Text.Editor.IWpfTextView,System.Windows.Controls.Dock)">
+            <summary>
+            Gets our multi-control-host margin from the text view.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlMarginProviderBaseDevTen">
+            <summary>
+            Base class for standard around-the-editor margins.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlDynamicMargin">
+            <summary>
+            A dynamic (runtime-defined) margin for the <see cref="T:Microsoft.VisualStudio.Text.Editor.IWpfTextView"/>-kind text control.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlDynamicMargin.myCachedUiElement">
+            <summary>
+            Create one from the <see cref="F:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlDynamicMargin.myData"/>, cache from then on.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlDynamicMargin.#ctor(JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlDynamicMargin.Data)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Object"/> class.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlDynamicMargin.AddToTextControl(Microsoft.VisualStudio.Text.Editor.IWpfTextView,JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlDynamicMargin.Data,System.Windows.Controls.Dock,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService,JetBrains.Application.IApplicationDescriptor)">
+            <summary>
+            Adds a margin/provider to the text control.
+            </summary>
+            <param name="textview">The host.</param>
+            <param name="data">Describes the margin to be created.</param>
+            <param name="dock">The side of the text control to dock the margin at.</param>
+            <param name="vsEditorAdaptersFactoryService"></param>
+            <param name="applicationDescriptor"></param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlDynamicMargin.System#IDisposable#Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlDynamicMargin.Microsoft#VisualStudio#Text#Editor#ITextViewMargin#GetTextViewMargin(System.String)">
+            <summary>
+            Gets the <see cref="T:Microsoft.VisualStudio.Text.Editor.ITextViewMargin"/> with the given <paramref name="marginName"/>.
+            </summary>
+            <param name="marginName">The name of the <see cref="T:Microsoft.VisualStudio.Text.Editor.ITextViewMargin"/>.</param>
+            <returns>
+            The <see cref="T:Microsoft.VisualStudio.Text.Editor.ITextViewMargin"/> named <paramref name="marginName"/>, or null if no match is found.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="marginName"/> is null.</exception>
+            <remarks>
+            A margin must return itself if passed its name, and a container margin must forward the call to its children.
+            </remarks>
+        </member>
+        <member name="P:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlDynamicMargin.Microsoft#VisualStudio#Text#Editor#ITextViewMargin#Enabled">
+            <summary>
+            Determines whether the margin is enabled.
+            </summary>
+            <exception cref="T:System.ObjectDisposedException">The margin is disposed.</exception>
+        </member>
+        <member name="P:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlDynamicMargin.Microsoft#VisualStudio#Text#Editor#ITextViewMargin#MarginSize">
+            <summary>
+            Gets the size of the margin. 
+            </summary>
+            <remarks>
+            For a horizontal margin this is the height of the margin, 
+                        since the width will be determined by the <see cref="T:Microsoft.VisualStudio.Text.Editor.ITextView"/>. 
+                        For a vertical margin this is the width of the margin, since the height will be determined by the <see cref="T:Microsoft.VisualStudio.Text.Editor.ITextView"/>.
+            </remarks>
+            <exception cref="T:System.ObjectDisposedException">The margin is disposed.</exception>
+        </member>
+        <member name="P:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlDynamicMargin.Microsoft#VisualStudio#Text#Editor#IWpfTextViewMargin#VisualElement">
+            <summary>
+            Gets the FrameworkElement that renders the margin.
+            </summary>
+            <exception cref="T:System.ObjectDisposedException">if the margin is disposed.</exception>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlDynamicMargin.Data">
+            <summary>
+            Describes the margin context to be dragged thru the provider and so on.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlDynamicMargin.Data.#ctor(JetBrains.DataFlow.Lifetime,System.String,System.Double,System.Func{JetBrains.DataFlow.Lifetime,System.Windows.FrameworkElement})">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Object"/> class.
+            </summary>
+            <param name="lifetime"></param>
+            <param name="id">Margin name. One can get a margin by its name from the text view.</param>
+            <param name="width">Margin width, in logical pixels.</param>
+            <param name="FCreateView">Creates the presentation for the new margin, given its lifetime.</param>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlDynamicMargin.Provider">
+            <summary>
+            A provider to create the preconfigured margin.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlDynamicMargin.Provider.Clone">
+            <summary>
+            Used in contexts where a <c>Func</c> for creating a provider is required.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlDynamicMargin.Provider.Microsoft#VisualStudio#Text#Editor#IWpfTextViewMarginProvider#CreateMargin(Microsoft.VisualStudio.Text.Editor.IWpfTextViewHost,Microsoft.VisualStudio.Text.Editor.IWpfTextViewMargin)">
+            <summary>
+            Creates an <see cref="T:Microsoft.VisualStudio.Text.Editor.IWpfTextViewMargin"/> for the given <see cref="T:Microsoft.VisualStudio.Text.Editor.IWpfTextViewHost"/>.
+            </summary>
+            d\
+                        <param name="wpfTextViewHost">The <see cref="T:Microsoft.VisualStudio.Text.Editor.IWpfTextViewHost"/> for which to create the <see cref="T:Microsoft.VisualStudio.Text.Editor.IWpfTextViewMargin"/>.</param><param name="marginContainer">The margin that will contain the newly-created margin.</param>
+            <returns>
+            The <see cref="T:Microsoft.VisualStudio.Text.Editor.IWpfTextViewMargin"/>.  
+                        The value may be null if this <see cref="T:Microsoft.VisualStudio.Text.Editor.IWpfTextViewMarginProvider"/> does not participate for this context.
+            </returns>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlMarginDevTen">
+            <summary>
+            The common margin implementation type.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlMarginProviderBottomDevTen">
+            <summary>
+            Bottom standard margin.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlMarginProviderBottomDevTen.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Object"/> class.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlMarginProviderLeftDevTen">
+            <summary>
+            Left standard margin.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlMarginProviderLeftDevTen.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Object"/> class.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlMarginProviderRightDevTen">
+            <summary>
+            Right standard margin.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlMarginProviderRightDevTen.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Object"/> class.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlMarginProviderTopDevTen">
+            <summary>
+            Top standard margin.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsTextControlMarginProviderTopDevTen.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Object"/> class.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsWpfErrorStripeDevTen.myErrorStripeErrorStatus">
+            <summary>
+            The error stripe state concerning the presence of errors or warnings.
+            Updated by the highlighters enumerator.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsWpfErrorStripeDevTen.#ctor(JetBrains.VsIntegration.DevTen.TextControl.VsTextControlDevTen,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService,JetBrains.Application.IShellLocks,JetBrains.Application.IApplicationDescriptor,JetBrains.TextControl.Markup.IDocumentMarkupManager)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Object"/> class.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsWpfErrorStripeDevTen.GetMarginId(JetBrains.Application.IApplicationDescriptor)">
+            <summary>
+            VS ID for our margin.
+            </summary>
+            <param name="applicationDescriptor"></param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsWpfErrorStripeDevTen.CreateStatusIndicator(JetBrains.DataFlow.Lifetime)">
+            <summary>
+            Creates the control of the status indicator itself, wires its presentation events.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsWpfErrorStripeDevTen.CreateStatusIndicator_ColorBlock(JetBrains.DataFlow.Lifetime,System.Windows.Controls.Panel)">
+            <summary>
+            Colored block of the error stripe status indicator.
+            The square version.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsWpfErrorStripeDevTen.CreateStatusIndicator_ColorBlock_Round(JetBrains.DataFlow.Lifetime,System.Windows.Controls.Panel)">
+            <summary>
+            Colored block of the error stripe status indicator.
+            The round version.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsWpfErrorStripeDevTen.CreateStatusIndicator_ColorBlock_Square(JetBrains.DataFlow.Lifetime,System.Windows.Controls.Panel)">
+            <summary>
+            Colored block of the error stripe status indicator.
+            The square version.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsWpfErrorStripeDevTen.CreateStatusIndicator_Tooltip(JetBrains.DataFlow.Lifetime,System.Windows.Controls.TextBlock,JetBrains.DataFlow.IProperty{JetBrains.TextControl.ErrorStripeIndicatorState})">
+            <summary>
+            Tooltip on the indicator.
+            TODO: DevTen: error/warning counts.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsWpfErrorStripeDevTen.CreateView(JetBrains.DataFlow.Lifetime,JetBrains.Application.IShellLocks)">
+            <summary>
+            Called by the margin when it needs a new view.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsWpfErrorStripeDevTen.CreateView_IndicatorPlace(JetBrains.DataFlow.Lifetime)">
+            <summary>
+            Placeholder for the indicator control on the error stripe.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsWpfErrorStripeDevTen.CreateView_MarkersPlace(JetBrains.DataFlow.Lifetime,JetBrains.Application.IShellLocks)">
+            <summary>
+            Placeholder for the bar with the error stripe markers.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsWpfErrorStripeDevTen.InitNeedsRepaint(JetBrains.TextControl.Markup.IDocumentMarkupManager)">
+            <summary>
+            Sinks environment change events to update the error stripe.
+            </summary>
+            <param name="documentMarkupManager"></param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsWpfErrorStripeDevTen.InitTextControlMargin(Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService,JetBrains.Application.IApplicationDescriptor,JetBrains.Application.IShellLocks)">
+            <summary>
+            Causes the margin to be created, will call back into <see cref="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsWpfErrorStripeDevTen.CreateView(JetBrains.DataFlow.Lifetime,JetBrains.Application.IShellLocks)"/>.
+            </summary>
+            <param name="vsEditorAdaptersFactoryService"></param>
+            <param name="applicationDescriptor"></param>
+            <param name="locks"></param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.Marginal.VsWpfErrorStripeDevTen.ShowMarkers(JetBrains.DataFlow.Lifetime,System.Windows.Size,JetBrains.Application.IShellLocks)">
+            <summary>
+            Calculates and shows the new set of error stripe markers.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.TextViewShimImpl.VsErrorStripeControlDevTen.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Windows.UIElement"/> class. 
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.TextControl.TextViewShimImpl.VsErrorStripeControlDevTen.ErrorStripeCursor">
+            <summary>
+            Handle to the cursor to be set in response to the <see cref="F:JetBrains.Interop.WinApi.WindowsMessages.WM_SETCURSOR"/> message.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.TextViewShimImpl.VsErrorStripeControlDevTen.Invalidate">
+            <summary>
+            Safely invalidates the control.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.TextViewShimImpl.VsErrorStripeControlDevTen.FillCursorMap">
+            <summary>
+            Mapping from <c>HCURSOR</c> to Avalon cursors.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.TextViewShimImpl.VsErrorStripeControlDevTen.OnGetJetTooltip(System.Object,JetBrains.UI.Avalon.Tooltips.GetJetTooltipEventArgs)">
+            <summary>
+            Handles requests for tooltips.
+            </summary>
+        </member>
+        <member name="P:JetBrains.VsIntegration.DevTen.TextControl.TextViewShimImpl.VsErrorStripeControlDevTen.Size">
+            <summary>
+            Currently arranged size of the stripe.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsErrorStripeDocumentDevTen.CreateHighlighterPositionCacheInstance">
+            <summary>
+            Allows to override the HighlighterPositionCache.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsErrorStripeDocumentDevTen.GetMarkersSpaceRect(System.Drawing.Size)">
+            <summary>
+            Gets the rectangle for the markers, this does not include the error stripe indicator space.
+            VS edition: sync to the scrollbar track.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.TextControl.TextViewShimImpl.VsTextViewShimImplementationComponentDevTen">
+            <summary>
+            Registers the <see cref="T:JetBrains.VsIntegration.DevTen.TextControl.TextViewShimImpl.VsTextViewShimImplementationFactoryDevTen">factory</see> with the Common Services.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.TextControl.TextViewShimImpl.VsTextViewShimImplementationDevTen">
+            <summary>
+            Provides the shared implementation of the Error Stripe for co-use in products, in VS10+.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.TextViewShimImpl.VsTextViewShimImplementationDevTen.Trace(System.String)">
+            <summary>
+            Traces (if allowed) with added ID of the current object.
+            </summary>
+        </member>
+        <member name="P:JetBrains.VsIntegration.DevTen.TextControl.TextViewShimImpl.VsTextViewShimImplementationDevTen.TextView">
+            <summary>
+            The view being wrapped.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlCoordinateConversionDevTen.#ctor(JetBrains.VsIntegration.DevTen.TextControl.VsTextControlDevTen)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Object"/> class.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlCoordinateConversionDevTen.TextControlLineColumn_To_Viewport(JetBrains.TextControl.TextControlLineColumn)">
+            <summary>
+            This is the central char-to-pixel conversion method in the DevTen case.
+            It has no such immanent thing as canvas coordinate system, only viewport-relative coords are defined with acceptable accuracy.
+            The scrolling is probably in lines, and canvas coord depends on the line height of the lines above the view, which is not calculated until they get into the viewport.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlCoordinateConversionDevTen.Viewport_To_TextControlLineColumn(System.Windows.Point)">
+            <summary>
+            This is the central pixel-to-char conversion method in the DevTen case.
+            It has no such immanent thing as canvas coordinate system, only viewport-relative coords are defined with acceptable accuracy.
+            The scrolling is probably in lines, and canvas coord depends on the line height of the lines above the view, which is not calculated until they get into the viewport.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlCoordinateConversionDevTen.GetAverageLineHeight(Microsoft.VisualStudio.Text.Editor.IWpfTextView)">
+            <summary>
+            Lines outside the viewport do not have layout, pixel coordinates, or height values.
+            To approximate pixel y-coordinates outside the viewport, we use the average viewport line height.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlCoordinateConversionDevTen.GetTextViewLineNumber(Microsoft.VisualStudio.Text.Editor.IWpfTextView,Microsoft.VisualStudio.Text.Formatting.ITextViewLine,Microsoft.VisualStudio.Text.PointTrackingMode)">
+            <summary>
+            Takes the text view formatted line, maps it to the visual buffer and gets its line number in the visual buffer.
+            </summary>
+            <param name="textview">The owning text view. Used for getting the visual buffer.</param>
+            <param name="line">The formatted line to get the number of.</param>
+            <param name="whichend">Whether to try the beginning or the end of the formatted line for the text view line number. They're not mathematically guaranteed to be the same.</param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlCoordinateConversionDevTen.GetViewportRectFromTextView(Microsoft.VisualStudio.Text.Editor.IWpfTextView)">
+            <summary>
+            Calculates the viewport rectangle in canvas coordinates. Exposed by <see cref="P:JetBrains.TextControl.ITextControlScrolling.ViewportRect"/>.
+            Unguarded (ie updates even when under a guard).
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlCoordinateConversionDevTen.MapVsVirtualPoint_DocToTextControl(Microsoft.VisualStudio.Text.VirtualSnapshotPoint)">
+            <summary>
+            Raw mapping of VS snapshot points. Preserves virtual space.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlCoordinateConversionDevTen.MapVsVirtualPoint_TextControlToDoc(Microsoft.VisualStudio.Text.VirtualSnapshotPoint)">
+            <summary>
+            Raw mapping of VS snapshot points. Preserves virtual space.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlCoordinateConversionDevTen.Screen_To_Viewport(System.Windows.Point)">
+            <summary>
+            The version that does not lose precision.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlCoordinateConversionDevTen.Viewport_To_Screen(System.Windows.Point)">
+            <summary>
+            The version that does not lose precision.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlCoordinateConversionDevTen.Canvas_To_TextControlLineColumn(JetBrains.TextControl.Graphics.PointEx)">
+            <summary>
+            Gets the canvas coords from two points in viewport coords: sample plus origin.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlCoordinateConversionDevTen.Screen_To_TextControlLineColumn(System.Drawing.Point)" -->
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlCoordinateConversionDevTen.TextControlLineColumn_To_Canvas(JetBrains.TextControl.TextControlLineColumn)">
+            <summary>
+            Gets the canvas coords from two points in viewport coords: sample plus origin.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlCoordinateConversionDevTen.TextControlLineColumn_To_Screen(JetBrains.TextControl.TextControlLineColumn)" -->
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlCreatorDevTen.CreateTextControl``1(JetBrains.TextControl.CreateTextControlParams{``0})">
+            <summary>
+            Creates a new text control for some document (there might be multiple text controls for the same document).
+             The document and the type of the text control created are determined by the <paramref name="param"/>, for which any <see cref="T:JetBrains.TextControl.CreateTextControlParams`1"/> inheritor could be used.
+            </summary>
+            <typeparam name="TTextControl">Type of the text control to create.</typeparam><param name="param">Text control context and parameters.</param>
+            <returns>
+            The new text control.
+            </returns>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlDevTen">
+            <summary>
+            Wraps Visual Studio text controls with our model, VS 10.0 implementation.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlDevTen.Init_AdvertiseOnVsObject">
+            <summary>
+            When we're ready (and until we begin teardown), advertise the jet model object on the VS model object.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlDevTen.Init_SyncOnDocChange">
+            <summary>
+            When the doc changes, do vs-sync for the important model parts.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlDevTen.GetVsTextViewOleCommandTarget">
+            <summary>
+            Gets the command target for the current VS text view.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlDevTen.IsPositionInTextView(JetBrains.TextControl.Coords.ITextControlPos)">
+            <summary>
+            Gets whether the given document position is present in the text view of the text control.
+            </summary>
+            <param name="position">The document position in the unified position format (<see cref="P:JetBrains.TextControl.ITextControl.Coords"/>.<see cref="M:JetBrains.TextControl.Coords.ITextControlCoords.FromDocOffset(System.Int32)"/> or <see cref="P:JetBrains.TextControl.ITextControl.Coords"/>.<see cref="M:JetBrains.TextControl.Coords.ITextControlCoords.FromDocLineColumn(JetBrains.DocumentModel.DocumentCoords)"/>).</param>
+            <remarks>
+            Even though every position could be converted to a text view (and usually a reasonable value will be returned), sometimes that would be only an approximate position (that would not roundtrip). For example, a document position could be hidden from the text view by a collapsed region.
+            Generic implementation common for all VS text controls.
+            If we go from document to text control and then back successfully, then the point is not covered by a collapsed region or any other layered model artifact.
+            Slow because at points that are actually under a collapsed region the calculations are complex sometimes.
+            Overriding with a more specific method is recommended.
+            </remarks>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlDevTen.IsVsCompletorWindowActive">
+            <summary>
+            Gets whether the VS completion window is currently visible over the text control.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlDevTen.PushOleCommandFilter(JetBrains.DataFlow.Lifetime,Microsoft.VisualStudio.OLE.Interop.IOleCommandTarget,Microsoft.VisualStudio.OLE.Interop.IOleCommandTarget@)">
+            <summary>
+            Places an OLE command filter to the text control filters chain at the highest priority.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlDevTen.Init_AfterFieldInit">
+            <summary>
+            Base init. Must be called by the inheritors after the text control is fully initialized.
+            </summary>
+        </member>
+        <member name="P:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlDevTen.Coords">
+            <summary>
+            <para>Provides access to the text control coordinate conversion, which makes it possible to represent a point on the text control or in the document in a unified way.</para>
+            <para>The rendered text gets from the <see cref="P:JetBrains.TextControl.ITextControl.Document">document</see>, however, it might be transformed or filtered (eg projections and collapsed regions).</para>
+            <para>That's why document line-column positions (<see cref="T:JetBrains.DocumentModel.DocumentCoords"/>) do not always agree to the text control line-column positions (<see cref="T:JetBrains.TextControl.TextControlLineColumn"/>). Currently, these coordinates have different CLR types and are not so easily mixed together.</para>
+            </summary>
+        </member>
+        <member name="P:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlDevTen.Scrolling">
+            <summary>
+            Gets the scrolling parameters of the text control, both for quering and manipulating.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.TextControl.VsAttachTextControlsToTextViews">
+            <summary>
+            Whenever we see a new text view, create our text control over it.
+            We must give a document to the text control, which is normally per-solution, that's why 'tis a solution component.
+            Solutionless text controls (eg LT editor) are created elsewhere.
+            We hope no text view's buffer has corresponding IDocument in more than one solution :)
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsAttachTextControlsToTextViews.TryGetCreateParams(Microsoft.VisualStudio.Text.Editor.IWpfTextView,JetBrains.VsIntegration.Interop.Shim.Shell.IVsRunningDocumentTable,JetBrains.VsIntegration.WindowManagement.VsWindowFrameManager,JetBrains.Application.IShellLocks,JetBrains.ProjectModel.ISolution,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService,JetBrains.VsIntegration.ProjectModel.ProjectModelSynchronizer,JetBrains.UI.Application.WindowsMessageHookManager)">
+            <summary>
+            Collects env for creating a text control.
+            Must be properly disposed of if non-<c>Null</c> (creating a text control is an example of some proper disposal).
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsAttachTextControlsToTextViews.AttachWindowFrameToTextViewRootParent(JetBrains.UI.WindowManagement.WindowFrame,System.Object,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService,JetBrains.UI.Application.WindowsMessageHookManager)">
+            <summary>
+            We cannot yet rip off information about the window off the <see cref="T:JetBrains.VsIntegration.Interop.Shim.Shell.IVsWindowFrame"/>.
+            Thus, when we're attaching to a VS text control, we only know its <see cref="F:JetBrains.UI.WindowManagement.WindowFrame.RootParentHwnd"/> from the text view.
+            </summary>
+            <param name="frame">Frame of the text control, to be completed with <see cref="F:JetBrains.UI.WindowManagement.WindowFrame.RootParentHwnd"/> info.</param>
+            <param name="textview">Text view of either implementation. HWND-based in Whidbey, Avalon-based in DevTen.</param>
+            <param name="vsEditorAdaptersFactoryService"></param>
+            <param name="hookman"></param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlScrollingDevTen.#ctor(JetBrains.VsIntegration.DevTen.TextControl.VsTextControlDevTen,Microsoft.VisualStudio.Text.Outlining.IOutliningManagerService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Object"/> class.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlScrollingDevTen.ScrollTo(JetBrains.TextControl.Coords.ITextControlPos,JetBrains.TextControl.TextControlScrollType)">
+            <summary>
+            Scrolls the view to make the <paramref name="position"/> visible in the viewport, placing it based on the <paramref name="scrolltype"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlSelectionDevTen.#ctor(JetBrains.VsIntegration.DevTen.TextControl.VsTextControlDevTen,JetBrains.Application.IShellLocks)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Object"/> class.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlWindowDevTen.#ctor(JetBrains.VsIntegration.DevTen.TextControl.VsTextControlDevTen,JetBrains.UI.WindowManagement.WindowFrame,JetBrains.Application.IShellLocks,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService,JetBrains.TextControl.Markup.IDocumentMarkupManager,JetBrains.TextControl.Markup.IHighlighterCustomization,JetBrains.TextControl.DefaultTextControlSchemeManager)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Object"/> class.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlWindowDevTen.Init_ErrorStripe(JetBrains.Platform.CommonServices.TextControlServices.IVsTextViewShared,JetBrains.Application.IShellLocks,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService)">
+            <summary>
+            Wires up together (1) error stripe doc (2) shared text view shim (3) user options on text control.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlWindowDevTen.Init_TextViewShared">
+            <summary>
+            Attaches to the shared services over the current text view.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlWindowDevTen.CreateViewportAnchorCore(JetBrains.DataFlow.Lifetime)">
+            <summary>
+            Should create the anchoring rect core object. Do not use caching, the impl already does it instead of calling the method directly.
+            </summary>
+            <param name="lifetime"></param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextControlWindowDevTen.FocusCore">
+            <summary>
+            Should cause the text control to achieve keyboard focus.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.TextControl.VsTextViewCollectorDevTen">
+            <summary>
+            Collects text views, getting them from any possible sources (MEF export collector, RDT events, by enumerating available text views periodically).
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.TextControl.VsTextViewCollectorDevTen.VsTextViewsGuarded">
+            <summary>
+            Lists the VS text controls (views) currently discovered. Guarded.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextViewCollectorDevTen.GetCurrentVsViewsFromRdt(JetBrains.Util.Lazy.Lazy{JetBrains.VsIntegration.Interop.Shim.Shell.IVsRunningDocumentTable},JetBrains.Threading.IThreading,JetBrains.Util.Lazy.Lazy{Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService},JetBrains.Util.Lazy.Lazy{Microsoft.VisualStudio.TextManager.Interop.IVsTextManager})">
+            <summary>
+            Enums RDT buffers, then gets text views attached to them.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.TextControl.VsTextViewKeyProcessor">
+            <summary>
+            Backend for the <see cref="P:JetBrains.TextControl.ITextControlWindow.Keyboard"/> event.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.TextControl.VsTextViewMouseProcessor">
+            <summary>
+            Backend for the <see cref="P:JetBrains.TextControl.ITextControlWindow.MouseMove"/>, <see cref="P:JetBrains.TextControl.ITextControlWindow.MouseDown"/>, <see cref="P:JetBrains.TextControl.ITextControlWindow.MouseUp"/> events.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.TextControl.VsTextViewSink">
+            <summary>
+            Monitors vs' creation of text views and maintains the <see cref="F:JetBrains.VsIntegration.DevTen.TextControl.VsTextViewSink.VsTextViewsUnugarded"/> collection.
+            This class is created by MEF, and its lifetime does not agree to the Shell lifetime.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.DevTen.TextControl.VsTextViewSink.VsTextViewsUnugarded">
+            <summary>
+            Lists the VS text controls (views).
+            As this collection directly reflects the VS state, even at times when the Shell is not running, it's not guarded.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextViewSink.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Object"/> class.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextViewSink.Microsoft#VisualStudio#Text#Editor#IWpfTextViewCreationListener#TextViewCreated(Microsoft.VisualStudio.Text.Editor.IWpfTextView)">
+            <summary>
+            Called when a text view having matchine roles is created over a text data model having a matching content type.
+                        Exporters must specify at least one ContentTypeAttribute and one TextViewRole, and should mark their export using the following attribute:
+                        [Export(typeof(TextViewCreationListener))], along with [ContentType()] and [TextViewRole()].
+            </summary>
+            <param name="textView">The newly created text view.</param>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.UI.VsAvalonStatusBarShimDevTen">
+            <summary>
+            An extension to the <see cref="T:JetBrains.UI.Avalon.Controls.AvalonStatusBarShim"/> class with DevTen-specific functions.
+            </summary>
+            <seealso cref="T:JetBrains.UI.Avalon.Controls.AvalonStatusBarShim"/>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.UI.VsAvalonStatusBarShimDevTen.TrySubclassDevTenBeta2StatusDockPanelInWindow(JetBrains.DataFlow.Lifetime,System.IntPtr,JetBrains.DataFlow.IListEvents{JetBrains.UI.StatusBar.JetStatusBarIndicator},JetBrains.UI.CommonControls.Fonts.FontsManager,JetBrains.UI.Tooltips.ITooltipManager,JetBrains.Threading.IThreading,JetBrains.UI.Application.IMainWindow,JetBrains.UI.PopupWindowManager.MainWindowPopupWindowContext,JetBrains.UI.PopupMenu.JetPopupMenus,JetBrains.UI.Application.WindowsMessageHookManager)">
+            <summary>
+            Works in DevTen Beta2+ for its status bars, see <see cref="M:JetBrains.UI.Avalon.Controls.AvalonStatusBarShim.TryFindDevTenBeta2StatusDockPanelInHwnd(System.IntPtr)"/> for comments.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.UI.VsAvalonStatusBarShimDevTen.SubclassDevTenBeta2StatusDockPanel(JetBrains.DataFlow.Lifetime,JetBrains.UI.CommonControls.Fonts.FontsManager,JetBrains.UI.Tooltips.ITooltipManager,JetBrains.Threading.IThreading,JetBrains.UI.Application.IMainWindow,System.Windows.Controls.Panel,JetBrains.DataFlow.IListEvents{JetBrains.UI.StatusBar.JetStatusBarIndicator},JetBrains.UI.PopupWindowManager.MainWindowPopupWindowContext,JetBrains.UI.PopupMenu.JetPopupMenus,JetBrains.UI.Application.WindowsMessageHookManager)">
+            <summary>
+            Works in DevTen Beta2+ for its status bars, see <see cref="M:JetBrains.UI.Avalon.Controls.AvalonStatusBarShim.TryFindDevTenBeta2StatusDockPanelInHwnd(System.IntPtr)"/> for comments.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.UI.VsAvalonStatusBarShimDevTen.AddItemsHostToStatusDockPanel(JetBrains.DataFlow.Lifetime,System.Windows.Controls.Panel,System.Windows.Controls.ItemsControl)">
+            <summary>
+            Helper for attaching to the status line of a window. Places a panel for our items in between the status bar and resize grip.
+            Must be executed on the UI thread.
+            </summary>
+            <param name="lifetime"></param>
+            <param name="statusdock">The dock panel of the window status line.</param>
+            <param name="panelToHostOnStatusBar">The Avalon element to put on the status bar as its item.</param>
+        </member>
+        <member name="T:JetBrains.VsIntegration.DevTen.UI.VsStatusBarIndicatorsDevTen">
+            <summary>
+            The status bar support part which inserts indicators into the DevEnv status bar by subclassing it as a WPF status bar and inserting own elements.
+            </summary>
+        </member>
+    </members>
+</doc>

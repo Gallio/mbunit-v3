@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.SolutionAnalysis.UI</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Daemon.SolutionAnalysis.UI.EnablingAnalysisWarningForm.InitView">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Daemon.SolutionAnalysis.UI.RunInspection.FindSimilarIssuesForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Daemon.SolutionAnalysis.UI.RunInspection.FindSimilarIssuesForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Daemon.SolutionAnalysis.UI.RunInspection.FindSimilarIssuesForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Daemon.SolutionAnalysis.UI.Indicator.CustomizeForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Daemon.SolutionAnalysis.UI.Indicator.CustomizeForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Daemon.SolutionAnalysis.UI.Indicator.CustomizeForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Daemon.SolutionAnalysis.UI.RunInspection.FilterIssuesForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Daemon.SolutionAnalysis.UI.RunInspection.FilterIssuesForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Daemon.SolutionAnalysis.UI.RunInspection.FilterIssuesForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+    </members>
+</doc>

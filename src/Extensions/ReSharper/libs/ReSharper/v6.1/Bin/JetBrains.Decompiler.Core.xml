@@ -1,0 +1,1451 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.Decompiler.Core</name>
+    </assembly>
+    <members>
+        <member name="F:JetBrains.Decompiler.Ast.FunctionSignatureStyle.Full">
+            <summary>
+            Includes attributes, modifiers, types, and names.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Decompiler.Ast.FunctionSignatureStyle.Compact">
+            <summary>
+            Includes names only.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Decompiler.Ast.FunctionSignatureStyle.CompactSingle">
+            <summary>
+            Includes the only name (no parenthesis).
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.ObjectModel.ExtractStaticCtorInitializerTransformation">
+            <summary>
+            <para>
+            <code>
+            {
+              $field-initializers
+              $body
+            }
+            </code>
+            ->
+            <code>
+            {
+              $body
+            }
+            </code>
+            </para>
+            </summary>
+        </member>
+        <member name="P:JetBrains.Decompiler.Ast.Constant.Type">
+            <summary>
+            The type of the value.
+            </summary>
+        </member>
+        <member name="P:JetBrains.Decompiler.Ast.Constant.ElementType">
+            <summary>
+            The element type corresponding to <see cref="P:JetBrains.Decompiler.Ast.Constant.Type"/>.
+            </summary>
+        </member>
+        <member name="P:JetBrains.Decompiler.Ast.Constant.Value">
+            <summary>
+            When <see cref="P:JetBrains.Decompiler.Ast.Constant.Type"/> is a enum, this holds value of the underlying type.
+            </summary>
+        </member>
+        <member name="P:JetBrains.Decompiler.Ast.IMemberCallExpression.IsVirtual">
+            <summary>
+            <b>true</b> for a virtual call (<c>callvirt</c>), <b>false</b> for a non-virtual one
+            (<c>call</c>).
+            </summary>
+        </member>
+        <member name="F:JetBrains.Decompiler.Naming.NameSuggestion.Null">
+            <summary>
+            An empty (null) suggestion.
+            </summary>
+        </member>
+        <member name="P:JetBrains.Decompiler.Naming.NameSuggestion.Name">
+            <summary>
+            If <see cref="P:JetBrains.Decompiler.Naming.NameSuggestion.Name"/> is <b>null</b> then there is a conflict and no name of the given <see cref="P:JetBrains.Decompiler.Naming.NameSuggestion.Kind"/>
+            should be suggested.
+            </summary>
+        </member>
+        <member name="P:JetBrains.Decompiler.Naming.NameSuggestion.Kind">
+            <summary>
+            Suggestion kind.
+            If it is <see cref="F:JetBrains.Decompiler.Naming.NameSuggestionKind.Null"/> then no actual suggestion is made.
+            </summary>
+        </member>
+        <member name="P:JetBrains.Decompiler.Naming.NameSuggestion.IsValid">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:JetBrains.Decompiler.Render.CSharp.RenderEx.RenderToCSharp(JetBrains.Metadata.Reader.API.IMetadataType)">
+            <summary>
+            Used mainly for debugging purpose.
+            </summary>
+            <param name="type">A type to format.</param>
+            <returns>A string representing the type.</returns>
+        </member>
+        <member name="M:JetBrains.Decompiler.Render.CSharp.IdentifierUtil.IsIdentifierStartCharacter(System.Char)">
+            <summary>
+            Checks whether character is identifier-start-character in accordance
+            with "Identifiers" (9.4.2) of C# standard
+            </summary>
+        </member>
+        <member name="M:JetBrains.Decompiler.Render.CSharp.IdentifierUtil.IsIdentifierPartCharacter(System.Char)">
+            <summary>
+            Checks whether character is identifier-part-character in accordance
+            with "Identifiers" (9.4.2) of C# standard
+            </summary>
+        </member>
+        <member name="M:JetBrains.Decompiler.Render.CSharp.IdentifierUtil.IsValidIdentifier(System.String)">
+            <summary>
+            Checks whether string is valid identifier in accordance
+            with "Identifiers" (9.4.2) of C# standard
+            </summary>
+        </member>
+        <member name="M:JetBrains.Decompiler.Render.CSharp.IdentifierUtil.IsLetterCharacter(System.Char)">
+            <summary>
+            Checks whether character is letter-character in accordance
+            with "Identifiers" (9.4.2) of C# standard
+            </summary>
+        </member>
+        <member name="M:JetBrains.Decompiler.Render.CSharp.IdentifierUtil.IsCombiningCharacter(System.Char)">
+            <summary>
+            Checks whether character is combining-character in accordance
+            with "Identifiers" (9.4.2) of C# standard
+            </summary>
+        </member>
+        <member name="M:JetBrains.Decompiler.Render.CSharp.IdentifierUtil.IsDecimalDigitCharacter(System.Char)">
+            <summary>
+            Checks whether character is decimal-digit-character in accordance
+            with "Identifiers" (9.4.2) of C# standard
+            </summary>
+        </member>
+        <member name="M:JetBrains.Decompiler.Render.CSharp.IdentifierUtil.IsConnectingCharacter(System.Char)">
+            <summary>
+            Checks whether character is connecting-character in accordance
+            with "Identifiers" (9.4.2) of C# standard
+            </summary>
+        </member>
+        <member name="M:JetBrains.Decompiler.Render.CSharp.IdentifierUtil.IsFormattingCharacter(System.Char)">
+            <summary>
+            Checks whether character is formatting-character in accordance
+            with "Identifiers" (9.4.2) of C# standard
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Assignment.ExtractArrayCompoundAssignmentTransformation">
+            <summary>
+            <code>
+            ($arrayCopy = $instance)[$indexCopy1 = $index[1], ..., $indexCopy[n] = $index[n]] =
+              ($lhsType) ($arrayCopy[$indexCopy1, ..., $indexCopy[n]] $op $rhs)
+            </code>
+            ->
+            <code>
+            $array[$index[1], ..., $index[n]] $op= $rhs
+            </code>
+            </summary>
+            <remarks>
+            This pattern is only used by unsafe code for incrementing or decrementing pointers.
+            </remarks>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Assignment.ExtractArrayPostfixExpressionTransformation">
+            <summary>
+            <code>
+            ($arrayCopy = $array)[$indexCopy1 = $index[1], ..., $indexCopy[n] = $index[n]] =
+              ($temp = $arrayCopy[$indexCopy1, ..., $indexCopy[n]]) $op 1;
+            </code>
+            ->
+            <code>
+            $temp = $array[$index[1], ..., $index[n]] $op;
+            </code>
+            </summary>
+            <remarks>
+            This pattern is only used by unsafe code for incrementing or decrementing pointers.
+            </remarks>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Delegates.ExtractStaticallyCachedAnonymousDelegateTransformation">
+            <summary>
+            <code>
+            Block $branch:
+            ...
+            if $cachedDelegate == null then goto $then else goto $else
+            
+            Block $then:
+            $cachedDelegate = new $delegateType($bodyMethod);
+            Goto $else
+            
+            Block $else:
+            ...$cachedDelegate$...
+            ...
+            </code>
+            ->
+            <code>
+            Block $branch:
+            ...
+            Goto $else
+            
+            Block $else:
+            ...($delegateType) delegate $body...
+            ...
+            </code>
+            The final usage is optional.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Delegates.ExtractLocallyCachedAnonymousDelegatesTransformation">
+            <summary>
+            <para>
+            Somewhere:
+            <code>
+            $cachedDelegate = ($delegateType) null;
+            </code>
+            </para>
+            
+            <para>
+            <code>
+            Block $branch:
+            ...
+            if $cachedDelegate == null then goto $then else goto $else
+            
+            Block $then:
+            $cachedDelegate = new $delegateType(this.$bodyMethod);
+            Goto $else
+            
+            Block $else:
+            ...$cachedDelegate$...
+            ...
+            </code>
+            ->
+            <code>
+            Block $branch:
+            ...
+            Goto $else
+            
+            Block $else:
+            ...($delegateType) delegate $body...
+            ...
+            </code>
+            The final usage is optional.
+            </para>
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:JetBrains.Decompiler.Transformations.TypeCasts.ReducePointerToReferenceTypeCastTransformation" -->
+        <member name="T:JetBrains.Decompiler.Transformations.UserDefinedOperators.ReduceOpFalseTransformation">
+            <summary>
+            <para>
+            <c>!op_False($1)</c> -> <c>$1</c>
+            in a context where a <c>boolean-expression</c> is expected (see 7.20).
+            </para>
+            <para>
+            <c>op_False($1)</c> -> <c>$1 ? false : true</c> in all contexts.
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Src.Utils.DecompilerLicenceResources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:JetBrains.Decompiler.Src.Utils.DecompilerLicenceResources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:JetBrains.Decompiler.Src.Utils.DecompilerLicenceResources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:JetBrains.Decompiler.Src.Utils.DecompilerLicenceResources.DecompilerLegalNotice">
+             <summary>
+               Looks up a localized string similar to {\rtf1\ansi\ansicpg1251\deff0\deflang1049{\fonttbl{\f0\fnil\fcharset0 Calibri;}}
+            {\*\generator Msftedit 5.41.21.2509;}\viewkind4\uc1\pard\sa200\sl276\slmult1\lang9\f0\fs22 IMPORTANT: BY ACCESSING AND USING JETBRAINS DECOMPILER, YOU AGREE TO THE CERTAIN TERMS AND CONDITIONS SET FORTH IN THE END-USER LICENSE AGREEMENT AND QUOTED BELOW. IF YOU DO NOT AGREE WITH THESE TERMS OR CONDITIONS, DO NOT ACCESS OR USE JETBRAINS DECOMPILER.\par
+            The Software includes decompiling functionality (&quot;JetBrains Decompiler&quot;) th [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="M:JetBrains.Decompiler.Metadata.MetadataTypeEx.IsImplementationOf(JetBrains.Metadata.Reader.API.MethodSpecification,JetBrains.Metadata.Reader.API.MethodSpecification)">
+            <summary>
+            See Partition II, 12.2.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Decompiler.Metadata.MetadataTypeEx.ToBoxedType(JetBrains.Metadata.Reader.API.IMetadataType)">
+            <summary>
+            See Partition I, 8.2.4 and Partition III, 1.8.1.1.
+            </summary>
+            <param name="type">An input type to be boxed.</param>
+            <returns>The boxed type.</returns>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Delegates.ExtractDelegateComparisonTransformation">
+            <summary>
+            <c>(Delegate) $lhs $op (Delegate) $rhs</c> -&gt; <c>$lhs $op $rhs</c> where <c>op</c> is either <see cref="F:JetBrains.Decompiler.Ast.OperationType.Equal"/>
+            or <see cref="F:JetBrains.Decompiler.Ast.OperationType.NotEqual"/>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Delegates.ExtractDelegateCreationTransformation">
+            <summary>
+            <code>
+            $targetCopy = $target;
+            $methodPointer = _methodptr($method);
+            $result = new $delegateType((object) $targetCopy, $methodPointer);
+            </code>
+            ->
+            <code>
+            $result = new $delegateType($target.$method);
+            </code>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Delegates.ExtractDelegateOperationTransformation">
+            <summary>
+            <c>($delegateType) Delegate.Combine((Delgate) $lhs, $(Delegate) $rhs)</c> -> <c>$lhs + $rhs</c>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Delegates.ExtractVirtualDelegateCreationTransformation">
+            <summary>
+            <code>
+            $targetCopy = $target;
+            $methodPointer = __vmethodptr($targetCopy, $method);
+            $result = new $delegateType((object) $targetCopy, $methodPointer);
+            </code>
+            ->
+            <code>
+            $result = new $delegateType($target.$method);
+            </code>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Enums.ExtractEnumBinaryOperationTransformation">
+            <summary>
+            <para>
+            <c>($evaluationType) $lhs $op ($evaluationType) $rhs</c> -> <c>($binaryOperationType) (($enumType) $lhs $op ($enumType) $rhs)</c>
+            where <c>$op</c> is one of <c>&amp;</c>, <c>|</c>, <c>^</c>, <c>+</c>, <c>-</c>, <c>==</c>, <c>!=</c>, <c>&gt;</c>, <c>&gt;=</c>, <c>&lt;</c>, <c>&lt;=</c>.
+            </para>
+            <para>
+            In certain cases type casts may be different.
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Enums.ExtractEnumUnaryOperationTransformation">
+            <summary>
+            <c>~ ($evaluationType) $arg</c> -> <c>($evaluationType) (~$arg)</c>
+            </summary>
+        </member>
+        <member name="M:JetBrains.Decompiler.Transformations.Iterators.IteratorDecompiler.ExtractYieldBreak(JetBrains.Decompiler.Ast.IReturnStatement)">
+            <summary>
+            <code>
+            return false;
+            </code>
+            ->
+            <code>
+            yield break;
+            </code>
+            </summary>
+        </member>
+        <member name="M:JetBrains.Decompiler.Transformations.Iterators.IteratorDecompiler.ExtractYieldReturn(JetBrains.Decompiler.ControlFlow.ControlFlowBlock,JetBrains.Decompiler.Ast.IReturnStatement)">
+            <summary>
+            <code>
+            this.$currentField = $result;
+            this.$state = $successorState;
+            return true;
+            </code>
+            ->
+            <code>
+            yield return $result;
+            </code>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.ObjectModel.ExtractInstanceCtorInitializerTransformation">
+            <summary>
+            <para>
+            <code>
+            {
+              this..ctor($arg);
+              $body
+            }
+            </code>
+            ->
+            <code>
+              : this($args)
+            {
+              $body
+            }
+            </code>
+            </para>
+            <para>
+            <code>
+            {
+              $field-initializers
+              base..ctor($args);
+              $body
+            }
+            </code>
+            ->
+            <code>
+              : base($args)
+            {
+              $body
+            }
+            </code>
+            </para>
+            <para>
+            Empty <c>base()</c> call is eliminated. Also instance field initializers are extracted.
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.ObjectModel.ExtractCheckCastTransformation">
+            <summary>
+            <para>
+            <c>$1 as $2 == null</c> -> <c>!($1 is $2)</c>
+            </para>
+            <para>
+            <c>$1 as $2 != null</c> -> <c>$1 is $2</c>
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.ObjectModel.UnwrapFinalizerTransformation">
+            <summary>
+            <code>
+            try
+            {
+              $body
+            }
+            finally
+            {
+              base.Finalize();
+            }
+            </code>
+            ->
+            <code>
+            $body
+            </code>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Assignment.ExtractCopyingCompoundAssignmentExpressionTransformation">
+            <summary>
+            <code>
+            $targetCopy = $target;
+            $temp2 = ($lhsType) ($temp1 = ($tempType) ($equivalentType) (($evaluationType) $targetCopy.$member $op $rhs))
+            $targetCopy.$member = ($lhsType) $temp1;
+            </code>
+            ->
+            <code>
+            $temp2 = ($lhsType) ($target.$member $op= $rhs)
+            </code>
+            
+            Typecasts involving <c>$equivalentType</c>, <c>$lhsType</c>, <c>$evaluationType</c> and <c>$tempType</c> are optional.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Assignment.ExtractCopyingPostfixTransformation">
+            <summary>
+            <code>
+            $targetCopy = $target;
+            $temp2 = ($tempType) ($equivalentType) (($evaluationType) ($temp1 = $targetCopy.$member) + 1)
+            $targetCopy.$member = ($lhsType) $temp2;
+            </code>
+            ->
+            <code>
+            $temp1 = ($lhsType) ($target.$member++)
+            </code>
+            
+            Typecasts involving <c>$equivalentType</c>, <c>$lhsType</c>, <c>$evaluationType</c> and <c>$tempType</c> are optional.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Assignment.ExtractIndexerPostfixTransformation">
+            <summary>
+            <code>
+            ($targetCopy = $target)[$indexCopy1 = $index[1], ..., $indexCopy[n] = $index[n]] = 
+              ($lhsType) (($evaluationType) ($temp = $targetCopy[$indexCopy1, ..., $indexCopy[n]]) $op 1)
+            </code>
+            -&gt;
+            <code>
+            $temp = $target[$index[1], ..., $index[n]]++
+            </code>
+            where <c>$op</c> is either <see cref="F:JetBrains.Decompiler.Ast.OperationType.Add"/> or <see cref="F:JetBrains.Decompiler.Ast.OperationType.Subtract"/>.
+            Typecasts involving <c>$lhsType</c> and <c>$evaluationType</c> are optional.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Assignment.ExtractSimplePostfixTransformation">
+            <summary>
+            <code>
+            $lhsTemp = ($tempType) $argument;
+            $rhsTemp = ($tempType) 1;
+            $argument = ($lhsType) (($evaluationType) $lhsTemp + ($evaluationType) $rhsTemp);
+            </code>
+            ->
+            <code>
+            $temp = ($tempType) ($argument++);
+            </code>
+            where <c>$argument</c> is one of the following:
+            <list type="bullet">
+            <item>a parameter;</item>
+            <item>a local variable;</item>
+            <item>a static field;</item>
+            <item>a static property.</item>
+            </list>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Assignment.ExtractSimplePrefixTransformation">
+            <summary>
+            <para>
+            <c>$expr += 1</c> -> <c>++$expr</c>
+            </para>
+            <para>
+            <c>$expr -= 1</c> -> <c>--$expr</c>
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Assignment.ExtractIndexerCompoundAssignmentTransformation">
+            <summary>
+            <code>
+            ($targetCopy = $target)[$indexCopy1 = $index[1], ..., $indexCopy[n] = $index[n]] =
+              ($lhsType) (($evaluationType) $targetCopy[$indexCopy1, ..., $indexCopy[n]] op $rhs)
+            </code>
+            ->
+            <code>
+            $target[$index[1], ..., $index[n]] op= $rhs
+            </code>
+            Typecasts involving <c>$lhsType</c> and <c>$evaluationType</c> are optional.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Assignment.ExtractCopyingCompoundAssignmentStatementTransformation">
+            <summary>
+            <code>
+            $targetCopy = $target;
+            $temp = ($tempType) (($equivalentType) (($evaluationType$) $targetCopy.$member op $rhs))
+            $targetCopy.$member = ($lhsType) $temp;
+            </code>
+            ->
+            <code>
+            $target.$member op= $rhs
+            </code>
+            Typecasts involving <c>$equivalentType</c>, <c>$evaluationType</c> and <c>$tempType</c> are optional.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Assignment.ExtractSimpleCompoundAssignmentTransformation">
+            <summary>
+            <c>$1 = ($lhsType) (($evaluationType) $1 op $2)</c> -> <c>$1 op= $2</c>
+            where <c>$1</c> is one of the following:
+            <list type="bullet">
+            <item>a parameter;</item>
+            <item>a local variable;</item>
+            <item>a static field;</item>
+            <item>a static property.</item>
+            </list>
+            Typecast involving <c>$lhsType</c> and <c>$evaluationType</c> are optional.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Bool.ReduceBoolToIntegerTypeCastTransformation">
+            <summary>
+            <c>(int) $1 </c> -> <c>$1 ? 1 : 0</c>
+            where <c>$1</c> is typed as <c>bool</c>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Generics.ExtractConditionalTypeArgumentCreationTransformation">
+            <summary>
+            <c>__box(default ($1), $1) == null ? System.Activator.CreateInstance&lt;$1&gt;() : default($1)</c> -&gt; <c>new $1()</c>
+            where <c>$1</c> is a type argument having <see cref="F:JetBrains.Metadata.Reader.API.GenericArgumentAttributes.DefaultConstructorConstraint"/>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Generics.ExtractReturnTypeArgumentCreationTransformation">
+            <summary>
+            <code>
+            if (__box(default ($1), $1) != null)
+              return default($1);
+            else
+              return System.Activator.CreateInstance&lt;$1&gt;();
+            </code>
+            -&gt;
+            <code>
+            return new $1();
+            </code>
+            where <c>$1</c> is a type argument having <see cref="F:JetBrains.Metadata.Reader.API.GenericArgumentAttributes.DefaultConstructorConstraint"/>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Lock.ExtractLock20Transformation">
+            <summary>
+            <code>
+            Monitor.Enter((object) ($copy = $expr));
+            try
+            {
+              $body
+            }
+            finally
+            {
+              Monitor.Exit((object) $copy);
+            }
+            </code>
+            ->
+            <code>
+            using ($expr)
+              $body
+            </code>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Lock.ExtractLock40Transformation">
+            <summary>
+            <code>
+            $flag = false;
+            try
+            {
+              Monitor.Enter((object) ($copy = $expr), ref $flag);
+              $body
+            }
+            finally
+            {
+              if ($flag)
+              {
+                Monitor.Exit((object) $copy);
+              }
+            }
+            </code>
+            ->
+            <code>
+            using ($expr)
+              $body
+            </code>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Lock.ExtractLockNull20Transformation">
+            <summary>
+            <code>
+            Monitor.Enter((object) null);
+            try
+              $body
+            finally
+            {
+              Monitor.Exit((object) null);
+            }
+            </code>
+            ->
+            <code>
+            lock (null)
+              $body
+            </code>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Lock.ExtractLockNull40Transformation">
+            <summary>
+            <code>
+            var $flag = false;
+            Monitor.Enter((object) null, &amp;$flag);
+            try
+              $body
+            finally
+            {
+              if ($flag)
+              {
+                Monitor.Exit((object) null);
+              }
+            }
+            </code>
+            ->
+            <code>
+            lock (null)
+              $body
+            </code>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Switch.ExtractBoolSwitchTransformation">
+            <summary>
+            <code>
+            switch ($expr ? 1 : 0)
+            {
+              case 1: $true-block;
+              case 0: $false-block;
+            }
+            </code>
+            ->
+            <code>
+            switch ($expr)
+            {
+              case true: $true-block;
+              case false: $false-block;
+            }
+            </code>
+            where <c>$expr</c> is typed as bool
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Switch.SimplifySwitchTransformation">
+            <summary>
+            <para>
+            Eliminate empty case if no default clause is present.
+            </para>
+            <para>
+            Put default clause after the switch statement if all switch cases are terminating.
+            <code>
+            switch ($expr)
+            {
+              $cases
+              default: $default-handler
+            }
+            </code>
+            ->
+            <code>
+            switch ($expr)
+            {
+              $cases
+            }
+            $default-handler
+            </code>
+            </para>
+            <para>
+            Eliminate empty default clause.
+            <code>
+            switch ($expr)
+            {
+              $cases
+              default: ;
+            }
+            </code>
+            ->
+            <code>
+            switch ($expr)
+            {
+              $cases
+            }
+            </code>
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Unsafe.ExtractAddressOfTransformation">
+            <summary>
+            <para>
+            <c>($type) @$expr</c> -> <c>($type) &amp;$expr</c> if <c>$type</c> is a pointer or a numeric type.
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Assignment.ExtractArrayPrefixTransformation">
+            <summary>
+            <code>
+            ($arrayCopy = $array)[$indexCopy1 = $index[1], ..., $indexCopy[n] = $index[n]] =
+              $arrayCopy[$indexCopy1, ..., $indexCopy[n]] $op 1
+            </code>
+            ->
+            <code>
+            $op $array[$index[1], ..., $index[n]]
+            </code>
+            </summary>
+            <remarks>
+            This pattern is only used by unsafe code for incrementing or decrementing pointers.
+            </remarks>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Unsafe.ExtractFixedStatementTransformation">
+            <summary>
+            <para>
+            <code>
+            try
+            {
+              __pinned $type $variable = $initializer;
+              $restOfTry
+            }
+            finally
+            {
+              __unpin($variable);
+              $restOfFinally
+            }  
+            </code>
+            ->
+            <code>
+            fixed ($type $variable = $initializer)
+            {
+              try $restOfTry finally $restOfFinally
+            }
+            </code>
+            </para>
+            <para>
+            <code>
+            __pinned $type $variable = $initializer;
+            $body
+            __unpin($variable);
+            $otherUnpins
+            </code>
+            ->
+            <code>
+            fixed ($type $variable = $initializer)
+            {
+              $body
+              $otherUnpins
+            }
+            </code>
+            </para>
+            <para>
+            <code>
+            __pinned $type $variable = $initializer;
+            $bodyWithoutUnpin
+            </code>
+            </para>
+            ->
+            <code>
+            fixed ($type $variable = $initializer)
+            {
+              $bodyWithoutUnpin
+            }
+            </code>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Unsafe.ExtractPointerSubtractionTransformation">
+            <summary>
+            <para>
+            <c>((IntPtr) $lhs - (IntPtr) $rhs) / $size</c> -> <c>(IntPtr) (($elementType*) $lhs - ($elementType*) $rhs))</c>
+            </para>
+            <para>
+            <c>$elementType</c> is selected based on the types of <c>$lhs</c>, <c>$rhs</c> and <c>$size</c>
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Unsafe.ExtractPointerElementAccessTransformation">
+            <summary>
+            <c>*($pointer + $index)</c> -> <c>$pointer[$index]</c>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Unsafe.ExtractNullPointerTransformation">
+            <summary>
+            <c>($pointerType) 0</c> -> <c>($pointerType) null</c>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Unsafe.ExtractPointerShiftTransformation">
+            <summary>
+            <para>
+            <c>(IntPtr) $lhs $op $delta</c> -&gt; <c>(IntPtr) (($properUnderlyingType*) $lhs + $rhs)</c>
+            </para>
+            <para>
+            where <c>$lhs</c> is a pointer or reference type with a given <c>$underlyingType</c> and <c>$op</c> is either <c>+</c> or <c>-</c>.
+            </para>
+            <para>
+            Let <c>$size</c> be the static size of <c>$underlyingType</c> (if known).
+            The following cases are possible for <c>$delta</c>:
+            <list type="bullet">
+            <item>
+            <c>$delta</c> is an <see cref="T:System.IntPtr"/> literal divisible by <c>$size</c>.
+            In this case <c>$rhs</c> is <c>(IntPtr) ($delta / $size)</c> (which will be treated by <see cref="T:JetBrains.Decompiler.Transformations.Unsafe.ReduceIntPtrInPointerBinaryOperationTransformation"/> later)
+            and <c>$properUnderlyingType</c> is <c>$underlyingType</c>.
+            </item>
+            <item>
+            <c>$delta</c> is an <see cref="T:System.IntPtr"/> literal not divisible by <c>$size</c>.
+            In this case <c>$rhs</c> is <c>$delta</c> and <c>$properUnderlyingType</c> is <c>byte</c>.
+            </item>
+            <item>
+            <c>$delta</c> is <c>(IntPtr) $recordCount * sizeof($properUnderlyingType)</c>.
+            In this case <c>$rhs</c> is <c>$recordCount</c> and <c>$properUnderlyingType</c> is derived from the above.
+            </item>
+            <item>
+            <c>$delta</c> is <c>(IntPtr) sizeof($properUnderlyingType)</c>.
+            In this case <c>$rhs</c> is <c>1</c> and <c>$properUnderlyingType</c> is derived from the above.
+            </item>
+            <item>
+            <c>$size</c> of <c>$underlyingType</c> is known statically and <c>$delta</c> is <c>(IntPtr) $recordCount * $size</c>.
+            In this case <c>$rhs</c> is <c>$recordCount</c> and <c>$properUnderlyingType</c> is <c>$underlyingType</c>.
+            </item>
+            <item>
+            <c>$size</c> of <c>$underlyingType</c> is 1 and <c>$delta</c> is <c>(IntPtr) $recordCount</c>.
+            In this case <c>$rhs</c> is <c>$recordCount</c> and <c>$properUnderlyingType</c> is <c>$underlyingType</c>.
+            </item>
+            </list>
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Unsafe.ExtractPointerOrReferenceComparisonTransformation">
+            <summary>
+            <para>
+            <c>($evaluationType) $lhs $op ($evaluationType)$ rhs</c> -&gt; <c>$lhs $op $rhs</c>
+            </para>
+            <para>
+            where <c>$op</c> is <c>==</c>, <c>!=</c>, <c>&lt;</c>, <c>&lt;=</c>, <c>&gt;</c>, <c>&gt;=</c>,
+            <c>$lhs</c> and <c>$rhs</c> are pointers, and <c>$evaluationType</c> is either a pointer, a reference, <see cref="T:System.IntPtr"/> or <see cref="T:System.UIntPtr"/>.
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Unsafe.ExtractMultibyteStackAllocTransformation">
+            <summary>
+            <code>
+            $lengthTemp = (IntPtr) (UIntPtr) (uint) $length;
+            $elementSizeTemp = $size;
+            $totalSizeTemp = checked ($lengthTemp * $elementSizeTemp);
+            $arrayTemp = __untypedstackalloc($totalSizeTemp);
+            $array = ($arrayType) $arrayTemp;
+            </code>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Unsafe.ExtractPointerFieldAccessTransformation">
+            <summary>
+            <c>(*$target).$field</c> -> <c>$target->$field</c>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Unsafe.ExtractPointerMethodCallTransformation">
+            <summary>
+            <c>(*$target).$method($args)</c> -> <c>$target->$method($args)</c>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Unsafe.ExtractPointerPropertyAccessTransformation">
+            <summary>
+            <c>(*$target).$property</c> -> <c>$target->$property</c>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Unsafe.ExtractReferencePinTransformation">
+            <summary>
+            <para>
+            <code>
+            $pinned = $initializer;
+            </code>
+            ->
+            <code>
+            __pinned $underlyingType* $newVariable = &amp;*$initializer;
+            </code>
+            where <c>$initializer</c> has a reference type.
+            </para>
+            <para>
+            </para>
+            <code>
+            $pinnedVariable =
+              ($tempArray = $initializer) == null || $tempArray.Length == 0
+              ? ($pinnedType) IntPtr.Zero
+              : ($pinnedType) @$tempArray[0];
+            </code>
+            ->
+            <code>
+            __pinned $underlyingType* $newPinned = $initializer;
+            </code>
+            where <c>$initializer</c> has an array type.
+            <para>
+            <c>$pinned = ($pinnedType) 0;</c> -> <c>__unpin($newPinned);</c>
+            </para>
+            <para>
+            Each reference to <c>$pinned</c> is replaced by <c>($pinnedType) $newPinned</c>.
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Unsafe.ExtractStringPinTransformation">
+            <summary>
+            <para>
+            <code>
+            $pinned = $initializer;
+            $charPointer = (IntPtr) $pinned;
+            if ($charPointer != IntPtr.Zero)
+            {
+              $offset = System.Runtime.CompilerServices.RuntimeHelpers.OffsetToStringData;
+              $charPointer += (IntPtr) $offset;
+            }
+            </code>
+            ->
+             <code>
+            __pinned char* $newPinned = $initializer;
+            </code>
+            </para>
+            <para>
+            <c>$pinned = (string) null;</c> -> <c>__unpin($newPinned);</c>
+            </para>
+            <para>
+            Each reference to <c>$charPointer</c> is replaced by <c>($charPointerType) $newPinned</c>.
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Unsafe.ExtractByteStackAllocTransformation">
+            <summary>
+            <code>
+            $lengthTemp = (IntPtr) (UIntPtr) (uint) $length;
+            $arrayTemp = __untypedstackalloc($lengthTemp);
+            $array = ($arrayType) $arrayTemp;
+            </code>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Unsafe.ReducePointerDiffTypeCastTransformation">
+            <summary>
+            <para>
+            <c>($type[1]) ... ($type[n]) ($pointer1 - $pointer2)</c> -> <c>($type[1]) ($pointer1 - $pointer2)</c>
+            </para>
+            <para>
+            where <c>$type[i]</c> is either <c>IntPtr</c>, <c>UIntPtr</c>, <c>long</c>, or <c>ulong</c>.
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Unsafe.IndirectionToZeroElementAccessReducer">
+            <summary>
+            <para>
+            <c>*$pointer</c> -> <c>$pointer[0]</c>
+            </para>
+            <para>
+            where <c>$pointer</c> is either a fixed or stackalloc array.
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.UserDefinedOperators.ExtractArrayCompoundAssignmentTransformation">
+            <summary>
+            <code>
+            ($arrayCopy = $instance)[$indexCopy1 = $index[1], ..., $indexCopy[n] = $index[n]] =
+              $arrayCopy[$indexCopy1, ..., $indexCopy[n]] $op $rhs
+            </code>
+            ->
+            <code>
+            $array[$index[1], ..., $index[n]] $op= $rhs
+            </code>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.UserDefinedOperators.ExtractArrayPostfixExpressionTransformation">
+            <summary>
+            <code>
+            ($arrayCopy = $array)[$indexCopy1 = $index[1], ..., $indexCopy[n] = $index[n]] =
+              $op($temp = $arrayCopy[$indexCopy1, ..., $indexCopy[n]]);
+            </code>
+            ->
+            <code>
+            $temp = $array[$index[1], ..., $index[n]] $op;
+            </code>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.UserDefinedOperators.ExtractArrayPrefixTransformation">
+            <summary>
+            <code>
+            ($arrayCopy = $array)[$indexCopy1 = $index[1], ..., $indexCopy[n] = $index[n]] =
+              $op($arrayCopy[$indexCopy1, ..., $indexCopy[n]])
+            </code>
+            ->
+            <code>
+            $op $array[$index[1], ..., $index[n]]
+            </code>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.UserDefinedOperators.ExtractIndexerCompoundAssignmentTransformation">
+            <summary>
+            <code>
+            ($targetCopy = $target)[$indexCopy1 = $index[1], ..., $indexCopy[n] = $index[n]] =
+              $targetCopy[$indexCopy1, ..., $indexCopy[n]] $op $rhs
+            </code>
+            ->
+            <code>
+            $target[$index[1], ..., $index[n]] $op= $rhs
+            </code>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.UserDefinedOperators.ExtractIndexerPostfixExpressionTransformation">
+            <summary>
+            <code>
+            ($targetCopy = $target)[$indexCopy1 = $index[1], ..., $indexCopy[n] = $index[n]] =
+              $op($temp = $targetCopy[$indexCopy1, ..., $indexCopy[n]]);
+            </code>
+            ->
+            <code>
+            $temp = $target[$index[1], ..., $index[n]] $op;
+            </code>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.UserDefinedOperators.ExtractIndexerPrefixTransformation">
+            <summary>
+            <code>
+            ($targetCopy = $target)[$indexCopy1 = $index[1], ..., $indexCopy[n] = $index[n]] = $op($targetCopy[$indexCopy[1], ..., $indexCopy[n]])
+            </code>
+            ->
+            <code>
+            $op $taret[$index[1], ..., $index[n]]
+            </code>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.UserDefinedOperators.ExtractSimpleCompoundAssignmentTransformation">
+            <summary>
+            <c>$lhs = $lhs $op $rhs</c> -> <c>$lhs $op= $rhs</c>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.UserDefinedOperators.ExtractSimplePostfixExpressionTransformation">
+            <summary>
+            <code>
+            $temp = $argument;
+            $argument = $op($temp);
+            </code>
+            ->
+            <code>
+            $temp = ($argument++);
+            </code>
+            where <c>$op</c> is either <c>op_Increment</c> or <c>op_Decrement</c> and
+            <c>$argument</c> is one of the following:
+            <list type="bullet">
+            <item>a parameter;</item>
+            <item>a local variable;</item>
+            <item>a static field;</item>
+            <item>a static property.</item>
+            </list>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.UserDefinedOperators.ExtractSimplePrefixTransformation">
+            <summary>
+            <c> $argument = $op($argument) </c>  ->  <c> $op $argument </c>
+            where <c>$op</c> is either <c>op_Increment</c> or <c>op_Decrement</c> and
+            <c>$argument</c> is one of the following:
+            <list type="bullet">
+            <item>a parameter;</item>
+            <item>a local variable;</item>
+            <item>a static field;</item>
+            <item>a static property.</item>
+            </list>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.UserDefinedOperators.ExtractUserDefinedConditionalLogicTransformation">
+            <summary>
+            <para>
+            Conditional or:
+            <code>
+            Block $branch:
+              ...
+              $result = $lhs;
+            If op_True($result) then goto $done else goto $evaluate
+            
+            Block $evaluate:
+              $rhsTemp = $rhs;
+              $result |= $rhsTemp;
+            Control flow behavior: goto $done
+            </code>
+            ->
+            <code>
+            Block $branch:
+              ...
+              $result = $lhs || $rhs;
+            </code>
+            <para/>
+            <code>
+            Block $branch:
+              ...
+              $result = $lhs;
+            If op_True($result) then goto $done else goto $evaluate
+            
+            Block $evaluate:
+              $rhsTemp = $rhs;
+              $result = $result | $rhsTemp;
+            Control flow behavior: goto $done
+            </code>
+            ->
+            <code>
+            Block $branch:
+              ...
+              $result = $lhs || $rhs;
+            </code>
+            </para>
+            <para>
+            Conditional and:
+            <code>
+            Block $branch:
+              ...
+              $result = $lhs;
+            If op_True($result) then goto $done else goto $evaluate
+            
+            Block $evaluate:
+              $rhsTemp = $rhs;
+              $result &amp;= $rhsTemp;
+            Goto $done
+            </code>
+            ->
+            <code>
+            Block $branch:
+              ...
+              $result = $lhs || $rhs;
+            Goto $done
+            </code>
+            <para/>
+            <code>
+            Block $branch:
+              ...
+              $result = $lhs;
+            If op_False($result) then goto $done else goto $evaluate
+            
+            Block $evaluate:
+              $rhsTemp = $rhs;
+              $result = $result &amp; $rhsTemp;
+            Goto $done
+            </code>
+            ->
+            <code>
+            Block $branch:
+              ...
+              $result = $lhs &amp;&amp; $rhs;
+            Goto $done
+            </code>
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.UserDefinedOperators.ReduceOpTrueTransformation">
+            <summary>
+            <para>
+            <c>op_True($1)</c> -> <c>$1</c>
+            in a context where a <c>boolean-expression</c> is expected (see 7.20).
+            </para>
+            <para>
+            <c>op_True($1)</c> -> <c>$1 ? true : false</c> in all contexts.
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Using.ExtractNotNullableUsingTransformation">
+            <summary>
+            <code>
+            $copy = $expr;
+            try
+            {
+              $body
+            }
+            finally
+            {
+              ((IDisposable) __box($copy, $type)).Dispose();
+            }
+            </code>
+            ->
+            <code>
+            using (var $copy = $expr)
+              $body
+            </code>
+            Boxing is optional.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Using.ExtractNullableUsingTransformation">
+            <summary>
+            <code>
+            $copy = $expr;
+            try
+            {
+              $body
+            }
+            finally
+            {
+              if ($copy != null)
+                ((IDisposable) $copy).Dispose();
+            }
+            </code>
+            ->
+            <code>
+            using (var $copy = $expr)
+              $body
+            </code>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.References.ImplicitDerefInserter">
+            <summary>
+            <para>
+            Make implicit each deref of the form <c>^$1</c> where <c>$1</c> is a parameter variable having <see cref="T:JetBrains.Metadata.Reader.API.IMetadataReferenceType"/>
+            or a <c>this</c> reference in a value type.
+            </para>
+            <para>
+            Replace all other references <c>$1</c> to such variables with <c>@^$1</c> where deref is implicit.
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Exceptions.CombineTryCatchFinallyTransformation">
+            <summary>
+            <code>
+            try
+            {
+              try $1
+            }
+            finally $2
+            </code>
+            ->
+            <code>
+            try
+            $1
+            finally $2
+            </code>
+            provided that the inner try statement has no finally or fault block.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Exceptions.EliminateCatchVariableTransformation">
+            <summary>
+            <c>catch (object $1)</c> -> <c>catch</c> if <c>$1</c> is not used
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.ObjectModel.ExtractRefTypeTransformation">
+            <summary>
+            <c>Type.GetTypeFromHandle(__reftypetoken ($1))</c> -> <c>__reftype ($1)</c>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Render.CSharp.ExpressionPrecedence">
+            <summary>
+            Used to omit redundant braces during pretty-printing.
+            Names borrowed from 7.3.1.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Arrays.EliminateArrayAddressDerefTransformation">
+            <summary>
+            <c>*$array.Address($index[1], ..., $index[n])</c> -> <c>$array[$index[1], ..., $index[n]]</c>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.TypeCasts.EliminateRedundantEqualityTypeCastTransformation">
+            <summary>
+            <c>($1) $2 == ($1) $3</c> -> <c>$2 == $3</c>
+            <c>($1) $2 != ($1) $3</c> -> <c>$2 != $3</c>
+            </summary>
+            when the following conditions are met:
+            <list type="bullet">
+            <item>the types of <c>$2</c> and <c>$3</c> are same and numeric</item>
+            <item>the basic types of <c>$1</c>, <c>$2</c>, and <c>$3</c> are the same</item>
+            </list>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.TypeCasts.EliminateRedundantLiteralEqualityTypeCastTransformation">
+            <summary>
+            <c>($1) $2 == $3</c> -> <c>$2 == $3</c>
+            <c>($1) $2 != $3</c> -> <c>$2 != $3</c>
+            </summary>
+            when the following conditions are met:
+            <list type="bullet">
+            <item>the types of <c>$2</c> and <c>$3</c> are same and numeric</item>
+            <item>the basic types of <c>$1</c>, <c>$2</c>, and <c>$3</c> are the same</item>
+            </list>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.ObjectModel.ExtractTypeOfTransformation">
+            <summary>
+            <c>Type.GetTypeFromHandle(__typeref ($1))</c> -> <c>typeof ($1)</c>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.LocalVariables.EliminateUnusedLocalVariablesAssignmentTransformation">
+            <summary>
+            <para>
+            Let <c>$local</c> be a local with the only reference.
+            </para>
+            <para>
+            Remove <c>$local = $constExpr;</c>.
+            </para>
+            <para>
+            <c>$local = $call</c> -> <c>$call</c>
+            </para>
+            <para>
+            <c>$local = $call ? 1 : 0</c> -> <c>$call</c>
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.ObjectModel.ReduceNullComparisonTransformation">
+            <summary>
+            <para>
+            <c>$1 &lt;= null</c> -> <c>$1 == null</c>
+            </para>
+            <para>
+            <c>$1 > null</c> -> <c>$1 != null</c>
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Arithmetic.ReduceSubtractFromZeroTransformation">
+            <summary>
+            <c>0 - $1</c> -> <c>-$1</c>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Boxing.ReduceUnboxTransformation">
+            <summary>
+            <c>__unbox($arg, $type)</c> -> <c>($type) $arg</c>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Loops.ExtractIndexForEachTransformation">
+            <summary>
+            <code>
+            $1 list = $2;
+            for (int index = 0; index &lt; list.Length; ++index)
+              $3
+            </code>
+            ->
+            <code>
+            foreach ($4 item in list)
+              $3
+            </code>
+            Here $4 is the element type of <c>list</c>, $3 contains the only read usage of <c>index</c>, namely of the form <c>list[index]</c>.
+            The latter usage is replaced by <c>item</c>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Strings.StringConcatTransformation">
+            <summary>
+            <c>string.Concat($1, ..., $n) </c> -> <c> $1 + ... + $n </c>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Conditional.PromoteTypeCastIntoConditionalTransformation">
+            <summary>
+            <c>($1) ($2 ? $3 : $4)</c> -> <c>$2 ? ($1) $3 : ($1) $4</c>
+            </summary>
+        </member>
+        <member name="F:JetBrains.Decompiler.DataFlow.UsageType.Read">
+            <summary>
+            Normal read usage, like in
+            <code>
+            Console.WriteLine(foo);
+            </code>
+            </summary>
+        </member>
+        <member name="F:JetBrains.Decompiler.DataFlow.UsageType.Write">
+            <summary>
+            Write usage, like in
+            <code>
+            foo = 1;
+            </code>
+            </summary>
+        </member>
+        <member name="F:JetBrains.Decompiler.DataFlow.UsageType.ReadWrite">
+            <summary>
+            Read-write usage, like in
+            <c>
+            foo++;
+            </c>
+            </summary>s
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Bool.ReduceIntegerToBoolTypeCastTransformation">
+            <summary>
+            <c>(bool) $1 </c> -> <c>$1 != 0</c>
+            where <c>$1</c> is typed as integer
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Conditional.RightConditionalLiteralTransformation">
+            <summary>
+            <para>
+            <c>$1 ? $2 : false</c> -> <c>$1 &amp;&amp; $2</c>
+            </para>
+            <para>
+            <c>$1 ? $2 : true</c> -> <c>!$1 || $2</c>
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Conditional.LeftConditionalLiteralTransformation">
+            <summary>
+            <para>
+            <c>$1 ? true : $2</c> -> <c>$1 || $2</c>
+            </para>
+            <para>
+            <c>$1 ? false : $2</c> -> <c>!$1 &amp;&amp; $2</c>
+            </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.References.EliminateDerefRefTransformation">
+            <summary>
+            <c>^@ $1</c> -> <c>$1</c>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.TypeCasts.EliminateRedundantTypeCastTransformation">
+            <summary>
+            <c>($1) $2</c> -> <c>$2</c>
+            where <c>$2</c> is typed as <c>$1</c>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Arithmetic.ReducePlusMinusTransformation">
+            <summary>
+            <code>
+            $1 + c -> $1 - (-c)
+            c + $1 -> $1 - (c)
+            </code>
+            for a negative constant c
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.StatementStructure.EliminateEmptyStatementTransformation">
+            <summary>
+            Remove empty statement.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.Bool.SimplifyBoolLiteralComparisonTransformation">
+            <summary>
+            <list type="bullet">
+            <item><c>(int) $1 == 1</c> -> <c>$1</c> (and vice versa)</item>
+            <item><c>(int) $1 == 0</c> -> <c>!$1</c> (and vice versa)</item>
+            <item><c>(int) $1 != 0</c> -> <c>$1</c> (and vice versa)</item>
+            <item><c>(int) $1 != 1</c> -> <c>!$1</c> (and vice versa)</item>
+            </list>
+            where $1 is typed as <c>bool</c>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.StatementStructure.EliminateEmptyBlockStatementTransformation">
+            <summary>
+            Remove empty block statement.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Decompiler.Transformations.StatementStructure.SimplifySingleStatementBlockTransformation">
+            <summary>
+            <c>{ $1 }</c> -> <c>$1</c>
+            </summary>
+        </member>
+    </members>
+</doc>

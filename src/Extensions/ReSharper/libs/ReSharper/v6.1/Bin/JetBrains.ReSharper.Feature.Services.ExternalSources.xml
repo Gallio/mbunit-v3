@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Feature.Services.ExternalSources</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Feature.Services.ExternalSources.ContextNavigation.GotoDeclarationVsDelegator">
+            <summary>
+            Allows to perform common VS goto definition (F12).
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.ExternalSources.Core.ExternalSourcesActivation.Active">
+            <summary>
+            Turn on/off entire External Sources subsystem.
+            Currenly used to delay External Sources loading in Visual Studio.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.Core.IDecompilationCache.CanBeCachedFile(System.String,JetBrains.Util.FileSystemPath)">
+            <summary>
+             Checks whether file is under cache directory and on appropriate level.
+             Doesn't impose any guarantees about GetCacheItem result
+             </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.ExternalSources.Core.DecompilationCacheItem.Moniker">
+            <summary>
+            Null for assembly-level decompilation. i.e. assembly attributes
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.Core.IExternalSourcesService.NavigateToSources(JetBrains.ReSharper.Psi.ICompiledElement,System.Collections.Generic.IEnumerable{JetBrains.ReSharper.Feature.Services.ExternalSources.Core.IExternalSourcesProvider})">
+            <summary>
+            Tries to get source(s) for <paramref name="compiledElement"/> from <paramref name="providers"/>
+            </summary>
+            <returns>source file(s) related to specified compiled element, null if user cancelled action</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.Utils.DeclaredElementBinder.BindDeclarations(JetBrains.ReSharper.Psi.Tree.IFile,JetBrains.ReSharper.Psi.IPsiModule,System.Boolean)">
+            <summary>
+            Bind declarations in <paramref name="file"/> to corresponding declared elements in psiModule.
+            WARNING: all references of psiModule must be loaded beforehand because
+            binding process uses xmldocids which requires all types to be resolved correctly.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.Core.IExternalSourcesProvider.NavigateToSources(JetBrains.ReSharper.Psi.ICompiledElement)">
+            <summary>
+            Tries to get source(s) for specified compiled element
+            </summary>
+            <returns>
+            source file(s) related to specified compiled element,
+            empty array if none (i.e. not applicable to this provider),
+            null if the navigation was handled by provider
+            </returns>
+            <exception cref="T:JetBrains.Application.Progress.ProcessCancelledException">User cancelled the action</exception>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.Pdb.IPdbService.DownloadSourceFilesForTypeIfNeeded(JetBrains.ProjectModel.Model2.Assemblies.Interfaces.IAssemblyFile,JetBrains.ReSharper.Psi.IClrTypeName,JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+            Downloads source files for <paramref name="typeName"/> type
+            </summary>
+            <exception cref="T:JetBrains.Application.Progress.ProcessCancelledException">if user cancelled download</exception>
+        </member>
+    </members>
+</doc>

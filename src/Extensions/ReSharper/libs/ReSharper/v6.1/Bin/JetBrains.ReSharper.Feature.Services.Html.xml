@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Feature.Services.Html</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Feature.Services.Html.HtmlResources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.Html.HtmlResources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.Html.HtmlResources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.Html.CodeCompletion.HtmlFooterItem.Image">
+            <summary>
+            Gets item image
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Html.CodeStructure.HtmlCodeStructureElement`1.GetPresentation(JetBrains.UI.TreeView.PresentationState)">
+            <summary>
+            
+            </summary>
+            <returns>Triple of image, main text and additional description</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Html.HtmlEntities.HtmlEntitiesWalker.#ctor(JetBrains.ReSharper.Psi.Html.Parsing.IHtmlTokenNodeTypes,JetBrains.ReSharper.Feature.Services.Html.HtmlEntities.HtmlEntitiesNodeTypeSet)">
+            <summary>
+            Html entities iterator
+            </summary>
+            <param name="tokenTypes"></param>
+            <param name="htmlEntitiesNodeTypeSet"></param>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.Html.HtmlEntities.HtmlEntity.IsNumeric">
+            <summary>
+            Is original passed entity was numeric
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.Html.Navigation.HtmlDeclarationContextSearch">
+            <summary>
+            Removes go-to-delcaration feature for some html specific declared elements...
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Html.SelectEmbracingConstruct.HtmlTokenPartSelection`1.GetParentCalculationData(JetBrains.ReSharper.Psi.Parsing.TokenNodeType,System.String)">
+            <returns>
+            prefix length, suffix length, is token selection allowed
+            </returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Html.TypingAssist.HtmlLexerUtils.GetHeaderByFooter(JetBrains.ReSharper.Psi.Parsing.CachingLexer,JetBrains.ReSharper.Psi.Html.Parsing.IHtmlTokenNodeTypes,JetBrains.ReSharper.Feature.Services.Html.TypingAssist.HtmlLexerUtils.TagNameContainerInfo)">
+            <summary>
+            Position lexer at header's tag name. Return true if successful. Lexer position otherwise is undefined.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Html.TypingAssist.HtmlLexerUtils.GetFooterByHeader(JetBrains.ReSharper.Psi.Parsing.CachingLexer,JetBrains.ReSharper.Psi.Html.Parsing.IHtmlTokenNodeTypes,JetBrains.ReSharper.Feature.Services.Html.TypingAssist.HtmlLexerUtils.TagNameContainerInfo)">
+            <summary>
+            Position lexer at footer's tag name. Return true if successful. Lexer position otherwise is undefined.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.Html.TypingAssist.TagMarkers.TagName">
+            <summary>
+            Tag name as it was before changes (used for undoing changes on Escape)
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.Html.TypingAssist.TagMarkers.ChangedTagName">
+            <summary>
+            Tag name with all changes to it
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.Html.TypingAssist.TagMarkers.FirstTagNameRange">
+            <summary>
+            Header or footer tag name range, according to FirstTagIsHeader. This is the range where user is typing.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.Html.TypingAssist.TagMarkers.SecondTagNameRange">
+            <summary>
+            Footer or header tag name range. This is the other side of modified tag.
+            </summary>
+        </member>
+    </members>
+</doc>

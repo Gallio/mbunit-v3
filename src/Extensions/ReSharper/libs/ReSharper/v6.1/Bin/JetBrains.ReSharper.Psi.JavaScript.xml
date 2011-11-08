@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.JavaScript</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Psi.JavaScript.CodeStyle.SettingsUprgade.JavaScriptCodeStyleSettings">
+            <summary>
+            Used for storing and managing of code style settings
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.JavaScript.CodeStyle.JavaScriptCodeFormatter.FormatDeletedNodes(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Format code during WritePSI action
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.JavaScript.DeclaredElements.IJavaScriptLocalElement">
+            <summary>
+            Local variable of function...
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.JavaScript.DeclaredElements.IJavaScriptTypeOwner.GetJsType(JetBrains.ReSharper.Psi.JavaScript.Impl.Resolve.JavaScriptResolveContext)">
+            <summary>
+            
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.JavaScript.Impl.Caches.ICacheItem.SymbolTypeGuid">
+            <summary>
+            Guid of symbol kind for persisting...
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.JavaScript.Impl.Caches.ICacheItem.Name">
+            <summary>
+            Short name of a symbol
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.JavaScript.Impl.Caches.IJavaScriptTypeBinding.GetJsType(JetBrains.ReSharper.Psi.JavaScript.Impl.Resolve.JavaScriptResolveContext)">
+            <summary>
+            Returns type provided by this binding
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.JavaScript.Resolve.IJavaScriptType.GetPsiServices">
+            <summary>
+            PsiManager
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.JavaScript.Resolve.IJavaScriptType.GetReturnType(JetBrains.ReSharper.Psi.JavaScript.Impl.Resolve.JavaScriptResolveContext)">
+            <summary>
+            When object is a function returns type of the function return value
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.JavaScript.Resolve.IJavaScriptType.GetConstructedType(JetBrains.ReSharper.Psi.JavaScript.Impl.Resolve.JavaScriptResolveContext)">
+            <summary>
+            If function is an object constructor returns type of the constructed object
+            </summary>
+            <param name="resolveContext"></param>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.JavaScript.Resolve.IJavaScriptType.BaseType">
+            <summary>
+            Base (prototype) type of this symbol
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.JavaScript.Resolve.IJavaScriptType.PresentableName">
+            <summary>
+            Name of type that can be used in presentation...
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.JavaScript.Resolve.IJavaScriptType.IsUnknown">
+            <summary>
+            Returns if this type contains some meaningful information...
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.JavaScript.Resolve.IJavaScriptType.Signatures">
+            <summary>
+            Returns signatures of all possible overloads
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.JavaScript.Resolve.IJavaScriptType.HasSignatures">
+            <summary>
+            Returns it this symbol can be used as a function (this check is much faster then Signatures.Any())
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.JavaScript.Resolve.IJavaScriptType.Properties">
+            <summary>
+            Properties of this object...
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.JavaScript.Resolve.IJavaScriptType.ElementType">
+            <summary>
+            Is this type is instance of Array type returns type of element of array
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.JavaScript.Impl.Caches.IJavaScriptCacheProvider.Version">
+            <summary>
+            version of this provider format (it contributes main cache version.)
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.JavaScript.Impl.Caches.IJavaScriptLocalTypeBinding.GetJsType(JetBrains.ReSharper.Psi.JavaScript.Impl.Resolve.JavaScriptResolveContext)">
+            <summary>
+            Returns type provided by this binding
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.JavaScript.Impl.Caches.IJavaScriptLocalTypeBinding.GetScope">
+            <summary>
+            scope of binding
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.JavaScript.Impl.Caches.IJavaScriptSymbol">
+            <summary>
+            Customization point for javascript properties
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.JavaScript.Impl.Caches.IJavaScriptSymbol.GetElementType">
+            <summary>
+            DeclaredElementType element that is declared by this symbol
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.JavaScript.Impl.Caches.IJavaScriptSymbol.FindDeclaration(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Restore tree node that declares this symbol
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.JavaScript.Impl.Caches.IJavaScriptSymbol.IsExplicit">
+            <summary>
+            Returns true for intentionally declared symbols (like var, {sss:} not just e = ???)
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.JavaScript.Impl.Caches.IJavaScriptSymbol.Offset">
+            <summary>
+            Offset of symbol declaration in the source file tree
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.JavaScript.Impl.Caches.IJavaScriptSymbol.SourceFile">
+            <summary>
+            Owner PSI source file
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.JavaScript.Impl.Caches.IJavaScriptSymbol.NavigationOffset">
+            <summary>
+            Offset where name of symbol is specified
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.JavaScript.Impl.Framework.jQuery.JQueryNotDocumentedFilesFilter">
+            <summary>
+            Filter out not documented files (preferes -vsdoc.js to bare .js and .min.js)
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.JavaScript.Resolve.IJavaScriptFunctionSignature.DocSignature">
+            <summary>
+            Associated Doc comment signature.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.JavaScript.Resolve.IJavaScriptFunctionSignature.SourceFile">
+            <summary>
+            Source file where signature owner is declared. Required for presentation.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.JavaScript.Impl.SymbolFilters.BetterSourceFilesFilter">
+            <summary>
+            Filters out elements that don't have doc comments (when there are elements with doc comments)
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.JavaScript.Tree.IJavaScriptStatement.ReplaceBy``1(``0)">
+            <summary>
+            Replace this statement in the tree by the copy of the given statement
+            </summary>
+            <param name="stmt"></param>
+            <returns>The clone of the original statement which was added into the tree </returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.JavaScript.Resolve.IReferenceExpressionReference.GetSymbolTable(JetBrains.ReSharper.Psi.JavaScript.Impl.Resolve.JavaScriptResolveContext)">
+            <summary>
+            Returns symbol table for code completion
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.JavaScript.Impl.Resolve.Types.JavaScriptArrayType">
+            <summary>
+            Represents array of elements having particular type. this type extends system Array type.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.JavaScript.Impl.Resolve.Types.JavaScriptFunctionType">
+            <summary>
+            Represents type of invocable symbol (symbol having signature...)
+            this type extends system Array type...
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.JavaScript.Impl.SymbolFilters.DocCommentsOwnerFilter">
+            <summary>
+            Filters out elements that don't have doc comments (when there are elements with doc comments)
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.JavaScript.Tree.IJavaScriptExpression.GetJsType(JetBrains.ReSharper.Psi.JavaScript.Impl.Resolve.JavaScriptResolveContext)">
+            <summary>
+            Returns type of this expression
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.JavaScript.Parsing.JavaScriptMissingTokensInserter.Run(JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.TreeElement)">
+            <remarks>
+            This code relies that TokenStart and TokenEnd return -1 when it reaches end of file.
+            </remarks>
+        </member>
+    </members>
+</doc>

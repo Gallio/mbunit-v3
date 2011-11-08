@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.I18n.Services.VB</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.I18n.Services.VB.CustomReferences.ResourceFileFinder.GetEmbeddedResourceName(JetBrains.ProjectModel.IProjectFile)">
+             <summary>
+             Get name embedded for the specified <paramref name="projectFile"/>.
+             </summary>
+             <remarks>
+             For VB applications the transformation is like:
+            
+             Resources1.resx => RootNamespace.Resources1 => Build into main assembly
+             SubFolder\Resources1.resx => RootNamespace.Resources1 => Build into main assembly
+             Resources1.fr.resx => RootNamespace.Resources1.fr => Build into satellite assembly
+             Resources1.notaculture.resx => RootNamespace.Resources1.notaculture => Build into main assembly    /// </remarks>
+             <param name="projectFile">resource file.</param>
+             <returns>resource name, e.g. for 'SR.ru-ru.resx' returns 'SR'.</returns>
+        </member>
+        <member name="T:JetBrains.ReSharper.I18n.Services.VB.ElementFactoryService">
+            <summary>
+            Factory for VB IElements creation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.VB.PsiService.GetArgumentValue(JetBrains.ReSharper.Psi.Tree.IArgument)">
+            <summary>
+            Gets the argument value.
+            </summary>
+            <param name="argument">The argument.</param>
+            <returns></returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.I18n.Services.VB.PsiService.LanguageType">
+            <summary>
+            Gets the type of the language.
+            </summary>
+            <value>The type of the language.</value>
+        </member>
+    </members>
+</doc>

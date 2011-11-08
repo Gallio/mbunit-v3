@@ -1,0 +1,197 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.Services</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Psi.Services.CandidatesUtil.MultiplyDeclaredElementExecutor">
+            <summary>
+            
+            </summary>
+            <param name="context">DataContext initially passed to action</param>
+            <param name="declaredElements">Candidates for navigation</param>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Services.IDeclaredElementInstanceToDataMap`2">
+            <summary>
+            IDeclaredElementInstance to TValue map.
+            Rehash should be called after any PSI change
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Services.DeclaredElementInstancePointerMap`2">
+            <summary>
+            IDeclaredElementInstance to TValue map.
+            Rehash should be called after any PSI change
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.LiteralService.IsStringLiteral(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Determines whether the specified <paramref name="element"/> is string literal.
+            </summary>
+            <param name="element">element for test</param>
+            <returns><c>true</c> - if success; otherwise - <c>false</c></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.LiteralService.IsConstantLiteral(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Determines whether the specified <paramref name="element"/> is constant literal.
+            </summary>
+            <param name="element">element for test</param>
+            <returns><c>true</c> - if success; otherwise - <c>false</c></returns>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Services.IDeclaredElementToDataMap`1">
+            <summary>
+            IDeclaredElement to TValue map.
+            Rehash should be called after any PSI change
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Services.ElementPointerMap`1">
+            <summary>
+            IDeclaredElement to TValue map.
+            Rehash should be called after any PSI change
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Services.ElementEnvoyMap`1">
+            <summary>
+            IDeclaredElement to TValue map.
+            Rehash should be called after any PSI change
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.PsiDataRules.DeclaredElementsFromDocument(JetBrains.Application.DataContext.IDataContext)">
+            <summary>
+            See <see cref="T:JetBrains.Application.DataContext.DataRule`1"/> ctor for tuple semantic comments.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.ILanguageReferenceSelector.GetBaseConstructor(JetBrains.ReSharper.Psi.IConstructor)">
+            <summary>
+            Get the base constructor call from given constructor
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.ILanguageReferenceSelector.GetCandidates(JetBrains.ReSharper.Psi.Resolve.IReference,JetBrains.ReSharper.Psi.Services.ReferencePreferenceKind)">
+            <summary>
+            Return the candidates to go to declaration action
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Services.ReparseContext.ContextType">
+            <summary>
+            TODO: this enum is C# specific. Move it to C#
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.Util.IPrefferedReference">
+            <summary>
+            Such reference will be always selected in <see cref="M:JetBrains.ReSharper.Psi.Services.TextControlToPsi.GetReferencesAtOffset(JetBrains.ProjectModel.ISolution,JetBrains.DocumentModel.IDocument,System.Int32)"/> and <see cref="!:JetBrains.ReSharper.Feature.Services.Util.CandidatesUtil.SelectGoodReferences"/>
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Services.StructuralSearch.IElementMatcher.Words">
+            <summary>
+            For WordIndex lookup. Only words specific for this element, not for children or siblings.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.StructuralSearch.Impl.AssociativeMatcherUtil.Match(System.Collections.Generic.IList{JetBrains.ReSharper.Psi.Tree.ITreeNode},JetBrains.ReSharper.Psi.Services.StructuralSearch.IMatchingContext,System.Collections.Generic.IEnumerable{JetBrains.ReSharper.Psi.Services.StructuralSearch.IElementMatcher},JetBrains.Util.Graphs.BipartiteGraph{JetBrains.ReSharper.Psi.Services.StructuralSearch.IElementMatcher,JetBrains.ReSharper.Psi.Tree.ITreeNode}@,System.Collections.Generic.List{JetBrains.ReSharper.Psi.Tree.ITreeNode}@)">
+            <summary>
+            
+            </summary>
+            <remarks>
+            <paramref name="operands"/> is truncated, only unmatched operands are left
+            </remarks>
+            <param name="operands"></param>
+            <param name="context"></param>
+            <param name="matchers"></param>
+            <param name="graph"></param>
+            <param name="matchedOperands"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.StructuralSearch.Impl.AssociativeMatcherUtil.MatchExpression(System.Collections.Generic.IList{JetBrains.ReSharper.Psi.Tree.ITreeNode},System.Collections.Generic.IEnumerable{JetBrains.ReSharper.Psi.Services.StructuralSearch.IElementMatcher},JetBrains.ReSharper.Psi.Services.StructuralSearch.IMatchingContext,System.Func{JetBrains.ReSharper.Psi.Tree.ITreeNode,System.Collections.Generic.IEnumerable{JetBrains.ReSharper.Psi.Tree.ITreeNode}})">
+            <summary>
+            Returns matched operands, <value>null</value> if not matched
+            </summary>
+            <param name="operands"></param>
+            <param name="matchers"></param>
+            <param name="context"></param>
+            <param name="getOperands"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.StructuralSearch.IStructuralMatcher.GetExtendedWords(JetBrains.ProjectModel.ISolution)">
+            <summary>
+            Words that MAY or MAY NOT be in matched snippet, but AT LEAST ONE word from this list MUST be there.
+            MUST NOT include Words (because this constaint applies after).
+            When empty enumerable is returned, constraint is not applied.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Services.StructuralSearch.IStructuralMatcher.Words">
+            <summary>
+            ALL these words MUST be in matched snippet
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.StructuralSearch.Impl.StructuralSearchPatternValidator.Validate(JetBrains.ReSharper.Psi.Services.StructuralSearch.IStructuralSearchPattern)">
+            <summary>
+            Returns null if pattern is correct
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Services.StructuralSearch.IMetaPlaceholder">
+            <summary>
+            Marker interface
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.StructuralSearch.IStructuralSearchPattern.Check">
+            <summary>
+            Returns null if pattern is correct
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Services.StructuralSearch.SequenceMatcher`1.DeepAnalysis">
+            <summary>
+            Deep analysis tries all cases of possible sequence matching
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.Services.StructuralSearch.StructuralSearchPatternParams.IgnoreEmptyStatements">
+            <summary>
+            Ignore empty statements.
+            Useful when matching statement placeholders in C#: "$stmt$;" pattern matches even if there's no empty statement at the end.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.Services.StructuralSearch.StructuralSearchPatternParams.TreatPostfixAndPrefixOperatorEquivalent">
+            <summary>
+            Only if they are not used in expressions
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.Services.StructuralSearch.StructuralSearchPatternParams.MatchAllMembersWithoutModifiers">
+            <summary>
+            If this modifier is set pattern "$type$ $method$($args$) $stmt$" will match all methods no matter
+            which modifiers they have (private/public, static, etc.)
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.Services.StructuralSearch.StructuralSearchPatternParams.MatchMethodParameterWithThisRefOut">
+            <summary>
+            If there's no ref or out or this modifier in pattern, pattern will match bare parameters as well as parameters with ref or out or this modifier.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.Services.StructuralSearch.StructuralSearchPatternParams.TypePlaceholderMatchesVoid">
+            <summary>
+            When Type placeholder is used as a return value of a method allows or disallows match void.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.TextControlToPsi.SelectReference(JetBrains.DocumentModel.DocumentRange,System.Collections.Generic.IEnumerable{JetBrains.ReSharper.Psi.Resolve.IReference})">
+            <summary>
+            Selects a reference from DIFFERENT psi files that user is most likely to bear in mind
+            </summary>
+            <remarks>Generally, we prefer references to the right of the position</remarks>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.TextControlToPsi.SelectReference(JetBrains.ReSharper.Psi.Tree.IFile,JetBrains.DocumentModel.DocumentRange,JetBrains.ReSharper.Psi.Resolve.IReference[])">
+            <summary>
+            Selects a reference from the same psi file that user is most likely to bear in mind
+            </summary>
+            <remarks>Generally, we prefer references to the right of the position</remarks>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Services.ValueTracking.Engine.ValueTrackingNodesRepository">
+            <summary>
+            Map of IElements to value tracking nodes
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.ValueTracking.Nodes.IPreExpandedNode.InitNode(JetBrains.Application.Progress.SubProgressIndicator)">
+            <summary>
+            Init data of pre-expanded node (usually calculates set of elements to search)
+            May be called several times (when user cancells action)
+            </summary>
+        </member>
+    </members>
+</doc>

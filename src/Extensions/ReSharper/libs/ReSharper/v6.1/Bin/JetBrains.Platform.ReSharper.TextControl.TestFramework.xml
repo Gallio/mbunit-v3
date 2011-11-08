@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.Platform.ReSharper.TextControl.TestFramework</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.Platform.Tests.TextControl.Components.TestImplStandaloneTextControlSwitchingGraphicsProvider">
+            <summary>
+            Overrides graphics provider with the tests instance.
+            </summary>
+        </member>
+    </members>
+</doc>

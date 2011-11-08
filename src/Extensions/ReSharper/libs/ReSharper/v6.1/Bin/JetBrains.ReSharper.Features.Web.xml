@@ -1,0 +1,234 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Features.Web</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Features.Web.JavaScriptXmlDocReferenceToFile.CodeCompletion.AutopopupInDocCommentReference">
+            <summary>
+            start automatic code completion in xxx["dd"] expression
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Web.Intellisense.CssCodeCompletionInJavaScript.AutopopupInCssStringLiteralStratery">
+            <summary>
+            start automatic code completion in string after . # : etc...
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Web.Options.Html.HtmlEditorPage">
+            <summary>
+            The HTML Editor related options.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Web.Options.JavaScript.JavaScriptContextActionsPage">
+            <summary>
+            Context actions.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Web.Options.JavaScript.JavaScriptContextActionsPage.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> or <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsManager"/> out of it.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Web.Options.Razor.RazorContextActionsPage">
+            <summary>
+            Context actions.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Web.Options.Razor.RazorContextActionsPage.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> or <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsManager"/> out of it.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Web.Options.Razor.RazorPage">
+            <summary>
+            Root options page for the Html language options.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Web.Options.Razor.RazorPage.OnOk">
+            <summary>
+            Invoked when OK button in the options dialog is pressed.
+            If the page returns <c>false</c>, the the options dialog won't be closed, and focus will be put into this page.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Web.Options.Razor.RazorPage.ValidatePage">
+            <summary>
+            Check if the settings on the page are consistent, and page could be closed.
+            </summary>
+            <returns><c>true</c> if page data is consistent.</returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Web.Options.Razor.RazorPage.Control">
+            <summary>
+            Control to be shown as page.
+            May be <c>Null</c> if the page does not have any UI.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Web.Options.Razor.RazorPage.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> or <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsManager"/> out of it.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Web.Options.Html.HtmlContextActionsPage">
+            <summary>
+            Context actions.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Web.Options.Html.HtmlContextActionsPage.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> or <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsManager"/> out of it.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Web.Options.Html.HtmlPage">
+            <summary>
+            Root options page for the Html language options.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Web.Options.Html.HtmlPage.OnOk">
+            <summary>
+            Invoked when OK button in the options dialog is pressed.
+            If the page returns <c>false</c>, the the options dialog won't be closed, and focus will be put into this page.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Web.Options.Html.HtmlPage.ValidatePage">
+            <summary>
+            Check if the settings on the page are consistent, and page could be closed.
+            </summary>
+            <returns><c>true</c> if page data is consistent.</returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Web.Options.Html.HtmlPage.Control">
+            <summary>
+            Control to be shown as page.
+            May be <c>Null</c> if the page does not have any UI.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Web.Options.Html.HtmlPage.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> or <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsManager"/> out of it.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Web.Options.Asp.AspContextActionsPage">
+            <summary>
+            Context actions.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Web.Options.Asp.AspContextActionsPage.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> or <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsManager"/> out of it.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Web.Options.Asp.AspxPage">
+            <summary>
+            Root options page for the ASP.NET language options.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Web.Options.Asp.AspxPage.OnOk">
+            <summary>
+            Invoked when OK button in the options dialog is pressed.
+            If the page returns <c>false</c>, the the options dialog won't be closed, and focus will be put into this page.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Web.Options.Asp.AspxPage.ValidatePage">
+            <summary>
+            Check if the settings on the page are consistent, and page could be closed.
+            </summary>
+            <returns><c>true</c> if page data is consistent.</returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Web.Options.Asp.AspxPage.Control">
+            <summary>
+            Control to be shown as page.
+            May be <c>Null</c> if the page does not have any UI.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Web.Options.Asp.AspxPage.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> or <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsManager"/> out of it.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Web.Options.JavaScript.JavaScriptCodeStylePage.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.OptionsManager"/> or <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> out of it.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Web.Options.CSS.CssOptionsPage">
+            <summary>
+            Root options page for the CSS language options.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Web.Options.CSS.CssOptionsPage.OnOk">
+            <summary>
+            Invoked when OK button in the options dialog is pressed.
+            If the page returns <c>false</c>, the the options dialog won't be closed, and focus will be put into this page.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Web.Options.CSS.CssOptionsPage.ValidatePage">
+            <summary>
+            Check if the settings on the page are consistent, and page could be closed.
+            </summary>
+            <returns><c>true</c> if page data is consistent.</returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Web.Options.CSS.CssOptionsPage.Control">
+            <summary>
+            Control to be shown as page.
+            May be <c>Null</c> if the page does not have any UI.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Web.Options.CSS.CssOptionsPage.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> or <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsManager"/> out of it.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Web.Options.JavaScript.JavaScriptPage">
+            <summary>
+            Root options page for the C# language options.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Web.Options.JavaScript.JavaScriptPage.OnOk">
+            <summary>
+            Invoked when OK button in the options dialog is pressed.
+            If the page returns <c>false</c>, the the options dialog won't be closed, and focus will be put into this page.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Web.Options.JavaScript.JavaScriptPage.ValidatePage">
+            <summary>
+            Check if the settings on the page are consistent, and page could be closed.
+            </summary>
+            <returns><c>true</c> if page data is consistent.</returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Web.Options.JavaScript.JavaScriptPage.Control">
+            <summary>
+            Control to be shown as page.
+            May be <c>Null</c> if the page does not have any UI.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Web.Options.JavaScript.JavaScriptPage.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> or <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsManager"/> out of it.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Web.Options.Razor.RazorNamespaceImportsPage.myBindSettings">
+            <summary>
+            List of bindings to from-target-apply on OK.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Web.Options.Razor.RazorNamespaceImportsPage.FillSettingsBag(JetBrains.DataFlow.Lifetime,JetBrains.UI.Options.OptionsSettingsSmartContext)">
+            <summary>
+            Prepares a settings bag for the language-neutral settings presenter.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Web.Options.Razor.RazorNamespaceImportsPage.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.OptionsManager"/> or <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> out of it.
+            </summary>
+        </member>
+    </members>
+</doc>

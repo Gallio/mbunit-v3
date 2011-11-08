@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.Xaml</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.DeclaredElements.IXamlResource.GetKeyType(JetBrains.ReSharper.Psi.IPsiModule)">
+            <summary>
+            If x:Key is defined using x:Type markup or it is a style with target type only
+            </summary>
+            <param name="psiModule"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.DeclaredElements.IXamlResource.GetStaticKey(JetBrains.ReSharper.Psi.IPsiModule)">
+            <summary>
+            If x:Key is defined with x:Static markup
+            </summary>
+            <param name="psiModule"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.DeclaredElements.IXamlResource.GetTargetType(JetBrains.ReSharper.Psi.IPsiModule)">
+            <summary>
+            Returns target type of Style/ Control template resource
+            </summary>
+            <param name="psiModule"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.DeclaredElements.IXamlResource.GetResourceType(JetBrains.ReSharper.Psi.IPsiModule)">
+            <summary>
+            Returns type of the declared resource
+            </summary>
+            <param name="psiModule"></param>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Xaml.Tree.IXamlObjectElement">
+            <summary>Xaml object element</summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Xaml.Tree.IXamlObjectElementDeclaration`1.Name">
+            <summary>Unquoted control name</summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Xaml.Tree.IResourceDeclaration">
+            <summary>
+            Xaml object element, that can declare resource
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Xaml.Tree.IXamlPropertyElement">
+            <summary>
+            Property element (i.e. Button.Content)
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Xaml.Tree.IXamlPropertyElement.ExpectedElementType">
+            <summary>
+            Cached expected type of child tags
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.Tree.IPropertyAttributeValue.GetTextToken">
+            <summary>
+            Returns text within attribute, if it is not a markup attribute
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.Tree.IPropertyAttributeValue.GetMarkups">
+            <summary>
+            Returns list of all top-level markup entries
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.Impl.Tree.PropertyAttributeValue.GetMarkups">
+            <summary>
+            Returns list of all top-level markup entries
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Xaml.Tree.MarkupExtensions.IMarkupAttribute.Name">
+            <summary>
+            Attribute Name
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Xaml.Tree.MarkupExtensions.IMarkupAttribute.Value">
+            <summary>
+            Markup value
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Xaml.Tree.MarkupExtensions.IMarkup.Name">
+            <summary>
+            Name of the markup
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Xaml.Tree.MarkupExtensions.IMarkup.Value">
+            <summary>
+            Value, that can be nested markup
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Xaml.Tree.MarkupExtensions.ISourceTraversalValue">
+            <summary>
+            Valid costructs are: /
+            qualifier/
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Xaml.Tree.MarkupExtensions.ITypeExpressionTypeArguments.TypeArguments">
+            <summary>
+            TypeArguments my be null though
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Xaml.Tree.IFieldDeclaration">
+            <summary>
+            Xaml object element, that can declare field
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Xaml.Tree.MarkupExtensions.IIdentifierMarkupValue">
+            <summary>
+            Simple markup entry, that consists of identifier only
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Xaml.Tree.IStyleDeclaration.BasedOnTypeReference">
+            <summary>
+            Reference on type, identified by BasedOn attribute
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.Impl.Util.BindingUtil.CalculateSourceTypeLocal(JetBrains.ReSharper.Psi.Xaml.Tree.IBinding,JetBrains.ReSharper.Psi.Xaml.Tree.IBinding,JetBrains.ReSharper.Psi.Xaml.Tree.IXamlObjectElement@)">
+            <summary>
+            Returns null when no source element is defined
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.Impl.XamlCacheProviderData.UpdateDefaultNamespaceIfNecessary(JetBrains.ProjectModel.IProject)">
+            <summary>
+            True, if chaged
+            </summary>    
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.Tree.BindingExtension.GetSourceType(JetBrains.ReSharper.Psi.Xaml.Tree.IBinding,JetBrains.ReSharper.Psi.Xaml.Tree.IXamlObjectElement@)">
+            <summary>
+            Returns source type used to resolve paths in binding
+            </summary>
+            <param name="binding">Binding element</param>
+            <param name="objectElement">?? </param>
+            <param name="bindingContext">Element, that specifies type. It is either DataContext or ElementName or RelativeSource etc.</param>
+            <returns></returns>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Xaml.Tree.IXamlIdentifier">
+            <summary>
+            XamlIdentifier has the form [[XmlNamemespace:]Qualifier.]Id
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Xaml.Tree.IXamlTypeDeclaration">
+            <summary>
+            Xaml root element. Declares partial type
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Xaml.Tree.IXamlFile">
+            <summary>
+            Xaml file
+            </summary>
+        </member>
+    </members>
+</doc>

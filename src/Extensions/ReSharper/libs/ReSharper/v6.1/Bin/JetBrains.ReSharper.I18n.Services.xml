@@ -1,0 +1,433 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.I18n.Services</name>
+    </assembly>
+    <members>
+        <member name="F:JetBrains.ReSharper.I18n.Services.LocalizableInspector.Optimistic">
+            <summary>
+            Analyze only localizable elements
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.I18n.Services.LocalizableInspector.Pessimistic">
+            <summary>
+            Analyze all possible elements
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.UI.Refactoring.RefactoringPageBase.Initialize(JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+            Initializes page. Called before each show of the page which is caused by "Continue" button.
+            </summary>
+            <param name="progressIndicator"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.UI.Refactoring.RefactoringPageBase.RefreshContents(JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+            Refreshes internal page pointers. Returns
+            <c>false</c> if refresh is unsuccessfull and refactoring should be canceled.
+            </summary>
+            <param name="progressIndicator"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.UI.Refactoring.RefactoringPageBase.Commit(JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+            Commits page
+            </summary>
+            <param name="progressIndicator"></param>
+            <returns>Next page if any</returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.I18n.Services.UI.Refactoring.RefactoringPageBase.Title">
+            <summary>
+            Gets page title
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:JetBrains.ReSharper.I18n.Services.UI.Refactoring.RefactoringPageBase.Description">
+            <summary>
+            Gets page description
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:JetBrains.ReSharper.I18n.Services.UI.Refactoring.RefactoringPageBase.View">
+            <summary>
+            Gets UI control
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:JetBrains.ReSharper.I18n.Services.UI.Refactoring.RefactoringPageBase.ContinueEnabled">
+            <summary>
+            Gets flag indicating whether the Continue button is enabled
+            </summary>
+            <value></value>
+        </member>
+        <member name="F:JetBrains.ReSharper.I18n.Services.Refactoring.MoveToResourceSecondPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.Refactoring.MoveToResourceSecondPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.Refactoring.MoveToResourceSecondPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.I18n.Services.Refactoring.ResourceInlinerAttribute.Priority">
+            <summary>
+            Inliner with the biggest value will be first.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.ElementFactory.CreateByValue(JetBrains.ReSharper.Psi.Tree.ITreeNode,System.Object)">
+            <summary>
+            Create literal expression for the specified <paramref name="value"/>.
+            </summary>
+            <param name="element">PSI module.</param>
+            <param name="value">literal value.</param>
+            <returns>if success - instance of <see cref="T:JetBrains.ReSharper.Psi.Tree.IExpression"/>; otherwise - <c>null</c>.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.ElementFactory.CreateByValue(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.ConstantValue)">
+            <summary>
+            Create literal expression for the specified <paramref name="value"/>.
+            </summary>
+            <param name="element">PSI module.</param>
+            <param name="value">literal value.</param>
+            <returns>if success - instance of <see cref="T:JetBrains.ReSharper.Psi.Tree.IExpression"/>; otherwise - <c>null</c>.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.ElementFactory.CreateExpression(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.IDeclaredElement)">
+            <summary>
+            Create expression for the specified <paramref name="element"/>.
+            </summary>
+            <param name="element">PSI module</param>
+            <param name="declaredElement">declared element.</param>
+            <returns>if success - instance of <see cref="T:JetBrains.ReSharper.Psi.Tree.IExpression"/>; otherwise - <c>null</c>.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.ElementFactory.CreateExpression(JetBrains.ReSharper.Psi.Tree.ITreeNode,System.String,System.Object[])">
+            <summary>
+            Create expression by <paramref name="format"/> and optional <paramref name="args"/>.
+            </summary>
+            <param name="element">PSI module.</param>
+            <param name="format">Format string is specified with $0, $1, ... as placeholders for arguments</param>
+            <param name="args">arguments for placeholders</param>
+            <returns>if success - instance of <see cref="T:JetBrains.ReSharper.Psi.Tree.IExpression"/>; otherwise - <c>null</c>.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.ElementFactory.CreateByValue(JetBrains.ReSharper.Psi.IClrDeclaredElement,System.Object)">
+            <summary>
+            Create literal expression for the specified <paramref name="value"/>.
+            </summary>
+            <param name="element">PSI module.</param>
+            <param name="value">literal value.</param>
+            <returns>if success - instance of <see cref="T:JetBrains.ReSharper.Psi.Tree.IExpression"/>; otherwise - <c>null</c>.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.ElementFactory.CreateByValue(JetBrains.ReSharper.Psi.IClrDeclaredElement,JetBrains.ReSharper.Psi.ConstantValue)">
+            <summary>
+            Create literal expression for the specified <paramref name="value"/>.
+            </summary>
+            <param name="element">PSI module.</param>
+            <param name="value">literal value.</param>
+            <returns>if success - instance of <see cref="T:JetBrains.ReSharper.Psi.Tree.IExpression"/>; otherwise - <c>null</c>.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.ElementFactory.CreateExpression(JetBrains.ReSharper.Psi.IClrDeclaredElement,JetBrains.ReSharper.Psi.IDeclaredElement)">
+            <summary>
+            Create expression for the specified <paramref name="element"/>.
+            </summary>
+            <param name="element">PSI module</param>
+            <param name="declaredElement">declared element.</param>
+            <returns>if success - instance of <see cref="T:JetBrains.ReSharper.Psi.Tree.IExpression"/>; otherwise - <c>null</c>.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.ElementFactory.CreateExpression(JetBrains.ReSharper.Psi.IClrDeclaredElement,System.String,System.Object[])">
+            <summary>
+            Create expression by <paramref name="format"/> and optional <paramref name="args"/>.
+            </summary>
+            <param name="element">PSI module.</param>
+            <param name="format">Format string is specified with $0, $1, ... as placeholders for arguments</param>
+            <param name="args">arguments for placeholders</param>
+            <returns>if success - instance of <see cref="T:JetBrains.ReSharper.Psi.Tree.IExpression"/>; otherwise - <c>null</c>.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.ElementFactoryService.Get(JetBrains.ReSharper.Psi.PsiLanguageType)">
+            <summary>
+            Gets instance of <see cref="T:JetBrains.ReSharper.I18n.Services.ElementFactoryService"/> for the specified <paramref name="language"/>.
+            </summary>
+            <param name="language">factory language.</param>
+            <returns>instance of <see cref="T:JetBrains.ReSharper.I18n.Services.ElementFactoryService"/></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.ElementFactoryService.CreateByValue(JetBrains.ReSharper.Psi.ConstantValue)">
+            <summary>
+            Create literal expression for the specified <paramref name="value"/>.
+            </summary>
+            <param name="value">literal value.</param>
+            <returns>if success - instance of <see cref="T:JetBrains.ReSharper.Psi.Tree.IExpression"/>; otherwise - <c>null</c>.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.ElementFactoryService.CreateExpression(JetBrains.ReSharper.Psi.IPsiModule,JetBrains.ReSharper.Psi.IDeclaredElement)">
+            <summary>
+            Create expression for the specified <paramref name="declaredElement"/>.
+            </summary>
+            <param name="module">psi module</param>
+            <param name="declaredElement">declared element.</param>
+            <returns>if success - instance of <see cref="T:JetBrains.ReSharper.Psi.Tree.IExpression"/>; otherwise - <c>null</c>.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.ElementFactoryService.CreateExpression(JetBrains.ReSharper.Psi.IPsiModule,System.String,System.Object[])">
+            <summary>
+            Create expression by <paramref name="format"/> and optional <paramref name="args"/>.
+            </summary>
+            <param name="module">PSI module.</param>
+            <param name="format">Format string is specified with $0, $1, ... as placeholders for arguments</param>
+            <param name="args">arguments for placeholders</param>
+            <returns>if success - instance of <see cref="T:JetBrains.ReSharper.Psi.Tree.IExpression"/>; otherwise - <c>null</c>.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.PsiService.GetInstance(JetBrains.ReSharper.Psi.PsiLanguageType)">
+            <summary>
+            Gets the instance.
+            </summary>
+            <value>The instance.</value>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.PsiService.GetInstance(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Gets the instance.
+            </summary>
+            <param name="element">The declared element.</param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.PsiService.GetArgumentValue(JetBrains.ReSharper.Psi.Tree.IArgument)">
+            <summary>
+            Gets the argument value.
+            </summary>
+            <param name="argument">The argument.</param>
+            <returns></returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.I18n.Services.PsiService.LanguageType">
+            <summary>
+            Gets the type of the language.
+            </summary>
+            <value>The type of the language.</value>
+        </member>
+        <member name="F:JetBrains.ReSharper.I18n.Services.Refactoring.AvailableResourcesRefactoringPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.Refactoring.AvailableResourcesRefactoringPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.Refactoring.AvailableResourcesRefactoringPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.Refactoring.MoveToResourceDrivenWorkflow.PreExecute(JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+             Performs pre-execute steps
+             </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.I18n.Services.Refactoring.MoveToResourceFirstPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.Refactoring.MoveToResourceFirstPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.Refactoring.MoveToResourceFirstPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.I18n.Services.Refactoring.InlineResourceFirstPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.Refactoring.InlineResourceFirstPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.Refactoring.InlineResourceFirstPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.I18n.Services.Refactoring.MoveResourceFirstPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.Refactoring.MoveResourceFirstPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.Refactoring.MoveResourceFirstPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.I18n.Services.Refactoring.RenameResourceFirstPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.Refactoring.RenameResourceFirstPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.Refactoring.RenameResourceFirstPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.SolutionResourceManagerImpl.GetResourceDeclarations(JetBrains.ProjectModel.IProjectFile)">
+            <summary>
+            Gets all resx data node declarations in the specified resx file.
+            </summary>
+            <param name="projectFile">resx file.</param>
+            <returns>all resx data node declarations</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.SolutionResourceManagerImpl.GetResourceDeclarations(JetBrains.ProjectModel.IProjectFile,System.String)">
+            <summary>
+            Gets all resx data node declarations by <paramref name="name"/> in the specified resx <paramref name="projectFile"/>.
+            </summary>
+            <param name="projectFile">resx file</param>
+            <param name="name">resource entry name</param>
+            <returns>all resx data node declarations</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.SolutionResourceManagerImpl.HasResourceDeclarations(JetBrains.ProjectModel.IProjectFile)">
+            <summary>
+            Determines where <paramref name="projectFile"/> contains resx declarations.
+            </summary>
+            <param name="projectFile">file for check.</param>
+            <returns><c>true</c> - contains; otherwise - <c>false</c>.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.SolutionResourceManagerImpl.GetResourceDeclaration(JetBrains.ProjectModel.IProjectFile,System.String,System.Int32)">
+             <summary>
+             Gets declaration in the <paramref name="projectFile"/> by <paramref name="name"/> and <paramref name="offset"/>.
+             </summary>
+            <param name="projectFile">resx project file</param>
+            <param name="name">resource name</param>
+            <param name="offset">resource offset</param>
+            <returns>resx data tag declration; otherwise - <c>null</c></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.StringUtil.TrimToLength(System.String)">
+            <summary>
+            Trims text to 40 chars
+            </summary>
+            <param name="text"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.UI.Options.OptionPageBase.#ctor(System.String,JetBrains.ReSharper.Daemon.Daemon)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JetBrains.ReSharper.I18n.Services.UI.Options.OptionPageBase"/> class.
+            </summary>
+            <param name="id">The id.</param>
+            <param name="daemon"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.UI.Options.OptionPageBase.JetBrains#UI#Options#IOptionsPage#ValidatePage">
+            <summary>
+            Check if the settings on the page are consistent, and page could be closed
+            </summary>
+            <returns><c>true</c> if page data is consistent</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.UI.Options.OptionPageBase.JetBrains#UI#Options#IOptionsPage#OnOk">
+            <summary>
+            Invoked when OK button in the options dialog is pressed
+            If the page returns <c>false</c>, the the options dialog won't be closed, and focus
+            will be put into this page
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.UI.Options.OptionPageBase.InitializeUI">
+            <summary>
+            Initializes the UI.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.UI.Options.OptionPageBase.Activated(System.Boolean)">
+            <summary>
+            Activateds the specified activated.
+            </summary>
+            <param name="activated">if set to <c>true</c> [activated].</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.UI.Options.OptionPageBase.OnValidatePage">
+            <summary>
+            Called when [validate page].
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.UI.Options.OptionPageBase.PressOk">
+            <summary>
+            Presses the ok.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.UI.Options.OptionPageBase.RefreshHighlightings">
+            <summary>
+            Refreshes the highlightings.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.I18n.Services.UI.Options.OptionPageBase.JetBrains#UI#Options#IOptionsPage#Control">
+            <summary>
+            Control to be shown as page
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:JetBrains.ReSharper.I18n.Services.UI.Options.OptionPageBase.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> or <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsManager"/> out of it.
+            </summary>
+            <value></value>
+        </member>
+        <member name="F:JetBrains.ReSharper.I18n.Services.UI.Options.LocalizationOptionPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.UI.Options.LocalizationOptionPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.UI.Options.LocalizationOptionPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.I18n.Services.UI.ResourceInplaceEditor.ResourceEditorForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.UI.ResourceInplaceEditor.ResourceEditorForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.UI.ResourceInplaceEditor.ResourceEditorForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+    </members>
+</doc>

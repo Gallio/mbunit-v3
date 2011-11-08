@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.ExternalSources</name>
+    </assembly>
+    <members>
+        <member name="F:JetBrains.ReSharper.ExternalSources.MetadataViewer.DecompilerBasedConstants.MinorVersion">
+            <summary>
+            Decompiler minor code version. Increasing this value will force cache expiration
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.ExternalSources.MetadataViewer.MetadataViewerTextControlsUpdater">
+            <summary>
+            Updates opened text controls with metadata view when MV option changes or different assembly
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.ExternalSources.Pdb.FolderSubstitutions.FolderSubstitutionEditorDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.ExternalSources.Pdb.FolderSubstitutions.FolderSubstitutionEditorDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.ExternalSources.Pdb.FolderSubstitutions.FolderSubstitutionEditorDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.ExternalSources.ReSharperIntegration.ExternalSourcesNavigationUtil.GetNavigationAreas(JetBrains.ReSharper.Psi.IDeclaredElement,System.Collections.Generic.IEnumerable{JetBrains.ReSharper.ExternalSources.ReSharperIntegration.ExternalSourceFile},JetBrains.ReSharper.Psi.IDeclaredElement)">
+            <summary>
+            Get navigation area (file + treeNode) to perform precise navigation later in that area.
+            </summary>
+            <param name="declaredElement"></param>
+            <param name="files"></param>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="T:JetBrains.ReSharper.ExternalSources.ReSharperIntegration.ExternalSourcesOptionsPageControl">
+            <summary>
+            Interaction logic for ExternalSourcesOptionsPageControl.xaml
+            </summary>
+            <summary>
+            ExternalSourcesOptionsPageControl
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.ExternalSources.ReSharperIntegration.ExternalSourcesOptionsPageControl.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.ExternalSources.ReSharperIntegration.ExternalSourcesFirstTimeNavigation.Execute">
+            <summary>
+            Show first-time navigation dialog and alter ES options according to
+            user choices
+            </summary>
+            <returns>Whether dialog was successfully executed</returns>
+        </member>
+    </members>
+</doc>

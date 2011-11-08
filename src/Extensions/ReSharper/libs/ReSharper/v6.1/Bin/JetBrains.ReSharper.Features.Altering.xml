@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Features.Altering</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Features.Altering.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Altering.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Altering.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Altering.CodeCleanup.CodeCleanupFilesCollector">
+            <summary>
+            Support for action on multiple files selected from Solution Explorer
+            (for example reformat code, optimize usings, etc.)
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Altering.CodeCleanup.ProfileNameDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Altering.CodeCleanup.ProfileNameDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Altering.CodeCleanup.ProfileNameDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Altering.Generate.GeneratorPage.#ctor(System.Collections.Generic.IList{JetBrains.ReSharper.Feature.Services.Generate.IGeneratorElement},JetBrains.Util.OneToListMap{JetBrains.ReSharper.Feature.Services.Generate.IGeneratorElement,JetBrains.ReSharper.Feature.Services.Generate.IGeneratorOption},System.String,JetBrains.ReSharper.Feature.Services.Generate.IGeneratorWorkflow)">
+            <summary>
+            Create page for setting element options
+            </summary>
+            <param name="elements">Elements to display in list</param>
+            <param name="options">Map of each element's option</param>
+            <param name="elementsCaption">Caption for elements list</param>
+            <param name="workflow"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Altering.Generate.GeneratorPage.#ctor(System.Collections.Generic.IList{JetBrains.ReSharper.Feature.Services.Generate.IGeneratorElement},System.Collections.Generic.IList{JetBrains.ReSharper.Feature.Services.Generate.IGeneratorOption},System.Collections.Generic.IList{JetBrains.ReSharper.Feature.Services.Generate.IGeneratorElement},System.String,JetBrains.ReSharper.Feature.Services.Generate.IGeneratorWorkflow)">
+            <summary>
+            Creates page for selecting elements from collection into another, with global options
+            </summary>
+            <param name="elements">Elements to select from</param>
+            <param name="options">Global options</param>
+            <param name="resultElements">Collection to select into</param>
+            <param name="elementsCaption">Caption for elements list</param>
+            <param name="workflow"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Altering.Options.FileHeaderTextPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+    </members>
+</doc>

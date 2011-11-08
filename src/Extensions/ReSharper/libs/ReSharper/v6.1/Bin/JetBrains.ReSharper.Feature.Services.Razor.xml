@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Feature.Services.Razor</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.CodeStructure.RazorDirectiveCodeStructureElement.GetPresentation(JetBrains.UI.TreeView.PresentationState)">
+            <summary>
+            
+            </summary>
+            <returns>Triple of image, main text and additional description</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.CodeStructure.RazorHelperCodeStructureElement.GetPresentation(JetBrains.UI.TreeView.PresentationState)">
+            <returns>Triple of image, main text and additional description</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.CodeStructure.RazorHtmlMarkupCodeStructureElement.GetPresentation(JetBrains.UI.TreeView.PresentationState)">
+            <returns>Triple of image, main text and additional description</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.CodeStructure.RazorSectionCodeStructureElement.GetPresentation(JetBrains.UI.TreeView.PresentationState)">
+            <summary>
+            
+            </summary>
+            <returns>Triple of image, main text and additional description</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.GetRelatedDeclarations(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            By default: yield break
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.GetRelatedAndFilterHidden(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            By default: yield return declaration
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.IsHidden(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            Works on auto-generated code-behind classed. By default - false
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.IsCodeBehindClass(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            By default - false
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.IsUserTextDeclaration(JetBrains.ReSharper.Psi.Tree.IDeclaration)">
+            <summary>
+            Works on auto-generated type members. By default - true
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.CanContainSeveralClasses(JetBrains.ReSharper.Psi.IPsiSourceFile)">
+            <summary>
+            Default - true
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.CanImplementInterfaces(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            Default - true
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.SuperClassCanBeChanged(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            Default - true
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.SuperClassNameMustBeFull(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            Default - false
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.GetFolderForElementsMovedToExternalScope(JetBrains.ProjectModel.IProjectFile,System.String,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Default - file.Location.Directory
+            </summary>
+        </member>
+    </members>
+</doc>

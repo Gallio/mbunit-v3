@@ -1,0 +1,902 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.Platform.ReSharper.VsIntegration.Whidbey</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.VsIntegration.Whidbey.Markup.VsHighlighterInstallerWhidbey">
+            <summary>
+            Registers and unregisters the highlighters.
+            Due to the <see cref="T:JetBrains.Application.Install.AssemblyAttributeInstallerAttribute"/>, it's invoked for each <see cref="T:JetBrains.TextControl.Markup.RegisterHighlighterAttribute"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.Markup.VsHighlighterInstallerWhidbey.CleanupRegisteredHighlighters(JetBrains.Application.Install.Installer)">
+            <summary>
+            An utility that iterates over the highlighters and kills those registered by us.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.Markup.VsHighlighterInstallerWhidbey.InstallInstance(JetBrains.Application.Install.Installer,System.Object)">
+            <summary>
+            Called for each of the attributes of the requested type encountered in the known assemblies.
+            </summary>
+            <param name="installer">The installer object that provides the installation data.</param>
+            <param name="attributeInstance">Instance of the attribute to process.</param>
+            <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.Markup.VsHighlighterServiceInstaller.InstallStatic(JetBrains.Application.Install.Installer)">
+            <summary>
+            Called once on the object during the registration process.
+            </summary>
+            <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Whidbey.Markup.VsRegisterHighlighterUtilWhidbey.RefreshCustomHighlighters.RootSuffixForm">
+            <summary>
+            Summary description for RootSuffixForm.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.Markup.VsRegisterHighlighterUtilWhidbey.RefreshCustomHighlighters.RootSuffixForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Whidbey.Markup.VsSimpleTextMarkerTypeWhidbey">
+            <summary>
+            Simple text marker type (without any custom rendering)
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Whidbey.ProjectModel.VsEnsureWritableHandlerWhidbey">
+            <summary>
+            Attaches to <see cref="T:JetBrains.ProjectModel.Impl.SolutionBase"/> events related to handling making the files writable.
+            Overrides Whidbey-specific behavior.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Whidbey.TextControl.CreateVsTextControlWhidbeyParams">
+            <summary>
+            Creates text controls over Visual Studio text views.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.CreateVsTextControlWhidbeyParams.#ctor(JetBrains.VsIntegration.DocumentModel.Whidbey.VsDocumentWhidbey,JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextView,JetBrains.UI.WindowManagement.WindowFrame)">
+            <summary>
+            Creates text controls over Visual Studio text views.
+            The text control will be destroyed either when you call <see cref="M:System.IDisposable.Dispose"/> on it or when the text view is unregistered with VS.
+            </summary>
+            <param name="textview">The Visual Studio text control we're wrapping.</param>
+            <param name="document">The document to be edited by the text control.</param>
+            <param name="frame">The window of the Visual Studio text control.</param>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.CreateVsTextControlWhidbeyParams.Document">
+            <summary>
+            The document to be edited by the text control.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.CreateVsTextControlWhidbeyParams.VsTextView">
+            <summary>
+            The Visual Studio text control we're wrapping.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.HiddenRegionsManager.GetRegionSafePosition(JetBrains.Util.dataStructures.TypedIntrinsics.Int32{JetBrains.DocumentModel.DocLine})">
+            <summary>
+            Returns a position of collapsed region, intersecting with current position
+            <b style="color:red">This method can start performing message queue.</b>
+            Only one collapsed region is assumed to intersect with position
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.HiddenRegionsManager.GetRegionSafePosition(JetBrains.DocumentModel.DocumentCoords)">
+            <summary>
+            Returns a position of collapsed region, intersecting with current position
+            <b style="color:red">This method can start performing message queue.</b>
+            Only one collapsed region is assumed to intersect with position
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow">
+            <summary>
+            Subclasses the VS Edit Pane HWND, which is the parent HWND of the <see cref="T:JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextView"/> HWND and is the root HWND of the editor-related windows like scrollbars etc. Subclasses these windows also.
+            Per-<see cref="T:JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextView"/> singleton, even against multiple platform-based products on different platform versions.
+            </summary>
+            <remarks>
+            Window structure:
+            * Edit Pane
+            * * Vs Text View (the HWND we get from <see cref="T:JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextView"/>).
+            * * Horz Scrollbar.
+            * * Vert Scrollbar.
+            * * Error Stripe Control.
+            </remarks>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.WM_SEND_WMSIZE">
+            <summary>
+            The custom message we use for forcing WM_SIZE in a deferred fashion.
+            We cannot just post the WM_SIZE message because:
+            * We do not want to call it sync (with SendMessage).
+            * The posted message carries actual size parameters with it, which means that if the size changes before the posted message is pumped, the resulting layout would be invalid.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.myDimensionsWhileCallingBaseLayout">
+            <summary>
+            When VS base impl causes the child windows to lay out, here they could get the sizes to be used instead of those dictated by the parent.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.myClientRectLastLaidOut">
+            <summary>
+            The MRU client rectangle used by <see cref="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.LayoutChildControls(JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.LocalDim@)"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.myIsErrorStripeVisible">
+            <summary>
+            Whether to show the error stripe in this view.
+            This is collected by the <see cref="T:JetBrains.Platform.CommonServices.TextControlServices.Impl.VsTextViewShared"/> from all of the <see cref="T:JetBrains.Platform.CommonServices.TextControlServices.Impl.VsTextViewShim"/> connected to it.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.myScrollHorz">
+            <summary>
+            Horz scrollbar, a child of VS Edit Pane Window.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.myScrollVert">
+            <summary>
+            Vert scrollbar, a child of VS Edit Pane Window.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.myTextViewWindow">
+            <summary>
+            HWND subclassing for <see cref="T:JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextView"/> itself.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.Rects_Dock(System.Drawing.Rectangle@,System.Windows.Forms.DockStyle,System.Drawing.Size)">
+            <summary>
+            Returns a non-collapsed rectangle docked within the <paramref name="space"/> rectangle.
+            </summary>
+            <param name="space">The docking space. Decreased to exclude the newly-docked rectangle on exit, so that to dock multiple rects in sequence.</param>
+            <param name="dockstyle">The docking style, which can be either any side or fill.</param>
+            <param name="size">The characteristic size of the side-docked rectangle (only either width or height is used, whichever is not defined by the docking process). In the <see cref="F:System.Windows.Forms.DockStyle.Fill"/> case, this parameter is ignored.</param>
+            <returns>The rectangle docked at the given side.</returns>
+            <remarks>Copied from <c>Rects</c>.</remarks>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.Rects_Dock(System.Drawing.Rectangle@,System.Windows.Forms.DockStyle,System.Int32)">
+            <summary>
+            Returns a non-collapsed rectangle docked within the <paramref name="space"/> rectangle.
+            </summary>
+            <param name="space">The docking space. Decreased to exclude the newly-docked rectangle on exit, so that to dock multiple rects in sequence.</param>
+            <param name="dockstyle">The docking style, which can be either any side or fill.</param>
+            <param name="size">The characteristic size of the side-docked rectangle (either width or height, whichever is not defined by the docking process). In the <see cref="F:System.Windows.Forms.DockStyle.Fill"/> case, this parameter is ignored.</param>
+            <returns>The rectangle docked at the given side.</returns>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.AssignHandle(System.IntPtr)">
+            <summary>
+            Make handle assignment go thru our code.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.WndProc_TranslateSplitterRect(System.Windows.Forms.Message@,JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.LocalDim@)">
+            <summary>
+            Special processing for the mouse messages: we move the splitter button to the left, but the button is not a window, it's only an area in the window we subclass.
+            So we have to translate all the mouse messages over the new splitter button location to the right.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.LayoutChildControlsIfSizeChanged(JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.LocalDim@)">
+            <summary>
+            Handles window resize, lays out all of the child controls.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.AttachScrollbar(JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsScrollBarWindow,JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsScrollBarWindow.VsScrollBarControlId)">
+            <summary>
+            Attaches or detaches one scrollbar window.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.LayoutChildControls(JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.LocalDim@)">
+            <summary>
+            Lays out all of the child controls.
+            Updates the layout to the new window size or to the new error stripe settings.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.PostWmSize">
+            <summary>
+            When we resign subclassing the window, the base VS impl must be caused to apply its own layout.
+            We send a <see cref="F:JetBrains.Interop.WinApi.WindowsMessages.WM_SIZE"/> for that.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.ReAttachScrollbars">
+            <summary>
+            Attaches or detaches both scrollbars.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.Trace(System.String)">
+            <summary>
+            Traces (if allowed) with added ID of the current object.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.WndProc_Paint(System.IntPtr,JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.LocalDim@)">
+            <summary>
+            Paints the parts that are revealed when the error stripe is added.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.WndProc_SendWmSize(System.Windows.Forms.Message@)">
+            <summary>
+            Handles <see cref="F:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.WM_SEND_WMSIZE"/>: sends <see cref="F:JetBrains.Interop.WinApi.WindowsMessages.WM_SIZE"/> for the current size to force relayout.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.ReleaseHandle">
+            <summary>
+            Make handle assignment go thru our code.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="P:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.ErrorStripeControl">
+            <summary>
+            The Error Stripe control, child of this object, and an HWND child of the Edit Pane Window HWND.
+            </summary>
+        </member>
+        <member name="P:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.IsErrorStripeVisible">
+            <summary>
+            Gets or sets whether to show the error stripe in this view.
+            This is collected by the <see cref="T:JetBrains.Platform.CommonServices.TextControlServices.Impl.VsTextViewShared"/> from all of the <see cref="T:JetBrains.Platform.CommonServices.TextControlServices.Impl.VsTextViewShim"/> connected to it.
+            </summary>
+        </member>
+        <member name="P:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.ScrollHorz">
+            <summary>
+            Horz scrollbar, a child of VS Edit Pane Window.
+            </summary>
+        </member>
+        <member name="P:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.ScrollVert">
+            <summary>
+            Vert scrollbar, a child of VS Edit Pane Window.
+            </summary>
+        </member>
+        <member name="P:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.TextView">
+            <summary>
+            The VS Text View object. Its HWND is of the <see cref="P:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.TextViewWindow"/>.
+            </summary>
+        </member>
+        <member name="P:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.TextViewWindow">
+            <summary>
+            The subclassing of the text view itself (the window that renders the characters). It's whose HWND is returned from <see cref="T:JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextView"/>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.LocalDim">
+            <summary>
+            Measures and lays out the controls in the text editor window.
+            Struct to improve lazy-creation, pass values byref only!
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.LocalDim.myRectScrollCorner">
+            <summary>
+            A small rectangle at the point where two scrollbars meet.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.LocalDim.myRectSplitter">
+            <summary>
+            A draggable point above the vertical scrollbar that allows to split the text view horizontally.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.LocalDim.#ctor(JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Object"/> class.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.LocalDim.SplitterHeight">
+            <summary>
+            Definition taken from VS source code. It had no comments as of why this expression has been chosen.
+            <code>m_iSplitterHeight = GetSystemMetrics (SM_CYSIZEFRAME) + (GetSystemMetrics (SM_CYBORDER) * 3);</code>
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.LocalDim.InitIfNeeded">
+            <summary>
+            Lazy-init when dimensions are actually needed (that's true not for all of the windows messages in WndProc)
+            </summary>
+        </member>
+        <member name="P:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.LocalDim.RectScrollCorner">
+            <summary>
+            A small rectangle at the point where two scrollbars meet.
+            </summary>
+        </member>
+        <member name="P:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsEditPaneWindow.LocalDim.RectSplitter">
+            <summary>
+            A draggable point above the vertical scrollbar that allows to split the text view horizontally.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsErrorStripeControlWhidbey.myCurrentCursor">
+            <summary>
+            Handle to the cursor to be set in response to the <see cref="F:JetBrains.Interop.WinApi.WindowsMessages.WM_SETCURSOR"/> message.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsErrorStripeControlWhidbey.CreateControl(System.Windows.Forms.IWin32Window,System.Drawing.Rectangle)">
+            <summary>
+            Creates the control.
+            </summary>
+            <param name="parent">Handle to the parent window (VS edit pane).</param>
+            <param name="bounds">Bounds of the control, in parent client coords.</param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsErrorStripeControlWhidbey.GetClientRect">
+            <summary>
+            Gets the client rectangle of the control.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsErrorStripeControlWhidbey.Invalidate">
+            <summary>
+            Safely invalidates the control.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsErrorStripeControlWhidbey.SetBounds(System.Drawing.Rectangle)">
+            <summary>
+            Repositions the control. Safe to call when not created yet, but will take no effect.
+            </summary>
+            <param name="bounds">New bounds, in parent client coords.</param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsErrorStripeControlWhidbey.Trace(System.String)">
+            <summary>
+            Traces (if allowed) with added ID of the current object.
+            </summary>
+        </member>
+        <member name="P:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsErrorStripeControlWhidbey.CurrentCursor">
+            <summary>
+            Handle to the cursor to be set in response to the <see cref="F:JetBrains.Interop.WinApi.WindowsMessages.WM_SETCURSOR"/> message.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsScrollBarWindow.AssignHandle(System.IntPtr)">
+            <summary>
+            Make handle assignment go thru our code.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsScrollBarWindow.SetBounds(System.Drawing.Rectangle)">
+            <summary>
+            Repositions the control. Safe to call when not created yet, but will take no effect.
+            </summary>
+            <param name="bounds">New bounds, in parent client coords.</param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsScrollBarWindow.GetScrollBarHandle(JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsScrollBarWindow.VsScrollBarControlId,System.IntPtr)">
+            <summary>
+            Looks up one of the scrollbar windows and returns a window handle to it.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsScrollBarWindow.Trace(System.String)">
+            <summary>
+            Traces (if allowed) with added ID of the current object.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsScrollBarWindow.ReleaseHandle">
+            <summary>
+            Releases the handle associated with this window. 
+            </summary>
+            <filterpriority>1</filterpriority><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode"/></PermissionSet>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsTextViewShimImplementationComponentWhidbey">
+            <summary>
+            Registers the <see cref="T:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsTextViewShimImplementationFactoryWhidbey">factory</see> with the Common Services.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsTextViewShimImplementationWhidbey">
+            <summary>
+            Subclasses the text view in VS 8-9 and provides the shared implementation of the Error Stripe for co-use in products.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsTextViewShimImplementationWhidbey.Trace(System.String)">
+            <summary>
+            Traces (if allowed) with added ID of the current object.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsTextViewShimImplementationWhidbey.TrySubclassView">
+            <summary>
+            Creates the subclassing — if the handle is already available and if not subclassed yet.
+            </summary>
+        </member>
+        <member name="P:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsTextViewShimImplementationWhidbey.EditPaneWindow">
+            <summary>
+            Subclassing data for the text view and its related windows.
+            </summary>
+        </member>
+        <member name="P:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsTextViewShimImplementationWhidbey.TextView">
+            <summary>
+            The view being wrapped.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsTextViewWindow.AssignHandle(System.IntPtr)">
+            <summary>
+            Make handle assignment go thru our code.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsTextViewWindow.SetBounds(System.Drawing.Rectangle)">
+            <summary>
+            Repositions the control. Safe to call when not created yet, but will take no effect.
+            </summary>
+            <param name="bounds">New bounds, in parent client coords.</param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsTextViewWindow.Trace(System.String)">
+            <summary>
+            Traces (if allowed) with added ID of the current object.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.TextViewShimImpl.VsTextViewWindow.ReleaseHandle">
+            <summary>
+            Releases the handle associated with this window. 
+            </summary>
+            <filterpriority>1</filterpriority><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode"/></PermissionSet>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Whidbey.TextControl.VsRowModelWhidbey">
+            <summary>
+            Note: has been phased out of VS text control because it works in Text Control coordinate space and cannot be implemented on top of VS. The exposed text view API is document coordinate.
+            The IVsTextView API is nice, but not enough.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.VsRowModelWhidbey.VsRow.myTextLines">
+            <summary>
+            DO NOT USE DIRECTLY, use <see cref="M:JetBrains.VsIntegration.Whidbey.TextControl.VsRowModelWhidbey.VsRow.WithTextLines``1(System.Func{JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextBuffer,``0},System.Func{``0})"/> instead.
+            Can be <c>Null</c>, can be zombie.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsRowModelWhidbey.VsRow.WithTextLines``1(System.Func{JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextBuffer,``0},System.Func{``0})">
+            <summary>
+            If the interface is still live and available, execs <paramref name="FWithLines"/>.
+            If the interface is dead, execs <paramref name="FNoLines"/>, and you should use the MRU value.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCanvasWhidbey">
+            <summary>
+            Note: has been phased out of VS text control because it relies on Row Model, which works in Text Control coordinate space and cannot be implemented on top of VS. The exposed text view API is document coordinate.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCaretWhidbey.myLastPolledCaretPos">
+            <summary>
+            Backend for <see cref="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCaretWhidbey.InitPollCaretPosition"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCaretWhidbey.InitPollCaretPosition">
+            <summary>
+            When there're visible text controls, call them to update their model periodically.
+            Reasoning for the current impl:
+            (1) We have the OnChangeCaretLine event, but don't know the in-line caret movements.
+            (2) We lack the selection change events.
+            Whidbey-specific.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCoordinateConversionWhidbey.#ctor(JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWhidbey,Microsoft.VisualStudio.TextManager.Interop.IVsHiddenTextManager,Microsoft.VisualStudio.TextManager.Interop.IVsTextManager)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Object"/> class.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCoordinateConversionWhidbey.MapVsLineColumn_TextControlToDoc_Transparent(JetBrains.VsIntegration.TextControl.TextControlLineColumnRange)">
+            <summary>
+            Called in case the text control is not layered, and its line-columns directly correspond to the document ones.
+            Just performs the type conversion.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCoordinateConversionWhidbey.GetZeroLineColPoint">
+            <summary>
+            Gets the location of the viewport top-left corner in canvas pixel coordinates.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCoordinateConversionWhidbey.MapVsLineColumn_DocToTextControl(JetBrains.DocumentModel.DocumentCoords,System.Boolean)">
+            <summary>
+            A smart version of <see cref="M:JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextView.BaseLineIndexToLocal(JetBrains.DocumentModel.DocumentCoords)"/>.
+            Knows about virtual space.
+            If the coordinate fails and allowed by <paramref name="bTryAdjacentPoints"/>, tries other ones and never returns <c>Null</c>. If <paramref name="bTryAdjacentPoints"/> is <c>False</c>, might return <c>Null</c>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCoordinateConversionWhidbey.GetViewportPaddingInClientArea">
+            <summary>
+            The viewport (visible portions of the canvas) has some padding within the client area, we have to take its left-top portion into account.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCoordinateConversionWhidbey.MapVsLineColumn_TextControlToDoc(JetBrains.VsIntegration.TextControl.TextControlLineColumnRange)">
+            <summary>
+            Takes the <paramref name="rangeTopmostLayer"/> line-col coordinates in the topmost layer (text view) coordinate space and translates them into the text buffer lines space.
+            This accounts for hidden regions and such.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCoordinateConversionWhidbey.MapVsLineColumn_TextControlToDoc(JetBrains.TextControl.TextControlLineColumn)">
+            <summary>
+            A smart version of <see cref="M:JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextView.LocalLineIndexToBase(JetBrains.TextControl.TextControlLineColumn)"/>.
+            Knows about virtual space.
+            If the coordinate fails, tries other ones.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCoordinateConversionWhidbey.ReportDocumentPosition(System.Exception,JetBrains.DocumentModel.DocumentCoords)">
+            <summary>
+            Adds context info to the exception.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCoordinateConversionWhidbey.ReportTextControlPosition(System.Exception,JetBrains.TextControl.TextControlLineColumn)">
+            <summary>
+            Adds context info to the exception.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCoordinateConversionWhidbey.ValidateDocumentPosition(JetBrains.DocumentModel.DocumentCoords,JetBrains.Util.dataStructures.TypedIntrinsics.Int32{JetBrains.DocumentModel.DocColumn})">
+            <summary>
+            Makes sure the doc coords fall into a valid document position. Could add virtual space to the column number afterwards.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCoordinateConversionWhidbey.Screen_To_Viewport(System.Drawing.Point)">
+            <summary>
+            Helper conversion for deriving screen conversions from canvas ones.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCoordinateConversionWhidbey.Viewport_To_Screen(System.Drawing.Point)">
+            <summary>
+            Helper conversion for deriving screen conversions from canvas ones.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCreationMonitorWhidbey">
+            <summary>
+            Attaches to <see cref="T:JetBrains.VsIntegration.Whidbey.DocumentModel.VsDocumentManagerWhidbey"/>.
+            Listens for possible moments when new VS text controls are created.
+            Initiates creating <see cref="T:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWhidbey"/> wrappers for them.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCreationMonitorWhidbey.#ctor(JetBrains.DataFlow.Lifetime,JetBrains.VsIntegration.Whidbey.DocumentModel.VsDocumentManagerWhidbey,JetBrains.VsIntegration.WindowManagement.VsWindowFrameManager,Microsoft.VisualStudio.Shell.Interop.IVsCodeDefView,JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCreatorWhidbey,JetBrains.UI.Application.WindowsMessageHookManager,JetBrains.VsIntegration.Interop.Shim.Shell.IVsRunningDocumentTable,JetBrains.VsIntegration.Whidbey.DocumentModel.MapVsCookieToProjectFile,JetBrains.Threading.IThreading,Microsoft.VisualStudio.TextManager.Interop.IVsTextManager)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Object"/> class.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCreationMonitorWhidbey.OnNewTextViewCreateTextControl(JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextView,JetBrains.VsIntegration.Whidbey.DocumentModel.VsTextBufferData,JetBrains.VsIntegration.Interop.Shim.Shell.IVsWindowFrame,Microsoft.VisualStudio.Shell.Interop.IVsCodeDefView,JetBrains.VsIntegration.Whidbey.DocumentModel.VsDocumentManagerWhidbey,JetBrains.VsIntegration.WindowManagement.VsWindowFrameManager,JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCreatorWhidbey,JetBrains.UI.Application.WindowsMessageHookManager)">
+            <summary>
+            A new text view has opened. Create a text control over it.
+            </summary>
+            <param name="textView">The text view (VS counterpart for our <see cref="T:JetBrains.TextControl.ITextControl"/>).</param>
+            <param name="vsTextBufferData">VS text buffer, doc cookie and its place in the hierarchy (roughly our <see cref="T:JetBrains.DocumentModel.IDocument"/>, <see cref="T:JetBrains.ProjectModel.IProjectFile"/>, and <see cref="T:JetBrains.ProjectModel.IProjectItem"/>).</param>
+            <param name="vsWindowFrame">The window of the text control. Pass it if you know for sure, or we'll try figure one from the <paramref name="textView"/>'s provider. If failed, the text control will not be created.</param>
+            <param name="vsCodeDefView"></param>
+            <param name="vsDocumentManagerWhidbey"></param>
+            <param name="vsWindowFrameManager"></param>
+            <param name="vsTextControlCreator"></param>
+            <param name="hookman"></param>
+            <returns>Whether we succeeded in creating a text control.</returns>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCreationMonitorWhidbey.AttachWindowFrameToTextViewRootParent(JetBrains.DataFlow.Lifetime,JetBrains.UI.WindowManagement.WindowFrame,System.Object,JetBrains.UI.Application.WindowsMessageHookManager)">
+            <summary>
+            We cannot yet rip off information about the window off the <see cref="T:JetBrains.VsIntegration.Interop.Shim.Shell.IVsWindowFrame"/>.
+            Thus, when we're attaching to a VS text control, we only know its <see cref="F:JetBrains.UI.WindowManagement.WindowFrame.RootParentHwnd"/> from the text view.
+            </summary>
+            <param name="lifetime">Lifetime of the activity.</param>
+            <param name="frame">Frame of the text control, to be completed with <see cref="F:JetBrains.UI.WindowManagement.WindowFrame.RootParentHwnd"/> info.</param>
+            <param name="textview">Text view of either implementation. HWND-based in Whidbey, Avalon-based in DevTen.</param>
+            <param name="hookman"></param>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCreatorWhidbey.myMapTextViewToTextControl">
+            <summary>
+            Stores the text views for which the text controls are to be created, along with their data
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlCreatorWhidbey.CreateTextControl``1(JetBrains.TextControl.CreateTextControlParams{``0})">
+            <summary>
+            Creates a new text control for some document (there might be multiple text controls for the same document).
+             The document and the type of the text control created are determined by the <paramref name="param"/>, for which any <see cref="T:JetBrains.TextControl.CreateTextControlParams`1"/> inheritor could be used.
+            </summary>
+            <typeparam name="TTextControl">Type of the text control to create.</typeparam><param name="param">Text control context and parameters.</param>
+            <returns>
+            The new text control.
+            </returns>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlScrollingWhidbey.myViewportRangeUnguarded">
+            <summary>
+            Flows into <see cref="P:JetBrains.TextControl.BaseImpl.TextControlScrollingBase.ViewportRange"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlScrollingWhidbey.myViewportRectUnguarded">
+            <summary>
+            Flows into <see cref="P:JetBrains.TextControl.BaseImpl.TextControlScrollingBase.ViewportRect"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlScrollingWhidbey.ScrollTo_DontCare(JetBrains.TextControl.Coords.ITextControlPos,System.Boolean)">
+            <summary>
+            Even though "Dont Care" we must check the result of what VS does.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlScrollingWhidbey.ScrollTo_Smart(JetBrains.TextControl.Coords.ITextControlPos,JetBrains.Util.dataStructures.TypedIntrinsics.Int32{JetBrains.TextControl.TextControlLine})">
+            <summary>
+            Advanced scrolling mode
+            Don't scroll at all if already visible decently
+            Scroll minimally if need to reveal the point
+            </summary>
+            <param name="position">Desired position.</param>
+            <param name="directional"><see cref="F:JetBrains.Util.dataStructures.TypedIntrinsics.Int32`1.O"/> for default behavior (uses prev scrolling position for direction). A nonzero value to (1) accept target in the “back” edge zone (do not scroll backwards against this direction if the target is visible onscreen) and (2) use this direction for choosing the upper/lower half. The latter mode is usually used for Goto Next/Prev actions that use prev caret position instead of prev scrolling position.</param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlScrollingWhidbey.VsGetHorzScrollRange">
+            <summary>
+            Calls VS directly. Gets the current scrolling range for the horizontal scrollbar.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlScrollingWhidbey.VsGetRawScrollPos">
+            <summary>
+            Gets raw scrolling position from VS.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlScrollingWhidbey.VsGetVertScrollRange">
+            <summary>
+            Calls VS directly. Gets the current scrolling range for the vertical scrollbar.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlScrollingWhidbey.VsSetRawScrollPos(JetBrains.TextControl.TextControlLineColumn)">
+            <summary>
+            Sets raw scrolling position to VS.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlScrollingWhidbey.GetTopmostLayerScrollRange">
+            <summary>
+            Gets the raw scrolling ranges, in view coordinates (topmost layer).
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlScrollingWhidbey.ValidatePositionInDocCoords(JetBrains.TextControl.Coords.ITextControlPos@)">
+            <summary>
+            Validation, in doc coords space only.
+            Basically we have to use doc line-column because (1) VS only exposes doc line-col coords in the scroll/caret model (legacy api) and (2) text control coords change when navigating because collapsed regions are expanded and text wrapping is refined, text control coords are thus unreliable.
+            </summary>
+            <param name="position">Updated if invalid. Does not throw out.</param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlScrollingWhidbey.VsForceScroll(JetBrains.DocumentModel.DocumentCoords,JetBrains.Util.dataStructures.TypedIntrinsics.Int32{JetBrains.TextControl.TextControlLine})">
+            <summary>
+            Operates on VS functions to scroll to the given document position.
+            </summary>
+            <param name="posDoc">Position, in document coords, to scroll into view. Cannot be in text coords because those aren't known exactly until scrolled into view.</param>
+            <param name="lnFromViewportTop">Number of text control lines from the viewport top to the line at which <paramref name="posDoc"/> should appear.</param>
+            <remarks>
+            The problem is that VS does not know exact text-control-coords for doc-coords before the view is scrolled in because of the collapsed regions, word wrapping, et cetera.
+            CenterColumns does not work at all without a previous EnsureSpanVisible.
+            And so on.
+            We scroll and than check to see if it had any effect altogether.
+            </remarks>
+            <returns>
+            <para>Whether it was possible to scroll to the desired position.</para>
+            <para>If this method totally fails to force VS into scrolling, an exception is thrown instead of returning anything.</para>
+            <para>However, it will be <c>False</c> if we're trying to scroll up beyond the viewport top (eg trying to place 0th doc line at viewport center).</para>
+            </returns>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlScrollingWhidbey.VsForceScroll_Horizontal(JetBrains.DocumentModel.DocumentCoords)">
+            <summary>
+            See <see cref="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlScrollingWhidbey.VsForceScroll(JetBrains.DocumentModel.DocumentCoords,JetBrains.Util.dataStructures.TypedIntrinsics.Int32{JetBrains.TextControl.TextControlLine})"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlScrollingWhidbey.VsForceScroll_Vertical(JetBrains.DocumentModel.DocumentCoords,JetBrains.Util.dataStructures.TypedIntrinsics.Int32{JetBrains.TextControl.TextControlLine})">
+            <summary>
+            See <see cref="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlScrollingWhidbey.VsForceScroll(JetBrains.DocumentModel.DocumentCoords,JetBrains.Util.dataStructures.TypedIntrinsics.Int32{JetBrains.TextControl.TextControlLine})"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlScrollingWhidbey.VsScrollBy(JetBrains.Util.dataStructures.TypedIntrinsics.Int32{JetBrains.TextControl.TextControlLine})">
+            <summary>
+            Implements relative scrolling.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlScrollingWhidbey.VsScrollBy(JetBrains.Util.dataStructures.TypedIntrinsics.Int32{JetBrains.TextControl.TextControlColumn})">
+            <summary>
+            Implements relative scrolling.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlScrollingWhidbey.VsScrollBy(JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextView.ScrollBarAxis,System.Int32)">
+            <summary>
+            Implements relative scrolling.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlScrollingWhidbey.VsScrollBy(JetBrains.VsIntegration.Interop.Shim.TextManager.IVsTextView.ScrollBarAxis,System.Double)">
+            <summary>
+            Operates VS functions directly.
+            Implements relative scrolling. The fraction is in the <c>[-1,1]</c> range.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWhidbey">
+            <summary>
+            Wraps Visual Studio text controls with our model, VS 8.0 - 9.0 implementation.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWhidbey.VsDocument">
+            <summary>
+            Gets the document of the text control.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWhidbey.VsTextView">
+            <summary>
+            Gets the VS Text View (a VS counterpart for our textcontrols) over which this text control is functioning.
+            <para>Achtung! Might be invalid even when not <see cref="P:JetBrains.TextControl.ITextControl.IsDisposed"/>, because that state is guarded. Check <see cref="P:JetBrains.VsIntegration.TextControl.VsTextControlCommon.IsVsAlive"/> instead.</para>
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWhidbey.AssertIsVsAlive">
+            <summary>
+            Asserts <see cref="P:JetBrains.VsIntegration.TextControl.VsTextControlCommon.IsVsAlive"/>. Called for access to the <see cref="F:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWhidbey.VsTextView"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWhidbey.Init_PreserveCaretPositionOnReplaceStream">
+            <summary>
+            VS sometimes (e.g. if the Word Wrap option is enabled) moves the caret unpredictably (but usually to the end of the current line) after programmatic text modification. We would like to avoid it.
+            Note: here we're called really before changing the VS stream, not just before our handlers are un no an already-changed stream.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWhidbey.GetVsTextViewOleCommandTarget">
+            <summary>
+            Gets the command target for the current VS text view.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWhidbey.IsPositionInTextView(JetBrains.TextControl.Coords.ITextControlPos)">
+            <summary>
+            Gets whether the given document position is present in the text view of the text control.
+            </summary>
+            <param name="position">The document position in the unified position format (<see cref="P:JetBrains.TextControl.ITextControl.Coords"/>.<see cref="M:JetBrains.TextControl.Coords.ITextControlCoords.FromDocOffset(System.Int32)"/> or <see cref="P:JetBrains.TextControl.ITextControl.Coords"/>.<see cref="M:JetBrains.TextControl.Coords.ITextControlCoords.FromDocLineColumn(JetBrains.DocumentModel.DocumentCoords)"/>).</param>
+            <remarks>
+            Even though every position could be converted to a text view (and usually a reasonable value will be returned), sometimes that would be only an approximate position (that would not roundtrip). For example, a document position could be hidden from the text view by a collapsed region.
+            Generic implementation common for all VS text controls.
+            If we go from document to text control and then back successfully, then the point is not covered by a collapsed region or any other layered model artifact.
+            Slow because at points that are actually under a collapsed region the calculations are complex sometimes.
+            Overriding with a more specific method is recommended.
+            </remarks>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWhidbey.IsVsCompletorWindowActive">
+            <summary>
+            Gets whether the VS completion window is currently visible over the text control.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWhidbey.PushOleCommandFilter(JetBrains.DataFlow.Lifetime,Microsoft.VisualStudio.OLE.Interop.IOleCommandTarget,Microsoft.VisualStudio.OLE.Interop.IOleCommandTarget@)">
+            <summary>
+            Places an OLE command filter to the text control filters chain at the highest priority.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWhidbey.GetVsTextViewCompoundAction">
+            <summary>
+            Gets the <see cref="T:Microsoft.VisualStudio.TextManager.Interop.IVsCompoundAction"/> interface for the text control.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWhidbey.Init_AfterFieldInit">
+            <summary>
+            Base init. Must be called by the inheritors after the text control is fully initialized.
+            </summary>
+        </member>
+        <member name="P:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWhidbey.Coords">
+            <summary>
+            Provides access to the text control coordinate conversion, which makes it possible to represent a point on the text control or in the document in a unified way.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWindowWhidbey.TextViewHwnd">
+            <summary>
+            HWND of the text view.
+            Sometimes the text view HWND is not available immediately, and gets known somewhen later thru its lifetime.
+            We'd have no HWND initially if:
+            (1) Opening Avalon designer with complicated text view nesting.
+            (2) Splitting text view.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWindowWhidbey.SuspendUpdate">
+            <summary>
+            When we're doing mass changes, supposedly prevents the VS code editor from repainting itself excessively.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWindowWhidbey.Init_ErrorStripe(JetBrains.Platform.CommonServices.TextControlServices.IVsTextViewShared,JetBrains.Application.IShellLocks)">
+            <summary>
+            Wires up together (1) error stripe doc (2) shared text view shim (3) user options on text control.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWindowWhidbey.Init_TextViewHwnd">
+            <summary>
+            <see cref="F:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWindowWhidbey.TextViewHwnd"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWindowWhidbey.Init_TextViewShared">
+            <summary>
+            Attaches to the shared services over the current text view.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWindowWhidbey.Init_TextViewSubclassing">
+            <summary>
+            Subclasses the text view HWND and enables HWND-related functionality.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWindowWhidbey.CreateViewportAnchorCore(JetBrains.DataFlow.Lifetime)">
+            <summary>
+            Should create the anchoring rect core object. Do not use caching, the impl already does it instead of calling the method directly.
+            </summary>
+            <param name="lifetime"></param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextControlWindowWhidbey.FocusCore">
+            <summary>
+            Should cause the text control to achieve keyboard focus.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Whidbey.TextControl.VsTextViewEventsHub">
+            <summary>
+            Sinks the Vs Text View events.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.VsTextViewEventsHub.ChangeCaretLine">
+            <summary>
+            Fires when the view reports that the caret has moved to another line, with the old line index in <see cref="P:JetBrains.Util.JetTuple`2.A"/> and the new line index in <see cref="P:JetBrains.Util.JetTuple`2.B"/>.
+            </summary>
+            <remarks>Coordinates: yes, the caret change is fired with <c>Fire_OnChangeCaretLine</c> in document coords by the <c>CSelection::MoveCaretEx</c> method</remarks>.
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.VsTextViewEventsHub.ChangeScrollInfo">
+            <summary>
+            Fires when the view reports scrolling info change.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.VsTextViewEventsHub.KillFocus">
+            <summary>
+            Fires when the view reports losing focus.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.VsTextViewEventsHub.SetFocus">
+            <summary>
+            Fires when the view reports getting focus.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Whidbey.TextControl.VsTextViewEventsHub.ScrollRange">
+            <summary>
+            A scrolling range along a single axis.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextViewEventsHub.ScrollRange.Equals(System.Object)">
+            <summary>
+            Indicates whether this instance and a specified object are equal.
+            </summary>
+            <returns>
+            true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false.
+            </returns>
+            <param name="obj">Another object to compare to. </param><filterpriority>2</filterpriority>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextViewEventsHub.ScrollRange.GetHashCode">
+            <summary>
+            Returns the hash code for this instance.
+            </summary>
+            <returns>
+            A 32-bit signed integer that is the hash code for this instance.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.VsTextViewEventsHub.ScrollRange.Equals(JetBrains.VsIntegration.Whidbey.TextControl.VsTextViewEventsHub.ScrollRange)">
+            <summary>
+            Indicates whether the current object is equal to another object of the same type.
+            </summary>
+            <returns>
+            true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
+            </returns>
+            <param name="other">An object to compare with this object.</param>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.Windows.VsErrorStripeDocumentWhidbey.CreateHighlighterPositionCacheInstance">
+            <summary>
+            Allows to override the HighlighterPositionCache.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.Windows.VsErrorStripeDocumentWhidbey.GetMarkersSpaceRect(System.Drawing.Size)">
+            <summary>
+            Gets the rectangle for the markers, this does not include the error stripe indicator space.
+            VS edition: sync to the scrollbar track.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.Windows.VsErrorStripeDocumentWhidbey.VsHighlighterPositionCacheWhidbey.GetLineCount">
+            <summary>
+            Marker-y is proportional to the line number of the marker, as gotten from the marker doc offset. This is the normalization factor.
+            VS has some specialties in the effective number of lines applicable for the error stripe.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Whidbey.TextControl.Windows.VsTextViewWindowWhidbeyEx">
+            <summary>
+            Text control window subclassing to manage its current-line, focus state, and message filters.
+            </summary>
+            // TODO: hide NativeWindow inside to prevent AssignHandle/etc abuse
+            // TODO: maybe join with the main VsTextControlWindowWhidbey class?
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.Windows.VsTextViewWindowWhidbeyEx.CurrentLineRect">
+            <summary>
+            The current line rect to be painted at the moment.
+            <see cref="F:System.Drawing.Rectangle.Empty"/> means should not be painted.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.Windows.VsTextViewWindowWhidbeyEx.HwndToAttach">
+            <summary>
+            HWND we should subclass.
+            Sometimes the text view HWND is not available immediately, and gets known somewhen later thru its lifetime.
+            </summary>
+        </member>
+        <member name="F:JetBrains.VsIntegration.Whidbey.TextControl.Windows.VsTextViewWindowWhidbeyEx.IsFocusedUnguarded">
+            <summary>
+            Track HWND focus.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.Whidbey.TextControl.Windows.VsTextViewWindowWhidbeyEx.AssignHandle(System.IntPtr)">
+            <summary>
+            Make handle assignment go thru our code.
+            </summary>
+        </member>
+        <member name="T:JetBrains.VsIntegration.Whidbey.UI.VsStatusBarIndicatorsWhidbey">
+            <summary>
+            The status bar support part which inserts indicators into the Whidbey status bar by subclassing it as a WinAPI status bar and intercepting the calls.
+            </summary>
+        </member>
+    </members>
+</doc>

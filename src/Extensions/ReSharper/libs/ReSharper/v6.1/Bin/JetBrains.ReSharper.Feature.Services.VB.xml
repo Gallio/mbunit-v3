@@ -1,0 +1,37 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+JetBrains.ReSharper.Feature.Services.VB
+</name>
+</assembly>
+<members>
+<member name="T:JetBrains.ReSharper.Feature.Services.VB.CodeCompletion.VBSimpleTypeItemsProvider">
+	<summary>
+ In case of smart completion add items if and only if simple type is present in the collector
+ Add items in other completios
+ </summary>
+</member><member name="T:JetBrains.ReSharper.Feature.Services.VB.CodeCompletion.ISmartCompleatebleReference">
+	<summary>
+ Reference with custom smart completion
+ </summary>
+</member><member name="T:JetBrains.ReSharper.Feature.Services.VB.CodeCompletion.LookupItems.IVBPreferredLookupItem">
+	<summary>
+ Mark lookup items with the interface to add them to preferred items list
+ </summary>
+</member><member name="P:JetBrains.ReSharper.Feature.Services.VB.My.Resources.Resources.ResourceManager">
+	<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member><member name="P:JetBrains.ReSharper.Feature.Services.VB.My.Resources.Resources.Culture">
+	<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member><member name="T:JetBrains.ReSharper.Feature.Services.VB.My.Resources.Resources">
+	<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member>
+</members>
+</doc>

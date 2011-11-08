@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.I18n.Services.CSharp</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.I18n.Services.CSharp.CustomReferences.ResourceFileFinder.GetEmbeddedResourceName(JetBrains.ProjectModel.IProjectFile)">
+            <summary>
+            Get name embedded for the specified <paramref name="projectFile"/>.
+            </summary>
+            <remarks>
+            For C# applications the transformation is like:
+            
+            Resources1.resx => RootNamespace.Resources1 => Build into main assembly
+            SubFolder\Resources1.resx => RootNamespace.SubFolder.Resources1 => Build into main assembly
+            Resources1.fr.resx => RootNamespace.Resources1.fr => Build into satellite assembly
+            Resources1.notaculture.resx => RootNamespace.Resources1.notaculture => Build into main assembly
+            </remarks>
+            <param name="projectFile">resource file.</param>
+            <returns>resource name, e.g. for 'SR.ru-ru.resx' returns 'SR'.</returns>
+        </member>
+        <member name="T:JetBrains.ReSharper.I18n.Services.CSharp.ElementFactoryService">
+            <summary>
+            Factory for C# IElements creation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.CSharp.PsiService.GetArgumentValue(JetBrains.ReSharper.Psi.Tree.IArgument)">
+            <summary>
+            Gets the argument value.
+            </summary>
+            <param name="argument">The argument.</param>
+            <returns></returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.I18n.Services.CSharp.PsiService.LanguageType">
+            <summary>
+            Gets the type of the language.
+            </summary>
+            <value>The type of the language.</value>
+        </member>
+        <member name="F:JetBrains.ReSharper.I18n.Services.UI.Options.CSharpLocallizationOptionPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.UI.Options.CSharpLocallizationOptionPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.I18n.Services.UI.Options.CSharpLocallizationOptionPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.LiveTemplates.CSharp</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.LiveTemplates.CSharp.Context.CSharpContextOptions">
+            <summary>
+            Summary description for CSharpContextOptions.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.LiveTemplates.CSharp.Context.CSharpContextOptions.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.CSharp.Context.CSharpContextOptions.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.CSharp.Context.CSharpContextOptions.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.LiveTemplates.Macros.CastToLeftSideTypeMacro">
+            <summary>
+            Macro which inserts cast to left side expression type
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.LiveTemplates.CSharp.Macros.CSharpMacroUtil">
+            <summary>
+            Contains utility methods for live templates macros
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.LiveTemplates.CSharp.Scope.CSharpScopeConfig">
+            <summary>
+            Interaction logic for CSharpScopeConfig.xaml
+            </summary>
+            <summary>
+            CSharpScopeConfig
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.CSharp.Scope.CSharpScopeConfig.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.Html</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Psi.Html.Impl.CodeStyle.HtmlCodeFormatter.Format(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.CodeStyle.CodeFormatProfile,JetBrains.Application.Progress.IProgressIndicator,JetBrains.Application.Settings.IContextBoundSettingsStore)">
+            <summary>
+            Format the given range in the tree. The bounding nodes are random, not siblings
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Html.Impl.CodeStyle.HtmlCodeFormatter.FormatInsertedNodes(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode,System.Boolean)">
+            <summary>
+            Format code during WritePSI action
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Html.Impl.CodeStyle.HtmlCodeFormatter.FormatInsertedRange(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.ITreeRange)">
+            <summary>
+            Format code during WritePSI action
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Html.Impl.CodeStyle.HtmlCodeFormatter.FormatReplacedNode(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Format code during WritePSI action
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Html.Impl.CodeStyle.HtmlCodeFormatter.FormatDeletedNodes(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Format code during WritePSI action
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Html.Impl.CodeStyle.HtmlCodeFormatter.GetMinimalSeparator(JetBrains.ReSharper.Psi.Tree.ITokenNode,JetBrains.ReSharper.Psi.Tree.ITokenNode)">
+            <summary>
+            Create the necessary separator between two given tokens (for example. space between identifiers)
+             If there is no necessity for separator, then return <c>null</c>
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Html.Impl.References.HtmlReferenceToId.GetStaticness">
+            <summary>
+            Determines whether static members are accessible in this context.
+             Staticness should be consistent with qualifier kind of access context.
+             All qualifier 
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Html.Impl.References.HtmlReferenceToId.FileQualifier.Resolved">
+            <summary>
+            False means failed to resolve
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Html.Tree.IHtmlTagContainer.AddTagBefore``1(``0,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Adds tag before then anchor. If anchor == null, the tag is inserted after the last tag
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Html.Tree.IHtmlTagContainer.AddTagAfter``1(``0,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Adds tag after ther anchor. If anchor == null, the tag is inserted before the first tag
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Html.Html.IHtmlEnumAttributeValueType.Strict">
+            <summary>Additional values mode</summary>
+            <remarks>False, if additional attributes are allowed, not listed in attribute's definition</remarks>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Html.Impl.Parsing.HtmlTokenNodeTypes.#ctor">
+            <summary>
+            Constructor for inheritors - with no init
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Html.Impl.References.HtmlFileReference`2.#ctor(`0,JetBrains.ReSharper.Psi.Resolve.IQualifier,`1,JetBrains.ReSharper.Psi.TreeTextRange,JetBrains.ProjectModel.ProjectFileType,System.Collections.Generic.ICollection{System.String},System.Boolean,System.Boolean)">
+            <param name="owner"></param>
+            <param name="qualifier"></param>
+            <param name="token"></param>
+            <param name="rangeWithin"></param>
+            <param name="expectedFileType"></param>
+            <param name="expectedExtensions">if null - default extensions for project file type</param>
+            <param name="noCircular"></param>
+            <param name="allowEmptyName"></param>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Html.Impl.Tree.HtmlInclude">
+            <summary>
+            The node, that represents include
+            if include file is resolved, the node has no children
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Html.Impl.Tree.HtmlIncludeEnd">
+            <summary>
+            End of include empty node
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Html.Impl.Tree.HtmlDocumentRangeTranslator">
+            <summary>
+            HtmlDocumentRangeTranslator maps tree ranges of IHtmlFile to ranges of html/aspx/razor file and all included files
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Html.Parsing.HtmlCompoundIncrementalLexer`1">
+            <summary>
+            Incremental composite lexer for HTML-inherited files (ASPX, Razor).
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Html.Parsing.HtmlCompoundLexer`1">
+            <summary>
+            Composite lexer for HTML-inherited files (ASPX, Razor).
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Html.Parsing.HtmlTreeBuilder">
+            <summary>
+            HtmlTreeBuilder
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Html.Parsing.WebTreeBuilder`4">
+            <summary>
+            WebTreeBuilder
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Html.Parsing.WebTreeBuilder`4.ParseAdditionalConstruct(JetBrains.ReSharper.Psi.Html.Parsing.HtmlTokenNodeType{`3}@,JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.CompositeElement@)">
+            <summary>
+            
+            </summary>
+            <param name="tokenType"></param>
+            <param name="compositeElement">Current tree parent, can be changed.</param>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Html.Parsing.WebTreeBuilder`4.HandlingTokens">
+            <summary>
+            Token types, thouse are handled by tree builder
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Html.Utils.HtmlAttributeContainerUtil.AddAttributeBefore``3(``0,``1,JetBrains.ReSharper.Psi.Tree.ITreeNode,``2)">
+            <summary>
+            Adds attribute before the anchor. If anchor == null, the attribute is inserted after the last attribute
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Html.Utils.HtmlAttributeContainerUtil.AddAttributeAfter``3(``0,``1,JetBrains.ReSharper.Psi.Tree.ITreeNode,``2)">
+            <summary>
+            Adds attribute after the anchor. If anchor == null, the attribute is inserted before the first attribute
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Html.Utils.HtmlPathReferenceUtil.ExpandRootName(System.String,JetBrains.ProjectModel.IProject)">
+            <summary>
+            Expand root symbol in path (~) to real path in project
+            </summary>
+            <param name="path">Original path with ~</param>
+            <param name="project">Project to calculate root</param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Html.Utils.HtmlTagContainerUtil.AddTagAfter``1(JetBrains.ReSharper.Psi.Html.Tree.IHtmlTagContainer,``0,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Adds tag after ther anchor. If anchor == null, the tag is inserted before the first tag
+            </summary>
+        </member>
+    </members>
+</doc>

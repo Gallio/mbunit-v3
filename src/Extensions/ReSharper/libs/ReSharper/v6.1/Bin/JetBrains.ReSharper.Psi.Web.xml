@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.Web</name>
+    </assembly>
+    <members>
+        <member name="P:JetBrains.ReSharper.Psi.Web.Impl.PsiModules.IWebPsiModuleHandlerHelper.Priority">
+            <summary>
+            The higher the priority, the sooner the helper is asked to process files.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Web.Impl.PsiModules.WebApp.WebAppCommonReferenceProviderFactoryAttribute">
+            <summary>
+            Attribute for <see cref="T:JetBrains.ReSharper.Psi.Web.Impl.PsiModules.WebApp.IWebAppCommonReferenceProviderFactory"/> impls.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Web.Impl.PsiModules.WebApp.WebAppPsiModuleHandlerHelperFactoryAttribute">
+            <summary>
+            Attribute for <see cref="T:JetBrains.ReSharper.Psi.Web.Impl.PsiModules.Website.IWebsitePsiModuleHandlerHelperFactory"/> impls.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Web.Impl.PsiModules.WebApp.Modules.IWebAppMainModuleMixinFactory">
+            <summary>
+            ProjectFileTypeSpecifix component
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Web.Impl.PsiModules.Website.WebsiteCommonReferenceProviderFactoryAttribute">
+            <summary>
+            Attribute for <see cref="T:JetBrains.ReSharper.Psi.Web.Impl.PsiModules.Website.IWebsiteCommonReferenceProviderFactory"/> impls.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Web.Impl.PsiModules.Website.WebsitePsiModuleHandlerHelperFactoryAttribute">
+            <summary>
+            Attribute for <see cref="T:JetBrains.ReSharper.Psi.Web.Impl.PsiModules.Website.IWebsitePsiModuleHandlerHelperFactory"/> impls.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Web.Impl.PsiModules.Website.Properties.IWebsiteAppCodePsiSourceFilePropertiesFactory">
+            <summary>
+            ProjectFile language-dependent component
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Web.Impl.Services.MinifiedFilesFilter">
+            <summary>
+            Filter out not documented files (preferes bare .js to .min.js)
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Web.PsiModules.IWebProjectFileClassifier">
+            <summary>
+            ProjectFileType-specific 
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Web.TagPrefixes.ITagPrefix.GetDeclaration">
+            <summary>
+            Returns declaration from which the TagPrefix is built
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Web.TagPrefixes.ITagName.GetDeclaration">
+            <summary>
+            Returns declaration from which the TagName is built
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Web.TagPrefixes.TagPrefixCache.GetSourceFiles(System.String)">
+            <summary>
+            Returns project files, that may contain holders if tagPrefix declarations
+            </summary>
+            <param name="tagPrefix"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Web.TagPrefixes.TagPrefixCache.GetGlobalTagPrefixes(JetBrains.ProjectModel.IProject)">
+            <summary>
+            Tagprefixes for a project, that are defined in framework's web.config
+            </summary>
+            <param name="project"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Web.Tree.IWebAttributeContainer`1.AddAttributeBefore(`0,`0)">
+            <summary>
+            Adds attribute before the anchor. If anchor == null, the attribute is inserted after the last attribute
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Web.Tree.IWebAttributeContainer`1.AddAttributeAfter(`0,`0)">
+            <summary>
+            Adds attribute after the anchor. If anchor == null, the attribute is inserted before the first attribute
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Web.Util.CodeBehindLanguageUtil">
+            <summary>
+            Code behind (target language of asp generator) language util.
+            Note: works with CS and VB but not with JS and other secondary languages.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Web.Util.CodeBehindLanguageUtil.GetCodeBehindLanguage(JetBrains.ProjectModel.IProjectFile)">
+            <summary>
+            Evaluates code-behind language by projectFile text
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Web.Util.CodeBehindLanguageUtil.GetCodeBehindLanguage(JetBrains.ReSharper.Psi.IPsiSourceFile)">
+            <summary>
+            Evaluates code-behind language by projectFile text
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Web.Util.CodeBehindLanguageUtil.GetCodeBehindProjectFileLanguage(JetBrains.ReSharper.Psi.IPsiSourceFile)">
+            <summary>
+            Evaluates code-behind language by projectFile text
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Web.Util.CodeBehindLanguageUtil.GetCodeBehindLanguageDefinedInFile(JetBrains.ReSharper.Psi.IPsiSourceFile)">
+            <summary>
+            Evaluates code-behind language by projectFile text
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Web.Util.CodeBehindLanguageUtil.GetCodeBehindLanguageDefinedInFile(JetBrains.ProjectModel.IProjectFile)">
+            <summary>
+            Evaluates code-behind language by projectFile text
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Web.Util.CodeBehindLanguageUtil.GetCodeBehindLanguage(JetBrains.ReSharper.Psi.Web.Tree.IWebFileWithCodeBehind)">
+            <summary>
+            Evaluates code-behind language committed PSIs
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Web.Util.CodeBehindLanguageUtil.GetCodeBehindLanguage(JetBrains.ReSharper.Psi.Web.Tree.IWebTreeNode)">
+            <summary>
+            Evaluates code-behind language committed PSIs
+            </summary>
+        </member>
+    </members>
+</doc>

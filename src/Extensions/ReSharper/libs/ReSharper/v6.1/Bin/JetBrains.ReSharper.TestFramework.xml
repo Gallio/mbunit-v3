@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.TestFramework</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.TestFramework.BaseTestWithSolution.PrepareSolution(JetBrains.DataFlow.Lifetime,JetBrains.ReSharper.TestFramework.BaseTestWithSolution.TestSolutionConfiguration)">
+            <summary>
+            Opens a test solution in the solution environment. Favors the <see cref="P:JetBrains.ReSharper.TestFramework.BaseTestWithSolution.SolutionCanBeReused"/> flag.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.TestFramework.BaseTestWithSolution.GuardAffinity">
+            <summary>
+            How the main test method should be executed.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.TestFramework.BaseTestWithSolution.GuardAffinityFlags">
+            <summary>
+            How the main test method should be executed.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.TestFramework.BaseTestWithSolution.GuardAffinityFlags.GuardedAndSync">
+            <summary>
+            The test method is executed under guard. <see cref="P:JetBrains.Threading.JetDispatcher.IsAsyncBehaviorProhibited">Async behavior</see> prohibited.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.TestFramework.BaseTestWithSolution.GuardAffinityFlags.UnguardedAndAsync">
+            <summary>
+            The test method is executed without an external guard. <see cref="P:JetBrains.Threading.JetDispatcher.IsAsyncBehaviorProhibited">Async behavior</see> is allowed for the test run.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.TestFramework.BaseTestWithSingleProject.WithSingleProject(System.String,System.Action{JetBrains.DataFlow.Lifetime,JetBrains.ProjectModel.IProject})">
+            <summary>
+            In a solution with the single project, commits the documents and runs your code.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.TestFramework.BaseTestWithSingleProject.WithSingleProject(System.Collections.Generic.IEnumerable{System.String},System.Action{JetBrains.DataFlow.Lifetime,JetBrains.ProjectModel.IProject})">
+            <summary>
+            In a solution with the single project, commits the documents and runs your code.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.TestFramework.BaseTestWithSingleProject.PrepareSingleProject(JetBrains.DataFlow.Lifetime,JetBrains.ProjectModel.ISolution)">
+            <summary>
+            Prepares test environment for running tests on a single project. The lifetime is of the test.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.TestFramework.ReferenceDlls.MsCorLib">
+            <summary>
+            Test project will have reference to the MsCorLib assembly of the test's platform. It's an error if mscorlib is not defined for that platform.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.TestFramework.CaretMovement">
+            <summary>
+            Helper class for testing navigation actions. Mimics movements of the caret from a source to a destination point
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.Lookup.TestLookupWindowManager.IsExternalDocumentChangeAllowed">
+            <summary>
+            If this flag is set, any document change doesn't cancel code completion
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.Lookup.TestLookupWindowManager.TestLookupWindow.Handle">
+            <summary>
+            Gets the handle to the window represented by the implementer.
+            </summary>
+            
+            <returns>
+            A handle to the window represented by the implementer.
+            </returns>
+            <filterpriority>1</filterpriority>
+        </member>
+        <member name="P:JetBrains.ReSharper.TestFramework.NamedPositionsProcessor.SkipExtensions">
+            <summary>
+            List of file extensions to skip text processing. Usefull for binary files.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.TestFramework.CaretPositionsProcessor">
+            <summary>
+            Helper class for testing navigation actions. Extracts information about caret movements from test data file.
+            The encoding of caret movement is as follows:
+            {sourceN} - source point for Nth movement
+            {targetN} - target point for Nth movement
+            </summary>
+        </member>
+    </members>
+</doc>

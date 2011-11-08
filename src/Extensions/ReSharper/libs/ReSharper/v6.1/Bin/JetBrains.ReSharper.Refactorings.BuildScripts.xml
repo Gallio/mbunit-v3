@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Refactorings.BuildScripts</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Refactorings.BuildScripts.IntroduceProperty.IntroducePropertyPage.InitializeComponent">
+            <summary>
+              Required method for Designer support - do not modify
+              the contents of this method with the code editor.
+            </summary>
+        </member>
+    </members>
+</doc>

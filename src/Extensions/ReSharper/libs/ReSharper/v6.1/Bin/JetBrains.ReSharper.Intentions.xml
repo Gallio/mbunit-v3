@@ -1,0 +1,359 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Intentions</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Intentions.src.Bulbs.BulbIconResources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.src.Bulbs.BulbIconResources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.src.Bulbs.BulbIconResources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.BulbItemImpl.ExecuteBeforeProgressAndTransaction(JetBrains.ProjectModel.ISolution)">
+            <summary>
+              Called to prepare QuickFix or ContextAction execution.
+            </summary>
+            <param name="solution"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.BulbItemImpl.ExecuteBeforePsiTransaction(JetBrains.ProjectModel.ISolution,JetBrains.ProjectModel.IProjectModelTransactionCookie,JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+              Called to prepare QuickFix or ContextAction execution.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.BulbItemImpl.ExecutePsiTransaction(JetBrains.ProjectModel.ISolution,JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+              Executes QuickFix or ContextAction. Returns post-execute method.
+            </summary>
+            <returns>
+              Action to execute after document and PSI transaction finish. Use to open TextControls, navigate caret, etc.
+            </returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.BulbItemImpl.ExecuteAfterPsiTransaction(JetBrains.ProjectModel.ISolution,JetBrains.ProjectModel.IProjectModelTransactionCookie,JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+              Executes after PSI transaction under Project/Document transaaction
+            </summary>
+            <returns>
+              Action to execute after document and PSI transaction finish. Use to open TextControls, navigate caret, etc.
+            </returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.BulbItemImpl.Text">
+            <summary>
+            Popup menu item text
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicator">
+            <summary>
+              The bulb indicator.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicatorBase">
+            <summary>
+            Base for the two types of popup indicators: bulb indiactor and import popup.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicatorBase.myTriggerOnMouseUp">
+            <summary>
+            Bulb dropdown triggers on mouse-down event, and the popup indicator does it on mouse click
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicatorBase.myWantsResize">
+            <summary>
+            Fires when the control would like to be reasked of its desired size.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicatorBase.myAutoActivate">
+            <summary>
+            <see cref="P:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicatorBase.AutoActivate"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicatorBase.GetDesiredSize(JetBrains.UI.IGraphicsContainer,System.Drawing.Size)">
+            <summary>
+            Performs the bottom-up layouting stage, when the control calculates its desired size using the given constraints.
+            Should give generally the same results as <see cref="T:JetBrains.CommonControls.IConstrainableControl"/>, but could employ the <paramref name="gc"/> device context for the sake of optimization.
+            </summary>
+            <param name="gc">The device context to measure against.</param>
+            <param name="limit">The maximum available space (that could affect the shape of the control, or strip down unnecessary calculations over the invisible items).
+            May be a <see cref="T:System.Drawing.Size"/> with width and height equal to <see cref="F:System.Int32.MaxValue"/>, which means that the size is not limited.</param>
+            <returns>The desired size, must be no larger than <paramref name="limit"/>.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicatorBase.SetLayout(JetBrains.UI.LayoutResult)">
+            <summary>
+            Tells the control the details about the new layout applied to it by the controlling entity in conjunction with some <see cref="T:JetBrains.UI.IPopupLayouter"/>.
+            Typically, the control need not apply the given size and location because that should be done by the controlling entity.
+            The control may change its presentation in response to the layouting details, for example, whether it's attached to the top or the bottom of the anchoring rect.
+            </summary>
+            <param name="layout">The layouting details.</param>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicatorBase.ShowWithoutActivation">
+            <summary>
+            Gets a value indicating whether the window will be activated when it is shown.
+            </summary>
+            
+            <returns>
+            True if the window will not be activated when it is shown; otherwise, false. The default is false.
+            </returns>
+            
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicatorBase.AutoActivate">
+            <summary>
+            Gets or sets whether the control should be activated initially when it's shown.
+            The typical implementation for a form is to return a negative of this value from the <see cref="P:System.Windows.Forms.Form.ShowWithoutActivation"/> override.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicatorBase.WantsResize">
+            <summary>
+            Fires when the control would like to be reasked of its desired size.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicator.ArrowGap">
+            <summary>
+              width of gap between indicator image and down arrow
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicator.ArrowSize">
+            <summary>
+              Size of down arrow
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicator.BorderWidth">
+            <summary>
+              width of indicator border (hot mode)
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicator.IndicatorPadding">
+            <summary>
+              Padding around indicator including border. Used also as a distance from base point to image.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicator.ShadowExtentBottom">
+            <summary>
+              extra space required for image shadow frame
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicator.myColors">
+            <summary>
+              <see cref="T:JetBrains.UI.PopupMenu.JetPopupMenu"/>
+              -compatible colors set.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicator.myImage">
+            <summary>
+              Antialiased image for the backgrounded-mode display.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicator.OnMenuDescribeItem(JetBrains.UI.PopupMenu.DescribeItemEventArgs)">
+            <summary>
+              Creates the menu item descriptor.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicator.OnMenuItemClicked(System.Object)">
+            <summary>
+              Executes an action when a menu item is clicked.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicator.DrawImageAlpha(System.Drawing.Graphics,System.Single)">
+            <summary>
+              Display indicator image on a given surface with alpha blending
+            </summary>
+            <param name="graphics"></param>
+            <param name="a"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicator.RenderGuts">
+            <summary>
+              Renders just the bulb and the "hot" arrow into a bitmap, without a border and background.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicator.CollectBulbItems">
+            <summary>
+              Fills the items-to-actions map and returns the collection of all the items extracted from the actions.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicator.GetDesiredSize(JetBrains.UI.IGraphicsContainer,System.Drawing.Size)">
+            <summary>
+              Performs the bottom-up layouting stage, when the control calculates its desired size using the given constraints.
+              Should give generally the same results as
+              <see cref="T:JetBrains.CommonControls.IConstrainableControl"/>
+              , but could employ the
+              <paramref name="gc"/>
+              device context for the sake of optimization.
+            </summary>
+            <param name="gc">
+              The device context to measure against.
+            </param>
+            <param name="limit">
+              The maximum available space (that could affect the shape of the control, or strip down unnecessary calculations over the invisible items).
+              May be a
+              <see cref="T:System.Drawing.Size"/>
+              with width and height equal to
+              <see cref="F:System.Int32.MaxValue"/>
+              , which means that the size is not limited.
+            </param>
+            <returns>
+              The desired size, must be no larger than
+              <paramref name="limit"/>
+              .
+            </returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicator.Image">
+            <summary>
+              Gets the image of this indicator.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicator.ImageSize">
+            <summary>
+              Gets the image size, or the default 16?16 size if it has not been specified yet.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicator.MouseOver">
+            <summary>
+              Gets or sets the “hot” control state.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Bulbs.BulbItemsBuilder.BuildAvailableQuickFixes(JetBrains.ReSharper.Intentions.Bulbs.BulbItemsBuilder.BulbCache,JetBrains.ReSharper.Intentions.Bulbs.VisibleActions)">
+            <summary>
+            Cannot be done async, since it deals with markup
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Bulbs.BulbManagerImpl.WaitForDaemon(JetBrains.TextControl.ITextControl)">
+            <summary>
+            Possibly wait for daemon to update highlighters under caret.
+            Returns <c>false</c> if actions should be collected immediately, 
+            Returncs <c>true</c> if this method will wait for daemon and then collect bulb actions
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Intentions.Bulbs.PopupIndicator">
+            <summary>
+            The blueish popup indicator with icon and text, eg, the “Import Namespace” popup.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Intentions.Bulbs.PopupIndicator.myHot">
+            <summary>
+            True whenif the mouse is over the control.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Bulbs.PopupIndicator.PaintImpl(System.Drawing.Graphics)">
+            <summary>
+            Does the rendering.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Bulbs.PopupIndicator.GetDesiredSize(JetBrains.UI.IGraphicsContainer,System.Drawing.Size)">
+            <summary>
+            Performs the bottom-up layouting stage, when the control calculates its desired size using the given constraints.
+            Should give generally the same results as <see cref="T:JetBrains.CommonControls.IConstrainableControl"/>, but could employ the <paramref name="gc"/> device context for the sake of optimization.
+            </summary>
+            <param name="gc">The device context to measure against.</param>
+            <param name="limit">The maximum available space (that could affect the shape of the control, or strip down unnecessary calculations over the invisible items).
+            May be a <see cref="T:System.Drawing.Size"/> with width and height equal to <see cref="F:System.Int32.MaxValue"/>, which means that the size is not limited.</param>
+            <returns>The desired size, must be no larger than <paramref name="limit"/>.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Bulbs.PopupIndicator.OnMouseEnter(System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Windows.Forms.Control.MouseEnter"></see> event.
+            </summary>
+            
+            <param name="e">An <see cref="T:System.EventArgs"></see> that contains the event data. </param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Bulbs.PopupIndicator.OnMouseLeave(System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Windows.Forms.Control.MouseLeave"></see> event.
+            </summary>
+            
+            <param name="e">An <see cref="T:System.EventArgs"></see> that contains the event data. </param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.ContextActionInfo.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"></see> that represents the current <see cref="T:System.Object"></see>.
+            </summary>
+            
+            <returns>
+            A <see cref="T:System.String"></see> that represents the current <see cref="T:System.Object"></see>.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="T:JetBrains.ReSharper.Intentions.Explanatory.CodeInspectionWikiProvider">
+            <summary>
+            Provides bulb items that offer to explain why ReSharper is
+            issuing a particular warning or suggestion.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.ContextActions.SurroundWithQuotesActionBase.Text">
+            <summary>
+            Gets the text.
+            </summary>
+            <value>The text.</value>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.ContextActions.UseStringEmptyActionBase.Text">
+            <summary>
+            Gets the text.
+            </summary>
+            <value>The text.</value>
+        </member>
+        <member name="T:JetBrains.ReSharper.Intentions.Options.ContextActionsPageBase">
+            <summary>
+            A page with the list of enablable context actions.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Intentions.Options.ContextActionsPageBase.ourHtmlCueBannerNoDescriptionAvailable">
+            <summary>
+            The “no description” cue banner to show instead of the description text when there is none.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Intentions.Options.ContextActionsPageBase.ourHtmlCueBannerNoSelection">
+            <summary>
+            The “no selection” cue banner to occupy the empty space under the list when nothing is selected.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Intentions.Options.ContextActionsPageBase.ourHtmlPreviewResourceName">
+            <summary>
+            The HTML resource with the preview area template.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Intentions.Options.ContextActionsPageBase.mySelectedItem">
+            <summary>
+            The selected context actions in the context actions tree.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Options.ContextActionsPageBase.SaveContextActionsCheckState">
+            <summary>
+            Reads from the <see cref="F:JetBrains.ReSharper.Intentions.Options.ContextActionsPageBase.myMapContextActionToCheckState"/>, writes to the settings.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Options.ContextActionsPageBase.WndProc(System.Windows.Forms.Message@)">
+            <summary>
+            Processes Windows messages.
+            </summary>
+            
+            <param name="msg">The Windows <see cref="T:System.Windows.Forms.Message"></see> to process. </param>
+        </member>
+        <member name="P:JetBrains.ReSharper.Intentions.Options.ContextActionsPageBase.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.OptionsManager"/> or <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> out of it.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Legacy.ContextActionBase.IsAvailableInternal">
+            <summary>
+            Called to check if ContextAction is available.
+            ReadLock is taken
+            Will not be called if PsiManager, ProjectFile of Solution == null
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Intentions.Legacy.ContextActionBase.ExecuteInternal(System.Object[])">
+            <summary>
+            Called to apply context action. No locks is taken before call
+            </summary>
+        </member>
+    </members>
+</doc>

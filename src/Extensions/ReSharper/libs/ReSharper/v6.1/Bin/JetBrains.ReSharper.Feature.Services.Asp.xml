@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Feature.Services.Asp</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Feature.Services.Asp.Caches.IMvcCacheProcessor">
+            <summary>
+            Detecting ASP.NET MVC layout and ASP.NET MVC 4 Display Modes changes
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Asp.Caches.MvcCache.GetData(JetBrains.ReSharper.Psi.IPsiSourceFile,System.Boolean)">
+            <param name="sourceFile"></param>
+            <param name="full"><see cref="!:bool.False"/> - rough search for candidates, <see cref="!:bool.True"/> - accurate search with resolve</param>
+            <returns></returns>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.Asp.Search.IMvcSearchSupported">
+            <summary>
+            Marker interafce says that specified PsiLanguageType is supported in MVC references search.
+            Must be implemented with LangugeSpecificAttribute.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Asp.CodeStructure.AspRenderBlockCodeStructureElement.GetNestedLevel(JetBrains.ReSharper.Psi.Asp.Tree.IAspRenderBlock)">
+            <summary>
+            Nested level of codeblock
+            First - minimu level, Second - last level (right)
+            </summary>
+            <param name="block"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Asp.CustomReferences.MvcReference`1.InternalBindTo(JetBrains.ReSharper.Psi.IDeclaredElement)">
+            <summary>
+            
+            </summary>
+            <param name="element"></param>
+            <returns>element holds reference (new one, if rebinded, or old one - if not binded) </returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.Asp.CustomReferences.IMvcActionControllerReference.Controllers">
+            <summary>
+            Collection of tuples of area, controller name and controller's class
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Asp.CustomReferences.MvcViewReference`2.GetReferenceSymbolTable(System.String,System.String,System.String,JetBrains.ReSharper.Feature.Services.Asp.CustomReferences.MvcKind,JetBrains.ProjectModel.IProject,System.Version)">
+            <summary>
+            Get views symbol table
+            </summary>
+            <param name="area">Area name</param>
+            <param name="controller">Controller name</param>
+            <param name="view">View name. Can be just name (View), relative path (Views/Bla/View.aspx) and rooted path (~/Views/Bla/View.aspx)</param>
+            <param name="mvcKind">Type of target - masterpage, view or template</param>
+            <param name="project">Project</param>
+            <param name="version">MVC version</param>
+            <returns>Symbol table</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Asp.CustomReferences.MvcActionReference`1.#ctor(JetBrains.ReSharper.Psi.Tree.IExpression,JetBrains.ReSharper.Psi.Tree.IArgumentsOwner)">
+            <summary>
+            
+            </summary>
+            <param name="owner"></param>
+            <param name="argumentsExpression"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Asp.CustomReferences.MvcUtil.GetAvailableControllers(JetBrains.ReSharper.Psi.IPsiModule,JetBrains.ReSharper.Psi.Search.ISearchDomain,System.Boolean,JetBrains.ReSharper.Psi.ITypeElement)">
+            <summary> Get all available controlles in module</summary>
+            <remarks>TODO: [derigel] Caching...</remarks>
+            <param name="module"></param>
+            <param name="searchDomain"></param>
+            <param name="includingIntermediateControllers">Including abstract controllers, not ending 'Controller' suffix and etc</param>
+            <param name="baseClass">Base class for controllers to check, by default <see cref="!:System.Web.Mvc.IController"/></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Asp.CustomReferences.MvcUtil.GetControllers(JetBrains.ReSharper.Psi.Tree.IArgumentsOwner)">
+            <summary>
+            Get controller names and their resolved types (explicit or implicit) for specified method invocation
+            </summary>
+            <param name="argumentsOwner"></param>
+            <returns>Collection of tuples of area, controller name, controller's determination kind, and controllers' classes corresponded to name</returns>
+            <remarks>Controller name can be null, indicating this way that controller's name is calculated at runtime</remarks>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Asp.CustomReferences.MvcUtil.DetermineActionParameters(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <returns>First is return type, rest - arguments types</returns>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.Asp.CustomReferences.MvcUtil.DeterminationKind">
+            <summary>
+            Enum telling how controllers/actions have been determined
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Asp.CustomReferences.MvcReferenceProvider`3.#ctor(JetBrains.ReSharper.Psi.IPsiSourceFile,System.Version)">
+            <param name="sourceFile">Source file</param>
+            <param name="version">Version of MVC assembly</param>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.Asp.CodeCompletion.Rules.MvcActionTransformationRule`1">
+            <summary>
+            Rule to remove trailing parenthesis in action methods
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Asp.CustomReferences.MvcCustomReferencesSettingsEx.IsApplied(JetBrains.DataFlow.IProperty{System.Boolean},JetBrains.ProjectModel.IProjectItem)">
+            <summary>
+            Check if any ASP.NET MVC activity should be done
+            </summary>
+            <param name="enabled">MVC settings' <see cref="F:JetBrains.ReSharper.Feature.Services.Asp.CustomReferences.MvcCustomReferencesSettings.Enabled"/> property</param>
+            <param name="projectItem"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Asp.CustomReferences.MvcCustomReferencesSettingsEx.IsApplied(JetBrains.DataFlow.IProperty{System.Boolean},JetBrains.ProjectModel.IProjectItem,System.Version@)">
+            <summary>
+            Check if any ASP.NET MVC activity should be done
+            </summary>
+            <param name="enabled">MVC settings' <see cref="F:JetBrains.ReSharper.Feature.Services.Asp.CustomReferences.MvcCustomReferencesSettings.Enabled"/> property</param>
+            <param name="projectItem"></param>
+            <param name="version">Version of referenced MVC assembly</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Asp.CustomReferences.MvcCustomReferencesSettingsEx.IsApplied(JetBrains.ReSharper.Feature.Services.Asp.CustomReferences.MvcCustomReferencesSettings,JetBrains.ProjectModel.IProjectItem)">
+            <summary>
+            Check if any ASP.NET MVC activity should be done
+            </summary>
+            <param name="settings">MVC settings</param>
+            <param name="projectItem"></param>
+        </member>
+    </members>
+</doc>

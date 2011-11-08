@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Feature.Services.Xml</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Xml.Bulbs.IXmlContextActionProvider.GetTagNameRanges(JetBrains.ReSharper.Psi.Xml.Tree.IXmlTag)">
+            <summary>
+            First of the ranges returned must be that one, that corresponds to the tag name
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Xml.Util.XmlContextUtil.GetTagNames(JetBrains.ReSharper.Psi.Xml.Tree.IXmlFile)">
+            <summary>
+            Returns alphabetically sorted list of tag names used in file
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Xml.Util.XmlContextUtil.GetAttributeNames(JetBrains.ReSharper.Psi.Xml.Tree.IXmlFile,System.String)">
+            <summary>
+            Returns alphabetically sorted list of tag names used in file or in tagName (if it is not empty)
+            </summary>
+            <param name="file"></param>
+            <param name="tagName"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

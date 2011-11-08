@@ -1,0 +1,678 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Features.Environment</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.Impl.CodeStylePageWithPreviewOnSettingsKey.CreateCodeStylePreview(JetBrains.TextControl.Markup.IDocumentMarkupManager,JetBrains.UI.WindowManagement.WindowFrame,JetBrains.ProjectModel.ISolution)">
+            <summary>
+             Create preview box
+            </summary>
+            <param name="documentMarkupManager"></param>
+            <param name="windowFrame"></param>
+            <param name="solution"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.Impl.CodeStylePageWithPreviewOnSettingsKey.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.Impl.CodeStylePageWithPreviewOnSettingsKey.CodeStyleDef">
+            <summary>
+            Returns string with the page data resource
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.Impl.CodeStylePageWithPreviewOnSettingsKey.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.OptionsManager"/> or <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> out of it.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.OptionPages.CodeStyle.Impl.CodeStylePreview.PrepareText(JetBrains.DocumentModel.IDocument,System.String,JetBrains.ReSharper.OptionPages.CodeStyle.Impl.PreviewParseType,JetBrains.Application.Settings.IContextBoundSettingsStore)">
+            <summary>
+            Do reformat text and set it to given document. If format settings are null, then no formatting should be applied
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.Impl.EditItems.CodeStyleEditItem.FixupSettingsForPreview(JetBrains.Application.Settings.IContextBoundSettingsStore)">
+            <summary>
+            Modify code style settings for the preview
+            </summary>
+            <param name="settingsStore"></param>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Environment.Options.Inspections.CodeInspectionPage">
+            <summary>
+            Root options page for the global per-language options.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Environment.Options.Inspections.CodeInspectionSettingsPage">
+            <summary>
+            Main settings for the code inspection.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Inspections.CodeInspectionSettingsPage.OnOk">
+            <summary>
+            Invoked when OK button in the options dialog is pressed.
+            If the page returns <c>false</c>, the the options dialog won't be closed, and focus will be put into this page.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Environment.Options.Inspections.CodeInspectionGeneratedPage">
+            <summary>
+            Main settings for the code inspection.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Inspections.CodeInspectionGeneratedPage.OnOk">
+            <summary>
+            Invoked when OK button in the options dialog is pressed.
+            If the page returns <c>false</c>, the the options dialog won't be closed, and focus will be put into this page.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.Inspections.GeneratedFilesItems.myTreeHasSelection">
+            <summary>
+            Whether there're selected items currently in the tree.
+            To manage the Remove button's Enabled state.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Environment.Options.Inspections.InspectionSeverityPage">
+            <summary>
+            Severities of the inspections (error/warning/suggestion hilites).
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Environment.Options.Inspections.InspectionSeverityPage.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.OptionsManager"/> or <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> out of it.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Environment.Options.Inspections.InspectionSeverityView">
+            <summary>
+            Interaction logic for Window1.xaml
+            </summary>
+            <summary>
+            InspectionSeverityView
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Inspections.InspectionSeverityView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.Inspections.SkipItemsForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Inspections.SkipItemsForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Inspections.SkipItemsForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.Inspections.SkipDaemonItemsPanel.myTreeHasSelection">
+            <summary>
+            Whether there're selected items currently in the tree.
+            To manage the Remove button's Enabled state.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.CSharp.CsharpMemberOrderPage.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.CSharp.CsharpMemberOrderPage.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.CSharp.CsharpMemberOrderPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.CSharp.CsharpMemberOrderPage.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.OptionsManager"/> or <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> out of it.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.CSharp.CsharpNamespaceImportsPage.myBindSettings">
+            <summary>
+            List of bindings to from-target-apply on OK.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.CSharp.CsharpNamespaceImportsPage.FillSettingsBag(JetBrains.DataFlow.Lifetime)">
+            <summary>
+            Prepares a settings bag for the language-neutral settings presenter.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.CSharp.CsharpNamespaceImportsPage.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.OptionsManager"/> or <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> out of it.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.OptionPages.CodeStyle.Impl.ModifiersOrderEdit.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.OptionPages.CodeStyle.Impl.ModifiersOrderEdit.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.NamespaceImportsPageBase">
+            <summary>
+            Shared services for <see cref="T:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.CSharp.CsharpNamespaceImportsPage"/> and <see cref="T:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.VB.VbnetNamespaceImportsPage"/> and <see cref="!:RazorNamespaceImportsPage"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.NamespaceImportsPageBase.AddImportsToDeepestScope">
+            <summary>
+            A setting from per-language import settings.
+            Optional.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.NamespaceImportsPageBase.QualifiedUsingAtNestedScope">
+            <summary>
+            A setting from per-language import settings.
+            Optional.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.NamespaceImportsPageBase.AllowAlias">
+            <summary>
+            A setting from per-language import settings.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.NamespaceImportsPageBase.CanUseGlobalAlias">
+            <summary>
+            A setting from per-language import settings.
+            Optional.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.NamespaceImportsPageBase.ImportDirectiveName">
+            <summary>
+            Tells how to present the import directive name in the lanugage being edited.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.NamespaceImportsPageBase.KeepImports">
+            <summary>
+            A setting from per-language import settings.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.NamespaceImportsPageBase.KeepNontrivialAlias">
+            <summary>
+            A setting from per-language import settings.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.NamespaceImportsPageBase.MandatoryImports">
+            <summary>
+            A setting from per-language import settings.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.NamespaceImportsPageBase.PreferQualifiedReference">
+            <summary>
+            A setting from per-language import settings.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.NamespaceImportsPageBase.CreateView(JetBrains.DataFlow.Lifetime,JetBrains.DataFlow.PropertyBag,System.Windows.Forms.TableLayoutPanel,JetBrains.ReSharper.Psi.PsiIconManager,JetBrains.UI.Application.UIApplication,JetBrains.Application.IApplicationDescriptor,JetBrains.UI.Application.WindowsMessageHookManager,JetBrains.CommonControls.Validation.FormValidators)">
+            <summary>
+            Creates a view for imports page. Extracts the language-neutral part.
+            </summary>
+            <param name="lifetime">Destruction queue.</param>
+            <param name="settings">Bag with settings to be edited.</param>
+            <param name="grid">The grid to work in.</param>
+            <param name="psiIconManager"></param>
+            <param name="uiApplication"></param>
+            <param name="applicationDescriptor"></param>
+            <param name="windowsMessageHookManager"></param>
+            <param name="formValidators"></param>
+            <returns>The list of bindings to copy-from-target on OK.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.NamespaceImportsPageBase.InitView_ImportsOptimization(JetBrains.DataFlow.Lifetime,JetBrains.ReSharper.Psi.PsiIconManager,JetBrains.DataFlow.PropertyBag,System.Windows.Forms.TableLayoutPanel,System.Windows.Forms.Control,System.Action{JetBrains.DataFlow.IPropertyBinding},JetBrains.UI.Application.UIApplication,JetBrains.Application.IApplicationDescriptor,JetBrains.UI.Application.WindowsMessageHookManager,JetBrains.CommonControls.Validation.FormValidators)">
+            <summary>
+            Creates a section.
+            </summary>
+            <param name="lifetime"></param>
+            <param name="psiIconManager"></param>
+            <param name="bag">Settings bag.</param>
+            <param name="grid">The outermost grid.</param>
+            <param name="stack">A stack panel that lives in the top cell of the <paramref name="grid"/>.</param>
+            <param name="bind">Function to store the binding for back-application on OK.</param>
+            <param name="uiApplication"></param>
+            <param name="applicationDescriptor"></param>
+            <param name="windowsMessageHookManager"></param>
+            <param name="formValidators"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.NamespaceImportsPageBase.InitView_ReferenceQualification(JetBrains.DataFlow.Lifetime,JetBrains.DataFlow.PropertyBag,System.Windows.Forms.Control,System.Action{JetBrains.DataFlow.IPropertyBinding})">
+            <summary>
+            Creates a section.
+            </summary>
+            <param name="lifetime"></param>
+            <param name="bag">Settings bag.</param>
+            <param name="stack">A stack panel to add the control rows into.</param>
+            <param name="bind">Function to store the binding for back-application on OK.</param>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.VB.VbnetNamespaceImportsPage.myBindSettings">
+            <summary>
+            List of bindings to from-target-apply on OK.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.VB.VbnetNamespaceImportsPage.FillSettingsBag(JetBrains.DataFlow.Lifetime)">
+            <summary>
+            Prepares a settings bag for the language-neutral settings presenter.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Environment.Options.CodeStyle.VB.VbnetNamespaceImportsPage.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.OptionsManager"/> or <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> out of it.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Environment.Options.EnvironmentGeneralPage">
+            <summary>
+            The environment options page.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.Naming.NamingStylePage`1.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Naming.NamingStylePage`1.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Naming.NamingStylePage`1.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.Naming.CustomNamingOptionsPage`1.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Naming.CustomNamingOptionsPage`1.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Naming.CustomNamingOptionsPage`1.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.Naming.EditNamingPolicyControl.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Naming.EditNamingPolicyControl.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Naming.EditNamingPolicyControl.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.Naming.EditNamingPolicyForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Naming.EditNamingPolicyForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Naming.EditNamingPolicyForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.Naming.EditUserRuleForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Naming.EditUserRuleForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Naming.EditUserRuleForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Options.Naming.AdvancedNamingSettingsForm`1.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Naming.AdvancedNamingSettingsForm`1.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Naming.AdvancedNamingSettingsForm`1.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator">
+            <summary>
+            A status bar indicator for the PSI cache notifier.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.GapAroundText">
+            <summary>
+            Gap on the right and left of the text, but within the progress fill.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.GapIconProgress">
+            <summary>
+            Gap between the icon and the progress area.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.TicksBeforeChangingImmediateSize">
+            <summary>
+            Number of <see cref="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.myTicksAfterDesiredSizeChanged"/> ticks before the immediate size starts adapting.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.SizeAdaptationStep">
+            <summary>
+            Step for changing the size when adapting.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.myDesiredSize">
+            <summary>
+            The indicator's desired size, as derived from the content.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.myDesiredSizeImmediate">
+            <summary>
+            The indicator size currently reported to the host as the desired size. Gradually changes to fit <see cref="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.myDesiredSize"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.myGottenDirty">
+            <summary>
+            The control has gotten dirty and should be repainted.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.myTicksAfterDesiredSizeChanged">
+            <summary>
+            Calculates the number of timer ticks after the <see cref="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.myDesiredSize"/> change.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.myTimerAdjustDesiredSize">
+            <summary>
+            Gradually adjusts <see cref="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.myDesiredSizeImmediate"/> to fit <see cref="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.myDesiredSize"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.myWantsResize">
+            <summary>
+            Fires when the control would like to be reasked of its desired size.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.OnUpdateDesiredSize(System.String)">
+            <summary>
+            Calculates the true desired size.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.OnTimerAdjustDesiredSize">
+            <summary>
+            When the timer ticks, gradually changes the immediate desired size value towards the actual desired size.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.GetTooltip(JetBrains.DataFlow.Lifetime,System.Drawing.Point)">
+            <summary>
+            Called by tooltip manager, if the tooltip is to be displayed
+            </summary>
+            <param name="lifetime"></param>
+            <param name="point">Point in control's coordinates</param>
+            <returns><see cref="T:JetBrains.UI.Tooltips.ITooltipInfo"/>, or <c>Null</c> if no tooltip should be displayed.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.GetDesiredSize(JetBrains.UI.IGraphicsContainer,System.Drawing.Size)">
+            <summary>
+            Performs the bottom-up layouting stage, when the control calculates its desired size using the given constraints.
+            Should give generally the same results as <see cref="T:JetBrains.CommonControls.IConstrainableControl"/>, but could employ the <paramref name="gc"/> device context for the sake of optimization.
+            </summary>
+            <param name="gc">The device context to measure against.</param>
+            <param name="limit">The maximum available space (that could affect the shape of the control, or strip down unnecessary calculations over the invisible items).
+            May be a <see cref="T:System.Drawing.Size"/> with width and height equal to <see cref="F:System.Int32.MaxValue"/>, which means that the size is not limited.</param>
+            <returns>The desired size, must be no larger than <paramref name="limit"/>.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.Paint(System.Drawing.Graphics)">
+            <summary>
+            Renders the context of the windowless control. The rendering bounds are given by the 
+            </summary>
+            <param name="g">The device context.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.SetBounds(JetBrains.UI.IGraphicsContainer,System.Drawing.Rectangle)">
+            <summary>
+            Performs the top-down layouting stage, when the control lais out its parts within the given bounds.
+            </summary>
+            <param name="gc">The device context to measure against.</param>
+            <param name="bounds">The new bounds. From now on, this value should be returned from the <see cref="P:JetBrains.CommonControls.IWindowlessControl.Bounds"/> property.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.SetLayout(JetBrains.UI.LayoutResult)">
+            <summary>
+            Tells the control the details about the new layout applied to it by the controlling entity in conjunction with some <see cref="T:JetBrains.UI.IPopupLayouter"/>.
+            Typically, the control need not apply the given size and location because that should be done by the controlling entity.
+            The control may change its presentation in response to the layouting details, for example, whether it's attached to the top or the bottom of the anchoring rect.
+            </summary>
+            <param name="layout">The layouting details.</param>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.AutoActivate">
+            <summary>
+            Gets or sets whether the control should be activated initially when it's shown.
+            The typical implementation for a form is to return a negative of this value from the <see cref="P:System.Windows.Forms.Form.ShowWithoutActivation"/> override.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.Bounds">
+            <summary>
+            The windowless control bounds in the parent coordinates. The implementor should just store and return the value set by the owner.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.GottenDirty">
+            <summary>
+            The control has gotten dirty and should be repainted.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator.WantsResize">
+            <summary>
+            Fires when the control would like to be reasked of its desired size.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierPopup">
+            <summary>
+            The popup view for the cache notifier.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierPopup.myPopupWindowMutex">
+            <summary>
+            Identity for the background notifier windows.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierPopup.myWantsResize">
+            <summary>
+            Fires when the control would like to be reasked of its desired size.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierPopup.OnAnyClick(System.Object,System.EventArgs)">
+            <summary>
+            Something has been clicked — turn modal.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierPopup.OnPaint(System.Windows.Forms.PaintEventArgs)">
+            <summary>
+            
+            </summary>
+            
+            <param name="e">A <see cref="T:System.Windows.Forms.PaintEventArgs" /> that contains the event data. </param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierPopup.GetDesiredSize(JetBrains.UI.IGraphicsContainer,System.Drawing.Size)">
+            <summary>
+            Performs the bottom-up layouting stage, when the control calculates its desired size using the given constraints.
+            Should give generally the same results as <see cref="T:JetBrains.CommonControls.IConstrainableControl"/>, but could employ the <paramref name="gc"/> device context for the sake of optimization.
+            </summary>
+            <param name="gc">The device context to measure against.</param>
+            <param name="limit">The maximum available space (that could affect the shape of the control, or strip down unnecessary calculations over the invisible items).
+            May be a <see cref="T:System.Drawing.Size"/> with width and height equal to <see cref="F:System.Int32.MaxValue"/>, which means that the size is not limited.</param>
+            <returns>The desired size, must be no larger than <paramref name="limit"/>.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierPopup.SetLayout(JetBrains.UI.LayoutResult)">
+            <summary>
+            Tells the control the details about the new layout applied to it by the controlling entity in conjunction with some <see cref="T:JetBrains.UI.IPopupLayouter"/>.
+            Typically, the control need not apply the given size and location because that should be done by the controlling entity.
+            The control may change its presentation in response to the layouting details, for example, whether it's attached to the top or the bottom of the anchoring rect.
+            </summary>
+            <param name="layout">The layouting details.</param>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierPopup.ShowWithoutActivation">
+            <summary>
+            Gets a value indicating whether the window will be activated when it is shown.
+            </summary>
+            
+            <returns>
+            True if the window will not be activated when it is shown; otherwise, false. The default is false.
+            </returns>
+            
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierPopup.AutoActivate">
+            <summary>
+            Gets or sets whether the control should be activated initially when it's shown.
+            The typical implementation for a form is to return a negative of this value from the <see cref="P:System.Windows.Forms.Form.ShowWithoutActivation"/> override.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierPopup.WantsResize">
+            <summary>
+            Fires when the control would like to be reasked of its desired size.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.ForegroundNotifierWindow.Dispose(System.Boolean)">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.PsiCacheNotifierImpl.IsVisibleViewIndicatorUi">
+            <summary>
+            Gets whether the corresponding view should be visible.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.PsiCacheNotifierImpl.IsVisibleViewPopupUi">
+            <summary>
+            Gets whether the corresponding view should be visible.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.PsiCacheNotifierImpl.DescriptionUi">
+            <summary>
+            The <see cref="!:PsiCacheNotifier.Description"/>, marshalled to UI.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.PsiCacheNotifierImpl.HeaderUi">
+            <summary>
+            The <see cref="!:PsiCacheNotifier.Header"/>, marshalled to UI.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.PsiCacheNotifierImpl.IsActiveUi">
+            <summary>
+            The <see cref="!:PsiCacheNotifier.IsActive"/>, marshalled to UI.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.PsiCacheNotifierImpl.ProgressUi">
+            <summary>
+            The <see cref="!:PsiCacheNotifier.Progress"/>, marshalled to UI.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.PsiCacheNotifierImpl.HideReadLocks(JetBrains.DataFlow.Lifetime,JetBrains.Application.IShellLocks)">
+            <summary>
+            Hides all of the read locks taken by the current thread, and returns them back on dispose.
+            Used by wait-for-caches kind functions to allow write locks on the other thread.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.PsiCacheNotifierImpl.InitDataFlow_AutoCleanUp">
+            <summary>
+            Whenever notifier is hidden, clean it up.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.PsiCacheNotifierImpl.InitDataFlow_MarshalUi">
+            <summary>
+            Marshal from the immediate thread-neutral properties to the in-ui-thread safe properties.
+            When reading values, use the UI versions.
+            When setting the values, use the non-UI versions.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.PsiCacheNotifierImpl.InitDataFlow_ShowViews(JetBrains.UI.StatusBar.IStatusBar)">
+            <summary>
+            What views to show, and when.
+            </summary>
+            <param name="statusBar"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.PsiCacheNotifierImpl.WaitForCaches(System.String,System.String)">
+            <summary>
+            Syncroniously wait until caches are ready, with a popup progress window.
+            Must be called under a read lock.
+            </summary>
+            <returns><c>True</c> if the caches are ready, <c>False</c> if user-cancelled.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.RecentFiles.RecentFilesCommands.ShowRecentEdits">
+            <summary>
+            Displays a popup menu list of the recent edits.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.RecentFiles.RecentFilesCommands.ShowRecentFiles">
+            <summary>
+            Displays a popup menu list of the recent files.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Environment.Tips.TipsForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Tips.TipsForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Tips.TipsForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+    </members>
+</doc>

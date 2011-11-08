@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.Asp</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Psi.Asp.Impl.AspCodeBehindGeneratedDocumentService">
+            <summary>
+            Generated document service for C# and VB languages of ASP page.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Asp.Impl.PsiModules.Website.Properties.IWebsiteAsxxPsiSourceFilePropertiesFactory">
+            <summary>
+            Psi language-dependent component
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Asp.Impl.PsiModules.Website.Properties.IWebsiteCodeBehindPsiSourceFilePropertiesFactory">
+            <summary>
+            ProjectFile language-dependent component
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Asp.Impl.Generate.AspCodeBehindFileGenerator">
+            <summary>
+            AspCodeBehindFileGenerator - a utility to generate code-behind-like class for .aspx page.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Asp.Impl.Generate.AspCodeBehindGenerator">
+            <summary>
+            Abstract base class for code generator
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Asp.Impl.Generate.LinqToXsd.LinqToXsdBuilder.CopyFile(JetBrains.Util.FileSystemPath,JetBrains.Util.FileSystemPath,JetBrains.ProjectModel.IProjectFile,JetBrains.DocumentManagers.DocumentManager)">
+            <summary>
+            Copies file content to the appropriate location (creates folders if necessary)
+            </summary>
+            <returns>relative path</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Asp.Impl.Generate.Tools.InterruptableProcessRunner.RunProcess(System.String,System.String,JetBrains.Util.FileSystemPath,System.Int32)">
+            <summary>
+            Runs external process, checks for interrupt and throws ProcessCancelledException if interrupted
+            </summary>
+            <returns>true if process exited</returns>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Asp.Impl.UniqueIdGenerator">
+            <summary>
+            UniqueIdGenerator.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Asp.Parsing.AspElementFactory.WrapChildrenAndCreateHead(JetBrains.ReSharper.Psi.Html.Tree.IHtmlFile)">
+            <summary>
+            
+            </summary>
+            <param name="aspFile"></param>
+            <returns>Triple of html, head, body tags</returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Asp.Impl.PredefinedControls.HtmlTagInfo.AttributeTypes">
+            <summary>
+            Tag's attrbute types
+            <remarks>Can contains not all attributes</remarks>
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Asp.Impl.References.TagNameReference">
+            <summary>
+            Reference should be qualifiable in order that AllNonQualifiableReferenceResolver processes it
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Asp.Impl.References.TagPrefixReference">
+            <summary>
+            Reference should be qualifiable in order that AllNonQualifiableReferenceResolver processes it
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Asp.Tree.AspTagExtensions.IsAffectedByCustomControlBuilder(JetBrains.ReSharper.Psi.Asp.Tree.IAspTag)">
+            <summary>
+            HACK HACK HACK!!!
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Asp.Parsing.AspTreeBuilder">
+            <summary>
+            AspTreeBuilder
+            </summary>
+        </member>
+    </members>
+</doc>

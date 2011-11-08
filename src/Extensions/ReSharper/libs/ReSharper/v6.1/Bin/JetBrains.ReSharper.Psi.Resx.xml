@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.Resx</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Psi.Resx.SolutionResourceManager.GetResourceDeclarations(JetBrains.ProjectModel.IProjectFile)">
+            <summary>
+            Gets all resx data node declarations in the specified resx file.
+            </summary>
+            <param name="projectFile">resx file.</param>
+            <returns>all resx data node declarations</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Resx.SolutionResourceManager.GetResourceDeclarations(JetBrains.ProjectModel.IProjectFile,System.String)">
+            <summary>
+            Gets all resx data node declarations by <paramref name="name"/> in the specified resx <paramref name="projectFile"/>.
+            </summary>
+            <param name="projectFile">resx file</param>
+            <param name="name">resource entry name</param>
+            <returns>all resx data node declarations</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Resx.SolutionResourceManager.HasResourceDeclarations(JetBrains.ProjectModel.IProjectFile)">
+            <summary>
+            Determines where <paramref name="projectFile"/> contains resource declarations.
+            </summary>
+            <param name="projectFile">resx file for check.</param>
+            <returns><c>true</c> - contains; otherwise - <c>false</c>.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Resx.SolutionResourceManager.GetResourceDeclaration(JetBrains.ProjectModel.IProjectFile,System.String,System.Int32)">
+             <summary>
+             Gets declaration in the <paramref name="projectFile"/> by the <paramref name="name"/> and the <paramref name="offset"/>.
+             </summary>
+            <param name="projectFile">resx project file</param>
+            <param name="name">resource name</param>
+            <param name="offset">resource offset</param>
+            <returns>resx data tag declration; otherwise - <c>null</c></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Resx.SolutionResourceManager.GetAvailableResources(JetBrains.ProjectModel.IProject,System.Predicate{JetBrains.ProjectModel.IProjectFile})">
+            <summary>
+            Gets available resources for secified <paramref name="project"/> with <paramref name="filter"/>.
+            </summary>
+            <param name="project">find available resource files for this project.</param>
+            <param name="filter">filter resource files result set.</param>
+            <returns>resources file set</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Resx.SolutionResourceManager.HasAvailableResourcesFrom(JetBrains.ProjectModel.IProjectFile)">
+            <summary>
+            Determines where resource manager contains resources with are available from the <paramref name="projectFile"/>.
+            </summary>
+            <param name="projectFile">any project file.</param>
+            <returns><c>true</c> - resources are available; otherwise - <c>false</c>.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Resx.SolutionResourceManager.GetBaseCultureFile(JetBrains.ProjectModel.IProjectFile)">
+            <summary>
+            Gets base culture
+            </summary>
+            <param name="projectFile"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Resx.SolutionResourceManager.GetBaseCultureFile(JetBrains.ProjectModel.IProjectFile,System.String)">
+            <summary>
+            Gets base culture
+            </summary>
+            <param name="projectFile"></param>
+            <param name="baseCultureName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Resx.SolutionResourceManager.GetResourceWithCulture(JetBrains.ProjectModel.IProjectFile,System.String)">
+            <summary>
+            Gets base culture
+            </summary>
+            <param name="projectFile"></param>
+            <param name="cultureName"><c>null</c> for default culture</param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Resx.Utils.ResxFileUtil.GetNameWithoutCulture(JetBrains.ProjectModel.IProjectFile)">
+            <summary>
+            Get name without culture for the specified <paramref name="projectFile"/>.
+            </summary>
+            <param name="projectFile">resource file.</param>
+            <returns>resource name, e.g. for 'SR.ru-ru.resx' returns 'SR'.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Resx.Utils.ResxFileUtil.VerifyResourceFileName(System.String)">
+            <summary>
+            Get verified resource name for the specified <paramref name="fileName"/>.
+            </summary>
+            <param name="fileName">resource file.</param>
+            <returns>resource name, e.g. for 'SR.ru-ru.resx' returns 'SR'.</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Resx.Utils.ResxFileUtil.IsDefaultCulture(JetBrains.ProjectModel.IProjectFile)">
+            <summary>
+            Checks if <paramref name="projectFile"/> is resx file for the default culture.
+            </summary>
+            <param name="projectFile">resx project file</param>
+            <returns><c>true</c> - is default culture; otherwise - <c>false</c></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Resx.Utils.ResxFileUtil.GetCultureName(JetBrains.ProjectModel.IProjectFile)">
+            <summary>
+            Gets the name of the culture.
+            </summary>
+            <returns><c>String.Empty</c> for default culture</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Resx.Utils.ResxFileUtil.IsRegionSpecificCultureName(JetBrains.ProjectModel.IProjectFile)">
+            <summary>
+            Determines where culture name is region specific (e.g. ru-ru).
+            </summary>
+            <returns><c>true</c> - if culture name is region specific; otherwise - <c>false</c></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Resx.Utils.ResxFileUtil.IsDefaultCulture(System.String)">
+            <summary>
+            Checks if <paramref name="fileName"/> is default culture.
+            </summary>
+            <param name="fileName">resx file name</param>
+            <returns><c>true</c> - is default culture; otherwise - <c>false</c></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Resx.Utils.ResxFileUtil.GetCultureName(System.String)">
+            <summary>
+            Gets the name of the culture.
+            </summary>
+            <returns><c>String.Empty</c> for default culture</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Resx.Utils.StringFormatUtil.GetMaxFormatArgsIndex(System.String)">
+            <summary>
+            Gets the format args count.
+            </summary>
+            <param name="value">The value.</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

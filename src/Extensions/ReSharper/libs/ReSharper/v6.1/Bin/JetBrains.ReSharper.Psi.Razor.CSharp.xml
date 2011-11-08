@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.Razor.CSharp</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Psi.Razor.CSharp.resources.Texts">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Razor.CSharp.resources.Texts.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Razor.CSharp.resources.Texts.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Razor.CSharp.resources.Texts.ExecuteEnd">
+            <summary>
+              Looks up a localized string similar to }}.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Razor.CSharp.resources.Texts.ExecuteStart">
+            <summary>
+              Looks up a localized string similar to [{1}] public override void Execute() {{.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:JetBrains.ReSharper.Psi.Razor.CSharp.resources.Texts.FileHeader" -->
+        <member name="P:JetBrains.ReSharper.Psi.Razor.CSharp.resources.Texts.FileTemplateEnd">
+             <summary>
+               Looks up a localized string similar to     }}
+            }}
+            .
+             </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Razor.CSharp.resources.Texts.FileTemplateStart">
+            <summary>
+              Looks up a localized string similar to namespace {1} {{
+               
+               {4}
+               public class {2} : {3} {{
+                 [{5}] private static void {6}(object value) {{}}
+                 [{5}] private static void {6}(System.Web.WebPages.HelperResult result) {{}}
+                 [{5}] private static void {7}(System.IO.TextWriter writer, object content) {{}}
+                 [{5}] private static void {7}(System.IO.TextWriter writer, System.Web.WebPages.HelperResult content) {{}}
+                 [{5}] private static void {8}(object value) {{}}
+                 [{5}] private static void {9}(System.IO.TextWri [rest of string was truncated]&quot;;.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Razor.CSharp.resources.Texts.StaticExecuteStart">
+            <summary>
+              Looks up a localized string similar to [{0}, {1}] private void Execute() {{.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Razor.CSharp.resources.Texts.WriteEnd">
+            <summary>
+              Looks up a localized string similar to );.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.Razor.CSharp.resources.Texts.WriteStart">
+            <summary>
+              Looks up a localized string similar to {0}({1}.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Razor.CSharp.Impl.CustomHandlers.RazorCSharpPsiServices.IsMethodWithRazorMarkup(JetBrains.ReSharper.Psi.Tree.IDeclaration)">
+            <summary>
+            Does method can contain markup (Execute or helper)?
+            </summary>
+            <param name="declaration"></param>
+            <returns></returns>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Razor.CSharp.Impl.Regenerator.HtmlOutputToRegenerate">
+            <summary>
+            Either HTML or Razor implicit or explicit expression (like @aaa)
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Razor.CSharp.Impl.Regenerator.CodeToRegenerate">
+            <summary>
+            C# statement, either escapable with @ (like @if) or with @{...}
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Razor.CSharp.Impl.RazorCSharpCodeBehindGeneratedDocumentService.#ctor(JetBrains.ReSharper.Psi.ILanguageManager,JetBrains.ReSharper.Psi.ExtensionsAPI.FileDependency,JetBrains.ReSharper.Psi.Razor.Generate.RazorCodeGenerator,JetBrains.ReSharper.Psi.Razor.Impl.CustomHandlers.IRazorPsiServices)">
+            <remarks><see cref="T:JetBrains.ReSharper.Psi.ILanguageManager"/> is marker interface, to get dependencies initialized (psi language instances)</remarks>
+        </member>
+    </members>
+</doc>

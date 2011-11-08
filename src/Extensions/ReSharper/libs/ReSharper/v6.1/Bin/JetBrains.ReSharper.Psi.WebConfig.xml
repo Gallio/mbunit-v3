@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.WebConfig</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Psi.WebConfig.Impl.PsiModules.Website.Modules.IWebConfigModule.GetCommonReferences">
+            <summary>
+            Common assembly references defined by current web.config and all above
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.WebConfig.Tree.IAddCodeSubDirectoryTag.DirectoryName">
+            <summary>
+            Relative to the \App_Code or staring with /
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.WebConfig.Util.TagPrefixUtil.GetRelevantHolders(JetBrains.ReSharper.Psi.Tree.IFile)">
+            <summary>
+            Finds all relevant tagPrefix/Name holder. 
+            The latter items in the enumerable take precedence over the previous ones
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.WebConfig.Util.TagPrefixUtil.GetRelevantHoldersBeforeFile(JetBrains.ReSharper.Psi.Tree.IFile,JetBrains.Util.FileSystemPath)">
+            <summary>
+            Finds all relevant tagPrefix/Name holder in all files except current.
+            The latter items in the enumerable take precedence over the previous ones
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.WebConfig.Util.TagPrefixUtil.GetHoldersInFile(JetBrains.ReSharper.Psi.Tree.IFile,JetBrains.Util.FileSystemPath)">
+            <summary>
+            Finds all holder within file specified
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.WebConfig.WebExtensions.IsHtmlPage(JetBrains.ProjectModel.IProjectFile)">
+            <summary>
+            Is html or inherited page except ASP
+            </summary>
+            <param name="projectFile"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

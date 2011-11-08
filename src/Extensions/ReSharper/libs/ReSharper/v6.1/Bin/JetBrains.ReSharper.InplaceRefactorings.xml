@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.InplaceRefactorings</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.InplaceRefactorings.ChangeSignature.ParameterArrowsOptimization.Optimize(JetBrains.ReSharper.InplaceRefactorings.ChangeSignature.SignatureChange)">
+            <returns>Indices of old parameters to draw arrows from</returns>
+        </member>
+    </members>
+</doc>

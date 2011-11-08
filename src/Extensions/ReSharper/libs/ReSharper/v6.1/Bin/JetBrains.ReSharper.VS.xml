@@ -1,0 +1,393 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.VS</name>
+    </assembly>
+    <members>
+        <member name="F:JetBrains.ReSharper.VS.Actions.AdvertiseSubmitFeedbackForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.Actions.AdvertiseSubmitFeedbackForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.Actions.AdvertiseSubmitFeedbackForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.Actions.ShowOfflineHelpAction.JetBrains#ActionManagement#IActionHandler#Execute(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.DelegateExecute)">
+            <summary>
+            Executes action. Called after Update, that set ActionPresentation.Enabled to true.
+            </summary>
+            <param name="context">DataContext</param>
+            <param name="nextExecute">delegate to call</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.Actions.ShowOfflineHelpAction.JetBrains#ActionManagement#IActionHandler#Update(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
+            <summary>
+            Updates action visual presentation. If presentation.Enabled is set to false, Execute
+            will not be called.
+            </summary>
+            <param name="context">DataContext</param>
+            <param name="presentation">presentation to update</param>
+            <param name="nextUpdate">delegate to call</param>
+        </member>
+        <member name="F:JetBrains.ReSharper.VS.ActivityTracking.ProductUsageFeedbackForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.ActivityTracking.ProductUsageFeedbackForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.ActivityTracking.ProductUsageFeedbackForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.VS.Customization.ReSharperPkg.Info">
+            <summary>
+            Package description, mostly for shell-less installers.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.VS.Customization.ReSharperPkg.Info.PackageAssemblyFullName">
+            <summary>
+            The full qualified assembly name of the .NET class that implements the package (<see cref="P:System.Reflection.AssemblyName.FullName"/>).
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.VS.Customization.ReSharperPkg.Info.PackageAssemblyName">
+            <summary>
+            The short assembly name of the .NET class that implements the package (<see cref="P:System.Reflection.AssemblyName.Name"/>).
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.VS.Customization.ReSharperPkg.Info.PackageClass">
+            <summary>
+            An FQN of the .NET class that implements the package (<see cref="P:System.Type.FullName"/>).
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.VS.Customization.ReSharperPkg.Info.PackageCompanyName">
+            <summary>
+            Name of the company, as specified in the Package Key registered at Microsoft.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.VS.Customization.ReSharperPkg.Info.PackageGuid">
+            <summary>
+            Guid of the .NET class that implements the package (<see cref="P:System.Type.GUID"/>).
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.VS.Customization.ReSharperPkg.Info.PackageKeyResourceId">
+            <summary>
+            ID of the resource that contains the package key (PLK).
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.VS.Customization.ReSharperPkg.Info.PackageMagicMenuValue">
+            <summary>
+            Value for the Menus registry data value.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.VS.Customization.ReSharperPkg.Info.PackageMinEdition">
+            <summary>
+            VS min edition for the package.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.VS.Customization.ReSharperPkg.Info.PackageName">
+            <summary>
+            Name of the package.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.VS.Customization.ReSharperPkg.Info.PackageProductName">
+            <summary>
+            Name of the product, as specified in the Package Key registered at Microsoft.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.VS.Customization.ReSharperPkg.Info.PackageProductVersion">
+            <summary>
+            Version of the product, as specified in the Package Key registered at Microsoft.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.VS.Customization.ReSharperApplicationDescriptor">
+            <summary>
+            Overrides R# appdesc for VS properties.
+            TODO: use installer env components instead.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.VS.Customization.ReSharperApplicationDescriptor.JetBrains#VsIntegration#Customization#IVsApplicationDescriptor#BmpForSplashScreenResourceId">
+            <summary>
+            WinAPI resource ID for the Splash Screen icon, see <see cref="M:Microsoft.VisualStudio.Shell.Interop.IVsInstalledProduct.IdBmpSplash(System.UInt32@)"/>.
+            Note that this resource must either reside in a satellite resource DLL or be specifically compiled into RESX.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.VS.Customization.ReSharperApplicationDescriptor.JetBrains#VsIntegration#Customization#IVsApplicationDescriptor#IcoLogoForAboutBoxResourceId">
+            <summary>
+            WinAPI resource ID for the About Box icon, see <see cref="M:Microsoft.VisualStudio.Shell.Interop.IVsInstalledProduct.IdIcoLogoForAboutbox(System.UInt32@)"/>.
+            Note that this resource must either reside in a satellite resource DLL or be specifically compiled into RESX.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.VS.Customization.ReSharperApplicationDescriptor.JetBrains#VsIntegration#Customization#IVsApplicationDescriptor#Package">
+            <summary>
+            Gets the type of the class that implements the Visual Studio Package interface.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.VS.Customization.ReSharperApplicationDescriptor.JetBrains#VsIntegration#Customization#IVsApplicationDescriptor#ProductPreviewExtensionManager">
+            <summary>
+            Gets an image that should appear on the product entry in VS 10 Extension Manager.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.VS.Customization.ReSharperApplicationDescriptor.JetBrains#VsIntegration#Customization#IVsApplicationDescriptor#VsMarkerTypeProviderGuid">
+            <summary>
+            Gets the GUID for the Visual Studio Marker Type Provider.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.VS.Dev10AsyncCtpDetector">
+            <summary>
+            Check .NET4 is targeted and 'AsyncCtpLibrary' is referenced
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostApi">
+            <summary>
+            Shared API to the <see cref="T:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer"/>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Internal.Debugger.IDebuggerHostApi">
+            <summary>
+            Shared API to the <see cref="T:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.IDebuggerHostApi.AttachToProcess(System.UInt32)">
+            <summary>
+            Instructs the debugger to attach to the process with the PID <paramref name="pid"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.IDebuggerHostApi.DetachAll">
+            <summary>
+            Instructs the debugger to detach from all the debuggee processes.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostApi.GetInstance(System.UInt32,System.String)">
+            <summary>
+            Gets the API to the debugger host running in the given process.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostApi.AttachToProcess(System.UInt32)">
+            <summary>
+            Instructs the debugger to attach to the process with the PID <paramref name="pid"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostApi.DetachAll">
+            <summary>
+            Instructs the debugger to detach from all the debuggee processes.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostClient">
+            <summary>
+            Client for controlling the debugger in another process with <see cref="T:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer"/> running in that process.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostClient.AttachDebugger(System.Diagnostics.Process,System.Diagnostics.Process,System.String)">
+            <summary>
+            Instructs the remote (or local) <see cref="T:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer"/> in the <paramref name="debugger"/> process to attach to the <paramref name="debuggee"/> process.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostClient.DetachAll(System.Diagnostics.Process,System.String)">
+            <summary>
+            Instructs the remote (or local) <see cref="T:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer"/> in the <paramref name="debugger"/> process to detach from all the debuggee processes.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer">
+            <summary>
+            Runs in the debugger-aware process and receives remote requests for debugging through COM RPC.
+            Advertises an <see cref="T:JetBrains.ReSharper.Features.Internal.Debugger.IDebuggerHostApi"/> / <see cref="T:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostApi"/> instance to the Running Objects Table.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer.GetInstance(System.UInt32,System.String)">
+            <summary>
+            Gets the API to the debugger host running in the given process.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer.GetInstanceDynamic(System.UInt32,System.String)">
+            <summary>
+            Gets the API to the debugger host running in the given process as a late-bound <see cref="T:System.Object"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer.AttachToProcess(System.UInt32)">
+            <summary>
+            Instructs the debugger to attach to the process with the PID <paramref name="pid"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer.DetachAll">
+            <summary>
+            Instructs the debugger to detach from all the debuggee processes.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.Debugger.DebuggerHostServer.InitRot(JetBrains.DataFlow.Lifetime,JetBrains.Application.IApplicationDescriptor)">
+            <summary>
+            Register/Revoke the Running Objects Table entry.
+            </summary>
+            <param name="lifetime"></param>
+            <param name="product"></param>
+        </member>
+        <member name="F:JetBrains.ReSharper.VS.FormatProperties.VsSettingOverrideBase`1.mySavedValue">
+            <summary>
+            Value that was set before we overrode it.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.VS.FormatProperties.VsSettingOverrideBase`1.myPropertyIsOverridden">
+            <summary>
+            True if property is temporary overridden 
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.FormatProperties.VsSettingOverrideAutocompletionBase`1.EnableVsAutoListMembers(System.Boolean,System.Guid)">
+            <summary>
+            Returns old value of the property
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.FormatProperties.VsSettingOverrideParameterInfoBase`1.EnableVsParameterInfo(System.Boolean,System.Guid)">
+            <summary>
+            Returns old value of the property
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.VS.StandardEditorsToFileTypeConverter.myEditorsMap">
+            <summary>
+            General editor to file type map
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.VS.StandardEditorsToFileTypeConverter.myEditorExtensionsMap">
+            <summary>
+            More specific file type map, including editor AND extension
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.VS.MSTest.MSTestAccessorReferenceProvider.MyProjectHandlerHandler">
+            <summary>
+            For every '.accessor' file add and reference corresponding DLLs
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.VS.OptionPages.VisualStudioIntegrationPage">
+            <summary>
+            The environment options page.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.OptionPages.VisualStudioIntegrationPage.#ctor(JetBrains.DataFlow.Lifetime,JetBrains.Application.IApplicationDescriptor,JetBrains.UI.Application.Progress.UITaskExecutor,JetBrains.ActionManagement.IShortcutManager,JetBrains.UI.Options.OptionsSettingsSmartContext)">
+            <summary>
+            Inits the base, sets the PID that will be given out thru <see cref="P:JetBrains.UI.Options.IOptionsPage.Id"/>.
+            </summary>
+            <param name="lifetime"></param>
+            <param name="product"></param>
+            <param name="uiTaskExecutor"></param>
+            <param name="shortcutManager"></param>
+            <param name="settings"></param>
+        </member>
+        <member name="F:JetBrains.ReSharper.VS.ProjectModel.WebProperties.UI.PathMappingControl.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.ProjectModel.WebProperties.UI.PathMappingControl.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.ProjectModel.WebProperties.UI.PathMappingControl.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.VS.ProjectModel.WebProperties.UI.SinglePathControl.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.ProjectModel.WebProperties.UI.SinglePathControl.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.ProjectModel.WebProperties.UI.SinglePathControl.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.VS.ProjectModel.WebProperties.UI.WebPathMappingForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.ProjectModel.WebProperties.UI.WebPathMappingForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.ProjectModel.WebProperties.UI.WebPathMappingForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.VS.SolutionBuilder.VsSolutionBuilder">
+            <summary>
+            Invokes Visual Studio to build the projects.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.VS.SolutionBuilder.VsSolutionBuilder.myIsReportingErrors">
+            <summary>
+            This is a supplementary component to wind up VS builds and track their progress.
+            Therefore, most of its warnings are non-fatal, even though we should be aware of them and should try to fix them.
+            Set up by Ctor, tells whether we're reporting non-fatal errors.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.SolutionBuilder.VsSolutionBuilder.CreateBuildSessionFromVsSolution(JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionSeverity,JetBrains.ProjectModel.IProject[])">
+            <summary>
+            Creates a session by adding all the projects from the solution.
+            // TODO: toposort
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.SolutionBuilder.VsSolutionBuilder.ProtoGetProjectLayers(System.Collections.Generic.IEnumerable{JetBrains.ProjectModel.IProject})">
+            <summary>
+            [PROTOTYPE IMPLEMENTATION, INTERNAL USE ONLY]
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.SolutionBuilder.VsSolutionBuilder.InitAttachDevenv">
+            <summary>
+            Listen to the DEVENV events.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.SolutionBuilder.VsSolutionBuilder.InitSelfPromotion">
+            <summary>
+            Promotes self as the active implementation.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.SolutionBuilder.VsSolutionBuilder.BeginRun(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSession)">
+            <summary>
+            Begins running a build of the session (from <see cref="M:JetBrains.ReSharper.SolutionBuilder.ISolutionBuilder.CreateSession(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionSeverity,JetBrains.ProjectModel.IProject[])"/>), async.
+            It's an error to invoke this method when <see cref="P:JetBrains.ReSharper.SolutionBuilder.ISolutionBuilder.RunningSession"/> is present.
+            </summary>
+            <param name="session">The session to run the build of. Must not be used yet.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.SolutionBuilder.VsSolutionBuilder.CreateSession(JetBrains.ReSharper.SolutionBuilder.SolBuilderDuo.BuildSessionSeverity,JetBrains.ProjectModel.IProject[])">
+            <summary>
+            Creates a new build session.
+            </summary>
+            <param name="severity">How to build the projects.</param>
+            <param name="projectsToBuild">The projects that must be included in the build (others might be included as needed), or an empty array to build the whole solution.</param>
+            <returns>The new session on which the build could be started and the progress could be tracked.</returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.VS.SolutionBuilder.VsSolutionBuilder.RunningSession">
+            <summary>
+            Gets the build session being currently run by the solution builder. <c>Null</c> if idle.
+            </summary>
+        </member>
+    </members>
+</doc>

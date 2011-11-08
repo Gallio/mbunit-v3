@@ -1,0 +1,340 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Feature.Services.BuildScripts</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.MSBuild.LookupItems.MSBuildElementLookupItem.Shrink">
+            <summary>
+            Shrinks lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.MSBuild.LookupItems.MSBuildElementLookupItem.Unshrink">
+            <summary>
+            Restores unshrinked lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.MSBuild.LookupItems.MSBuildElementLookupItem.Accept(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange,JetBrains.ReSharper.Feature.Services.Lookup.LookupItemInsertType,JetBrains.ReSharper.Feature.Services.Lookup.Suffix,JetBrains.ProjectModel.ISolution,System.Boolean)">
+            <summary>
+            Completes the item at the specified range.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.MSBuild.LookupItems.MSBuildElementLookupItem.GetVisualReplaceRange(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange)">
+            <summary>
+            Gets visual replace range
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.MSBuild.LookupItems.MSBuildElementLookupItem.Image">
+            <summary>
+            Gets lookup item image
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.MSBuild.LookupItems.MSBuildElementLookupItem.DisplayName">
+            <summary>
+            Gets lookup item display name
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.MSBuild.LookupItems.MSBuildElementLookupItem.DisplayTypeName">
+            <summary>
+            Gets type display name 
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.MSBuild.Rules.MSBuildTagCompletionRule.IsAvailable(JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.MSBuild.MSBuildCodeCompletionContext)">
+            <summary>
+            Determines whether the rule is applicable in the given context
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.MSBuild.Rules.MSBuildTagCompletionRule.AddLookupItems(JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.MSBuild.MSBuildCodeCompletionContext,JetBrains.ReSharper.Feature.Services.Lookup.GroupedItemsCollector)">
+            <summary>
+            Applies the rule
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.MSBuild.Rules.MSBuildTagCompletionRule.CompleteItemGroupElement(JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.MSBuild.MSBuildCodeCompletionContext,JetBrains.ReSharper.Feature.Services.Lookup.GroupedItemsCollector)">
+            <summary>
+              Completes item group element
+            </summary>
+            <param name="context"></param>
+            <param name="result"></param>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.MSBuild.Rules.MSBuildTagCompletionRule.CanGenerate">
+            <summary>
+            Gets flag indicating whether the rule can generate members
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntAttributeLookupItem.Shrink">
+            <summary>
+            Shrinks lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntAttributeLookupItem.Unshrink">
+            <summary>
+            Restores unshrinked lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntAttributeLookupItem.Accept(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange,JetBrains.ReSharper.Feature.Services.Lookup.LookupItemInsertType,JetBrains.ReSharper.Feature.Services.Lookup.Suffix,JetBrains.ProjectModel.ISolution,System.Boolean)">
+            <summary>
+            Completes the item at the specified range.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntAttributeLookupItem.GetVisualReplaceRange(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange)">
+            <summary>
+            Gets visual replace range
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntAttributeLookupItem.Image">
+            <summary>
+            Gets lookup item image
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntAttributeLookupItem.DisplayName">
+            <summary>
+            Gets lookup item display name
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntAttributeLookupItem.DisplayTypeName">
+            <summary>
+            Gets type display name 
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntElementLookupItem.Shrink">
+            <summary>
+            Shrinks lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntElementLookupItem.Unshrink">
+            <summary>
+            Restores unshrinked lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntElementLookupItem.Accept(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange,JetBrains.ReSharper.Feature.Services.Lookup.LookupItemInsertType,JetBrains.ReSharper.Feature.Services.Lookup.Suffix,JetBrains.ProjectModel.ISolution,System.Boolean)">
+            <summary>
+            Completes the item at the specified range.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntElementLookupItem.GetVisualReplaceRange(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange)">
+            <summary>
+            Gets visual replace range
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntElementLookupItem.Image">
+            <summary>
+            Gets lookup item image
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntElementLookupItem.DisplayName">
+            <summary>
+            Gets lookup item display name
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntElementLookupItem.DisplayTypeName">
+            <summary>
+            Gets type display name 
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntFunctionLookupItem.Shrink">
+            <summary>
+            Shrinks lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntFunctionLookupItem.Unshrink">
+            <summary>
+            Restores unshrinked lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntFunctionLookupItem.Accept(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange,JetBrains.ReSharper.Feature.Services.Lookup.LookupItemInsertType,JetBrains.ReSharper.Feature.Services.Lookup.Suffix,JetBrains.ProjectModel.ISolution,System.Boolean)">
+            <summary>
+            Completes the item at the specified range.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntFunctionLookupItem.GetVisualReplaceRange(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange)">
+            <summary>
+            Gets visual replace range
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntFunctionLookupItem.Image">
+            <summary>
+            Gets lookup item image
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntFunctionLookupItem.DisplayName">
+            <summary>
+            Gets lookup item display name
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntFunctionLookupItem.DisplayTypeName">
+            <summary>
+            Gets type display name 
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntPropertyLookupItem.Shrink">
+            <summary>
+            Shrinks lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntPropertyLookupItem.Unshrink">
+            <summary>
+            Restores unshrinked lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntPropertyLookupItem.Accept(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange,JetBrains.ReSharper.Feature.Services.Lookup.LookupItemInsertType,JetBrains.ReSharper.Feature.Services.Lookup.Suffix,JetBrains.ProjectModel.ISolution,System.Boolean)">
+            <summary>
+            Completes the item at the specified range.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntPropertyLookupItem.GetVisualReplaceRange(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange)">
+            <summary>
+            Gets visual replace range
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntPropertyLookupItem.Image">
+            <summary>
+            Gets lookup item image
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntPropertyLookupItem.DisplayName">
+            <summary>
+            Gets lookup item display name
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntPropertyLookupItem.DisplayTypeName">
+            <summary>
+            Gets type display name 
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntScriptElementLookupItem.Shrink">
+            <summary>
+            Shrinks lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntScriptElementLookupItem.Unshrink">
+            <summary>
+            Restores unshrinked lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntScriptElementLookupItem.GetVisualReplaceRange(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange)">
+            <summary>
+            Gets visual replace range
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntScriptElementLookupItem.Accept(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange,JetBrains.ReSharper.Feature.Services.Lookup.LookupItemInsertType,JetBrains.ReSharper.Feature.Services.Lookup.Suffix,JetBrains.ProjectModel.ISolution,System.Boolean)">
+            <summary>
+            Completes the item at the specified range.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntScriptElementLookupItem.Image">
+            <summary>
+            Gets lookup item image
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntScriptElementLookupItem.DisplayName">
+            <summary>
+            Gets lookup item display name
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntScriptElementLookupItem.DisplayTypeName">
+            <summary>
+            Gets type display name 
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntSimpleLookupItem.Shrink">
+            <summary>
+            Shrinks lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntSimpleLookupItem.Unshrink">
+            <summary>
+            Restores unshrinked lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntSimpleLookupItem.Accept(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange,JetBrains.ReSharper.Feature.Services.Lookup.LookupItemInsertType,JetBrains.ReSharper.Feature.Services.Lookup.Suffix,JetBrains.ProjectModel.ISolution,System.Boolean)">
+            <summary>
+            Completes the item at the specified range.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntSimpleLookupItem.GetVisualReplaceRange(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange)">
+            <summary>
+            Gets visual replace range
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntSimpleLookupItem.Image">
+            <summary>
+            Gets lookup item image
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntSimpleLookupItem.DisplayName">
+            <summary>
+            Gets lookup item display name
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntSimpleLookupItem.DisplayTypeName">
+            <summary>
+            Gets type display name 
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntTargetLookupItem.Shrink">
+            <summary>
+            Shrinks lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntTargetLookupItem.Unshrink">
+            <summary>
+            Restores unshrinked lookup item presentation
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntTargetLookupItem.Accept(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange,JetBrains.ReSharper.Feature.Services.Lookup.LookupItemInsertType,JetBrains.ReSharper.Feature.Services.Lookup.Suffix,JetBrains.ProjectModel.ISolution,System.Boolean)">
+            <summary>
+            Completes the item at the specified range.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntTargetLookupItem.GetVisualReplaceRange(JetBrains.TextControl.ITextControl,JetBrains.Util.TextRange)">
+            <summary>
+            Gets visual replace range
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntTargetLookupItem.Image">
+            <summary>
+            Gets lookup item image
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntTargetLookupItem.DisplayName">
+            <summary>
+            Gets lookup item display name
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.LookupItems.NAntTargetLookupItem.DisplayTypeName">
+            <summary>
+            Gets type display name 
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.Rules.NAntPropertyCompletionRule.AddLookupItems(JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.NAntCodeCompletionContext,JetBrains.ReSharper.Feature.Services.Lookup.GroupedItemsCollector)">
+            <summary>
+            Applies the rule
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.Rules.NAntScriptCompletionRule.IsAvailable(JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.NAntCodeCompletionContext)">
+            <summary>
+            Determines whether the rule is applicable in the given context
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.Rules.NAntScriptCompletionRule.AddLookupItems(JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.NAntCodeCompletionContext,JetBrains.ReSharper.Feature.Services.Lookup.GroupedItemsCollector)">
+            <summary>
+            Applies the rule
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.Rules.NAntTargetCompletionRule.IsAvailable(JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.NAntCodeCompletionContext)">
+            <summary>
+            Determines whether the rule is applicable in the given context
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.Rules.NAntTargetCompletionRule.AddLookupItems(JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.NAntCodeCompletionContext,JetBrains.ReSharper.Feature.Services.Lookup.GroupedItemsCollector)">
+            <summary>
+            Applies the rule
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.BuildScripts.CodeCompletion2.NAnt.Rules.NAntTargetCompletionRule.CanGenerate">
+            <summary>
+            Gets flag indicating whether the rule can generate members
+            </summary>
+        </member>
+    </members>
+</doc>

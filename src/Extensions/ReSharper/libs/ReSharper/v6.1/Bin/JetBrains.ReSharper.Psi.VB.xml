@@ -1,0 +1,351 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.VB</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Psi.VB.ExpectedTypes.IMatchingPolicy.GetSubstantialIndices(System.Int32)">
+            <summary>
+            Returns indicies of arguments that will be considered during matching.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.VB.ExpectedTypes.IMatchingPolicy.IsPartial">
+            <summary>
+            Returns if match can return partial result. (if somethisng goes wrong)
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.CompilerGeneratedFiles.My.MyGeneratedFile.ShouldAddMyFile">
+            <summary>
+            http://msdn.microsoft.com/en-us/library/ms233781.aspx
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.ControlFlow.VBVariableIndex.AddVariable(JetBrains.ReSharper.Psi.VB.Impl.ControlFlow.VBVariableInfo)">
+            <summary>
+            Add new variable into index
+            </summary>
+            <param name="info"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.ControlFlow.VBVariableIndex.Find(JetBrains.ReSharper.Psi.IDeclaredElement)">
+            <summary>
+            Find info by declared element - only for top-level elements
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.ControlFlow.VBVariableIndex.Find(JetBrains.ReSharper.Psi.VB.Tree.IVBExpression)">
+            <summary>
+            Find info by expression
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.VB.Impl.ControlFlow.VBVariableIndex.FunctionValue">
+            <summary>
+            Function return value
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.VB.Impl.ControlFlow.VBVariableIndex.Count">
+            <summary>
+            Get number of variables in index
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.VB.Impl.ControlFlow.VBControlFlowContext.RecursiveAtAllPaths">
+            <summary>
+            Indicates that at all paths to this point there was recursive call
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.VB.Impl.Resolve.ExtensionMethods.VBBaseTypesIteratorUtil">
+            <summary>
+            iterates base types with option of interuption
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.VB.Impl.Resolve.Filters.UseLocalVariableBeforeDeclarationFilter">
+            <summary>
+            Filter local variable declarations by their position in the tree
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Tree.IVBExpression.ReplaceBy(JetBrains.ReSharper.Psi.VB.Tree.IVBExpression)">
+            <summary>
+            Replace this expression by the copy of the given expression.
+            Insert parentheses if necessary
+            </summary>
+            <param name="expr"></param>
+            <returns>The copy of given expression which was actually inserted into tree</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.Tree.VBExpressionBase.NeedToParenthise(JetBrains.ReSharper.Psi.VB.Tree.IVBExpression)">
+            <summary>
+            Check if this expression should be enclosed in parentheses if it will be replaced by 'expr'
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.IVBInvocationReference.InvocationName">
+            <summary>
+            Name of the invocation reference for using in features (can make some kind of resolve to get name)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Tree.IVBStatement.ReplaceBy``1(``0)">
+            <summary>
+            Replace this statement in the tree by the copy of the given statement
+            </summary>
+            <param name="stmt"></param>
+            <returns>The clone of the original statement which was added into the tree </returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.Types.Conversions.NumericWideningExists(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.IType)">
+            VB rules follow C# rules...
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.VBProjectFileLanguageService.GetPreprocessorDefines(JetBrains.ProjectModel.IProject)">
+            <summary>
+            http://msdn.microsoft.com/en-us/library/ms233781.aspx
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.VB.IVBPsiSourceFileProperties">
+            <summary>
+            PSI source file propertis for VisualBasic
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.IVBPsiSourceFileProperties.ProjectStrictOff">
+            <summary>
+            Is option strict OFF for specific project file
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.IVBPsiSourceFileProperties.ProjectExplicitOff">
+            <summary>
+            Is option explicit OFF for specific project file
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.IVBPsiSourceFileProperties.ProjectInferOff">
+            <summary>
+            Is option infer OFF for specific project file
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.VB.IVBPsiSourceFileProperties.WarningSeverity">
+            <summary>
+            Check how VB compiler deals with warnings
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.VB.IVBPsiSourceFileProperties.WarningsAsErrors">
+            <summary>
+            VB compiler message IDs to be errors insted of warnings
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.VB.IVBPsiSourceFileProperties.IgnoreWarnings">
+            <summary>
+            VB compiler message IDs to be ignored
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.VB.Impl.VBReferenceProviderFactory.ComponentNameReference">
+            <summary>
+            Reference to component name in WinForm generated code
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.VB.Impl.Query.QueryVariablesCache.myChainTypes">
+            <summary>
+            Query variables related to the particular platform. May contain null values. 
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.VB.Impl.Query.QueryVariablesCache.OwnersToChainsMap">
+            <summary>
+            Query method chains...
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.VB.Impl.Query.QueryVariablesCache.Variables">
+            <summary>
+            Query variables related to the particular platform.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Tree.IAggregatedCollectionOwner.GetQualifierWithTypeElement(JetBrains.ReSharper.Psi.Resolve.Managed.IResolveContext)">
+            <summary>
+            returns qualifier based on group variable...
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.VB.ExpectedTypes.ExpectedTypeMode">
+            <summary>
+            Completion Mode = Ignore tree after expression
+            BlackHole Mode = Ignore only this expression
+            Precise Mode = Take full tree
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.VB.Impl.Tree.CollectionRangeVariableDeclaration.FromReferenceImpl">
+            <summary>
+            Simple SelectMany reference ...
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.VB.Impl.Tree.CollectionRangeVariableDeclaration.CastingSelectReferenceImpl">
+            <summary>
+            Select reference:
+              from b as A in Cb ... 
+            translated to:
+              Cb.Select(b as B => (A)b)...
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.VB.Impl.Tree.CollectionRangeVariableDeclaration.CastingInnerSelectReferenceImpl">
+            <summary>
+            Select reference:
+              from a in Ca, b as B as Ce ... 
+            translated to:
+              Ca.SelectMany(a as A => Ca.Select(e as E => (B)e), ...)...
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.VB.Impl.Tree.CollectionRangeVariableDeclaration.DirectCastReferenceImpl">
+            <summary>
+            Select reference:
+              from b in Cb ... 
+            translated to:
+              Cb.Cast(of Xxx)...
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Tree.VBExpressionExtensions.GetInitializedDeclaredElement(JetBrains.ReSharper.Psi.VB.Tree.IVBExpression)">
+            <summary>
+            Returns initialized element of expression that may provide projected name
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Tree.VBExpressionExtensions.GetProjectedIdentifierName(JetBrains.ReSharper.Psi.VB.Tree.IVBExpression)">
+            <summary>
+            Returns projected name provided by expression
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Tree.VBExpressionExtensions.ProvidesProjectedName(JetBrains.ReSharper.Psi.VB.Tree.IVBExpression)">
+            <summary>
+            returns true for expressions that provide projected name for a variable.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.VB.Tree.ITypeArgumentList.TypeArguments">
+            <summary>
+            Get the list of type arguments. Corresponding item in list is <c>null</c> if none is written in the source code, for example:
+            <c>GetType(C(Of ))</c>
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.VBImportsUtil.FindAliasTo(JetBrains.ReSharper.Psi.VB.Tree.IVBFile,JetBrains.ReSharper.Psi.INamespace)">
+            <summary>
+            Try to find alias to given namespace.
+            Returns found alias name, or <c>null</c> if none found
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.VBImportsUtil.FindAliasTo(JetBrains.ReSharper.Psi.VB.Tree.IVBFile,JetBrains.ReSharper.Psi.DeclaredElementInstance{JetBrains.ReSharper.Psi.ITypeElement})">
+            <summary>
+            Try to find alias to given type.
+            Returns found alias name, or <c>null</c> if none found
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.VBImportsUtil.IsAliasValid(JetBrains.ReSharper.Psi.VB.Tree.IVBFile,System.String)">
+            <summary>
+            Check if the given alias directive is valid in file
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.VBImportsUtil.GetImportConflictsInternal(JetBrains.ReSharper.Psi.VB.Tree.IVBFile,JetBrains.ReSharper.Psi.VB.Tree.IImportDirective,JetBrains.Util.Key{JetBrains.ReSharper.Psi.DeclaredElementInstance},JetBrains.ReSharper.Psi.Resolve.IReference,JetBrains.ReSharper.Psi.Resolve.IResolveResult@)">
+            <summary>
+            Builds the list of conflicts which will occur if the given namespace will be imported into given scope.
+            References with existing value in UserData by the given key will not be included
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.VBImportsUtil.GetImportOf(JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve.IQualifiableReference)">
+            <summary>
+            Get the corresponding using directive (if any) which is used to import references' target
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Tree.IBlock.ReplaceBy(JetBrains.ReSharper.Psi.VB.Tree.IBlock)">
+            <summary>
+            Replace this block in the tree by the copy of the given statement
+            </summary>
+            <param name="block"></param>
+            <returns>The clone of the original statement which was added into the tree </returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.VBReferenceUtil.ExtractQualifierReference(JetBrains.ReSharper.Psi.Resolve.IReference)">
+            <summary>
+            Try to extract the qualifier reference of the given reference' element
+            i.e. extract reference to B from reference to C in expression A.B.C
+            </summary>
+            <param name="reference"></param>
+            <returns>null if reference could not be extracted</returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.VB.Tree.IObjectCreationExpression.TypeReference">
+            <summary>
+            This reference is NOT presented in GetReferences() list for this element
+            It is in GetReferences() of corresponding ReferenceName
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.Tree.ReferenceExpressionReference.TryCreatePartialTypeOrMemberResolveResult(JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve.ResolveResultWithInfo,JetBrains.ReSharper.Psi.Resolve.Managed.IResolveContext,System.Func{JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve.ResolveResultWithInfo})">
+            <summary>
+            11.6.1 Identical Type and Member Names
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.Tree.ReferenceExpressionReference.TryCreatePartialTypeOrInstanceObjectResolveResult(JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve.ResolveResultWithInfo,JetBrains.ReSharper.Psi.Resolve.ISymbolTable,JetBrains.ReSharper.Psi.Resolve.Managed.IResolveContext)">
+            <summary>
+            VB specification 11.6.2
+            Check if here could be implicit access to instance object.
+            Hard-Coded behavior due to "My" file template
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.VB.Tree.IConstructorDeclaration.Initializer">
+            <summary>
+            Search for 'MyBase.New', 'Me.New' or 'MyClass.New' constructor call
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Util.VBExpressionUtil.IsCondition(JetBrains.ReSharper.Psi.VB.Tree.IVBExpression)">
+            <summary>
+            Check if the expression could be used as boolean condition (VB specs 11.19)
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Util.VBExpressionUtil.GetRuntimeExpressionType(JetBrains.ReSharper.Psi.VB.Tree.IVBExpression)">
+            <summary>
+            Tries to guess expression type which will be at runtime. Usually returns expression.GetExpressionType, but recognize few special cases
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.Tree.ChameleonBlock.ScanChameleon(JetBrains.ReSharper.Psi.Parsing.ILexer)">
+            <summary>
+            Attempt to scan chameleon range. Lexer should be positioned on the first token ofthe block.
+            Returns <c>value</c> if chameleon could be created, and lexer is positioned on the end declaration token, and value means end offset of the last meaningful token
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Tree.IClassLikeDeclaration.InsertAtSpecificPosition``1(``0,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Insert given class member at the first safe place AFTER given token
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Tree.IVBFile.SetOptions(JetBrains.ReSharper.Psi.VB.Tree.IOptionStatementsSection)">
+            <summary>
+            TODO: make it override SetOptionsSection!
+            </summary>
+            <param name="param"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.Tree.VBFile.SetOptions(JetBrains.ReSharper.Psi.VB.Tree.IOptionStatementsSection)">
+            <summary>
+            TODO: make it override SetOptionsSection!
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.Types.VBTypeConversionRuleOld.IsWideningConversionPredefined(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.IType)">
+            VB 8.8
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.Types.VBTypeConversionRuleOld.IsExplicitlyConvertibleTo(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.IType)">
+            Combines VB 8.8 and VB 8.9
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.Types.VBTypeConversionRuleOld.NumericWideningExists(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.IType)">
+            VB rules follow C# rules...
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Impl.CodeStyle.Formatter.VBCodeFormatter.RemoveExtraLineTerminatorsOnTreeNodeDeleting(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode@,JetBrains.ReSharper.Psi.Tree.ITreeNode@,JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.NodeTypeSet)">
+            <summary>
+            Count the number of new lines to the left from deleted nodes and to the right from them, and remove the smallest
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.VB.Parsing.VBMissingTokensInserter.PreProcessorParser">
+            <summary>
+            Try to parse the preprocessor directive from given lexer up to given limit.
+            Returns parsed tree node, or <c>null</c> if none
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.VB.Impl.Types.DeclaredTypeFromReferenceName">
+            <summary>
+            NOTE: Do not hold IReferenceName
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.VBTypeFactory.CreatePredefinedTypeByKeyword(JetBrains.ReSharper.Psi.Parsing.TokenNodeType,JetBrains.ReSharper.Psi.IPsiModule)">
+            <summary>tokenType should be type of token of one of predefined types.</summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.VB.CodeStyle.CustomIndentHandler">
+            <summary>
+            Provide custom indentation for the node to format correctly in ASP
+            </summary>
+            <param name="node">node to get the indent for</param>
+            <param name="indentType">requested indent type</param>
+            <param name="settings"></param>
+            <returns><c>null</c> if default indentation should be used, or string which will be used as an indent</returns>
+        </member>
+    </members>
+</doc>

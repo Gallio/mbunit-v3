@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Daemon.Xml</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Daemon.Xml.Stages.Analysis.XmlAnalysisProviderAttribute">
+            <summary>
+            A class marked with this attribute provides list of analysises for given XML PSI  
+            </summary>
+        </member>
+    </members>
+</doc>

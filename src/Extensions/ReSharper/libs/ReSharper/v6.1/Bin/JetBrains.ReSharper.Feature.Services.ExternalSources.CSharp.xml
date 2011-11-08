@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Feature.Services.ExternalSources.CSharp</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.CSharp.MetadataTranslator.CSharpNamingUtil.IsLetterCharacter(System.Char)">
+            <summary>
+            Checks whether character is letter-character in accordance
+            with "Identifiers" (9.4.2) of C# standard
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.CSharp.MetadataTranslator.CSharpNamingUtil.IsCombiningCharacter(System.Char)">
+            <summary>
+            Checks whether character is combining-character in accordance
+            with "Identifiers" (9.4.2) of C# standard
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.CSharp.MetadataTranslator.CSharpNamingUtil.IsDecimalDigitCharacter(System.Char)">
+            <summary>
+            Checks whether character is decimal-digit-character in accordance
+            with "Identifiers" (9.4.2) of C# standard
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.CSharp.MetadataTranslator.CSharpNamingUtil.IsConnectingCharacter(System.Char)">
+            <summary>
+            Checks whether character is connecting-character in accordance
+            with "Identifiers" (9.4.2) of C# standard
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.CSharp.MetadataTranslator.CSharpNamingUtil.IsFormattingCharacter(System.Char)">
+            <summary>
+            Checks whether character is formatting-character in accordance
+            with "Identifiers" (9.4.2) of C# standard
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.CSharp.MetadataTranslator.CSharpNamingUtil.IsIdentifierStartCharacter(System.Char)">
+            <summary>
+            Checks whether character is identifier-start-character in accordance
+            with "Identifiers" (9.4.2) of C# standard
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.CSharp.MetadataTranslator.CSharpNamingUtil.IsIdentifierPartCharacter(System.Char)">
+            <summary>
+            Checks whether character is identifier-part-character in accordance
+            with "Identifiers" (9.4.2) of C# standard
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.CSharp.MetadataTranslator.CSharpNamingUtil.IsIdentifier(System.String)">
+            <summary>
+            Checks whether string is valid identifier in accordance
+            with "Identifiers" (9.4.2) of C# standard
+            </summary>
+        </member>
+    </members>
+</doc>

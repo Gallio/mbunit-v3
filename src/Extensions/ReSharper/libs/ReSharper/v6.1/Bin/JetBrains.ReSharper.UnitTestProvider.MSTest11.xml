@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.UnitTestProvider.MSTest11</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.UnitTestProvider.MSTest.MsTestProvider.Discovery.GetMsEnvDllPath">
+            <summary>
+            Knowing that VS environment is based on <c>msenv.dll</c>, gets the path of the loaded module.
+            </summary>
+        </member>
+    </members>
+</doc>

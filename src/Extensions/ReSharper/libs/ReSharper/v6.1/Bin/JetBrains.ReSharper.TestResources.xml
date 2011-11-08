@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.TestResources</name>
+    </assembly>
+    <members>
+        <member name="T:ReSharperTestEnvironmentAssembly">
+            <summary>
+            Must be in the global namespace.
+            This class creates the test environment before running tests in this assembly, and destroys it after all the tests.
+            Plant a class in each assembly with ReSharper tests (unless they're really unit tests), inherited from this one.
+            </summary>
+        </member>
+    </members>
+</doc>

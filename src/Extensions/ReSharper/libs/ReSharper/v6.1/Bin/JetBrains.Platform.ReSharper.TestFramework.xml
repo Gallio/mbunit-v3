@@ -1,0 +1,515 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.Platform.ReSharper.TestFramework</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.Application.Test.BaseTestNoShell.WithExceptionsAllowed(System.Action)">
+            <summary>
+            While inside this scope, <see cref="M:JetBrains.Util.Logger.LogException(System.Exception)"/> does not log exceptions but throws them out of the method (unlike its regular behavior when running the product).
+            </summary>
+        </member>
+        <member name="M:JetBrains.Application.Test.BaseTestNoShell.AssertReentrancyGuardIsClean(JetBrains.Threading.ReentrancyGuard)">
+            <summary>
+            Ensures the Reentrancy Guard is empty after executing the test.
+            </summary>
+        </member>
+        <member name="P:JetBrains.Application.Test.BaseTestNoShell.RelativeTestDataPath">
+            <summary>
+            Relative path to this test's data under the base test data path.
+            The default implementation uses class full name parts (without the default namespace of the assembly) for folders.
+            </summary>
+        </member>
+        <member name="F:JetBrains.TestShell.Infra.BaseTest.PRODUCT_INSTALLATION">
+            <summary>
+            Environment variable expanded to product installation directory
+            </summary>
+        </member>
+        <member name="F:JetBrains.TestShell.Infra.BaseTest.BASE_TEST_DATA">
+            <summary>
+            Environment variable expanded to base test data directory
+            </summary>
+        </member>
+        <member name="F:JetBrains.TestShell.Infra.BaseTest.TEST_DATA">
+            <summary>
+            Environment variable expanded to test data directory
+            </summary>
+        </member>
+        <member name="M:JetBrains.TestShell.Infra.BaseTest.ThrowLoggedExceptions(System.Boolean)">
+            <summary>
+            Throws all of the logged exceptions collected by silent <see cref="M:JetBrains.Util.Logger.LogException(System.Exception)"/> and <see cref="M:JetBrains.Util.Logger.Assert(System.Boolean,System.String)"/> family methods.
+            </summary>
+            <param name="bGC">Whether to perform a full CG so that to collect the errors from hanging finalizers.</param>
+        </member>
+        <member name="M:JetBrains.TestShell.Infra.BaseTest.EnsureAndCleanupTestSolutionFolder">
+            <summary>
+            Gets a base path for test solution projects.
+            Cleans up the path before use.
+            </summary>
+        </member>
+        <member name="M:JetBrains.TestShell.Infra.BaseTest.RunGuarded(System.Action)">
+            <summary>
+            Runs the test code under the <see cref="T:JetBrains.Threading.ReentrancyGuard"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.TestShell.Infra.BaseTest.ChangeSettingsTemporarily(JetBrains.DataFlow.Lifetime)">
+            <summary>
+            Call this method if you would like to change a number of settings in the tests temporarily and then have the changes rolled back when the lifetime ends.
+            </summary>
+            <param name="lifetime"></param>
+            <remarks>Adds a temporary high-priority layer which intercepts all of the writes.</remarks>
+        </member>
+        <member name="T:JetBrains.TestShell.Infra.BaseTest.ChangeSettingsTemporarilyCore">
+            <summary>
+            Adds a temporary high-priority layer which intercepts all of the writes.
+            </summary>
+            <seealso cref="M:JetBrains.TestShell.Infra.BaseTest.ChangeSettingsTemporarily(JetBrains.DataFlow.Lifetime)"/>
+        </member>
+        <member name="T:JetBrains.TestShell.Components.Mode.AsyncBehaviorProhibited">
+            <summary>
+            In tests, prevents async behavior by default.
+            </summary>
+        </member>
+        <member name="T:JetBrains.TestShell.Components.Mode.LogToDebugStream">
+            <summary>
+            Logger => std debug stream (in tests).
+            </summary>
+        </member>
+        <member name="T:JetBrains.TestShell.Components.Mode.TestMessageBoxHandler">
+            <summary>
+            Suppresses all user-question msgboxes in tests (only MB_OK messageboxes are allowed, and they're ignored unless an error).
+            Note that you can temporarily push your own handler to reply to your expected messagebox.
+            </summary>
+        </member>
+        <member name="M:JetBrains.TestShell.Components.Mode.TestMessageBoxHandler.TestMessageBox(System.IntPtr,System.String,System.String,JetBrains.Interop.WinApi.MessageBoxFlags)">
+            <summary>
+            Suppresses message boxes in tests.
+            </summary>
+        </member>
+        <member name="T:JetBrains.TestShell.Components.Mode.WakeUpDispatcherThreadsPeriodically">
+            <summary>
+            For correct running in test mode, wake up secondary tests (waiting for Windows messages) from time to time so that they could eg shut down.
+            </summary>
+        </member>
+        <member name="T:JetBrains.TestShell.Components.Settings.SuppressDiskStorages">
+            <summary>
+            Prevents the Settings Store running in the test environment from reading the nondefault user settings and from saving whatever has been modified by the tests to disk.
+            </summary>
+        </member>
+        <member name="M:JetBrains.TestShell.Components.Settings.TestSettingsKeyA.AssertKeyEntries(JetBrains.Application.src.Settings.SettingsKey)">
+            <summary>
+            The test checks reading the schema.
+            </summary>
+        </member>
+        <member name="M:JetBrains.TestShell.Components.Settings.TestSettingsKeyA.AssessMapPerformanceInt(JetBrains.Application.Settings.ISettingsStore,JetBrains.Application.Settings.Storage.ISettingsStorage)">
+            <summary>
+            Test set-get in store vs. plain dictionary.
+            </summary>
+        </member>
+        <member name="M:JetBrains.TestShell.Components.Settings.TestSettingsKeyA.AssessMapPerformanceString(JetBrains.Application.Settings.ISettingsStore,JetBrains.Application.Settings.Storage.ISettingsStorage)">
+            <summary>
+            Test set-get in store vs. plain dictionary.
+            </summary>
+        </member>
+        <member name="T:JetBrains.TestShell.Components.TearDownComponents">
+            <summary>
+            When shell is shutting down, calls teardown on all components.
+            </summary>
+        </member>
+        <member name="M:JetBrains.TestShell.Components.TearDownComponents.TearDownGuarded">
+            <summary>
+            Calls teardown on all teardown components. Call from guarded context only.
+            </summary>
+        </member>
+        <member name="M:JetBrains.TestShell.Components.TearDownComponents.FixtureTearDownGuarded">
+            <summary>
+            Calls teardown on all teardown components. Call from guarded context only.
+            </summary>
+        </member>
+        <member name="M:JetBrains.TestShell.Components.TearDownComponents.TearDownUnguarded">
+            <summary>
+            Calls teardown on all teardown components. Call from unguarded context only.
+            </summary>
+        </member>
+        <member name="M:JetBrains.TestShell.Components.TearDownComponents.FixtureTearDownUnguarded">
+            <summary>
+            Calls teardown on all teardown components. Call from unguarded context only.
+            </summary>
+        </member>
+        <member name="T:JetBrains.TestShell.Components.TestImplHostCulture">
+            <summary>
+            Test must use invariant culture consistently.
+            </summary>
+        </member>
+        <member name="T:JetBrains.TestShell.Infra.JetTestHost">
+            <summary>
+            Hosts tests.
+            </summary>
+        </member>
+        <member name="F:JetBrains.TestShell.Infra.JetTestHost.PlatformTestsAssembliesConfiguration">
+            <summary>
+            The assemblies configuration for running tests on this shell.
+            </summary>
+        </member>
+        <member name="M:JetBrains.TestShell.Infra.JetTestHost.PumpOutLeftovers">
+            <summary>
+            Attempts to pump out all of the leftover deferred actions.
+            </summary>
+        </member>
+        <member name="F:JetBrains.TestShell.Infra.JetTestHost.ExceptionTrap">
+            <summary>
+            Accumulates logger exceptions.
+            Throw them out when noone is to intercept them so that they got right to NUnit (eg in test teardown).
+            </summary>
+        </member>
+        <member name="F:JetBrains.TestShell.Infra.JetTestHost.FinalExceptions">
+            <summary>
+            <para>The host is collecting exceptions with <see cref="F:JetBrains.TestShell.Infra.JetTestHost.ExceptionTrap"/> throughout its life; at any time they could be thrown out with <see cref="M:JetBrains.Util.Tests.TestLoggerListener.ThrowLoggedExceptions"/> (normally, this should be done after every test).</para>
+            <para>Take care to let the exceptions out to the test runner (i.e. not get them caught with <see cref="T:JetBrains.Util.Logger"/>).</para>
+            <para>If there're any exceptions on shutting down the Shell/Environment, they'd be normally thrown out when disposing of <see cref="F:JetBrains.TestShell.Infra.JetTestHost.ExceptionTrap"/>, but within the lifetime termination they'd be recaptured by the <see cref="T:JetBrains.Util.Logger"/>. To avoid losing these exceptions, they're dumped into this field. Throw them out after terminating the host lifetime. </para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.TestShell.Infra.AssemblyScope.PlatformTestEnvironmentAssembly">
+            <summary>
+            Must be in the global namespace.
+            This class creates the test environment before running tests in this assembly, and destroys it after all the tests.
+            Plant a class in each assembly with platform tests (unless they're really unit tests), inherited from this one.
+            </summary>
+        </member>
+        <member name="T:JetBrains.TestShell.Infra.AssemblyScope.TestEnvironmentAssembly">
+            <summary>
+            Must be in the global namespace.
+            This class creates the test environment before running tests in this assembly, and destroys it after all the tests.
+            Plant a class in each assembly with tests, inherited from the product-specific base class (which should define the app descriptor override for its product).
+            </summary>
+        </member>
+        <member name="F:JetBrains.TestShell.Infra.AssemblyScope.TestEnvironmentAssembly.PRODUCT_ENV_VAR">
+            <summary>
+            Environment variable name assigned of product instalattion directory
+            </summary>
+        </member>
+        <member name="M:JetBrains.TestShell.Infra.AssemblyScope.TestEnvironmentAssembly.CreateApplicationDescriptor">
+            <summary>
+            Creates the application descriptor. It defines which assemblies will provide components for the test environment.
+            Should be oevrridden once per product. Other product assemblies' scope classes should derive from that base class.
+            </summary>
+        </member>
+        <member name="P:JetBrains.TestShell.Infra.AssemblyScope.TestEnvironmentAssembly.IsRunningTestsInInternalMode">
+            <summary>
+            Override in assemblies which would like to run tests in internal mode.
+            The default is <c>False</c>.
+            </summary>
+        </member>
+        <member name="P:JetBrains.TestShell.Infra.AssemblyScope.TestEnvironmentAssembly.IsRunningTestsWithAsyncBehaviorProhibited">
+            <summary>
+            Override in assemblies which would like to run tests with suppressed async calls like <see cref="M:JetBrains.Threading.JetDispatcher.BeginInvoke(JetBrains.DataFlow.Lifetime,System.String,System.Action)"/> or <see cref="M:JetBrains.Threading.ReentrancyGuard.Queue(System.String,System.Action)"/>.
+            The default is <c>False</c>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.TestShell.Infra.SettingsTestHelpers.CreateCatalogWithSettingsKey``1">
+            <summary>
+            If you'd like to load one specific key into the settings schema, create a catalog with just these keys and their parent keys up to root with this method.
+            </summary>
+        </member>
+        <member name="M:JetBrains.TestShell.Infra.SettingsTestHelpers.CreateCatalogWithSettingsKeys(System.Type[])">
+            <summary>
+            If you'd like to load a few specific keys into the settings schema, create a catalog with just these keys and their parent keys up to root with this method.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Util.Tests.TestException">
+            <summary>
+            A special exception for the test purposes, to distinguish it in catch-blocks from any other ones.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.Tests.TestException.Expect``1(System.Action)">
+            <summary>
+            Executes the <paramref name="action"/>, continues OK whenif <typeparamref name="TException"/> occurs, throws if it does not.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Util.Tests.TestLimits">
+            <summary>
+            Defines the constants that limit the number of iterations in random tests.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Util.Tests.TestLimits.MaxSize">
+            <summary>
+            Upper limit for random sizes.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Util.Tests.TestLimits.MinSize">
+            <summary>
+            Lower limit for random sizes.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Util.Tests.TestLimits.RandomTryIterations">
+            <summary>
+            Number of iterations to try different random setups for the same test.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Util.Tests.TestLimits.RichTextBlockLines">
+            <summary>
+            Number of lines when testing rich text blocks.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Util.Tests.TestLimits.StringLength">
+            <summary>
+            Length limit for the autogenerated strings.
+            The lower limit is usually <c>0</c>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.Tests.TestLimits.Repeat(System.Action)">
+            <summary>
+            Repeats the action <see cref="F:JetBrains.Util.Tests.TestLimits.RandomTryIterations"/> times.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.Tests.TestLimits.RunInSta(System.Action)">
+            <summary>
+            Runs the given action on a STA thread.
+            </summary>
+        </member>
+        <member name="T:JetBrains.TestShell.Infra.TestLogger">
+            <summary>
+            Allows to log a number of entries and then collect them.
+            Used by lazy test authors for injecting into the components under tests.
+            </summary>
+        </member>
+        <member name="M:JetBrains.TestShell.Infra.TestLogger.Start">
+            <summary>
+            Enables and clears.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Util.Tests.TestLoggerListener">
+            <summary>
+            In tests, allows all of the exceptions to be thrown out.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Util.Tests.TestLoggerListener.myIsSuppressingExceptions">
+            <summary>
+            Whether we've altered the <see cref="P:JetBrains.Util.Logger.AllowExceptions"/> value, and have to restore it on <see cref="M:JetBrains.Util.Tests.TestLoggerListener.Dispose"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Util.Tests.TestLoggerListener.myOldAllowExceptionsValue">
+            <summary>
+            Caches the overridden <see cref="P:JetBrains.Util.Logger.AllowExceptions"/>, if <see cref="F:JetBrains.Util.Tests.TestLoggerListener.myIsSuppressingExceptions"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.Tests.TestLoggerListener.#ctor">
+            <summary>
+            Enables logger's passing exceptions out of safe methods. Attaches self.
+            Does not change the <see cref="P:JetBrains.Util.Logger.AllowExceptions"/> value.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.Tests.TestLoggerListener.#ctor(JetBrains.DataFlow.Lifetime,System.Boolean)">
+            <summary>
+            Enables logger's passing exceptions out of safe methods. Attaches self.
+            Optionally, lowers the <see cref="P:JetBrains.Util.Logger.AllowExceptions"/> value for the lifetime of the instance, so that the exceptions were collected and not thrown immediately.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.Tests.TestLoggerListener.Dispose(System.Boolean)">
+            <summary>
+            Forces the finalizable objects to check whether their <see cref="M:System.IDisposable.Dispose"/> contract was fulfilled.
+            Reports all of the exceptions that have occured within the listener's life.
+            Detaches from the logger.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.Tests.TestLoggerListener.RecycleLoggedExceptions">
+            <summary>
+            Returns the current <see cref="P:JetBrains.Util.Tests.TestLoggerListener.LoggedExceptions"/> object, and creates a new (empty) one instead of it.
+            Does not actually throw the exception.
+            Thread-safe.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.Tests.TestLoggerListener.ThrowLoggedExceptions">
+            <summary>
+            If there are any logged exceptions, throws them out.
+            Cleans up the exceptions store for further uses.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.Tests.TestLoggerListener.Dispose">
+            <summary>
+            Reports all of the exceptions that have occured within the listener's life.
+            Detaches from the logger.
+            </summary>
+        </member>
+        <member name="P:JetBrains.Util.Tests.TestLoggerListener.LoggedExceptions">
+            <summary>
+            Exceptions logged during the session.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Tests.TestRandom">
+            <summary>
+            A random class that supports generating test objects in a deterministic way.
+            Not thread-safe.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Tests.TestRandom.Seed">
+            <summary>
+            The default deterministic seed.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Tests.TestRandom.myNextStringBuilder">
+            <summary>
+            Worker instance for <see cref="M:JetBrains.Tests.TestRandom.NextString"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.#ctor(System.Int32)">
+            <summary>
+            Initializes the object and seeds it with the given number.
+            You can make the tests deterministic by always submitting the same number.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.#ctor">
+            <summary>
+            Initializes the object and seeds it with the constant <see cref="F:JetBrains.Tests.TestRandom.Seed"/>, so that the sequence were deterministic.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.CreateWithRandomSeed">
+            <summary>
+            Creates an instance initialized with a random seed, thus producing an unstable sequence.
+            Useless for tests, but handy for debug method dummies.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.GetRandomValues(System.Type,System.Int32)">
+            <summary>
+            Gets the random values for running a row of tests parameterized with <typeparamref name="T"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.GetRandomValues``1(System.Int32)">
+            <summary>
+            Gets the random values for running a row of tests parameterized with <typeparamref name="T"/>.
+            </summary>
+            <param name="randomTryIterations"></param>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.GetRandomValues``1">
+            <summary>
+            Gets the random values for running a row of tests parameterized with <typeparamref name="T"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.GetRandomValues_Nullable(System.Type,System.Int32)">
+            <summary>
+            Takes <see cref="M:JetBrains.Tests.TestRandom.GetRandomValues``1(System.Int32)"/> of the nullable's underlying type, then adds some <c>NULL</c>s.
+            </summary>
+            <param name="typeNullableUnderlying"></param>
+            <param name="randomTryIterations"></param>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.GetRandomValues_Enum(System.Type,System.Int32)">
+            <summary>
+            Gets random values of the enum underlying type, then wraps into the enum.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.NextColor">
+            <summary>
+            Generates a random <see cref="T:System.Drawing.Color"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.NextRichText(System.Int32,System.Int32,System.String@)">
+            <summary>
+            Generates a random <see cref="T:JetBrains.UI.RichText.RichText"/> string consisting of multiple parts having different styles.
+            </summary>
+            <param name="min">Minimum length.</param>
+            <param name="max">Maximum length.</param>
+            <param name="text">Gives out the plain string containing the same characters as in the return value, in order to check their correspondence.</param>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.NextRichText(System.Int32,System.Int32)">
+            <summary>
+            Generates a random <see cref="T:JetBrains.UI.RichText.RichText"/> string consisting of multiple parts having different styles.
+            </summary>
+            <param name="min">Minimum length.</param>
+            <param name="max">Maximum length.</param>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.NextRichText(System.Int32)">
+            <summary>
+            Generates a random <see cref="T:JetBrains.UI.RichText.RichText"/> string consisting of multiple parts having different styles.
+            The minimum length is assumed to be zero (an empty string).
+            </summary>
+            <param name="max">Maximum length.</param>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.NextSize(System.Int32,System.Int32)">
+            <summary>
+            Generates a random <see cref="T:System.Drawing.Size"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.NextSizes(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Generates a random set of random <see cref="T:System.Drawing.Size"/> values.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.NextString(System.Int32,System.Int32)">
+            <summary>
+            Generates a random string that consists of ASCII characters (20h…7Fh).
+            </summary>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.NextStringAlphanumeric(System.Int32,System.Int32)">
+            <summary>
+            Generates a random string that consists of ASCII characters (20h…7Fh).
+            </summary>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.NextString">
+            <summary>
+            Generates a new string with the testlimits-defined length.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.NextStringAlphanumeric">
+            <summary>
+            Generates a new string with the testlimits-defined length. Uses alphanumeric chars only.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.NextTextStyle">
+            <summary>
+            Generates a random <see cref="T:JetBrains.UI.RichText.TextStyle"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.Repeat(System.Boolean,System.Action{System.String})">
+            <summary>
+            Runs multiple iterations on random strings, including border values.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.Repeat(System.Action{System.Int32})">
+            <summary>
+            Runs multiple iterations on random values, including border values.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.Repeat``1(System.Action{``0})">
+            <summary>
+            Runs multiple iterations on random values, including border values.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.RepeatPush``1(System.Func{``0,System.IDisposable})">
+            <summary>
+            Runs multiple iterations on random values, including border values.
+            First executes all of the actions, then disposes of their retvals in the reverse order.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.Next(System.Int32,System.Int32)">
+            <summary>
+            Returns a random number within a specified range.
+            </summary>
+            
+            <returns>
+            A 32-bit signed integer greater than or equal to minValue and less than maxValue; that is, the range of return values includes minValue but not maxValue. If minValue equals maxValue, minValue is returned.
+            </returns>
+            
+            <param name="minValue">The inclusive lower bound of the random number returned. </param>
+            <param name="maxValue">The exclusive upper bound of the random number returned. maxValue must be greater than or equal to minValue. </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">minValue is greater than maxValue. </exception><filterpriority>1</filterpriority>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.Next(System.Int32)">
+            <summary>
+            Returns a nonnegative random number less than the specified maximum.
+            </summary>
+            
+            <returns>
+            A 32-bit signed integer greater than or equal to zero, and less than maxValue; that is, the range of return values includes zero but not maxValue.
+            </returns>
+            
+            <param name="maxValue">The exclusive upper bound of the random number to be generated. maxValue must be greater than or equal to zero. </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">maxValue is less than zero. </exception><filterpriority>1</filterpriority>
+        </member>
+        <member name="M:JetBrains.Tests.TestRandom.Next01">
+            <summary>
+            Returns a random floating-point value in the <c>[0..1)</c> range.
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

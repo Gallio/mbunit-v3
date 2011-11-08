@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Feature.Services.JavaScript</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Feature.Services.JavaScript.CodeCompletion.AutomaticStrategies.AutopopupInStringLiteralStratery">
+            <summary>
+            start automatic code completion in xxx["dd"] expression
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.JavaScript.CodeCompletion.JavaScriptArgumentsContext.Create(JetBrains.ReSharper.Psi.JavaScript.Tree.IIdentifierExpression,JetBrains.ReSharper.Psi.TreeTextRange@)">
+            <summary>
+            Calculates completion range for the specified reference
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.JavaScript.CodeCompletion.JavaScriptCodeCompletionContextProviderInStringLiterals">
+            <summary>
+            foo["xxx"]
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.JavaScript.CodeCompletion.JavaScriptFollowingExpressionContext">
+            <summary>
+            Range and text of the expression that could be substituted into arguments list of a completed item.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.JavaScript.CodeCompletion.JavaScriptFollowingExpressionContext.Create(JetBrains.ReSharper.Psi.JavaScript.Tree.IJavaScriptFile,JetBrains.ReSharper.Psi.TreeTextRange)">
+            <summary>
+            
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.BuildScripts.NAnt</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Psi.BuildScripts.NAnt.Tasks.NAntElement.DumpToXml(System.Xml.XmlElement,System.Xml.XmlDocument)">
+            <summary>
+              Temporary method to dump all tasks metadata to a xml file
+            </summary>
+            <param name="element"></param>
+            <param name="document"></param>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.BuildScripts.NAnt.Tasks.NAntTaskManager">
+            <summary>
+              Manages NAnt tasks
+            </summary>
+        </member>
+    </members>
+</doc>

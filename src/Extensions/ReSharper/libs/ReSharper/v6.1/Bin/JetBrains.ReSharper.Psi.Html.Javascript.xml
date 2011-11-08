@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.Html.Javascript</name>
+    </assembly>
+    <members>
+        <member name="F:JetBrains.ReSharper.Psi.Html.Javascript.GeneratedDocuments.JavaScriptInWebLexer.myAlienTokenPositions">
+            <summary>
+            List of (x,y):
+            where x - location in the projected buffer
+                  y - range in the original buffer
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Html.Javascript.GeneratedDocuments.JavaScriptFromHtmlGeneratedDocumentService.#ctor(JetBrains.ReSharper.Psi.ILanguageManager,JetBrains.ProjectModel.HtmlProjectFileType)">
+            <remarks><see cref="T:JetBrains.ReSharper.Psi.ILanguageManager"/> is marker interface, to get dependencies initialized (psi language instances)</remarks>
+        </member>
+    </members>
+</doc>

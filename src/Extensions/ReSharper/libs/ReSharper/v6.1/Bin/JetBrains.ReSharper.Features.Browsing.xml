@@ -1,0 +1,203 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Features.Browsing</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.AnalyzeReferences.ReferencedCodeTreeHelper.#ctor(JetBrains.ProjectModel.IProject,JetBrains.ReSharper.Feature.Services.Search.SearchRequests.SearchProjectItemReferencedCodeRequest)">
+            <summary>
+            primary ctor
+            </summary>
+            <param name="project">owner project</param>
+            <param name="request"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.AnalyzeReferences.ReferencedCodeTreeHelper.RemoveAllUnusedReferences">
+            <summary>
+            Removes all unused references and return correpsonding occurences
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.AnalyzeReferences.ReferencedCodeTreeHelper.RemoveSelectedReferencesAndRelatedUsages(System.Collections.Generic.IEnumerable{JetBrains.ProjectModel.IProjectToModuleReference})">
+            <summary>
+            
+            </summary>
+            <param name="selectedReferences"></param>
+            <returns>if some of the used referenced modules were removed</returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Browsing.AnalyzeReferences.ReferencedCodeTreeHelper.UnusedReferencedModules">
+            <summary>
+            Unused and non implicit-referenced modules
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Browsing.AnalyzeReferences.RemoveUnused.RemoveUnusedProjectReferencesHelper">
+            <summary>
+            Language specific part for 'workflow'
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Browsing.AnalyzeReferences.RemoveUnused.UnusedProjectReferencesUserControl.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.AnalyzeReferences.RemoveUnused.UnusedProjectReferencesUserControl.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.AnalyzeReferences.RemoveUnused.UnusedProjectReferencesUserControl.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Browsing.src.AnalyzeReferences.RemoveUnused.UnusedReferencesCheckList">
+            <summary>
+            Interaction logic for UserControl1.xaml
+            </summary>
+            <summary>
+            UnusedReferencesCheckList
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.src.AnalyzeReferences.RemoveUnused.UnusedReferencesCheckList.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.AnalyzeReferences.ScopedReferencedCodeTreeHelper.#ctor(JetBrains.ProjectModel.IProject,JetBrains.ReSharper.Feature.Services.Search.SearchRequests.SearchProjectItemReferencedCodeRequest,System.Collections.Generic.List{JetBrains.ProjectModel.IModule})">
+            <summary>
+            
+            </summary>
+            <param name="project"></param>
+            <param name="request"></param>
+            <param name="referencedCodeScope">Pass a collection of modules here if you want to build occurences(usages) only from specified referenced modules. </param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.Bookmarks.BookmarkActions.ItemActionHandler.#ctor(System.Action{JetBrains.UI.PopupMenu.JetPopupMenu,JetBrains.UI.PopupMenu.Impl.JetPopupMenuDoc},System.Action{JetBrains.UI.PopupMenu.JetPopupMenu,JetBrains.UI.PopupMenu.Impl.JetPopupMenuDoc},System.Action{JetBrains.UI.PopupMenu.JetPopupMenu,JetBrains.UI.PopupMenu.Impl.JetPopupMenuDoc},System.Func{JetBrains.UI.PopupMenu.JetPopupMenu,JetBrains.ReSharper.Features.Browsing.Bookmarks.BookmarkActions.UpdateResult})">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Object"/> class.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.Bookmarks.BookmarkActions.UpdateResult.#ctor(JetBrains.ReSharper.Features.Browsing.Bookmarks.BookmarkActions.UpdateResultType,JetBrains.UI.PopupMenu.SimpleMenuItem)">
+            <summary>
+            Initializes a new instance.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Browsing.StackTrace.ExceptionVisualizerInstaller">
+            <summary>
+            Makes the <c>ExceptionVisualizer</c> DLL class deploy to Visual Studio on install.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.StackTrace.ExceptionVisualizerInstaller.JetBrains#Application#Install#IStaticInstaller#InstallStatic(JetBrains.Application.Install.Installer)">
+            <summary>
+            Called once on the object during the registration process.
+            </summary>
+            <param name="installer">The installer object that provides the installation data.</param>
+            <returns>The list of the Registry entries to write, or <c>Null</c> if none.</returns>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Browsing.TodoItems.TodoItemPatternDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.TodoItems.TodoItemPatternDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.TodoItems.TodoItemPatternDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Browsing.TodoItems.TodoItemsPage.Id">
+            <summary>
+            Gets the ID of this option page.
+            <see cref="T:JetBrains.UI.Options.OptionsManager"/> or <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> out of it.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Browsing.TypeHierarchy.IHierarchyDescriptorFactory">
+            <summary>
+            Interface for feature parts needed to provide custom hierarchy browsing
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.TypeHierarchy.IHierarchyDescriptorFactory.CreateDescriptor(JetBrains.Application.DataContext.IDataContext)">
+            <summary>
+            Creates a descriptor to handle Browse Hierarchy feature.
+            <a cref="T:JetBrains.ReSharper.Features.Browsing.TypeHierarchy.HierarchyDescriptor`1">HierarchyDescriptor</a> inherits from this abstract class, so
+            to implemenet this method - just create an instance of <a cref="T:JetBrains.ReSharper.Features.Browsing.TypeHierarchy.HierarchyDescriptor`1">HierarchyDescriptor</a>.
+            </summary>
+            <param name="dataContext"></param>
+            <returns></returns>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Browsing.TypeHierarchy.IHierarchyController`1">
+            <summary>
+            Responsible for logic of searching and grouping items to be displayed in the Hierarchy tool window.
+            State is allowed, because lifetime of the controller is the same as a descriptor's lifetime (lifetime of a toolwindow tab).
+            
+            Should be instantiated by <see cref="T:JetBrains.ReSharper.Features.Browsing.TypeHierarchy.IHierarchyDescriptorFactory"/>IHierarchyDescriptorFactory feature part component
+            and is necessary to create parameterized hierarchy descriptor.
+            </summary>
+            <typeparam name="THierarchyItem">type of items to be handled</typeparam>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.TypeHierarchy.IHierarchyController`1.GetSubtypeOccurences(`0,System.Boolean)">
+            <summary>
+            Get occurences list for 'sub types' mode. 
+            </summary>
+            <param name="target"></param>
+            <param name="applyFilter"></param>
+            <returns>should include target occurence</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.TypeHierarchy.IHierarchyController`1.GetClassHierarchyOccurences(`0,System.Boolean)">
+            <summary>
+            Get occurences list for 'class hierarchy' mode (sub nodes + root path).
+            </summary>
+            <param name="target"></param>
+            <param name="applyFilter"></param>
+            <returns>should include target occurence</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.TypeHierarchy.IHierarchyController`1.GetSuperTypesOccurences(`0,System.Boolean)">
+            <summary>
+            Get occurences list for 'super types' mode.
+            </summary>
+            <param name="target"></param>
+            <param name="applyFilter"></param>
+            <returns>should include target occurence</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.TypeHierarchy.IHierarchyController`1.OnRefereshed">
+            <summary>
+            Fires on clicking 'Refresh' button.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.TypeHierarchy.IHierarchyController`1.OnViewStyleChanged">
+            <summary>
+            Fires when the descriptor's view style has changed
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.TypeHierarchy.IHierarchyController`1.GetDefaultRootPath(JetBrains.ReSharper.Feature.Services.Search.IOccurence,JetBrains.ReSharper.Features.Browsing.TypeHierarchy.HierarchyDescriptor{`0})">
+            <summary>
+            Get root path for indicated occurence to the root. Is necessary for building a tree.
+            Is not necessary if default grouping is overriden by custom grouping providers.
+            <seealso cref="T:JetBrains.ReSharper.Features.Common.GroupingManagement.IGroupingProvider`1"/>
+            OCCURENCES IN RESULT CASCADE SHOULD BE THE SAME (equals, gethashcode) AS GIVEN BY SEARCH METHODS! 
+            Use owner.Items property to get obtained occurences.
+            </summary>
+            <param name="item"></param>
+            <param name="owner"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Browsing.TypeHierarchy.TypeHierarchyController.GetSubtypeOccurences(JetBrains.ReSharper.Psi.IDeclaredElementEnvoy,System.Boolean)">
+            <summary>Gets sub tree occurences including root occurence
+             </summary>
+             <param name="target"></param>
+             <param name="applyFilter"></param>
+             <returns></returns>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Browsing.ValueTracking.Impl.ValueTrackingTreeModelBrowserDescriptor.myModel">
+            <summary>
+            Async model based on adapter
+            </summary>
+        </member>
+    </members>
+</doc>

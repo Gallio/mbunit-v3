@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.Platform.ReSharper.Symbols</name>
+    </assembly>
+    <members>
+        <member name="F:JetBrains.Symbols.Downloader.EulaDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Symbols.Downloader.EulaDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.Symbols.Downloader.EulaDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Symbols.src.PdbFallbackResources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:JetBrains.Symbols.src.PdbFallbackResources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:JetBrains.Symbols.src.PdbFallbackResources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Symbols.Providers.ISymbolsProvider.DownloadPdbFile(JetBrains.Util.FileSystemPath,System.String,JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+            Downloads symbols file for <paramref name="assemblyFile"/>
+            </summary>
+            <exception cref="T:JetBrains.Application.Progress.ProcessCancelledException">on downloading cancelled by progress indicator</exception>
+            <returns>true if the file was downloaded, false otherwise</returns>
+        </member>
+        <member name="P:JetBrains.Symbols.SourcesCache.PrimaryCacheDir">
+            <summary>
+            Chosen directory to place downloaded sources
+            </summary>
+        </member>
+        <member name="M:JetBrains.Symbols.ISourcesDownloader.Download(JetBrains.Metadata.Utils.Pdb.SourceLocation,JetBrains.Util.FileSystemPath,JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+             Downloads source file specified by <paramref name="sourceLocation" /> to <paramref name="cacheDirectory" />.
+             Handles errors by itself
+             </summary>
+        </member>
+        <member name="M:JetBrains.Symbols.ISymbolsDownloader.Download(JetBrains.Util.FileSystemPath,JetBrains.Symbols.SymbolsSource,System.String,JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+             Downloads symbols for <paramref name="assemblyFile" /> to <paramref name="symbolsSource" />,
+             asks for specific <paramref name="pdbSignature" /> instead of gettting it from <paramref name="assemblyFile" />
+             Handles errors by itself, overwrites existing files.
+             </summary><returns>whether pdb was successfully downloaded and saved to designated location</returns>
+        </member>
+    </members>
+</doc>

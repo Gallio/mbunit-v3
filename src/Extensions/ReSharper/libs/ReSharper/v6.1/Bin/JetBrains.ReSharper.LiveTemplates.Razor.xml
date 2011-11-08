@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.LiveTemplates.Razor</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.LiveTemplates.Razor.RazorScopeConfig">
+            <summary>
+            Interaction logic for CSharpScopeConfig.xaml
+            </summary>
+            <summary>
+            RazorScopeConfig
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.LiveTemplates.Razor.RazorScopeConfig.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+    </members>
+</doc>

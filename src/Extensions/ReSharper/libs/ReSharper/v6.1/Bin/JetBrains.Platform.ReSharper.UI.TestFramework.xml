@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.Platform.ReSharper.UI.TestFramework</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.Platform.TestUI.Components.TestImplLicenseCheckComponent">
+            <summary>
+            Suppress license checks in tests.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Platform.TestUtil.Components.TestImplTooltipManagerComponent.TooltipShown">
+            <summary>
+            Fires when a test implementation mocks a shown tooltip.
+            </summary>
+        </member>
+        <member name="T:Components.TestImplUITaskExecutorSwitchingImplementation">
+            <summary>
+            Test mock for <see cref="T:JetBrains.UI.Application.Progress.UITaskExecutorRuns"/>.
+            </summary>
+        </member>
+        <member name="M:Components.TestImplUITaskExecutorSwitchingImplementation.CreateExecutor(JetBrains.UI.Application.Progress.TaskThreadAffinity)">
+            <summary>
+            Switching implementation for <see cref="T:JetBrains.UI.Application.Progress.UITaskExecutorRuns"/>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Platform.TestUI.Components.TestTimeBombComponent">
+            <summary>
+            Suppresses timebombing in tests.
+            </summary>
+        </member>
+    </members>
+</doc>

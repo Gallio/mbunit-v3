@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.Platform.ReSharper.Symbols.TestFramework</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.TestFramework.Symbols.src.TestImplSettingsLogging">
+            <summary>
+            Uses system logger for settings in tests.
+            </summary>
+        </member>
+    </members>
+</doc>

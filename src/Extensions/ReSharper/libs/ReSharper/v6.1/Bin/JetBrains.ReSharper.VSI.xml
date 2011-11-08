@@ -1,0 +1,226 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.VSI</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.VS.Actions.CheckBoxSample7">
+            <summary>
+            CheckBoxSample7
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.Actions.CheckBoxSample7.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.VSI.Src.Actions.UserControl666">
+            <summary>
+            Interaction logic for UserControl666.xaml
+            </summary>
+            <summary>
+            UserControl666
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VSI.Src.Actions.UserControl666.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.VSI.Misc.LocalProj">
+            <summary>
+            Runs some of the <c>Local.Proj</c> tasks.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VSI.Misc.LocalProj.RegisterAndDevenvSetup">
+            <summary>
+            Does local registration and runs devenv/setup. Returns the success flag.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.Actions.StdAfxAction.Execute(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.DelegateExecute)">
+            <summary>
+            Executes action. Called after Update, that set ActionPresentation.Enabled to true.
+            </summary>
+            <param name="context">DataContext</param>
+            <param name="nextExecute">delegate to call</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.Actions.StdAfxAction.Update(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
+            <summary>
+            Updates action visual presentation. If presentation.Enabled is set to false, ExecuteAsync
+            will not be called.
+            </summary>
+            <param name="context">DataContext</param>
+            <param name="presentation">presentation to update</param>
+            <param name="nextUpdate">delegate to call</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.Actions.StdAfxAction.MenuController.#ctor(JetBrains.DataFlow.Lifetime,JetBrains.UI.GotoByName.GotoByNameModel,JetBrains.Application.IShellLocks)">
+            <summary> 
+            Creates the controller and attaches to the model.
+            The controller lifetime is also synchronized to the model lifetime. That is, when the model is disposed of, the controller is also disposed of (but not the other way).
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.Actions.StdAfxAction.MenuController.ExecuteItem(JetBrains.UI.PopupMenu.Impl.JetPopupMenuItem)">
+            <summary>
+            Called when an item is to be executed.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VS.Actions.StdAfxAction.MenuController.UpdateItems(System.String,System.Func{System.Collections.Generic.IEnumerable{JetBrains.UI.PopupMenu.Impl.JetPopupMenuItem},JetBrains.UI.GotoByName.GotoByNameController.AddItemsBehavior,System.Boolean})">
+            <summary>
+            When the items get dirty (<see cref="F:JetBrains.UI.GotoByName.GotoByNameController.ItemsGottenDirty"/>), this function is called on the secondary thread.
+            The function should be checking for <paramref name="checkCancelled"/> every so often.
+            </summary>
+            <param name="filterString">The filtering string against which the items list should be produced.</param>
+            <param name="checkCancelled">Call from time to time, on <c>True</c>, abort immediately.</param>
+            <param name="itemsConsumer">A function you can use to add items to the output collection in a thread-safe manner. The function checks for the items limit and returns whether more items can be added.</param>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Common.UI.DeclaredElementView">
+            <summary>
+            Provides a customizable presentation for a declared element that can be used in runs of text.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Common.UI.DeclaredElementView.myDeclaredElementEnvoy">
+            <summary>
+            Helps tracking the <see cref="F:JetBrains.ReSharper.Features.Common.UI.DeclaredElementView.DeclaredElementProperty"/> value across document changes.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Common.UI.DeclaredElementView.myIsInternalDeclaredElementChange">
+            <summary>
+            Raised when changing the <see cref="F:JetBrains.ReSharper.Features.Common.UI.DeclaredElementView.DeclaredElementProperty"/> due to a change in the envoy.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Common.UI.DeclaredElementView.AttachEnvoy(JetBrains.ReSharper.Psi.IDeclaredElement)">
+            <summary>
+            Creates a new envoy for the new declared element.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Common.UI.DeclaredElementView.OnGotoDeclaredElement(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            When the hyperlink is clicked, navigates to the target.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Common.UI.DeclaredElementView.UpdateChildren">
+            <summary>
+            Updates the visual presentation of the object.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Common.UI.DeclaredElementView.DeclaredElement">
+            <summary>
+            Gets or sets the declared element presented by this instance.
+            The declared element tries to track changes in the document and remain valid as long as possible.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.VSI.Components.SolutionWatchdog">
+            <summary>
+            Watches for any leaked solutions.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VSI.Components.SolutionWatchdog.SolCompo.System#IDisposable#Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="F:JetBrains.ReSharper.VSI.Components.TextControlDebugMonitor.ShowWindow">
+            <summary>
+            Shows the monitor window.
+            Routed thru a signal to deactivate on disposal.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VSI.Components.TextControlDebugMonitor.InitWindow_Viewport(JetBrains.DataFlow.Lifetime,System.Windows.Window,JetBrains.Application.IShellLocks,JetBrains.Application.IApplicationDescriptor,JetBrains.TextControl.ITextControlManager)">
+            <summary>
+            Last focused text control viewport coordinates.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VSI.Components.TextControlDebugMonitor.ShowScrollingAndCaret(JetBrains.DataFlow.Lifetime,System.Windows.Window,JetBrains.Application.IApplicationDescriptor,JetBrains.TextControl.ITextControlManager)">
+            <summary>
+            Shows text control scrolling and caret info for the last-focused text control.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.VSI.Components.TextControlDebugMonitor.ShowActionHandler.JetBrains#ActionManagement#IActionHandler#Execute(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.DelegateExecute)">
+            <summary>
+            Executes action. Called after Update, that set ActionPresentation.Enabled to true.
+            </summary>
+            <param name="context">DataContext</param>
+            <param name="nextExecute">delegate to call</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.VSI.Components.TextControlDebugMonitor.ShowActionHandler.JetBrains#ActionManagement#IActionHandler#Update(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
+            <summary>
+            Updates action visual presentation. If presentation.Enabled is set to false, Execute
+            will not be called.
+            </summary>
+            <param name="context">DataContext</param>
+            <param name="presentation">presentation to update</param>
+            <param name="nextUpdate">delegate to call</param>
+        </member>
+        <member name="T:JetBrains.ReSharper.VSI.ErrorStripeProto.ErrorStripeEditorStyle">
+            <summary>
+            Switches the error stripe into the editor colors mode. Optionally.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.VS.OptionPages.InternalPage.PageCreate">
+            <summary>
+            Fires when the internal page is shown.
+            Allows to add more controls to it (as a stack panel). Sink <see cref="F:JetBrains.ReSharper.VS.OptionPages.InternalPage.Commit"/> to save on OK.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.VS.OptionPages.InternalPage.Commit">
+            <summary>
+            Fires when the page is committed with OK.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompilerImpl.myOutputLine">
+            <summary>
+            Fires when the compiler sends a line to the output.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompilerImpl.PublishInstance">
+            <summary>
+            Publishes the implementation instance into the public interface.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompilerImpl.OutputLine">
+            <summary>
+            Fires when the compiler sends a line to the output.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompilerImpl.MSBuildLogger">
+            <summary>
+            A logger that captures the MSBuild log events (status, error, warnings) and directs them into the SolutionBuilder log system.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompilerImpl.MSBuildLogger.Initialize(Microsoft.Build.Framework.IEventSource)">
+            <summary>
+            Subscribes loggers to specific events. This method is called when the logger is registered with the build engine, before any events are raised.
+            </summary>
+            
+            <param name="eventSource">The events available to loggers.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompilerImpl.MSBuildLogger.Shutdown">
+            <summary>
+            Releases the resources allocated to the logger at the time of initialization or during the build. This method is called when the logger is unregistered from the engine, after all events are raised. A host of  typically unregisters loggers immediately before quitting.
+            </summary>
+            
+        </member>
+        <member name="P:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompilerImpl.MSBuildLogger.Parameters">
+            <summary>
+            Gets or sets the user-defined parameters of the logger. 
+            </summary>
+            
+            <returns>
+            The logger parameters.
+            </returns>
+            
+        </member>
+        <member name="P:JetBrains.ReSharper.SolutionBuilder.Impl.MSBuild.MSBuildCompilerImpl.MSBuildLogger.Verbosity">
+            <summary>
+            Gets or sets the level of detail to show in the event log.
+            </summary>
+            
+            <returns>
+            One of the enumeration values. The default is <see cref="F:Microsoft.Build.Framework.LoggerVerbosity.Normal"></see>.
+            </returns>
+            
+        </member>
+    </members>
+</doc>

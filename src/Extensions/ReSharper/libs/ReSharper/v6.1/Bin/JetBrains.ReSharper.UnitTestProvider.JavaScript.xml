@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.UnitTestProvider.JavaScript</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.UnitTestProvider.JavaScript.QUnit.QUnitPageView">
+            <summary>
+            Interaction logic for UserControl1.xaml
+            </summary>
+            <summary>
+            QUnitPageView
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.UnitTestProvider.JavaScript.QUnit.QUnitPageView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Features.Finding</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Features.Finding.NavigateFromHere.RequestContextSearchProvider`3">
+            <summary>
+            Base provider that works on context searches which are based on SearchRequest.  
+            </summary>
+            <typeparam name="TContextSearch">context search engine that takes dataContext and returns a collection of candidates and + special delegate to be applied to them</typeparam>
+            <typeparam name="TDescriptor">descriptor to present the results</typeparam>
+            <typeparam name="TSearchRequest">request taken from the context search to be used by descriptor</typeparam>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Finding.GoToDeclaration.DeclaredElementNavigationService.Navigate(JetBrains.ReSharper.Psi.IDeclaredElement,JetBrains.UI.PopupWindowManager.PopupWindowContextSource,System.Boolean,System.Nullable{JetBrains.ReSharper.Feature.Services.Occurences.OccurencePresentationOptions})">
+            <summary>
+            Navigates to declared element using context searches.
+            Context Searches are language specific feature part components, mostly working on finder
+            This method works using occurences.
+            </summary>
+            <param name="declaredElement"></param>
+            <param name="windowContext"></param>
+            <param name="transferFocus"></param>
+            <param name="options">presentation options to be used when displaying disambig</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Finding.FindDeclarations.GotoDeclarationHyperlink.GetRangeFromDeclaration">
+             This code is modified copy from GotoDeclarationAction.GetCandidates
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Finding.GoToDeclaredElement.GotoDeclaredElementAction.EnableShowInFindResults(JetBrains.ReSharper.Features.Common.GoToByName.Controllers.GotoDeclaredElementController)">
+            <summary>
+            Recalculates the complete list of items and shows them in FindResults.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Finding.GoToSymbol.GotoSymbolAction.EnableShowInFindResults(JetBrains.ReSharper.Features.Common.GoToByName.Controllers.GotoSymbolController)">
+            <summary>
+            Executes when the Plus Button is clicked, or when the last menu item is executed.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Finding.FindDeclarations.GotoTypeDeclarationAction">
+            <summary>
+            Navigates to the declaration of the type of a reference expression
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Finding.SearchDialogs.DeclaredElementSelector.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Finding.SearchDialogs.DeclaredElementSelector.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Finding.SearchDialogs.DeclaredElementSelector.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Finding.SearchDialogs.FlagsSelector.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Finding.SearchDialogs.FlagsSelector.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Finding.SearchDialogs.FlagsSelector.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.Css</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Psi.Css.CodeStyle.CssCodeFormatter.FormatDeletedNodes(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Format code during WritePSI action
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Css.CodeStyle.CssCodeStyleSettings">
+            <summary>
+            Used for storing and managing of code style settings
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.Css.Definitions.CssValueGroupType.And">
+            <summary>
+            Separates two or more values all of which must occur, in any order
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.Css.Definitions.CssValueGroupType.Or">
+            <summary>
+            Separates two or more alternatives: exactly one of them must occur.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.Css.Definitions.CssValueGroupType.Any">
+            <summary>
+            Separates two or more options: one or more of them must occur, in any order.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.Css.Definitions.CssValueGroupType.All">
+            <summary>
+            All of them must occur, in the given order.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.Css.Definitions.CssValueGroupType.Default">
+            <summary>
+            <see cref="F:JetBrains.ReSharper.Psi.Css.Definitions.CssValueGroupType.All"/> is default value.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Css.Parsing.CssMissingTokensInserter.Run(JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.TreeElement)">
+            <remarks>
+            This code relies that TokenStart and TokenEnd return -1 when it reaches end of file.
+            </remarks>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Css.CssConstantValueUtil.GetConstantValueAndUnits(JetBrains.ReSharper.Psi.Css.Tree.ICssPropertyValueExpression)">
+            <summary>
+            Returns numeric value and units of literal in case literal represents number
+            Value parsed using double.TryParse
+            </summary>
+            <param name="propertyValueExpression"></param>
+            <returns>pair of value and units or null</returns>
+        </member>
+    </members>
+</doc>

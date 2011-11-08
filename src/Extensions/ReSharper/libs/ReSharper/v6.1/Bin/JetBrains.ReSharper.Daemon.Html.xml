@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Daemon.Html</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Daemon.Html.Stages.Analysis.IHtmlAnalysis`1.Init(JetBrains.ReSharper.Psi.Html.Tree.IHtmlFile,JetBrains.ReSharper.Daemon.Stages.IHighlightingConsumer)">
+            <summary>
+            
+            </summary>
+            <param name="file"></param>
+            <param name="consumer"></param>
+            <returns>Return type must be TContext</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Daemon.Html.Stages.Analysis.HtmlAnalysis`1.DoSupressHighlighting(JetBrains.ReSharper.Psi.Tree.ITreeNode,`0)">
+            <summary>
+            Shoud we ignore errors in html comments or other skip nodes
+            </summary>
+        </member>
+    </members>
+</doc>

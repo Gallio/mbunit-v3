@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.Razor</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Psi.Razor.Impl.CustomHandlers.IRazorPsiServices.SplitCodebehindNode(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Splits comments and error elements attached to the end
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Razor.Impl.CustomHandlers.IRazorPsiServices.GetOriginalAnchorAndType(JetBrains.ReSharper.Psi.Tree.ITreeNode,System.Boolean,JetBrains.ReSharper.Psi.Tree.ITreeNode,System.Predicate{JetBrains.Util.Pair{JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Razor.Impl.CustomHandlers.OriginalStatementType}})">
+            <summary>
+            If original node not found (for synthetic or empty statements), iterate until it would be found.
+            If first == true, iterate forward, otherwise, backward
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Razor.Impl.Generate.RazorCodeGeneratorProcessor.WriteHtml(JetBrains.Util.Pair{System.Text.StringBuilder,JetBrains.ReSharper.Psi.Impl.Shared.IGeneratedRangeMap},System.Boolean)">
+            <summary>
+            Throw all cumulative html if any
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Razor.Impl.RazorCodeBehindGeneratedDocumentService">
+            <summary>
+            Generated document service for C# and VB languages of Razor page.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Razor.Tree.IRazorBaseTypeDirective">
+            <summary>
+            Common interface for @inherits and @model directives
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Razor.Tree.IRazorHtmlMarkup">
+            <summary>
+            Special syntax for inserting HTML inside code blocks, such as &lt;text&gt;..&lt;/text&gt; or @:
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Razor.Tree.IRazorBlockMarkup">
+            <summary>
+            &lt;text&gt;..&lt;/text&gt; block (for HTML inside code blocks)
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Razor.Impl.References.RazorReferenceProviderFactory`4.CreateFactory(JetBrains.ReSharper.Psi.IPsiSourceFile,JetBrains.ReSharper.Psi.Tree.IFile)">
+            <summary>
+            Creates implementation of <see cref="T:JetBrains.ReSharper.Psi.Resolve.IReferenceFactory"/> for the <paramref name="sourceFile"/> and <paramref name="file"/>.
+            </summary>
+            <param name="sourceFile">the specified project file</param>
+            <param name="file">the specified PSI file</param>
+            <returns>implementation of <see cref="T:JetBrains.ReSharper.Psi.Resolve.IReferenceFactory"/> or <c>null</c></returns>
+            <remarks><paramref name="file"/>.IsValid() is <c>false</c> for this method call;</remarks>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Razor.Tree.IRazorLineMarkup">
+            <summary>
+            @: (for HTML line inside code block)
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Razor.Parsing.RazorTreeBuilder">
+            <summary>
+            RazorTreeBuilder
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Psi.Razor.RazorKeywords.Model">
+            <remarks>
+            Only for ASP.NET MVC Razor
+            </remarks>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Razor.Tree.RazorElementTypes.RazorModelDirectiveNodeType">
+            <remarks>
+            Applied only for MVC
+            </remarks>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Features.Internal</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Features.Internal.ContextActions.ExportContextActionsListAction.Execute(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.DelegateExecute)">
+            <summary>
+            Executes action. Called after Update, that set ActionPresentation.Enabled to true.
+            </summary>
+            <param name="context">DataContext</param>
+            <param name="nextExecute">delegate to call</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.ContextActions.ExportContextActionsListAction.Update(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
+            <summary>
+            Updates action visual presentation. If presentation.Enabled is set to false, Execute
+            will not be called.
+            </summary>
+            <param name="context">DataContext</param>
+            <param name="presentation">presentation to update</param>
+            <param name="nextUpdate">delegate to call</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.ContextActions.TryProjectTransactionAction.Execute(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.DelegateExecute)">
+            <summary>
+            Executes action. Called after Update, that set ActionPresentation.Enabled to true.
+            </summary>
+            <param name="context">DataContext</param>
+            <param name="nextExecute">delegate to call</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.ContextActions.TryProjectTransactionAction.Update(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
+            <summary>
+            Updates action visual presentation. If presentation.Enabled is set to false, Execute
+            will not be called.
+            </summary>
+            <param name="context">DataContext</param>
+            <param name="presentation">presentation to update</param>
+            <param name="nextUpdate">delegate to call</param>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Internal.PsiViewer.PsiViewerForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.PsiViewer.PsiViewerForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.PsiViewer.PsiViewerForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Internal.TestForm.TestForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.TestForm.TestForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.TestForm.TestForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Internal.PsiViewer.IPsiTextEditor">
+            <summary>
+            Interface to an editor containing text representation of the tree loaded in the PSI viewer
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Features.Internal.PsiViewer.FindDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.PsiViewer.FindDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.PsiViewer.FindDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Internal.PluginDownloader.UI.MagicManagerWindow">
+            <summary>
+            Interaction logic for MagicManager.xaml
+            </summary>
+            <summary>
+            MagicManagerWindow
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Internal.PluginDownloader.UI.MagicManagerWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+    </members>
+</doc>

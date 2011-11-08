@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.FeaturesTestFramework</name>
+    </assembly>
+    <members>
+        <member name="F:JetBrains.ReSharper.Feature.Services.Tests.CSharp.FeatureServices.CodeCompletion.CodeCompletionTestBase.myLookupItemInsertType">
+            <summary>
+            Completion type
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Daemon.Test.HighlightingTestBase.JETBRAINS_ANNOTATIONS_DLL_PATH">
+            <summary>
+            JetBrains Annotations assembly path - often is used
+            </summary>
+        </member>
+    </members>
+</doc>

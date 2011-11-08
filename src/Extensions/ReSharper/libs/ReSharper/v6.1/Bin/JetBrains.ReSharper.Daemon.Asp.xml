@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Daemon.Asp</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Daemon.Asp.Stages.Analysis.AspSyntaxErrorsAnalysis.DoSupressHighlighting(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.Util.JetTuple{JetBrains.ReSharper.Daemon.Stages.IHighlightingConsumer,JetBrains.ReSharper.Psi.Html.Html.IHtmlDeclaredElementsCache,JetBrains.ReSharper.Psi.Html.Tree.IHtmlFile,JetBrains.ReSharper.Psi.IPsiServices})">
+            <summary>
+            ignore errors in html comment but not in server tags or server comments
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Daemon.Asp.Stages.Analysis.AspTagNotClosedAnalysis.DoSupressHighlighting(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.Util.JetTuple{JetBrains.ReSharper.Psi.Html.Tree.IHtmlFile,JetBrains.ReSharper.Daemon.Stages.IHighlightingConsumer,JetBrains.ReSharper.Psi.Html.Html.IHtmlDeclaredElementsCache,System.Collections.Generic.HashSet{JetBrains.ReSharper.Psi.Html.Tree.IHtmlTag}})">
+            <summary>
+            ignore errors in html comment but not in server tags
+            </summary>
+        </member>
+    </members>
+</doc>

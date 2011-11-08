@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.Services.Html</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Psi.Services.Html.ReferencedAssembliesServiceEx.IsProjectReferencingMvc(JetBrains.ProjectModel.IProjectElement,System.Version@)">
+            <param name="projectFile"></param>
+            <param name="version">Version of MVC, if referenced</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Services.Html.ReferencedAssembliesServiceEx.IsProjectReferencingMvc3(JetBrains.ProjectModel.IProjectElement)">
+            <summary>
+            Is project referencing MVC assembly version >= 3
+            </summary>
+        </member>
+    </members>
+</doc>

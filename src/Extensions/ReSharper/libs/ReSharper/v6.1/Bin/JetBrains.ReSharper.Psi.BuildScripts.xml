@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Psi.BuildScripts</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Psi.BuildScripts.References.AttributeReference">
+            <summary>
+               <seealso cref="T:JetBrains.ReSharper.Psi.BuildScripts.References.ScriptReferenceBase"/>
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.BuildScripts.References.ScriptReferenceBase.GetTreeNode">
+            <summary>
+            Returns "owner" of reference.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.BuildScripts.References.ScriptReferenceBase.GetName">
+            <summary>
+            Returns reference name.
+            This name usually coincides with short name of corresponding DeclaredElement.
+            (Only known exception is constructor initializer, its name is "this" or "base".)
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.BuildScripts.References.ScriptReferenceBase.GetAllNames">
+            <summary>
+            Returns all reference names (i.e., all possible short names of corresponding DeclaredElement)
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.BuildScripts.References.ScriptReferenceBase.GetReferenceSymbolTable(System.Boolean)">
+            <summary>
+            Returns full symbol table for the reference
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.BuildScripts.References.ScriptReferenceBase.GetAccessContext">
+            <summary>
+            Returns access context containing reference. It is useful to define, if context
+            is static or to determine access rights of context.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.BuildScripts.References.ScriptReferenceBase.GetCompletionSymbolTable">
+            <summary>
+            Returns symbol table for code completion
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.BuildScripts.References.ScriptReferenceBase.HasMultipleNames">
+            <summary>
+            Returns true iff reference could be resolved in declared elements with different names.
+            E.g., attribute [XXX] could be resolved into class with name 'XXX' or 'XXXAttribute' 
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.BuildScripts.References.AttributeReference.BindTo(JetBrains.ReSharper.Psi.IDeclaredElement)">
+            <summary>
+            Bind this reference to given Declared Element. May insert using directive.
+            </summary>
+            <returns>new "this"</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.BuildScripts.References.TagReference.BindTo(JetBrains.ReSharper.Psi.IDeclaredElement)">
+            <summary>
+            Bind this reference to given Declared Element. May insert using directive.
+            </summary>
+            <returns>new "this"</returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.BuildScripts.PathUtil.GetFilePath(JetBrains.ReSharper.Psi.BuildScripts.Tree.IBuildScriptAttribute,System.String)">
+            <summary>
+              Returns path to a file provided with base directory and an attribute
+            </summary>
+            <param name="attribute"></param>
+            <param name="baseDir"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.BuildScripts.InclusionEngine.BuildScriptNode.PointsToNode(JetBrains.ReSharper.Psi.BuildScripts.InclusionEngine.BuildScriptNode)">
+            <summary>
+              Checks if this node can reach specified node through outgoing edges
+            </summary>
+            <param name="node"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

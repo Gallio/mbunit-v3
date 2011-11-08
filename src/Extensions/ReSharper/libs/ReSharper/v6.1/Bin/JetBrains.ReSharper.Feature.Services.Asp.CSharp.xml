@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Feature.Services.Asp.CSharp</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.ReSharper.Feature.Services.Asp.CSharp.CodeCompletion.Rules.MvcActionCSharpTransformationRule">
+            <summary>
+            Rule to remove trailing parenthesis in action methods
+            </summary>
+        </member>
+    </members>
+</doc>

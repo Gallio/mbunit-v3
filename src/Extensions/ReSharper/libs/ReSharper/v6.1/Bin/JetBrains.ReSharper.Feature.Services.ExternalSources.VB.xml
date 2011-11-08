@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.ReSharper.Feature.Services.ExternalSources.VB</name>
+    </assembly>
+    <members>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.VB.MetadataTranslator.VBNamingUtil.IsAlphaCharacter(System.Char)">
+            <summary>
+            Checks whether character is AlphaCharacter in accordance
+            with "Identifiers" (2.2) of VB spec
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.VB.MetadataTranslator.VBNamingUtil.IsCombiningCharacter(System.Char)">
+            <summary>
+            Checks whether character is CombiningCharacter in accordance
+            with "Identifiers" (2.2) of VB spec
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.VB.MetadataTranslator.VBNamingUtil.IsNumericCharacter(System.Char)">
+            <summary>
+            Checks whether character is NumericCharacter in accordance
+            with "Identifiers" (2.2) of VB spec
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.VB.MetadataTranslator.VBNamingUtil.IsFormattingCharacter(System.Char)">
+            <summary>
+            Checks whether character is FormattingCharacter in accordance
+            with "Identifiers" (2.2) of VB spec
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.VB.MetadataTranslator.VBNamingUtil.IsIdentifierStartCharacter(System.Char)">
+            <summary>
+            Checks whether character is IdentifierStart in accordance
+            with "Identifiers" (2.2) of VB spec
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.VB.MetadataTranslator.VBNamingUtil.IsIdentifierPartCharacter(System.Char)">
+            <summary>
+            Checks whether character is IdentifierCharacter in accordance
+            with "Identifiers" (2.2) of VB spec
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.ExternalSources.VB.MetadataTranslator.VBNamingUtil.IsIdentifier(System.String)">
+            <summary>
+            Checks whether string is valid identifier in accordance
+            with "Identifiers" (2.2) of VB spec
+            </summary>
+        </member>
+    </members>
+</doc>
