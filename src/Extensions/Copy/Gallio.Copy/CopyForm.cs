@@ -145,7 +145,7 @@ namespace Gallio.Copy
         private void CopyForm_Load(object sender, EventArgs e)
         {
             // provide WindowsFormsSynchronizationContext for cross-thread databinding
-            SynchronizationContext.Current = System.Threading.SynchronizationContext.Current;
+            SyncContext.Current = System.Threading.SynchronizationContext.Current;
 
             copyController.Load();
         }
