@@ -15,7 +15,9 @@
 
 using System;
 using Gallio.Loader;
+#if RESHARPER_61
 using JetBrains.Application.Settings;
+#endif
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Daemon;
 using JetBrains.ReSharper.Psi;
