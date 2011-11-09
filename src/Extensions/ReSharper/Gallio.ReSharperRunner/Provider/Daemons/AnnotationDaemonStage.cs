@@ -48,12 +48,17 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
 
 #if RESHARPER_60
     	public ErrorStripeRequest NeedsErrorStripe(IPsiSourceFile sourceFile)
-#elif RESHARPER_61
-        public ErrorStripeRequest NeedsErrorStripe(IPsiSourceFile sourceFile, IContextBoundSettingsStore settingsStore)
-#endif
     	{
     		return GetErrorStripe();
     	}
+#endif
+
+#if RESHARPER_61
+        public ErrorStripeRequest NeedsErrorStripe(IPsiSourceFile sourceFile, IContextBoundSettingsStore settingsStore)
+    	{
+    		return GetErrorStripe();
+    	}        
+#endif
 
     	public ErrorStripeRequest NeedsErrorStripe(IProjectFile projectFile)
         {
