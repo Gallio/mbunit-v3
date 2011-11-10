@@ -34,7 +34,7 @@ using Gallio.Runtime.ProgressMonitoring;
 using JetBrains.Metadata.Reader.API;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.Caches;
+using JetBrains.ReSharper.Psi.Impl.Caches2;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.TaskRunnerFramework;
 using JetBrains.ReSharper.UnitTestFramework;
@@ -51,27 +51,39 @@ namespace Gallio.ReSharperRunner.Provider
     {
         public const string ProviderId = "Gallio";
         private readonly Shim shim;
-        private UnitTestManager unitTestManager;
+#if RESHARPER_60
+		private UnitTestManager unitTestManager;
+#endif
 
         static GallioTestProvider()
         {
             LoaderManager.InitializeAndSetupRuntimeIfNeeded();
         }
 
-        public GallioTestProvider(ISolution solution, PsiModuleManager psiModuleManager, CacheManager cacheManager)
+#if RESHARPER_60
+		public GallioTestProvider(ISolution solution, PsiModuleManager psiModuleManager, CacheManagerEx cacheManager)
+#else
+		public GallioTestProvider()
+#endif
         {
+#if RESHARPER_60
             Solution = solution;
-            PsiModuleManager = psiModuleManager;
-            CacheManager = cacheManager;
+			PsiModuleManager = psiModuleManager;
+			CacheManager = cacheManager;
+#endif
             shim = new Shim(this);
         }
 
-        public CacheManager CacheManager { get; private set; }
+        public CacheManagerEx CacheManager { get; set; }
 
-        public UnitTestManager UnitTestManager
+#if RESHARPER_60
+		public UnitTestManager UnitTestManager
         {
             get { return unitTestManager ?? (unitTestManager = Solution.GetComponent<UnitTestManager>()); }
         }
+#else
+		public IUnitTestProvidersManager UnitTestProvidersManager { get; set; }
+#endif
 
         public void ExploreExternal(UnitTestElementConsumer consumer)
         {
@@ -147,7 +159,7 @@ namespace Gallio.ReSharperRunner.Provider
 
         public ISolution Solution { get; private set; }
 
-        public PsiModuleManager PsiModuleManager { get; private set; }
+        public PsiModuleManager PsiModuleManager { get; set; }
 
         private sealed class Shim
         {
@@ -188,8 +200,12 @@ namespace Gallio.ReSharperRunner.Provider
 
             	try
             	{
+#if RESHARPER_60
             		var reflectionPolicy = new MetadataReflectionPolicy(assembly, project);
-            		IAssemblyInfo assemblyInfo = reflectionPolicy.Wrap(assembly);
+#else
+					var reflectionPolicy = new MetadataReflectionPolicy(assembly, project, provider.CacheManager);
+#endif
+					IAssemblyInfo assemblyInfo = reflectionPolicy.Wrap(assembly);
 
             		if (assemblyInfo != null)
             		{
@@ -219,7 +235,11 @@ namespace Gallio.ReSharperRunner.Provider
 
         		try
         		{
+#if RESHARPER_60
         			var reflectionPolicy = new PsiReflectionPolicy(psiFile.GetPsiServices().PsiManager);
+#else
+					var reflectionPolicy = new PsiReflectionPolicy(psiFile.GetPsiServices().PsiManager, provider.CacheManager);
+#endif
         			var consumerAdapter = new ConsumerAdapter(provider, consumer, psiFile);
 
         			var codeElements = new List<ICodeElementInfo>();
@@ -266,9 +286,12 @@ namespace Gallio.ReSharperRunner.Provider
             {
                 var excludedTestFrameworkIds = new List<string>();
 
-            	var unitTestManager = UnitTestManager.GetInstance(provider.Solution);
-            	var unitTestProviders = unitTestManager.GetEnabledProviders();
-
+#if RESHARPER_60
+				var unitTestManager = UnitTestManager.GetInstance(provider.Solution);
+				var unitTestProviders = unitTestManager.GetEnabledProviders();
+#else
+            	var unitTestProviders = provider.UnitTestProvidersManager.GetEnabledProviders();
+#endif
             	foreach (var testProvider in unitTestProviders)
                 {
                     IList<string> frameworkIds;
@@ -344,7 +367,11 @@ namespace Gallio.ReSharperRunner.Provider
 
 				try
 				{
+#if RESHARPER_60
 					var reflectionPolicy = new PsiReflectionPolicy(element.GetPsiServices().PsiManager);
+#else
+					var reflectionPolicy = new PsiReflectionPolicy(element.GetPsiServices().PsiManager, provider.CacheManager);
+#endif
 					var elementInfo = reflectionPolicy.Wrap(element);
 					if (elementInfo == null)
 						return false;

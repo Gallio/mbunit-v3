@@ -55,12 +55,31 @@ namespace Gallio.ReSharperRunner.Reflection
     public class PsiReflectionPolicy : ReSharperReflectionPolicy
     {
         private readonly PsiManager psiManager;
+#if RESHARPER_61
+		private readonly CacheManagerEx cacheManager;
+#endif
 
         private KeyedMemoizer<IModule, StaticAssemblyWrapper> assemblyMemoizer = new KeyedMemoizer<IModule, StaticAssemblyWrapper>();
         private KeyedMemoizer<IType, StaticTypeWrapper> typeMemoizer = new KeyedMemoizer<IType, StaticTypeWrapper>();
         private KeyedMemoizer<ITypeElement, StaticDeclaredTypeWrapper> typeWithoutSubstitutionMemoizer = new KeyedMemoizer<ITypeElement, StaticDeclaredTypeWrapper>();
         private KeyedMemoizer<IDeclaredType, StaticDeclaredTypeWrapper> declaredTypeMemoizer = new KeyedMemoizer<IDeclaredType, StaticDeclaredTypeWrapper>();
 
+#if RESHARPER_61
+        /// <summary>
+        /// Creates a reflector with the specified PSI manager.
+        /// </summary>
+        /// <param name="psiManager">The PSI manager.</param>
+        /// <param name="cacheManager">Cache manager.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="psiManager"/> is null.</exception>
+        public PsiReflectionPolicy(PsiManager psiManager, CacheManagerEx cacheManager)
+        {
+            if (psiManager == null)
+                throw new ArgumentNullException("psiManager");
+
+            this.psiManager = psiManager;
+        	this.cacheManager = cacheManager;
+        }
+#else
         /// <summary>
         /// Creates a reflector with the specified PSI manager.
         /// </summary>
@@ -73,9 +92,9 @@ namespace Gallio.ReSharperRunner.Reflection
 
             this.psiManager = psiManager;
         }
-
-        #region Wrapping
-        /// <summary>
+#endif
+		#region Wrapping
+		/// <summary>
         /// Obtains a reflection wrapper for a declared element.
         /// </summary>
         /// <param name="target">The element, or null if none.</param>
@@ -315,7 +334,9 @@ namespace Gallio.ReSharperRunner.Reflection
                     yield return new StaticAttributeWrapper(this, attrib);
             }
 #else
-            CacheManagerEx cacheManager = CacheManagerEx.GetInstance(psiManager.Solution);
+#if !RESHARPER_61
+			CacheManagerEx cacheManager = CacheManagerEx.GetInstance(psiManager.Solution);
+#endif
             IPsiModule psiModule = GetPsiModule(moduleHandle);
             if (psiModule != null)
             {
@@ -549,9 +570,11 @@ namespace Gallio.ReSharperRunner.Reflection
 
             IAssembly assemblyHandle = (IAssembly) moduleHandle;
             return psiManager.GetDeclarationsCache(DeclarationsCacheScope.LibraryScope(assemblyHandle, false), true);
-#elif RESHARPER_60
+#elif RESHARPER_60_OR_NEWER
 			var psiModule = PsiModuleManager.GetInstance(moduleHandle.GetSolution()).GetPrimaryPsiModule(moduleHandle);
+#if RESHARPER_60
 			var cacheManager = CacheManager.GetInstance(psiModule.GetSolution());
+#endif
 			return cacheManager.GetDeclarationsCache(psiModule, false, false);
 #else
             IPsiModule psiModule = GetPsiModule(moduleHandle);
@@ -664,7 +687,7 @@ namespace Gallio.ReSharperRunner.Reflection
 #if RESHARPER_31
             ConstantValue2 rawValue = GetAttributeNamedParameterHack(attributeHandle, memberHandle);
             return rawValue.IsBadValue() ? (ConstantValue?)null : ConvertConstantValue(rawValue.Value);
-#elif RESHARPER_60
+#elif RESHARPER_60_OR_NEWER
 			AttributeValue rawValue = attributeHandle.NamedParameter(memberHandle.ShortName);
 			return rawValue.IsBadValue ? (ConstantValue?)null : ConvertConstantValue(rawValue);
 #else
@@ -990,6 +1013,8 @@ namespace Gallio.ReSharperRunner.Reflection
 
 #if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
             var parameter = new Parameter(methodHandle, type, null);
+#elif RESHARPER_61
+			var parameter = new Parameter(methodHandle, 0, ParameterKind.UNKNOWN, type, null);
 #else
             var parameter = new Parameter(methodHandle, 0, type, null);
 #endif
@@ -1101,7 +1126,7 @@ namespace Gallio.ReSharperRunner.Reflection
         {
 #if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
             return declaredElement.Module;
-#elif RESHARPER_60
+#elif RESHARPER_60_OR_NEWER
             var sourceFiles = declaredElement.GetSourceFiles();
             IPsiModule psiModule;
             if (sourceFiles.Count == 0)

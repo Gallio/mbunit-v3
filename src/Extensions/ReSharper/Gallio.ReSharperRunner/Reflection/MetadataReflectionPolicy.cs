@@ -32,6 +32,9 @@ using JetBrains.Shell;
 using JetBrains.Util;
 #else
 using JetBrains.Application;
+#if RESHARPER_61
+using JetBrains.ReSharper.Psi.Impl.Caches2;
+#endif
 using AssemblyReference=JetBrains.Metadata.Access.AssemblyReference;
 #endif
 #if RESHARPER_50_OR_NEWER
@@ -52,12 +55,16 @@ namespace Gallio.ReSharperRunner.Reflection
     {
         private readonly IProject contextProject;
         private readonly MetadataLoader metadataLoader;
+#if RESHARPER_61
+		private readonly CacheManagerEx cacheManager;
+#endif
 
         private KeyedMemoizer<IMetadataAssembly, StaticAssemblyWrapper> assemblyMemoizer = new KeyedMemoizer<IMetadataAssembly, StaticAssemblyWrapper>();
         private KeyedMemoizer<IMetadataType, StaticTypeWrapper> typeMemoizer = new KeyedMemoizer<IMetadataType, StaticTypeWrapper>();
         private KeyedMemoizer<IMetadataTypeInfo, StaticDeclaredTypeWrapper> typeWithoutSubstitutionMemoizer = new KeyedMemoizer<IMetadataTypeInfo, StaticDeclaredTypeWrapper>();
         private KeyedMemoizer<IMetadataClassType, StaticDeclaredTypeWrapper> classMemoizer = new KeyedMemoizer<IMetadataClassType, StaticDeclaredTypeWrapper>();
 
+#if !RESHARPER_61
         /// <summary>
         /// Creates a reflector with the specified project as its context.
         /// The context project is used to resolve metadata items to declared elements.
@@ -72,7 +79,24 @@ namespace Gallio.ReSharperRunner.Reflection
             metadataLoader = GetMetadataLoaderHack(assembly);
             this.contextProject = contextProject;
         }
+#else
+		/// <summary>
+		/// Creates a reflector with the specified project as its context.
+		/// The context project is used to resolve metadata items to declared elements.
+		/// </summary>
+		/// <param name="assembly">The assembly provide context for the loader.</param>
+		/// <param name="contextProject">The context project, or null if none.</param>
+		/// <param name="cacheManager">Cache manager.</param>
+		public MetadataReflectionPolicy(IMetadataAssembly assembly, IProject contextProject, CacheManagerEx cacheManager)
+		{
+			if (assembly == null)
+				throw new ArgumentNullException("assembly");
 
+			metadataLoader = GetMetadataLoaderHack(assembly);
+			this.contextProject = contextProject;
+			this.cacheManager = cacheManager;
+		}
+#endif
         /// <summary>
         /// Gets the context project, or null if none.
         /// </summary>
@@ -225,9 +249,9 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             if (metadataLoader != null)
             {
-#if RESHARPER_50_OR_NEWER && !RESHARPER_60
+#if RESHARPER_50_OR_NEWER && !RESHARPER_60_OR_NEWER
                 IMetadataAssembly assembly = metadataLoader.Load(new AssemblyNameInfo(assemblyName.FullName), DummyLoadReferencePredicate);
-#elif RESHARPER_60
+#elif RESHARPER_60_OR_NEWER
                 var assembly = metadataLoader.TryLoad(new AssemblyNameInfo(assemblyName.FullName), DummyLoadReferencePredicate);
 #else
                 IMetadataAssembly assembly = metadataLoader.Load(assemblyName, DummyLoadReferencePredicate);
@@ -858,8 +882,12 @@ namespace Gallio.ReSharperRunner.Reflection
         #region GetDeclaredElement and GetProject
         protected override IDeclaredElementResolver GetDeclaredElementResolver(StaticWrapper element)
         {
+#if !RESHARPER_61
             return DeclaredElementResolver.CreateResolver(contextProject, element);
-        }
+#else
+			return DeclaredElementResolver.CreateResolver(contextProject, element, cacheManager);
+#endif
+		}
 
         protected override IProject GetProject(StaticWrapper element)
         {
@@ -870,11 +898,21 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             private readonly IProject project;
             private readonly Common.Func<IProject, IDeclaredElement> provider;
+#if RESHARPER_61
+        	private static CacheManager cacheManager;
+#endif
 
+#if !RESHARPER_61
             private DeclaredElementResolver(IProject project, Common.Func<IProject, IDeclaredElement> provider)
+#else
+			private DeclaredElementResolver(IProject project, Common.Func<IProject, IDeclaredElement> provider, CacheManager cacheManager)
+#endif
             {
                 this.project = project;
                 this.provider = provider;
+#if RESHARPER_61
+				DeclaredElementResolver.cacheManager = cacheManager;
+#endif
             }
 
             public IDeclaredElement ResolveDeclaredElement()
@@ -884,19 +922,23 @@ namespace Gallio.ReSharperRunner.Reflection
 
 #if !RESHARPER_60
                 using (ReadLockCookie.Create())
-#else
-				//var shellLocks = Shell.Instance.GetComponent<IShellLocks>();
-				//using (TryReadLockCookie.Create(null, shellLocks, () => false))
 #endif
 				{
                     return provider(project);
                 }
             }
 
+#if !RESHARPER_61
             public static IDeclaredElementResolver CreateResolver(IProject project, StaticWrapper element)
             {
                 return new DeclaredElementResolver(project, project != null ? GetProvider(element) : null);
-            }
+			}
+#else
+			public static IDeclaredElementResolver CreateResolver(IProject project, StaticWrapper element, CacheManager cacheManager)
+			{
+				return new DeclaredElementResolver(project, project != null ? GetProvider(element) : null, cacheManager);
+			}
+#endif
 
             private static Common.Func<IProject, IDeclaredElement> ToDeclaredElementProvider<T>(Common.Func<IProject, T> provider)
                 where T : IDeclaredElement
@@ -1107,9 +1149,11 @@ namespace Gallio.ReSharperRunner.Reflection
 #if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
                 return PsiManager.GetInstance(contextProject.GetSolution()).
                     GetDeclarationsCache(DeclarationsCacheScope.ProjectScope(contextProject, true), true);
-#elif RESHARPER_60
+#elif RESHARPER_60_OR_NEWER
 				var module = PsiModuleManager.GetInstance(contextProject.GetSolution()).GetPrimaryPsiModule(contextProject);
+#if RESHARPER_60
             	var cacheManager = CacheManager.GetInstance(contextProject.GetSolution());
+#endif
             	return cacheManager.GetDeclarationsCache(module, false, false);
 #else
                 IPsiModule module = PsiModuleManager.GetInstance(contextProject.GetSolution()).GetPsiModule(contextProject.ProjectFile);
@@ -1175,7 +1219,7 @@ namespace Gallio.ReSharperRunner.Reflection
                     IsOut = parameter.Kind != ParameterKind.VALUE,
 #if ! RESHARPER_50_OR_NEWER
                     TypeName = parameter.Type.GetPresentableName(PsiLanguageType.UNKNOWN)
-#elif RESHARPER_60
+#elif RESHARPER_60_OR_NEWER
 					TypeName = parameter.Type.GetLongPresentableName(UnknownLanguage.Instance)
 #else
                     TypeName = parameter.Type.GetLongPresentableName(PsiLanguageType.UNKNOWN)

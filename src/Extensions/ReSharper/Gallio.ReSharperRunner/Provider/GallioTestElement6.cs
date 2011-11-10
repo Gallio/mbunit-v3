@@ -367,12 +367,12 @@ namespace Gallio.ReSharperRunner.Provider
 
         public static IUnitTestElement Deserialize(XmlElement parent, IUnitTestElement parentElement, GallioTestProvider provider)
         {
-            var projectId = parent.GetAttribute("projectId");
-            var project = ProjectUtil.FindProjectElementByPersistentID(provider.Solution, projectId) as IProject;
-            if (project == null)
-            {
-                return null;
-            }
+			//var projectId = parent.GetAttribute("projectId");
+			//var project = ProjectUtil.FindProjectElementByPersistentID(provider.Solution, projectId) as IProject;
+			//if (project == null)
+			//{
+			//    return null;
+			//}
 
             //var testId = parent.GetAttribute("testId");
             //var element = provider.UnitTestManager.GetElementById(project, testId) as GallioTestElement;

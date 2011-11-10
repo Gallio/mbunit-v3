@@ -65,14 +65,14 @@ namespace Gallio.ReSharperRunner.Provider.Actions
         {
 #if ! RESHARPER_50_OR_NEWER
             VSShell.Instance.ApplicationObject.ItemOperations.Navigate(url.ToString(), vsNavigateOptions.vsNavigateOptionsDefault);
-#elif RESHARPER_60
+#elif RESHARPER_60_OR_NEWER
         	throw new InvalidOperationException("Need to find out how to access the Shell.");
 #else
             VSShell.Instance.ServiceProvider.Dte().ItemOperations.Navigate(url.ToString(), vsNavigateOptions.vsNavigateOptionsDefault);
 #endif
         }
 
-#if RESHARPER_50_OR_NEWER && !RESHARPER_60
+#if RESHARPER_50_OR_NEWER && !RESHARPER_60_OR_NEWER
         private static readonly Dictionary<string, string> LastRunIdCache = new Dictionary<string, string>();
 #endif
         private static string GetSessionId(IDataContext context)
@@ -81,7 +81,7 @@ namespace Gallio.ReSharperRunner.Provider.Actions
             if (session == null)
                 return null;
 
-#if ! RESHARPER_50_OR_NEWER || RESHARPER_60
+#if ! RESHARPER_50_OR_NEWER || RESHARPER_60_OR_NEWER
             return session.ID;
 #else
             // HACK: Get the last RunId for correlation instead of the SessionId because the SessionId is
