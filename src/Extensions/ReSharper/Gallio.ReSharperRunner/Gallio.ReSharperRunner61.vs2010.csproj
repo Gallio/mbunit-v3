@@ -29,7 +29,7 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>bin\v6.0\</OutputPath>
+    <OutputPath>bin\v6.1\</OutputPath>
     <DefineConstants>TRACE;RESHARPER_31_OR_NEWER;RESHARPER_40_OR_NEWER;RESHARPER_41_OR_NEWER;RESHARPER_45_OR_NEWER;RESHARPER_50_OR_NEWER;RESHARPER_51_OR_NEWER;RESHARPER_60_OR_NEWER;RESHARPER_61</DefineConstants>
     <DocumentationFile>bin\v6.1\Gallio.ReSharperRunner61.xml</DocumentationFile>
     <Optimize>true</Optimize>
