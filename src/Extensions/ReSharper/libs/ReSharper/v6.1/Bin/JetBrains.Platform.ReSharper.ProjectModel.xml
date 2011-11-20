@@ -69,6 +69,11 @@
             Returns .NET framework directory, usually under .NET Frameworks install root
             </summary>
         </member>
+        <member name="P:JetBrains.ProjectModel.Impl.StudioProjectData.ProjectLocation">
+            <summary>
+            Project home directory for Web sites. Project file location for other project types.
+            </summary>
+        </member>
         <member name="M:JetBrains.ProjectModel.model2.Assemblies.Interfaces.IAssemblyFactory.AddRef(JetBrains.ProjectModel.AssemblyReferenceResolveResult,System.String,JetBrains.ProjectModel.PlatformID)">
             <summary>
             Adds assembly to assembly collection
@@ -323,6 +328,50 @@
         <member name="T:JetBrains.ProjectModel.Settings.Storages.SolutionSettingsStorageShared">
             <summary>
             Per-solution storage to be checked in to SCC.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ProjectModel.Settings.Store.ProjectSettings">
+            <summary>
+            Helpers for working with project-specific settings layers.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ProjectModel.Settings.Store.ProjectSettings.BindForWritingToProjectShared">
+            <summary>
+            Binds <see cref="T:JetBrains.Application.src.Settings.SettingsStore"/> to the project context so that writes were SmartSaved to the Project Shared layer (affecting any higher-priority writable layers if they contain conflicting values).
+            </summary>
+        </member>
+        <member name="F:JetBrains.ProjectModel.Settings.Store.ProjectSettings.ProjectSharedLayerId">
+            <summary>
+            <para>Identifies the Project-Shared <see cref="T:JetBrains.Application.Settings.UserInterface.UserFriendlySettingsLayer">user-friendly settings layer</see>.</para>
+            <para>To get the layer, obtain or create a <see cref="T:JetBrains.Application.Settings.UserInterface.UserFriendlySettingsLayers"/> instance and ask it for the layer by its ID.</para>
+            </summary>
+        </member>
+        <member name="F:JetBrains.ProjectModel.Settings.Store.ProjectSettings.ProjectPersonalLayerId">
+            <summary>
+            <para>Identifies the Project-Personal <see cref="T:JetBrains.Application.Settings.UserInterface.UserFriendlySettingsLayer">user-friendly settings layer</see>.</para>
+            <para>To get the layer, obtain or create a <see cref="T:JetBrains.Application.Settings.UserInterface.UserFriendlySettingsLayers"/> instance and ask it for the layer by its ID.</para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.ProjectModel.Settings.Store.SolutionSettings">
+            <summary>
+            Helpers for working with solution-specific settings layers.
+            </summary>
+        </member>
+        <member name="F:JetBrains.ProjectModel.Settings.Store.SolutionSettings.BindForWritingToSolutionShared">
+            <summary>
+            Binds <see cref="T:JetBrains.Application.src.Settings.SettingsStore"/> to the solution context so that writes were SmartSaved to the Solution Shared layer (affecting any higher-priority writable layers if they contain conflicting values).
+            </summary>
+        </member>
+        <member name="F:JetBrains.ProjectModel.Settings.Store.SolutionSettings.SolutionSharedLayerId">
+            <summary>
+            <para>Identifies the Solution-Shared <see cref="T:JetBrains.Application.Settings.UserInterface.UserFriendlySettingsLayer">user-friendly settings layer</see>.</para>
+            <para>To get the layer, obtain or create a <see cref="T:JetBrains.Application.Settings.UserInterface.UserFriendlySettingsLayers"/> instance and ask it for the layer by its ID.</para>
+            </summary>
+        </member>
+        <member name="F:JetBrains.ProjectModel.Settings.Store.SolutionSettings.SolutionPersonalLayerId">
+            <summary>
+            <para>Identifies the Solution-Personal <see cref="T:JetBrains.Application.Settings.UserInterface.UserFriendlySettingsLayer">user-friendly settings layer</see>.</para>
+            <para>To get the layer, obtain or create a <see cref="T:JetBrains.Application.Settings.UserInterface.UserFriendlySettingsLayers"/> instance and ask it for the layer by its ID.</para>
             </summary>
         </member>
         <member name="P:JetBrains.ProjectModel.PlatformManager.GacPath">

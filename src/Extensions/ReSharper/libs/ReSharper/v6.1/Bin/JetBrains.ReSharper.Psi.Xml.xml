@@ -21,17 +21,17 @@
             Adds tag after ther anchor. If anchor == null, the tag is inserted before the first tag
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Xml.Parsing.XmlElementFactoryEx.CreateFile(JetBrains.ReSharper.Psi.Xml.Parsing.IXmlElementFactory,JetBrains.ReSharper.Psi.IPsiServices,JetBrains.ReSharper.Psi.IPsiModule,System.String,System.Boolean)">
+        <member name="M:JetBrains.ReSharper.Psi.Xml.Parsing.XmlElementFactoryEx.CreateFile(JetBrains.ReSharper.Psi.Xml.Parsing.IXmlElementFactory,System.String,JetBrains.ReSharper.Psi.IPsiServices,JetBrains.ReSharper.Psi.IPsiModule,System.Boolean)">
             <summary>
             Creates xml file for specified <paramref name="xmlText"/>.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Xml.Parsing.XmlElementFactoryEx.CreateTag(JetBrains.ReSharper.Psi.Xml.Parsing.IXmlElementFactory,JetBrains.ReSharper.Psi.IPsiServices,JetBrains.ReSharper.Psi.IPsiModule,System.String,System.Boolean)">
+        <member name="M:JetBrains.ReSharper.Psi.Xml.Parsing.XmlElementFactoryEx.CreateTag(JetBrains.ReSharper.Psi.Xml.Parsing.IXmlElementFactory,System.String,JetBrains.ReSharper.Psi.IPsiServices,JetBrains.ReSharper.Psi.IPsiModule,System.Boolean)">
             <summary>
             Creates simple XML tag
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Xml.Parsing.XmlElementFactoryEx.CreateAttribute(JetBrains.ReSharper.Psi.Xml.Parsing.IXmlElementFactory,JetBrains.ReSharper.Psi.IPsiServices,JetBrains.ReSharper.Psi.IPsiModule,System.String,System.Boolean)">
+        <member name="M:JetBrains.ReSharper.Psi.Xml.Parsing.XmlElementFactoryEx.CreateAttribute(JetBrains.ReSharper.Psi.Xml.Parsing.IXmlElementFactory,System.String,JetBrains.ReSharper.Psi.IPsiServices,JetBrains.ReSharper.Psi.IPsiModule,System.Boolean)">
             <summary>
             Creates simple XML attribute
             </summary>
@@ -105,9 +105,6 @@
             <summary>
             Manages xml doc comment PSI
             </summary>
-            <remarks>[review] probably there should be XmlDocumentation language, inherited from Xml
-            e.g. formatter could be a bit different in this language, likewise some context actions, completion, etc
-            </remarks>
         </member>
     </members>
 </doc>

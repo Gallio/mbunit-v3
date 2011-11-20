@@ -134,6 +134,12 @@
             Reference to component name in WinForm generated code
             </summary>
         </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.Util.VBCollectionTypeUtil.ElementTypeByCollectionType(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.Resolve.IAccessContext,JetBrains.ReSharper.Psi.VB.Tree.IVBTreeNode)">
+            <summary>
+            Returns element type if collectionType is a _collection_type_ (described in specification, 15.8.4)
+            otherwise, returns null
+            </summary>
+        </member>
         <member name="F:JetBrains.ReSharper.Psi.VB.Impl.Query.QueryVariablesCache.myChainTypes">
             <summary>
             Query variables related to the particular platform. May contain null values. 
@@ -338,10 +344,12 @@
         <member name="M:JetBrains.ReSharper.Psi.VB.VBTypeFactory.CreatePredefinedTypeByKeyword(JetBrains.ReSharper.Psi.Parsing.TokenNodeType,JetBrains.ReSharper.Psi.IPsiModule)">
             <summary>tokenType should be type of token of one of predefined types.</summary>
         </member>
-        <member name="T:JetBrains.ReSharper.Psi.VB.CodeStyle.CustomIndentHandler">
+        <member name="T:JetBrains.ReSharper.Psi.VB.CodeStyle.ICustomIndentHandler">
             <summary>
-            Provide custom indentation for the node to format correctly in ASP
+            Provide custom indentation for the node to format correctly in ASP/Razor
             </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.VB.CodeStyle.ICustomIndentHandler.Indent(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.CodeStyle.CustomIndentType,JetBrains.ReSharper.Psi.VB.CodeStyle.VBCodeFormattingSettings)">
             <param name="node">node to get the indent for</param>
             <param name="indentType">requested indent type</param>
             <param name="settings"></param>

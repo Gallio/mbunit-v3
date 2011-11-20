@@ -42,13 +42,14 @@
             I.3 If pattern has RemoveAllRegions=&quot;true&quot; attribute, then all regions will be cleared prior to reordering. Otherwise, only auto-generated reg [rest of string was truncated]&quot;;.
              </summary>
         </member>
-        <member name="T:JetBrains.ReSharper.Psi.CSharp.CodeStyle.CustomIndentHandler">
+        <member name="T:JetBrains.ReSharper.Psi.CSharp.CodeStyle.ICustomIndentHandler">
             <summary>
-            Provide custom indentation for the node to format correctly in ASP
+            Provide custom indentation for the node to format correctly in ASP/Razor
             </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.CodeStyle.ICustomIndentHandler.Indent(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.CodeStyle.CustomIndentType,JetBrains.ReSharper.Psi.CSharp.CodeStyle.CSharpCodeFormattingSettings)">
             <param name="node">node to get the indent for</param>
             <param name="indentType">type of requested custom indent</param>
-            <param name="globalSettings"></param>
             <param name="settings"></param>
             <returns><c>null</c> if default indentation should be used, or string which will be used as an indent</returns>
         </member>
@@ -399,6 +400,12 @@
         <member name="F:JetBrains.ReSharper.Psi.CSharp.Parsing.ParserNodeTypeSets.DECISION_CHAR_FOR_TYPE_ARGUMENT_LIST">
             <summary>
             Reference to C# specs 4.5.4.2 with nikov's comments
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.CSharpCollectionTypeUtil.ElementTypeByCollectionType(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.Resolve.IAccessContext)">
+            <summary>
+            Returns element type if collectionType is a _collection_type_ (described in specification, 15.8.4)
+            otherwise, returns null
             </summary>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.CSharp.Util.CSharpDeclaredElementUtil.IsCSharpTypeMember(JetBrains.ReSharper.Psi.ITypeMember)">

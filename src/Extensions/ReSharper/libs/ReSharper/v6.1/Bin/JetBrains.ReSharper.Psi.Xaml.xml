@@ -100,6 +100,87 @@
             Xaml object element, that can declare field
             </summary>
         </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.Impl.Util.AttachedEventUtil.IsAddHandler(JetBrains.ReSharper.Psi.IDeclaredElement,JetBrains.ReSharper.Psi.Resolve.ISubstitution,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Checks method to be the Add-accesor method of attached event.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.Impl.Util.AttachedEventUtil.IsRemoveHandler(JetBrains.ReSharper.Psi.IDeclaredElement,JetBrains.ReSharper.Psi.Resolve.ISubstitution,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Checks method to be the Remove-accesor method of attached event.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.Impl.Util.AttachedEventUtil.IsRoutedEventField(JetBrains.ReSharper.Psi.IDeclaredElement,JetBrains.ReSharper.Psi.Resolve.ISubstitution)">
+            <summary>
+            Checks field to be the routed event field.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.Impl.Util.AttachedEventUtil.GetAttachedEventType(JetBrains.ReSharper.Psi.IDeclaredElement,JetBrains.ReSharper.Psi.Resolve.ISubstitution,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Returns the event type by the attached event accessor signature.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.Impl.Util.AttachedEventUtil.CheckAccessorMethodSignature(JetBrains.ReSharper.Psi.IMethod)">
+            <summary>
+            Checks method to be static void-returning method with two parameters,
+            second of delegate type.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.Impl.Util.AttachedEventUtil.CheckAcessorOwnerType(JetBrains.ReSharper.Psi.IMethod,JetBrains.ReSharper.Psi.IType)">
+            <summary>
+            Checks attached event accessor method for first parameter type
+            to be equal or explicitly convertible to expected type.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.Impl.Util.AttachedEventUtil.CheckEventField(JetBrains.ReSharper.Psi.IMethod,JetBrains.ReSharper.Psi.Resolve.ISubstitution,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Checks attached event accessor to have routed event field defined in the same class.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.Impl.Util.AttachedEventUtil.CreateAddHandlerFilters(System.String,JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Resolve.ISymbolFilter,JetBrains.ReSharper.Psi.IType)">
+            <summary>
+            Returns filters list for attached events Add-accessor lookup.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.Impl.Util.AttachedEventUtil.CreateRemoveHandlerFilters(System.String,JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Resolve.ISymbolFilter,JetBrains.ReSharper.Psi.IType)">
+            <summary>
+            Returns filters list for attached events Remove-accessor lookup.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.Impl.Util.AttachedEventUtil.CreateRoutedEventFieldFilters(JetBrains.ReSharper.Psi.IPsiModule)">
+            <summary>
+            Returns filters list for routed event fields lookup.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.Impl.Util.AttachedEventUtil.CreateRoutedEventFilters(System.String,JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Resolve.ISymbolFilter)">
+            <summary>
+            Returs filters list for routed events with CLR accessors
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Xaml.Impl.Util.AttachedEventUtil.AttachedAccessorSignatureFilter">
+            <summary>
+            Accepts static method with the void return type
+            and 2 parameters, second of delegate type.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Xaml.Impl.Util.AttachedEventUtil.AttachedAccessorOwnerTypeFilter">
+            <summary>
+            Accepts method with the first parameter of type equal
+            or implicitly convertible to specified owner type.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Xaml.Impl.Util.AttachedEventUtil.RoutedEventFieldTypeFilter">
+            <summary>
+            Accepts type owner with expected type or type implicitly
+            convertible to exprected by CLR rules.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Xaml.Impl.Util.AttachedEventUtil.HasRoutedEventFieldFilter">
+            <summary>
+            Accepts events or add accessor methods with the routed event
+            fields defined near in the same type.
+            </summary>
+        </member>
         <member name="T:JetBrains.ReSharper.Psi.Xaml.Tree.MarkupExtensions.IIdentifierMarkupValue">
             <summary>
             Simple markup entry, that consists of identifier only

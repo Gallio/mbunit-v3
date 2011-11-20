@@ -15,6 +15,10 @@
              SubFolder\Resources1.resx => RootNamespace.Resources1 => Build into main assembly
              Resources1.fr.resx => RootNamespace.Resources1.fr => Build into satellite assembly
              Resources1.notaculture.resx => RootNamespace.Resources1.notaculture => Build into main assembly    /// </remarks>
+             
+             if Resources.resx is dependent upon Class1.cs with first class fullname Namespace.Class1 => Namespace.Class1
+             else => RootNamespace.Resources
+             
              <param name="projectFile">resource file.</param>
              <returns>resource name, e.g. for 'SR.ru-ru.resx' returns 'SR'.</returns>
         </member>

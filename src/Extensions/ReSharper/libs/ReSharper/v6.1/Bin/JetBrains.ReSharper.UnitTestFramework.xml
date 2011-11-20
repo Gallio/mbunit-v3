@@ -220,6 +220,12 @@
             <param name="parent">Element pattern in this context</param>
             <returns></returns>
         </member>
+        <member name="T:JetBrains.ReSharper.UnitTestFramework.IUnitTestElementTaskLaunchAware">
+            <summary>
+            Adds extra parameter IUnitTestLaunch to GetTaskSequence
+            Merge with IUnitTestElement (by replacing original GetTaskSequence) after 6.1
+            </summary>
+        </member>
         <member name="M:JetBrains.ReSharper.UnitTestFramework.Elements.UnitTestElementManager.AddElement(JetBrains.ReSharper.UnitTestFramework.IUnitTestElement,System.Boolean)">
             <summary>
             Adds new Unit Test Element to the system

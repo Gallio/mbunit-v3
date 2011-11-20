@@ -70,6 +70,11 @@
             Rule for completing methods in delegate creation expressions for second parameter (x, y|)
             </summary>
         </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Rules.LambdaParameterNameExpectedRuleWithReparse">
+            <summary>
+            Rule for completing methods in delegate creation expressions for second parameter (x, y|)
+            </summary>
+        </member>
         <member name="T:JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Rules.IndexersRule">
             <summary>
             Adds indexers after dot
@@ -274,7 +279,8 @@
             Tries to handle typing. Returns true if it handles typing or if nextHandler is called
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.TypingAssist.CSharpTypingAssistBase.GetValidSplitOffset(System.String,System.Int32)">
+        <member name="M:JetBrains.ReSharper.Feature.Services.CSharp.TypingAssist.CSharpTypingAssistBase.GetValidSplitOffset(JetBrains.ReSharper.Psi.PsiLanguageType,System.String,System.Int32)">
+            <param name="languageType"></param>
             <param name="str">String literal, including opening and ending double-quotes</param>
             <param name="offset">Current offset in literal</param>
         </member>

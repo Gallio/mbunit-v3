@@ -73,6 +73,11 @@
             <param name="project"></param>
             <returns></returns>
         </member>
+        <member name="M:JetBrains.ReSharper.Psi.Web.Tree.IWebAttribute.AttributeNameEqualsTo(System.String)">
+            <summary>
+            Fast check for AttributeName to reduce memory traffic
+            </summary>
+        </member>
         <member name="M:JetBrains.ReSharper.Psi.Web.Tree.IWebAttributeContainer`1.AddAttributeBefore(`0,`0)">
             <summary>
             Adds attribute before the anchor. If anchor == null, the attribute is inserted after the last attribute

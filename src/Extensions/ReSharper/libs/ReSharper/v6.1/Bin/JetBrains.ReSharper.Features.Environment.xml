@@ -282,23 +282,6 @@
             The environment options page.
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.Features.Environment.Options.Naming.NamingStylePage`1.components">
-            <summary> 
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Naming.NamingStylePage`1.Dispose(System.Boolean)">
-            <summary> 
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Naming.NamingStylePage`1.InitializeComponent">
-            <summary> 
-            Required method for Designer support - do not modify 
-            the contents of this method with the code editor.
-            </summary>
-        </member>
         <member name="F:JetBrains.ReSharper.Features.Environment.Options.Naming.CustomNamingOptionsPage`1.components">
             <summary> 
             Required designer variable.
@@ -382,6 +365,19 @@
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Environment.src.Options.Naming.PredefinedNamingSettingsPage">
+            <summary> 
+            Interaction logic for PredefinedNamingSettingsPage.xaml
+            </summary>
+            <summary>
+            PredefinedNamingSettingsPage
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.src.Options.Naming.PredefinedNamingSettingsPage.InitializeComponent">
+            <summary>
+            InitializeComponent
             </summary>
         </member>
         <member name="T:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator">

@@ -80,7 +80,7 @@
               Looks up a localized string similar to {0}({1}.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Razor.VB.Impl.RazorVBCodeBehindGeneratedDocumentService.#ctor(JetBrains.ReSharper.Psi.ILanguageManager,JetBrains.ReSharper.Psi.ExtensionsAPI.FileDependency)">
+        <member name="M:JetBrains.ReSharper.Psi.Razor.VB.Generate.RazorVBCodeGenerator.#ctor(JetBrains.ReSharper.Psi.ILanguageManager,JetBrains.Application.IApplicationDescriptor)">
             <remarks><see cref="T:JetBrains.ReSharper.Psi.ILanguageManager"/> is marker interface, to get dependencies initialized (psi language instances)</remarks>
         </member>
     </members>

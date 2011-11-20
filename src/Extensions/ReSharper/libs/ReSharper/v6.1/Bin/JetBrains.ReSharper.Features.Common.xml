@@ -149,6 +149,13 @@
             <see cref="T:JetBrains.UI.GotoByName.GotoByNameModel"/> for types (classes, structs, etc).
             </summary>
         </member>
+        <member name="M:JetBrains.ReSharper.Features.Common.SectionsManagement.IOccurenceSectionProvider.GetTreeSections(JetBrains.ReSharper.Features.Common.Occurences.OccurenceBrowserDescriptor)">
+            <summary>
+            Update descriptor's sections (sorting, titling, adding new sections) and return them.
+            </summary>
+            <param name="descriptor"></param>
+            <returns></returns>
+        </member>
         <member name="M:JetBrains.ReSharper.Features.Common.Occurences.OccurencePopupMenu.ShowMenuFromTextControl``1(JetBrains.Application.DataContext.IDataContext,System.Collections.Generic.ICollection{JetBrains.ReSharper.Feature.Services.Search.IOccurence},System.Func{``0},System.Nullable{JetBrains.ReSharper.Feature.Services.Occurences.OccurencePresentationOptions},System.Boolean,System.String,System.Int32)">
             <summary>
             shows a context popup menu filled with menu items. Each menu item presents corresponding occurence.
@@ -160,6 +167,14 @@
             <param name="skipMenuIfSingleEnabled"></param>
             <param name="title"></param>
             <param name="itemsCountLimit"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Common.Occurences.OccurenceBrowserDescriptor.SetResults(System.Collections.Generic.ICollection{JetBrains.ReSharper.Feature.Services.Search.IOccurence},JetBrains.Application.Progress.IProgressIndicator,System.Boolean)">
+            <summary>
+            Sets occurences to model.
+            </summary>
+            <param name="items"></param>
+            <param name="indicator"></param>
+            <param name="mergeKinds">use merging for defferent occurence kinds</param>
         </member>
         <member name="M:JetBrains.ReSharper.Features.Common.Occurences.OccurencePresentationManager.MergePresentationOptions(JetBrains.ReSharper.Feature.Services.Occurences.OccurencePresentationOptions,JetBrains.ReSharper.Feature.Services.Occurences.OccurencePresentationOptions)">
             <summary>

@@ -369,6 +369,11 @@
       <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Services.Css.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="JetBrains.ReSharper.Psi.Services.Asxx">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Services.Asxx.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="JetBrains.ReSharper.Psi.Services.Asp">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Services.Asp.dll</HintPath>

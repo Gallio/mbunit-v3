@@ -265,7 +265,7 @@
             More specific file type map, including editor AND extension
             </summary>
         </member>
-        <member name="T:JetBrains.ReSharper.VS.MSTest.MSTestAccessorReferenceProvider.MyProjectHandlerHandler">
+        <member name="T:JetBrains.ReSharper.VS.MSTest.MSTestAccessorReferenceProvider.MsTestAccessorProjectHandler">
             <summary>
             For every '.accessor' file add and reference corresponding DLLs
             </summary>

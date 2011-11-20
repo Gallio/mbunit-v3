@@ -2450,10 +2450,51 @@
             Helper class for registering a single file-based storage and a single mounting point with the Settings Store.
             </summary>
         </member>
+        <member name="F:JetBrains.Application.Settings.Storage.FileSettingsStorageProviderBase.Storage">
+            <summary>
+            The storage created by this component and promoted to the <see cref="T:JetBrains.Application.src.Settings.SettingsStore"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Application.Settings.Storage.FileSettingsStorageProviderBase.MountPoint">
+            <summary>
+            The mounting point for the storage created by this component and promoted to the <see cref="T:JetBrains.Application.src.Settings.SettingsStore"/>.
+            </summary>
+        </member>
         <member name="T:JetBrains.Application.Settings.Storage.DefaultFileStorages.GlobalAllProductsStorage">
             <summary>
             User settings: the storage serving the Global context, for all the products.
             </summary>
+        </member>
+        <member name="T:JetBrains.Application.Settings.Storage.DefaultFileStorages.GlobalSettings">
+            <summary>
+            Helpers for working with global settings layers (per-product and all-products).
+            </summary>
+        </member>
+        <member name="F:JetBrains.Application.Settings.Storage.DefaultFileStorages.GlobalSettings.AllProductsLayerId">
+            <summary>
+            <para>Identifies the Defaults-for-All-Products <see cref="T:JetBrains.Application.Settings.UserInterface.UserFriendlySettingsLayer">user-friendly settings layer</see>.</para>
+            <para>To get the layer, obtain or create a <see cref="T:JetBrains.Application.Settings.UserInterface.UserFriendlySettingsLayers"/> instance and ask it for the layer by its ID.</para>
+            </summary>
+        </member>
+        <member name="F:JetBrains.Application.Settings.Storage.DefaultFileStorages.GlobalSettings.ProductGlobalLayerId">
+            <summary>
+            <para>Identifies the This-Product-Global-Settings <see cref="T:JetBrains.Application.Settings.UserInterface.UserFriendlySettingsLayer">user-friendly settings layer</see>.</para>
+            <para>To get the layer, obtain or create a <see cref="T:JetBrains.Application.Settings.UserInterface.UserFriendlySettingsLayers"/> instance and ask it for the layer by its ID.</para>
+            </summary>
+        </member>
+        <member name="F:JetBrains.Application.Settings.Storage.DefaultFileStorages.GlobalSettings.BindForWritingToAllProducts">
+            <summary>
+            Binds <see cref="T:JetBrains.Application.src.Settings.SettingsStore"/> to the application-wide context so that writes were SmartSaved to the All-Products Settings layer (affecting any higher-priority writable layers if they contain conflicting values).
+            </summary>
+        </member>
+        <member name="M:JetBrains.Application.Settings.Storage.DefaultFileStorages.GlobalSettings.BindForSmartWritingToReadonlyContext(JetBrains.Application.Settings.ISettingsStore,JetBrains.Application.Settings.ISettingsStorageMountPoint,JetBrains.Application.Settings.ContextRange)">
+            <summary>
+            Helper function for binding to a smart-save context which turns the specified readonly mount into a writable one and specifies it as the last-wide-context-mount (which means that no writes will go to lower-priority layers, and higher-priority layers will be updated to agree to the setting being written).
+            </summary>
+            <param name="store"></param>
+            <param name="mountReadonly"></param>
+            <param name="contextrangeWithReadonlyMount"></param>
+            <returns></returns>
         </member>
         <member name="T:JetBrains.Application.Settings.Storage.ContentSubstring">
             <summary>
@@ -4273,12 +4314,12 @@
         </member>
         <member name="M:JetBrains.Application.Settings.ISettingsStore.GetOrderedMountPointsInContext(JetBrains.Application.DataContext.IDataContext)">
             <summary>
-            Returns the sequence of mouhnting points applicable to the specified context, sorted by priority ascending.
+            Returns the sequence of mounting points applicable to the specified context, sorted by priority ascending.
             </summary>
             <param name="context">Filtering context.</param>
             <returns>Sequence.</returns>
         </member>
-        <member name="M:JetBrains.Application.Settings.ISettingsStore.BindToMountPoints(System.Collections.Generic.IEnumerable{JetBrains.Application.Settings.ISettingsStorageMountPoint})">
+        <member name="M:JetBrains.Application.Settings.ISettingsStore.BindToMountPoints(System.Collections.Generic.IEnumerable{JetBrains.Application.Settings.ISettingsStorageMountPoint},JetBrains.Application.Settings.ISettingsStorageMountPoint)">
             <summary>
             Binds the context to the explicitly specified mount points.
             With non-transacted settings store, this means just creating a new bound store on the mount points.
@@ -4738,11 +4779,11 @@
             </summary>
         </member>
         <member name="M:JetBrains.Application.Settings.SettingsKeyAttribute.#ctor(System.Type,System.String)">
-            <param name="Parent">
+            <param name="parent">
             <para>The parent settings key. </para>
             <para><see cref="T:System.Reflection.Missing"/> denotes top-level settings keys. You should only have a few in the product. Consider mounting to an existing category instead of creating an new one.</para>
             </param>
-            <param name="Description">The string that explains the setting for the means of human-readable settings serialization or settings browser.</param>
+            <param name="description">The string that explains the setting for the means of human-readable settings serialization or settings browser.</param>
         </member>
         <member name="T:JetBrains.Application.Settings.ContextRange">
             <summary>
@@ -4828,6 +4869,13 @@
             <summary>
             Base priority for nested storages within the hierarchy (for R#, these are solution/project storages).
             If you need more than one priority level per hierarchy, use different mantissa with the same exponent (i. e. multiply by a positive number below ten).
+            </summary>
+        </member>
+        <member name="F:JetBrains.Application.Settings.SettingsStorageMountPointPriorityClasses.SyntheticPriorityOfSmartLayer">
+            <summary>
+            When we're rendering the settings layers, mount-originating layers take the priority of the underlying mount.
+            The “Smart” synthetic layer does not have a single mount under it. To be displayed in a sorted list along with other layers, it uses this fake priority level.
+            Do not use for real mounting points.
             </summary>
         </member>
         <member name="T:JetBrains.Application.Settings.SettingsStoreChangeArgs">
@@ -5325,6 +5373,12 @@
             Identifies this layer in an instance-invariant and transaction-invariant manner.
             </summary>
         </member>
+        <member name="F:JetBrains.Application.Settings.UserInterface.UserFriendlySettingsLayer.Priority">
+            <summary>
+            Priority of this layer when displaying a sorted layers list.
+            The lower the number, the higher the priority.
+            </summary>
+        </member>
         <member name="P:JetBrains.Application.Settings.UserInterface.UserFriendlySettingsLayer.IsDefault">
             <summary>
             Whether it's the default “Smart” “settings layer” (a combination of all application-wide mounts) which is edited in the default Options dialog.
@@ -5351,14 +5405,20 @@
             The list of available options context which could be manually selected for editing by the user.
             </summary>
         </member>
-        <member name="F:JetBrains.Application.Settings.UserInterface.UserFriendlySettingsLayers.IsHiddenFromMoreList">
+        <member name="F:JetBrains.Application.Settings.UserInterface.UserFriendlySettingsLayers.IsHiddenFromUserFriendlyLayers">
             <summary>
-            Set this metadata to <c>True</c> on a mounting point if you want to keep it from appearing in the “More…” list of the Options dialog.
+            Set this metadata to <c>True</c> on a mounting point if you want to keep it from appearing in the user-friendly settings layers list (in Options' SaveTo, in SettingsLayers dialog, etc).
             </summary>
         </member>
         <member name="F:JetBrains.Application.Settings.UserInterface.UserFriendlySettingsLayers.Origin">
             <summary>
             Some text which hints on the origin of the layer — e.g. from appdata or solution folder.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Application.Settings.UserInterface.UserFriendlySettingsLayers.Flags.IncludeHiddenLayers">
+            <summary>
+            By default, layers with <see cref="F:JetBrains.Application.Settings.UserInterface.UserFriendlySettingsLayers.IsHiddenFromUserFriendlyLayers"/> metadata are excluded from the user-friendly-layers list.
+            This flag overrides the behavior to include all of the available layers.
             </summary>
         </member>
         <member name="T:JetBrains.Application.Settings.EnvironmentSettings">
@@ -8122,13 +8182,15 @@
         <member name="M:JetBrains.Application.FileSystemTracker.IFileSystemTracker.AdviseFileChanges(JetBrains.DataFlow.Lifetime,JetBrains.Util.FileSystemPath,System.Action{JetBrains.ProjectModel.FileSystemChangeDelta})">
             <summary>
              Listens for changes in <paramref name="path" /> and executes <paramref name="onChangeAction" /> on it
-             (on FileSystemTrackerCommit thread in async mode and on main thread in sync mode)
+             (on FileSystemTrackerCommit thread in async mode and on main thread in sync mode).
+             Delta argument of <paramref name="onChangeAction"/> receives only changes related to <paramref name="path"/>
              </summary>
         </member>
         <member name="M:JetBrains.Application.FileSystemTracker.IFileSystemTracker.AdviseDirectoryChanges(JetBrains.DataFlow.Lifetime,JetBrains.Util.FileSystemPath,System.Boolean,System.Action{JetBrains.ProjectModel.FileSystemChangeDelta})">
             <summary>
              Listens for changes in <paramref name="path" /> and executes <paramref name="onChangeAction" /> on it
              (on FileSystemTrackerCommit thread in async mode and on main thread in sync mode)
+             Delta argument of <paramref name="onChangeAction"/> receives only changes related to <paramref name="path"/>
              </summary>
         </member>
         <member name="M:JetBrains.Application.FileSystemTracker.IFileSystemTracker.CommitChanges(JetBrains.Util.FileSystemPath[])">
@@ -9422,7 +9484,7 @@
         <member name="F:JetBrains.Application.Defines.LicenseSupportIdentifier">
              <summary>
               <para>
-                <c>#define LicenseSupportIdentifier E6EF44CE-A7F4-4C23-AD3D-E91D05774D0B</c>
+                <c>#define LicenseSupportIdentifier E9375A11-D795-423F-9A54-B29E77A11EA3</c>
               </para>
               <para>An identifier for the evaluation license. Change it to reset the evaluation period.</para>
               <para>Note: do not change LicenseSupportIdentifier here, edit the property on TeamCity instead.</para>
@@ -9842,7 +9904,7 @@
         <member name="F:JetBrains.Application.Defines.Const.LicenseSupportIdentifier">
              <summary>
               <para>
-                <c>#define LicenseSupportIdentifier E6EF44CE-A7F4-4C23-AD3D-E91D05774D0B</c>
+                <c>#define LicenseSupportIdentifier E9375A11-D795-423F-9A54-B29E77A11EA3</c>
               </para>
               <para>An identifier for the evaluation license. Change it to reset the evaluation period.</para>
               <para>Note: do not change LicenseSupportIdentifier here, edit the property on TeamCity instead.</para>

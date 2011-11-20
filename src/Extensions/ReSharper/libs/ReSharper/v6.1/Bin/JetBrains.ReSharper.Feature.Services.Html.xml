@@ -63,6 +63,15 @@
             Position lexer at footer's tag name. Return true if successful. Lexer position otherwise is undefined.
             </summary>
         </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Html.TypingAssist.HtmlLexerUtils.SkipAnotherLanguageInjects(JetBrains.ReSharper.Psi.Parsing.CachingLexer,JetBrains.ReSharper.Psi.Html.Parsing.IHtmlTokenNodeTypes)">
+            <summary>
+            Skips injects backwards
+            Returns if injects contain only another language tokens or text/spaces/errors
+            Also returns true if no injects found
+            If inject contains other tokens (for example, ASP directive can contain eq, attribute names and values),
+            stops processing and return false
+            </summary>
+        </member>
         <member name="P:JetBrains.ReSharper.Feature.Services.Html.TypingAssist.TagMarkers.TagName">
             <summary>
             Tag name as it was before changes (used for undoing changes on Escape)

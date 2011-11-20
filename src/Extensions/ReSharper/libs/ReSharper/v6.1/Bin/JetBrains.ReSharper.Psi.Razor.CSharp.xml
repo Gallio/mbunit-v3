@@ -67,6 +67,9 @@
               Looks up a localized string similar to {0}({1}.
             </summary>
         </member>
+        <member name="M:JetBrains.ReSharper.Psi.Razor.CSharp.Generate.RazorCSharpCodeGenerator.#ctor(JetBrains.ReSharper.Psi.ILanguageManager,JetBrains.Application.IApplicationDescriptor)">
+            <remarks><see cref="T:JetBrains.ReSharper.Psi.ILanguageManager"/> is marker interface, to get dependencies initialized (psi language instances)</remarks>
+        </member>
         <member name="M:JetBrains.ReSharper.Psi.Razor.CSharp.Impl.CustomHandlers.RazorCSharpPsiServices.IsMethodWithRazorMarkup(JetBrains.ReSharper.Psi.Tree.IDeclaration)">
             <summary>
             Does method can contain markup (Execute or helper)?
@@ -83,9 +86,6 @@
             <summary>
             C# statement, either escapable with @ (like @if) or with @{...}
             </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Psi.Razor.CSharp.Impl.RazorCSharpCodeBehindGeneratedDocumentService.#ctor(JetBrains.ReSharper.Psi.ILanguageManager,JetBrains.ReSharper.Psi.ExtensionsAPI.FileDependency,JetBrains.ReSharper.Psi.Razor.Generate.RazorCodeGenerator,JetBrains.ReSharper.Psi.Razor.Impl.CustomHandlers.IRazorPsiServices)">
-            <remarks><see cref="T:JetBrains.ReSharper.Psi.ILanguageManager"/> is marker interface, to get dependencies initialized (psi language instances)</remarks>
         </member>
     </members>
 </doc>

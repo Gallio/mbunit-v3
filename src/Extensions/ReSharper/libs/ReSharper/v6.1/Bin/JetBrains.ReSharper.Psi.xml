@@ -80,6 +80,18 @@
             Primary for web modules useful
             </summary>
         </member>
+        <member name="P:JetBrains.ReSharper.Psi.IPsiModule.PsiLanguage">
+            <summary>
+            "Primary" language of the PsiModule. For projects the property returns language obtained by <see cref="P:JetBrains.ReSharper.Psi.IPsiModule.ProjectFileType"/>
+            For PsiModules corresponding to ASP files we return code-behind language.
+            For Assembly PsiModules - UNKNOWN
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Psi.IPsiModule.ProjectFileType">
+            <summary>
+            Default language for a project, UNKNOWN for assembly, code-behind language for ASP file PsiModules...
+            </summary>
+        </member>
         <member name="P:JetBrains.ReSharper.Psi.IPsiModule.ContainingProjectModule">
             <summary>
             IAssembly or IProject for which this PsiModule is created as either primary or secondary, null for empty project module
@@ -757,7 +769,7 @@
             Timestamp if unsaved in-memory modified document. <c>null</c> if document is not modified in memory
             </summary>
         </member>
-        <member name="P:JetBrains.ReSharper.Psi.IPsiSourceFile.LastWriteTime">
+        <member name="P:JetBrains.ReSharper.Psi.IPsiSourceFile.LastWriteTimeUtc">
             <summary>
             UTC Timestamp of persistent document
             </summary>
@@ -859,7 +871,13 @@
         </member>
         <member name="M:JetBrains.ReSharper.Psi.IProjectPsiModuleHandler.OnProjectPropertiesChanged(JetBrains.ReSharper.Psi.PsiModuleChangeBuilder)">
             <summary>
-            Process changes of properties on underlying project, and return list of modified modules
+            Process changes of properties on underlying project, and return list of modifications
+            </summary>
+            <param name="changeBuilder"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.IProjectPsiModuleHandler.OnExternalModuleSetChanged(JetBrains.ReSharper.Psi.PsiModuleChangeBuilder)">
+            <summary>
+            Called when other modules are added or removed, so the reference resolve ot this could change
             </summary>
             <param name="changeBuilder"></param>
         </member>
@@ -1316,9 +1334,12 @@
             NotNull version of <see cref="M:JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.CompositeElement.FindChildByRole(System.Int16)"/>
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.TreeElement.myCachedLocalOffsetInParent">
+        <member name="F:JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.TreeElement.myCachedOffsetData">
             <summary>
             Cached value of local node offset in parent. The value is valid only when parent.<see cref="F:JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.CompositeElement.myCachedLength"/> is valid
+            -1 means unknown
+            zero or more: offset relative to parent
+            less then -1: absolute offset in buffer, -2 means zero
             </summary>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.TreeElement.FindElementsAtInternal(JetBrains.ReSharper.Psi.TreeOffset,System.Collections.Generic.List{JetBrains.ReSharper.Psi.Tree.ITreeNode})">
@@ -1349,7 +1370,7 @@
             Returns all possible secondary languages of the project file
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.IGeneratedDocumentsManager.CreateCompoundSecondaryLexerProcess(JetBrains.ProjectModel.ProjectFileType,JetBrains.ReSharper.Psi.Parsing.MixedLexer,JetBrains.ReSharper.Psi.IPsiSourceFile)">
+        <member name="M:JetBrains.ReSharper.Psi.IGeneratedDocumentsManager.CreateCompoundSecondaryLexerProcess(JetBrains.ProjectModel.ISolution,JetBrains.ProjectModel.ProjectFileType,JetBrains.ReSharper.Psi.Parsing.MixedLexer,JetBrains.ReSharper.Psi.IPsiSourceFile)">
             <summary>
             Creates lexing process for composite lexer
             </summary>
@@ -1359,14 +1380,19 @@
             Passes document change to the related documents
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.IGeneratedDocumentsManager.GetServices(JetBrains.ReSharper.Psi.IPsiSourceFile)">
+        <member name="M:JetBrains.ReSharper.Psi.IGeneratedDocumentsManager.GetServices(JetBrains.ProjectModel.ProjectFileType)">
             <summary>
-            Enumerables services for source file
+            Enumerables services for specified project file type
             </summary>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.IGeneratedDocumentsManager.AreGeneratedFilesValid(JetBrains.ReSharper.Psi.IPsiSourceFile)">
             <summary>
             Checks that generated files are not corrupted
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.GeneratedDocumentsManagerExtensions.GetServices(JetBrains.ReSharper.Psi.IGeneratedDocumentsManager,JetBrains.ReSharper.Psi.IPsiSourceFile)">
+            <summary>
+            Enumerables services for source file
             </summary>
         </member>
         <member name="F:JetBrains.ReSharper.Psi.Impl.Caches2.SymbolCache.ForwardedTypesTable.myForwardedTypesByClrName">
@@ -1524,13 +1550,13 @@
             retrurn XAML
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.IProjectFileLanguageService.GetMixedLexerFactory(JetBrains.Text.IBuffer,JetBrains.ReSharper.Psi.IPsiSourceFile,JetBrains.ReSharper.Psi.PsiManager)">
+        <member name="M:JetBrains.ReSharper.Psi.IProjectFileLanguageService.GetMixedLexerFactory(JetBrains.ProjectModel.ISolution,JetBrains.Text.IBuffer,JetBrains.ReSharper.Psi.IPsiSourceFile)">
             <summary>
             Creates lexer, that corresponds to source file text (NOT generated!) 
             </summary>
+            <param name="solution"></param>
             <param name="buffer">IBuffer with the text</param>
             <param name="sourceFile">Actual source file (if exists) for which the lexer is to be generated</param>
-            <param name="manager"></param>
             <returns></returns>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.Module.IModuleReferencer.CanReferenceModule(JetBrains.ReSharper.Psi.IPsiModule,JetBrains.ReSharper.Psi.IPsiModule)">
@@ -1785,13 +1811,13 @@
             PSI module provider for special solution projects
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Impl.Search.SearcherBase.ProcessProjectItem``1(JetBrains.ReSharper.Psi.IPsiSourceFile,JetBrains.ReSharper.Psi.Search.IFindResultConsumer{``0})">
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Search.SearchProcessorBase.ProcessProjectItem``1(JetBrains.ReSharper.Psi.IPsiSourceFile,JetBrains.ReSharper.Psi.Search.IFindResultConsumer{``0})">
             <returns>True if further search is not needed</returns>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Impl.Search.SearcherBase.ProcessElement``1(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Search.IFindResultConsumer{``0})">
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Search.SearchProcessorBase.ProcessElement``1(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.Search.IFindResultConsumer{``0})">
             <returns>True if further search is not needed</returns>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Impl.Search.SearcherBase.ProcessLibraryFile``1(JetBrains.ReSharper.Psi.Caches.IPsiAssemblyFile,JetBrains.ReSharper.Psi.Search.IFindResultConsumer{``0})">
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Search.SearchProcessorBase.ProcessLibraryFile``1(JetBrains.ReSharper.Psi.Caches.IPsiAssemblyFile,JetBrains.ReSharper.Psi.Search.IFindResultConsumer{``0})">
             <returns>True if further search is not needed</returns>
         </member>
         <member name="T:JetBrains.ReSharper.Psi.Impl.Search.MethodUsageInfo">
@@ -2291,6 +2317,11 @@
             It is used in "what-if" analysis, such as control flow statement redundancy.
             </summary>
         </member>
+        <member name="T:JetBrains.ReSharper.Psi.ControlFlow.IControlFlowElement">
+            <summary>
+            Base element of control flow tree. Getters use class <see cref="T:System.Collections.Generic.List`1"/> for performance reasons to not to box enumerator
+            </summary>
+        </member>
         <member name="T:JetBrains.ReSharper.Psi.DeclaredElementEnvoy`1">
             <summary>
             Represents <see cref="T:JetBrains.ReSharper.Psi.IDeclaredElement"/> for presentations.
@@ -2333,7 +2364,7 @@
             Returns random file at specified path
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Util.CollectionTypeUtil.ElementTypeByCollectionType(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.Resolve.IAccessContext)">
+        <member name="M:JetBrains.ReSharper.Psi.Util.CollectionTypeUtil.ElementTypeByCollectionType(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
             <summary>
             Returns element type if collectionType is a _collection_type_ (described in specification, 15.8.4)
             otherwise, returns null
@@ -2526,7 +2557,7 @@
             If cutting succeds the altered <code>str</code> contains a "shortened" presentation of the <see cref="T:JetBrains.ReSharper.Psi.IParametersOwner"/>.</param>
             <returns><code>true</code> if succeds to shorten a string.</returns>
         </member>
-        <member name="P:JetBrains.ReSharper.Psi.ExtensionsAPI.Finder.TextOccurenceSearcherBase.Predicate">
+        <member name="P:JetBrains.ReSharper.Psi.ExtensionsAPI.Finder.TextOccurenceSearcherBase`1.Predicate">
             <summary>
             Get the predicate to check if the given node should be checked for text occurence
             </summary>
@@ -2977,7 +3008,7 @@
             A smart element which resurrects from model changes by tracking its location
             </summary>
         </member>
-        <member name="T:JetBrains.ReSharper.Psi.Impl.Search.ConstructorSpecialReferenceSearcher">
+        <member name="T:JetBrains.ReSharper.Psi.Impl.Search.ConstructorSpecialReferenceSearchProcessor">
             <summary>
             Search for ":this()", ":base()" references....
             </summary>
@@ -3361,7 +3392,7 @@
             Custom naviagtion range, for instance for page declarations in ASP
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.ExtensionsAPI.IGeneratedDocumentService.CreateSecondaryLexingService(JetBrains.ReSharper.Psi.Parsing.MixedLexer,JetBrains.ReSharper.Psi.IPsiSourceFile)">
+        <member name="M:JetBrains.ReSharper.Psi.ExtensionsAPI.IGeneratedDocumentService.CreateSecondaryLexingService(JetBrains.ProjectModel.ISolution,JetBrains.ReSharper.Psi.Parsing.MixedLexer,JetBrains.ReSharper.Psi.IPsiSourceFile)">
             <summary>
             Creates provider of primary document composite lexer.
             </summary>
@@ -3775,6 +3806,14 @@
             <param name="k"></param>
             <returns>Type of the k'th token</returns>
         </member>
+        <member name="M:JetBrains.ReSharper.Psi.Parsing.LexerUtil.LookaheadToken``1(JetBrains.ReSharper.Psi.Parsing.ILexer{``0},System.Int32)">
+            <summary>
+            Scan next k tokens
+            </summary>
+            <param name="lexer"></param>
+            <param name="k"></param>
+            <returns>Type of the k'th token</returns>
+        </member>
         <member name="M:JetBrains.ReSharper.Psi.Parsing.LexerUtil.GetCurrTokenText(JetBrains.ReSharper.Psi.Parsing.ILexer)">
             <summary>
             Get the text of the current token of the lexer
@@ -3982,7 +4021,7 @@
             Get the underlying type pointer
             </summary> 
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Impl.Reflection2.XmlDocIndex.#ctor(JetBrains.ReSharper.Psi.IPsiAssembly,System.Boolean,JetBrains.ReSharper.Psi.PsiConfiguration,JetBrains.ProjectModel.PlatformManager)">
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Reflection2.XmlDocIndex.#ctor(JetBrains.ReSharper.Psi.IPsiAssembly,System.Boolean,JetBrains.ReSharper.Psi.PsiConfiguration,JetBrains.ProjectModel.PlatformManager,JetBrains.ReSharper.Psi.XmlIndex.XmlIndexThread)">
             <summary>
             Builds index for compiled XML docs
             </summary>

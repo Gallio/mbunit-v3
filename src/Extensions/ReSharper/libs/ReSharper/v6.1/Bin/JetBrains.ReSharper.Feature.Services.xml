@@ -946,11 +946,6 @@
             Context where a template can be executed
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.LiveTemplates.Context.ITemplateContext.WriteToXml(System.Xml.XmlElement)">
-            <summary>
-            Writes context to XML tag
-            </summary>
-        </member>
         <member name="T:JetBrains.ReSharper.Feature.Services.LiveTemplates.Scope.ScopeSelectorControl">
             <summary>
             ScopeSelectorControl
@@ -1904,6 +1899,11 @@
             Default - false
             </summary>
         </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.GetDocumentRangeForPartiallyUnmappedNode(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Default - InvalidRange
+            </summary>
+        </member>
         <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.IsOperationPossibleOnUnmappedRange(JetBrains.ReSharper.Psi.ITreeRange)">
             <summary>
             Default - false
@@ -1971,29 +1971,9 @@
             the contents of this method with the code editor.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.LiveTemplates.Storages.ITemplateFamily.GetConflicts(JetBrains.ReSharper.LiveTemplates.Templates.Template)">
-            <summary>
-            Enumerates conflicts for the specified templates
-            </summary>
-        </member>
         <member name="M:JetBrains.ReSharper.Feature.Services.LiveTemplates.Storages.ITemplateFamily.UidUsed(System.Guid)">
             <summary>
             Checks if the specified uid is already used for a template of the family
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.LiveTemplates.Storages.ITemplateFamily.StartBatch">
-            <summary>
-            Starts batch operation
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.LiveTemplates.Storages.ITemplateFamily.EndBatch">
-            <summary>
-            Ends batch operation
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Feature.Services.LiveTemplates.Storages.ITemplateFamily.Title">
-            <summary>
-            Gets family title
             </summary>
         </member>
         <member name="P:JetBrains.ReSharper.Feature.Services.LiveTemplates.Storages.ITemplateFamily.PredefinedStorage">
@@ -2009,11 +1989,6 @@
         <member name="P:JetBrains.ReSharper.Feature.Services.LiveTemplates.Storages.ITemplateFamily.TemplateStorages">
             <summary>
             Gets all registered template storages
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Feature.Services.LiveTemplates.Storages.ITemplateFamily.IsBatchRunning">
-            <summary>
-            Gets property indicating whether a batch operation is running
             </summary>
         </member>
         <member name="F:JetBrains.ReSharper.Feature.Services.LiveTemplates.FileTemplates.FileTemplatesFamilyEditorUI.components">
@@ -2647,46 +2622,6 @@
         <member name="T:JetBrains.ReSharper.Feature.Services.LiveTemplates.QuickLists.QuickList">
             <summary>
             Quick list implementation
-            </summary>
-        </member>
-        <member name="T:JetBrains.ReSharper.Feature.Services.LiveTemplates.Storages.ITemplateStorage">
-            <summary>
-            Represents a template storage
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.LiveTemplates.Storages.ITemplateStorage.ReplaceTemplate(JetBrains.ReSharper.LiveTemplates.Templates.Template,JetBrains.ReSharper.LiveTemplates.Templates.Template)">
-            <summary>
-            Replaces one template with another
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Feature.Services.LiveTemplates.Storages.ITemplateStorage.Icon">
-            <summary>
-            Get storage icon
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Feature.Services.LiveTemplates.Storages.ITemplateStorage.Name">
-            <summary>
-            Gets storage name
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Feature.Services.LiveTemplates.Storages.ITemplateStorage.ReadOnly">
-            <summary>
-            Gets flag indicating whether the storage is readonly
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Feature.Services.LiveTemplates.Storages.ITemplateStorage.Family">
-            <summary>
-            Gets templates family
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Feature.Services.LiveTemplates.Storages.ITemplateStorage.Templates">
-            <summary>
-            Gets templates located in this folder
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.LiveTemplates.Storages.IPredefinedStorage.Restore(JetBrains.ReSharper.LiveTemplates.Templates.Template)">
-            <summary>
-            Restores template to original predefined version
             </summary>
         </member>
         <member name="T:JetBrains.ReSharper.Feature.Services.LiveTemplates.Storages.UserStorage">

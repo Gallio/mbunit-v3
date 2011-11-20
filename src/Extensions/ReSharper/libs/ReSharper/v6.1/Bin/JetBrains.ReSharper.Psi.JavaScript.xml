@@ -196,10 +196,5 @@
             Returns type of this expression
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.JavaScript.Parsing.JavaScriptMissingTokensInserter.Run(JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.TreeElement)">
-            <remarks>
-            This code relies that TokenStart and TokenEnd return -1 when it reaches end of file.
-            </remarks>
-        </member>
     </members>
 </doc>

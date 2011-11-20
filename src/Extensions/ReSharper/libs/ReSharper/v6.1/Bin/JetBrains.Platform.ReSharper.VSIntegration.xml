@@ -115,23 +115,6 @@
             </summary>
             <param name="applicationDescriptor"></param>
         </member>
-        <member name="F:JetBrains.VsIntegration.ActionManagement.ShortcutsSchemeForm.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:JetBrains.VsIntegration.ActionManagement.ShortcutsSchemeForm.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:JetBrains.VsIntegration.ActionManagement.ShortcutsSchemeForm.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
-        </member>
         <member name="M:JetBrains.VsIntegration.ActionManagement.VsActionLoader.ProcessInsert(System.Xml.XmlElement,JetBrains.ActionManagement.ActionsXmlInfo)">
             <summary>
             Handles the <c>insert</c> statement in ActionsXml.

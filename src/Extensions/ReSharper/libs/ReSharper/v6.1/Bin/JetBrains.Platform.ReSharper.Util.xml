@@ -6935,6 +6935,11 @@
             An overload which supplies the logger into the methods, either the <see cref="T:JetBrains.Util.ILogger"/> obtained from the <see cref="T:System.ComponentModel.ITypeDescriptorContext"/>, or the default logger dumping into the static <see cref="T:JetBrains.Util.Logger"/> otherwise.
             </summary>
         </member>
+        <member name="T:JetBrains.Util.Reflection.ValueSerializerBase`1">
+            <summary>
+            A base class for quickly implementing a <see cref="T:System.Windows.Markup.ValueSerializer"/> for some class <typeparamref name="T"/> (attached thru <see cref="T:System.Windows.Markup.ValueSerializerAttribute"/>).
+            </summary>
+        </member>
         <member name="T:JetBrains.Util.FileSystemPathEx">
             <summary>
             Extension methods.
@@ -7134,6 +7139,12 @@
             <summary>
             Gets whether this control was ever requested in a non-native type, for which a wrapper has been created.
             If you'd like to be more specific about which kind of wrapper was created, it can be deduced from the <see cref="P:JetBrains.UI.CrossFramework.EitherControl.IsAvalon"/>/<see cref="P:JetBrains.UI.CrossFramework.EitherControl.IsWinForms"/> properties.
+            </summary>
+        </member>
+        <member name="T:JetBrains.UI.CrossFramework.EitherControl.DockedWindowsFormsHost">
+            <summary>
+            Represents workaround for such cases when Windows Forms 
+            control is docked or anchored to all availbale space
             </summary>
         </member>
         <member name="T:JetBrains.UI.CrossFramework.JetElementHost">
@@ -7844,9 +7855,50 @@
             Loags the given number of arguments on the stack, starting with #0 (“this” on an instance method).
             </summary>
         </member>
-        <member name="T:JetBrains.Util.Reflection.ValueSerializerBase`1">
+        <member name="T:JetBrains.Reflection.StringConversion">
             <summary>
-            A base class for quickly implementing a <see cref="T:System.Windows.Markup.ValueSerializer"/> for some class <typeparamref name="T"/> (attached thru <see cref="T:System.Windows.Markup.ValueSerializerAttribute"/>).
+            Helps with converting arbitrary types to and from strings.
+            Calls into <see cref="T:System.ComponentModel.TypeDescriptor"/>'s <see cref="T:System.ComponentModel.TypeConverter"/>, and WPF's <see cref="T:System.Windows.Markup.ValueSerializer"/>, and handles some trivial cases on its own.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Reflection.StringConversion.ToInvariantString(System.Object,JetBrains.Util.ILogger)">
+            <summary>
+            Wraps the <see cref="T:System.ComponentModel.TypeConverter"/>.
+            </summary>
+            <param name="value">Value to be converted to a string.</param>
+            <param name="logger">Optional. The logger to be passed to the converter.</param>
+        </member>
+        <member name="M:JetBrains.Reflection.StringConversion.ParseInvariantString(System.String,System.Type,JetBrains.Util.ILogger)">
+            <summary>
+            Wraps the <see cref="T:System.ComponentModel.TypeConverter"/>.
+            </summary>
+            <param name="value">String representation.</param>
+            <param name="type">Desired type of the object to be restored from the string representation.</param>
+            <param name="logger">Optional. The logger to be passed to the converter.</param>
+        </member>
+        <member name="M:JetBrains.Reflection.StringConversion.ParseInvariantString``1(System.String,JetBrains.Util.ILogger)">
+            <summary>
+            Wraps the <see cref="T:System.ComponentModel.TypeConverter"/>.
+            </summary>
+            <typeparam name="T">Desired type of the object to be restored from the string representation.</typeparam>
+            <param name="value">String representation.</param>
+            <param name="logger">Optional. The logger to be passed to the converter.</param>
+        </member>
+        <member name="M:JetBrains.Reflection.StringConversion.GetSomeLogger(System.ComponentModel.ITypeDescriptorContext)">
+            <summary>
+            Either the <see cref="T:JetBrains.Util.ILogger"/> obtained from the <see cref="T:System.ComponentModel.ITypeDescriptorContext"/>, or the default logger dumping into the static <see cref="T:JetBrains.Util.Logger"/> otherwise.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Reflection.StringConversion.GetTypeConverter(System.Type)">
+            <summary>
+            Caches <see cref="M:System.ComponentModel.TypeDescriptor.GetConverter(System.Type)"/> results because it seems to walk the attributes every time, which takes considerable amount of times when doing repeated serializations in Settings.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Reflection.StringConversion.TryGetValueSerializer(System.Type)">
+            <summary>
+            <para>Looks up a serializer. Does not construct a fake serializer for wrapping the type converter (like <see cref="M:System.Windows.Markup.ValueSerializer.GetSerializerFor(System.Type)"/> does) if not found, but returns NULL.</para>
+            <para>This is because a type-descriptor-converter wrapped into a value-converter would operate in the en-US locale while all previous calls of type-descriptor-converters operated in an invariant locale. We want all data previously written with an invariant type-converter to be now readable from persistent media, so we'd be calling type-descriptor-converters manually at the next stage.</para>
+            <para>NOTE: logic for finding a <see cref="T:System.Windows.Markup.ValueSerializer"/>, as implemented at <see cref="M:System.Windows.Markup.ValueSerializer.GetSerializerFor(System.Type)"/>, is really this simple. That's why we can do it ourselves. On the contrary, getting a <see cref="T:System.ComponentModel.TypeConverter"/> is a hell of a work for the whole <see cref="T:System.ComponentModel.TypeDescriptor"/> subsystem, that's why we're not reimplementing it. Also, <see cref="T:System.Windows.Markup.ValueSerializerAttribute"/> refers to a type when given a <see cref="T:System.Type"/>, while <see cref="T:System.ComponentModel.TypeConverterAttribute"/> commits it into a string and sometimes has problems getting it back as a type.</para>
             </summary>
         </member>
         <member name="T:JetBrains.Util.OperationResultType">
@@ -8158,6 +8210,16 @@
             Gets the hook data as a <see cref="T:JetBrains.Interop.WinApi.MSLLHOOKSTRUCT"/>. Valid for some messages only. Valid within the hook callback only. LIVE, do not modify unless that's intentional.
             </summary>
         </member>
+        <member name="M:JetBrains.Util.ExceptionEx.AddData``1(``0,System.String,System.Object)">
+            <summary>
+            Adds some data to be reported with the exception.
+            Note that the data is added as an object by default, and is not committed to text until the exception is.
+            </summary>
+            <param name="exception">The exception to enrich with data.</param>
+            <param name="name">Data entry name. Must be unique with the exception.</param>
+            <param name="value">Data entry value. For calculated values consider passing as a function for exception safety.</param>
+            <returns>The same exception object, for fluent usages.</returns>
+        </member>
         <member name="M:JetBrains.Util.ExceptionEx.AddData``1(``0,System.String,System.Func{System.Object})">
             <summary>
             Adds some data to be reported with the exception.
@@ -8169,13 +8231,6 @@
             <returns>The same exception object, for fluent usages.</returns>
         </member>
         <member name="M:JetBrains.Util.ExceptionEx.AddDataIndirect``1(``0,System.Action{System.Exception})">
-            <summary>
-            Adds some data to be reported with the exception.
-            Allows to call a data-adding function on some object that bears the exception context.
-            The call is executed in a safe manner.
-            </summary>
-        </member>
-        <member name="M:JetBrains.Util.ExceptionEx.AddDataIndirect2``1(``0,System.Func{``0,``0})">
             <summary>
             Adds some data to be reported with the exception.
             Allows to call a data-adding function on some object that bears the exception context.
@@ -14054,7 +14109,7 @@
         <member name="M:JetBrains.Util.DataStructures.ChunkList`1.BinarySearch(System.Func{`0,System.Int32})">
             <returns>found index. Less than 0 if not found</returns>
         </member>
-        <member name="M:JetBrains.Util.DataStructures.ChunkPackedIntArray.GetFirstItem(System.Int32)">
+        <member name="M:JetBrains.Util.DataStructures.ChunkPackedIntArray.GetItem(System.Int32,System.Int32)">
             <summary>
             Returns the first element of <see cref="P:JetBrains.Util.DataStructures.ChunkPackedIntArray.Item(System.Int32)"/> array
             </summary>
@@ -14336,11 +14391,6 @@
             <param name="value">Value to be converted to a string.</param>
             <param name="logger">Optional. The logger to be passed to the converter.</param>
         </member>
-        <member name="M:JetBrains.Reflection.ReflectionExtensions.TypeDescriptor_GetConverter(System.Type)">
-            <summary>
-            Caches <see cref="M:System.ComponentModel.TypeDescriptor.GetConverter(System.Type)"/> results because it seems to walk the attributes every time, which takes considerable amount of times when doing repeated serializations in Settings.
-            </summary>
-        </member>
         <member name="M:JetBrains.Reflection.ReflectionExtensions.GetBaseClassesAndInterfaces(System.Type)">
             <summary>
             Performs a BFS for base classes and interfaces of a type, self not included.
@@ -14398,11 +14448,6 @@
             <summary>
             Gets the chain of member access based on the expression passed in, from outermost to innermost members.
             Could be used e.g. for creating Avalon early-bound data binding property path.
-            </summary>
-        </member>
-        <member name="M:JetBrains.Reflection.ReflectionExtensions.GetSomeLogger(System.ComponentModel.ITypeDescriptorContext)">
-            <summary>
-            Either the <see cref="T:JetBrains.Util.ILogger"/> obtained from the <see cref="T:System.ComponentModel.ITypeDescriptorContext"/>, or the default logger dumping into the static <see cref="T:JetBrains.Util.Logger"/> otherwise.
             </summary>
         </member>
         <member name="T:JetBrains.TreeModels.CascadeGroup">
@@ -14664,14 +14709,9 @@
             Gets list of <see cref="T:JetBrains.TreeModels.ITreeGroupProvider`1"/> instances
             </summary>
         </member>
-        <member name="M:JetBrains.Util.DataStructures.UncheckedPackedIntArray.GetFirstItem(System.Int32,System.Int32)">
+        <member name="M:JetBrains.Util.DataStructures.UncheckedPackedIntArray.GetItem(System.Int32,System.Int32,System.Int32)">
             <summary>
-             Calculates the first element of the <see cref="P:JetBrains.Util.DataStructures.UncheckedPackedIntArray.Item(System.Int32,System.Int32)"/>
-            </summary>
-        </member>
-        <member name="M:JetBrains.Util.DataStructures.UncheckedPackedIntArray.GetLastItem(System.Int32,System.Int32)">
-            <summary>
-             Calculates the last element of the <see cref="P:JetBrains.Util.DataStructures.UncheckedPackedIntArray.Item(System.Int32,System.Int32)"/>
+            Calculates this[iSubItem]
             </summary>
         </member>
         <member name="T:JetBrains.Util.WeakCollection`1">
@@ -16671,10 +16711,15 @@
             Reuses the single instance of an empty array (one per type).
             </summary>
         </member>
+        <member name="T:JetBrains.Util.EmptyList`1">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:JetBrains.Util.EmptyArray">
             <summary>
             Reuses the single instance of an empty array (one per type).
-            This class is preferrable over <see cref="T:JetBrains.Util.EmptyArray`1"/> when you'd like to use SmartCompletion for completing the array type.
+            This class is preferrable over <see cref="T:JetBrains.Util.EmptyList`1"/> when you'd like to use SmartCompletion for completing the array type.
             </summary>
         </member>
         <member name="T:JetBrains.Util.EmptyDictionary`2">

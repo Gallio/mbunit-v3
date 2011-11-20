@@ -6667,6 +6667,17 @@
             <c>False</c> by default (because it's not very friendly with huge virtualized lists with large selections).
             </summary>
         </member>
+        <member name="F:JetBrains.UI.Avalon.TreeListView.TreeListViewItem.IsLockedProperty">
+            <summary>
+            Using a DependencyProperty as the backing store for Expandable.  
+            This enables animation, styling, binding, etc...
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Avalon.TreeListView.TreeListViewItem.IsLocked">
+            <summary>
+            Gets or sets whether this item is locked from user interaction
+            </summary>
+        </member>
         <member name="F:JetBrains.UI.Controls.TreeListView.TreeListViewWithDataContext.SelectedItem">
             <summary>
             If selection is not empty, gives out any selected item.
@@ -7700,6 +7711,12 @@
             Gets whether the settings layer is locked (readonly)
             </summary>
         </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerUidata.Priority">
+            <summary>
+            Priority of this layer when displaying a sorted layers list.
+            The lower the number, the higher the priority.
+            </summary>
+        </member>
         <member name="P:JetBrains.UI.Options.OptionsDialog2.OptionsDialogUidata.OptionsUidata">
             <summary>
             Gets view model for options pages
@@ -8320,6 +8337,15 @@
             When the boolean property is <c>True</c>, the target element is made visible; otherwise, it's hidden and collapsed.
             Usage: <c>isVisibleBoolProp.FlowIntoVisibility(control);</c>.
             </summary>
+        </member>
+        <member name="M:JetBrains.UI.Avalon.AvalonEx.TryPointFromScreen(System.Windows.Media.Visual,System.Windows.Point)">
+            <summary>
+            Converts a <see cref="T:System.Windows.Point"/> in screen coordinates into a <see cref="T:System.Windows.Point"/> that represents the current coordinate system of the <see cref="T:System.Windows.Media.Visual"/>.
+            Reimplements <see cref="M:System.Windows.Media.Visual.PointFromScreen(System.Windows.Point)"/> but without throwing any exceptions.
+            </summary>
+            <param name="thіs"></param>
+            <param name="point"></param>
+            <returns></returns>
         </member>
         <member name="T:JetBrains.UI.Avalon.AvalonTemplates">
             <summary>
@@ -9399,12 +9425,25 @@
             <para>This context belongs to a <see cref="T:JetBrains.Application.Settings.ISettingsStoreInTransaction">Settings Store transaction</see>, so you can freely modify it in Options UI and access this data across pages. The choice of the context depends on the user's settings editing mode: either Smart Save by default, or writing to a specific storage in Advanced mode.</para>
             </summary>
         </member>
-        <member name="F:JetBrains.UI.Options.OptionPagesList.OptionPages">
+        <member name="M:JetBrains.UI.Options.OptionPagesList.GetOptionPages">
             <summary>
             <para>Lists the known option pages.</para>
             <para>When the option pages tree needs to be built, these are organized into a one-time tree of <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/>s.</para>
-            <para>Generally, they're collected from the classes implementing <see cref="T:JetBrains.UI.Options.IOptionsPage"/> and marked with <see cref="T:JetBrains.UI.Options.OptionsPageAttribute"/>. You can promote your own page entities here as needed.</para>
+            <para>Generally, they're collected from the classes implementing <see cref="T:JetBrains.UI.Options.IOptionsPage"/> and marked with <see cref="T:JetBrains.UI.Options.OptionsPageAttribute"/>. You can promote your own page entities with <see cref="M:JetBrains.UI.Options.OptionPagesList.AddOptionsPage(JetBrains.DataFlow.Lifetime,System.Type,JetBrains.UI.Options.OptionsPageAttribute)"/> as needed.</para>
             </summary>
+        </member>
+        <member name="F:JetBrains.UI.Options.OptionPagesList.myManuallyAddedPages">
+            <summary>
+            What came with <see cref="M:JetBrains.UI.Options.OptionPagesList.AddOptionsPage(JetBrains.DataFlow.Lifetime,System.Type,JetBrains.UI.Options.OptionsPageAttribute)"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.Options.OptionPagesList.AddOptionsPage(JetBrains.DataFlow.Lifetime,System.Type,JetBrains.UI.Options.OptionsPageAttribute)">
+            <summary>
+            Manually registers a page for the Options dialog (in addition to pages regularly discovered from <see cref="T:JetBrains.UI.Options.OptionsPageAttribute"/>).
+            </summary>
+            <param name="lifetime">Duration.</param>
+            <param name="typePage">Type of the page class implementing the <see cref="T:JetBrains.UI.Options.IOptionsPage"/> interface.</param>
+            <param name="attribute">Attribute with page metadata.</param>
         </member>
         <member name="M:JetBrains.UI.Options.OptionPagesList.IsPageInConfiguration(JetBrains.UI.Options.OptionsPageAttribute,JetBrains.Application.Env.RunsProducts.ProductConfigurations,JetBrains.Application.IApplicationDescriptor)">
             <summary>
@@ -9413,7 +9452,7 @@
         </member>
         <member name="T:JetBrains.UI.Options.OptionPagesList.OptionsPageEntity">
             <summary>
-            Describes a known page in the <see cref="F:JetBrains.UI.Options.OptionPagesList.OptionPages">list</see>.
+            Describes a known page in the <see cref="M:JetBrains.UI.Options.OptionPagesList.GetOptionPages">list</see>.
             </summary>
         </member>
         <member name="P:JetBrains.UI.Options.OptionPagesList.OptionsPageEntity.Attribute">
@@ -9851,6 +9890,21 @@
             • View, a WinForms control created from the Decriptor, lives only for the run of the Options dialog.
             </remarks>
         </member>
+        <member name="M:JetBrains.UI.Options.OptionsManager.GetOptionPages">
+            <summary>
+            <para>Lists the known option pages.</para>
+            <para>When the option pages tree needs to be built, these are organized into a one-time tree of <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/>s.</para>
+            <para>Generally, they're collected from the classes implementing <see cref="T:JetBrains.UI.Options.IOptionsPage"/> and marked with <see cref="T:JetBrains.UI.Options.OptionsPageAttribute"/>. You can promote your own page entities with <see cref="M:JetBrains.UI.Options.OptionsManager.AddOptionsPage(JetBrains.DataFlow.Lifetime,System.Type,JetBrains.UI.Options.OptionsPageAttribute)"/> as needed.</para>
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.Options.OptionsManager.AddOptionsPage(JetBrains.DataFlow.Lifetime,System.Type,JetBrains.UI.Options.OptionsPageAttribute)">
+            <summary>
+            Manually registers a page for the Options dialog (in addition to pages regularly discovered from <see cref="T:JetBrains.UI.Options.OptionsPageAttribute"/>).
+            </summary>
+            <param name="lifetime">Duration.</param>
+            <param name="typePage">Type of the page class implementing the <see cref="T:JetBrains.UI.Options.IOptionsPage"/> interface.</param>
+            <param name="attribute">Attribute with page metadata.</param>
+        </member>
         <member name="M:JetBrains.UI.Options.OptionsManager.CreateOptionPagesTree">
             <summary>
             When option pages tree needs to be presented, builds the tree structure.
@@ -9870,13 +9924,6 @@
             Shows options dialog.
             </summary>
             <param name="pageId">Page id. <c>Null</c> means opening the most recently used page.</param>
-        </member>
-        <member name="P:JetBrains.UI.Options.OptionsManager.OptionPages">
-            <summary>
-            <para>Lists the known option pages.</para>
-            <para>When the option pages tree needs to be built, these are organized into a one-time tree of <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/>s.</para>
-            <para>Generally, they're collected from the classes implementing <see cref="T:JetBrains.UI.Options.IOptionsPage"/> and marked with <see cref="T:JetBrains.UI.Options.OptionsPageAttribute"/>. You can promote your own page entities here as needed.</para>
-            </summary>
         </member>
         <member name="T:JetBrains.UI.Options.OptionsPageAttribute">
             <summary>
@@ -13212,7 +13259,7 @@
             Checks whether the HWND belongs to a still-living .NET control or a good window.
             </summary>
         </member>
-        <member name="M:JetBrains.UI.ToolWindowManagement.TabRenamePrompt.Prompt(System.String,System.String)">
+        <member name="M:JetBrains.UI.ToolWindowManagement.TabRenamePrompt.Prompt(System.String,System.String,System.String[])">
             <summary>
             Asks user for a new tab name. Returns null on cancel
             </summary>
@@ -13852,7 +13899,7 @@
         </member>
         <member name="F:JetBrains.UI.Updates.UpdatesPageComponent.IsEnabled">
             <summary>
-            Allows to disable the auto-adding of the options page. Make this class a SCInterface to access this prop, if you ever need this.
+            Allows to disable the auto-adding of the options page.
             </summary>
         </member>
         <member name="T:JetBrains.UI.Updates.UpdatesShellProductCategoryOwner">

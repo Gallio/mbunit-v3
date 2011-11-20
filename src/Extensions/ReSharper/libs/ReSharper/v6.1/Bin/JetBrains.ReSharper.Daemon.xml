@@ -10,17 +10,34 @@
             and this is the difference from <see cref="M:JetBrains.ReSharper.Psi.Tree.TreeNodeExtensions.GetDocumentRange(JetBrains.ReSharper.Psi.Tree.ITreeNode)"/>
             </summary>
         </member>
+        <member name="T:JetBrains.ReSharper.Daemon.Stages.FileStructureBase">
+            <summary>
+            Handy base class for language-specific <see cref="T:JetBrains.ReSharper.Daemon.Stages.IFileStructure"/>
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Daemon.Stages.IFileStructure">
+            <summary>
+            Explores specific information for file and return it's coordinates relative to file
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Daemon.Stages.ICompilerWarningPreProcessor">
+            <summary>
+            Allows change the severity of compiler-specific highlighting according to project settings (such as "warning level" or "treat warnings as errors").
+            Applied when adding highlightings to <see cref="T:JetBrains.ReSharper.Daemon.Stages.IHighlightingConsumer"/> throgh <see cref="M:JetBrains.ReSharper.Daemon.Stages.HighlightingConsumerExtension.AddHighlighting(JetBrains.ReSharper.Daemon.Stages.IHighlightingConsumer,JetBrains.ReSharper.Daemon.IHighlighting,JetBrains.DocumentModel.DocumentRange,JetBrains.ReSharper.Psi.Tree.IFile,System.Nullable{JetBrains.ReSharper.Daemon.Severity},System.String)"/> methods
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Daemon.Stages.ICompilerWarningPreProcessor.PreProcess(JetBrains.ReSharper.Daemon.IHighlighting,System.Collections.Generic.IList{System.String},JetBrains.ReSharper.Psi.Tree.IFile,System.Nullable{JetBrains.ReSharper.Daemon.Severity}@,System.String@)">
+            <summary>
+            language-dependent preprocessor of highlighting with specified compiler ID. Return (null,null) in out parameters to use default severity anf attribute.
+            </summary>
+            <returns>
+            <c>true</c> if warning should be added to markup, <c>false</c> if warning should be skipped
+            </returns>
+        </member>
         <member name="T:JetBrains.ReSharper.Daemon.Stages.IgnoreWarningsRegionsInfo">
             <summary>
             Info about regions where to ignore warnings or errors
             </summary>
-        </member>
-        <member name="T:JetBrains.ReSharper.Daemon.Stages.IgnoreWarningsRegionsInfo.CompilerWarningPreprocessor">
-            <summary>
-            language-dependent preprocessor of highlighting with specified compiler ID.
-            Return (null,null) in out parameters to use default severity anf attribute.
-            </summary>
-            <returns><c>true</c> if warning should be added to markup, <c>false</c> if warning should be skipped</returns>
         </member>
         <member name="T:JetBrains.ReSharper.Daemon.Stages.GlobalFileStructureCollectorStage">
             <summary>
