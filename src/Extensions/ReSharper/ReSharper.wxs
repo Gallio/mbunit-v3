@@ -28,6 +28,9 @@
 <?ifdef FEATURE_RESHARPER_RUNNER_60 ?>
 			<FeatureRef Id='feat_Gallio.ReSharper.V60'/>
 <?endif?>
+<?ifdef FEATURE_RESHARPER_RUNNER_61 ?>
+			<FeatureRef Id='feat_Gallio.ReSharper.V61'/>
+<?endif?>
         </Feature>
     </Fragment>
 <?endif?>
