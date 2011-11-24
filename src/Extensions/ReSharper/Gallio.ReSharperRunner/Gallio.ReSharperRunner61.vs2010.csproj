@@ -90,6 +90,7 @@
     <Compile Include="Provider\Actions\ShowReportAction.cs" />
     <Compile Include="Provider\Explorers\UnitTestFileExplorer.cs" />
     <Compile Include="Provider\Explorers\UnitTestMetadataExplorer.cs" />
+    <Compile Include="Provider\Facade\NullFacadeTask.cs" />
     <Compile Include="Provider\GallioTestPresenter6.cs" />
     <Compile Include="Provider\GallioTestElement6.cs" />
     <Compile Include="Provider\Facade\AdapterFacadeLogger.cs" />
@@ -165,7 +166,7 @@
   <PropertyGroup>
     <ReSharperSdkTargets Condition=" '$(ReSharperSdkTargets)' == '' ">..\libs\ReSharper\v6.1\Targets</ReSharperSdkTargets>
   </PropertyGroup>
-  <Import Project="$(ReSharperSdkTargets)\Plugin.Targets" />  
+  <Import Project="$(ReSharperSdkTargets)\Plugin.Targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

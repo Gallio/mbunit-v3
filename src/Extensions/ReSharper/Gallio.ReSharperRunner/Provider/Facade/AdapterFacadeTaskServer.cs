@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
 using JetBrains.ReSharper.TaskRunnerFramework;
 using Gallio.Loader.Isolation;
@@ -62,8 +61,10 @@ namespace Gallio.ReSharperRunner.Provider.Facade
             if (node == null)
                 throw new ArgumentNullException("node");
 
-            FacadeTaskWrapper remoteTask = (FacadeTaskWrapper)node.RemoteTask;
-            FacadeTask facadeTask = remoteTask.FacadeTask;
+            var remoteTask = node.RemoteTask as FacadeTaskWrapper;
+            var facadeTask = remoteTask == null 
+                ? new NullFacadeTask() 
+                : remoteTask.FacadeTask;
 
             facadeTask.RemoteTaskHandle = remoteTasks.Count;
             remoteTasks.Add(remoteTask);

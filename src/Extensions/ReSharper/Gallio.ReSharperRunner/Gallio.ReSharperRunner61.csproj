@@ -90,6 +90,7 @@
     <Compile Include="Provider\Actions\ShowReportAction.cs" />
     <Compile Include="Provider\Explorers\UnitTestFileExplorer.cs" />
     <Compile Include="Provider\Explorers\UnitTestMetadataExplorer.cs" />
+    <Compile Include="Provider\Facade\NullFacadeTask.cs" />
     <Compile Include="Provider\GallioTestPresenter6.cs" />
     <Compile Include="Provider\GallioTestElement6.cs" />
     <Compile Include="Provider\Facade\AdapterFacadeLogger.cs" />

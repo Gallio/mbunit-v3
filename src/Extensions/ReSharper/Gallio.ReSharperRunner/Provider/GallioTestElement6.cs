@@ -26,6 +26,7 @@ using Gallio.ReSharperRunner.Reflection;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.ReSharper.TaskRunnerFramework;
 using JetBrains.ReSharper.UnitTestFramework;
 using JetBrains.Util;
 
@@ -216,9 +217,8 @@ namespace Gallio.ReSharperRunner.Provider
         public IList<UnitTestTask> GetTaskSequence(IList<IUnitTestElement> explicitElements)
 #endif
         {
-            var tasks = new List<UnitTestTask> { new UnitTestTask(null, FacadeTaskFactory.CreateRootTask()) };
-
             // Add the run task.  Must always be first.
+            var tasks = new List<UnitTestTask> { new UnitTestTask(null, FacadeTaskFactory.CreateRootTask()) };
 
             // Add the test case branch.
             AddTestTasksFromRootToLeaf(tasks, this);
@@ -227,6 +227,7 @@ namespace Gallio.ReSharperRunner.Provider
             // arbitrary elements.  We don't care about the structure of the task tree beyond this depth.
 
             // Add the assembly location.
+            tasks.Add(new UnitTestTask(null, new AssemblyLoadTask(GetAssemblyLocation())));
             tasks.Add(new UnitTestTask(null, FacadeTaskFactory.CreateAssemblyTaskFrom(this)));
 
             if (explicitElements.Count() != 0)
