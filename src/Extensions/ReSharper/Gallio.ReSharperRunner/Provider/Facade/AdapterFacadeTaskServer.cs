@@ -62,9 +62,13 @@ namespace Gallio.ReSharperRunner.Provider.Facade
                 throw new ArgumentNullException("node");
 
             var remoteTask = node.RemoteTask as FacadeTaskWrapper;
+#if RESHARPER_60_OR_NEWER
             var facadeTask = remoteTask == null 
                 ? new NullFacadeTask() 
                 : remoteTask.FacadeTask;
+#else
+            var facadeTask = remoteTask.FacadeTask;
+#endif
 
             facadeTask.RemoteTaskHandle = remoteTasks.Count;
             remoteTasks.Add(remoteTask);
