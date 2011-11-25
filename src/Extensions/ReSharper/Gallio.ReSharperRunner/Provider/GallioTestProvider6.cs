@@ -33,6 +33,9 @@ using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using JetBrains.Metadata.Reader.API;
 using JetBrains.ProjectModel;
+#if RESHARPER_61
+using JetBrains.ReSharper.Feature.Services.UnitTesting;
+#endif
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Impl.Caches2;
 using JetBrains.ReSharper.Psi.Tree;
@@ -48,9 +51,15 @@ namespace Gallio.ReSharperRunner.Provider
     /// </summary>
     [UnitTestProvider]
     public class GallioTestProvider : IUnitTestProvider
+#if RESHARPER_61
+        , IUnitTestingCategoriesAttributeProvider
+#endif
     {
         public const string ProviderId = "Gallio";
         private readonly Shim shim;
+
+        private static readonly IClrTypeName CategoryAttribute = new ClrTypeName("MbUnit.Framework.CategoryAttribute");
+
 #if RESHARPER_60
 		private UnitTestManager unitTestManager;
 #endif
@@ -538,6 +547,11 @@ namespace Gallio.ReSharperRunner.Provider
                     }
                 }
             }
+        }
+
+        public IEnumerable<string> CategoryAttributes
+        {
+            get { yield return CategoryAttribute.FullName; }
         }
     }
 }
