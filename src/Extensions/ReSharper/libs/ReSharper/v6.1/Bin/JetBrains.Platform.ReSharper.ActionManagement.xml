@@ -104,20 +104,27 @@
             Fluent. Sets a preloaded image, or resets the image on the action.
             </summary>
         </member>
-        <member name="T:JetBrains.ActionManagement.IActionBase">
+        <member name="P:JetBrains.ActionManagement.ActionPresentation.DisplayStyle">
             <summary>
-            Base for all actions. Has no default implementation.
+            Overrides the display style of this action's presentation on toolbars, menus, etc.
             </summary>
         </member>
-        <member name="T:JetBrains.ActionManagement.IActionGroup">
+        <member name="T:JetBrains.ActionManagement.ActionPresentation.DisplayStyles">
             <summary>
-            Group of actions.
+            Display style override for toolbar and menu buttons, where applicable.
+            TODO: should be introduced into Actions.XML, + into VSCT compiler.
+            TODO: should be moved into Actions.XML from action update handlers (to become declarative instead of procedural, and affect action usages in specific places rather than all action usages).
             </summary>
         </member>
-        <member name="T:JetBrains.ActionManagement.IUpdatableAction">
+        <member name="T:JetBrains.ActionManagement.DelegateActionHandler">
             <summary>
-            Action which presentation can be updated.
-            </summary>    
+            An action handler which could be defined with just two delegates.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ActionManagement.IActionHandler">
+            <remarks>
+            See <see cref="T:JetBrains.ActionManagement.DelegateActionHandler"/> for the default implementation of a code-created action handler.
+            </remarks>
         </member>
         <member name="M:JetBrains.ActionManagement.IActionHandler.Update(JetBrains.Application.DataContext.IDataContext,JetBrains.ActionManagement.ActionPresentation,JetBrains.ActionManagement.DelegateUpdate)">
             <summary>
@@ -134,6 +141,21 @@
             </summary>
             <param name="context">DataContext</param>
             <param name="nextExecute">delegate to call</param>
+        </member>
+        <member name="T:JetBrains.ActionManagement.IActionBase">
+            <summary>
+            Base for all actions. Has no default implementation.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ActionManagement.IActionGroup">
+            <summary>
+            Group of actions.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ActionManagement.IUpdatableAction">
+            <summary>
+            Action which presentation can be updated.
+            </summary>    
         </member>
         <member name="T:JetBrains.ActionManagement.IActionWithGroup">
             <summary>

@@ -22,29 +22,9 @@
             </summary>
             <returns>Triple of image, main text and additional description</returns>
         </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.GetRelatedDeclarations(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
-            <summary>
-            By default: yield break
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.GetRelatedAndFilterHidden(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
-            <summary>
-            By default: yield return declaration
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.IsHidden(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
-            <summary>
-            Works on auto-generated code-behind classed. By default - false
-            </summary>
-        </member>
         <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.IsCodeBehindClass(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
             <summary>
             By default - false
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.IsUserTextDeclaration(JetBrains.ReSharper.Psi.Tree.IDeclaration)">
-            <summary>
-            Works on auto-generated type members. By default - true
             </summary>
         </member>
         <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.CanContainSeveralClasses(JetBrains.ReSharper.Psi.IPsiSourceFile)">
@@ -57,19 +37,44 @@
             Default - true
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.SuperClassCanBeChanged(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.CanHaveConstructors(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
             <summary>
             Default - true
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.SuperClassNameMustBeFull(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.GetNamespaceForElementsMovedToExternalScope(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
             <summary>
-            Default - false
+            Default - typeElement.GetContainingElement&lt;INamespaceDeclaration&gt;(false);
             </summary>
         </member>
         <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.GetFolderForElementsMovedToExternalScope(JetBrains.ProjectModel.IProjectFile,System.String,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
             <summary>
             Default - file.Location.Directory
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.GetPrettyName(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration,System.Boolean)">
+            <summary>
+            Default - element.DeclaredName
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.IsOperationPossibleOnUnmappedRange(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Default - false
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.IsOperationPossibleOnUnmappedRange(JetBrains.ReSharper.Psi.ITreeRange)">
+            <summary>
+            Default - false
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.CanDeclarationBeOverloaded(JetBrains.ReSharper.Psi.Tree.IDeclaration)">
+            <summary>
+            Default - true
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Razor.RazorFileTypeSpecificOwnerUtil.GetMvcViewWithModelBaseTypes">
+            <summary>
+            Default - empty
             </summary>
         </member>
     </members>

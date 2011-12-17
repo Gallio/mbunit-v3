@@ -4,6 +4,11 @@
         <name>JetBrains.ReSharper.UnitTestProvider.JavaScript</name>
     </assembly>
     <members>
+        <member name="T:JetBrains.ReSharper.UnitTestProvider.JavaScript.QUnit.QUnitTestCache">
+            <summary>
+            Cache for QUnit tests. Refactor later into cache for all (JS) tests.
+            </summary>
+        </member>
         <member name="T:JetBrains.ReSharper.UnitTestProvider.JavaScript.QUnit.QUnitPageView">
             <summary>
             Interaction logic for UserControl1.xaml

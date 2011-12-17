@@ -26,12 +26,12 @@
         <member name="M:JetBrains.ReSharper.Features.Finding.FindDeclarations.GotoDeclarationHyperlink.GetRangeFromDeclaration">
              This code is modified copy from GotoDeclarationAction.GetCandidates
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Finding.GoToDeclaredElement.GotoDeclaredElementAction.EnableShowInFindResults(JetBrains.ReSharper.Features.Common.GoToByName.Controllers.GotoDeclaredElementController)">
+        <member name="M:JetBrains.ReSharper.Features.Finding.GoToDeclaredElement.GotoDeclaredElementAction.EnableShowInFindResults(JetBrains.ReSharper.Features.Common.GoToByName.Controllers.GotoDeclaredElementController,JetBrains.DataFlow.LifetimeDefinition)">
             <summary>
             Recalculates the complete list of items and shows them in FindResults.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.Finding.GoToSymbol.GotoSymbolAction.EnableShowInFindResults(JetBrains.ReSharper.Features.Common.GoToByName.Controllers.GotoSymbolController)">
+        <member name="M:JetBrains.ReSharper.Features.Finding.GoToSymbol.GotoSymbolAction.EnableShowInFindResults(JetBrains.ReSharper.Features.Common.GoToByName.Controllers.GotoSymbolController,JetBrains.DataFlow.LifetimeDefinition)">
             <summary>
             Executes when the Plus Button is clicked, or when the last menu item is executed.
             </summary>

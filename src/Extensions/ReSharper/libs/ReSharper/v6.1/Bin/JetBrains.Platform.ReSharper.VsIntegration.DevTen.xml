@@ -422,7 +422,20 @@
             DO NOT USE for things that could be achieved thru the modern API!
             </summary>
         </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.IWpfTextViewEx.TryGetIVsTextView(Microsoft.VisualStudio.Text.Editor.IWpfTextView,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService)">
+            <summary>
+            Gets the adapter class that exposes the pre-VS-10 interfaces from the text view.
+            DO NOT USE for things that could be achieved thru the modern API!
+            </summary>
+        </member>
         <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.IWpfTextViewEx.GetServiceProvider(Microsoft.VisualStudio.Text.Editor.IWpfTextView,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService)">
+            <summary>
+            Gets the Service Provider of the text view.
+            It wraps the Visual Studio <see cref="T:Microsoft.VisualStudio.OLE.Interop.IServiceProvider"/> object, but exposes it with the System <see cref="T:System.IServiceProvider"/> API.
+            The <see cref="T:Microsoft.VisualStudio.TextManager.Interop.IVsTextView"/>-implementing object is the <c>VsTextViewAdapter</c> who derives from <c>WindowPane</c> who implements the system <see cref="T:System.IServiceProvider"/>.
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.Interop.Extension.IWpfTextViewEx.TryGetServiceProvider(Microsoft.VisualStudio.Text.Editor.IWpfTextView,Microsoft.VisualStudio.Editor.IVsEditorAdaptersFactoryService)">
             <summary>
             Gets the Service Provider of the text view.
             It wraps the Visual Studio <see cref="T:Microsoft.VisualStudio.OLE.Interop.IServiceProvider"/> object, but exposes it with the System <see cref="T:System.IServiceProvider"/> API.
@@ -1221,6 +1234,11 @@
         <member name="T:JetBrains.VsIntegration.DevTen.TextControl.VsTextViewCollectorDevTen">
             <summary>
             Collects text views, getting them from any possible sources (MEF export collector, RDT events, by enumerating available text views periodically).
+            </summary>
+        </member>
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextViewCollectorDevTen.AdviseViewClosedSafe(Microsoft.VisualStudio.Text.Editor.IWpfTextView,JetBrains.Util.WeakReference{System.Action{Microsoft.VisualStudio.Text.Editor.IWpfTextView}})">
+            <summary>
+            Prevents fucking csc from pulling too many objects into the closure. Should have just the view (which defines the lifetime of all this stuff) and a weak ref to our object (which might live shorter if we're suspended).
             </summary>
         </member>
         <member name="F:JetBrains.VsIntegration.DevTen.TextControl.VsTextViewCollectorDevTen.VsTextViewsGuarded">

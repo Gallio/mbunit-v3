@@ -248,21 +248,21 @@
             Indicates that IEnumarable, passed as parameter, is not enumerated.
             </summary>
         </member>
-        <member name="T:JetBrains.Annotations.XamlMemberBindingAttribute">
+        <member name="T:JetBrains.Annotations.XamlItemBindingOfItemsControlAttribute">
             <summary>
-            Indicates the property of some <see cref="!:BindingBase"/> derived type, that is used
-            for items binding in some control with unusual templating scheme. This annotation will
-            enable the 'DataContext' type resolve for XAML bindings in such properties.
+            Indicates the property of some <c>BindingBase</c>-derived type, that is used
+            to bind some item of <c>ItemsControl</c>-derived type. This annotation will
+            enable the <c>DataContext</c> type resolve for XAML bindings for such properties.
             </summary>
             <remarks>
-            Property should have the tree ancestor of the <see cref="!:ItemsControl"/> type
-            or marked with the <see cref="T:JetBrains.Annotations.XamlItemsControlAttribute"/> attribute.
+            Property should have the tree ancestor of the <c>ItemsControl</c> type or
+            marked with the <see cref="T:JetBrains.Annotations.XamlItemsControlAttribute"/> attribute.
             </remarks>
         </member>
         <member name="T:JetBrains.Annotations.XamlItemsControlAttribute">
             <summary>
-            Indicates the type that should be treated as <see cref="!:ItemsControl"/>,
-            to enable the 'DataContext' type resolve based on 'ItemsSource' property value.
+            Indicates the type that has <c>ItemsSource</c> property and should be treated
+            as <c>ItemsControl</c>-derived type, to enable inner items <c>DataContext</c> type resolve.
             </summary>
         </member>
     </members>

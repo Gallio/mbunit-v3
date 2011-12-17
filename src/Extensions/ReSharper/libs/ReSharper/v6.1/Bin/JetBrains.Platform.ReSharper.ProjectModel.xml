@@ -337,7 +337,7 @@
         </member>
         <member name="F:JetBrains.ProjectModel.Settings.Store.ProjectSettings.BindForWritingToProjectShared">
             <summary>
-            Binds <see cref="T:JetBrains.Application.src.Settings.SettingsStore"/> to the project context so that writes were SmartSaved to the Project Shared layer (affecting any higher-priority writable layers if they contain conflicting values).
+            Binds <see cref="T:JetBrains.Application.Settings.Store.Implementation.SettingsStore"/> to the project context so that writes were SmartSaved to the Project Shared layer (affecting any higher-priority writable layers if they contain conflicting values).
             </summary>
         </member>
         <member name="F:JetBrains.ProjectModel.Settings.Store.ProjectSettings.ProjectSharedLayerId">
@@ -359,7 +359,7 @@
         </member>
         <member name="F:JetBrains.ProjectModel.Settings.Store.SolutionSettings.BindForWritingToSolutionShared">
             <summary>
-            Binds <see cref="T:JetBrains.Application.src.Settings.SettingsStore"/> to the solution context so that writes were SmartSaved to the Solution Shared layer (affecting any higher-priority writable layers if they contain conflicting values).
+            Binds <see cref="T:JetBrains.Application.Settings.Store.Implementation.SettingsStore"/> to the solution context so that writes were SmartSaved to the Solution Shared layer (affecting any higher-priority writable layers if they contain conflicting values).
             </summary>
         </member>
         <member name="F:JetBrains.ProjectModel.Settings.Store.SolutionSettings.SolutionSharedLayerId">

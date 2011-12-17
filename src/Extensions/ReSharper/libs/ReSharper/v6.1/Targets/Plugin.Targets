@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ReSharperSdkBinaries Condition="'$(ReSharperSdkBinaries)'==''">..\libs\ReSharper\v6.1\Bin</ReSharperSdkBinaries>
+    <ReSharperSdk Condition="'$(ReSharperSdk)'==''">SDK-PATH-HERE</ReSharperSdk>
+    <ReSharperSdkBinaries Condition="'$(ReSharperSdkBinaries)'==''">$(ReSharperSdk)\Bin</ReSharperSdkBinaries>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ionic.Zip.Reduced">
@@ -289,11 +290,6 @@
       <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Razor.CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="JetBrains.ReSharper.Psi.Razor.VB">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Razor.VB.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="JetBrains.ReSharper.Psi.Razor.Css">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Razor.Css.dll</HintPath>
@@ -304,11 +300,6 @@
       <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Razor.Css.CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="JetBrains.ReSharper.Psi.Razor.Css.VB">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Razor.Css.VB.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="JetBrains.ReSharper.Psi.Razor.JavaScript">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Razor.JavaScript.dll</HintPath>
@@ -317,11 +308,6 @@
     <Reference Include="JetBrains.ReSharper.Psi.Razor.JavaScript.CSharp">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Razor.JavaScript.CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="JetBrains.ReSharper.Psi.Razor.JavaScript.VB">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Razor.JavaScript.VB.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="JetBrains.ReSharper.Psi.IL">

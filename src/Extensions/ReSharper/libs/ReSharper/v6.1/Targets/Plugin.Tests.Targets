@@ -269,10 +269,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Razor.CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="JetBrains.ReSharper.Psi.Razor.VB">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Razor.VB.dll</HintPath>
-    </Reference>
     <Reference Include="JetBrains.ReSharper.Psi.Razor.Css">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Razor.Css.dll</HintPath>
@@ -281,10 +277,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Razor.Css.CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="JetBrains.ReSharper.Psi.Razor.Css.VB">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Razor.Css.VB.dll</HintPath>
-    </Reference>
     <Reference Include="JetBrains.ReSharper.Psi.Razor.JavaScript">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Razor.JavaScript.dll</HintPath>
@@ -292,10 +284,6 @@
     <Reference Include="JetBrains.ReSharper.Psi.Razor.JavaScript.CSharp">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Razor.JavaScript.CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="JetBrains.ReSharper.Psi.Razor.JavaScript.VB">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Razor.JavaScript.VB.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.ReSharper.Psi.IL">
       <SpecificVersion>False</SpecificVersion>

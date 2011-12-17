@@ -10,6 +10,38 @@
             and this is the difference from <see cref="M:JetBrains.ReSharper.Psi.Tree.TreeNodeExtensions.GetDocumentRange(JetBrains.ReSharper.Psi.Tree.ITreeNode)"/>
             </summary>
         </member>
+        <member name="T:JetBrains.ReSharper.Daemon.Impl.ChangeInspectionSeverityDialog">
+            <summary>
+            ChangeInspectionSeverityDialog
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Daemon.Impl.ChangeInspectionSeverityDialog.SeverityOptionsTitleProperty">
+            <summary>
+            Using a DependencyProperty as the backing store for SeverityOptionsTitle.  
+            This enables animation, styling, binding, etc...
+            </summary>
+        </member>
+        <member name="F:JetBrains.ReSharper.Daemon.Impl.ChangeInspectionSeverityDialog.CanBeErrorProperty">
+            <summary>
+            Using a DependencyProperty as the backing store for CanBeError. 
+            This enables animation, styling, binding, etc...
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Daemon.Impl.ChangeInspectionSeverityDialog.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Daemon.Impl.ChangeInspectionSeverityDialog.SeverityOptionsTitle">
+            <summary>
+            Gets or sets title of options which severity will be changed
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Daemon.Impl.ChangeInspectionSeverityDialog.SelectedSettingsLayer">
+            <summary>
+            Gets settings layer if user used Save To, null otherwise
+            </summary>
+        </member>
         <member name="T:JetBrains.ReSharper.Daemon.Stages.FileStructureBase">
             <summary>
             Handy base class for language-specific <see cref="T:JetBrains.ReSharper.Daemon.Stages.IFileStructure"/>
@@ -82,16 +114,26 @@
             the contents of this method with the code editor.
             </summary>
         </member>
+        <member name="P:JetBrains.ReSharper.Daemon.Impl.DaemonProcessBase.LastRunTimestamp">
+            <summary>
+            Aggregated timestamp of <see cref="T:JetBrains.ReSharper.Psi.IPsiSourceFile"/> for which daemon was completed
+            </summary>
+        </member>
         <member name="M:JetBrains.ReSharper.Daemon.Impl.DaemonProcessBase.HighlightingOverlapResolver.Compare(JetBrains.ReSharper.Daemon.Impl.DaemonProcessBase.HighlightingOverlapResolver.Highlighting,JetBrains.ReSharper.Daemon.Impl.DaemonProcessBase.HighlightingOverlapResolver.Highlighting)">
             <summary>
             Compare highlightings.
             </summary>
             <returns>0 if both should be present. -1 if <paramref name="i"/> should be removed, +1 if <paramref name="j"/> should be removed</returns>
         </member>
-        <member name="M:JetBrains.ReSharper.Daemon.Impl.DaemonProcessBase.HighlightingOverlapResolver.Resolve(System.Collections.Generic.ICollection{JetBrains.ReSharper.Daemon.HighlightingInfo},System.Boolean,JetBrains.Util.TextRange,JetBrains.ReSharper.Daemon.Impl.DaemonProcessBase.HighlightingOverlapResolver.Layer,JetBrains.Application.Settings.IContextBoundSettingsStore)">
+        <member name="M:JetBrains.ReSharper.Daemon.Impl.DaemonProcessBase.HighlightingOverlapResolver.Resolve(System.Collections.Generic.ICollection{JetBrains.ReSharper.Daemon.HighlightingInfo},System.Boolean,JetBrains.Util.TextRange,JetBrains.ReSharper.Daemon.Impl.DaemonProcessBase.HighlightingOverlapResolver.Layer,JetBrains.ProjectModel.ISolution)">
             <summary>
             Resolve overlapping highlighters. Receives new highlighters in given range (either full document, if <paramref name="fullRehighlight"/> is <c>true</c>, 
             and returns infos to be added and infos to be deleted
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Daemon.Impl.DaemonImpl.OnPsiModulesChange(JetBrains.ReSharper.Psi.PsiModuleChange)">
+            <summary>
+            remove invalidated daemons
             </summary>
         </member>
         <member name="T:JetBrains.ReSharper.Daemon.Impl.SolutionAnalysisService">

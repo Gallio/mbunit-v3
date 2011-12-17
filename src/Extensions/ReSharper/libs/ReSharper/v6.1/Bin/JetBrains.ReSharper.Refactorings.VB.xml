@@ -6,7 +6,13 @@ JetBrains.ReSharper.Refactorings.VB
 </name>
 </assembly>
 <members>
-<member name="P:JetBrains.ReSharper.Refactorings.VB.My.Resources.Resources.ResourceManager">
+<member name="M:JetBrains.ReSharper.Refactorings.VB.VBRefactoringService.FindScopesByDeclaredElement(JetBrains.ReSharper.Psi.IDeclaredElement)">
+	<summary>
+	</summary>
+	<param name="declaredElement"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:JetBrains.ReSharper.Refactorings.VB.My.Resources.Resources.ResourceManager">
 	<summary>
   Returns the cached ResourceManager instance used by this class.
 </summary>

@@ -96,7 +96,7 @@
             Prevents the Settings Store running in the test environment from reading the nondefault user settings and from saving whatever has been modified by the tests to disk.
             </summary>
         </member>
-        <member name="M:JetBrains.TestShell.Components.Settings.TestSettingsKeyA.AssertKeyEntries(JetBrains.Application.src.Settings.SettingsKey)">
+        <member name="M:JetBrains.TestShell.Components.Settings.TestSettingsKeyA.AssertKeyEntries(JetBrains.Application.Settings.SettingsKey)">
             <summary>
             The test checks reading the schema.
             </summary>

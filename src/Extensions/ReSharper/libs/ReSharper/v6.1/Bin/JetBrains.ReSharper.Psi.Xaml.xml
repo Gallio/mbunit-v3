@@ -100,6 +100,21 @@
             Xaml object element, that can declare field
             </summary>
         </member>
+        <member name="M:JetBrains.ReSharper.Psi.Xaml.Impl.Util.AttachedMembersUtil.IsTypeAttachable(JetBrains.ReSharper.Psi.Tree.ITreeNode,JetBrains.ReSharper.Psi.IType)">
+            <summary>
+            Detects if type can has some property/event attached.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Xaml.Impl.Util.AttachedMembersUtil.OwnerTypesFilter">
+            <summary>
+            Filter types with attached properties/events or reouted events
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Psi.Xaml.Impl.Util.AttachedMembersUtil.AttachedDefiningTypeFilter">
+            <summary>
+            Filter only attached properties/events defined by 'myAttachedOwnerType'
+            </summary>
+        </member>
         <member name="M:JetBrains.ReSharper.Psi.Xaml.Impl.Util.AttachedEventUtil.IsAddHandler(JetBrains.ReSharper.Psi.IDeclaredElement,JetBrains.ReSharper.Psi.Resolve.ISubstitution,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
             <summary>
             Checks method to be the Add-accesor method of attached event.
@@ -221,9 +236,7 @@
             </summary>
         </member>
         <member name="T:JetBrains.ReSharper.Psi.Xaml.Tree.IXamlFile">
-            <summary>
-            Xaml file
-            </summary>
+            <summary>Xaml file</summary>
         </member>
     </members>
 </doc>

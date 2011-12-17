@@ -337,6 +337,27 @@
             The number of nodes contained in the tree.
             </summary>
         </member>
+        <member name="T:JetBrains.Util.dataStructures.SimpleTrie`2">
+            <summary>
+            A trie which stores hierarchically nodes whose keys are lists of <typeparamref name="TKey"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Util.dataStructures.SimpleTrie`2.myRootNode">
+            <summary>
+            Synthetic root.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.dataStructures.SimpleTrie`2.RemoveAllKeyPrefixes(System.Collections.Generic.IList{`0})">
+            <summary>
+            Removes all nodes on any possible prefixes of <paramref name="keys"/>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Util.Collections.LimitedDictionary`2">
+            <summary>
+            Cache of most recently used items.
+            No position update on access.
+            </summary>
+        </member>
         <member name="T:JetBrains.Util.CompoundException">
             <summary>
             Aggregates multiple exceptions.
@@ -958,12 +979,12 @@
             Fires the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event.
             </summary>
         </member>
-        <member name="M:JetBrains.DataFlow.CollectionEvents`1.InternalAddAnnotatee(`0,System.Object)">
+        <member name="M:JetBrains.DataFlow.CollectionEvents`1.InternalAdd(`0,System.Object)">
             <summary>
             One of the core methods that implement the actual functionality.
             </summary>
         </member>
-        <member name="M:JetBrains.DataFlow.CollectionEvents`1.InternalRemoveAnnotatee(`0,System.Object)">
+        <member name="M:JetBrains.DataFlow.CollectionEvents`1.InternalRemove(`0,System.Object)">
             <summary>
             One of the core methods that implement the actual functionality.
             </summary>
@@ -1316,12 +1337,12 @@
             <param name="bNullKeysAllowed">Whether <c>Null</c> values are allowed for keys (take caution with value types).</param>
             <param name="bNullValuesAllowed">Whether <c>Null</c> values are allowed for values (take caution with value types).</param>
         </member>
-        <member name="M:JetBrains.DataFlow.DictionaryEvents`2.InternalAddAnnotatee(System.Collections.Generic.KeyValuePair{`0,`1},System.Object)">
+        <member name="M:JetBrains.DataFlow.DictionaryEvents`2.InternalAdd(System.Collections.Generic.KeyValuePair{`0,`1},System.Object)">
             <summary>
             One of the core methods that implement the actual functionality.
             </summary>
         </member>
-        <member name="M:JetBrains.DataFlow.DictionaryEvents`2.InternalRemoveAnnotatee(System.Collections.Generic.KeyValuePair{`0,`1},System.Object)">
+        <member name="M:JetBrains.DataFlow.DictionaryEvents`2.InternalRemove(System.Collections.Generic.KeyValuePair{`0,`1},System.Object)">
             <summary>
             One of the core methods that implement the actual functionality.
             </summary>
@@ -1370,6 +1391,15 @@
             <param name="key">Key to the value we're trying to look up.</param>
             <param name="funcCreateIfMissing">In case there is no <paramref name="key"/> in the dictionary, produces a new value to be stored in the dictionary and returned to the caller.</param>
             <returns></returns>
+        </member>
+        <member name="M:JetBrains.DataFlow.DictionaryEvents`2.set_Item(`0,System.Object,`1)">
+            <summary>
+            Sets the element with the specified key.
+            An overload of the <see cref="M:JetBrains.DataFlow.DictionaryEvents`2.set_Item(`0,`1)"/> method which allows to specify the modification cookie for both removal and addition operation events which might be fired as a result of this assignment.
+            </summary>
+            <param name="key"></param>
+            <param name="cookie"></param>
+            <param name="value"></param>
         </member>
         <member name="P:JetBrains.DataFlow.DictionaryEvents`2.NullPairKeysAllowed">
             <summary>
@@ -1667,7 +1697,7 @@
             <param name="thіs">Collection.</param>
             <returns>If the item was added to the collection (not cancelled by the duplicates merger or the before-added handlers), returns an object that removes the item from the collection on <see cref="M:System.IDisposable.Dispose"/>. Otherwise, returns a dummy <see cref="T:System.IDisposable"/>.</returns>
         </member>
-        <member name="M:JetBrains.DataFlow.ICollectionEventsEx.FlowInto``2(JetBrains.DataFlow.ICollectionEvents{``0},JetBrains.DataFlow.Lifetime,JetBrains.DataFlow.ICollectionEvents{``1},System.Func{``0,``1},System.Object)">
+        <member name="M:JetBrains.DataFlow.ICollectionEventsEx.FlowInto``2(JetBrains.DataFlow.ICollectionEvents{``0},JetBrains.DataFlow.Lifetime,JetBrains.DataFlow.ICollectionEvents{``1},System.Func{``0,``1},System.Func{``0,System.Boolean},System.Object)">
             <summary>
             Mirrors one collection into another.
             </summary>
@@ -1677,6 +1707,7 @@
             <param name="lifetime">ILifetime of the collection flow.</param>
             <param name="target">The target collection.</param>
             <param name="FConvert">If the collection types differ and are unrelated, a converter that produces items for the second collection from the items of the first collection. Note that for the <see cref="F:JetBrains.DataFlow.AddRemove.Remove"/> operation to be mirrored successfully, the converter product must return <see cref="M:System.Object.Equals(System.Object,System.Object)"/> for to projections of the same source item. May be <c>Null</c> if the types could be converted by a simple cast.</param>
+            <param name="FFilter">Allows to exclude certain items from being converted and added to the target collection.</param>
             <param name="cookie">An optional cookie for the modifiction operation on the <paramref name="target"/> collection.</param>
             <returns></returns>
         </member>
@@ -3445,14 +3476,14 @@
             This event does not acknowlegde subscriptions.
             </summary>
         </member>
-        <member name="M:JetBrains.DataFlow.IUntypedPropertyBag.GetOrCreateProperty(JetBrains.DataFlow.PropertyId,System.Object,System.Boolean)">
+        <member name="M:JetBrains.DataFlow.IUntypedPropertyBag.GetOrCreateProperty(JetBrains.DataFlow.PropertyId,System.Object,System.Nullable{System.Boolean})">
             <summary>
             Creates a property in the bag, or picks an existing one.
             The type is inferred from the generic data constant type <see cref="T:JetBrains.DataFlow.PropertyId`1"/>.
             </summary>
             <param name="id">An identifier for the property.</param>
             <param name="defaultvalue">Default value to assign to the property initially.</param>
-            <param name="nullable">Whether <c>Null</c> values are accepted by the property.</param>
+            <param name="isNullValueAllowed"></param>
             <returns>The newly-created property, or an existing one, if available.</returns>
         </member>
         <member name="M:JetBrains.DataFlow.IUntypedPropertyBag.Remove(JetBrains.DataFlow.PropertyId)">
@@ -3688,11 +3719,6 @@
         <member name="F:JetBrains.DataFlow.Lifetime.OptionRevertSchedulledInTerminated">
             <summary>
             If the actions schedulled on a terminated lifetime should be executed immediately (for actions; brackets are just ignored; disposes are disposed; etc).
-            </summary>
-        </member>
-        <member name="F:JetBrains.DataFlow.Lifetime.myId">
-            <summary>
-            ID for callstack annotation.
             </summary>
         </member>
         <member name="F:JetBrains.DataFlow.Lifetime.myItems">
@@ -4262,12 +4288,12 @@
             Called when someone attempts to sink the <see cref="P:JetBrains.DataFlow.ListEvents`1.BeforeAddRemove"/> signal. Acknowledges the handler.
             </summary>
         </member>
-        <member name="M:JetBrains.DataFlow.ListEvents`1.InternalAddAnnotatee(`0,System.Object)">
+        <member name="M:JetBrains.DataFlow.ListEvents`1.InternalAdd(`0,System.Object)">
             <summary>
             One of the core methods that implement the actual functionality.
             </summary>
         </member>
-        <member name="M:JetBrains.DataFlow.ListEvents`1.InternalRemoveAnnotatee(`0,System.Object)">
+        <member name="M:JetBrains.DataFlow.ListEvents`1.InternalRemove(`0,System.Object)">
             <summary>
             One of the core methods that implement the actual functionality.
             </summary>
@@ -5033,7 +5059,7 @@
             Tries to remove an existing property from the bag, returns whether successful (ie there really was such a property in the bag).
             </summary>
         </member>
-        <member name="M:JetBrains.DataFlow.PropertyBag.JetBrains#DataFlow#IUntypedPropertyBag#GetOrCreateProperty(JetBrains.DataFlow.PropertyId,System.Object,System.Boolean)">
+        <member name="M:JetBrains.DataFlow.PropertyBag.JetBrains#DataFlow#IUntypedPropertyBag#GetOrCreateProperty(JetBrains.DataFlow.PropertyId,System.Object,System.Nullable{System.Boolean})">
             <summary>
             Creates a property in the bag, or picks an existing one.
             The type is inferred from the generic data constant type <see cref="T:JetBrains.DataFlow.PropertyId`1"/>.
@@ -5461,6 +5487,31 @@
             Shouldn't be equal to current buffer length (should be zero in the next buffer instead).
             </summary>
         </member>
+        <member name="F:JetBrains.Util.dataStructures.ChunkedMemoryStream.myIsOnUserBuffers">
+            <summary>
+            Whether we're running on user buffers (as passed to ctor) and should not be modifying them.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.dataStructures.ChunkedMemoryStream.TrimExcess">
+            <summary>
+            Works similarly to <see cref="M:System.Collections.Generic.List`1.TrimExcess"/>.
+            Frees the unused buffers, but does not free the unused leftovers of the last buffer.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.dataStructures.ChunkedMemoryStream.TryGetBufferAndOffsetOfPosition(System.Int64,System.Int32@,System.Int32@)">
+            <summary>
+            Gets the buffer and offset in it where the <paramref name="lPositionIncludingStartOffset"/> falls.
+            Offset can be zero and never can be equal to the length of the buffer. At the very end, the buffer index is equal to the number of buffers.
+            Returns <c>-1</c> of OK and the total max length of the buffers-allocated space (including start offset) if the position does not fall within the allocated space.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.dataStructures.ChunkedMemoryStream.GetBufferAndOffsetOfPosition(System.Int64,System.Int32@,System.Int32@)">
+            <summary>
+            Gets the buffer and offset in it where the <paramref name="lPositionIncludingStartOffset"/> falls.
+            Offset can be zero and never can be equal to the length of the buffer. At the very end, the buffer index is equal to the number of buffers.
+            Throws when the length is outside the buffers span.
+            </summary>
+        </member>
         <member name="M:JetBrains.Util.DataStructures.ChunkSparseArray`1.#ctor(System.Int32)">
             <summary>
             Create chunk array with pre-allocated given size
@@ -5483,6 +5534,12 @@
             <para>Clones the list.</para>
             <para>We're a value type, but not a POD. Unlike assignment, cloning also clones the tail list correctly.</para>
             <para>Does NOT clone the items (unless they're PODs of course).</para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Util.DataStructures.HybridCollection`1">
+            <summary>
+            Collection which optmized to store single item without allocating array.
+            The collection cannot contain <c>null</c> elements!
             </summary>
         </member>
         <member name="T:JetBrains.UI.Anchoring">
@@ -8084,6 +8141,13 @@
             Writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.
             </summary>
         </member>
+        <member name="M:JetBrains.Extension.StreamEx.Rewind(System.IO.Stream)">
+            <summary>
+            <para>Rewinds the stream to the beginning so that it could be reused for reading.</para>
+            <para>For example, this should be done to a <see cref="T:System.IO.MemoryStream"/> after writing and before each reading.</para>
+            <para>Fluent.</para>
+            </summary>
+        </member>
         <member name="T:JetBrains.Extension.TypeEx">
             <summary>
             Extension methods for <see cref="T:System.Type"/>.
@@ -8119,7 +8183,7 @@
             Takes the type presentation, surrounds it with quotes if it contains spaces.
             </summary>
         </member>
-        <member name="M:JetBrains.Extension.TypeEx.CoercePrimitiveValueToType(System.Object,System.Type)">
+        <member name="M:JetBrains.Extension.TypeEx.CoercePrimitiveValueToType(System.Object,System.Type,JetBrains.Util.ILogger)">
             <summary>
             <para>When a value has to be specified on an attribute, its type is limited to primitive types. Also, the primitive types might not match if an integer is specified where a floating-point type is expected.</para>
             <para>This method tries the following coersions:</para>
@@ -13491,6 +13555,14 @@
             <para>We only post one (or a few) requests on the <see cref="F:JetBrains.Threading.JetDispatcher.myMarshaller"/>, and the actual actions to process reside on the queue here.</para>
             </summary>
         </member>
+        <member name="F:JetBrains.Threading.JetDispatcher.myItemsQueuedSinceLastExecution">
+            <summary>
+            Calculates the items added to <see cref="F:JetBrains.Threading.JetDispatcher.myPendingInvocationsQueue"/> since the last time those items were processed by the executor.
+            This is needed to post to the underlying marshaller only so rarely, and to make sure we post one more marshaller request when we start queueing nested items for execution (BeginInvoke from within another BeginInvoke execution which pumps messages).
+            Also reset when the queue gets empty.
+            Accessed under <see cref="F:JetBrains.Threading.JetDispatcher.myQueueLock"/> only.
+            </summary>
+        </member>
         <member name="F:JetBrains.Threading.JetDispatcher.OptionCallNativeMarshallerForFirstItems">
             <summary>
             To increase reliability, the system marshaller will be called for these first items added to the queue.
@@ -13520,6 +13592,14 @@
         <member name="F:JetBrains.Threading.JetDispatcher.Thread">
             <summary>
             Gets the thread the dispatcher is running on.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Threading.JetDispatcher.myGeneration">
+            <summary>
+            Provides the generation number for <see cref="F:JetBrains.Threading.JetDispatcher.Closure.Generation"/>.
+            Can be read free-threaded (because in absence of synchronization you cannot prove violation of invariants).
+            Incremented under the <see cref="F:JetBrains.Threading.JetDispatcher.myQueueLock"/>.
+            Must not be zero.
             </summary>
         </member>
         <member name="M:JetBrains.Threading.JetDispatcher.AssertFreeThreaded">
@@ -13685,6 +13765,11 @@
         <member name="F:JetBrains.Threading.JetDispatcher.Closure.myAction">
             <summary>
             Action to execute, <c>Null</c>ed if the lifetime is terminated (execution is canceled).
+            </summary>
+        </member>
+        <member name="F:JetBrains.Threading.JetDispatcher.Closure.Generation">
+            <summary>
+            Execution generation to which this schedulled action closure belongs. See usage for details.
             </summary>
         </member>
         <member name="M:JetBrains.Threading.JetDispatcher.Closure.Execute">
@@ -14130,17 +14215,40 @@
             </summary>
             <returns>The difference, in the <paramref name="minuend"/> instance.</returns>
         </member>
-        <member name="M:JetBrains.Util.BinarySearchUtil.GetOrCreate``1(System.Collections.Generic.IList{``0},JetBrains.Util.Locator{``0},System.Func{``0})">
+        <member name="M:JetBrains.Util.BinarySearchUtil.BinarySearch``2(System.Collections.Generic.IList{``1},``0,System.Func{``1,``0},System.Collections.Generic.IComparer{``0},System.Int32,System.Int32)">
             <summary>
-            Looks up an item in a binary-search-ready (sorted) list.
-            Returns the found item.
-            If not found, creates a new item, insers into the list on the proper position to maintain sorting, and returns this new item.
+            <para>Searches a one-dimensional sorted <see cref="T:System.Collections.Generic.IList`1"/> for a value using the binary search algorithm.</para>
+            <para>The desired item is identified by its so-called key given in <paramref name="keyLookFor"/>, and a transformation is defined as <paramref name="FGetKeyOfItem"/> for getting a key out of each list item. The comparison (and list sorting requirement) applies to these keys derived from the items.</para>
+            <para>Optionally, the comparer could be overridden. This is recommended for custom value types to avoid boxing, unless they're <see cref="T:System.IComparable`1"/>.</para>
+            <para>The advantage of this method over the one using a locator, <see cref="M:JetBrains.Util.BinarySearchUtil.BinarySearch``1(System.Collections.Generic.IList{``0},System.Int32,System.Int32,JetBrains.Util.Locator{``0})"/>, is that it can work on cached delegates/comparers and does not require creating a closure for each new location session. Also, there's no locator left-right argument confusion.</para>
             </summary>
-            <typeparam name="TValue"></typeparam>
-            <param name="list">Sorted list.</param>
-            <param name="locator">Navigates to the desired item.</param>
-            <param name="FCreateIfMissing">If the item is not found, this functor is called to create a new item.</param>
-            <returns></returns>
+            <typeparam name="TItem">Type of the actual items in the list.</typeparam>
+            <typeparam name="TKey">Type of the so-called key by which the items are sorted and located in the list. This could be either an actual field/property of the item, or a completely synthetic value calculated on the item.</typeparam>
+            <param name="list">The list of items to search. Must be sorted by their keys.</param>
+            <param name="keyLookFor">Key we're looking for. If it is equal to a key of some item in the list, that item is returned as a search result. If no items correspond to the key, the result points “in between” array items, see return value members for telling this cases apart or using the found location, for example, <see cref="M:JetBrains.Util.BinarySearchResult`1.InsertAt(`0)"/>.</param>
+            <param name="index">Starting index of the list range to search in. <c>0</c> is the default.</param>
+            <param name="length">Length of the list range to search in. <c>-1</c> is the default and means that the whole list must be searched.</param>
+            <param name="FGetKeyOfItem">
+            <para>A transformation which produces a key for any of the list items. Items are sorted by these keys, and keys are used for locating items. This could be either an actual field/property of the item, or a completely synthetic value calculated on the item.</para>
+            <para>In performance-critical scenarios, cache this delegate. Normally it's a static method and thus does not require a new closure each time.</para>
+            </param>
+            <param name="keycomparer">A custom comparer over item keys, if needed. If omitted, the <see cref="P:System.Collections.Generic.Comparer`1.Default">standard comparer</see> is used.</param>
+            <returns>The search result which can tell you if any item was hit, at which index to insert the new item, what's the closest index before/after the search target, and so on.</returns>
+        </member>
+        <member name="M:JetBrains.Util.BinarySearchUtil.BinarySearch``1(System.Collections.Generic.IList{``0},``0,System.Collections.Generic.IComparer{``0},System.Int32,System.Int32)">
+            <summary>
+            <para>Searches a one-dimensional sorted <see cref="T:System.Collections.Generic.IList`1"/> for a value using the binary search algorithm.</para>
+            <para>This overload does comparison right on the items. If the list is sorted by just one property of the item, use the overload with item-key metaphor.</para>
+            <para>Optionally, the comparer could be overridden. This is recommended for custom value types to avoid boxing, unless they're <see cref="T:System.IComparable`1"/>.</para>
+            <para>The advantage of this method over the one using a locator, <see cref="M:JetBrains.Util.BinarySearchUtil.BinarySearch``1(System.Collections.Generic.IList{``0},System.Int32,System.Int32,JetBrains.Util.Locator{``0})"/>, is that it can work on cached delegates/comparers and does not require creating a closure for each new location session. Also, there's no locator left-right argument confusion.</para>
+            </summary>
+            <typeparam name="TItem">Type of the actual items in the list. They're the sorting keys of the list as well.</typeparam>
+            <param name="list">The list of items to search. Must be sorted by their keys.</param>
+            <param name="itemLookFor">Item we're looking for, which itself is also the sorting/search key. If it is equal to some item in the list, that item is returned as a search result. If no items are hit, the result points “in between” array items, see return value members for telling this cases apart or using the found location, for example, <see cref="M:JetBrains.Util.BinarySearchResult`1.InsertAt(`0)"/>.</param>
+            <param name="index">Starting index of the list range to search in. <c>0</c> is the default.</param>
+            <param name="length">Length of the list range to search in. <c>-1</c> is the default and means that the whole list must be searched.</param>
+            <param name="keycomparer">A custom comparer over items, if needed. If omitted, the <see cref="P:System.Collections.Generic.Comparer`1.Default">standard comparer</see> is used.</param>
+            <returns>The search result which can tell you if any item was hit, at which index to insert the new item, what's the closest index before/after the search target, and so on.</returns>
         </member>
         <member name="M:JetBrains.Util.BinarySearchUtil.GetOrCreateValue``2(System.Collections.Generic.IList{``1},``0,System.Func{``1,``0},System.Func{``1})">
             <summary>
@@ -14169,15 +14277,6 @@
             <param name="key">The key whose item you would like to find in the list.</param>
             <returns></returns>
         </member>
-        <member name="M:JetBrains.Util.BinarySearchUtil.Remove``1(System.Collections.Generic.IList{``0},JetBrains.Util.Locator{``0})">
-            <summary>
-            Looks up an item in a binary-search-ready (sorted) list and removes it.
-            Returns whether the item was found.
-            </summary>
-            <typeparam name="TValue"></typeparam>
-            <param name="list">Sorted list.</param>
-            <param name="locator">Navigates to the desired item.</param>
-        </member>
         <member name="M:JetBrains.Util.BinarySearchUtil.RemoveValue``2(System.Collections.Generic.IList{``1},``0,System.Func{``1,``0})">
             <summary>
             Looks up an item in a binary-search-ready (sorted) list which is being used as a dictionary (values stored in the list are associated with some kind of keys which you use for comparing items in the list), and removes it.
@@ -14191,23 +14290,13 @@
             <param name="key">The key whose item you would like to find in the list.</param>
             <returns></returns>
         </member>
-        <member name="M:JetBrains.Util.BinarySearchUtil.BinarySearchEx``1(System.Collections.Generic.List{``0},``0)">
+        <member name="M:JetBrains.Util.BinarySearchUtil.BinarySearchEx``1(System.Collections.Generic.IList{``0},``0)">
             <summary>
             Searches an entire one-dimensional sorted <see cref="T:System.Collections.Generic.IList`1"/> for the index of a specific value.
             </summary>
             <typeparam name="TItem">The type of the elements of the list.</typeparam>
             <param name="thіs">The sorted list to search.</param>
             <param name="item">The item to find.</param>
-        </member>
-        <member name="M:JetBrains.Util.BinarySearchUtil.BinarySearchEx``2(System.Collections.Generic.IList{``1},``0,System.Func{``1,``0})">
-            <summary>
-            Searches an entire one-dimensional sorted <see cref="T:System.Collections.Generic.IList`1"/> for an item by its key.
-            </summary>
-            <typeparam name="TKey"></typeparam>
-            <typeparam name="TValue"></typeparam>
-            <param name="thіs">The sorted list to search.</param>
-            <param name="key">Key to find an item with.</param>
-            <param name="FGetKeyOfItem">The transformation for getting a key ot of an item stored in the list.</param>
         </member>
         <member name="M:JetBrains.Util.BinarySearchUtil.BinarySearchEx``1(System.Collections.Generic.IList{``0},JetBrains.Util.Locator{``0})">
             <summary>
@@ -14216,16 +14305,6 @@
             <typeparam name="T">The type of the elements of the list.</typeparam>
             <param name="list">The sorted list to search.</param>
             <param name="locator">The comparer to use when comparing elements. Delegate should compare its parameter to the item you're looking for.</param>
-        </member>
-        <member name="M:JetBrains.Util.BinarySearchUtil.BinarySearchEx``1(System.Collections.Generic.IList{``0},System.Int32,System.Int32,JetBrains.Util.Locator{``0})">
-            <summary>
-            Searches an entire one-dimensional sorted <see cref="T:System.Collections.Generic.IList`1"/> for a value using the specified <paramref name="locator">comparer</paramref>.
-            </summary>
-            <typeparam name="T">The type of the elements of the list.</typeparam>
-            <param name="list">The sorted list to search.</param>
-            <param name="index"></param>
-            <param name="length"></param>
-            <param name="locator">The comparer to use when comparing elements.</param>
         </member>
         <member name="M:JetBrains.Util.BinarySearchUtil.BinarySearch``1(System.Collections.Generic.IList{``0},System.Int32,System.Int32,JetBrains.Util.Locator{``0})">
             <summary>
@@ -16870,6 +16949,43 @@
             Static overload to prevent runtime type checks.
             </remarks>
         </member>
+        <member name="M:JetBrains.Util.CollectionUtil.IsNullOrEmpty``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns <c>true</c> if and only if <paramref name="collection"/> is empty (has no elements).
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.CollectionUtil.IsNullOrEmpty``1(System.Collections.Generic.ICollection{``0})">
+            <summary>
+            Returns <c>true</c> if and only if <paramref name="collection"/> is empty (has no elements).
+            </summary>
+            <remarks>
+            Static overload to prevent runtime type checks.
+            </remarks>
+        </member>
+        <member name="M:JetBrains.Util.CollectionUtil.IsNullOrEmpty``1(JetBrains.Util.LocalList{``0})">
+            <summary>
+            Returns <c>true</c> if and only if <paramref name="collection"/> is empty (has no elements).
+            </summary>
+            <summary>
+            Static overload to prevent runtime type checks.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Util.CollectionUtil.IsNullOrEmpty``1(System.Collections.Generic.Stack{``0})">
+            <summary>
+            Returns <c>true</c> if and only if <paramref name="collection"/> is empty (has no elements).
+            </summary>
+            <remarks>
+            Static overload to prevent runtime type checks.
+            </remarks>
+        </member>
+        <member name="M:JetBrains.Util.CollectionUtil.IsNullOrEmpty``1(System.Collections.Generic.Queue{``0})">
+            <summary>
+            Returns <c>true</c> if and only if <paramref name="collection"/> is empty (has no elements).
+            </summary>
+            <remarks>
+            Static overload to prevent runtime type checks.
+            </remarks>
+        </member>
         <member name="M:JetBrains.Util.CollectionUtil.IsSingle``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Returns <c>true</c> if and only if <paramref name="collection"/> has exactly 1 element.
@@ -18468,6 +18584,11 @@
         <member name="F:JetBrains.Util.EnsureWritableResult.CHANGES_DETECTED">
             <summary>
             Some files were modified as a result of the attempt to make them writable
+            </summary>
+        </member>
+        <member name="F:JetBrains.Util.EnsureWritableResult.CANCELLED">
+            <summary>
+            Cancelled by user
             </summary>
         </member>
         <member name="T:JetBrains.Util.Events.EventDispatcher">

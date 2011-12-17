@@ -811,6 +811,11 @@
             </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "M:JetBrains.ReSharper.Psi.Impl.Shared.IGeneratedRangeMap.GetCoveringRangeExceptZeroLengthAtBounds(JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Original})" -->
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.IGeneratedRangeMap.CloseAddedRange(JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Original},JetBrains.ReSharper.Psi.Impl.Shared.MappedRangeType)">
+            <summary>
+            Makes already added original range not greedy from right. Use only if you're sure map is ordered.
+            </summary>
+        </member>
         <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.GeneratedRangeMapTree.Add(JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Generated},JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Original})">
             <summary>
              Adds new generated pair
@@ -825,6 +830,11 @@
             <param name="generatedRange">TextRange in generated code</param>
             <param name="originalRange">Source range, if originalRange == ElementTange{T}.Invalid, the range is secondary</param>
             <param name="rangeType">Range type, should be some static-like instance</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.GeneratedRangeMapTree.CloseAddedRange(JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Original},JetBrains.ReSharper.Psi.Impl.Shared.MappedRangeType)">
+            <summary>
+            Makes already added original range not greedy from right. Use only if you're sure map is ordered.
+            </summary>
         </member>
         <member name="M:JetBrains.ReSharper.Psi.Impl.Shared.GeneratedRangeMapTree.AddOrMerge(JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Generated},JetBrains.ReSharper.Psi.TreeTextRange{JetBrains.ReSharper.Psi.Original},JetBrains.ReSharper.Psi.Impl.Shared.MappedRangeType,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
@@ -1512,7 +1522,7 @@
         <member name="M:JetBrains.ReSharper.Psi.Impl.OutputAssembliesCache.GetAssemblyByProject(JetBrains.ProjectModel.IProject)">
             <returns>Assembly if it is specified for project and there's no other project with the same output assembly</returns>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Impl.OutputAssembliesCache.GetProjectByAssembly(JetBrains.ProjectModel.Model2.Assemblies.Interfaces.IAssembly)">
+        <member name="M:JetBrains.ReSharper.Psi.Impl.OutputAssembliesCache.GetProjectsByAssembly(JetBrains.ProjectModel.Model2.Assemblies.Interfaces.IAssembly)">
             <returns>Project if it is the only project with output assembly equal to the assembly in question</returns>
         </member>
         <member name="T:JetBrains.ReSharper.Psi.Resolve.IReferenceProvider">
@@ -4027,8 +4037,6 @@
             </summary>
             <param name="assembly">assembly to index doc for</param>
             <param name="sync">indicates wether indexing should be syncronious, or may execute in another thread</param>
-            <param name="psiConfiguration"></param>
-            <param name="platformManager"></param>
         </member>
         <member name="T:JetBrains.ReSharper.Psi.InvocableSignature">
             <summary>
@@ -4135,7 +4143,7 @@
         </member>
         <member name="F:JetBrains.ReSharper.Psi.TransactionResultEnum.CANCELLED">
             <summary>
-            Transaction failed due to ProcessCancelledException is caught (usually, user press "cancel" button in progress window
+            Transaction failed due to ProcessCancelledException is caught (usually, user press "cancel" button in progress window)
             </summary>
         </member>
         <member name="F:JetBrains.ReSharper.Psi.TransactionResultEnum.ENSURE_WRITABLE_FAILURE">
@@ -4211,7 +4219,7 @@
             Select the single type in the collection, to which all others are implicitly convertible
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Psi.Util.TypesUtil.RetargetType(JetBrains.ReSharper.Psi.IType,System.Func{JetBrains.ReSharper.Psi.IPsiModule})">
+        <member name="M:JetBrains.ReSharper.Psi.Util.TypesUtil.RetargetType(JetBrains.ReSharper.Psi.IType,JetBrains.ReSharper.Psi.IPsiModule)">
             <summary>
             <para>Redirects given type to that one which is 'actual' in the context of given source module</para>
             <b>Rules of conversion:</b>

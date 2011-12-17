@@ -39,6 +39,11 @@
             <see cref="F:JetBrains.ReSharper.Psi.Css.Definitions.CssValueGroupType.All"/> is default value.
             </summary>
         </member>
+        <member name="T:JetBrains.ReSharper.Psi.Css.Services.MinifiedFilesFilter">
+            <summary>
+            Filter out not documented files (preferes bare .css to .min.css)
+            </summary>
+        </member>
         <member name="M:JetBrains.ReSharper.Psi.Css.Parsing.CssMissingTokensInserter.Run(JetBrains.ReSharper.Psi.ExtensionsAPI.Tree.TreeElement)">
             <remarks>
             This code relies that TokenStart and TokenEnd return -1 when it reaches end of file.

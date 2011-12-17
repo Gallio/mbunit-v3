@@ -14,6 +14,17 @@
             start automatic code completion in string after . # : etc...
             </summary>
         </member>
+        <member name="T:JetBrains.ReSharper.Features.Web.Options.Asp.AspEditorPage">
+            <summary>
+            The ASP.NET Editor related options.
+            </summary>
+            TODO: Separate Help Topic Id
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Web.Options.Html.HtmlEditorBasePage`1">
+            <summary>
+            The HTML Editor related options.
+            </summary>
+        </member>
         <member name="T:JetBrains.ReSharper.Features.Web.Options.Html.HtmlEditorPage">
             <summary>
             The HTML Editor related options.
@@ -29,6 +40,12 @@
             Gets the ID of this option page.
             <see cref="T:JetBrains.UI.Options.IOptionsDialog"/> or <see cref="T:JetBrains.UI.Options.OptionsPageDescriptor"/> could be used to retrieve the <see cref="T:JetBrains.UI.Options.OptionsManager"/> out of it.
             </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Features.Web.Options.Razor.RazorEditorPage">
+            <summary>
+            The Razor Editor related options.
+            </summary>
+            TODO: Separate Help Topic Id
         </member>
         <member name="T:JetBrains.ReSharper.Features.Web.Options.Razor.RazorContextActionsPage">
             <summary>

@@ -119,7 +119,7 @@
         </member>
         <member name="T:JetBrains.IDE.TreeBrowser.UIOptions">
              <summary>
-            Internal options intended to be shared between dotPeek/rShsarper. (dotPeek can not use intertnal assembly)
+            Internal options intended to be shared between dotPeek/ReSharper. (dotPeek can not use intertnal assembly)
              </summary>
         </member>
         <member name="T:JetBrains.IDE.UI.Options.OptionsPageViewFactorySolution">

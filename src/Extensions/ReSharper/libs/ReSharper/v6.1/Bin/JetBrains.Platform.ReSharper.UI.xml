@@ -334,6 +334,19 @@
             </param>
             <returns>The toolbar as a UI element.</returns>
         </member>
+        <member name="M:JetBrains.ActionManagement.IActionBarManagerAvalonEx.CreateActionBarForAvalonControl_AutomaticScoping(JetBrains.ActionManagement.IActionBarManager,JetBrains.DataFlow.Lifetime,System.String)">
+            <summary>
+            <para>Creates an <see cref="T:JetBrains.ActionManagement.IActionManager"/>-driven toolbar to be hosted in Avalon controls with <see cref="T:JetBrains.Application.DataContext.IDataContext">data contexts</see> collected from Avalon controls.</para>
+            <para>The UI element to collect data rules again is chosen with the <see cref="T:System.Windows.Input.FocusManager"/>: it is the focused element in the focus scope which contains the toolbar itself. Normally, it would be a window, or a toolwindow, etc.</para>
+            <para>When keyboard focus is actually within this scope, the focused element defines the data context (it's collected by bubbling from the focused element and collecting all the available data rules/constants).</para>
+            <para>When keyboard focus is not within, the logical focus context is used for gathering data context, which is basically the most recently keyboard-focused element (or, rather, which element would get focused when keyboard focus returns to the window). This allows for keeping the window-local action buttons enabled on the toolbar even when focus is not in the window itself.</para>
+            <para>If you want to limit the scope, set <see cref="F:System.Windows.Input.FocusManager.IsFocusScopeProperty"/> to <c>True</c> on the appropriate container.</para>
+            </summary>
+            <param name="thіs">Creator.</param>
+            <param name="lifetime">Limiting lifetime for toolbar activities.</param>
+            <param name="sActionGroupId">ID of the actions group whose actions should be presented as toolbar buttons.</param>
+            <returns>The toolbar as a UI element.</returns>
+        </member>
         <member name="T:JetBrains.ActionManagement.IActionBarManagerEx">
             <summary>
             UI-framework-agnostic helpers for <see cref="T:JetBrains.ActionManagement.IActionBarManager"/>.
@@ -454,63 +467,111 @@
             <param name="actionMan">Action Manager.</param>
             <param name="typeActionHandler">Type of the action handler class for the action that should be hinted. Allows to make a strongly-type reference to the action instead of using the action ID.</param>
         </member>
+        <member name="M:JetBrains.ActionManagement.ActionManagerUIEx.GetExecutableAction``1(JetBrains.ActionManagement.IActionManager)">
+            <summary>
+            <para>Gets the action by its handler type.</para>
+            </summary>
+            <param name="actionman">This.</param>
+            <typeparam name="TActionHandler">Action handler type to guess the action itself from it.</typeparam>
+        </member>
+        <member name="M:JetBrains.ActionManagement.ActionManagerUIEx.ExecuteAction``1(JetBrains.ActionManagement.IActionManager,JetBrains.Application.DataContext.IDataContext)">
+            <summary>
+            <para>Calls <see cref="M:JetBrains.ActionManagement.IActionManager.UpdateAction(JetBrains.ActionManagement.IUpdatableAction,JetBrains.Application.DataContext.IDataContext)"/> on the action and, if the action is available, executes it.</para>
+            <para>It's an error if the action does not exist or is not executable or is not available at the moment.</para>
+            </summary>
+            <param name="actionman">This.</param>
+            <typeparam name="TActionHandler">Action handler type to guess the action itself from it.</typeparam>
+            <param name="dataContextOverride">Optional custom datacontext instead of the default selection one.</param>
+        </member>
+        <member name="M:JetBrains.ActionManagement.ActionManagerUIEx.ExecuteAction``1(JetBrains.ActionManagement.IActionManager,System.Func{JetBrains.DataFlow.Lifetime,JetBrains.Application.DataContext.DataContexts,JetBrains.Application.DataContext.IDataContext})">
+            <summary>
+            <para>Calls <see cref="M:JetBrains.ActionManagement.IActionManager.UpdateAction(JetBrains.ActionManagement.IUpdatableAction,JetBrains.Application.DataContext.IDataContext)"/> on the action and, if the action is available, executes it.</para>
+            <para>It's an error if the action does not exist or is not executable or is not available at the moment.</para>
+            </summary>
+            <param name="actionman">This.</param>
+            <typeparam name="TActionHandler">Action handler type to guess the action itself from it.</typeparam>
+            <param name="FCreateDataContext">Custom datacontext instead of the default selection one.</param>
+        </member>
         <member name="F:JetBrains.ActionManagement.ActionsXmlInfo.IsProduct">
             <summary>
             Whether this ActionsXml is statically compiled into the product. <c>False</c> for plugins and other dynamically loaded action sets.
             </summary>
         </member>
-        <member name="T:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionsOnRoutedUICommands">
+        <member name="T:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerCommandBindings">
             <summary>
-            Binds Avalon routed UI commands to <see cref="T:JetBrains.ActionManagement.ActionManager"/> actions.
+            <para>Viewmodel object which backs attaching <see cref="P:System.Windows.UIElement.CommandBindings">WPF Command Bindings</see> for <see cref="T:JetBrains.ActionManagement.IActionManager">Action Manager</see> <see cref="T:JetBrains.ActionManagement.IExecutableAction">actions</see>.</para>
+            <para>Expose this object from the view model to fulfil the seps described in <see cref="T:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerCommandBindingsBehavior"/> docs.</para>
             </summary>
         </member>
-        <member name="M:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionsOnRoutedUICommands.GetScope(System.Windows.UIElement)">
+        <member name="F:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerCommandBindings.myAttachedViews">
             <summary>
-            <para>Gets or creates the scope of binding between Routed UI Commands and Action Manager Executable Actions.</para>
-            <para>A scope is attached to some UI element whose children can bind to action-based commands registered in this scope.</para>
-            <para>Registering commands in the scope is required due to command bindings architectural limitation.</para>
-            </summary>
-            <param name="element">The element hosting the scope. All of its children will be able to bind to commands registered in this scope.</param>
-            <returns></returns>
-        </member>
-        <member name="F:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionsOnRoutedUICommands.ActionsOnRoutedUICommandsScopeProperty">
-            <summary>
-            <see cref="M:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionsOnRoutedUICommands.GetScope(System.Windows.UIElement)"/> backend.
+            NOTE: because the behavior uses attached proeprties, it's hard to implement proper lifetiming in there. We'd just keep track of views without holding them on hard references.
             </summary>
         </member>
-        <member name="T:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionsOnRoutedUICommandsScope">
+        <member name="M:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerCommandBindings.GetCommand(JetBrains.ActionManagement.IExecutableAction)">
             <summary>
-            Created by <see cref="M:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionsOnRoutedUICommands.GetScope(System.Windows.UIElement)"/> to handle action-based commands in child elements.
+            <para>Creates a new command corresponding to the action, and registers the command bindings on the view element to which the <see cref="T:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerCommandBindingsBehavior"/> is applied.</para>
+            <para>Safe to call multiple times.</para>
             </summary>
         </member>
-        <member name="M:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionsOnRoutedUICommandsScope.GetCommand(JetBrains.ActionManagement.IExecutableAction)">
+        <member name="T:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerCommandBindingsBehavior">
+            <summary>
+            <para>Sets up the view element which attaches <see cref="P:System.Windows.UIElement.CommandBindings">WPF Command Bindings</see> for <see cref="T:JetBrains.ActionManagement.IActionManager">Action Manager</see> <see cref="T:JetBrains.ActionManagement.IExecutableAction">actions</see>.</para>
+            <para>To set up the infrastructure for handling Action Manager actions as WPF Commands:</para>
+            <para>• In the viewmodel, create and expose an instance of <see cref="T:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerCommandBindings"/>.</para>
+            <para>• On the view element which should define the bindings (one parenting all of the command-using elements), set the <see cref="T:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerCommandBindingsBehavior"/> behavior's <see cref="F:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerCommandBindingsBehavior.DefineProperty"/> attached dependency property.</para>
+            <para>• In the viewmodel, get a command for each action you need and expose to the view.</para>
+            <para>• In the view, use the command as usual (must be within the element with the behavior).</para>
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerCommandBindingsBehavior.DefineProperty">
+            <summary>
+            <para>Takes part in attaching <see cref="P:System.Windows.UIElement.CommandBindings">WPF Command Bindings</see> for <see cref="T:JetBrains.ActionManagement.IActionManager">Action Manager</see> <see cref="T:JetBrains.ActionManagement.IExecutableAction">actions</see>.</para>
+            <para>Set this attached dependency property on a view element to fulfil the steps described in <see cref="T:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerCommandBindingsBehavior"/> docs.</para>
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerCommandBindingsEx.GetCommand(JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerCommandBindings,System.String)">
             <summary>
             <para>Registers the action with this command scope and returns a routed command which will represent the action in this scope.</para>
             <para>Safe to call multiple times.</para>
             </summary>
         </member>
-        <member name="M:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionsOnRoutedUICommandsScopeEx.GetCommand(JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionsOnRoutedUICommandsScope,System.String)">
+        <member name="M:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerCommandBindingsEx.GetCommand``1(JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerCommandBindings)">
             <summary>
             <para>Registers the action with this command scope and returns a routed command which will represent the action in this scope.</para>
             <para>Safe to call multiple times.</para>
             </summary>
         </member>
-        <member name="M:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionsOnRoutedUICommandsScopeEx.GetCommand``1(JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionsOnRoutedUICommandsScope)">
+        <member name="T:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerContextMenu">
             <summary>
-            <para>Registers the action with this command scope and returns a routed command which will represent the action in this scope.</para>
-            <para>Safe to call multiple times.</para>
+            <para>Viewmodel part of the infrastructure supporting <see cref="T:JetBrains.ActionManagement.IActionManager">Action Manager</see> driven context menus over WPF elements.</para>
+            <para>See <see cref="T:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerContextMenuBehavior"/> documentation for details.</para>
+            </summary>
+        </member>
+        <member name="T:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerContextMenuBehavior">
+            <summary>
+            <para>Sets up a WPF element to show a context menu based on a specific <see cref="T:JetBrains.ActionManagement.IActionManager">Action Manager</see> action group.</para>
+            <para>The menu is populated with actions from the group, whose presentation and availability are updated based on the current context.</para>
+            <para>To set up the infrastructure, fulfil the following steps:</para>
+            <para>• In the view model, create and expose an instance of <see cref="T:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerContextMenu"/>.</para>
+            <para>• On the view element which should show the menu (i.e. on which you would have defined the <see cref="F:System.Windows.FrameworkElement.ContextMenuProperty"/> property), set the <see cref="T:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerContextMenuBehavior"/> behavior's </para>
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerContextMenuBehavior.StateProperty">
+            <summary>
+            Service property to support lifetiming of the view
             </summary>
         </member>
         <member name="T:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerRoutedUICommand">
             <summary>
             <para>Exposes an <see cref="T:JetBrains.ActionManagement.IActionManager"/>'s <see cref="T:JetBrains.ActionManagement.IExecutableAction"/> as a <see cref="T:System.Windows.Input.RoutedUICommand"/> for Avalon bindings.</para>
-            <para>To get, call <see cref="M:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionsOnRoutedUICommands.GetScope(System.Windows.UIElement)"/> and then one of its <see cref="M:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionsOnRoutedUICommandsScope.GetCommand(JetBrains.ActionManagement.IExecutableAction)"/> overloads.</para>
+            <para>See <see cref="T:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerCommandBindingsBehavior"/> for instructions on how to wire up WPF commands over Action Manager actions.</para>
             </summary>
         </member>
         <member name="M:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerRoutedUICommand.Create(JetBrains.DataFlow.Lifetime,JetBrains.ActionManagement.IExecutableAction,JetBrains.ActionManagement.IShortcutManager,JetBrains.ActionManagement.IActionManager,JetBrains.Threading.IThreading)">
             <summary>
             <para>Helper method. Internal use only.</para>
-            <para>You should call <see cref="M:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionsOnRoutedUICommands.GetScope(System.Windows.UIElement)"/> and then one of its <see cref="M:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionsOnRoutedUICommandsScope.GetCommand(JetBrains.ActionManagement.IExecutableAction)"/> overloads. Otherwise, if the command is not created thru a scope, there will be no command bindings for this command in this scope or anywhere around.</para>
+            <para>See <see cref="T:JetBrains.UI.ActionSystem.ActionManager.Avalon.ActionManagerCommandBindingsBehavior"/> for instructions on how to wire up WPF commands over Action Manager actions.</para>
             </summary>
             <param name="lifetime"></param>
             <param name="action"></param>
@@ -518,29 +579,6 @@
             <param name="actionManager"></param>
             <param name="threading"></param>
             <returns></returns>
-        </member>
-        <member name="T:JetBrains.UI.ActionSystem.ActionManager.Avalon.ExecutableActionCommand">
-            <summary>
-            Exposes action manager's <see cref="T:JetBrains.ActionManagement.IExecutableAction"/> as a WPF Command.  // TODO: return from action manager?
-            </summary>
-        </member>
-        <member name="M:JetBrains.UI.ActionSystem.ActionManager.Avalon.IActionManagerEx.ExecuteAction``1(JetBrains.ActionManagement.IActionManager,JetBrains.Application.DataContext.IDataContext)">
-            <summary>
-            <para>Calls <see cref="!:IActionManager.UpdateAction(JetBrains.ActionManagement.IUpdatableAction)"/> on the action and, if the action is available, executes it.</para>
-            <para>It's an error if the action does not exist or is not executable or is not available at the moment.</para>
-            </summary>
-            <param name="actionman">This.</param>
-            <typeparam name="TActionHandler">Action handler type to guess the action itself from it.</typeparam>
-            <param name="dataContextOverride">Optional custom datacontext instead of the default selection one.</param>
-        </member>
-        <member name="M:JetBrains.UI.ActionSystem.ActionManager.Avalon.IActionManagerEx.ExecuteAction``1(JetBrains.ActionManagement.IActionManager,System.Func{JetBrains.DataFlow.Lifetime,JetBrains.Application.DataContext.DataContexts,JetBrains.Application.DataContext.IDataContext})">
-            <summary>
-            <para>Calls <see cref="!:IActionManager.UpdateAction(JetBrains.ActionManagement.IUpdatableAction)"/> on the action and, if the action is available, executes it.</para>
-            <para>It's an error if the action does not exist or is not executable or is not available at the moment.</para>
-            </summary>
-            <param name="actionman">This.</param>
-            <typeparam name="TActionHandler">Action handler type to guess the action itself from it.</typeparam>
-            <param name="FCreateDataContext">Custom datacontext instead of the default selection one.</param>
         </member>
         <member name="M:JetBrains.UI.ActionSystem.ActionManager.ShortcutManagerEx.GetShortcutString(JetBrains.ActionManagement.IShortcutManager,JetBrains.ActionManagement.IUpdatableAction)">
             <summary>
@@ -960,6 +998,20 @@
             Fires when the user switches its attention in our out, and we could potentially show our notifications without breaking the user context.
             </summary>
         </member>
+        <member name="M:JetBrains.UI.Controls.ActionBarUidata.CreateActionBarViewCore(JetBrains.DataFlow.Lifetime)">
+            <summary>
+            A presenter-like method for creating the part of the view.
+            Creates the Windows Forms control (while it's still WinForms of course) which represents the action bar.
+            </summary>
+            <param name="lifetime"></param>
+            <returns></returns>
+        </member>
+        <member name="T:JetBrains.UI.Controls.ActionBarView">
+            <summary>
+            A UI element for planting the Action Manager Toolbar into the WPF UI. Does not require any components for creating an instance.
+            All of the components and data are databound from the viewmodel.
+            </summary>
+        </member>
         <member name="T:JetBrains.UI.Controls.ActionManagerToolBar">
             <summary>
             A UI element for planting the Action Manager Toolbar into the WPF UI. Does not require any components for creating an instance.
@@ -982,7 +1034,7 @@
             <para>For example, in a tool window that would be your content element. In a window, that would be the window content element. Usually the returned action bar UI element is parented by the context parent.</para>
             <para>When keyboard focus is within the context parent, the focused element defines the data context (it's collected by bubbling from the focused element and collecting all the available data rules/constants).</para>
             <para>When keyboard focus is not within, the logical focus context is used for gathering data context, which is basically the most recently keyboard-focused element (or, rather, which element would get focused when keyboard focus returns to the window). This allows for keeping the window-local action buttons enabled on the toolbar even when focus is not in the window itself.</para>
-            <para>To implement this, <see cref="!:FocusManager.IsFocusScopeProperty"/> is set to <c>True</c> on <paramref name="contextparent"/>.</para>
+            <para>To implement this, <see cref="F:System.Windows.Input.FocusManager.IsFocusScopeProperty"/> is set to <c>True</c> on <paramref name="contextparent"/>.</para>
             </summary>
         </member>
         <member name="T:JetBrains.UI.Controls.ActionManagerToolBar.PresentWhenLoaded">
@@ -5818,6 +5870,23 @@
             NOTE: part of the control logic rules involving its child control state resides in the view model dataflow init.
             </summary>
         </member>
+        <member name="T:JetBrains.UI.Avalon.Controls.RichTextPresenter">
+            <summary>
+            RichText representation for WPF
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.Avalon.Controls.RichTextPresenter.IsKeyAccessedProperty">
+            <summary>
+            Using a DependencyProperty as the backing store for IsKeyAccessed.  
+            This enables styling, binding, etc...
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Avalon.Controls.RichTextPresenter.IsKeyAccessed">
+            <summary>
+            Gets or sets wether the RichTextPresenter 
+            is key accessed by ALT + accesskey (access key is processed from the RichText)
+            </summary>
+        </member>
         <member name="T:JetBrains.UI.Controls.RichTextHeading">
             <summary>
             Renders a multiline wrappable heading with one bold paragraph and one normal-text paragraph. 
@@ -6116,6 +6185,11 @@
         <member name="P:JetBrains.CommonControls.RichTextTipPainter.WantsResize">
             <summary>
             Fires when the control would like to be reasked of its desired size.
+            </summary>
+        </member>
+        <member name="T:JetBrains.UI.Controls.RichTextView">
+            <summary>
+            When a rich text string is in the datacontext, presents it with <see cref="T:JetBrains.UI.Avalon.Controls.RichTextPresenter"/>.
             </summary>
         </member>
         <member name="T:JetBrains.UI.Avalon.Controls.RunBindable">
@@ -6482,6 +6556,16 @@
             <summary>
             Exposes properties IsFirst \ IsLast on FrameworkElements for styling purposes
             EnableItemsStyle should be set on target panel or itemspresenter
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Controls.Misc.SearchTextBox.SearchBehavior">
+            <summary>
+            Exposes the <see cref="F:JetBrains.UI.Controls.Misc.SearchTextBox.SearchEvent"/> routed event in a way suitable for viewmodel-binding.
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Controls.Misc.SearchEventArgs.SearchText">
+            <summary>
+            Gets the current text in the search box.
             </summary>
         </member>
         <member name="T:JetBrains.UI.CommonControls.TableLayoutPanelColored">
@@ -7470,6 +7554,11 @@
             Add your data rules to the end of this collection. See <see cref="F:JetBrains.UI.Avalon.DataContext.GetDataRulesEventArgs.GetDataRulesEvent"/> documentation for details.
             </summary>
         </member>
+        <member name="F:JetBrains.UI.Avalon.DataContext.GetDataRulesEventArgs.GetDataRulesBehaviorProperty">
+            <summary>
+            If you want a control to publish data rules, set this property on the view to the handler defined in the viewmodel, and it will be attached to sink the event.
+            </summary>
+        </member>
         <member name="T:JetBrains.UI.Avalon.DataContext.GetDataRulesEventArgs.GetDataRulesEventHandler">
             <summary>
             Delegate type for the <see cref="F:JetBrains.UI.Avalon.DataContext.GetDataRulesEventArgs.GetDataRulesEvent"/> routed event.
@@ -7556,10 +7645,167 @@
             Supports selectding between Avalon data templates per specific data object which should be templated.
             </summary>
         </member>
+        <member name="T:JetBrains.UI.Extensions.ListViewColumn">
+            <summary>
+            ListViewColumnStretch
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.Extensions.ListViewColumn.IsStretchedProperty">
+            <summary>
+            IsStretched Dependancy property which can be attached to gridview columns.
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.Extensions.ListViewColumn.GetIsStretched(System.Windows.DependencyObject)">
+            <summary>
+            Gets the stretch.
+            </summary>
+            <param name="obj">The obj.</param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.UI.Extensions.ListViewColumn.SetIsStretched(System.Windows.DependencyObject,System.Boolean)">
+            <summary>
+            Sets the stretch.
+            </summary>
+            <param name="obj">The obj.</param>
+            <param name="value">if set to <c>true</c> [value].</param>
+        </member>
+        <member name="M:JetBrains.UI.Extensions.ListViewColumn.OnCoerceStretch(System.Windows.DependencyObject,System.Object)">
+            <summary>
+            Coerce stretch
+            </summary>
+            <param name="source">The source.</param>
+            <param name="value">The value.</param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.UI.Extensions.ListViewColumn.OnListViewSizeChanged(System.Object,System.Windows.SizeChangedEventArgs)">
+            <summary>
+            Handles the SizeChanged event of the lv control.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">The <see cref="T:System.Windows.SizeChangedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:JetBrains.UI.Extensions.ListViewColumn.OnListViewLoaded(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Handles the Loaded event of the ListView control.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">The <see cref="T:System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:JetBrains.UI.Extensions.ListViewColumn.SetColumnWidths(System.Windows.Controls.ListView)">
+            <summary>
+            Sets the column widths
+            </summary>
+        </member>
         <member name="T:JetBrains.UI.Extensions.WindowStyles">
             <summary>
             Helps to manage differrent native window styles. 
             For example to show or hide control buttons
+            </summary>
+        </member>
+        <member name="T:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerForLayersDialogUidata">
+            <summary>
+            Improved version for the Settings Layers dialog, adds a few things not needed by Options Dialog.
+            TODO: probably they should be separated because they have little in common.
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerUidata.DisplayName">
+            <summary>
+            Gets name of settings layer
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerUidata.OriginText">
+            <summary>
+            Gets a string describing the origin of the settings layer (e.g. its file location, URI, etc).
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerUidata.IsDefault">
+            <summary>
+            Gets whether the settings layer is default
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerUidata.IsLocked">
+            <summary>
+            Gets whether the settings layer is locked (readonly)
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerUidata.Priority">
+            <summary>
+            Priority of this layer when displaying a sorted layers list.
+            The lower the number, the higher the priority.
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerUidata.Icon">
+            <summary>
+            Gets icon for the layer
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerForLayersDialogUidata.IsPathAccessible">
+            <summary>
+            Gets whether the path is accessible
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerForLayersDialogUidata.IsActive">
+            <summary>
+            Gets whether the settings layer is active (used in 'settings stack')
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerForLayersDialogUidata.IsRenameModeActive">
+            <summary>
+            Gets whether the settings layer is locked (readonly)
+            </summary>
+        </member>
+        <member name="T:JetBrains.UI.src.Settings.AnchorSettingsLayerDataConstant">
+            <summary>
+            Additional information for the layer-related actions which need an anchor in addition to selection.
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.Options.OptionsDialog2.ResetSettingsDialogUidata2.CloseRequested">
+            <summary>
+            Request to close the dialog window
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.ResetSettingsDialogUidata2.SettingsTree">
+            <summary>
+            Schema for resetting the selected layers
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.ResetSettingsDialogUidata2.CommandCancel">
+            <summary>
+            Command to perform reseting layers
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.ResetSettingsDialogUidata2.CommandReset">
+            <summary>
+            Command to perform reseting layers
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.ResetSettingsDialogUidata2.Title">
+            <summary>
+            Gets main title of the dialog
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.ResetSettingsDialogUidata2.WhatToResetDescription">
+            <summary>
+            Gets message of count layers or its name if there is only one here
+            </summary>
+        </member>
+        <member name="T:JetBrains.UI.Options.OptionsDialog2.ResetSettingsDialogView2">
+            <summary>
+            Represents dialog for selection particular 
+            settings to copy/import/export them
+            </summary>
+            <summary>
+            ResetSettingsDialogView2
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.Options.OptionsDialog2.ResetSettingsDialogView2.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.Options.OptionsDialog2.ResetSettingsDialogModel.Tree">
+            <summary>
+            Only what's in the context layer.
             </summary>
         </member>
         <member name="T:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialog">
@@ -7576,66 +7822,38 @@
             InitializeComponent
             </summary>
         </member>
-        <member name="T:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogItemUidata">
+        <member name="T:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogModel">
             <summary>
-            Represents an item of settings in a tree where user 
-            can select particular settings to copy/import/export
+            <para>When you create the model, it start reading the given source async.</para>
+            <para>After this async operation is completed, either <see cref="F:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogModel.Error"/> or <see cref="F:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogModel.Tree"/> is assigned to the valid data on the UI thread.</para>
+            <para>After that, you can call one of the <c>Write</c> methods.</para>
             </summary>
         </member>
-        <member name="M:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogItemUidata.GetSelectedSettings(JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogItemUidata)">
+        <member name="M:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogModel.#ctor(JetBrains.DataFlow.Lifetime,JetBrains.UI.src.Settings.ImportExport.Model.SettingsSourceModel,System.Boolean,JetBrains.Threading.IThreading,JetBrains.Application.Communication.WebProxySettingsReader)">
             <summary>
-            Get all selected settings (only leafs)
+            Constructs &amp; starts reading.
             </summary>
-            <returns>Selected settings (only leafs)</returns>
-        </member>
-        <member name="M:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogItemUidata.GetSelectedSettings(System.Collections.Generic.IEnumerable{JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogItemUidata})">
-            <summary>
-            Get all selected settings (only leafs)
-            </summary>
-            <returns>Selected settings (only leafs)</returns>
-        </member>
-        <member name="P:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogItemUidata.IsCheckedTriState">
-            <summary>
-            Gets or sets the state of the associated UI toggle (ex. CheckBox).
-            The return value is calculated based on the check state of all
-            children.  Setting this property to true or false
-            will set all children to the same check state, and setting it 
-            to any value will cause the parent to verify its check state.
-            </summary>
-        </member>
-        <member name="P:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogItemUidata.Name">
-            <summary>
-            Gets name of the setting
-            </summary>
-        </member>
-        <member name="P:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogItemUidata.Description">
-            <summary>
-            Gets description of the setting
-            </summary>
-        </member>
-        <member name="P:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogItemUidata.Children">
-            <summary>
-            Gets children nodes
-            </summary>
+            <param name="lifetime"></param>
+            <param name="source">The source from which the settings to be copied will be read.</param>
+            <param name="isAllSelectedInitially">The <see cref="F:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogModel.Tree"/> filled with data read from the <paramref name="source"/>; this defines whether initially all of the nodes will be checked (included for export/import/copy) or unchecked.</param>
+            <param name="threading"></param>
+            <param name="webProxySettingsReader"></param>
         </member>
         <member name="F:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogModel.myMountWithData">
             <summary>
             When we read data from the source, it's kept here before it's written (under <see cref="F:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogModel.mySequenceMountWithData"/>).
             </summary>
         </member>
-        <member name="F:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogModel.CopySettingsDialogItemModel.Key">
+        <member name="F:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogModel.Error">
             <summary>
-            Points to a non-indexed schema key, or to a particular instance of an indexed key.
+            <para>If async reading from the source fails, the error message is assigned here on the UI thread. This means that the model is async-ready, but won't be able to proceed.</para>
+            <para>Either <see cref="F:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogModel.Error"/> or <see cref="F:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogModel.Tree"/> will be assigned on the UI thread when the async reading is completed.</para>
             </summary>
         </member>
-        <member name="P:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogModel.CopySettingsDialogItemModel.DisplayName">
+        <member name="F:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogModel.Tree">
             <summary>
-            On a non-indexed key, the key local name. On an indexed key instance — the display name corresponding to the particular instance.
-            </summary>
-        </member>
-        <member name="P:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogModel.CopySettingsDialogItemModel.Description">
-            <summary>
-            Item description.
+            <para>Whenif async reading from the source succeeds, the description on the read data is assigned here (to the root items list of the tree model) on the UI thread.</para>
+            <para>Either <see cref="F:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogModel.Error"/> or <see cref="F:JetBrains.UI.Options.OptionsDialog2.CopySettingsDialogModel.Tree"/> will be assigned on the UI thread when the async reading is completed.</para>
             </summary>
         </member>
         <member name="P:JetBrains.UI.Options.OptionsDialog2.SettingsLayersDialogUidata.GroupedSettingsLayers">
@@ -7653,6 +7871,16 @@
             Gets or sets current selected settings layers
             </summary>
         </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.SettingsLayersDialogUidata.CanBackToOptions">
+            <summary>
+            Can user initiate back to option command (must be hidden in that case)
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.SettingsLayersDialogUidata.Title">
+            <summary>
+            Gets title for the dialog window
+            </summary>
+        </member>
         <member name="T:JetBrains.UI.Options.OptionsDialog2.SettingsLayersDialog">
             <summary>
             Interaction logic for MainWindow.xaml
@@ -7666,55 +7894,122 @@
             InitializeComponent
             </summary>
         </member>
-        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerUidata.Name">
+        <member name="T:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeModel">
             <summary>
-            Gets name of settings layer
+            A tree visualizing a part of the settings schema corresponding to the current context, with hierarchical checkbox.
             </summary>
         </member>
-        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerUidata.Path">
+        <member name="M:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeModel.GetSelectedItems">
             <summary>
-            Gets path to the physical file of settings layer
+            Returns the shallowest selected items.
+            All children of a selected item are also assumed to be selected, so they're omitted from the returned list.
             </summary>
         </member>
-        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerUidata.PathHint">
+        <member name="F:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeModel.ItemModel.Key">
             <summary>
-            Gets trimmed path to the physical file of settings layer
+            Points to a non-indexed schema key, or to a particular instance of an indexed key.
             </summary>
         </member>
-        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerUidata.IsPathAccessible">
+        <member name="M:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeModel.ItemModel.FetchItemsFromSnapshot(JetBrains.DataFlow.Lifetime,JetBrains.Application.Settings.SettingsStoreChangeArgs,System.Boolean)">
             <summary>
-            Gets whether the path is accessible
+            Populates tree items with snapshot contents (leaves only those schema nodes for which there are actualy any values in the snapshot).
             </summary>
         </member>
-        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerUidata.Group">
+        <member name="M:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeModel.ItemModel.FetchItemsFromSchema(JetBrains.DataFlow.Lifetime,JetBrains.Application.Settings.SettingsSchema,System.Boolean,JetBrains.Util.ILogger)">
             <summary>
-            Gets a logical group where the settings layer locates
+            Populates tree items with all of the schema keys.
             </summary>
         </member>
-        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerUidata.IsDefault">
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeModel.ItemModel.DisplayName">
             <summary>
-            Gets whether the settings layer is default
+            On a non-indexed key, the key local name. On an indexed key instance — the display name corresponding to the particular instance.
             </summary>
         </member>
-        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerUidata.IsActive">
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeModel.ItemModel.Description">
             <summary>
-            Gets whether the settings layer is active (used in 'settings stack')
+            Item description.
             </summary>
         </member>
-        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerUidata.IsLocked">
+        <member name="T:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeUidata">
             <summary>
-            Gets whether the settings layer is locked (readonly)
+            A tree visualizing a part of the settings schema corresponding to the current context, with hierarchical checkbox.
             </summary>
         </member>
-        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerUidata.IsRenameModeActive">
+        <member name="T:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeUidata.ItemUidata">
             <summary>
-            Gets whether the settings layer is locked (readonly)
+            Represents an item of settings in a tree where user 
+            can select particular settings to copy/import/export
             </summary>
         </member>
-        <member name="P:JetBrains.UI.Options.OptionsDialog2.UserFriendlySettingsLayerUidata.Priority">
+        <member name="F:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeUidata.ItemUidata.myTokenHierarchySyncChange">
             <summary>
-            Priority of this layer when displaying a sorted layers list.
-            The lower the number, the higher the priority.
+            When we sync up and down the tree, to avoid cross-waves.
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeUidata.ItemUidata.GetSelectedSettings(JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeUidata.ItemUidata)">
+            <summary>
+            Get all selected settings (only leafs)
+            </summary>
+            <returns>Selected settings (only leafs)</returns>
+        </member>
+        <member name="M:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeUidata.ItemUidata.GetSelectedSettings(System.Collections.Generic.IEnumerable{JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeUidata.ItemUidata})">
+            <summary>
+            Get all selected settings (only leafs)
+            </summary>
+            <returns>Selected settings (only leafs)</returns>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeUidata.ItemUidata.IsCheckedTriState">
+            <summary>
+            Gets or sets the state of the associated UI toggle (ex. CheckBox).
+            The return value is calculated based on the check state of all
+            children.  Setting this property to true or false
+            will set all children to the same check state, and setting it 
+            to any value will cause the parent to verify its check state.
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeUidata.ItemUidata.Name">
+            <summary>
+            Gets name of the setting
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeUidata.ItemUidata.Description">
+            <summary>
+            Gets description of the setting
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeUidata.ItemUidata.Children">
+            <summary>
+            Gets children nodes
+            </summary>
+        </member>
+        <member name="T:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeView">
+            <summary>
+            A tree visualizing a part of the settings schema corresponding to the current context, with hierarchical checkbox.
+            </summary>
+            <summary>
+            SettingsSnapshotTreeView
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeView.ListenKeyboardOnProperty">
+            <summary>
+            Using a DependencyProperty as the backing store for ListenKeyboardOn.  
+            This enables animation, styling, binding, etc...
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="P:JetBrains.UI.Options.OptionsDialog2.SettingsSnapshotTreeView.ListenKeyboardOn">
+            <summary>
+            Gets or sets what element we should use to listen hot key for search box
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.Options.OptionsDialog2.OptionsDialogUidata.RefreshPendingChanges">
+            <summary>
+            Forces immediate recalculation of the pending changes count.
+            Normally, this is done in a background thread on settings changes event from store.
             </summary>
         </member>
         <member name="P:JetBrains.UI.Options.OptionsDialog2.OptionsDialogUidata.OptionsUidata">
@@ -7760,6 +8055,17 @@
             InitializeComponent
             </summary>
         </member>
+        <member name="F:JetBrains.UI.Options.OptionsDialog2.OptionsModel.OptionIsForcingWriteOfDefaultValuesOnSaveTo">
+            <summary>
+            Two possible implementations: when we're writing default values on SaveTo, or if we're using the default SmartSave behavior in this case as well.
+            </summary>
+        </member>
+        <member name="M:JetBrains.UI.Options.OptionsDialog2.OptionsModel.RecalculatePendingChangesCount">
+            <summary>
+            Forces immediate recalculation of the pending changes count.
+            Normally, this is done in a background thread on settings changes event from store.
+            </summary>
+        </member>
         <member name="M:JetBrains.UI.Options.OptionsDialog2.OptionsModel.Commit">
             <summary>
             Commits changes in options pages to the transacted settings store and then the settings store transaction to the main store.
@@ -7788,6 +8094,11 @@
         <member name="F:JetBrains.UI.Options.OptionsDialog2.OptionsModel.PageSelected">
             <summary>
             A page has been selected in a view. Fired by views.
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.Options.OptionsDialog2.OptionsModel.PendingChangesCount">
+            <summary>
+            The estimated number of pending changes to be written when you commit the options model.
             </summary>
         </member>
         <member name="M:JetBrains.UI.Options.OptionsDialog2.OptionsModel.Revert">
@@ -7837,7 +8148,7 @@
             Especially with not forgetting to supply all of the guaranteed injections.
             </summary>
         </member>
-        <member name="M:JetBrains.UI.Options.OptionsDialog2.OptionsPageFactory.GetInjections_DummyToPreventImporting(JetBrains.DataFlow.Lifetime,System.Collections.Generic.List{System.Object},JetBrains.Application.src.Settings.SettingsSchema)">
+        <member name="M:JetBrains.UI.Options.OptionsDialog2.OptionsPageFactory.GetInjections_DummyToPreventImporting(JetBrains.DataFlow.Lifetime,System.Collections.Generic.List{System.Object},JetBrains.Application.Settings.ISettingsSchema)">
             <summary>
             Prohibit importing some raw types by supplying diplicates to generate ambiguity.
             E.g. prevent access to out-of-transaction storage.
@@ -7884,11 +8195,13 @@
         <member name="F:JetBrains.UI.Options.OptionsDialog2.OptionsUidata.SelectedPage_Model">
             <summary>
             Selected options page in terms of model, for binding to the model.
+            Can be <c>Null</c> when no tree selection.
             </summary>
         </member>
         <member name="F:JetBrains.UI.Options.OptionsDialog2.OptionsUidata.SelectedPageForTree">
             <summary>
             For binding selected page in the tree (two-way). Two-way binds to <see cref="F:JetBrains.UI.Options.OptionsDialog2.OptionsUidata.SelectedPage_Model"/>.
+            Can be <c>Null</c> when no tree selection.
             </summary>
         </member>
         <member name="F:JetBrains.UI.Options.OptionsDialog2.OptionsUidata.SelectedPageInContextForPreview">
@@ -8372,6 +8685,12 @@
             A fluent method for setting up a control template to be populated with a delegate when it's loaded and when its datacontext is assigned to the expected viewmodel type.
             </summary>
         </member>
+        <member name="M:JetBrains.UI.Avalon.AvalonTemplates.OverrideTemplate``2(System.Windows.DependencyProperty,System.Func{JetBrains.DataFlow.Lifetime,``0,``1,System.Windows.UIElement})">
+            <summary>
+            A method for setting up a control template to be populated with a delegate when it's loaded and when its datacontext is assigned to the expected viewmodel type.
+            To be called in the static constructor on the <see cref="F:System.Windows.Controls.Control.TemplateProperty"/> or alike.
+            </summary>
+        </member>
         <member name="M:JetBrains.UI.Avalon.AvalonTemplates.SetTemplate``2(System.Windows.DataTemplate,System.Func{JetBrains.DataFlow.Lifetime,``0,``1,System.Windows.UIElement})">
             <summary>
             A fluent method for setting up a data template to be populated with a delegate when it's loaded and when its datacontext is assigned to the expected viewmodel type.
@@ -8400,6 +8719,16 @@
             <typeparam name="TViewModel"></typeparam>
             <typeparam name="TView"></typeparam>
             <param name="thіs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JetBrains.UI.Avalon.AvalonTemplates.RegisterView``1(System.Windows.ResourceDictionary,System.Windows.FrameworkElementFactory)">
+            <summary>
+            Creates a data template which simply sets the given view of the specified type as a content presentation 
+            for the given viewmodel type, and registers it with the resource dictionary.
+            </summary>
+            <typeparam name="TViewModel"></typeparam>
+            <param name="thіs"></param>
+            <param name="frameworkElementFactory"></param>
             <returns></returns>
         </member>
         <member name="T:JetBrains.UI.Avalon.AvalonTreeHelpers">
@@ -8674,6 +9003,12 @@
             Shows a window that catches focus and then returns it back immediately, so that the <paramref name="hwndTopmost"/> window could process the activation message consistently and place focus on the proper child window. Without that it could happen that focus sits directly on the main window and no child is active.
             </summary>
         </member>
+        <member name="M:JetBrains.UI.Application.WindowUtil.GetActiveWindow">
+            <summary>
+            Gets currently active WPF window or null
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:JetBrains.UI.Application.WindowUtil.PrependCaptionWithProductName(System.String)">
             <summary>
             Prepends a caption string with the product name, separated with an en-dash.
@@ -8691,9 +9026,10 @@
         </member>
         <member name="M:JetBrains.UI.Application.WindowUtil.ShowDialogWithGuardedCreation(JetBrains.DataFlow.Lifetime,JetBrains.UI.Application.WindowUtil.Modality,System.Func{JetBrains.DataFlow.LifetimeDefinition,JetBrains.DataFlow.Lifetime,System.Windows.Window},JetBrains.Threading.IThreading,System.Object)">
             <summary>
-            Shows the dialog either modally or nonmodally, so that its <paramref name="FCreateView">creation function</paramref> were modal, but its execution were not wholy guarded.
-            Guarding the creation is needed to process modal functions correctly.
-            Non-guarding the body of execution is required for controls which would be queueing smth guarded to function correctly: if the dialog is guarded throughout its whole lifetime, their activities would not have a chance to execute before it's closed.
+            <para>Shows the dialog either modally or nonmodally, so that its <paramref name="FCreateView">creation function</paramref> were guarded, but its execution were not wholy guarded.</para>
+            <para>Guarding the creation is needed to process modal functions correctly.</para>
+            <para>Non-guarding the body of execution is required for controls which would be queueing smth guarded to function correctly: if the dialog is guarded throughout its whole lifetime, their activities would not have a chance to execute before it's closed.</para>
+            <para>If you're calling this method for modal execution, the <see cref="T:JetBrains.Threading.ReentrancyGuard"/> obviously must not be held at the moment, otherwise it's not possible to fulfil the conditions.</para>
             </summary>
             <param name="lifetime">Limiting lifetime for the whole activity.</param>
             <param name="modality">Whether to show modally or non-modally.</param>
@@ -8710,6 +9046,22 @@
         <member name="T:JetBrains.UI.Application.WindowUtil.Modality">
             <summary>
             Whether to show a dialog modally or nonmodally.
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.Application.WindowUtil.Modality.Nonmodal">
+            <summary>
+            The dialog is shown nonmodally.
+            Its creation function might be executed offstack if that is required to open a <see cref="T:JetBrains.Threading.ReentrancyGuard"/> transaction.
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.Application.WindowUtil.Modality.Modal">
+            <summary>
+            The dialog is executed modally, but not necessarily on the same stack: the execution function might return before the dialog is actually shown, in case that is required to open a <see cref="T:JetBrains.Threading.ReentrancyGuard"/> transaction.
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.Application.WindowUtil.Modality.ModalThisStack">
+            <summary>
+            The dialog is executed modally exactly on this stack, so that the execution function returns only after the dialog is completed. This requires that <see cref="T:JetBrains.Threading.ReentrancyGuard"/> is not held at call time (otherwise the transaction cannot be opened in the given invariants).
             </summary>
         </member>
         <member name="M:JetBrains.UI.Application.HelpSystem.GetOfflineHelpFilePath">
@@ -10053,6 +10405,12 @@
         <member name="T:JetBrains.UI.Options.OptionsPageViewFactoryShell">
             <summary>
             Enables <see cref="T:JetBrains.UI.Options.OptionsPageViewFactoryManager"/> to import Shell components to the ctor (fallback for cases when solution container is not available).
+            </summary>
+        </member>
+        <member name="T:JetBrains.UI.Options.ShowOptionsAction">
+            <summary>
+            Shows the Options dialog for the Smart context.
+            Optionally overrides the MRU selected page and the context (with an arbitrary user-friendly layer).
             </summary>
         </member>
         <member name="F:JetBrains.UI.Options.ShowOptionsAction.ShowOptionsPage">
@@ -11455,7 +11813,7 @@
             Controls a single <see cref="M:JetBrains.Application.Progress.ITaskExecutor.ExecuteTask(System.String,JetBrains.Application.Progress.TaskCancelable,System.Action{JetBrains.Application.Progress.IProgressIndicator})"/> run of the <see cref="T:JetBrains.UI.Application.Progress.UITaskExecutorRuns"/>.
             </summary>
         </member>
-        <member name="M:JetBrains.UI.Application.Progress.UITaskExecutorRun.Run(JetBrains.UI.Application.Progress.TaskThreadAffinity,System.Action{JetBrains.Application.Progress.IProgressIndicator},System.Func{JetBrains.DataFlow.Lifetime,JetBrains.Application.Progress.IProgressIndicatorModel,System.IntPtr},JetBrains.Application.Progress.ProgressIndicator,System.Windows.Forms.IWin32Window,JetBrains.Threading.IThreading)">
+        <member name="M:JetBrains.UI.Application.Progress.UITaskExecutorRun.Run(JetBrains.UI.Application.Progress.TaskThreadAffinity,System.Action{JetBrains.Application.Progress.IProgressIndicator},System.Func{JetBrains.DataFlow.Lifetime,JetBrains.Application.Progress.IProgressIndicatorModel,System.IntPtr},JetBrains.Application.Progress.ProgressIndicator,System.Windows.Forms.IWin32Window,JetBrains.Threading.IThreading,System.Boolean)">
             <summary>
             Creates an object that runs the task execution once.
             </summary>
@@ -11465,13 +11823,14 @@
             <param name="indicator">The owner-provided progress indicator.</param>
             <param name="parentWindow">The window focus will be restored to if it was impossible to restore focus to the previous window.</param>
             <param name="threading"></param>
+            <param name="enforceModalityState"></param>
         </member>
         <member name="F:JetBrains.UI.Application.Progress.UITaskExecutorRun.myBackingA">
             <summary>
             Private.
             </summary>
         </member>
-        <member name="M:JetBrains.UI.Application.Progress.UITaskExecutorRun.RunCore(JetBrains.UI.Application.Progress.TaskThreadAffinity,System.Action{JetBrains.Application.Progress.IProgressIndicator},System.Func{JetBrains.DataFlow.Lifetime,JetBrains.Application.Progress.IProgressIndicatorModel,System.IntPtr},JetBrains.Application.Progress.ProgressIndicator,System.Windows.Forms.IWin32Window,JetBrains.Threading.IThreading)">
+        <member name="M:JetBrains.UI.Application.Progress.UITaskExecutorRun.RunCore(JetBrains.UI.Application.Progress.TaskThreadAffinity,System.Action{JetBrains.Application.Progress.IProgressIndicator},System.Func{JetBrains.DataFlow.Lifetime,JetBrains.Application.Progress.IProgressIndicatorModel,System.IntPtr},JetBrains.Application.Progress.ProgressIndicator,System.Windows.Forms.IWin32Window,JetBrains.Threading.IThreading,System.Boolean)">
             <summary>
             Creates an object that runs the task execution once.
             </summary>
@@ -11481,6 +11840,7 @@
             <param name="progressIndicator">The owner-provided progress indicator.</param>
             <param name="parentWindow">The window focus will be restored to if it was impossible to restore focus to the previous window.</param>
             <param name="threading"></param>
+            <param name="enforceModalityState"></param>
         </member>
         <member name="M:JetBrains.UI.Application.Progress.UITaskExecutorRun.PushProgressCanceledInterruptableCookie(JetBrains.Application.Progress.IProgressIndicator,JetBrains.UI.Application.Progress.TaskThreadAffinity)">
             <summary>
@@ -11521,7 +11881,7 @@
             <param name="lifetime"></param>
             <param name="progressIndicator"></param>
             <param name="threading"></param>
-            <param name="FAttachUi"></param>
+            <param name="fAttachUi"></param>
         </member>
         <member name="M:JetBrains.UI.Application.Progress.UITaskExecutorRun.Run_DisableWindowsButOne(JetBrains.DataFlow.Lifetime,System.IntPtr)">
             <summary>
@@ -11619,9 +11979,51 @@
             </summary>
             <filterpriority>2</filterpriority>
         </member>
+        <member name="F:JetBrains.UI.Settings.DataConstants.SingleSelectedUserFriendlySettingsLayer">
+            <summary>
+            If <see cref="F:JetBrains.UI.Settings.DataConstants.SelectedUserFriendlySettingsLayers"/> contains exactly one item, that item.
+            </summary>
+            <remarks>You MUST NOT provide this data rule, provide <see cref="F:JetBrains.UI.Settings.DataConstants.SelectedUserFriendlySettingsLayers"/> instead and the data rule will infer this one.</remarks>
+        </member>
+        <member name="F:JetBrains.UI.Settings.DataConstants.SingleSelectedUserInjectedSettingsLayer">
+            <summary>
+            If <see cref="F:JetBrains.UI.Settings.DataConstants.SelectedUserFriendlySettingsLayers"/> contains exactly one item, and it's an injected layer, that item.
+            </summary>
+            <remarks>You MUST NOT provide this data rule, provide <see cref="F:JetBrains.UI.Settings.DataConstants.SelectedUserFriendlySettingsLayers"/> instead and the data rule will infer this one.</remarks>
+        </member>
+        <member name="F:JetBrains.UI.Settings.DataConstants.SelectedUserFriendlySettingsLayers">
+            <summary>
+            The set of the currently selected user-friendly settings layers.
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.Settings.DataConstants.InjectedLayersHost_IncludingHostItself">
+            <summary>
+            <para>For an injected layer, takes its host. For an injections host layer, takes itself.</para>
+             <para>If all of the layers in the <see cref="F:JetBrains.UI.Settings.DataConstants.SelectedUserFriendlySettingsLayers"/> yield the same host, returns that host.</para>
+            <para>Unlike <see cref="F:JetBrains.UI.Settings.DataConstants.InjectedLayersHost_ExcludeHostItself"/>, this transformation includes hosting layers themselves.</para>
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.Settings.DataConstants.InjectedLayersHost_ExcludeHostItself">
+            <summary>
+            <para>For an injected layer, takes its host.</para>
+            <para>If all of the layers in the <see cref="F:JetBrains.UI.Settings.DataConstants.SelectedUserFriendlySettingsLayers"/> are injected and have the same host, returns that host.</para>
+            <para>Unlike <see cref="F:JetBrains.UI.Settings.DataConstants.InjectedLayersHost_IncludingHostItself"/>, this transformation yields <c>Null</c> if there are any hosting layers in the selection.</para>
+            </summary>
+        </member>
         <member name="T:JetBrains.UI.Settings.DialogWindowsSettings">
             <summary>
             Parent for settings of dialog windows.
+            </summary>
+        </member>
+        <member name="T:JetBrains.UI.Settings.EditSettingsLayerOptionsAction">
+            <summary>
+            Shows Options Dialog for the currently selected settings layer.
+            Optionally overrides the MRU selected page.
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.Settings.EditSettingsLayerOptionsAction.ShowOptionsPage">
+            <summary>
+            Context parameter for Show Options action: whether to preselect some page.
             </summary>
         </member>
         <member name="T:JetBrains.UI.src.Settings.ImportExport.Model.ImportExportRun">
@@ -11776,6 +12178,16 @@
             Creates from absolute screen coordinates.
             </summary>
         </member>
+        <member name="T:JetBrains.UI.Settings.ResetSettingsDialogOwner">
+            <summary>
+            Shows the dialog for resetting select settings on one or more preselected layers.
+            </summary>
+        </member>
+        <member name="F:JetBrains.UI.Settings.ResetSettingsDialogOwner.Show">
+            <summary>
+            We require that the guard is not held when this method is called in the modal variant.
+            </summary>
+        </member>
         <member name="T:JetBrains.UI.Settings.LayoutSettings">
             <summary>
             Parent for layout-related environment settings.
@@ -11867,9 +12279,9 @@
         </member>
         <member name="F:JetBrains.ReSharper.VSI.Misc.SettingsSchemaView.SchemaTreeNode.ValueTypes.myValueType">
             <summary>
-            <c>NULL</c> on a <see cref="T:JetBrains.Application.src.Settings.SettingsKey"/>.
-            Type of the entry value on a <see cref="T:JetBrains.Application.src.Settings.SettingsScalarEntry"/>.
-            Type of the mapped value on a <see cref="T:JetBrains.Application.src.Settings.SettingsIndexedEntry"/>.
+            <c>NULL</c> on a <see cref="T:JetBrains.Application.Settings.SettingsKey"/>.
+            Type of the entry value on a <see cref="T:JetBrains.Application.Settings.SettingsScalarEntry"/>.
+            Type of the mapped value on a <see cref="T:JetBrains.Application.Settings.SettingsIndexedEntry"/>.
             On synthetic nodes, the type of the node (key/value/etc).
             </summary>
         </member>
@@ -11882,9 +12294,9 @@
         </member>
         <member name="P:JetBrains.ReSharper.VSI.Misc.SettingsSchemaView.SchemaTreeNode.ValueTypes.ValueType">
             <summary>
-            <c>NULL</c> on a <see cref="T:JetBrains.Application.src.Settings.SettingsKey"/>.
-            Type of the entry value on a <see cref="T:JetBrains.Application.src.Settings.SettingsScalarEntry"/>.
-            Type of the mapped value on a <see cref="T:JetBrains.Application.src.Settings.SettingsIndexedEntry"/>.
+            <c>NULL</c> on a <see cref="T:JetBrains.Application.Settings.SettingsKey"/>.
+            Type of the entry value on a <see cref="T:JetBrains.Application.Settings.SettingsScalarEntry"/>.
+            Type of the mapped value on a <see cref="T:JetBrains.Application.Settings.SettingsIndexedEntry"/>.
             On synthetic nodes, the type of the node (key/value/etc).
             </summary>
         </member>
@@ -11893,12 +12305,12 @@
             Meaningful part of the tooltip text.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.VSI.Misc.SettingsSchemaView.SchemaTreeKey.CreateKeyOuterNode(JetBrains.Application.src.Settings.SettingsKey,JetBrains.ReSharper.VSI.Misc.SettingsSchemaView.SchemaTreeNodeFactory,System.Collections.Generic.IDictionary{JetBrains.Application.src.Settings.SettingsKey,System.Object})">
+        <member name="M:JetBrains.ReSharper.VSI.Misc.SettingsSchemaView.SchemaTreeKey.CreateKeyOuterNode(JetBrains.Application.Settings.SettingsKey,JetBrains.ReSharper.VSI.Misc.SettingsSchemaView.SchemaTreeNodeFactory,System.Collections.Generic.IDictionary{JetBrains.Application.Settings.SettingsKey,System.Object})">
             <summary>
             Creates one of the key kinds: for a non-indexed key, this is the one and only key node; for an indexed key, this is the root node for the indexed key.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.VSI.Misc.SettingsSchemaView.SchemaTreeKey.CreateKeyInnerNode(JetBrains.Application.src.Settings.SettingsIndexedKey,JetBrains.ReSharper.VSI.Misc.SettingsSchemaView.SchemaTreeNodeFactory,System.Collections.Generic.IDictionary{JetBrains.Application.src.Settings.SettingsKey,System.Object},System.Object)">
+        <member name="M:JetBrains.ReSharper.VSI.Misc.SettingsSchemaView.SchemaTreeKey.CreateKeyInnerNode(JetBrains.Application.Settings.SettingsIndexedKey,JetBrains.ReSharper.VSI.Misc.SettingsSchemaView.SchemaTreeNodeFactory,System.Collections.Generic.IDictionary{JetBrains.Application.Settings.SettingsKey,System.Object},System.Object)">
             <summary>
             Creates one of the key kinds: for a non-indexed key, this is the one and only key node; for an indexed key, this is the root node for the indexed key.
             </summary>
@@ -11915,7 +12327,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:JetBrains.ReSharper.VSI.Misc.SettingsSchemaView.SchemaTreeKey.SetDictionaryItemCow(System.Collections.Generic.IDictionary{JetBrains.Application.src.Settings.SettingsKey,System.Object},JetBrains.Application.src.Settings.SettingsKey,System.Object)">
+        <member name="M:JetBrains.ReSharper.VSI.Misc.SettingsSchemaView.SchemaTreeKey.SetDictionaryItemCow(System.Collections.Generic.IDictionary{JetBrains.Application.Settings.SettingsKey,System.Object},JetBrains.Application.Settings.SettingsKey,System.Object)">
             <summary>
             Modifies the dictionary copy-on-write style.
             </summary>
@@ -11952,7 +12364,7 @@
             Parented under <see cref="T:JetBrains.ReSharper.VSI.Misc.SettingsSchemaView.SchemaTreeKeyIndexedRoot"/>, represents a particular instance of an indexed key. Its index is in parent-key-indices.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.VSI.Misc.SettingsSchemaView.SchemaTreeEntry.CreateEntryOuterNode(JetBrains.Application.src.Settings.SettingsEntry,JetBrains.ReSharper.VSI.Misc.SettingsSchemaView.SchemaTreeNodeFactory,System.Collections.Generic.IDictionary{JetBrains.Application.src.Settings.SettingsKey,System.Object})">
+        <member name="M:JetBrains.ReSharper.VSI.Misc.SettingsSchemaView.SchemaTreeEntry.CreateEntryOuterNode(JetBrains.Application.Settings.SettingsEntry,JetBrains.ReSharper.VSI.Misc.SettingsSchemaView.SchemaTreeNodeFactory,System.Collections.Generic.IDictionary{JetBrains.Application.Settings.SettingsKey,System.Object})">
             <summary>
             Creates one of the key kinds: for a non-indexed key, this is the one and only key node; for an indexed key, this is the root node for the indexed key.
             </summary>

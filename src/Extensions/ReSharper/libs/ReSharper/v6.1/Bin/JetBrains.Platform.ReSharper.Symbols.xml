@@ -49,7 +49,7 @@
             Chosen directory to place downloaded sources
             </summary>
         </member>
-        <member name="M:JetBrains.Symbols.ISourcesDownloader.Download(JetBrains.Metadata.Utils.Pdb.SourceLocation,JetBrains.Util.FileSystemPath,JetBrains.Application.Progress.IProgressIndicator)">
+        <member name="M:JetBrains.Symbols.ISourcesDownloader.Download(JetBrains.Metadata.Utils.Pdb.SrcSrv.SourceLocation,JetBrains.Util.FileSystemPath,JetBrains.Application.Progress.IProgressIndicator)">
             <summary>
              Downloads source file specified by <paramref name="sourceLocation" /> to <paramref name="cacheDirectory" />.
              Handles errors by itself

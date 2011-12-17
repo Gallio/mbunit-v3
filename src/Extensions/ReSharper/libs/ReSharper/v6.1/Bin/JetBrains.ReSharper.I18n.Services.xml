@@ -4,6 +4,7 @@
         <name>JetBrains.ReSharper.I18n.Services</name>
     </assembly>
     <members>
+        <!-- Badly formed XML comment ignored for member "M:JetBrains.ReSharper.I18n.Services.QuickFixes.CreateResourceItemFromUsageFix.#ctor(JetBrains.ReSharper.I18n.Services.Daemon.ResourceItemNotResolvedWarning)" -->
         <member name="F:JetBrains.ReSharper.I18n.Services.LocalizableInspector.Optimistic">
             <summary>
             Analyze only localizable elements

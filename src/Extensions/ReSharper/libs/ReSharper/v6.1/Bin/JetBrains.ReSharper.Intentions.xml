@@ -4,54 +4,6 @@
         <name>JetBrains.ReSharper.Intentions</name>
     </assembly>
     <members>
-        <member name="T:JetBrains.ReSharper.Intentions.src.Bulbs.BulbIconResources">
-            <summary>
-              A strongly-typed resource class, for looking up localized strings, etc.
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Intentions.src.Bulbs.BulbIconResources.ResourceManager">
-            <summary>
-              Returns the cached ResourceManager instance used by this class.
-            </summary>
-        </member>
-        <member name="P:JetBrains.ReSharper.Intentions.src.Bulbs.BulbIconResources.Culture">
-            <summary>
-              Overrides the current thread's CurrentUICulture property for all
-              resource lookups using this strongly typed resource class.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Intentions.BulbItemImpl.ExecuteBeforeProgressAndTransaction(JetBrains.ProjectModel.ISolution)">
-            <summary>
-              Called to prepare QuickFix or ContextAction execution.
-            </summary>
-            <param name="solution"></param>
-        </member>
-        <member name="M:JetBrains.ReSharper.Intentions.BulbItemImpl.ExecuteBeforePsiTransaction(JetBrains.ProjectModel.ISolution,JetBrains.ProjectModel.IProjectModelTransactionCookie,JetBrains.Application.Progress.IProgressIndicator)">
-            <summary>
-              Called to prepare QuickFix or ContextAction execution.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Intentions.BulbItemImpl.ExecutePsiTransaction(JetBrains.ProjectModel.ISolution,JetBrains.Application.Progress.IProgressIndicator)">
-            <summary>
-              Executes QuickFix or ContextAction. Returns post-execute method.
-            </summary>
-            <returns>
-              Action to execute after document and PSI transaction finish. Use to open TextControls, navigate caret, etc.
-            </returns>
-        </member>
-        <member name="M:JetBrains.ReSharper.Intentions.BulbItemImpl.ExecuteAfterPsiTransaction(JetBrains.ProjectModel.ISolution,JetBrains.ProjectModel.IProjectModelTransactionCookie,JetBrains.Application.Progress.IProgressIndicator)">
-            <summary>
-              Executes after PSI transaction under Project/Document transaaction
-            </summary>
-            <returns>
-              Action to execute after document and PSI transaction finish. Use to open TextControls, navigate caret, etc.
-            </returns>
-        </member>
-        <member name="P:JetBrains.ReSharper.Intentions.BulbItemImpl.Text">
-            <summary>
-            Popup menu item text
-            </summary>
-        </member>
         <member name="T:JetBrains.ReSharper.Intentions.Bulbs.BulbIndicator">
             <summary>
               The bulb indicator.

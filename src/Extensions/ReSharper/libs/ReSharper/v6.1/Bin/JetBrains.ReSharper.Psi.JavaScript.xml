@@ -196,5 +196,10 @@
             Returns type of this expression
             </summary>
         </member>
+        <member name="T:JetBrains.ReSharper.Psi.JavaScript.Services.MinifiedFilesFilter">
+            <summary>
+            Filter out not documented files (preferes bare .js to .min.js)
+            </summary>
+        </member>
     </members>
 </doc>

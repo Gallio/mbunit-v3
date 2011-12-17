@@ -61,7 +61,7 @@
             InitializeComponent
             </summary>
         </member>
-        <member name="F:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.EditorParameterInfoHandler.myNextArrow">
+        <member name="F:JetBrains.ReSharper.Features.Intellisense.ParameterInfo.EditorParameterInfoHandler.Delay">
             <summary>
             Handling of arrows while popu is shown
             </summary>

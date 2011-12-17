@@ -380,6 +380,29 @@
             InitializeComponent
             </summary>
         </member>
+        <member name="T:JetBrains.ReSharper.Features.Environment.Options.Naming.EditNamingPolicyDialog">
+            <summary>
+            Interaction logic for MainWindow.xaml
+            </summary>
+            <summary>
+            EditNamingPolicyDialog
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.Environment.Options.Naming.EditNamingPolicyDialog.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Environment.Options.Naming.EditNamingPolicyDialog.SelectedSettingsLayer">
+            <summary>
+            Gets settings layer if user used Save To, null otherwise
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Features.Environment.Options.Naming.EditNamingPolicyDialog.CanSaveTo">
+            <summary>
+            Gets whether to show save to button
+            </summary>
+        </member>
         <member name="T:JetBrains.ReSharper.Features.Environment.PsiCacheNotifier.CacheNotifierIndicator">
             <summary>
             A status bar indicator for the PSI cache notifier.

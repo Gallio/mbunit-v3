@@ -774,6 +774,12 @@
             This class implements the logic and supporting structures.
             </summary>
         </member>
+        <member name="F:JetBrains.ReSharper.Features.SolBuilderDuo.Engine.MsbuildExe.BuildLevelProjectsLogic.ProjectDecisions">
+            <summary>
+            <para>Reports the decisions made for each encountered project (whether it should be built or not).</para>
+            <para><c>NULL</c> means the project was totally skipped from the build.</para>
+            </summary>
+        </member>
         <member name="M:JetBrains.ReSharper.Features.SolBuilderDuo.Engine.MsbuildExe.BuildLevelProjectsLogic.ReportProjectHasBreakingChanges(JetBrains.Util.FileSystemPath)">
             <summary>
             Reports the project as having breaking changes (it will be built regularily).
@@ -788,6 +794,12 @@
             <summary>
             Reports the project as having nonbreaking changes (it will not be built regularily, but copy-to-output will be possibly invoked for it): Started state, up-to-date notification; Completed state will be set after copying the outputs.
             </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Features.SolBuilderDuo.Engine.MsbuildExe.BuildLevelProjectsLogic.ReportProjectSkipped(JetBrains.Util.FileSystemPath)">
+            <summary>
+            <see cref="M:JetBrains.ReSharper.Features.SolBuilderDuo.Engine.MsbuildExe.BuildLevelProjectsLogic.FilterBuildLevelProjects(System.Collections.Generic.ICollection{JetBrains.Util.FileSystemPath},System.Collections.Generic.ICollection{JetBrains.Util.FileSystemPath}@,System.Collections.Generic.ICollection{JetBrains.Util.FileSystemPath}@,System.Collections.Generic.ICollection{JetBrains.Util.FileSystemPath}@)"/> ruled out that the project should not take part in the build at all (note that project-with-no-changes is still taking part in the build, but most of the steps are skipped for it).
+            </summary>
+            <param name="pathProject"></param>
         </member>
         <member name="M:JetBrains.ReSharper.Features.SolBuilderDuo.Engine.MsbuildExe.BuildLevelProjectsLogic.OnBuildLevelBegin(System.Int32,System.Collections.Generic.List{JetBrains.Util.FileSystemPath})">
             <summary>
@@ -997,7 +1009,7 @@
             If we were running it normally to then collect and cache its output data, do the caching.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Features.SolBuilderDuo.Engine.MsbuildExe.Components.ProjectInfoCollector.Init_Tampering_EnsureInfoCollectedAfterProjectBuild(JetBrains.ReSharper.Features.SolBuilderDuo.Engine.MsbuildExe.Components.Msbuild4ReflectionAccess,JetBrains.Util.FileSystemPath,JetBrains.ReSharper.Features.SolBuilderDuo.Engine.MsbuildExe.Logging.MsbuildExeBuildEventsUpload,JetBrains.ReSharper.Features.SolBuilderDuo.Engine.MsbuildExe.MsbuildExeMainNodeParameters)">
+        <member name="M:JetBrains.ReSharper.Features.SolBuilderDuo.Engine.MsbuildExe.Components.ProjectInfoCollector.Init_Tampering_EnsureInfoCollectedAfterProjectBuild(JetBrains.ReSharper.Features.SolBuilderDuo.Engine.MsbuildExe.Components.Msbuild4ReflectionAccess,JetBrains.Util.FileSystemPath,JetBrains.ReSharper.Features.SolBuilderDuo.Engine.MsbuildExe.Logging.MsbuildExeBuildEventsUpload,JetBrains.ReSharper.Features.SolBuilderDuo.Engine.MsbuildExe.MsbuildExeMainNodeParameters,JetBrains.ReSharper.Features.SolBuilderDuo.Engine.MsbuildExe.BuildLevelProjectsLogic)">
             <summary>
             Project has completed building; make sure we've collected the minimal info out of it (this includes what we need to do heuristics, and does not include cached task items for overridden tasks).
             Does nothing on the Clean scenario.

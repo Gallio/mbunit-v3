@@ -39,11 +39,6 @@
             ProjectFile language-dependent component
             </summary>
         </member>
-        <member name="T:JetBrains.ReSharper.Psi.Web.Impl.Services.MinifiedFilesFilter">
-            <summary>
-            Filter out not documented files (preferes bare .js to .min.js)
-            </summary>
-        </member>
         <member name="T:JetBrains.ReSharper.Psi.Web.PsiModules.IWebProjectFileClassifier">
             <summary>
             ProjectFileType-specific 
@@ -86,6 +81,15 @@
         <member name="M:JetBrains.ReSharper.Psi.Web.Tree.IWebAttributeContainer`1.AddAttributeAfter(`0,`0)">
             <summary>
             Adds attribute after the anchor. If anchor == null, the attribute is inserted before the first attribute
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Web.Util.ReferencedAssembliesServiceEx.IsProjectReferencingMvc(JetBrains.ProjectModel.IProjectElement,System.Version@)">
+            <param name="projectFile"></param>
+            <param name="version">Version of MVC, if referenced</param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Psi.Web.Util.ReferencedAssembliesServiceEx.IsProjectReferencingMvc3(JetBrains.ProjectModel.IProjectElement)">
+            <summary>
+            Is project referencing MVC assembly version >= 3
             </summary>
         </member>
         <member name="T:JetBrains.ReSharper.Psi.Web.Util.CodeBehindLanguageUtil">

@@ -2311,45 +2311,45 @@
             Symbolic info ID
             </summary>
         </member>
-        <member name="T:JetBrains.Metadata.Utils.Pdb.PdbStream">
+        <member name="T:JetBrains.Metadata.Utils.Pdb.Common.PdbStream">
             <summary>
             PDB stream descriptor
             </summary>
         </member>
-        <member name="M:JetBrains.Metadata.Utils.Pdb.PdbStream.#ctor(System.UInt32,System.UInt32[])">
+        <member name="M:JetBrains.Metadata.Utils.Pdb.Common.PdbStream.#ctor(System.UInt32,System.UInt32[])">
             <summary>
             ctor
             </summary>
             <param name="size"></param>
             <param name="blocks"></param>
         </member>
-        <member name="P:JetBrains.Metadata.Utils.Pdb.PdbStream.Size">
+        <member name="P:JetBrains.Metadata.Utils.Pdb.Common.PdbStream.Size">
             <summary>
             Stream size
             </summary>
         </member>
-        <member name="P:JetBrains.Metadata.Utils.Pdb.PdbStream.Blocks">
+        <member name="P:JetBrains.Metadata.Utils.Pdb.Common.PdbStream.Blocks">
             <summary>
             Stream blocks
             </summary>
         </member>
-        <member name="T:JetBrains.Metadata.Utils.Pdb.PdbStreamInfo">
+        <member name="T:JetBrains.Metadata.Utils.Pdb.Common.PdbStreamInfo">
             <summary>
             PDB (v 2.0) stream information stored in the Table of the Contents
             </summary>
         </member>
-        <member name="M:JetBrains.Metadata.Utils.Pdb.PdbStreamInfo.#ctor(System.IO.BinaryReader)">
+        <member name="M:JetBrains.Metadata.Utils.Pdb.Common.PdbStreamInfo.#ctor(System.IO.BinaryReader)">
             <summary>
             ctor
             </summary>
             <param name="reader"></param>
         </member>
-        <member name="P:JetBrains.Metadata.Utils.Pdb.PdbStreamInfo.Size">
+        <member name="P:JetBrains.Metadata.Utils.Pdb.Common.PdbStreamInfo.Size">
             <summary>
             Stream size
             </summary>
         </member>
-        <member name="T:JetBrains.Metadata.Utils.Pdb.PdbSubStream">
+        <member name="T:JetBrains.Metadata.Utils.Pdb.Common.PdbSubStream">
             <summary>
             Stream for reading sub range of the underlayed stream
             </summary>

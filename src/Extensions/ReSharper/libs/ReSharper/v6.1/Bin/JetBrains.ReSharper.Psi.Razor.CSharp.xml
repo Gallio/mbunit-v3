@@ -40,16 +40,16 @@
         </member>
         <member name="P:JetBrains.ReSharper.Psi.Razor.CSharp.resources.Texts.FileTemplateStart">
             <summary>
-              Looks up a localized string similar to namespace {1} {{
+              Looks up a localized string similar to namespace {0} {{
                
-               {4}
-               public class {2} : {3} {{
-                 [{5}] private static void {6}(object value) {{}}
-                 [{5}] private static void {6}(System.Web.WebPages.HelperResult result) {{}}
-                 [{5}] private static void {7}(System.IO.TextWriter writer, object content) {{}}
-                 [{5}] private static void {7}(System.IO.TextWriter writer, System.Web.WebPages.HelperResult content) {{}}
-                 [{5}] private static void {8}(object value) {{}}
-                 [{5}] private static void {9}(System.IO.TextWri [rest of string was truncated]&quot;;.
+               {3}
+               public class {1} : {2} {{
+                 [{4}] private static void {5}(object value) {{}}
+                 [{4}] private static void {5}(System.Web.WebPages.HelperResult result) {{}}
+                 [{4}] private static void {6}(System.IO.TextWriter writer, object content) {{}}
+                 [{4}] private static void {6}(System.IO.TextWriter writer, System.Web.WebPages.HelperResult content) {{}}
+                 [{4}] private static void {7}(object value) {{}}
+                 [{4}] private static void {8}(System.IO.TextWri [rest of string was truncated]&quot;;.
             </summary>
         </member>
         <member name="P:JetBrains.ReSharper.Psi.Razor.CSharp.resources.Texts.StaticExecuteStart">

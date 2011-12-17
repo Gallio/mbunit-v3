@@ -39,6 +39,71 @@
             Return all child <see cref="T:System.Xml.XmlElement"/> with specified name.
             </summary>
         </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.src.Bulbs.BulbIconResources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.src.Bulbs.BulbIconResources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.src.Bulbs.BulbIconResources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="T:JetBrains.ReSharper.Feature.Services.Bulbs.IBulbItem">
+            <summary>
+            Represents a single lightbulb-bearing menu item.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Bulbs.IBulbItem.Execute(JetBrains.ProjectModel.ISolution,JetBrains.TextControl.ITextControl)">
+            <summary>
+            Invoked when the user executes this bulb item.
+            </summary>
+            <param name="solution">The currently open solution.</param>
+            <param name="textControl">The text control that is currently open</param>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.Bulbs.IBulbItem.Text">
+            <summary>
+            The text rendered directly on the bulb item.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Bulbs.BulbItemImpl.ExecuteBeforeProgressAndTransaction(JetBrains.ProjectModel.ISolution)">
+            <summary>
+              Called to prepare QuickFix or ContextAction execution.
+            </summary>
+            <param name="solution"></param>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Bulbs.BulbItemImpl.ExecuteBeforePsiTransaction(JetBrains.ProjectModel.ISolution,JetBrains.ProjectModel.IProjectModelTransactionCookie,JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+              Called to prepare QuickFix or ContextAction execution.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Bulbs.BulbItemImpl.ExecutePsiTransaction(JetBrains.ProjectModel.ISolution,JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+              Executes QuickFix or ContextAction. Returns post-execute method.
+            </summary>
+            <returns>
+              Action to execute after document and PSI transaction finish. Use to open TextControls, navigate caret, etc.
+            </returns>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Bulbs.BulbItemImpl.ExecuteAfterPsiTransaction(JetBrains.ProjectModel.ISolution,JetBrains.ProjectModel.IProjectModelTransactionCookie,JetBrains.Application.Progress.IProgressIndicator)">
+            <summary>
+              Executes after PSI transaction under Project/Document transaaction
+            </summary>
+            <returns>
+              Action to execute after document and PSI transaction finish. Use to open TextControls, navigate caret, etc.
+            </returns>
+        </member>
+        <member name="P:JetBrains.ReSharper.Feature.Services.Bulbs.BulbItemImpl.Text">
+            <summary>
+            Popup menu item text
+            </summary>
+        </member>
         <member name="M:JetBrains.ReSharper.Feature.Services.Bulbs.IContextActionDataProvider.GetSelectedElement``1(System.Boolean,System.Boolean)">
             <summary>
             Returns element under caret
@@ -154,23 +219,6 @@
         <member name="P:JetBrains.ReSharper.Feature.Services.Bulbs.IBulbAction.Items">
             <summary>
             An array of bulb items that this bulb action supports.
-            </summary>
-        </member>
-        <member name="T:JetBrains.ReSharper.Feature.Services.Bulbs.IBulbItem">
-            <summary>
-            Represents a single lightbulb-bearing menu item.
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Bulbs.IBulbItem.Execute(JetBrains.ProjectModel.ISolution,JetBrains.TextControl.ITextControl)">
-            <summary>
-            Invoked when the user executes this bulb item.
-            </summary>
-            <param name="solution">The currently open solution.</param>
-            <param name="textControl">The text control that is currently open</param>
-        </member>
-        <member name="P:JetBrains.ReSharper.Feature.Services.Bulbs.IBulbItem.Text">
-            <summary>
-            The text rendered directly on the bulb item.
             </summary>
         </member>
         <member name="T:JetBrains.ReSharper.Feature.Services.Bulbs.IQuickFix">
@@ -816,9 +864,195 @@
             Used by todo manager to extract contents from tokens, e.g. remove slashes from comments. 
             </summary>
         </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.TodoItems.TodoPatternStorage.UpdateHash">
+            <summary>
+            Recalculates hash and returns true if it has not changed
+            </summary>
+            <returns>true if has not changed</returns>
+        </member>
         <member name="T:JetBrains.ReSharper.Feature.Services.TypingAssist.SkippingTypingAssist">
             <summary>
             This typing assist skips (overtypes) string that is set in the document data by code completion or other typing assist.
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.GetRelatedDeclarations(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            By default: yield break
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.GetRelatedAndFilterHidden(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            By default: yield return declaration
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.IsHidden(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            Works on auto-generated code-behind classed. By default - false
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.IsCodeBehindClass(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            By default - false
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.IsUserTextDeclaration(JetBrains.ReSharper.Psi.Tree.IDeclaration)">
+            <summary>
+            Works on auto-generated type members. By default - true
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.CanContainSeveralClasses(JetBrains.ReSharper.Psi.IPsiSourceFile)">
+            <summary>
+            Default - true
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.CanImplementInterfaces(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            Default - true
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.CanHaveConstructors(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            Default - true
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.SuperClassCanBeChanged(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            Default - true
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.SuperClassNameMustBeFull(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            Default - false
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.GetNamespaceForElementsMovedToExternalScope(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Default - typeElement.GetContainingElement&lt;INamespaceDeclaration&gt;(false);
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.GetFolderForElementsMovedToExternalScope(JetBrains.ProjectModel.IProjectFile,System.String,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Default - projectFile.Location.Directory
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.GetPrettyName(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration,System.Boolean)">
+            <summary>
+            Default - element.DeclaredName
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.IsOperationPossibleOnUnmappedRange(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Default - false
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.GetDocumentRangeForPartiallyUnmappedNode(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Default - InvalidRange
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.IsOperationPossibleOnUnmappedRange(JetBrains.ReSharper.Psi.ITreeRange)">
+            <summary>
+            Default - false
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.CanDeclarationBeOverloaded(JetBrains.ReSharper.Psi.Tree.IDeclaration)">
+            <summary>
+            Default - true
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.GetMvcViewWithModelBaseTypes">
+            <summary>
+            Default - empty
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.DefaultFileTypeSpecificOwnerUtil.GetRelatedDeclarations(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            By default: yield break
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.DefaultFileTypeSpecificOwnerUtil.GetRelatedAndFilterHidden(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            By default: yield return declaration
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.DefaultFileTypeSpecificOwnerUtil.IsHidden(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            Works on auto-generated code-behind classed. By default - false
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.DefaultFileTypeSpecificOwnerUtil.IsCodeBehindClass(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            By default - false
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.DefaultFileTypeSpecificOwnerUtil.IsUserTextDeclaration(JetBrains.ReSharper.Psi.Tree.IDeclaration)">
+            <summary>
+            Works on auto-generated type members. By default - true
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.DefaultFileTypeSpecificOwnerUtil.CanContainSeveralClasses(JetBrains.ReSharper.Psi.IPsiSourceFile)">
+            <summary>
+            Default - true
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.DefaultFileTypeSpecificOwnerUtil.CanImplementInterfaces(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            Default - true
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.DefaultFileTypeSpecificOwnerUtil.CanHaveConstructors(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            Default - true
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.DefaultFileTypeSpecificOwnerUtil.SuperClassCanBeChanged(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            Default - true
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.DefaultFileTypeSpecificOwnerUtil.SuperClassNameMustBeFull(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
+            <summary>
+            Default - false
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.DefaultFileTypeSpecificOwnerUtil.GetNamespaceForElementsMovedToExternalScope(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Default - typeElement.GetContainingElement&lt;INamespaceDeclaration&gt;(false);
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.DefaultFileTypeSpecificOwnerUtil.GetFolderForElementsMovedToExternalScope(JetBrains.ProjectModel.IProjectFile,System.String,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Default - projectFile.Location.Directory
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.DefaultFileTypeSpecificOwnerUtil.GetPrettyName(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration,System.Boolean)">
+            <summary>
+            Default - element.DeclaredName
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.DefaultFileTypeSpecificOwnerUtil.IsOperationPossibleOnUnmappedRange(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Default - false
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.DefaultFileTypeSpecificOwnerUtil.GetDocumentRangeForPartiallyUnmappedNode(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
+            <summary>
+            Default - InvalidRange
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.DefaultFileTypeSpecificOwnerUtil.IsOperationPossibleOnUnmappedRange(JetBrains.ReSharper.Psi.ITreeRange)">
+            <summary>
+            Default - false
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.DefaultFileTypeSpecificOwnerUtil.CanDeclarationBeOverloaded(JetBrains.ReSharper.Psi.Tree.IDeclaration)">
+            <summary>
+            Default - true
+            </summary>
+        </member>
+        <member name="M:JetBrains.ReSharper.Feature.Services.Util.DefaultFileTypeSpecificOwnerUtil.GetMvcViewWithModelBaseTypes">
+            <summary>
+            Default - empty
             </summary>
         </member>
         <member name="M:JetBrains.ReSharper.Feature.Services.Intentions.DataProviders.ICreationTarget.GetTargetDeclaration">
@@ -1341,7 +1575,7 @@
             Passes the icon that should be painted in the popup menu caption in case there's more than one alternative.
             </summary>
         </member>
-        <member name="M:JetBrains.ReSharper.Daemon.HighlightingSettingsManager.HasNecessarySeverity(JetBrains.ReSharper.Daemon.Severity,JetBrains.ReSharper.Daemon.IHighlighting,JetBrains.Application.Settings.IContextBoundSettingsStore)">
+        <member name="M:JetBrains.ReSharper.Daemon.HighlightingSettingsManager.HasNecessarySeverity(JetBrains.ReSharper.Daemon.Severity,JetBrains.ReSharper.Daemon.IHighlighting,JetBrains.ProjectModel.ISolution)">
             <summary>
             Check if any of the given highlighting list has severity equals or higher than <paramref name="severity"/>
             </summary>
@@ -1828,96 +2062,6 @@
             <param name="action">Activity to execute if the caches are ready OK.</param>
             <param name="title">Progress title.</param>
             <returns>Whether the caches are, finally, idle (the wait might be cancelled).</returns>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.GetRelatedDeclarations(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
-            <summary>
-            By default: yield break
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.GetRelatedAndFilterHidden(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
-            <summary>
-            By default: yield return declaration
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.IsHidden(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
-            <summary>
-            Works on auto-generated code-behind classed. By default - false
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.IsCodeBehindClass(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
-            <summary>
-            By default - false
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.IsUserTextDeclaration(JetBrains.ReSharper.Psi.Tree.IDeclaration)">
-            <summary>
-            Works on auto-generated type members. By default - true
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.CanContainSeveralClasses(JetBrains.ReSharper.Psi.IPsiSourceFile)">
-            <summary>
-            Default - true
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.CanImplementInterfaces(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
-            <summary>
-            Default - true
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.CanHaveConstructors(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
-            <summary>
-            Default - true
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.SuperClassCanBeChanged(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
-            <summary>
-            Default - true
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.SuperClassNameMustBeFull(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration)">
-            <summary>
-            Default - false
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.GetNamespaceForElementsMovedToExternalScope(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
-            <summary>
-            Default - typeElement.GetContainingElement&lt;INamespaceDeclaration&gt;(false);
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.GetFolderForElementsMovedToExternalScope(JetBrains.ProjectModel.IProjectFile,System.String,JetBrains.ReSharper.Psi.Tree.ITreeNode)">
-            <summary>
-            Default - file.Location.Directory
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.GetPrettyName(JetBrains.ReSharper.Psi.Tree.ITypeDeclaration,System.Boolean)">
-            <summary>
-            Default - element.DeclaredName
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.IsOperationPossibleOnUnmappedRange(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
-            <summary>
-            Default - false
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.GetDocumentRangeForPartiallyUnmappedNode(JetBrains.ReSharper.Psi.Tree.ITreeNode)">
-            <summary>
-            Default - InvalidRange
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.IsOperationPossibleOnUnmappedRange(JetBrains.ReSharper.Psi.ITreeRange)">
-            <summary>
-            Default - false
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.CanDeclarationBeOverloaded(JetBrains.ReSharper.Psi.Tree.IDeclaration)">
-            <summary>
-            Default - true
-            </summary>
-        </member>
-        <member name="M:JetBrains.ReSharper.Feature.Services.Util.IFileTypeSpecificOwnerUtil.GetMvcViewWithModelBaseTypes">
-            <summary>
-            Default - empty
-            </summary>
         </member>
         <member name="P:JetBrains.ReSharper.Feature.Services.LiveTemplates.Context.ITemplateContextUI.Title">
             <summary>
