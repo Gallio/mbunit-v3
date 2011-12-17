@@ -20,6 +20,7 @@ using System.Windows.Forms;
 using Gallio.Common;
 using Gallio.Model.Schema;
 using Gallio.Runner.Reports.Schema;
+using Gallio.UI.Common.Synchronization;
 
 namespace Gallio.UI.Reports
 {
@@ -148,7 +149,7 @@ namespace Gallio.UI.Reports
         {
             if (InvokeRequired)
             {
-                BeginInvoke(action);
+                SyncContext.Post(cb => action(), null);
             }
             else
             {

@@ -123,8 +123,8 @@ namespace Gallio.Icarus
             {
                 toolStripProgressBar.CompletedWork = progressController.CompletedWork;
             };
-            progressController.DisplayProgressDialog += (s, e) => BeginInvoke((MethodInvoker) (() => 
-                new ProgressMonitorDialog(e.ProgressMonitor).Show(this)));
+            progressController.DisplayProgressDialog += (s, e) => SyncContext.Post(cb => 
+                new ProgressMonitorDialog(e.ProgressMonitor).Show(this), null);
         }
 
         private static bool RunningOnWin7()

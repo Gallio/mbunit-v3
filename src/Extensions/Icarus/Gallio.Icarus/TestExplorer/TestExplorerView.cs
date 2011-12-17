@@ -22,6 +22,7 @@ using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Icarus.Projects;
 using Gallio.Icarus.Utilities;
 using Gallio.Model;
+using Gallio.UI.Common.Synchronization;
 using SortOrder = Gallio.Icarus.Models.SortOrder;
 
 namespace Gallio.Icarus.TestExplorer
@@ -302,7 +303,7 @@ namespace Gallio.Icarus.TestExplorer
 
         private void testTree_SelectionChanged(object sender, EventArgs e)
         {
-            BeginInvoke((MethodInvoker)TreeSelectionChanged);
+            SyncContext.Post(cb => TreeSelectionChanged(), null);
         }
 
         private void TreeSelectionChanged()
