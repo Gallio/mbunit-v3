@@ -40,7 +40,7 @@ namespace Gallio.Icarus.RuntimeLog
             }
         }
 
-        public event EventHandler<RuntimeLogEventArgs> LogMessage;
+        public event EventHandler<RuntimeLogEventArgs> LogMessage = delegate { };
         
         public void SetLogger(IRuntimeLogger logger)
         {
