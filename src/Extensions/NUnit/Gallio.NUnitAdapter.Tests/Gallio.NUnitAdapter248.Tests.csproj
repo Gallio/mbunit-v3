@@ -36,6 +36,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NHamcrest, Version=1.2.1.0, Culture=neutral, PublicKeyToken=31c3ea0b6fcf8c4a, processorArchitecture=MSIL" />
     <Reference Include="nunit.core, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\v2.4.8\nunit.core.dll</HintPath>
@@ -74,6 +75,7 @@
   <ItemGroup>
     <Compile Include="Integration\RunAddinsTest.cs" />
     <Compile Include="Integration\RunFixtureDependentUponSetUpFixtureTest.cs" />
+    <Compile Include="Model\NUnitTestFilterTest.cs" />
     <Compile Include="Model\NUnitTestFrameworkTest.cs" />
     <Compile Include="Integration\RunSimpleTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

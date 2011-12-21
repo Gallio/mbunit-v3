@@ -70,6 +70,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\NUnitTestFilter.cs" />
     <Compile Include="Model\NUnitNativeTestExplorerEngine.cs" />
     <Compile Include="Model\NUnitReflectiveTestExplorerEngine.cs" />
     <Compile Include="Model\NUnitTest.cs" />

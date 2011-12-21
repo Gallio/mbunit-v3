@@ -77,6 +77,7 @@
     <Compile Include="Model\NUnitTestDriver.cs" />
     <Compile Include="Model\NUnitTestExplorer.cs" />
     <Compile Include="Model\NUnitTestExplorerEngine.cs" />
+    <Compile Include="Model\NUnitTestFilter.cs" />
     <Compile Include="Model\NUnitTestFramework.cs" />
     <Compile Include="Model\NUnitAssemblyTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

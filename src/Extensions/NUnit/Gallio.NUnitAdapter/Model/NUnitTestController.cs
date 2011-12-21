@@ -86,6 +86,7 @@ namespace Gallio.NUnitAdapter.Model
             private Dictionary<TestName, ITestCommand> testCommandsByTestName;
             private Stack<ITestContext> testContextStack;
             private TestResult topResult;
+            private NUnitTestFilter nUnitTestFilter;
 
             public RunMonitor(TestRunner runner, IList<ITestCommand> testCommands, TestStep topTestStep,
                 IProgressMonitor progressMonitor)
@@ -136,6 +137,7 @@ namespace Gallio.NUnitAdapter.Model
                         testCommandsByTestName[testName] = testCommand;
                     }); 
                 }
+                nUnitTestFilter = new NUnitTestFilter(testCommandsByTestName);
 
                 testContextStack = new Stack<ITestContext>();
             }
@@ -332,22 +334,17 @@ namespace Gallio.NUnitAdapter.Model
             #region ITestFilter Members
             bool ITestFilter.Pass(NUnit.Core.ITest test)
             {
-                return FilterTest(test);
+                return nUnitTestFilter.Pass(test);
             }
 
             bool ITestFilter.Match(NUnit.Core.ITest test)
             {
-                return FilterTest(test);
+                return nUnitTestFilter.Match(test);
             }
 
             bool ITestFilter.IsEmpty
             {
-                get { return false; }
-            }
-
-            private bool FilterTest(NUnit.Core.ITest test)
-            {
-                return testCommandsByTestName.ContainsKey(test.TestName);
+                get { return nUnitTestFilter.IsEmpty; }
             }
             #endregion
 
