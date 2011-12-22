@@ -2,8 +2,8 @@
 
 set ReSharperVersion=v6.0
 
-set pluginFolder="%APPDATA%\JetBrains\ReSharper\v6.0\vs10.0\Plugins\Gallio"
-set externalAnnotationsFolder="%APPDATA%\JetBrains\ReSharper\v6.0\vs10.0\ExternalAnnotations\MbUnit"
+set pluginFolder="%APPDATA%\JetBrains\ReSharper\%ReSharperVersion%\vs10.0\Plugins\Gallio"
+set externalAnnotationsFolder="%APPDATA%\JetBrains\ReSharper\%ReSharperVersion%\vs10.0\ExternalAnnotations\MbUnit"
 
 if not exist %pluginFolder% md %pluginFolder%
 if not exist %externalAnnotationsFolder% md %externalAnnotationsFolder%
