@@ -347,7 +347,7 @@
             </summary>
             <returns><c>true</c> if page data is consistent</returns>
         </member>
-        <member name="M:JetBrains.ReSharper.I18n.Services.UI.Options.OptionPageBase.JetBrains#UI#Options#IOptionsPage#OnOk">
+        <member name="M:JetBrains.ReSharper.I18n.Services.UI.Options.OptionPageBase.OnOk">
             <summary>
             Invoked when OK button in the options dialog is pressed
             If the page returns <c>false</c>, the the options dialog won't be closed, and focus

@@ -979,12 +979,12 @@
             Fires the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event.
             </summary>
         </member>
-        <member name="M:JetBrains.DataFlow.CollectionEvents`1.InternalAdd(`0,System.Object)">
+        <member name="M:JetBrains.DataFlow.CollectionEvents`1.InternalAddAnnotatee(`0,System.Object)">
             <summary>
             One of the core methods that implement the actual functionality.
             </summary>
         </member>
-        <member name="M:JetBrains.DataFlow.CollectionEvents`1.InternalRemove(`0,System.Object)">
+        <member name="M:JetBrains.DataFlow.CollectionEvents`1.InternalRemoveAnnotatee(`0,System.Object)">
             <summary>
             One of the core methods that implement the actual functionality.
             </summary>
@@ -1337,12 +1337,12 @@
             <param name="bNullKeysAllowed">Whether <c>Null</c> values are allowed for keys (take caution with value types).</param>
             <param name="bNullValuesAllowed">Whether <c>Null</c> values are allowed for values (take caution with value types).</param>
         </member>
-        <member name="M:JetBrains.DataFlow.DictionaryEvents`2.InternalAdd(System.Collections.Generic.KeyValuePair{`0,`1},System.Object)">
+        <member name="M:JetBrains.DataFlow.DictionaryEvents`2.InternalAddAnnotatee(System.Collections.Generic.KeyValuePair{`0,`1},System.Object)">
             <summary>
             One of the core methods that implement the actual functionality.
             </summary>
         </member>
-        <member name="M:JetBrains.DataFlow.DictionaryEvents`2.InternalRemove(System.Collections.Generic.KeyValuePair{`0,`1},System.Object)">
+        <member name="M:JetBrains.DataFlow.DictionaryEvents`2.InternalRemoveAnnotatee(System.Collections.Generic.KeyValuePair{`0,`1},System.Object)">
             <summary>
             One of the core methods that implement the actual functionality.
             </summary>
@@ -3721,6 +3721,11 @@
             If the actions schedulled on a terminated lifetime should be executed immediately (for actions; brackets are just ignored; disposes are disposed; etc).
             </summary>
         </member>
+        <member name="F:JetBrains.DataFlow.Lifetime.myId">
+            <summary>
+            ID for callstack annotation.
+            </summary>
+        </member>
         <member name="F:JetBrains.DataFlow.Lifetime.myItems">
             <summary>
             Stores the items to execute upon termination.
@@ -4288,12 +4293,12 @@
             Called when someone attempts to sink the <see cref="P:JetBrains.DataFlow.ListEvents`1.BeforeAddRemove"/> signal. Acknowledges the handler.
             </summary>
         </member>
-        <member name="M:JetBrains.DataFlow.ListEvents`1.InternalAdd(`0,System.Object)">
+        <member name="M:JetBrains.DataFlow.ListEvents`1.InternalAddAnnotatee(`0,System.Object)">
             <summary>
             One of the core methods that implement the actual functionality.
             </summary>
         </member>
-        <member name="M:JetBrains.DataFlow.ListEvents`1.InternalRemove(`0,System.Object)">
+        <member name="M:JetBrains.DataFlow.ListEvents`1.InternalRemoveAnnotatee(`0,System.Object)">
             <summary>
             One of the core methods that implement the actual functionality.
             </summary>

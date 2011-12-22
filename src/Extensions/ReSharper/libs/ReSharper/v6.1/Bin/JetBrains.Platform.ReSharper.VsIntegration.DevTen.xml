@@ -1236,7 +1236,7 @@
             Collects text views, getting them from any possible sources (MEF export collector, RDT events, by enumerating available text views periodically).
             </summary>
         </member>
-        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextViewCollectorDevTen.AdviseViewClosedSafe(Microsoft.VisualStudio.Text.Editor.IWpfTextView,JetBrains.Util.WeakReference{System.Action{Microsoft.VisualStudio.Text.Editor.IWpfTextView}})">
+        <member name="M:JetBrains.VsIntegration.DevTen.TextControl.VsTextViewCollectorDevTen.AdviseViewClosedSafe(Microsoft.VisualStudio.Text.Editor.IWpfTextView,JetBrains.Util.WeakReference{JetBrains.VsIntegration.DevTen.TextControl.VsTextViewCollectorDevTen})">
             <summary>
             Prevents fucking csc from pulling too many objects into the closure. Should have just the view (which defines the lifetime of all this stuff) and a weak ref to our object (which might live shorter if we're suspended).
             </summary>

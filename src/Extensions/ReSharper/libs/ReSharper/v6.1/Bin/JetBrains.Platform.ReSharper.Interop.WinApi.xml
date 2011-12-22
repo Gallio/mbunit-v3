@@ -2906,6 +2906,48 @@
             <param name="hDesktop">A handle to the desktop to be assigned to the calling thread. This handle is returned by the CreateDesktop, GetThreadDesktop, OpenDesktop, or OpenInputDesktop function. This desktop must be associated with the current window station for the process.</param>
             <returns>If the function succeeds, the return value is nonzero. If the function fails, the return value is zero. To get extended error information, call GetLastError.</returns>
         </member>
+        <member name="M:JetBrains.Interop.WinApi.User32Dll.GetWindowLongPtr32(System.IntPtr,System.Int32)">
+            <summary>
+            Retrieves information about the specified window. 
+            The function also retrieves the 32-bit value at 
+            the specified offset into the extra window memory
+            </summary>
+        </member>
+        <member name="M:JetBrains.Interop.WinApi.User32Dll.GetWindowLongPtr64(System.IntPtr,System.Int32)">
+            <summary>
+            Retrieves information about the specified window. 
+            The function also retrieves the 64-bit value at 
+            the specified offset into the extra window memory
+            </summary>
+        </member>
+        <member name="M:JetBrains.Interop.WinApi.User32Dll.GetWindowLongPtr(System.IntPtr,System.Int32)">
+            <summary>
+            Retrieves information about the specified window. 
+            The function also retrieves the 32-bit (DWORD) value at 
+            the specified offset into the extra window memory
+            This static method is required because Win32 does not support
+            GetWindowLongPtr directly
+            </summary>
+        </member>
+        <member name="M:JetBrains.Interop.WinApi.User32Dll.SetWindowLongPtr(System.IntPtr,System.Int32,System.IntPtr)">
+            <summary>
+            Changes an attribute of the specified window. The function also 
+            sets a value at the specified offset in the extra window memory. 
+            (This static method is required because legacy OSes do not support SetWindowLongPtr)
+            </summary>
+        </member>
+        <member name="M:JetBrains.Interop.WinApi.User32Dll.SetWindowLong32(System.IntPtr,System.Int32,System.Int32)">
+            <summary>
+            Changes an attribute of the specified window. The function also sets 
+            a value at the specified offset in the extra window memory.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Interop.WinApi.User32Dll.SetWindowLongPtr64(System.IntPtr,System.Int32,System.IntPtr)">
+            <summary>
+            Changes an attribute of the specified window. The function also sets 
+            a value at the specified offset in the extra window memory.
+            </summary>
+        </member>
         <member name="M:JetBrains.Interop.WinApi.User32Dll.SetWindowLongPtrW(System.Void*,System.Int32,System.IntPtr)">
             <summary>
             The SetWindowLongPtrW function changes an attribute of the specified window. The function also sets a value at the specified offset in the extra window memory.
