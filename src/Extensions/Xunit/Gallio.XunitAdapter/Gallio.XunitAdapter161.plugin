@@ -50,7 +50,7 @@
                componentType="Gallio.XunitAdapter.Model.XunitTestFramework, Gallio.XunitAdapter161">
       <traits>
         <name>xUnit.net v1.6.1</name>
-        <frameworkAssemblies>xunit</frameworkAssemblies>
+        <frameworkAssemblies>xunit, Version=1.1.0.0-1.6.65535.65535</frameworkAssemblies>
         <version>1.6.1.1521</version>
         <fileTypes>Assembly</fileTypes>
         <icon>plugin://Gallio.XunitAdapter161/Resources/xUnit.ico</icon>

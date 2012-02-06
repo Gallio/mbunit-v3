@@ -38,20 +38,20 @@ namespace Gallio.XunitAdapter.Tests.Integration
             Assert.IsFalse(theoryRun.Step.IsDynamic);
             Assert.AreEqual(3, theoryRun.Children.Count);
 
-            TestStepRun run1 = (from x in theoryRun.Children where x.Step.Name.Contains("3, 4, 5") select x).Single();
-            Assert.AreEqual("Pythagoras(3, 4, 5)", run1.Step.Name);
+            TestStepRun run1 = (from x in theoryRun.Children where x.Step.Name.Contains("a: 3, b: 4, c: 5") select x).Single();
+            Assert.AreEqual("Pythagoras(a: 3, b: 4, c: 5)", run1.Step.Name);
             Assert.IsFalse(run1.Step.IsPrimary);
             Assert.IsTrue(run1.Step.IsDynamic);
             Assert.AreEqual(TestOutcome.Passed, run1.Result.Outcome);
 
-            TestStepRun run2 = (from x in theoryRun.Children where x.Step.Name.Contains("6, 8, 10") select x).Single();
-            Assert.AreEqual("Pythagoras(6, 8, 10)", run2.Step.Name);
+            TestStepRun run2 = (from x in theoryRun.Children where x.Step.Name.Contains("a: 6, b: 8, c: 10") select x).Single();
+            Assert.AreEqual("Pythagoras(a: 6, b: 8, c: 10)", run2.Step.Name);
             Assert.IsFalse(run2.Step.IsPrimary);
             Assert.IsTrue(run2.Step.IsDynamic);
             Assert.AreEqual(TestOutcome.Passed, run2.Result.Outcome);
 
-            TestStepRun run3 = (from x in theoryRun.Children where x.Step.Name.Contains("1, 1, 1") select x).Single();
-            Assert.AreEqual("Pythagoras(1, 1, 1)", run3.Step.Name);
+            TestStepRun run3 = (from x in theoryRun.Children where x.Step.Name.Contains("a: 1, b: 1, c: 1") select x).Single();
+            Assert.AreEqual("Pythagoras(a: 1, b: 1, c: 1)", run3.Step.Name);
             Assert.IsFalse(run3.Step.IsPrimary);
             Assert.IsTrue(run3.Step.IsDynamic);
             Assert.AreEqual(TestOutcome.Failed, run3.Result.Outcome);
