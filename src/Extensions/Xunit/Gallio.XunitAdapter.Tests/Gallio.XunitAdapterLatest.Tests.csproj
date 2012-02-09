@@ -48,7 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Integration\RunConsoleAndDebugTraceSample.cs" />
-    <Compile Include="Integration\RunTheorySample.cs" />
+    <Compile Include="Integration\RunTheorySampleLatest.cs" />
     <Compile Include="Model\XunitTestFrameworkTest.cs" />
     <Compile Include="Integration\RunSimpleTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
