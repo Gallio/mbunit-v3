@@ -40,12 +40,9 @@ namespace Gallio.Common.Concurrency
     {
         private readonly object syncRoot = new object();
 
-        // Invariant: This list only contains work sets that have at least one pending action.
-        private readonly LinkedList<WorkSet> pendingWorkSets;
-
         private readonly DegreeOfParallelismProvider degreeOfParallelismProvider;
 
-        private volatile int activeThreads;
+        private volatile int activeThreads = 1;
 
         /// <summary>
         /// Creates a work scheduler.
@@ -60,8 +57,6 @@ namespace Gallio.Common.Concurrency
                 throw new ArgumentNullException("degreeOfParallelismProvider");
 
             this.degreeOfParallelismProvider = degreeOfParallelismProvider;
-
-            pendingWorkSets = new LinkedList<WorkSet>();
         }
 
         /// <summary>
@@ -84,80 +79,69 @@ namespace Gallio.Common.Concurrency
         [DebuggerHidden]
         public void Run(IEnumerable<Action> actions)
         {
-            // NOTE: This method has been optimized to minimize the total stack depth of the action
-            //       by inlining blocks on the critical path that had previously been factored out.
-
             if (actions == null)
                 throw new ArgumentNullException("actions");
 
-            // Copy the queue of actions to process from the enumeration.
-            var actionQueue = new Queue<Action>();
-            foreach (Action action in actions)
+            int localActiveThreads = 0;
+
+            foreach (var action in actions)
             {
-                if (action == null)
-                    throw new ArgumentNullException("actions");
-                actionQueue.Enqueue(action);
-            }
+                // Get block local copy for when it gets captured in lambda below
+                var nextAction = action;
 
-            // Short-circuit when no actions to run to satisfy our invariant for pending work sets.
-            if (actionQueue.Count == 0)
-                return;
-
-            // Add this work set to the list of pending work sets.
-            WorkSet workSet;
-            lock (syncRoot)
-            {
-                workSet = new WorkSet(actionQueue);
-
-                pendingWorkSets.AddLast(workSet);
-                activeThreads += 1;
-            }
-
-            // Loop until all actions in this work set are finished.
-            for (; ; )
-            {
-                Action nextAction;
-
-                lock (syncRoot)
+                if (this.activeThreads >= this.GetDegreeOfParallelism())
                 {
-                    // Synchronize and exit if this work set is finished.
-                    if (!workSet.SyncHasPendingActions())
+                    try
                     {
-                        activeThreads -= 1;
+                        nextAction();
+                    }
+                    catch (Exception ex)
+                    {
+                        ReportUnhandledException(ex);
+                    }
+                }
+                else
+                {
+                    lock (this.syncRoot)
+                    {
+                        while (this.activeThreads >= this.GetDegreeOfParallelism())
+                        {
+                            Monitor.Wait(this.syncRoot);
+                        }
 
-                        while (workSet.SyncHasActionsInProgress())
-                            Monitor.Wait(syncRoot);
-
-                        return;
+                        this.activeThreads++;
+                        localActiveThreads++;
                     }
 
-                    // Prepare next action from this work set only.
-                    nextAction = workSet.SyncPrepareNextAction();
-
-                    // Remove the work set from the list of pending work sets if it has no other pending actions.
-                    if (!workSet.SyncHasPendingActions())
-                        pendingWorkSets.Remove(workSet);
-
-                    // Spawn more threads if needed for pending work sets.
-                    SyncSpawnBackgroundActionLoopIfNeeded();
-                }
-
-                // Run the next action.
-                try
-                {
-                    nextAction();
-                }
-                catch (Exception ex)
-                {
-                    ReportUnhandledException(ex);
-                }
-                finally
-                {
-                    lock (syncRoot)
+                    ThreadPool.QueueUserWorkItem(state =>
                     {
-                        workSet.SyncActionFinished();
-                        Monitor.PulseAll(syncRoot);
-                    }
+                        try
+                        {
+                            nextAction();
+                        }
+                        catch (Exception ex)
+                        {
+                            ReportUnhandledException(ex);
+                        }
+                        finally
+                        {
+                            lock (this.syncRoot)
+                            {
+                                this.activeThreads--;
+                                localActiveThreads--;
+
+                                Monitor.PulseAll(this.syncRoot);
+                            }
+                        }
+                    });
+                }
+            }
+
+            lock (this.syncRoot)
+            {
+                while (localActiveThreads > 0)
+                {
+                    Monitor.Wait(this.syncRoot);
                 }
             }
         }
@@ -167,105 +151,9 @@ namespace Gallio.Common.Concurrency
             return Math.Max(degreeOfParallelismProvider(), 1);
         }
 
-        private void SyncSpawnBackgroundActionLoopIfNeeded()
-        {
-            if (pendingWorkSets.Count != 0
-                && activeThreads < GetDegreeOfParallelism())
-            {
-                activeThreads += 1;
-                ThreadPool.QueueUserWorkItem(BackgroundActionLoop);
-            }
-        }
-
-        [DebuggerHidden]
-        private void BackgroundActionLoop(object dummy)
-        {
-            // NOTE: This method has been optimized to minimize the total stack depth of the action
-            //       by inlining blocks on the critical path that had previously been factored out.
-
-            for (; ; )
-            {
-                WorkSet nextWorkSet;
-                Action nextAction;
-
-                lock (syncRoot)
-                {
-                    // Exit if no pending work sets remain or if there are too many threads running.
-                    if (pendingWorkSets.Count == 0
-                        || activeThreads > GetDegreeOfParallelism())
-                    {
-                        activeThreads -= 1;
-                        return;
-                    }
-
-                    // Prepare next action.
-                    nextWorkSet = pendingWorkSets.First.Value;
-                    nextAction = nextWorkSet.SyncPrepareNextAction();
-
-                    // Remove the work set from the list of pending work sets if it has no other pending actions.
-                    if (!nextWorkSet.SyncHasPendingActions())
-                        pendingWorkSets.RemoveFirst();
-
-                    // Spawn more threads if needed for pending work sets.
-                    SyncSpawnBackgroundActionLoopIfNeeded();
-                }
-
-                // Run the next action.
-                try
-                {
-                    nextAction();
-                }
-                catch (Exception ex)
-                {
-                    ReportUnhandledException(ex);
-                }
-                finally
-                {
-                    lock (syncRoot)
-                    {
-                        nextWorkSet.SyncActionFinished();
-                        Monitor.PulseAll(syncRoot);
-                    }
-                }
-            }
-        }
-
         private static void ReportUnhandledException(Exception ex)
         {
             UnhandledExceptionPolicy.Report("An unhandled exception occurred while running a parallelizable action.", ex);
-        }
-
-        private sealed class WorkSet
-        {
-            private readonly Queue<Action> actionQueue;
-            private int actionsInProgress;
-
-            public WorkSet(Queue<Action> actionQueue)
-            {
-                this.actionQueue = actionQueue;
-            }
-
-            public bool SyncHasPendingActions()
-            {
-                return actionQueue.Count != 0;
-            }
-
-            public bool SyncHasActionsInProgress()
-            {
-                return actionsInProgress != 0;
-            }
-
-            public Action SyncPrepareNextAction()
-            {
-                Action action = actionQueue.Dequeue();
-                actionsInProgress += 1;
-                return action;
-            }
-
-            public void SyncActionFinished()
-            {
-                actionsInProgress -= 1;
-            }
         }
     }
 }
