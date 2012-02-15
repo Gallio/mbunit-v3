@@ -75,6 +75,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\AsyncTestAttribute.cs" />
     <Compile Include="Framework\FileType.cs" />
     <Compile Include="Framework\FlatFileDataObjectAttribute.cs" />
     <Compile Include="Framework\TabularDataAttributeBase.cs" />

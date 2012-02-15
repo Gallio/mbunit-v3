@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\AsyncTests.cs" />
     <Compile Include="Framework\XmlDataObjectCartesianTests.cs" />
     <Compile Include="Framework\XmlDataObjectTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
