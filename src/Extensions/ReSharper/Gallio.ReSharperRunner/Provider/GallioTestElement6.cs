@@ -178,6 +178,13 @@ namespace Gallio.ReSharperRunner.Provider
             return "";
         }
 
+#if RESHARPER_70
+        public string GetPresentation(IUnitTestElement parent = null)
+        {
+            throw new NotImplementedException();
+        }
+#endif
+
         public UnitTestNamespace GetNamespace()
         {
             return new UnitTestNamespace(namespaceName);
@@ -215,6 +222,8 @@ namespace Gallio.ReSharperRunner.Provider
         public IList<UnitTestTask> GetTaskSequence(IEnumerable<IUnitTestElement> explicitElements)
 #elif RESHARPER_61
         public IList<UnitTestTask> GetTaskSequence(IList<IUnitTestElement> explicitElements)
+#else
+        public IList<UnitTestTask> GetTaskSequence(ICollection<IUnitTestElement> explicitElements, IUnitTestLaunch launch)
 #endif
         {
             // Add the run task.  Must always be first.

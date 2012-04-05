@@ -17,7 +17,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\v6.1\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;RESHARPER_31_OR_NEWER;RESHARPER_40_OR_NEWER;RESHARPER_41_OR_NEWER;RESHARPER_45_OR_NEWER;RESHARPER_50_OR_NEWER;RESHARPER_51_OR_NEWER;RESHARPER_60_OR_NEWER;RESHARPER_61</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;RESHARPER_31_OR_NEWER;RESHARPER_40_OR_NEWER;RESHARPER_41_OR_NEWER;RESHARPER_45_OR_NEWER;RESHARPER_50_OR_NEWER;RESHARPER_51_OR_NEWER;RESHARPER_60_OR_NEWER;RESHARPER_61;RESHARPER_61_OR_NEWER</DefineConstants>
     <DocumentationFile>bin\v6.1\Gallio.ReSharperRunner61.xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>1591,1685</NoWarn>
@@ -30,7 +30,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\v6.1\</OutputPath>
-    <DefineConstants>TRACE;RESHARPER_31_OR_NEWER;RESHARPER_40_OR_NEWER;RESHARPER_41_OR_NEWER;RESHARPER_45_OR_NEWER;RESHARPER_50_OR_NEWER;RESHARPER_51_OR_NEWER;RESHARPER_60_OR_NEWER;RESHARPER_61</DefineConstants>
+    <DefineConstants>TRACE;RESHARPER_31_OR_NEWER;RESHARPER_40_OR_NEWER;RESHARPER_41_OR_NEWER;RESHARPER_45_OR_NEWER;RESHARPER_50_OR_NEWER;RESHARPER_51_OR_NEWER;RESHARPER_60_OR_NEWER;RESHARPER_61;RESHARPER_61_OR_NEWER</DefineConstants>
     <DocumentationFile>bin\v6.1\Gallio.ReSharperRunner61.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

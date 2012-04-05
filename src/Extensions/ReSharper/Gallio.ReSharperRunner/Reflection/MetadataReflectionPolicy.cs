@@ -32,7 +32,7 @@ using JetBrains.Shell;
 using JetBrains.Util;
 #else
 using JetBrains.Application;
-#if RESHARPER_61
+#if RESHARPER_61_OR_NEWER
 using JetBrains.ReSharper.Psi.Impl.Caches2;
 #endif
 using AssemblyReference=JetBrains.Metadata.Access.AssemblyReference;
@@ -55,7 +55,7 @@ namespace Gallio.ReSharperRunner.Reflection
     {
         private readonly IProject contextProject;
         private readonly MetadataLoader metadataLoader;
-#if RESHARPER_61
+#if RESHARPER_61_OR_NEWER
 		private readonly CacheManagerEx cacheManager;
 #endif
 
@@ -64,7 +64,7 @@ namespace Gallio.ReSharperRunner.Reflection
         private KeyedMemoizer<IMetadataTypeInfo, StaticDeclaredTypeWrapper> typeWithoutSubstitutionMemoizer = new KeyedMemoizer<IMetadataTypeInfo, StaticDeclaredTypeWrapper>();
         private KeyedMemoizer<IMetadataClassType, StaticDeclaredTypeWrapper> classMemoizer = new KeyedMemoizer<IMetadataClassType, StaticDeclaredTypeWrapper>();
 
-#if !RESHARPER_61
+#if !RESHARPER_61_OR_NEWER
         /// <summary>
         /// Creates a reflector with the specified project as its context.
         /// The context project is used to resolve metadata items to declared elements.
@@ -195,8 +195,8 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             var assemblyHandle = (IMetadataAssembly)assembly.Handle;
 #if RESHARPER_60_OR_NEWER
-			var referencedAssembliesNames = assemblyHandle.ReferencedAssembliesNames;
-			return Array.ConvertAll(referencedAssembliesNames, assemblyNameInfo => new AssemblyName(assemblyNameInfo.FullName));
+			var referencedAssembliesNames = new List<AssemblyNameInfo>(assemblyHandle.ReferencedAssembliesNames);
+			return Array.ConvertAll(referencedAssembliesNames.ToArray(), assemblyNameInfo => new AssemblyName(assemblyNameInfo.FullName));
 #else
             AssemblyReference[] references = assemblyHandle.ReferencedAssembliesNames;
             return Array.ConvertAll<AssemblyReference, AssemblyName>(references, delegate(AssemblyReference reference)
@@ -882,7 +882,7 @@ namespace Gallio.ReSharperRunner.Reflection
         #region GetDeclaredElement and GetProject
         protected override IDeclaredElementResolver GetDeclaredElementResolver(StaticWrapper element)
         {
-#if !RESHARPER_61
+#if !RESHARPER_61_OR_NEWER
             return DeclaredElementResolver.CreateResolver(contextProject, element);
 #else
 			return DeclaredElementResolver.CreateResolver(contextProject, element, cacheManager);
@@ -898,11 +898,11 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             private readonly IProject project;
             private readonly Common.Func<IProject, IDeclaredElement> provider;
-#if RESHARPER_61
+#if RESHARPER_61_OR_NEWER
         	private static CacheManager cacheManager;
 #endif
 
-#if !RESHARPER_61
+#if !RESHARPER_61_OR_NEWER
             private DeclaredElementResolver(IProject project, Common.Func<IProject, IDeclaredElement> provider)
 #else
 			private DeclaredElementResolver(IProject project, Common.Func<IProject, IDeclaredElement> provider, CacheManager cacheManager)
@@ -910,7 +910,7 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 this.project = project;
                 this.provider = provider;
-#if RESHARPER_61
+#if RESHARPER_61_OR_NEWER
 				DeclaredElementResolver.cacheManager = cacheManager;
 #endif
             }
@@ -928,7 +928,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 }
             }
 
-#if !RESHARPER_61
+#if !RESHARPER_61_OR_NEWER
             public static IDeclaredElementResolver CreateResolver(IProject project, StaticWrapper element)
             {
                 return new DeclaredElementResolver(project, project != null ? GetProvider(element) : null);

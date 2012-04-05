@@ -1,0 +1,327 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D8CACF2B-5003-4FA6-B676-A45F7AB62A0B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Gallio.ReSharperRunner</RootNamespace>
+    <AssemblyName>Gallio.ReSharperRunner70</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <BaseIntermediateOutputPath>obj\v7.0\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\v7.0\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;RESHARPER_31_OR_NEWER;RESHARPER_40_OR_NEWER;RESHARPER_41_OR_NEWER;RESHARPER_45_OR_NEWER;RESHARPER_50_OR_NEWER;RESHARPER_51_OR_NEWER;RESHARPER_60_OR_NEWER;RESHARPER_61_OR_NEWER;RESHARPER_70</DefineConstants>
+    <DocumentationFile>bin\v7.0\Gallio.ReSharperRunner61.xml</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>1591,1685</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\v7.0\</OutputPath>
+    <DefineConstants>TRACE;RESHARPER_31_OR_NEWER;RESHARPER_40_OR_NEWER;RESHARPER_41_OR_NEWER;RESHARPER_45_OR_NEWER;RESHARPER_50_OR_NEWER;RESHARPER_51_OR_NEWER;RESHARPER_60_OR_NEWER;RESHARPER_61_OR_NEWER;RESHARPER_70</DefineConstants>
+    <DocumentationFile>bin\v7.0\Gallio.ReSharperRunner61.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>1591,1685</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE\PublicAssemblies\EnvDTE.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Annotations">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Platform.CommonServices">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.Platform.CommonServices.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.AbstractTreeBuilder">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.Platform.ReSharper.AbstractTreeBuilder.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.ActionManagement">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.Platform.ReSharper.ActionManagement.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.ActivityTracking">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.Platform.ReSharper.ActivityTracking.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.ComponentModel">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.Platform.ReSharper.ComponentModel.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.DocumentManager">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.Platform.ReSharper.DocumentManager.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.DocumentModel">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.Platform.ReSharper.DocumentModel.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.IDE">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.Platform.ReSharper.IDE.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.Interop.WinApi">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.Platform.ReSharper.Interop.WinApi.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.Metadata">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.Platform.ReSharper.Metadata.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.ProjectModel">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.Platform.ReSharper.ProjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.Satellite">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.Platform.ReSharper.Satellite.exe</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.Shell">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.Platform.ReSharper.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.TextControl">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.Platform.ReSharper.TextControl.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.UI">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.Platform.ReSharper.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.Util">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.Platform.ReSharper.Util.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Daemon">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Daemon.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Daemon.CSharp">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Daemon.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Daemon.Specific">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Daemon.Specific.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.ExternalProcessStorage">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.ExternalProcessStorage.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.ExternalProcessStorage.Process">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.ExternalProcessStorage.Process.exe</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Feature.Services">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Feature.Services.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Feature.Services.CSharp">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Feature.Services.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Features.Altering">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Features.Altering.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Features.Browsing">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Features.Browsing.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Features.Common">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Features.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Features.Environment">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Features.Environment.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Features.Finding">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Features.Finding.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Features.Intellisense">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Features.Intellisense.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Features.Internal">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Features.Internal.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Features.Shared">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Features.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Intentions">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Intentions.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Intentions.CSharp">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Intentions.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.LiveTemplates">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.LiveTemplates.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.LiveTemplates.CSharp">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.LiveTemplates.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.NewRefactorings">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.NewRefactorings.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Psi">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Psi.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Psi.CSharp">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Psi.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Psi.Services">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Psi.Services.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Psi.Services.CSharp">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Psi.Services.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Psi.Xml">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Psi.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Refactorings.CSharp">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Refactorings.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Resources">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.Resources.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.SolutionAnalysis">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.SolutionAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.SolutionBuilder">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.SolutionBuilder.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.TaskRunner">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.TaskRunner.exe</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.TaskRunnerFramework">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.TaskRunnerFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.UnitTestExplorer">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.UnitTestExplorer.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.UnitTestFramework">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.UnitTestFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.VS">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.VS.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.VSI">
+      <HintPath>..\libs\ReSharper\v7.0\JetBrains.ReSharper.VSI.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft Visual Studio 2008 SDK\VisualStudioIntegration\Common\Assemblies\Microsoft.VisualStudio.OLE.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+      <Aliases>global</Aliases>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\SDK\Loader\Gallio.Loader.cs">
+      <Link>Gallio.Loader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SDK\Loader\Gallio.Loader.Isolation.cs">
+      <Link>Gallio.Loader.Isolation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SDK\Loader\Gallio.Loader.SharedEnvironment.cs">
+      <Link>Gallio.Loader.SharedEnvironment.cs</Link>
+    </Compile>
+    <Compile Include="Provider\AnnotationState.cs" />
+    <Compile Include="Provider\Actions\ShowFullReportAction.cs" />
+    <Compile Include="Provider\Actions\ShowCondensedReportAction.cs" />
+    <Compile Include="Provider\Actions\GallioAction.cs" />
+    <Compile Include="Provider\Actions\ShowReportAction.cs" />
+    <Compile Include="Provider\Explorers\UnitTestFileExplorer.cs" />
+    <Compile Include="Provider\Explorers\UnitTestMetadataExplorer.cs" />
+    <Compile Include="Provider\Facade\NullFacadeTask.cs" />
+    <Compile Include="Provider\GallioTestPresenter6.cs" />
+    <Compile Include="Provider\GallioTestElement6.cs" />
+    <Compile Include="Provider\Facade\AdapterFacadeLogger.cs" />
+    <Compile Include="Provider\Facade\AdapterFacadeTaskServer.cs" />
+    <Compile Include="Provider\Facade\FacadeTaskFactory.cs" />
+    <Compile Include="Provider\Facade\UnitTestFacadeTaskWrapper.cs" />
+    <Compile Include="Provider\Facade\FacadeTaskExecutorConfiguration.cs" />
+    <Compile Include="Provider\Facade\FacadeTaskRunner.cs" />
+    <Compile Include="Provider\Facade\TestContainerFacadeTaskWrapper.cs" />
+    <Compile Include="Provider\Facade\FacadeTaskWrapper.cs" />
+    <Compile Include="Provider\Facade\FacadeUtils.cs" />
+    <Compile Include="Provider\Facade\IFacadeLogger.cs" />
+    <Compile Include="Provider\Facade\IFacadeTaskServer.cs" />
+    <Compile Include="Provider\Facade\FacadeTask.cs" />
+    <Compile Include="Provider\Facade\FacadeTaskException.cs" />
+    <Compile Include="Provider\Facade\FacadeTaskOutputType.cs" />
+    <Compile Include="Provider\Facade\FacadeTaskResult.cs" />
+    <Compile Include="Provider\Daemons\AnnotationDaemonStage.cs" />
+    <Compile Include="Provider\Daemons\AnnotationDaemonStageProcess.cs" />
+    <Compile Include="Provider\Daemons\AnnotationHighlighting.cs" />
+    <Compile Include="Provider\Daemons\ErrorAnnotationHighlighting.cs" />
+    <Compile Include="Provider\Daemons\InfoAnnotationHighlighting.cs" />
+    <Compile Include="Provider\Daemons\WarningAnnotationHighlighting.cs" />
+    <Compile Include="Provider\Facade\IRemoteFacadeTaskRunner.cs" />
+    <Compile Include="Provider\Facade\RemoteFacadeTaskRunner.cs" />
+    <Compile Include="Provider\GallioTestProvider6.cs" />
+    <Compile Include="Provider\ProjectFileState.cs" />
+    <Compile Include="Provider\ReSharperExceptionDialogSuppressor.cs" />
+    <Compile Include="Provider\SessionCache.cs" />
+    <Compile Include="Provider\Tasks\GallioTestRunner.cs" />
+    <Compile Include="Provider\Tasks\GallioTestAssemblyTask.cs" />
+    <Compile Include="Provider\Tasks\GallioTestExplicitTask.cs" />
+    <Compile Include="Provider\Tasks\GallioTestItemTask.cs" />
+    <Compile Include="Provider\Tasks\GallioTestRunTask.cs" />
+    <Compile Include="Provider\Facade\TaskExceptionFactory.cs" />
+    <Compile Include="Reflection\IDeclaredElementResolver.cs" />
+    <Compile Include="Provider\Facade\FacadeLoggerWrapper.cs" />
+    <Compile Include="Reflection\MetadataReflectionPolicy.cs" />
+    <Compile Include="Reflection\PsiReflectionPolicy.cs" />
+    <Compile Include="Reflection\ReSharperReflectionPolicy.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
+      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
+      <Name>Gallio.vs2010</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Readme - Debugging.txt" />
+    <Content Include="Resources\resharper.ico" />
+    <None Include="Gallio.ReSharperRunner70.plugin" />
+    <None Include="Resources\GallioIcon.png" />
+    <EmbeddedResource Include="Resources\Report.png" />
+    <EmbeddedResource Include="Resources\Actions.xml" />
+    <None Include="Reflection\Known Limitations and Workarounds.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

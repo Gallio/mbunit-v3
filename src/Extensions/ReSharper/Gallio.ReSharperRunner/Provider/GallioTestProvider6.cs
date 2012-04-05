@@ -33,7 +33,7 @@ using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using JetBrains.Metadata.Reader.API;
 using JetBrains.ProjectModel;
-#if RESHARPER_61
+#if RESHARPER_61_OR_NEWER
 using JetBrains.ReSharper.Feature.Services.UnitTesting;
 #endif
 using JetBrains.ReSharper.Psi;
@@ -51,7 +51,7 @@ namespace Gallio.ReSharperRunner.Provider
     /// </summary>
     [UnitTestProvider]
     public class GallioTestProvider : IUnitTestProvider
-#if RESHARPER_61
+#if RESHARPER_61_OR_NEWER
         , IUnitTestingCategoriesAttributeProvider
 #endif
     {

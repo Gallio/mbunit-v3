@@ -44,7 +44,6 @@ using JetBrains.Metadata.Utils;
 #if RESHARPER_60_OR_NEWER
 using JetBrains.ProjectModel.Model2.Assemblies.Interfaces;
 using ConstantValue = Gallio.Common.Reflection.ConstantValue;
-
 #endif
 
 namespace Gallio.ReSharperRunner.Reflection
@@ -55,7 +54,7 @@ namespace Gallio.ReSharperRunner.Reflection
     public class PsiReflectionPolicy : ReSharperReflectionPolicy
     {
         private readonly PsiManager psiManager;
-#if RESHARPER_61
+#if RESHARPER_61_OR_NEWER
 		private readonly CacheManagerEx cacheManager;
 #endif
 
@@ -64,7 +63,7 @@ namespace Gallio.ReSharperRunner.Reflection
         private KeyedMemoizer<ITypeElement, StaticDeclaredTypeWrapper> typeWithoutSubstitutionMemoizer = new KeyedMemoizer<ITypeElement, StaticDeclaredTypeWrapper>();
         private KeyedMemoizer<IDeclaredType, StaticDeclaredTypeWrapper> declaredTypeMemoizer = new KeyedMemoizer<IDeclaredType, StaticDeclaredTypeWrapper>();
 
-#if RESHARPER_61
+#if RESHARPER_61_OR_NEWER
         /// <summary>
         /// Creates a reflector with the specified PSI manager.
         /// </summary>
@@ -334,7 +333,7 @@ namespace Gallio.ReSharperRunner.Reflection
                     yield return new StaticAttributeWrapper(this, attrib);
             }
 #else
-#if !RESHARPER_61
+#if !RESHARPER_61_OR_NEWER
 			CacheManagerEx cacheManager = CacheManagerEx.GetInstance(psiManager.Solution);
 #endif
             IPsiModule psiModule = GetPsiModule(moduleHandle);
@@ -381,7 +380,7 @@ namespace Gallio.ReSharperRunner.Reflection
 #if RESHARPER_60_OR_NEWER
 				if (projectHandle.IsValid())
 				{
-					var moduleRefs = projectHandle.GetModuleReferences();
+					var moduleRefs = new List<IProjectToModuleReference>(projectHandle.GetModuleReferences());
 					return GenericCollectionUtils.ConvertAllToArray(moduleRefs, moduleRef => GetAssemblyName(moduleRef.ResolveResult()));
 				}
 #else
@@ -1013,7 +1012,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
 #if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
             var parameter = new Parameter(methodHandle, type, null);
-#elif RESHARPER_61
+#elif RESHARPER_61_OR_NEWER
 			var parameter = new Parameter(methodHandle, 0, ParameterKind.UNKNOWN, type, null);
 #else
             var parameter = new Parameter(methodHandle, 0, type, null);

@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JetBrains.Platform.ReSharper.IDE</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.IDE.EditorManager">
+            <summary>
+            EditorManager is a solution-level component, 
+            that provides all access to editor control in the center of WindowManager.MainForm
+            </summary>
+        </member>
+        <member name="M:JetBrains.IDE.EditorManager.OpenProjectFile(JetBrains.ProjectModel.IProjectFile,System.Boolean,JetBrains.IDE.FileView,JetBrains.IDE.TabOptions)">
+            <summary>
+            Tries to open a file from solution for editing.
+            </summary>
+            <param name="projectFile">The file to open.</param>
+            <param name="activate">Whether to set focus to the opened file. Otherwise, the previously focused file will remain active.</param>
+            <param name="fileViewPrimary">The preferred view. If failed, this method will fallback to other views.</param>
+            <param name="tabOptions"> </param>
+            <returns>The text control, if the file was opened successfully and the opened view is a text view for which a text control could be created.</returns>
+        </member>
+        <member name="M:JetBrains.IDE.EditorManager.OpenProjectFile(JetBrains.ProjectModel.IProjectFile,System.Boolean,JetBrains.IDE.TabOptions)">
+            <summary>
+            Tries to open a file from solution for editing, preferring a text editor view for which a Text Control could be created. Fallbacks to other views (like designer, Solution Explorer, etc) if that fails.
+            </summary>
+            <param name="projectFile">The file to open.</param>
+            <param name="activate">Whether to set focus to the opened file. Otherwise, the previously focused file will remain active.</param>
+            <param name="tabOptions"> </param>
+            <returns>The text control, if the file was opened successfully and the opened view is a text view for which a text control could be created.</returns>
+        </member>
+        <member name="M:JetBrains.IDE.EditorManager.TryGetTextControl(JetBrains.ProjectModel.IProjectFile)">
+            <summary>
+            If the project file is currently opened in any text controls, looks up one. Otherwise, <c>Null</c>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.IDE.INavigateOccurenceProvider">
+            <summary>
+            Implement this interface to provide navigation thruout the results of something  
+            </summary>
+        </member>
+        <member name="T:JetBrains.IDE.NavigateOccurenceManager">
+            <summary>
+            Utility to implement navigation thru  some results
+            </summary>
+        </member>
+        <member name="M:JetBrains.IDE.PersistableViewManager.CreateTextControl(JetBrains.UI.PersistableDocument.IPersistableView)">
+            <summary>
+            Creates a text control specifically sited in a Persistable View.
+            </summary>
+        </member>
+        <member name="M:JetBrains.IDE.TreeBrowser.WPF.TreeModelPresentableViewWPF.ReentrancyGuardExecuteOrQueueOrMerge(System.String,System.Action{System.Boolean})">
+            <param name="action">action to execute , boolean flag is true for immidiate execution</param>
+            <returns><c>True</c> if executed immediately, <c>False</c> if queued (<see cref="M:JetBrains.Threading.ReentrancyGuard.TryExecute(System.String,System.Action)"/>-compatible behavior).</returns>
+        </member>
+        <member name="P:JetBrains.IDE.TreeBrowser.WPF.TreeModelPresentableViewWPF.DefaultExpandLevels">
+            <summary>
+            Gets or sets default levels to expand on ExpandAll command (ex. if "*" key pressed)
+            </summary>
+        </member>
+        <member name="T:JetBrains.IDE.src.TreeBrowser.ExportTreeViewResources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:JetBrains.IDE.src.TreeBrowser.ExportTreeViewResources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:JetBrains.IDE.src.TreeBrowser.ExportTreeViewResources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="F:JetBrains.IDE.TreeBrowser.ExportTreeViewDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:JetBrains.IDE.TreeBrowser.ExportTreeViewDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:JetBrains.IDE.TreeBrowser.ExportTreeViewDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:JetBrains.IDE.TreeBrowser.PreviewSupport">
+            <summary>
+            Enumerates possible types of preview support in <see cref="T:JetBrains.IDE.TreeBrowser.TreeModelBrowser"/>
+            </summary>
+        </member>
+        <member name="F:JetBrains.IDE.TreeBrowser.PreviewSupport.NotSupported">
+            <summary>
+            Preview is not supported at all
+            </summary>
+        </member>
+        <member name="F:JetBrains.IDE.TreeBrowser.PreviewSupport.Supported">
+            <summary>
+            Preview is supported. Control will be created through a call to <see cref="!:TreeModelBrowserDescriptor.PreviewCreateControl"/> and updated
+            through calls to <see cref="!:TreeModelBrowserDescriptor.PreviewUpdate"/>. Preview is invisible by default.
+            </summary>
+        </member>
+        <member name="F:JetBrains.IDE.TreeBrowser.PreviewSupport.SupportedAndVisibleByDefault">
+            <summary>
+            Preview is supported. Control will be created through a call to <see cref="!:TreeModelBrowserDescriptor.PreviewCreateControl"/> and updated
+            through calls to <see cref="!:TreeModelBrowserDescriptor.PreviewUpdate"/>. Preview is visible by default.
+            </summary>
+        </member>
+        <member name="F:JetBrains.IDE.TreeBrowser.PreviewSupport.Virtual">
+            <summary>
+            <i>Virtual</i> preview support. No control will be created by <see cref="T:JetBrains.IDE.TreeBrowser.TreeModelBrowser"/>, but calls to <see cref="!:TreeModelBrowserDescriptor.PreviewUpdate"/> will be made
+            so the inheritor can dispatch them to a custom preview mechanism.
+            </summary>
+        </member>
+        <member name="M:JetBrains.IDE.TreeBrowser.TreeModelBrowserDescriptorBase.PreviewCreateControl(JetBrains.UI.WindowManagement.WindowFrame)">
+            <summary>
+            Create a control for the preview area.
+            </summary>
+            <param name="framePreview">Window frame of the preview area that reflects the preview area visibility, as well as visibility of the tree model browser itself (if hosted in a visibility-aware frame, like a [tabbed] tool window).</param>
+        </member>
+        <member name="T:JetBrains.IDE.TreeBrowser.UIOptions">
+             <summary>
+            Internal options intended to be shared between dotPeek/ReSharper. (dotPeek can not use intertnal assembly)
+             </summary>
+        </member>
+        <member name="T:JetBrains.IDE.UI.Options.OptionsPageViewFactorySolution">
+            <summary>
+            Enables <see cref="T:JetBrains.UI.Options.OptionsPageViewFactoryManager"/> to import Solution components to the ctor (preeempts Shell when a solution is open and it's the current solution).
+            </summary>
+        </member>
+    </members>
+</doc>

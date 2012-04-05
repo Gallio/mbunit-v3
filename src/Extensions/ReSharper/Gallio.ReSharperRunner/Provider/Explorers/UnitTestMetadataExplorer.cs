@@ -18,7 +18,7 @@ namespace Gallio.ReSharperRunner.Provider.Explorers
 #endif
         {
             this.provider = provider;
-#if RESHARPER_61
+#if RESHARPER_61_OR_NEWER
         	provider.PsiModuleManager = psiModuleManager;
         	provider.CacheManager = cacheManager;
 			provider.UnitTestProvidersManager = unitTestProvidersManager;

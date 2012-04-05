@@ -15,7 +15,11 @@
 
 using System.Drawing;
 using JetBrains.CommonControls;
+#if RESHARPER_70
+using JetBrains.ReSharper.Features.Shared.TreePsiBrowser;
+#else
 using JetBrains.ReSharper.Features.Common.TreePsiBrowser;
+#endif
 using JetBrains.ReSharper.UnitTestExplorer;
 using JetBrains.UI.TreeView;
 using JetBrains.TreeModels;
