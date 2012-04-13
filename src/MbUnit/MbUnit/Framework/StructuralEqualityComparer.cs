@@ -472,6 +472,12 @@ namespace MbUnit.Framework
 
         private bool CompareEnumerables<TValue>(IEnumerable<TValue> xEnumerable, IEnumerable<TValue> yEnumerable, EqualityComparison<TValue> comparer)
         {
+            if (xEnumerable == null && yEnumerable == null)
+                return true;
+
+            if (xEnumerable == null || yEnumerable == null)
+                return false;
+
             var xEnumerator = xEnumerable.GetEnumerator();
             var yEnumerator = yEnumerable.GetEnumerator();
 
@@ -501,6 +507,12 @@ namespace MbUnit.Framework
 
         private bool CompareEnumerablesIgnoringOrder<TValue>(IEnumerable<TValue> xEnumerable, IEnumerable<TValue> yEnumerable, EqualityComparison<TValue> comparer)
         {
+            if (xEnumerable == null && yEnumerable == null)
+                return true;
+
+            if (xEnumerable == null || yEnumerable == null)
+                return false;
+
             var table = new MatchTable<TValue>(comparer);
 
             foreach (TValue xElement in xEnumerable)

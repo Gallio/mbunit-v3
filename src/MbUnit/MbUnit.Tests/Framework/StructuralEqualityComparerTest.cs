@@ -393,5 +393,81 @@ namespace MbUnit.Tests.Framework
             bool result = comparer.Equals(value1, value2);
             Assert.AreEqual(expected, result);
         }
+
+        public IEnumerable<object[]> ProvideTestData5()
+        {
+            yield return new object[] 
+            {
+                new Foo
+                { 
+                    Children = null
+                },
+                
+                new Foo
+                { 
+                    Children = new ChildFoo[0]
+                },
+
+                false
+            };
+
+            yield return new object[] 
+            {
+                new Foo
+                { 
+                    Children = new ChildFoo[0]
+                },
+                
+                new Foo
+                { 
+                    Children = null
+                },
+
+                false
+            };
+
+            yield return new object[] 
+            {
+                new Foo
+                { 
+                    Children = null
+                },
+                
+                new Foo
+                { 
+                    Children = null
+                },
+
+                true,
+            };
+        }
+
+        [Test]
+        [Factory("ProvideTestData5")]
+        public void Compare_null_enumerations(Foo value1, Foo value2, bool expected)
+        {
+            var comparer = new StructuralEqualityComparer<Foo>
+            {
+                { x => x.Children, new StructuralEqualityComparer<ChildFoo> { x => x.Tag } }
+            };
+
+            var result = comparer.Equals(value1, value2);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        [Factory("ProvideTestData5")]
+        public void Compare_null_enumerations_ignoring_order(Foo value1, Foo value2, bool expected)
+        {
+            var comparer = new StructuralEqualityComparer<Foo>
+            {
+                { x => x.Children, new StructuralEqualityComparer<ChildFoo> { x => x.Tag }, StructuralEqualityComparerOptions.IgnoreEnumerableOrder }
+            };
+
+            var result = comparer.Equals(value1, value2);
+
+            Assert.AreEqual(expected, result);
+        }
     }
 }
