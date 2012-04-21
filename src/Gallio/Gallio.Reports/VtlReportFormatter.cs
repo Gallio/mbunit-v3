@@ -15,25 +15,12 @@
 
 using System;
 using System.IO;
-using System.Text;
-using System.Xml;
-using System.Xml.XPath;
-using System.Xml.Xsl;
-using Gallio.Common.Xml;
 using Gallio.Common.Markup;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Runtime;
 using Gallio.Runner.Reports;
 using Path = System.IO.Path;
 using NVelocity;
 using NVelocity.App;
-using System.Collections;
-using System.Collections.Generic;
-using NVelocity.Runtime;
-using Gallio.Runner.Reports.Schema;
-using Gallio.Common;
-using System.Text.RegularExpressions;
-using Gallio.Model;
 using Gallio.Reports.Vtl;
 using Gallio.Runner.Reports.Preferences;
 
@@ -140,7 +127,7 @@ namespace Gallio.Reports
             var helper = new FormatHelper();
             VelocityContext velocityContext = VelocityEngineFactory.CreateVelocityContext(reportWriter, helper);
             var writer = GetReportWriter(velocityEngine, velocityContext, reportWriter, helper, options);
-            writer.Run();
+            reportWriter.WithUpdatedContentPathsAndDisposition(attachmentContentDisposition, writer.Run);
         }
 
         private VtlReportWriter GetReportWriter(VelocityEngine velocityEngine, VelocityContext velocityContext, IReportWriter reportWriter, FormatHelper helper, ReportFormatterOptions options)

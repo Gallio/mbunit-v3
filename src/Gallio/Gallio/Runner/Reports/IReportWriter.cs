@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using Gallio.Common;
 using Gallio.Common.Markup;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ProgressMonitoring;
@@ -112,5 +113,12 @@ namespace Gallio.Runner.Reports
         /// <param name="progressMonitor">The progress monitor.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null.</exception>
         void SaveReportAttachments(IProgressMonitor progressMonitor);
+
+        /// <summary>
+        /// Perform an action with updated content paths and dispositions
+        /// </summary>
+        /// <param name="attachmentContentDisposition">The attachment content disposition to use.</param>
+        /// <param name="action">The action to perform.</param>
+        void WithUpdatedContentPathsAndDisposition(AttachmentContentDisposition attachmentContentDisposition, Action action);
     }
 }

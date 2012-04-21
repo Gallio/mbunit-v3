@@ -19,6 +19,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using Gallio.Common;
 using Gallio.Common.Markup;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ProgressMonitoring;
@@ -34,6 +35,7 @@ namespace Gallio.Runner.Reports
         private readonly Report report;
         private readonly IReportContainer reportContainer;
         private readonly List<string> reportDocumentPaths;
+        private readonly AttachmentPathResolver attachmentPathResolver;
 
         private bool reportSaved;
         private bool reportAttachmentsSaved;
@@ -55,6 +57,8 @@ namespace Gallio.Runner.Reports
             this.reportContainer = reportContainer;
 
             reportDocumentPaths = new List<string>();
+
+            attachmentPathResolver = new AttachmentPathResolver(reportContainer);
         }
 
         /// <inheritdoc />
@@ -87,59 +91,39 @@ namespace Gallio.Runner.Reports
             if (xmlWriter == null)
                 throw new ArgumentNullException(@"xmlWriter");
 
-            var originalAttachmentData = new Dictionary<AttachmentData, KeyValuePair<AttachmentContentDisposition, string>>();
+            var ignoreAttributes = new XmlAttributes();
+            ignoreAttributes.XmlIgnore = true;
+            var overrides = new XmlAttributeOverrides();
 
-            try
+            // Prune unnecessary ids that can be determined implicitly from the report structure.
+            overrides.Add(typeof(TestStepData), @"ParentId", ignoreAttributes);
+
+            // Only include content path when linking.
+            if (attachmentContentDisposition != AttachmentContentDisposition.Link)
             {
-                var ignoreAttributes = new XmlAttributes();
-                ignoreAttributes.XmlIgnore = true;
-                var overrides = new XmlAttributeOverrides();
+                overrides.Add(typeof(AttachmentData), @"ContentPath", ignoreAttributes);
+            }
 
-                // Prune unnecessary ids that can be determined implicitly from the report structure.
-                overrides.Add(typeof(TestStepData), @"ParentId", ignoreAttributes);
+            // Only include content data when inline.
+            if (attachmentContentDisposition != AttachmentContentDisposition.Inline)
+            {
+                overrides.Add(typeof(AttachmentData), @"SerializedContents", ignoreAttributes);
+            }
 
-                // Only include content path when linking.
-                if (attachmentContentDisposition != AttachmentContentDisposition.Link)
-                {
-                    overrides.Add(typeof(AttachmentData), @"ContentPath", ignoreAttributes);
-                }
-
-                // Only include content data when inline.
-                if (attachmentContentDisposition != AttachmentContentDisposition.Inline)
-                {
-                    overrides.Add(typeof(AttachmentData), @"SerializedContents", ignoreAttributes);
-                }
-
-                // Munge the content paths and content disposition.
-                if (report.TestPackageRun != null)
-                {
-                    foreach (TestStepRun testStepRun in report.TestPackageRun.AllTestStepRuns)
-                    {
-                        foreach (AttachmentData attachment in testStepRun.TestLog.Attachments)
-                        {
-                            originalAttachmentData.Add(attachment, new KeyValuePair<AttachmentContentDisposition, string>(
-                                attachment.ContentDisposition, attachment.ContentPath));
-
-                            string attachmentPath = GetAttachmentPath(testStepRun.Step.Id, attachment.Name, attachment.ContentType);
-                            attachment.ContentDisposition = attachmentContentDisposition;
-                            attachment.ContentPath = attachmentPath;
-                        }
-                    }
-                }
-
+            WithUpdatedContentPathsAndDisposition(attachmentContentDisposition, () =>
+            {
                 // Serialize the report.
                 var serializer = new XmlSerializer(typeof(Report), overrides);
                 serializer.Serialize(xmlWriter, report);
-            }
-            finally
+            });
+        }
+
+        /// <inheritdoc />
+        public void WithUpdatedContentPathsAndDisposition(AttachmentContentDisposition attachmentContentDisposition, Action action)
+        {
+            using (new UpdatedContentPathsAndDisposition(attachmentPathResolver, attachmentContentDisposition, report.TestPackageRun))
             {
-                // Restore content disposition and path in the XML document to the original values.
-                foreach (KeyValuePair<AttachmentData,
-                    KeyValuePair<AttachmentContentDisposition, string>> pair in originalAttachmentData)
-                {
-                    pair.Key.ContentDisposition = pair.Value.Key;
-                    pair.Key.ContentPath = pair.Value.Value;
-                }
+                action();
             }
         }
 
@@ -208,7 +192,7 @@ namespace Gallio.Runner.Reports
                 {
                     foreach (AttachmentData attachment in testStepRun.TestLog.Attachments)
                     {
-                        string attachmentPath = GetAttachmentPath(testStepRun.Step.Id, attachment.Name, attachment.ContentType);
+                        string attachmentPath = attachmentPathResolver.GetAttachmentPath(testStepRun.Step.Id, attachment.Name, attachment.ContentType);
 
                         progressMonitor.ThrowIfCanceled();
                         progressMonitor.SetStatus(attachmentPath);
@@ -228,20 +212,6 @@ namespace Gallio.Runner.Reports
             var encoding = new UTF8Encoding(false);
             using (Stream attachmentStream = reportContainer.OpenWrite(attachmentPath, attachmentData.ContentType, encoding))
                 attachmentData.SaveContents(attachmentStream, encoding);
-        }
-
-        private string GetAttachmentPath(string testStepId, string attachmentName, string mimeType)
-        {
-            string path = Path.Combine(Path.Combine(
-                reportContainer.ReportName,
-                reportContainer.EncodeFileName(testStepId)),
-                reportContainer.EncodeFileName(attachmentName));
-
-            string extension = MimeTypes.GetExtensionByMimeType(mimeType);
-            if (extension != null)
-                path += extension;
-
-            return path;
         }
 
         private static int CountAttachments(Report report)
