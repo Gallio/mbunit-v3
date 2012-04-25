@@ -181,7 +181,7 @@ namespace Gallio.ReSharperRunner.Provider
 #if RESHARPER_70
         public string GetPresentation(IUnitTestElement parent = null)
         {
-            throw new NotImplementedException();
+            return GetPresentation();
         }
 #endif
 
