@@ -1282,8 +1282,13 @@ namespace Gallio.ReSharperRunner.Reflection
             // HACK: The assembly contains a reference back to its loader
             //       which is useful for loading referenced assemblies but it
             //       does not expose it.
+#if RESHARPER_70
+            var loaderProperty = assembly.GetType().GetProperty(@"Loader", BindingFlags.Instance | BindingFlags.Public);
+#else
             PropertyInfo loaderProperty = assembly.GetType().GetProperty(@"Loader", BindingFlags.Instance | BindingFlags.NonPublic);
+#endif
             return loaderProperty != null ? (MetadataLoader)loaderProperty.GetValue(assembly, null) : null;
+
         }
 
         private IMetadataTypeInfo ResolveMetadataTypeInfoHack(IMetadataTypeInfo typeInfo)
