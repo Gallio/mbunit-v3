@@ -4,44 +4,44 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{AFBC884C-F0A5-4ABE-B8E7-C7DD585134F5}</ProjectGuid>
+    <ProjectGuid>{2C08486B-BE25-44AE-B0D6-19FB3E273377}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.AutoCAD.Plugin</RootNamespace>
-    <AssemblyName>Gallio.AutoCAD.Plugin</AssemblyName>
+    <AssemblyName>Gallio.AutoCAD.Plugin170</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>bin\v17.0\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Gallio.AutoCAD.Plugin.xml</DocumentationFile>
+    <DocumentationFile>bin\v17.0\Gallio.AutoCAD.Plugin170.xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>bin\v17.0\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Gallio.AutoCAD.Plugin.xml</DocumentationFile>
+    <DocumentationFile>bin\v17.0\Gallio.AutoCAD.Plugin170.xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AcDbMgd, Version=17.0.51.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="acdbmgd, Version=17.0.51.0, Culture=neutral, PublicKeyToken=null">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\AcDbMgd.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\libs\v17.0\AcDbMgd.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="AcMgd, Version=17.0.51.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="acmgd, Version=17.0.51.0, Culture=neutral, PublicKeyToken=null">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\AcMgd.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\libs\v17.0\AcMgd.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

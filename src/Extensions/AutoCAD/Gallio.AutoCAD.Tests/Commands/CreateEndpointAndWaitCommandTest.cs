@@ -24,17 +24,19 @@ namespace Gallio.AutoCAD.Tests.Commands
     public class CreateEndpointAndWaitCommandTest
     {
         private CreateEndpointAndWaitCommand command;
+        private object application;
 
         [SetUp]
         public void SetUp()
         {
             command = new CreateEndpointAndWaitCommand("MyIpcPort", Guid.NewGuid());
+            application = new {Version = "19.0s (LMS Tech)"};
         }
 
         [Test]
         public void GetArguments_ReturnsArgumentsInExpectedOrder()
         {
-            Assert.Over.Pairs(command.GetArguments(), ExpectedOrder, Assert.AreEqual);
+            Assert.Over.Pairs(command.GetArguments(application), ExpectedOrder, Assert.AreEqual);
         }
 
         private IEnumerable<string> ExpectedOrder

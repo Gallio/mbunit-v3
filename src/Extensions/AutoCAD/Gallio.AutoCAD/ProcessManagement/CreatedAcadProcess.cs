@@ -45,9 +45,11 @@ namespace Gallio.AutoCAD.ProcessManagement
         /// <param name="executable">The path to the AutoCAD executable.</param>
         /// <param name="processCreator">A process creator.</param>
         /// <param name="debuggerManager">A debugger mananger.</param>
+        /// <param name="pluginLocator">A plugin locator.</param>
         public CreatedAcadProcess(ILogger logger, IAcadCommandRunner commandRunner,
-            string executable, IProcessCreator processCreator, IDebuggerManager debuggerManager)
-            : base(logger, commandRunner)
+            string executable, IProcessCreator processCreator, IDebuggerManager debuggerManager,
+            IAcadPluginLocator pluginLocator)
+            : base(logger, commandRunner, pluginLocator)
         {
             if (executable == null)
                 throw new ArgumentNullException("executable");
@@ -55,6 +57,8 @@ namespace Gallio.AutoCAD.ProcessManagement
                 throw new ArgumentNullException("processCreator");
             if (debuggerManager == null)
                 throw new ArgumentNullException("debuggerManager");
+            if (pluginLocator == null)
+                throw new ArgumentNullException("pluginLocator");
 
             startInfo = new ProcessStartInfo(executable);
             this.processCreator = processCreator;
@@ -84,6 +88,10 @@ namespace Gallio.AutoCAD.ProcessManagement
         /// <inheritdoc/>
         protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
+
+            // Shut the AutoCAD process down after calling into base class's Dispose(). This allows
+            // the AutoCAD process a bit of time to complete the current command before we kill it.
             if (disposing && process != null)
             {
                 var ownedProcess = Interlocked.Exchange(ref process, null);
@@ -95,7 +103,6 @@ namespace Gallio.AutoCAD.ProcessManagement
 
                 ownedProcess.Dispose();
             }
-            base.Dispose(disposing);
         }
 
         /// <summary>

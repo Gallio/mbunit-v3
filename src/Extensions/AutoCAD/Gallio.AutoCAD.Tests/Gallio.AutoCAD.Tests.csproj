@@ -37,16 +37,6 @@
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AcDbMgd, Version=17.0.51.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\AcDbMgd.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="AcMgd, Version=17.0.51.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\AcMgd.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Rhino.Mocks, Version=3.1.0.584, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\tools\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
@@ -59,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AcadPluginLocatorTest.cs" />
     <Compile Include="Commands\CreateEndpointAndWaitCommandTest.cs" />
     <Compile Include="Commands\NetLoadCommandTest.cs" />
     <Compile Include="Integration\AcadSampleTest.cs" />

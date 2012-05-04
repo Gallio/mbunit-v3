@@ -13,22 +13,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Diagnostics;
-using Gallio.Framework;
-using MbUnit.Framework;
+using System.IO;
 
-namespace Gallio.AutoCAD.Tests.Integration
+namespace Gallio.AutoCAD
 {
     /// <summary>
-    /// A sample test to run within AutoCAD.
+    /// Provides the path to an AutoCAD plugin.
     /// </summary>
-    [Explicit("Sample test.")]
-    public class AcadSampleTest
+    public interface IAcadPluginLocator
     {
-        [Test]
-        public void Test()
-        {
-            TestLog.WriteLine("Process name {0}.", Process.GetCurrentProcess().ProcessName);
-        }
+        /// <summary>
+        /// Gets the location of the AutoCAD plugin for the specified version.
+        /// </summary>
+        /// <param name="acadVersion">
+        /// The version reported to Gallio from AutoCAD. This is that same value the <c>ACADVER</c>
+        /// variable provides in AutoCAD. Specify <c>null</c> to find the plugin with highest version.
+        /// </param>
+        /// <returns>The location of the AutoCAD plugin.</returns>
+        /// <exception cref="FileNotFoundException">If an AutoCAD plugin can't be found.</exception>
+        string GetPluginPath(string acadVersion);
     }
 }

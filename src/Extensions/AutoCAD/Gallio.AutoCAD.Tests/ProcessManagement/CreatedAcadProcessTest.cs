@@ -35,8 +35,9 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
             var commandRunner = MockRepository.GenerateStub<IAcadCommandRunner>();
             var processCreator = MockRepository.GenerateStub<IProcessCreator>();
             var debuggerManager = MockRepository.GenerateStub<IDebuggerManager>();
+            var pluginLocator = MockRepository.GenerateStub<IAcadPluginLocator>();
 
-            var acadProcess = new CreatedAcadProcess(logger, commandRunner, @"c:\path\to\acad.exe", processCreator, debuggerManager);
+            var acadProcess = new CreatedAcadProcess(logger, commandRunner, @"c:\path\to\acad.exe", processCreator, debuggerManager, pluginLocator);
             Assert.AreEqual(@"c:\path\to\acad.exe", acadProcess.FileName);
         }
 
@@ -55,8 +56,9 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
                 actualProcess = MockRepository.GenerateStub<IProcess>();
                 processCreator = MockRepository.GenerateStub<IProcessCreator>();
                 processCreator.Stub(x => x.Start(Arg<ProcessStartInfo>.Is.Anything)).Return(actualProcess);
+                var pluginLocator = MockRepository.GenerateStub<IAcadPluginLocator>();
 
-                acadProcess = new CreatedAcadProcess(logger, commandRunner, @"c:\path\to\acad.exe", processCreator, debuggerManager);
+                acadProcess = new CreatedAcadProcess(logger, commandRunner, @"c:\path\to\acad.exe", processCreator, debuggerManager, pluginLocator);
             }
 
             [Test]
@@ -65,16 +67,6 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
                 actualProcess.Stub(x => x.HasExited).Return(true);
 
                 Assert.Throws<InvalidOperationException>(() => acadProcess.Start("IPC port name", Guid.Empty, null));
-            }
-
-            [Test]
-            public void WhenUnableToLoad_ThrowsTimeoutException()
-            {
-                acadProcess.ReadyPollInterval = TimeSpan.Zero;
-                acadProcess.ReadyTimeout = TimeSpan.FromTicks(1);
-                actualProcess.Stub(x => x.IsModuleLoaded(Arg<string>.Is.Anything)).Return(false);
-                
-                Assert.Throws<TimeoutException>(() => acadProcess.Start("IPC port name", Guid.Empty, null));
             }
 
             public class PassesToProcessCreator
@@ -92,8 +84,9 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
                     processCreator = MockRepository.GenerateMock<IProcessCreator>();
                     actualProcess = MockRepository.GenerateStub<IProcess>();
                     actualProcess.Stub(x => x.IsModuleLoaded(Arg<string>.Is.Anything)).Return(true);
+                    var pluginLocator = MockRepository.GenerateStub<IAcadPluginLocator>();
 
-                    acadProcess = new CreatedAcadProcess(logger, commandRunner, @"c:\path\to\acad.exe", processCreator, debuggerManager);
+                    acadProcess = new CreatedAcadProcess(logger, commandRunner, @"c:\path\to\acad.exe", processCreator, debuggerManager, pluginLocator);
                 }
 
                 [Test]
@@ -146,6 +139,7 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
                 var logger = MockRepository.GenerateStub<ILogger>();
                 var commandRunner = MockRepository.GenerateStub<IAcadCommandRunner>();
                 var debuggerManager = MockRepository.GenerateStub<IDebuggerManager>();
+                var pluginLocator = MockRepository.GenerateStub<IAcadPluginLocator>();
 
                 actualProcess = MockRepository.GenerateMock<IProcess>();
                 actualProcess.Stub(x => x.IsModuleLoaded(Arg<string>.Is.Anything)).Return(true);
@@ -153,7 +147,7 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
                 processCreator = MockRepository.GenerateStub<IProcessCreator>();
                 processCreator.Stub(x => x.Start(Arg<ProcessStartInfo>.Is.Anything)).Return(actualProcess);
 
-                acadProcess = new CreatedAcadProcess(logger, commandRunner, @"c:\path\to\acad.exe", processCreator, debuggerManager);
+                acadProcess = new CreatedAcadProcess(logger, commandRunner, @"c:\path\to\acad.exe", processCreator, debuggerManager, pluginLocator);
             }
 
             [Test]

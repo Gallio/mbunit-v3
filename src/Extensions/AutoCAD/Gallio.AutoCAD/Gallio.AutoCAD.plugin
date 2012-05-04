@@ -16,7 +16,9 @@
   <files>
     <file path="Gallio.AutoCAD.plugin" />
     <file path="Gallio.AutoCAD.dll" />
-    <file path="Gallio.AutoCAD.Plugin.dll" />
+    <file path="Gallio.AutoCAD.Plugin170.dll" />
+    <file path="Gallio.AutoCAD.Plugin180.dll" />
+    <file path="Gallio.AutoCAD.Plugin190.dll" />
     <file path="Resources\Gallio.AutoCAD.ico" />
   </files>
 
@@ -30,6 +32,9 @@
     <service serviceId="Gallio.AutoCAD.AcadLocator"
              serviceType="Gallio.AutoCAD.IAcadLocator, Gallio.AutoCAD" />
 
+    <service serviceId="Gallio.AutoCAD.AcadPluginLocator"
+             serviceType="Gallio.AutoCAD.IAcadPluginLocator, Gallio.AutoCAD" />
+
     <service serviceId="Gallio.AutoCAD.Preferences.AcadPreferenceManager"
              serviceType="Gallio.AutoCAD.Preferences.IAcadPreferenceManager, Gallio.AutoCAD" />
 
@@ -41,6 +46,10 @@
     <component componentId="Gallio.AutoCAD.AcadLocator"
                serviceId="Gallio.AutoCAD.AcadLocator"
                componentType="Gallio.AutoCAD.AcadLocator, Gallio.AutoCAD" />
+
+    <component componentId="Gallio.AutoCAD.AcadPluginLocator"
+               serviceId="Gallio.AutoCAD.AcadPluginLocator"
+               componentType="Gallio.AutoCAD.AcadPluginLocator, Gallio.AutoCAD" />
 
     <component componentId="Gallio.AutoCAD.Preferences.AcadPreferenceManager"
                serviceId="Gallio.AutoCAD.Preferences.AcadPreferenceManager"

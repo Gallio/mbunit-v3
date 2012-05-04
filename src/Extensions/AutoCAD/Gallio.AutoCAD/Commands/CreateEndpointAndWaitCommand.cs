@@ -46,7 +46,7 @@ namespace Gallio.AutoCAD.Commands
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<string> GetArgumentsImpl()
+        protected override IEnumerable<string> GetArgumentsImpl(object application)
         {
             yield return IpcPortName;
             yield return LinkId.ToString();

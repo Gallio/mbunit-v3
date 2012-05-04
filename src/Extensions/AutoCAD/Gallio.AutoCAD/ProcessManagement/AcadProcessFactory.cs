@@ -38,6 +38,7 @@ namespace Gallio.AutoCAD.ProcessManagement
         private readonly IDebuggerManager debuggerManager;
         private readonly IAcadPreferenceManager preferenceManager;
         private readonly IAcadLocator acadLocator;
+        private readonly IAcadPluginLocator pluginLocator;
 
         /// <summary>
         /// Intializes a new <see cref="AcadProcessFactory"/> instance.
@@ -49,10 +50,11 @@ namespace Gallio.AutoCAD.ProcessManagement
         /// <param name="debuggerManager">An <see cref="IDebuggerManager"/> instance.</param>
         /// <param name="preferenceManager">The AutoCAD preference manager.</param>
         /// <param name="acadLocator">The AutoCAD locator.</param>
+        /// <param name="pluginLocator">An AutoCAD plugin locator.</param>
         public AcadProcessFactory(ILogger logger, IFileSystem fileSystem,
             IProcessFinder processFinder, IProcessCreator processCreator,
             IDebuggerManager debuggerManager, IAcadPreferenceManager preferenceManager,
-            IAcadLocator acadLocator)
+            IAcadLocator acadLocator, IAcadPluginLocator pluginLocator)
         {
             if (logger == null)
                 throw new ArgumentNullException("logger");
@@ -68,6 +70,8 @@ namespace Gallio.AutoCAD.ProcessManagement
                 throw new ArgumentNullException("preferenceManager");
             if (acadLocator == null)
                 throw new ArgumentNullException("acadLocator");
+            if (pluginLocator == null)
+                throw new ArgumentNullException("pluginLocator");
 
             this.logger = logger;
             this.fileSystem = fileSystem;
@@ -76,6 +80,7 @@ namespace Gallio.AutoCAD.ProcessManagement
             this.debuggerManager = debuggerManager;
             this.preferenceManager = preferenceManager;
             this.acadLocator = acadLocator;
+            this.pluginLocator = pluginLocator;
         }
 
         /// <inheritdoc/>
@@ -138,7 +143,7 @@ namespace Gallio.AutoCAD.ProcessManagement
 
         private IAcadProcess AttachToProcess(IProcess process)
         {
-            return new ExistingAcadProcess(logger, new AcadCommandRunner(), process);
+            return new ExistingAcadProcess(logger, new AcadCommandRunner(), process, pluginLocator);
         }
 
         private IAcadProcess CreateNewProcess(string executable, string workingDirectory, string arguments)
@@ -155,7 +160,7 @@ namespace Gallio.AutoCAD.ProcessManagement
                 throw new NotSupportedException("An AutoCAD process is already running.");
             }
 
-            var process = new CreatedAcadProcess(logger, new AcadCommandRunner(), executable, processCreator, debuggerManager)
+            var process = new CreatedAcadProcess(logger, new AcadCommandRunner(), executable, processCreator, debuggerManager, pluginLocator)
                               {
                                   Arguments = arguments,
                                   WorkingDirectory = workingDirectory

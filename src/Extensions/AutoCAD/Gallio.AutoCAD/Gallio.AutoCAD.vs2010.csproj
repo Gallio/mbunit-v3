@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IAcadPluginLocator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\AcadCommand.cs" />
     <Compile Include="Commands\AcadCommandRunner.cs" />

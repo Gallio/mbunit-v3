@@ -53,8 +53,10 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
             var acadLocator = MockRepository.GenerateStub<IAcadLocator>();
             acadLocator.Stub(x => x.GetMostRecentlyUsed()).Return(@"c:\most\recently\used\acad.exe");
 
+            var pluginLocator = MockRepository.GenerateStub<IAcadPluginLocator>();
+
             factory = new AcadProcessFactory(logger, fileSystem, processFinder,
-                processCreator, debuggerManager, preferenceManager, acadLocator);
+                processCreator, debuggerManager, preferenceManager, acadLocator, pluginLocator);
         }
 
         [Test]

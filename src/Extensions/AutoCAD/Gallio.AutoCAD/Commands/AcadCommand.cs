@@ -39,9 +39,13 @@ namespace Gallio.AutoCAD.Commands
         /// <summary>
         /// Gets the command's arguments.
         /// </summary>
-        public IEnumerable<string> GetArguments()
+        /// <param name="application">The <c>AcadApplication</c> COM object.</param>
+        public IEnumerable<string> GetArguments(object application)
         {
-            var arguments = GetArgumentsImpl();
+            if (application == null)
+                throw new ArgumentNullException("application");
+
+            var arguments = GetArgumentsImpl(application);
             if (arguments == null)
                 throw new InvalidOperationException("Unable to get arguments.");
 
@@ -51,10 +55,11 @@ namespace Gallio.AutoCAD.Commands
         /// <summary>
         /// Gets the command's arguments.
         /// </summary>
+        /// <param name="application">The <c>AcadApplication</c> COM object.</param>
         /// <remarks>
         /// This method must not return null.
         /// </remarks>
-        protected abstract IEnumerable<string> GetArgumentsImpl();
+        protected abstract IEnumerable<string> GetArgumentsImpl(object application);
 
         /// <summary>
         /// Gets the global name for this command.
@@ -71,14 +76,16 @@ namespace Gallio.AutoCAD.Commands
         /// <summary>
         /// Creates a string representing the command as a AutoLISP expression.
         /// </summary>
-        public string ToLispExpression()
+        /// <param name="application">The <c>AcadApplication</c> COM object.</param>
+        /// <returns>An AutoLISP expression.</returns>
+        public string ToLispExpression(object application)
         {
             var builder = new StringBuilder();
 
             builder.Append("(command ");
             builder.Append(StringUtils.ToStringLiteral("_" + GlobalName));
 
-            var args = GetArguments();
+            var args = GetArguments(application);
             if (args != null)
             {
                 foreach (var arg in args)

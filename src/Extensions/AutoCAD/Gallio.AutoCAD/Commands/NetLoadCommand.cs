@@ -16,6 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.AutoCAD.Commands
 {
@@ -24,36 +26,42 @@ namespace Gallio.AutoCAD.Commands
     /// </summary>
     public class NetLoadCommand : AcadCommand
     {
-        private readonly string assemblyPath;
+        private readonly ILogger logger;
+        private readonly IAcadPluginLocator pluginLocator;
 
         /// <summary>
         /// Initializes a new <see cref="NetLoadCommand"/> object.
         /// </summary>
-        public NetLoadCommand(string assemblyPath)
+        public NetLoadCommand(ILogger logger, IAcadPluginLocator pluginLocator)
             : base("NETLOAD")
         {
-            if (assemblyPath == null)
-                throw new ArgumentNullException("assemblyPath");
-            if (assemblyPath.Length == 0)
-                throw new ArgumentException("String can't be empty.", "assemblyPath");
-            if (assemblyPath.IndexOfAny(Path.GetInvalidPathChars()) != -1)
-                throw new ArgumentException("Path contains invalid characters.", "assemblyPath");
-
-            this.assemblyPath = assemblyPath;
+            if (logger == null)
+                throw new ArgumentNullException("logger");
+            if (pluginLocator == null)
+                throw new ArgumentNullException("pluginLocator");
+            this.logger = logger;
+            this.pluginLocator = pluginLocator;
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<string> GetArgumentsImpl()
+        protected override IEnumerable<string> GetArgumentsImpl(object application)
         {
-            yield return AssemblyPath;
+            var version = GetAcadVersion(application);
+            var path = pluginLocator.GetPluginPath(version);
+            yield return path;
         }
 
-        /// <summary>
-        /// Gets or sets the path to the assembly to load.
-        /// </summary>
-        public string AssemblyPath
+        private string GetAcadVersion(object application)
         {
-            get { return assemblyPath; }
+            try
+            {
+                return application.GetType().InvokeMember(@"Version", BindingFlags.GetProperty, null, application, null) as string;
+            }
+            catch (MemberAccessException e)
+            {
+                logger.Log(LogSeverity.Warning, "Unable to retrieve AutoCAD version.", e);
+            }
+            return null;
         }
     }
 }

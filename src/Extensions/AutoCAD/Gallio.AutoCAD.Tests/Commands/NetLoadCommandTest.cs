@@ -13,44 +13,45 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Gallio.AutoCAD.Commands;
+using Gallio.Common.IO;
+using Gallio.Runtime.Logging;
 using MbUnit.Framework;
+using Rhino.Mocks;
 
 namespace Gallio.AutoCAD.Tests.Commands
 {
     [TestsOn(typeof(NetLoadCommand))]
     public class NetLoadCommandTest
     {
+        private IFileSystem fileSystem;
         private NetLoadCommand command;
 
         [SetUp]
         public void SetUp()
         {
-            command = new NetLoadCommand(@"c:\path\to\assembly.dll");
+            var logger = MockRepository.GenerateStub<ILogger>();
+            fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            var pluginLocator = new AcadPluginLocator(logger, fileSystem);
+
+            command = new NetLoadCommand(logger, pluginLocator);
         }
 
         [Test]
-        public void GetArguments_ReturnsArgumentsInExpectedOrder()
+        [Row("19.0s (LMS Tech)", "Gallio.AutoCAD.Plugin190.dll")]
+        public void GetArguments_ReturnsArgumentsInExpectedOrder(string version, string plugin)
         {
-            Assert.Over.Pairs(command.GetArguments(), ExpectedOrder, Assert.AreEqual);
+            StubAvailablePlugins(plugin);
+            Assert.AreEqual(plugin, command.GetArguments(new {Version = version}).Single());
         }
 
-        private IEnumerable<string> ExpectedOrder
+        private void StubAvailablePlugins(params string[] plugins)
         {
-            get
-            {
-                yield return command.AssemblyPath;
-            }
-        }
-
-        [Test]
-        [Row(null)]
-        [Row("")]
-        public static void Constructor_WhenAssemblyPathIsNullOrEmpty_ThrowsArgumentException(string assemblyPath)
-        {
-            Assert.Throws<ArgumentException>(() => new NetLoadCommand(assemblyPath));
+            fileSystem
+                .Stub(fs => fs.GetFilesInDirectory(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<SearchOption>.Is.Anything))
+                .Return(plugins);
         }
     }
 }

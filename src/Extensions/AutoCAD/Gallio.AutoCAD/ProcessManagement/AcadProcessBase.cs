@@ -15,6 +15,8 @@
 
 using System;
 using System.Diagnostics;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Gallio.AutoCAD.Commands;
 using Gallio.Common.Concurrency;
@@ -37,6 +39,7 @@ namespace Gallio.AutoCAD.ProcessManagement
         private TimeSpan? readyPollInterval;
         private TimeSpan? readyTimeout;
         private readonly IAcadCommandRunner commandRunner;
+        private readonly IAcadPluginLocator pluginLocator;
         private readonly ILogger logger;
         private IAsyncResult activeCommand;
 
@@ -45,18 +48,22 @@ namespace Gallio.AutoCAD.ProcessManagement
         /// </summary>
         /// <param name="logger">A logger.</param>
         /// <param name="commandRunner">A AutoCAD command runner.</param>
+        /// <param name="pluginLocator">A AutoCAD plugin locator.</param>
         /// <exception cref="ArgumentNullException">
         /// If <paramref name="logger"/> or <paramref name="commandRunner"/> are null.
         /// </exception>
-        protected AcadProcessBase(ILogger logger, IAcadCommandRunner commandRunner)
+        protected AcadProcessBase(ILogger logger, IAcadCommandRunner commandRunner, IAcadPluginLocator pluginLocator)
         {
             if (logger == null)
                 throw new ArgumentNullException("logger");
             if (commandRunner == null)
                 throw new ArgumentNullException("commandRunner");
+            if (pluginLocator == null)
+                throw new ArgumentNullException("pluginLocator");
 
             this.logger = logger;
             this.commandRunner = commandRunner;
+            this.pluginLocator = pluginLocator;
         }
 
         /// <inheritdoc/>
@@ -76,7 +83,7 @@ namespace Gallio.AutoCAD.ProcessManagement
                 IAsyncResult result = Interlocked.Exchange(ref activeCommand, null);
                 try
                 {
-                    // We wait on the handle directly instead of using EndCommand() since
+                    // We wait on the handle directly instead of using EndRun since
                     // that may rethrow an exception on this thread that occured on the
                     // command runner's thread. Since we're no longer using the AutoCAD
                     // process anyway we ignore this exception.
@@ -100,39 +107,22 @@ namespace Gallio.AutoCAD.ProcessManagement
             var process = StartProcess(debuggerSetup);
             if (process == null)
                 throw new InvalidOperationException("Unable to acquire AutoCAD process.");
+            if (process.HasExited)
+                throw new InvalidOperationException("Process has exited before assembly could be loaded.");
 
-            var pluginLocation = AcadPluginLocator.GetAcadPluginLocation();
-            if (pluginLocation == null)
-                throw new InvalidOperationException("Unable to determine the location of Gallio.AutoCAD.Plugin.dll.");
-
-            NetLoadPlugin(pluginLocation, process);
+            NetLoadPlugin(process);
 
             // Run the create endpoint command asynchronously. This command runs for the duration of the test run.
             activeCommand = commandRunner.BeginRun(new CreateEndpointAndWaitCommand(ipcPortName, linkId), process, null, null);
         }
 
-        private void NetLoadPlugin(string pluginLocation, IProcess process)
+        private void NetLoadPlugin(IProcess process)
         {
-            var command = new NetLoadCommand(pluginLocation);
+            var command = new NetLoadCommand(logger, pluginLocator);
+            IAsyncResult result = commandRunner.BeginRun(command, process, null, null);
 
-            var stopwatch = Stopwatch.StartNew();
-            do
-            {
-                if (process.HasExited)
-                    throw new InvalidOperationException("Process has exited before assembly could be loaded.");
-
-                IAsyncResult result = commandRunner.BeginRun(command, process, null, null);
-
-                // Run the netload command synchronously. This loads the create endpoint command into AutoCAD.
-                commandRunner.EndRun(result);
-
-                process.Refresh();
-                if (process.IsModuleLoaded(pluginLocation))
-                    return;
-
-            } while (stopwatch.Elapsed < ReadyTimeout);
-
-            throw new TimeoutException("Timeout waiting for AutoCAD to load assembly.");
+            // Block while waiting for the netload command to run. This loads the create endpoint command into AutoCAD.
+            commandRunner.EndRun(result);
         }
 
         /// <summary>

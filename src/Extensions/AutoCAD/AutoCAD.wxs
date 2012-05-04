@@ -12,8 +12,14 @@
               <Component Id="Gallio.AutoCAD.plugin" Guid="3c258bc9-05f5-41a4-b0a1-f848ecc529f4" Win64="$(var.Win64Binary)">
                   <File Name="Gallio.AutoCAD.plugin" KeyPath="yes" />
               </Component>
-              <Component Id="Gallio.AutoCAD.Plugin.dll" Guid="9c467029-0caa-4138-862c-f09a1839698b" Win64="$(var.Win64Binary)">
-                  <File Name="Gallio.AutoCAD.Plugin.dll" KeyPath="yes" />
+              <Component Id="Gallio.AutoCAD.Plugin170.dll" Guid="98bb9b5e-0e60-41d6-834b-2232e09b061e" Win64="$(var.Win64Binary)">
+                  <File Name="Gallio.AutoCAD.Plugin170.dll" KeyPath="yes" />
+              </Component>
+              <Component Id="Gallio.AutoCAD.Plugin180.dll" Guid="6a08cd79-9a91-4221-b816-cc5ea5212f54" Win64="$(var.Win64Binary)">
+                <File Name="Gallio.AutoCAD.Plugin180.dll" KeyPath="yes" />
+              </Component>
+              <Component Id="Gallio.AutoCAD.Plugin190.dll" Guid="043b12fa-0738-4bbb-80c5-2dd870a9b9da" Win64="$(var.Win64Binary)">
+                <File Name="Gallio.AutoCAD.Plugin190.dll" KeyPath="yes" />
               </Component>
               <Component Id="Gallio.AutoCAD.UI.dll" Guid="c97e1d5e-d646-4d94-9291-325833ad4389" Win64="$(var.Win64Binary)">
                 <File Name="Gallio.AutoCAD.UI.dll" KeyPath="yes" />
@@ -39,7 +45,9 @@
                  Description="Installs the AutoCAD integration features.">
             <ComponentRef Id="Gallio.AutoCAD.dll" />
             <ComponentRef Id="Gallio.AutoCAD.plugin" />
-            <ComponentRef Id="Gallio.AutoCAD.Plugin.dll" />
+            <ComponentRef Id="Gallio.AutoCAD.Plugin170.dll" />
+            <ComponentRef Id="Gallio.AutoCAD.Plugin180.dll" />
+            <ComponentRef Id="Gallio.AutoCAD.Plugin190.dll" />
             <ComponentRef Id="Gallio.AutoCAD.UI.dll" />
             <ComponentRef Id="Gallio.AutoCAD.UI.plugin" />
             <ComponentRef Id="Gallio.AutoCAD.Resources" />

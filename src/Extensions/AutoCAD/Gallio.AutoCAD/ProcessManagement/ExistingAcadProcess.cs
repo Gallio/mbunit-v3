@@ -40,8 +40,9 @@ namespace Gallio.AutoCAD.ProcessManagement
         /// <param name="logger">A logger.</param>
         /// <param name="commandRunner">An AutoCAD command runner.</param>
         /// <param name="process">The existing AutoCAD process.</param>
-        public ExistingAcadProcess(ILogger logger, IAcadCommandRunner commandRunner, IProcess process)
-            : base(logger, commandRunner)
+        /// <param name="pluginLocator">An AutoCAD plugin locator.</param>
+        public ExistingAcadProcess(ILogger logger, IAcadCommandRunner commandRunner, IProcess process, IAcadPluginLocator pluginLocator)
+            : base(logger, commandRunner, pluginLocator)
         {
             if (process == null)
                 throw new ArgumentNullException("process");

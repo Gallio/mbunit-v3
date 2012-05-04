@@ -31,7 +31,8 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
             var logger = MockRepository.GenerateStub<ILogger>();
             var commandRunner = MockRepository.GenerateStub<IAcadCommandRunner>();
             var actualProcess = MockRepository.GenerateMock<IProcess>();
-            var acadProcess = new ExistingAcadProcess(logger, commandRunner, actualProcess);
+            var pluginLocator = MockRepository.GenerateStub<IAcadPluginLocator>();
+            var acadProcess = new ExistingAcadProcess(logger, commandRunner, actualProcess, pluginLocator);
 
             acadProcess.Dispose();
 

@@ -131,9 +131,9 @@ namespace Gallio.AutoCAD.Commands
                 try
                 {
                     var document = GetActiveDocument(application);
-                    var parameters = new object[] { command.ToLispExpression() };
+                    var parameters = new object[] { command.ToLispExpression(application) };
                     document.GetType().InvokeMember("SendCommand", BindingFlags.InvokeMethod, null, document, parameters);
-                    return;
+                    GC.KeepAlive(application);
                 }
                 catch (COMException e)
                 {

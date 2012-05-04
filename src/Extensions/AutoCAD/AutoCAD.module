@@ -3,7 +3,9 @@
 
   <ItemGroup>
     <CSharpProject Include="Gallio.AutoCAD\Gallio.AutoCAD$(ProjectVariant).csproj" />
-    <CSharpProject Include="Gallio.AutoCAD.Plugin\Gallio.AutoCAD.Plugin$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.AutoCAD.Plugin\Gallio.AutoCAD.Plugin170$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.AutoCAD.Plugin\Gallio.AutoCAD.Plugin180$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.AutoCAD.Plugin\Gallio.AutoCAD.Plugin190$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.AutoCAD.Tests\Gallio.AutoCAD.Tests$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.AutoCAD.UI\Gallio.AutoCAD.UI$(ProjectVariant).csproj" />
     
@@ -16,7 +18,13 @@
     <PluginFile Include="Gallio.AutoCAD\Gallio.AutoCAD.plugin">
       <ImagePath>bin\AutoCAD</ImagePath>
     </PluginFile>
-    <AssemblyFile Include="Gallio.AutoCAD.Plugin\bin\Gallio.AutoCAD.Plugin.dll">
+    <AssemblyFile Include="Gallio.AutoCAD.Plugin\bin\v17.0\Gallio.AutoCAD.Plugin170.dll">
+      <ImagePath>bin\AutoCAD</ImagePath>
+    </AssemblyFile>
+    <AssemblyFile Include="Gallio.AutoCAD.Plugin\bin\v18.0\Gallio.AutoCAD.Plugin180.dll">
+      <ImagePath>bin\AutoCAD</ImagePath>
+    </AssemblyFile>
+    <AssemblyFile Include="Gallio.AutoCAD.Plugin\bin\v19.0\Gallio.AutoCAD.Plugin190.dll">
       <ImagePath>bin\AutoCAD</ImagePath>
     </AssemblyFile>
     <AssemblyFile Include="Gallio.AutoCAD.UI\bin\Gallio.AutoCAD.UI.dll">
