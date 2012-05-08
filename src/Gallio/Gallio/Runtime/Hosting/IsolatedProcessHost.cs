@@ -247,6 +247,10 @@ namespace Gallio.Runtime.Hosting
                 if (!runtimeVersion.StartsWith("v"))
                     runtimeVersion = "v" + runtimeVersion; // just in case, this is a common user error
 
+                // http://msdn.microsoft.com/en-us/library/w4atty68.aspx
+                if (runtimeVersion == "v4.0")
+                    runtimeVersion = "v4.0.30319";
+
                 processTask.SetEnvironmentVariable("COMPLUS_Version", runtimeVersion);
             }
 
