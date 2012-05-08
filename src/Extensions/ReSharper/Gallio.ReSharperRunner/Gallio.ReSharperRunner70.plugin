@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<plugin pluginId="Gallio.ReSharperRunner61"
+<plugin pluginId="Gallio.ReSharperRunner70"
         recommendedInstallationPath="ReSharper\v7.0"
         xmlns="http://www.gallio.org/">
   <traits>
