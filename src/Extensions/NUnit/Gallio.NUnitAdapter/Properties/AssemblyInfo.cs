@@ -50,6 +50,8 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Gallio.NUnitAdapter248.Tests")]
 #elif NUNIT253
 [assembly: InternalsVisibleTo("Gallio.NUnitAdapter253.Tests")]
+#elif NUNIT254TO10
+[assembly: InternalsVisibleTo("Gallio.NUnitAdapter254-10.Tests")]
 #elif NUNITLATEST
 [assembly: InternalsVisibleTo("Gallio.NUnitAdapterLatest.Tests")]
 #else

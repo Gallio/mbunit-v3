@@ -32,8 +32,10 @@ namespace Gallio.NUnitAdapter.Model
         internal const string AssemblyKind = "NUnit v2.4.8 Assembly";
 #elif NUNIT253
         internal const string AssemblyKind = "NUnit v2.5.3 Assembly";
+#elif NUNIT254TO10
+        internal const string AssemblyKind = "NUnit v2.5.4-10 Assembly";
 #elif NUNITLATEST
-        internal const string AssemblyKind = "NUnit v2.5.4+ Assembly";
+        internal const string AssemblyKind = "NUnit v2.5.6+ Assembly";
 #else
 #error "Unrecognized NUnit framework version."
 #endif

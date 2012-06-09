@@ -26,8 +26,11 @@ using System.Runtime.InteropServices;
 #elif NUNIT253
 [assembly: AssemblyDescription("A sample test assembly for NUnit v2.5.3.")]
 [assembly: AssemblyTitle("Gallio.NUnitAdapter253.TestResources")]
+#elif NUNIT254TO10
+[assembly: AssemblyDescription("A sample test assembly for NUnit v2.5.4-10.")]
+[assembly: AssemblyTitle("Gallio.NUnitAdapter254-10.TestResources")]
 #elif NUNITLATEST
-[assembly: AssemblyDescription("A sample test assembly for NUnit v2.5.4+.")]
+[assembly: AssemblyDescription("A sample test assembly for NUnit v2.6+.")]
 [assembly: AssemblyTitle("Gallio.NUnitAdapterLatest.TestResources")]
 #else
 #error "Unrecognized NUnit framework version."

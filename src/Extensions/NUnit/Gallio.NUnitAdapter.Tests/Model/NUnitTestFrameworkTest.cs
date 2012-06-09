@@ -41,6 +41,8 @@ namespace Gallio.NUnitAdapter.Tests.Model
                 RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("NUnitAdapter248.TestFramework");
 #elif NUNIT253
                 RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("NUnitAdapter253.TestFramework");
+#elif NUNIT254TO10
+                RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("NUnitAdapter254-10.TestFramework");
 #elif NUNITLATEST
                 RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("NUnitAdapterLatest.TestFramework");
 #else

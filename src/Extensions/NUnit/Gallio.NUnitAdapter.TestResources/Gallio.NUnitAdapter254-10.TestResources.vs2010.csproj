@@ -5,14 +5,13 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{056F7226-3476-4A09-9E86-B222ADC83648}</ProjectGuid>
+    <ProjectGuid>{EFB96ED9-A89E-425F-B898-721927212B30}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gallio.NUnitAdapter</RootNamespace>
-    <AssemblyName>Gallio.NUnitAdapterLatest</AssemblyName>
-    <SignAssembly>true</SignAssembly>
+    <RootNamespace>Gallio.NUnitAdapter.TestResources</RootNamespace>
+    <AssemblyName>Gallio.NUnitAdapter254-10.TestResources</AssemblyName>
+    <BaseIntermediateOutputPath>obj\254-10\</BaseIntermediateOutputPath>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <BaseIntermediateOutputPath>obj\Latest\</BaseIntermediateOutputPath>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -33,83 +32,64 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Latest\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NUNITLATEST</DefineConstants>
+    <OutputPath>bin\254-10\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NUNIT254TO10</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\254-10\Gallio.NUnitAdapter254-10.TestResources.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Latest\Gallio.NUnitAdapterLatest.xml</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Latest\</OutputPath>
-    <DefineConstants>TRACE;NUNITLATEST</DefineConstants>
+    <OutputPath>bin\254-10</OutputPath>
+    <DefineConstants>TRACE;NUNIT254TO10</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\254-10\Gallio.NUnitAdapter254-10.TestResources.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Latest\Gallio.NUnitAdapterLatest.xml</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.core, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+    <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\Latest\nunit.core.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.core.interfaces, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\Latest\nunit.core.interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.util, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\Latest\nunit.util.dll</HintPath>
+      <HintPath>..\libs\254-10\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\NUnitTestFilter.cs" />
-    <Compile Include="Model\NUnitNativeTestExplorerEngine.cs" />
-    <Compile Include="Model\NUnitReflectiveTestExplorerEngine.cs" />
-    <Compile Include="Model\NUnitTest.cs" />
-    <Compile Include="Model\NUnitTestController.cs" />
-    <Compile Include="Model\NUnitTestDriver.cs" />
-    <Compile Include="Model\NUnitTestExplorer.cs" />
-    <Compile Include="Model\NUnitTestExplorerEngine.cs" />
-    <Compile Include="Model\NUnitTestFramework.cs" />
-    <Compile Include="Model\NUnitAssemblyTest.cs" />
+    <Compile Include="AmbiguousMatchSample.cs" />
+    <Compile Include="Metadata\DescriptionSample.cs" />
+    <Compile Include="Metadata\CategorySample.cs" />
+    <Compile Include="Metadata\IgnoreReasonSample.cs" />
+    <Compile Include="Metadata\PropertySample.cs" />
+    <Compile Include="AddinsTest.cs" />
+    <Compile Include="ParameterizedTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="SettingsTest.cs" />
+    <Compile Include="SetUpFixtureSample\FixtureDependentUponSetUpFixture.cs" />
+    <Compile Include="SetUpFixtureSample\SetUpFixture.cs" />
+    <Compile Include="SimpleTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <Content Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Readme.txt">
-    </Content>
-    <Content Include="Resources\NUnit.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
-      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio.vs2010</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Gallio.NUnitAdapterLatest.plugin">
-      <SubType>Designer</SubType>
+    <None Include="App.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="nunit.framework.dll.tdnet" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

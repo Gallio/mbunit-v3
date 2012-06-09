@@ -3,9 +3,9 @@
         recommendedInstallationPath="NUnit\Latest"
         xmlns="http://www.gallio.org/">
   <traits>
-    <name>NUnit v2.5.4+ Adapter Plugin</name>
+    <name>NUnit v2.6+ Adapter Plugin</name>
     <version>0.0.0.0</version>
-    <description>Provides support for running NUnit v2.5.4+ tests.</description>
+    <description>Provides support for running NUnit v2.6+ tests.</description>
     <icon>plugin://Gallio.NUnitAdapterLatest/Resources/NUnit.ico</icon>
   </traits>
 
@@ -34,24 +34,24 @@
               codeBase="Gallio.NUnitAdapterLatest.dll"
               qualifyPartialName="true" />
 
-    <assembly fullName="nunit.core, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
+    <assembly fullName="nunit.core, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
               codeBase="nunit.core.dll">
       <bindingRedirects>
-        <bindingRedirect oldVersion="2.5.4.0-2.5.65535.65535" />
+        <bindingRedirect oldVersion="2.6.0.0-2.6.65535.65535" />
       </bindingRedirects>
     </assembly>
 
-    <assembly fullName="nunit.core.interfaces, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
+    <assembly fullName="nunit.core.interfaces, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
               codeBase="nunit.core.interfaces.dll">
       <bindingRedirects>
-        <bindingRedirect oldVersion="2.5.4.0-2.5.65535.65535" />
+        <bindingRedirect oldVersion="2.6.0.0-2.6.65535.65535" />
       </bindingRedirects>
     </assembly>
 
-    <assembly fullName="nunit.util, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
+    <assembly fullName="nunit.util, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
               codeBase="nunit.util.dll">
       <bindingRedirects>
-        <bindingRedirect oldVersion="2.5.4.0-2.5.65535.65535" />
+        <bindingRedirect oldVersion="2.6.0.0-2.6.65535.65535" />
       </bindingRedirects>
     </assembly>
   </assemblies>
@@ -65,9 +65,9 @@
                serviceId="Gallio.TestFramework"
                componentType="Gallio.NUnitAdapter.Model.NUnitTestFramework, Gallio.NUnitAdapterLatest">
       <traits>
-        <name>NUnit v2.5.4+</name>
-        <frameworkAssemblies>nunit.framework, Version=2.5.4.0-2.5.65535.65535</frameworkAssemblies>
-        <version>2.5.10.11092</version>
+        <name>NUnit v2.6+</name>
+        <frameworkAssemblies>nunit.framework, Version=2.6.0.0-2.6.65535.65535</frameworkAssemblies>
+        <version>2.6.0.12051</version>
         <fileTypes>Assembly</fileTypes>
         <icon>plugin://Gallio.NUnitAdapterLatest/Resources/NUnit.ico</icon>
       </traits>
@@ -76,8 +76,8 @@
     <component componentId="NUnitAdapterLatest.TestKinds.NUnitTestAssembly"
                serviceId="Gallio.TestKind">
       <traits>
-        <name>NUnit v2.5.4+ Assembly</name>
-        <description>NUnit v2.5.4+ Test Assembly</description>
+        <name>NUnit v2.6+ Assembly</name>
+        <description>NUnit v2.6+ Test Assembly</description>
         <icon>plugin://Gallio.NUnitAdapterLatest/Resources/NUnit.ico</icon>
       </traits>
     </component>
