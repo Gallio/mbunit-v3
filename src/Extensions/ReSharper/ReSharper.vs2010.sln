@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 11
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 10
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gallio", "Gallio", "{6559CEC8-1B3B-4736-B6B8-EAD15C1BF429}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.vs2010", "..\..\Gallio\Gallio\Gallio.vs2010.csproj", "{6CAB7735-05DA-480D-9A04-50615B00F886}"
