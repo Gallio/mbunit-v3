@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Gallio.Loader;
 #if RESHARPER_61_OR_NEWER
 using JetBrains.Application.Settings;
@@ -39,13 +40,19 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
 
 #if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
         public IDaemonStageProcess CreateProcess(IDaemonProcess process)
-#elif RESHARPER_61_OR_NEWER
+#elif RESHARPER_70
+        public IEnumerable<IDaemonStageProcess> CreateProcess(IDaemonProcess process, IContextBoundSettingsStore settings, DaemonProcessKind processKind)
+#elif RESHARPER_61
         public IDaemonStageProcess CreateProcess(IDaemonProcess process, IContextBoundSettingsStore settings, DaemonProcessKind processKind)
 #else
         public IDaemonStageProcess CreateProcess(IDaemonProcess process, DaemonProcessKind processKind)
 #endif
         {
+#if RESHARPER_70
+            return new[] { new AnnotationDaemonStageProcess(process) };
+#else
             return new AnnotationDaemonStageProcess(process);
+#endif
         }
 
 #if RESHARPER_60

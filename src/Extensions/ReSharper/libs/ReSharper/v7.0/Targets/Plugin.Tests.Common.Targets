@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <PrepareForRunDependsOn>$(PrepareForRunDependsOn);CopyExtraFilesToOutput</PrepareForRunDependsOn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ReSharperSdkBinariesX86 Include="$(ReSharperSdkBinaries)\x86\*.dll"/>
+    <ReSharperSdkBinariesX64 Include="$(ReSharperSdkBinaries)\x64\*.dll"/>
+  </ItemGroup>
+
+  <Target Name="CopyExtraFilesToOutput">
+    <MakeDir Directories="$(OutDir)\x86;$(OutDir)\x64;" />
+    <Copy SourceFiles="@(ReSharperSdkBinariesX86)" DestinationFolder="$(OutDir)\x86" />
+    <Copy SourceFiles="@(ReSharperSdkBinariesX64)" DestinationFolder="$(OutDir)\x64" />
+  </Target>
+
+</Project>
+ 
