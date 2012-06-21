@@ -84,6 +84,9 @@
     <Module Include="$(SourceDir)\Extensions\NUnit\NUnit253.module">
       <Inherit>true</Inherit>
     </Module>
+    <Module Include="$(SourceDir)\Extensions\NUnit\NUnit254-10.module">
+      <Inherit>true</Inherit>
+    </Module>
     <Module Include="$(SourceDir)\Extensions\NUnit\NUnitLatest.module">
       <Inherit>true</Inherit>
     </Module>
