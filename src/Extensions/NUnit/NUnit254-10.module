@@ -1,0 +1,55 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(RootDir)\bin\Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.NUnitAdapter\Gallio.NUnitAdapter254-10$(ProjectVariant).csproj" />
+
+    <CSharpProject Include="Gallio.NUnitAdapter.TestResources\Gallio.NUnitAdapter254-10.TestResources$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.NUnitAdapter.Tests\Gallio.NUnitAdapter254-10.Tests$(ProjectVariant).csproj" />
+    
+    <AssemblyFile Include="Gallio.NUnitAdapter\bin\254-10\Gallio.NUnitAdapter254-10.dll">
+      <ImagePath>bin\NUnit\254-10</ImagePath>
+    </AssemblyFile>
+    <PdbFile Include="Gallio.NUnitAdapter\bin\254-10\Gallio.NUnitAdapter254-10.pdb">
+      <ExcludeFromImage>true</ExcludeFromImage>
+    </PdbFile>
+    <PluginFile Include="Gallio.NUnitAdapter\Gallio.NUnitAdapter254-10.plugin">
+      <ImagePath>bin\NUnit\254-10</ImagePath>
+    </PluginFile>
+    <File Include="Gallio.NUnitAdapter\nunit.framework.dll.tdnet">
+      <ImagePath>bin\NUnit\254-10</ImagePath>
+    </File>    
+    <File Include="Gallio.NUnitAdapter\Readme.txt">
+      <ImagePath>bin\NUnit\254-10</ImagePath>
+    </File>   
+    <File Include="Gallio.NUnitAdapter\Resources\NUnit.ico">
+      <ImagePath>bin\NUnit\254-10\Resources</ImagePath>
+    </File>
+    
+    <File Include="libs\254-10\license.txt">
+      <ImagePath>bin\NUnit\254-10</ImagePath>
+    </File>
+    <File Include="libs\254-10\nunit.framework.dll">
+      <ImagePath>bin\NUnit\254-10</ImagePath>
+    </File>
+    <File Include="libs\254-10\nunit.framework.xml">
+      <ImagePath>bin\NUnit\254-10</ImagePath>
+    </File>
+    <File Include="libs\254-10\nunit.core.dll">
+      <ImagePath>bin\NUnit\254-10</ImagePath>
+    </File>
+    <File Include="libs\254-10\nunit.core.interfaces.dll">
+      <ImagePath>bin\NUnit\254-10</ImagePath>
+    </File>
+    <File Include="libs\254-10\nunit.util.dll">
+      <ImagePath>bin\NUnit\254-10</ImagePath>
+    </File>
+    <File Include="libs\Latest\addins\NUnit Addins Readme.txt">
+      <ImagePath>bin\NUnit\Latest\addins</ImagePath>
+    </File>
+    
+    <TestAssembly Include="Gallio.NUnitAdapter.Tests\bin\254-10\Gallio.NUnitAdapter254-10.Tests.dll" />
+    
+    <Feature Include="FEATURE_NUNIT_ADAPTER_254-10" />
+  </ItemGroup>
+</Project>
