@@ -41,9 +41,6 @@
     <File Include="libs\Latest\nunit.core.interfaces.dll">
       <ImagePath>bin\NUnit\Latest</ImagePath>
     </File>
-    <File Include="libs\Latest\nunit.mocks.dll">
-      <ImagePath>bin\NUnit\Latest</ImagePath>
-    </File>
     <File Include="libs\Latest\nunit.util.dll">
       <ImagePath>bin\NUnit\Latest</ImagePath>
     </File>

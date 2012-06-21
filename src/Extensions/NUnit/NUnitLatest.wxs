@@ -16,7 +16,6 @@
               <File Id="NUnit.Latest.nunit.framework.dll.tdnet" Name="nunit.framework.dll.tdnet" />
               <File Id="NUnit.Latest.nunit.framework.xml" Name="nunit.framework.xml" />
               <File Id="NUnit.Latest.nunit.util.dll" Name="nunit.util.dll" />
-              <File Id="NUnit.Latest.nunit.mocks.dll" Name="nunit.mocks.dll" />
               <File Id="NUnit.Latest.nunit.Readme.txt" Name="Readme.txt" />
             </Component>
 
@@ -35,7 +34,7 @@
         </DirectoryRef>
 
         <Feature Id='feat_NUnitAdapterLatest' Title='Latest' Level='1' AllowAdvertise="no"
-            Description='Enables Gallio to run NUnit v2.5.4+ tests.'>
+            Description='Enables Gallio to run NUnit v2.6+ tests.'>
           <ComponentRef Id="Gallio.NUnitAdapterLatest"/>
           <ComponentRef Id="Gallio.NUnitAdapterLatest.Addins"/>
           <ComponentRef Id="Gallio.NUnitAdapterLatest.Resources"/>
