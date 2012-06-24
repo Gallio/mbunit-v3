@@ -23,7 +23,6 @@
     <file path="nunit.framework.dll" />
     <file path="nunit.framework.dll.tdnet" />
     <file path="nunit.framework.xml" />
-    <file path="nunit.mocks.dll" />
     <file path="nunit.util.dll" />
     <file path="addins\NUnit Addins Readme.txt" />
     <file path="Resources\NUnit.ico" />
