@@ -44,8 +44,8 @@
     <File Include="libs\254-10\nunit.util.dll">
       <ImagePath>bin\NUnit\254-10</ImagePath>
     </File>
-    <File Include="libs\Latest\addins\NUnit Addins Readme.txt">
-      <ImagePath>bin\NUnit\Latest\addins</ImagePath>
+    <File Include="libs\254-10\addins\NUnit Addins Readme.txt">
+      <ImagePath>bin\NUnit\254-10\addins</ImagePath>
     </File>
     
     <TestAssembly Include="Gallio.NUnitAdapter.Tests\bin\254-10\Gallio.NUnitAdapter254-10.Tests.dll" />
