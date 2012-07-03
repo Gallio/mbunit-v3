@@ -113,7 +113,7 @@ REM Register TIP
 "%REG%" ADD "%VS_TEST_TYPE_KEY%\Extensions" /V .exe /T REG_DWORD /D "101" /F >nul
 
 echo Installing Gallio.VisualStudio.Tip.Proxy proxy assembly into GAC.
-if %VS_VERSION%==9 ("%GACUTIL%" /i "%PROXY_DLL%" /f) else ("%GACUTIL40%" /i "%PROXY_DLL%" /f)
+if %VS_VERSION%==9 ("%GACUTIL%" /i "%PROXY_DLL%" /f) else (%GACUTIL40% /i "%PROXY_DLL%" /f)
 
 call :RUN_VISUALSTUDIO_ADDIN_SETUP
 echo.
@@ -134,7 +134,7 @@ echo Deleting registry keys.
 "%REG%" DELETE "%VS_ROOT_KEY%\AutomationOptions\LookInFolders" /V "%SHELL_BIN_DIR%" /F 2>nul >nul
 
 echo Uninstalling Gallio.VisualStudio.Tip.Proxy proxy assembly from GAC.
-if %VS_VERSION%==9 ("%GACUTIL%" /u "%PROXY_DLL%" 2>nul >nul) else ("%GACUTIL40%" /u "%PROXY_DLL%" 2>nul >nul)
+if %VS_VERSION%==9 ("%GACUTIL%" /u "%PROXY_DLL%" 2>nul >nul) else (%GACUTIL40% /u "%PROXY_DLL%" 2>nul >nul)
 
 call :RUN_VISUALSTUDIO_ADDIN_SETUP
 echo.
