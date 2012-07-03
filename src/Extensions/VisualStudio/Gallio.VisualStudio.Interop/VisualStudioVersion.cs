@@ -42,6 +42,11 @@ namespace Gallio.VisualStudio.Interop
         /// <summary>
         /// Visual Studio 2010.
         /// </summary>
-        VS2010 = 3
+        VS2010 = 3,
+
+        /// <summary>
+        /// Visual Studio 2012.
+        /// </summary>
+        VS2012 = 4,
     }
 }
