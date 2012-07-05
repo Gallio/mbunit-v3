@@ -28,9 +28,19 @@
                 Root='HKCU' Key='Software\JetBrains\ReSharper\v7.0\vs10.0' Name='InstallDir' />
         </Property>
 
+		<Property Id="RESHARPER_V70_VS11_INSTALLDIR"> 
+            <RegistrySearch Id='JetBrainsReSharperRegistryLM.V70.VS11' Type="raw" Win64="no"
+                Root='HKLM' Key='Software\JetBrains\ReSharper\v7.0\vs11.0' Name='InstallDir' />
+            <RegistrySearch Id='JetBrainsReSharperRegistryCU.V70.VS11' Type="raw" Win64="no"
+                Root='HKCU' Key='Software\JetBrains\ReSharper\v7.0\vs11.0' Name='InstallDir' />
+            <RegistrySearch Id='JetBrainsReSharperRegistryLM64.V70.VS11' Type="raw" Win64="yes"
+                Root='HKLM' Key='Software\JetBrains\ReSharper\v7.0\vs11.0' Name='InstallDir' />	
+			<RegistrySearch Id='JetBrainsReSharperRegistryCU64.V70.VS11' Type="raw" Win64="yes"
+                Root='HKCU' Key='Software\JetBrains\ReSharper\v7.0\vs11.0' Name='InstallDir' />
+        </Property>
+		
         <DirectoryRef Id="TARGETDIR">
             <Directory Id="RESHARPER_V70_VS9_INSTALLDIR" Name="ReSharper_V70_VS90">
-				
 				<Directory Id="JetBrains.ReSharper.V70.VS9.ExternalAnnotationsDir" Name="ExternalAnnotations">
 					<Directory Id="JetBrains.Resharper.V70.VS9.MbUnitDir" Name="MbUnit">
                         <Component Id="MbUnit.V70.VS9.xml" Guid="{543E9654-C6C9-11E1-8946-F9845A5868B3}" Win64="no">
@@ -55,7 +65,6 @@
             </Directory>
     
             <Directory Id="RESHARPER_V70_VS10_INSTALLDIR" Name="ReSharper_V70_VS100">
-				
 				<Directory Id="JetBrains.ReSharper.V70.VS10.ExternalAnnotationsDir" Name="ExternalAnnotations">
 					<Directory Id="JetBrains.Resharper.V70.VS10.MbUnitDir" Name="MbUnit">
                         <Component Id="MbUnit.V70.VS10.xml" Guid="{7D25B1EC-C6C9-11E1-A77B-2001360B68FB}" Win64="no">
@@ -77,15 +86,38 @@
 						</Directory>
                     </Directory>
                 </Directory>
-				
-            </Directory>  
+            </Directory>
+
+            <Directory Id="RESHARPER_V70_VS11_INSTALLDIR" Name="ReSharper_V70_VS110">
+				<Directory Id="JetBrains.ReSharper.V70.VS11.ExternalAnnotationsDir" Name="ExternalAnnotations">
+					<Directory Id="JetBrains.Resharper.V70.VS11.MbUnitDir" Name="MbUnit">
+                        <Component Id="MbUnit.V70.VS11.xml" Guid="{80E701A6-C6CD-11E1-B82C-F9845A5868B3}" Win64="no">
+                            <File Id="MbUnit.V70.VS11.xml" Source="$(var.GallioTargetDir)\bin\ReSharper\v7.0\MbUnit.xml" KeyPath="yes" />
+                        </Component>					
+					</Directory>
+                </Directory>
+                
+				<Directory Id="JetBrains.ReSharper.V70.VS11.PluginsDir" Name="Plugins">
+                    <Directory Id="JetBrains.Resharper.V70.VS11.GallioDir" Name="Gallio">
+                        <Component Id="Gallio.ReSharperRunner.V70.VS11.dll" Guid="{938CA45A-C6CD-11E1-908E-F9845A5868B3}" Win64="no">
+                            <File Id="Gallio.ReSharperRunner.V70.VS11.dll" Source="$(var.GallioTargetDir)\bin\ReSharper\v7.0\Gallio.ReSharperRunner70.dll" KeyPath="yes" />
+                        </Component>
+						
+						<Directory Id="Gallio.ReSharperRunner.V70.VS11.Resources" Name="Resources">
+							<Component Id="Gallio.ReSharperRunner.V70.VS11.Icon" Guid="{A1A089D0-C6CD-11E1-908E-F9845A5868B3}" Win64="$(var.Win64Binary)">
+								<File Id="ReSharper_V70_VS110_Icon" Source="$(var.GallioTargetDir)\bin\ReSharper\v7.0\Resources\resharper.ico" KeyPath="yes" />
+							</Component>
+						</Directory>
+                    </Directory>
+                </Directory>
+            </Directory> 			
 			
         </DirectoryRef>
 
         <Feature Id="feat_Gallio.ReSharper.V70" Title="ReSharper v7.0 Plug-in" Level="0" AllowAdvertise="no"
                  Description="Installs the ReSharper v7.0 plug-in.">
             <Condition Level="1">
-                RESHARPER_V70_VS9_INSTALLDIR or RESHARPER_V70_VS10_INSTALLDIR
+                RESHARPER_V70_VS9_INSTALLDIR or RESHARPER_V70_VS10_INSTALLDIR or RESHARPER_V70_VS11_INSTALLDIR
             </Condition>
 
             <Feature Id="feat_Gallio.ReSharper.V70.VS9" Title="Visual Studio 2008" Level="0" AllowAdvertise="no">
@@ -100,6 +132,13 @@
 				<ComponentRef Id="MbUnit.V70.VS10.xml"/>
                 <ComponentRef Id="Gallio.ReSharperRunner.V70.VS10.dll"/>
 				<ComponentRef Id="Gallio.ReSharperRunner.V70.VS10.Icon"/>
+            </Feature>
+			
+			<Feature Id="feat_Gallio.ReSharper.V70.VS11" Title="Visual Studio 2012 RC" Level="0" AllowAdvertise="no">
+                <Condition Level="1">RESHARPER_V70_VS11_INSTALLDIR</Condition>
+				<ComponentRef Id="MbUnit.V70.VS11.xml"/>
+                <ComponentRef Id="Gallio.ReSharperRunner.V70.VS11.dll"/>
+				<ComponentRef Id="Gallio.ReSharperRunner.V70.VS11.Icon"/>
             </Feature> 
         </Feature>
     </Fragment>
