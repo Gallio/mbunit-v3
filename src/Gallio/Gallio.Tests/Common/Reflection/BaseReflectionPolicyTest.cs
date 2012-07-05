@@ -617,7 +617,7 @@ namespace Gallio.Tests.Common.Reflection
         public void ExhaustiveComparison()
         {
             Assembly assembly = typeof(ReflectionPolicySample).Assembly;
-            IAssemblyInfo info = GetAssembly(assembly);
+            IAssemblyInfo info =GetAssembly(assembly);
 
             WrapperAssert.AreEquivalent(assembly, info, true);
         }
@@ -685,6 +685,18 @@ namespace Gallio.Tests.Common.Reflection
                     Assert.IsFalse((bool)equals.Invoke(wrapperFactory(target1), new object[] { null }));
                 }
             }
+        }
+
+        [Test]
+        public void GetTypesIncludesNestedTypes()
+        {
+            Assembly assembly = typeof(ReflectionPolicySample).Assembly;
+            IAssemblyInfo info = GetAssembly(assembly);
+            ITypeInfo expectedType = GetType(typeof(ReflectionPolicySample.Class1));
+
+            IList<ITypeInfo> types = info.GetTypes();
+
+            Assert.IsTrue(types.Contains(expectedType));
         }
     }
 }

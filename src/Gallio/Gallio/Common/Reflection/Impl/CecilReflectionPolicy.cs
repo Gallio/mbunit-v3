@@ -227,13 +227,30 @@ namespace Gallio.Common.Reflection.Impl
         {
             foreach (ModuleDefinition moduleHandle in assemblyHandle.Modules)
             {
-                foreach (TypeDefinition typeHandle in moduleHandle.Types)
+                foreach (TypeDefinition typeHandle in EnumerateNestedTypeDefinitionsRecursive(moduleHandle.Types))
                 {
-                    if (!typeHandle.Name.StartsWith("<")) // exclude types like <Module> and <PrivateImplementationDetails>
-                        yield return typeHandle;
+                    yield return typeHandle;
                 }
             }
         }
+
+        private static IEnumerable<TypeDefinition> EnumerateNestedTypeDefinitionsRecursive(Collection<TypeDefinition> types)
+        {
+            foreach (TypeDefinition typeHandle in types)
+            {
+                if (!typeHandle.Name.StartsWith("<")) // exclude types like <Module> and <PrivateImplementationDetails>
+                    yield return typeHandle;
+
+                if (typeHandle.HasNestedTypes)
+                {
+                    foreach (TypeDefinition nestedType in EnumerateNestedTypeDefinitionsRecursive(typeHandle.NestedTypes))
+                    {
+                        yield return nestedType;
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Attributes
