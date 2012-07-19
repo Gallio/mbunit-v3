@@ -57,10 +57,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(ReSharperSdkBinaries)\JetBrains.Profiler.Core.Api.dll</HintPath>
     </Reference>
-    <Reference Include="JetBrains.Annotations">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(ReSharperSdkBinaries)\JetBrains.Annotations.dll</HintPath>
-    </Reference>
     <Reference Include="JetBrains.Platform.CommonServices">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(ReSharperSdkBinaries)\JetBrains.Platform.CommonServices.dll</HintPath>
@@ -1112,6 +1108,10 @@
     <Reference Include="JetBrains.ReSharper.ExternalProcessStorage.Process">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.ExternalProcessStorage.Process.exe</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Product.UI">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Product.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
