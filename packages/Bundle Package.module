@@ -120,6 +120,9 @@
 	<Module Include="$(SourceDir)\Extensions\ReSharper\ReSharper61.module">
       <Inherit>true</Inherit>
     </Module>
+	<Module Include="$(SourceDir)\Extensions\ReSharper\ReSharper70.module">
+      <Inherit>true</Inherit>
+    </Module>
     <Module Include="$(SourceDir)\Extensions\RSpec\RSpec.module">
       <Inherit>true</Inherit>
     </Module>
