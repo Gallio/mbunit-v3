@@ -15,6 +15,9 @@
 <?ifdef FEATURE_NUNIT_ADAPTER_253 ?>
             <FeatureRef Id="feat_NUnitAdapter253"/>
 <?endif?>
+<?ifdef FEATURE_NUNIT_ADAPTER_254_10 ?>
+            <FeatureRef Id="feat_NUnitAdapter254_10"/>
+<?endif?>
 <?ifdef FEATURE_NUNIT_ADAPTER_LATEST ?>
             <FeatureRef Id="feat_NUnitAdapterLatest"/>
 <?endif?>

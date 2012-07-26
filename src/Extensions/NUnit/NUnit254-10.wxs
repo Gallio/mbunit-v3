@@ -2,43 +2,43 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <?include ..\..\Installer\Common.wxi ?>
 
-<?ifdef FEATURE_NUNIT_ADAPTER_254-10 ?>
+<?ifdef FEATURE_NUNIT_ADAPTER_254_10 ?>
     <Fragment>
         <DirectoryRef Id="NUnit" FileSource="$(var.GallioTargetDir)\bin\NUnit">
-          <Directory Id="NUnit.254-10" Name="254-10">
-            <Component Id="Gallio.NUnitAdapter254-10" Guid="{12D813FB-64FA-4709-B192-63A6807FFBB5}" Win64="$(var.Win64Binary)">
-              <File Id="NUnit.254-10.NUnitAdapter254-10.dll" Name="Gallio.NUnitAdapter254-10.dll" KeyPath="yes" />
-              <File Id="NUnit.254-10.NUnitAdapter254-10.plugin" Name="Gallio.NUnitAdapter254-10.plugin" />
-              <File Id="NUnit.254-10.nunit.license.txt" Name="license.txt" />
-              <File Id="NUnit.254-10.nunit.core.dll" Name="nunit.core.dll" />
-              <File Id="NUnit.254-10.nunit.core.interfaces.dll" Name="nunit.core.interfaces.dll" />
-              <File Id="NUnit.254-10.nunit.framework.dll" Name="nunit.framework.dll" />
-              <File Id="NUnit.254-10.nunit.framework.dll.tdnet" Name="nunit.framework.dll.tdnet" />
-              <File Id="NUnit.254-10.nunit.framework.xml" Name="nunit.framework.xml" />
-              <File Id="NUnit.254-10.nunit.util.dll" Name="nunit.util.dll" />
-              <File Id="NUnit.254-10.nunit.mocks.dll" Name="nunit.mocks.dll" />
-              <File Id="NUnit.254-10.nunit.Readme.txt" Name="Readme.txt" />
+          <Directory Id="NUnit.v254_10" Name="v2.5.4-10">
+            <Component Id="Gallio.NUnitAdapter254_10" Guid="{12D813FB-64FA-4709-B192-63A6807FFBB5}" Win64="$(var.Win64Binary)">
+              <File Id="NUnit.v254_10.NUnitAdapter254_10.dll" Name="Gallio.NUnitAdapter254-10.dll" KeyPath="yes" />
+              <File Id="NUnit.v254_10.NUnitAdapter254_10.plugin" Name="Gallio.NUnitAdapter254-10.plugin" />
+              <File Id="NUnit.v254_10.nunit.license.txt" Name="license.txt" />
+              <File Id="NUnit.v254_10.nunit.core.dll" Name="nunit.core.dll" />
+              <File Id="NUnit.v254_10.nunit.core.interfaces.dll" Name="nunit.core.interfaces.dll" />
+              <File Id="NUnit.v254_10.nunit.framework.dll" Name="nunit.framework.dll" />
+              <File Id="NUnit.v254_10.nunit.framework.dll.tdnet" Name="nunit.framework.dll.tdnet" />
+              <File Id="NUnit.v254_10.nunit.framework.xml" Name="nunit.framework.xml" />
+              <File Id="NUnit.v254_10.nunit.util.dll" Name="nunit.util.dll" />
+              <File Id="NUnit.v254_10.nunit.mocks.dll" Name="nunit.mocks.dll" />
+              <File Id="NUnit.v254_10.nunit.Readme.txt" Name="Readme.txt" />
             </Component>
 
-            <Directory Id="NUnit.254-10.Addins" Name="addins">
-              <Component Id="Gallio.NUnitAdapter254-10.Addins" Guid="{9304A432-4F14-439F-AF8D-09615E420D94}" Win64="$(var.Win64Binary)">
-                <File Id="NUnit.254-10.AddinsReadme.txt" Name="NUnit Addins Readme.txt" KeyPath="yes" />
+            <Directory Id="NUnit.v254_10.Addins" Name="addins">
+              <Component Id="Gallio.NUnitAdapter254_10.Addins" Guid="{9304A432-4F14-439F-AF8D-09615E420D94}" Win64="$(var.Win64Binary)">
+                <File Id="NUnit.v254_10.AddinsReadme.txt" Name="NUnit Addins Readme.txt" KeyPath="yes" />
               </Component>
             </Directory>
 	    
-            <Directory Id="NUnit.254-10.Resources" Name="Resources">
-              <Component Id="Gallio.NUnitAdapter254-10.Resources" Guid="{913495C8-0C39-4F1E-97E3-1907E1F2A670}" Win64="$(var.Win64Binary)">
-                <File Id="NUnit.254-10.NUnit.ico" Name="NUnit.ico" KeyPath="yes" />
+            <Directory Id="NUnit.v254_10.Resources" Name="Resources">
+              <Component Id="Gallio.NUnitAdapter254_10.Resources" Guid="{913495C8-0C39-4F1E-97E3-1907E1F2A670}" Win64="$(var.Win64Binary)">
+                <File Id="NUnit.v254_10.NUnit.ico" Name="NUnit.ico" KeyPath="yes" />
               </Component>
             </Directory>
           </Directory>
         </DirectoryRef>
 
-        <Feature Id='feat_NUnitAdapter254-10' Title='254-10' Level='1' AllowAdvertise="no"
+        <Feature Id='feat_NUnitAdapter254_10' Title='v2.5.4-10' Level='1' AllowAdvertise="no"
             Description='Enables Gallio to run NUnit v2.5.4-10 tests.'>
-          <ComponentRef Id="Gallio.NUnitAdapter254-10"/>
-          <ComponentRef Id="Gallio.NUnitAdapter254-10.Addins"/>
-          <ComponentRef Id="Gallio.NUnitAdapter254-10.Resources"/>
+          <ComponentRef Id="Gallio.NUnitAdapter254_10"/>
+          <ComponentRef Id="Gallio.NUnitAdapter254_10.Addins"/>
+          <ComponentRef Id="Gallio.NUnitAdapter254_10.Resources"/>
         </Feature>
     </Fragment>
 <?endif?>
