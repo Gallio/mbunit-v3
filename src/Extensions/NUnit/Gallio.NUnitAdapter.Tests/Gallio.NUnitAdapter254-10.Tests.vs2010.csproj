@@ -11,7 +11,7 @@
     <RootNamespace>Gallio.NUnitAdapter.Tests</RootNamespace>
     <AssemblyName>Gallio.NUnitAdapter254-10.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <BaseIntermediateOutputPath>obj\254-10\</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath>obj\v2.5.4-10\</BaseIntermediateOutputPath>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -32,11 +32,11 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\254-10\</OutputPath>
+    <OutputPath>bin\v2.5.4-10\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NUNIT254TO10</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\254-10\Gallio.NUnitAdapter254-10.Tests.xml</DocumentationFile>
+    <DocumentationFile>bin\v2.5.4-10\Gallio.NUnitAdapter254-10.Tests.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -44,11 +44,11 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\254-10\</OutputPath>
+    <OutputPath>bin\v2.5.4-10\</OutputPath>
     <DefineConstants>TRACE;NUNIT254TO10</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\254-10\Gallio.NUnitAdapter254-10.Tests.xml</DocumentationFile>
+    <DocumentationFile>bin\v2.5.4-10\Gallio.NUnitAdapter254-10.Tests.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -57,19 +57,19 @@
     <Reference Include="NHamcrest, Version=1.2.1.0, Culture=neutral, PublicKeyToken=31c3ea0b6fcf8c4a, processorArchitecture=MSIL" />
     <Reference Include="nunit.core, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\254-10\nunit.core.dll</HintPath>
+      <HintPath>..\libs\v2.5.4-10\nunit.core.dll</HintPath>
     </Reference>
     <Reference Include="nunit.core.interfaces, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\254-10\nunit.core.interfaces.dll</HintPath>
+      <HintPath>..\libs\v2.5.4-10\nunit.core.interfaces.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\254-10\nunit.framework.dll</HintPath>
+      <HintPath>..\libs\v2.5.4-10\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="nunit.util, Version=2.5.10.110928, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\254-10\nunit.util.dll</HintPath>
+      <HintPath>..\libs\v2.5.4-10\nunit.util.dll</HintPath>
     </Reference>
     <Reference Include="Rhino.Mocks, Version=3.1.0.584, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.NUnitAdapter.TestResources</RootNamespace>
     <AssemblyName>Gallio.NUnitAdapter254-10.TestResources</AssemblyName>
-    <BaseIntermediateOutputPath>obj\254-10\</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath>obj\v2.5.4-10\</BaseIntermediateOutputPath>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -32,11 +32,11 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\254-10\</OutputPath>
+    <OutputPath>bin\v2.5.4-10\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NUNIT254TO10</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\254-10\Gallio.NUnitAdapter254-10.TestResources.xml</DocumentationFile>
+    <DocumentationFile>bin\v2.5.4-10\Gallio.NUnitAdapter254-10.TestResources.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -48,7 +48,7 @@
     <DefineConstants>TRACE;NUNIT254TO10</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\254-10\Gallio.NUnitAdapter254-10.TestResources.xml</DocumentationFile>
+    <DocumentationFile>bin\v2.5.4-10\Gallio.NUnitAdapter254-10.TestResources.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -56,7 +56,7 @@
   <ItemGroup>
     <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\254-10\nunit.framework.dll</HintPath>
+      <HintPath>..\libs\v2.5.4-10\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
