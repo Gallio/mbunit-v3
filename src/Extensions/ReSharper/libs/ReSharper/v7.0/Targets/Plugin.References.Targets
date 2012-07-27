@@ -966,16 +966,6 @@
       <HintPath>$(ReSharperSdkBinaries)\JetBrains.PsiFeatures.VisualStudio.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="JetBrains.PsiFeatures.VisualStudio.v10.v11">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(ReSharperSdkBinaries)\JetBrains.PsiFeatures.VisualStudio.v10.v11.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="JetBrains.PsiFeatures.VisualStudio.v11">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(ReSharperSdkBinaries)\JetBrains.PsiFeatures.VisualStudio.v11.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="JetBrains.ReSharper.Psi.Resx">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(ReSharperSdkBinaries)\JetBrains.ReSharper.Psi.Resx.dll</HintPath>
