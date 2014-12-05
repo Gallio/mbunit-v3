@@ -48,5 +48,10 @@ namespace Gallio.VisualStudio.Interop
         /// Visual Studio 2012.
         /// </summary>
         VS2012 = 4,
+		
+		/// <summary>
+        /// Visual Studio 2013.
+        /// </summary>
+        VS2013 = 5,
     }
 }
