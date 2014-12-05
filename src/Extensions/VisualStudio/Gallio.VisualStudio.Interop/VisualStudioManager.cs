@@ -47,6 +47,7 @@ namespace Gallio.VisualStudio.Interop
                 { VisualStudioVersion.VS2008, new VisualStudioVersionInfo() { Name = "9.0", ProgID = "VisualStudio.DTE.9.0" } },
                 { VisualStudioVersion.VS2010, new VisualStudioVersionInfo() { Name = "10.0", ProgID = "VisualStudio.DTE.10.0" } },
                 { VisualStudioVersion.VS2012, new VisualStudioVersionInfo() { Name = "11.0", ProgID = "VisualStudio.DTE.11.0" } },
+				{ VisualStudioVersion.VS2013, new VisualStudioVersionInfo() { Name = "12.0", ProgID = "VisualStudio.DTE.12.0" } },
             };
 
         /// <summary>
@@ -254,7 +255,8 @@ namespace Gallio.VisualStudio.Interop
         {
             if (version == VisualStudioVersion.Any)
             {
-                return action(VisualStudioVersion.VS2012)
+                return action(VisualStudioVersion.VS2013)
+					|| action(VisualStudioVersion.VS2012)
                     || action(VisualStudioVersion.VS2010)
                     || action(VisualStudioVersion.VS2008)
                     || action(VisualStudioVersion.VS2005);
